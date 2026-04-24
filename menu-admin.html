@@ -1999,16 +1999,31 @@ async function toggleOpen() {
 }
 
 async function saveAllConfig() {
+  const btn = event && event.target ? event.target : null;
+  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
   const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
-  try {
-    for (const k of keys) {
-      const val = document.getElementById('cfg-' + k).value;
+  let savedCount = 0;
+  let lastError = null;
+  for (const k of keys) {
+    const val = document.getElementById('cfg-' + k).value;
+    try {
       await api('save_config', { cle: k, valeur: val });
       state.config[k] = val;
+      savedCount++;
+    } catch (err) {
+      lastError = err;
+      console.error('Erreur save ' + k + ':', err);
     }
-    document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
+  }
+  document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
+  if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+  if (savedCount === keys.length) {
     showToast('Configuration enregistrée', 'success');
-  } catch (err) {}
+  } else if (savedCount > 0) {
+    showToast(`${savedCount}/${keys.length} champs enregistrés`, 'error');
+  } else {
+    showToast('Échec : ' + (lastError ? lastError.message : 'erreur inconnue'), 'error');
+  }
 }
 
 async function loadMenu() {

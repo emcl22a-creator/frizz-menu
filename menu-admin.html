@@ -1861,13 +1861,30 @@ let state = {
 };
 
 async function api(action, params = {}) {
-  const url = new URL(BACKEND_URL);
-  url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k, v]) => {
-    if (v !== undefined && v !== null) url.searchParams.set(k, v);
-  });
   try {
-    const res = await fetch(url.toString());
+    // Estime la taille de l'URL GET pour décider POST vs GET
+    const paramsStr = Object.entries(params)
+      .filter(([k, v]) => v !== undefined && v !== null)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&');
+    const totalLen = BACKEND_URL.length + action.length + paramsStr.length + 20;
+
+    let res;
+    if (totalLen > 6000) {
+      // POST avec text/plain pour éviter le preflight CORS
+      res = await fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, ...params })
+      });
+    } else {
+      const url = new URL(BACKEND_URL);
+      url.searchParams.set('action', action);
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) url.searchParams.set(k, v);
+      });
+      res = await fetch(url.toString());
+    }
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Erreur inconnue');
     return data;

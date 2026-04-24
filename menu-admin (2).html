@@ -1,0 +1,2440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Frizz — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root {
+    --bg: #000;
+    --label: #F5F5F7;
+    --label-2: rgba(245,245,247,0.6);
+    --label-3: rgba(245,245,247,0.38);
+    --label-4: rgba(245,245,247,0.18);
+    --fill-1: rgba(255,255,255,0.06);
+    --fill-2: rgba(255,255,255,0.035);
+    --fill-3: rgba(255,255,255,0.02);
+    --sep: rgba(255,255,255,0.1);
+    --sep-opaque: rgba(255,255,255,0.06);
+    --green: #0A84FF;
+    --green-glow: rgba(10,132,255,0.5);
+    --green-soft: rgba(10,132,255,0.1);
+    --blue: #0A84FF;
+    --red: #FF453A;
+    --red-soft: rgba(255,69,58,0.1);
+    --r-sm: 10px;
+    --r: 14px;
+    --r-lg: 18px;
+    --r-xl: 22px;
+    --r-2xl: 28px;
+    --pill: 100px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *::selection { background: var(--green); color: #fff; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--label);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
+  input, textarea, select {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--fill-2);
+    color: var(--label);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-sm);
+    padding: 14px 16px;
+    width: 100%;
+    transition: all 0.2s var(--ease);
+    letter-spacing: -0.011em;
+  }
+  input::placeholder, textarea::placeholder { color: var(--label-3); }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: rgba(255,255,255,0.3);
+    background: var(--fill-1);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
+  }
+  textarea { resize: vertical; min-height: 96px; line-height: 1.5; font-size: 14px; }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='rgba(245,245,247,0.5)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  /* ============================================================
+     ANIMATED BACKGROUND — refined
+     ============================================================ */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 0%, rgba(8,12,18,1) 0%, #000 55%),
+      #000;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    will-change: transform;
+    mix-blend-mode: screen;
+  }
+  .orb-1 {
+    width: 680px; height: 680px;
+    background: radial-gradient(circle, var(--green) 0%, transparent 70%);
+    top: -220px; left: -180px;
+    opacity: 0.45;
+    animation: drift-1 32s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, #FF375F 0%, transparent 70%);
+    bottom: -160px; right: 5%;
+    opacity: 0.22;
+    animation: drift-2 38s ease-in-out infinite;
+  }
+  .orb-3 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #BF5AF2 0%, transparent 70%);
+    top: 40%; right: -140px;
+    opacity: 0.2;
+    animation: drift-3 44s ease-in-out infinite;
+  }
+  @keyframes drift-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(120px, 100px) scale(1.12); } }
+  @keyframes drift-2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-100px, -80px) scale(1.1); } }
+  @keyframes drift-3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(-70px, 90px) scale(1.1); } }
+
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 96px 96px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 75% 55% at 50% 35%, #000 20%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 35%, #000 20%, transparent 85%);
+  }
+  .bg-grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+    mix-blend-mode: overlay;
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border-bottom: 1px solid var(--sep-opaque);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.04em;
+    color: var(--green);
+    text-shadow: 0 0 24px rgba(10,132,255,0.35);
+  }
+  .brand-logo .spark {
+    font-size: 18px;
+    line-height: 1;
+    animation: twinkle 3.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 1; transform: scale(1) rotate(0); }
+    50% { opacity: 0.55; transform: scale(0.85) rotate(180deg); }
+  }
+  .brand-sub {
+    font-size: 11.5px;
+    color: var(--label-2);
+    font-weight: 500;
+    margin-top: 3px;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 16px;
+    border-radius: var(--pill);
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--fill-1);
+    border: 1px solid var(--sep-opaque);
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    letter-spacing: -0.01em;
+  }
+  .status-pill:hover { border-color: var(--sep); background: var(--fill-2); }
+  .status-pill.open { background: var(--green-soft); border-color: rgba(10,132,255,0.3); color: var(--green); }
+  .status-pill.closed { background: var(--red-soft); border-color: rgba(255,69,58,0.3); color: var(--red); }
+  .status-pill .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  /* ============================================================
+     TABS — liquid glass
+     ============================================================ */
+  .tabs-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: flex;
+    justify-content: center;
+  }
+  .tabs {
+    display: inline-flex;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--pill);
+    padding: 6px;
+    gap: 2px;
+    margin-top: 20px;
+    margin-bottom: 48px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      inset 0 -1px 0 rgba(0,0,0,0.4),
+      0 20px 50px -20px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .tabs::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .tab {
+    padding: 10px 24px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--label-2);
+    border-radius: var(--pill);
+    transition: all 0.3s var(--ease);
+    letter-spacing: -0.015em;
+    position: relative;
+    z-index: 1;
+  }
+  .tab:hover { color: var(--label); }
+  .tab.active {
+    color: #000;
+    background: linear-gradient(180deg, #eaeaec 0%, #ffffff 50%, #eaeaec 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(0,0,0,0.15),
+      0 4px 12px rgba(0,0,0,0.35);
+  }
+
+  /* ============================================================
+     MAIN
+     ============================================================ */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8px 28px 160px;
+    padding-bottom: calc(160px + env(safe-area-inset-bottom));
+  }
+  .section { display: none; }
+  .section.active {
+    display: block;
+    animation: section-in 0.6s var(--ease-spring) both;
+  }
+  @keyframes section-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    position: relative;
+    padding: 44px 40px;
+    margin-bottom: 32px;
+    border-radius: var(--r-2xl);
+    background:
+      linear-gradient(135deg, rgba(10,132,255,0.06) 0%, rgba(10,132,255,0.03) 55%, transparent 100%),
+      rgba(18,18,20,0.55);
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -35%; right: -8%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--green-glow) 0%, transparent 60%);
+    opacity: 0.25;
+    pointer-events: none;
+    animation: hero-glow 16s ease-in-out infinite;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  }
+  @keyframes hero-glow {
+    0%,100% { transform: translate(0,0) scale(1); opacity: 0.25; }
+    50% { transform: translate(-70px, 50px) scale(1.15); opacity: 0.45; }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 13px 6px 11px;
+    border-radius: var(--pill);
+    background: var(--green-soft);
+    border: 1px solid rgba(10,132,255,0.3);
+    color: var(--green);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-badge .live-dot {
+    position: relative;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+  .hero-badge .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--green);
+    opacity: 0.4;
+    animation: ping 1.8s ease-out infinite;
+  }
+  @keyframes ping {
+    0% { transform: scale(0.5); opacity: 0.6; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+    margin-bottom: 32px;
+  }
+  .hero-title {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 1;
+    padding-bottom: 0.08em;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.62) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-lede {
+    color: var(--label-2);
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 16px;
+    max-width: 520px;
+    line-height: 1.5;
+    letter-spacing: -0.015em;
+  }
+  .hero-cta { display: flex; align-items: flex-end; }
+
+  .hero-divider {
+    position: relative;
+    z-index: 1;
+    height: 1px;
+    margin-bottom: 26px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  /* ============================================================
+     STATS STRIP — glass cards with SF icons
+     ============================================================ */
+  .stats-strip {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .strip-item {
+    position: relative;
+    background: rgba(255,255,255,0.035);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-lg);
+    padding: 20px 22px 22px;
+    overflow: hidden;
+    transition: all 0.35s var(--ease);
+    min-height: 116px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .strip-item:hover {
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.055);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -12px rgba(0,0,0,0.4);
+  }
+  .strip-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  }
+  .strip-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 120%, rgba(255,255,255,0.04), transparent 60%);
+    pointer-events: none;
+  }
+  .strip-icon {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 18px; height: 18px;
+    color: rgba(255,255,255,0.22);
+    transition: color 0.25s var(--ease);
+  }
+  .strip-item:hover .strip-icon { color: rgba(255,255,255,0.4); }
+  .strip-icon svg { width: 100%; height: 100%; display: block; }
+  .strip-head {
+    display: flex;
+    flex-direction: column;
+    padding-right: 28px;
+  }
+  .strip-label {
+    font-size: 11px;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+  .strip-value {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--label);
+    margin-top: 4px;
+  }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--pill);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s var(--ease);
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+    position: relative;
+  }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-primary {
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8ea 100%);
+    color: #0a0a0a;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.8),
+      inset 0 -1px 0 rgba(0,0,0,0.15),
+      0 4px 14px -2px rgba(255,255,255,0.15);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 -1px 0 rgba(0,0,0,0.15),
+      0 8px 22px -4px rgba(255,255,255,0.25);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--fill-1);
+    color: var(--label);
+    border: 1px solid var(--sep);
+    backdrop-filter: blur(12px);
+  }
+  .btn-secondary:hover { background: var(--fill-2); border-color: rgba(255,255,255,0.2); }
+  .btn-ghost {
+    color: var(--label-2);
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover { color: var(--label); background: var(--fill-2); }
+  .btn-danger {
+    background: var(--red-soft);
+    color: var(--red);
+  }
+  .btn-danger:hover { background: rgba(255,69,58,0.18); }
+  .icon-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--fill-1);
+    border: 1px solid var(--sep-opaque);
+    color: var(--label-2);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.2s var(--ease);
+  }
+  .icon-btn:hover { background: var(--fill-2); color: var(--label); border-color: var(--sep); }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  /* ============================================================
+     FILTER CHIPS
+     ============================================================ */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .chip {
+    padding: 9px 18px;
+    border-radius: var(--pill);
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-2);
+    white-space: nowrap;
+    transition: all 0.25s var(--ease);
+    letter-spacing: -0.01em;
+  }
+  .chip:hover { color: var(--label); border-color: var(--sep); }
+  .chip.active {
+    background: var(--label);
+    border-color: var(--label);
+    color: #000;
+  }
+
+  /* ============================================================
+     GRID & CARDS
+     ============================================================ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .grid > * { animation: card-in 0.5s var(--ease-spring) both; }
+  .grid > *:nth-child(1) { animation-delay: 0.02s; }
+  .grid > *:nth-child(2) { animation-delay: 0.05s; }
+  .grid > *:nth-child(3) { animation-delay: 0.08s; }
+  .grid > *:nth-child(4) { animation-delay: 0.11s; }
+  .grid > *:nth-child(5) { animation-delay: 0.14s; }
+  .grid > *:nth-child(6) { animation-delay: 0.17s; }
+  .grid > *:nth-child(7) { animation-delay: 0.20s; }
+  .grid > *:nth-child(8) { animation-delay: 0.23s; }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* PLAT CARD */
+  .plat-card {
+    background: var(--fill-2);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    transition: all 0.35s var(--ease);
+    position: relative;
+  }
+  .plat-card:hover {
+    border-color: var(--sep);
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -14px rgba(0,0,0,0.45);
+  }
+  .plat-card.indisponible { opacity: 0.42; }
+  .plat-photo {
+    aspect-ratio: 16 / 10;
+    background: var(--fill-3);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .plat-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.25));
+    pointer-events: none;
+  }
+  .plat-photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--label-4);
+  }
+  .plat-photo-placeholder svg { width: 40px; height: 40px; }
+  .plat-tag {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(14px);
+    padding: 5px 11px;
+    border-radius: var(--pill);
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(255,255,255,0.08);
+    z-index: 1;
+  }
+  .plat-body { padding: 18px 20px 16px; }
+  .plat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  .plat-nom {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+  .plat-prix {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--label);
+    white-space: nowrap;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .plat-desc {
+    font-size: 13px;
+    color: var(--label-2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 40px;
+  }
+  .plat-footer {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--sep-opaque);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .plat-dispo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12.5px;
+    color: var(--label-2);
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    user-select: none;
+  }
+
+  /* Toggle iOS-style */
+  .toggle {
+    position: relative;
+    width: 38px; height: 22px;
+    background: rgba(255,255,255,0.15);
+    border-radius: var(--pill);
+    transition: background 0.25s var(--ease);
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.25s var(--ease);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .toggle.on { background: var(--green); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* TABLE CARD */
+  .table-card {
+    background: var(--fill-2);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-xl);
+    padding: 24px;
+    transition: all 0.35s var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .table-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  }
+  .table-card:hover {
+    border-color: var(--sep);
+    transform: translateY(-3px);
+    box-shadow: 0 22px 44px -14px rgba(0,0,0,0.45);
+  }
+  .table-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+  .table-nom {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+  .table-cap {
+    font-size: 13px;
+    color: var(--label-2);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .table-badge {
+    padding: 5px 11px;
+    border-radius: var(--pill);
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .table-badge.libre { background: var(--green-soft); color: var(--green); }
+  .table-badge.occupee { background: var(--red-soft); color: var(--red); }
+  .table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ============================================================
+     STATS SECTION
+     ============================================================ */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    position: relative;
+    background: var(--fill-2);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-lg);
+    padding: 24px 24px 26px;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .stat-value {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--label);
+  }
+  .stat-value.accent {
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* PANEL (generic) */
+  .panel {
+    position: relative;
+    background: var(--fill-2);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-xl);
+    padding: 28px 30px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--label-2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-title svg { width: 14px; height: 14px; color: var(--label-2); }
+
+  /* TOP PLATS LIST */
+  .top-plat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--sep-opaque);
+  }
+  .top-plat-row:last-child { border-bottom: 0; }
+  .top-plat-info { display: flex; align-items: center; gap: 14px; flex: 1; font-weight: 600; letter-spacing: -0.015em; }
+  .top-plat-rank {
+    width: 28px; height: 28px;
+    background: var(--fill-1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--label-2);
+  }
+  .top-plat-row:nth-child(1) .top-plat-rank { background: rgba(255,215,0,0.14); color: #FFD60A; }
+  .top-plat-row:nth-child(2) .top-plat-rank { background: rgba(192,192,192,0.12); color: #E5E5E7; }
+  .top-plat-row:nth-child(3) .top-plat-rank { background: rgba(205,127,50,0.14); color: #FFA07A; }
+  .top-plat-qte {
+    font-weight: 800;
+    color: var(--label);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* CHART */
+  .chart-total {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-top: 8px;
+  }
+  .chart-delta {
+    font-size: 12.5px;
+    color: var(--label-2);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    margin-top: 8px;
+  }
+  .chart-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .chart-empty {
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--label-2);
+    gap: 12px;
+  }
+  .chart-empty svg { width: 40px; height: 40px; opacity: 0.4; }
+
+  /* AI CARD */
+  .ai-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10,132,255,0.05) 0%, rgba(10,132,255,0.03) 100%), var(--fill-2);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(10,132,255,0.22);
+    border-radius: var(--r-xl);
+    padding: 28px 30px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .ai-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -18%;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, var(--green-glow) 0%, transparent 60%);
+    opacity: 0.22;
+    pointer-events: none;
+    animation: hero-glow 10s ease-in-out infinite;
+  }
+  .ai-card > * { position: relative; z-index: 1; }
+  .ai-summary-text {
+    white-space: pre-wrap;
+    line-height: 1.65;
+    color: var(--label);
+    font-size: 15px;
+    margin-top: 20px;
+    letter-spacing: -0.013em;
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     MODAL
+     ============================================================ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+  .modal-overlay.active {
+    display: flex;
+    animation: overlay-in 0.25s var(--ease-spring);
+  }
+  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: rgba(22,22,24,0.92);
+    backdrop-filter: blur(44px) saturate(180%);
+    -webkit-backdrop-filter: blur(44px) saturate(180%);
+    border: 1px solid var(--sep);
+    border-radius: var(--r-2xl);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modal-in 0.4s var(--ease-spring);
+    box-shadow: 0 32px 80px -12px rgba(0,0,0,0.7);
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(28px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal::-webkit-scrollbar { width: 6px; }
+  .modal::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 3px; }
+  .modal-header {
+    padding: 30px 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--fill-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-2);
+    transition: all 0.2s var(--ease);
+  }
+  .modal-close:hover { background: var(--fill-2); color: var(--label); transform: rotate(90deg); }
+  .modal-close svg { width: 14px; height: 14px; }
+  .modal-body { padding: 24px 30px; }
+  .modal-footer {
+    padding: 0 30px 30px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .field { margin-bottom: 18px; }
+  .field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label-2);
+    margin-bottom: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .field-hint {
+    font-size: 12px;
+    color: var(--label-3);
+    margin-top: 7px;
+    line-height: 1.45;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ============================================================
+     PHOTO PICKER
+     ============================================================ */
+  .photo-picker {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r);
+    background: var(--fill-2);
+    border: 1px dashed rgba(255,255,255,0.16);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo-picker:hover {
+    border-color: rgba(255,255,255,0.32);
+    background-color: var(--fill-1);
+  }
+  .photo-picker.has-photo {
+    border-style: solid;
+    border-color: var(--sep-opaque);
+  }
+  .photo-picker-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--label-2);
+    padding: 20px;
+    text-align: center;
+  }
+  .photo-picker-empty svg {
+    width: 32px; height: 32px;
+    opacity: 0.5;
+  }
+  .photo-picker-empty-label {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--label);
+  }
+  .photo-picker-empty-hint {
+    font-size: 11.5px;
+    color: var(--label-3);
+    font-weight: 500;
+  }
+  .photo-picker-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.78));
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 12px 14px;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+  }
+  .photo-picker.has-photo:hover .photo-picker-overlay { opacity: 1; }
+  .photo-picker-change, .photo-picker-remove {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 13px;
+    border-radius: var(--pill);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+  .photo-picker-change { background: rgba(0,0,0,0.5); }
+  .photo-picker-remove { background: rgba(255,69,58,0.9); border: 0; }
+  .photo-picker-remove:hover { background: var(--red); }
+  .photo-processing {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .photo-processing.show { display: flex; }
+  .photo-processing .spinner {
+    border-color: rgba(255,255,255,0.25);
+    border-top-color: #fff;
+    width: 22px; height: 22px;
+  }
+
+  /* ============================================================
+     QR MODAL
+     ============================================================ */
+  .qr-container {
+    background: #fff;
+    border-radius: var(--r);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .qr-container img { width: 240px; height: 240px; display: block; }
+  .qr-url {
+    font-size: 11px;
+    color: var(--label-2);
+    word-break: break-all;
+    text-align: center;
+    padding: 14px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-sm);
+    margin-top: 18px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    line-height: 1.5;
+  }
+
+  /* ============================================================
+     EMPTY & SPINNER
+     ============================================================ */
+  .empty-state {
+    text-align: center;
+    padding: 24px 24px 48px;
+    color: var(--label-2);
+  }
+  .empty-state-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 18px;
+    border-radius: var(--r);
+    background: var(--fill-1);
+    border: 1px solid var(--sep-opaque);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-3);
+  }
+  .empty-state-icon svg { width: 26px; height: 26px; }
+  .empty-state-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--label);
+    margin-bottom: 6px;
+    letter-spacing: -0.025em;
+  }
+  .empty-state p { font-size: 14px; font-weight: 500; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(140px);
+    background: rgba(22,22,24,0.92);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid var(--sep);
+    border-radius: var(--pill);
+    padding: 13px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 200;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s var(--ease-spring);
+    letter-spacing: -0.013em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--label-2); }
+  .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+  .toast.success .toast-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+  /* ============================================================
+     CONFIG
+     ============================================================ */
+  .config-form {
+    max-width: 620px;
+    background: var(--fill-2);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-xl);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .config-form::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 720px) {
+    .header-inner { padding: 14px 18px; }
+    .tabs-wrap { padding: 0 16px; }
+    .tabs { margin-top: 14px; margin-bottom: 32px; padding: 4px; }
+    .tab { padding: 9px 16px; font-size: 13px; }
+    main { padding: 4px 18px 120px; }
+
+    .hero { padding: 28px 22px; border-radius: var(--r-xl); }
+    .hero-title { font-size: 44px; }
+    .hero-lede { font-size: 15px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 20px; }
+    .hero-cta { justify-content: flex-start; align-items: flex-start; }
+
+    .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .strip-item { padding: 16px 16px 18px; min-height: 104px; border-radius: var(--r); }
+    .strip-value { font-size: 30px; }
+    .strip-icon { top: 14px; right: 14px; width: 16px; height: 16px; }
+    .strip-label { font-size: 10px; letter-spacing: 0.12em; }
+    .strip-head { padding-right: 22px; }
+
+    .stat-value { font-size: 32px; }
+    .stat-card, .panel, .ai-card, .config-form { padding: 22px; border-radius: var(--r-lg); }
+    .panel-header { margin-bottom: 16px; }
+    .chart-total { font-size: 28px; }
+    .chart-wrap { height: 220px; }
+
+    .field-row { grid-template-columns: 1fr; }
+    .modal-header, .modal-body, .modal-footer { padding-left: 22px; padding-right: 22px; }
+
+    .brand-logo { font-size: 19px; }
+    .brand-logo .spark { font-size: 15px; }
+    .brand-sub { font-size: 10.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="bg-grid"></div>
+<div class="bg-grain"></div>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-text">
+        <span class="brand-logo">Frizz<span class="spark">✦</span></span>
+        <span class="brand-sub" id="brand-sub">Admin</span>
+      </div>
+    </div>
+    <button class="status-pill open" id="status-pill" onclick="toggleOpen()">
+      <span class="dot"></span>
+      <span id="status-label">En service</span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ TABS ============ -->
+<div class="tabs-wrap">
+  <nav class="tabs">
+    <button class="tab active" data-tab="menu">Menu</button>
+    <button class="tab" data-tab="tables">Tables</button>
+    <button class="tab" data-tab="stats">Stats</button>
+    <button class="tab" data-tab="config">Config</button>
+  </nav>
+</div>
+
+<main>
+  <!-- ============ MENU ============ -->
+  <section class="section active" id="section-menu">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">
+            <span class="live-dot"></span>
+            <span>Synchro temps réel</span>
+          </div>
+          <h1 class="hero-title">Menu</h1>
+          <p class="hero-lede">Ta carte en direct. Modifie un prix, marque un plat épuisé, ajoute une nouveauté — tout se met à jour instantanément pour tes clients.</p>
+        </div>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="openPlatModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Nouveau plat
+          </button>
+        </div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="stats-strip">
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h18"/><path d="M4 12a8 8 0 0 1 16 0"/><path d="M2 18h20"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Total plats</div></div>
+          <div class="strip-value" id="strip-total">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/>
+              <rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Catégories</div></div>
+          <div class="strip-value" id="strip-cats">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Disponibles</div></div>
+          <div class="strip-value" id="strip-dispo">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Épuisés</div></div>
+          <div class="strip-value" id="strip-epuise">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-bar" id="category-filters"></div>
+    <div class="grid" id="menu-grid"></div>
+  </section>
+
+  <!-- ============ TABLES ============ -->
+  <section class="section" id="section-tables">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">
+            <span class="live-dot"></span>
+            <span>QR codes actifs</span>
+          </div>
+          <h1 class="hero-title">Tables</h1>
+          <p class="hero-lede">Chaque table a son QR code unique. Les clients scannent, commandent, paient — tu gardes la main sur ce qui se passe en salle.</p>
+        </div>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="openTableModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Nouvelle table
+          </button>
+        </div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="stats-strip">
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/>
+              <rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Total tables</div></div>
+          <div class="strip-value" id="tstrip-total">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Libres</div></div>
+          <div class="strip-value" id="tstrip-libre">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/>
+              <path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"/><path d="M15 20c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Occupées</div></div>
+          <div class="strip-value" id="tstrip-occ">0</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3v8a2.5 2.5 0 0 0 5 0V3"/><path d="M9.5 11v10"/>
+              <path d="M17 3c-1.5 0-2.5 1.5-2.5 3v6H17"/><path d="M17 3v18"/>
+            </svg>
+          </div>
+          <div class="strip-head"><div class="strip-label">Couverts</div></div>
+          <div class="strip-value" id="tstrip-couv">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid" id="tables-grid"></div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="section" id="section-stats">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">
+            <span class="live-dot"></span>
+            <span>Mis à jour en direct</span>
+          </div>
+          <h1 class="hero-title">Stats</h1>
+          <p class="hero-lede">Chiffre d'affaires, panier moyen, top plats, évolution — tous les signaux de ton service en un coup d'œil.</p>
+        </div>
+        <div class="hero-cta" style="flex-direction: column; gap: 12px; align-items: flex-end;">
+          <div class="filter-bar" style="margin: 0;">
+            <button class="chip active" data-periode="jour">Jour</button>
+            <button class="chip" data-periode="semaine">Semaine</button>
+            <button class="chip" data-periode="mois">Mois</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Chiffre d'affaires</div>
+        <div class="stat-value accent" id="stat-ca">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Commandes</div>
+        <div class="stat-value" id="stat-commandes">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Panier moyen</div>
+        <div class="stat-value" id="stat-panier">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tables occupées</div>
+        <div class="stat-value" id="stat-tables">—</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
+            </svg>
+            Évolution
+          </div>
+          <div class="chart-total" id="chart-total">—</div>
+          <div class="chart-delta" id="chart-delta">Calcul en cours…</div>
+        </div>
+      </div>
+      <div id="chart-container"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3h12v4a6 6 0 0 1-12 0V3z"/>
+            <path d="M6 7H4a2 2 0 0 0-2 2 3 3 0 0 0 3 3h1"/>
+            <path d="M18 7h2a2 2 0 0 1 2 2 3 3 0 0 1-3 3h-1"/>
+            <path d="M9 21h6"/><path d="M12 17v4"/>
+          </svg>
+          Top plats
+        </div>
+      </div>
+      <div id="top-plats-list">
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
+            </svg>
+          </div>
+          <p>Pas encore de données</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-card">
+      <div class="panel-header">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>
+            <path d="M19 14l0.9 2.4 2.4 0.9-2.4 0.9-0.9 2.4-0.9-2.4-2.4-0.9 2.4-0.9z" opacity="0.7"/>
+          </svg>
+          Résumé IA
+        </div>
+        <button class="btn btn-secondary" onclick="generateAISummary()" id="ai-btn">Générer</button>
+      </div>
+      <div class="ai-summary-text" id="ai-summary" style="display: none;"></div>
+    </div>
+  </section>
+
+  <!-- ============ CONFIG ============ -->
+  <section class="section" id="section-config">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title">Configuration</h1>
+          <p class="hero-lede">Paramètres de ton restaurant — nom, logo, URL client et langue par défaut.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-form">
+      <div class="field">
+        <label class="field-label">Nom du restaurant</label>
+        <input type="text" id="cfg-restaurant_nom" placeholder="Ex: Chez Marco">
+      </div>
+      <div class="field">
+        <label class="field-label">URL du logo</label>
+        <input type="url" id="cfg-logo_url" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label class="field-label">URL client (GitHub Pages)</label>
+        <input type="url" id="cfg-url_client" placeholder="https://ton-user.github.io/frizz-client/menu.html">
+        <div class="field-hint">Utilisée pour générer les QR codes. Le paramètre ?table_id=X est ajouté automatiquement.</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Lien Google Avis</label>
+        <input type="url" id="cfg-google_link" placeholder="https://g.page/...">
+      </div>
+      <div class="field">
+        <label class="field-label">Langue par défaut</label>
+        <select id="cfg-langue_defaut">
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="saveAllConfig()" style="width: 100%; margin-top: 12px;">Enregistrer</button>
+    </div>
+  </section>
+</main>
+
+<!-- ============ MODAL PLAT ============ -->
+<div class="modal-overlay" id="modal-plat">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-plat-title">Nouveau plat</h2>
+      <button class="modal-close" onclick="closeModal('modal-plat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="plat-id">
+      <div class="field">
+        <label class="field-label">Nom du plat</label>
+        <input type="text" id="plat-nom" placeholder="Ex: Risotto aux cèpes">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Catégorie</label>
+          <input type="text" id="plat-categorie" placeholder="plats, desserts…" list="categories-list">
+          <datalist id="categories-list">
+            <option value="entrées"><option value="plats"><option value="desserts"><option value="boissons">
+          </datalist>
+        </div>
+        <div class="field">
+          <label class="field-label">Prix (€)</label>
+          <input type="number" id="plat-prix" step="0.10" min="0" placeholder="0.00">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Description</label>
+        <textarea id="plat-description" placeholder="Ingrédients, origine, préparation…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Photo</label>
+        <input type="hidden" id="plat-photo_url">
+        <input type="file" id="plat-photo-file" accept="image/*" style="display: none;">
+        <div class="photo-picker" id="photo-picker" onclick="triggerPhotoUpload()">
+          <div class="photo-picker-empty" id="photo-picker-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="15" rx="2"/>
+              <circle cx="12" cy="12.5" r="3.5"/>
+              <path d="M8 5l1.5-2h5L16 5"/>
+            </svg>
+            <div class="photo-picker-empty-label">Ajouter une photo</div>
+            <div class="photo-picker-empty-hint">JPG · PNG · HEIC — depuis ton appareil</div>
+          </div>
+          <div class="photo-picker-overlay">
+            <span class="photo-picker-change">Changer la photo</span>
+            <button type="button" class="photo-picker-remove" onclick="event.stopPropagation(); removePhoto()">Supprimer</button>
+          </div>
+          <div class="photo-processing" id="photo-processing">
+            <span class="spinner"></span>
+            <span>Optimisation…</span>
+          </div>
+        </div>
+        <div class="field-hint">Redimensionnement auto en 1080p, compression intelligente.</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Allergènes</label>
+        <input type="text" id="plat-allergenes" placeholder="gluten, lactose, œufs…">
+      </div>
+      <div class="field">
+        <label class="field-label">Options (avancé)</label>
+        <textarea id="plat-options" placeholder='[{"type":"Cuisson","choix":["saignant","à point","bien cuit"]}]'></textarea>
+        <div class="field-hint">Format JSON. Laisse vide si pas d'options.</div>
+      </div>
+      <div class="field" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0 0; border-top: 1px solid var(--sep-opaque); margin-top: 4px;">
+        <span style="font-size: 14px; font-weight: 600; color: var(--label);">Disponible à la commande</span>
+        <span class="toggle on" id="plat-disponible-toggle" onclick="toggleDisponible()"></span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="plat-delete-btn" onclick="deletePlat()" style="display: none;">Supprimer</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-plat')">Annuler</button>
+      <button class="btn btn-primary" onclick="savePlat()" id="plat-save-btn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL TABLE ============ -->
+<div class="modal-overlay" id="modal-table">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-table-title">Nouvelle table</h2>
+      <button class="modal-close" onclick="closeModal('modal-table')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="table-id">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Nom / numéro</label>
+          <input type="text" id="table-nom" placeholder="Ex: Table 1">
+        </div>
+        <div class="field">
+          <label class="field-label">Capacité</label>
+          <input type="number" id="table-capacite" min="1" value="2">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-table')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTable()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL QR ============ -->
+<div class="modal-overlay" id="modal-qr">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="qr-title">QR code</h2>
+      <button class="modal-close" onclick="closeModal('modal-qr')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="qr-container">
+        <img id="qr-img" src="" alt="QR code">
+      </div>
+      <div class="qr-url" id="qr-url"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-qr')">Fermer</button>
+      <button class="btn btn-primary" onclick="downloadQR()">Télécharger</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxjufZqwVMAY8sM289Vdqc7r8T-oCIgKvRaG60tRc0xM1UZknKCMxVrxRbseLcp8Oninw/exec';
+
+const ICONS = {
+  plate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg>',
+  chair: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="10" rx="2"/><path d="M7 14v6M17 14v6M5 18h14"/></svg>',
+  qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3M14 17v4M17 17v1M20 14v3M20 20h1"/></svg>',
+  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
+};
+
+let state = {
+  menu: [], tables: [], config: {},
+  activeCategory: '', activePeriode: 'jour',
+  editingPlatId: null, editingTableId: null, platDisponible: true
+};
+
+async function api(action, params = {}) {
+  const url = new URL(BACKEND_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) url.searchParams.set(k, v);
+  });
+  try {
+    const res = await fetch(url.toString());
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Erreur inconnue');
+    return data;
+  } catch (err) {
+    showToast(err.message, 'error');
+    throw err;
+  }
+}
+
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('section-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'stats') loadStats();
+    if (tab.dataset.tab === 'tables') loadTables();
+  });
+});
+
+async function loadConfig() {
+  try {
+    const data = await api('get_config');
+    state.config = data.config || {};
+    if (state.config.restaurant_nom) {
+      document.getElementById('brand-sub').textContent = state.config.restaurant_nom;
+      document.title = state.config.restaurant_nom + ' — Frizz Admin';
+    }
+    const isOpen = String(state.config.ouvert).toLowerCase() === 'true' || state.config.ouvert === true;
+    updateOpenPill(isOpen);
+    document.getElementById('cfg-restaurant_nom').value = state.config.restaurant_nom || '';
+    document.getElementById('cfg-logo_url').value = state.config.logo_url || '';
+    document.getElementById('cfg-url_client').value = state.config.url_client || '';
+    document.getElementById('cfg-google_link').value = state.config.google_link || '';
+    document.getElementById('cfg-langue_defaut').value = state.config.langue_defaut || 'fr';
+  } catch (err) { console.error(err); }
+}
+
+function updateOpenPill(isOpen) {
+  const pill = document.getElementById('status-pill');
+  const label = document.getElementById('status-label');
+  if (isOpen) {
+    pill.classList.add('open'); pill.classList.remove('closed');
+    label.textContent = 'En service';
+  } else {
+    pill.classList.add('closed'); pill.classList.remove('open');
+    label.textContent = 'Hors service';
+  }
+}
+
+async function toggleOpen() {
+  const current = String(state.config.ouvert).toLowerCase() === 'true' || state.config.ouvert === true;
+  const next = !current;
+  updateOpenPill(next);
+  try {
+    await api('save_config', { cle: 'ouvert', valeur: next ? 'true' : 'false' });
+    state.config.ouvert = next;
+    showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
+  } catch (err) { updateOpenPill(current); }
+}
+
+async function saveAllConfig() {
+  const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
+  try {
+    for (const k of keys) {
+      const val = document.getElementById('cfg-' + k).value;
+      await api('save_config', { cle: k, valeur: val });
+      state.config[k] = val;
+    }
+    document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
+    showToast('Configuration enregistrée', 'success');
+  } catch (err) {}
+}
+
+async function loadMenu() {
+  try {
+    const data = await api('get_menu');
+    state.menu = data.items || [];
+    renderCategories();
+    renderMenu();
+    const total = state.menu.length;
+    const cats = new Set(state.menu.map(p => p.categorie).filter(Boolean)).size;
+    const dispo = state.menu.filter(p => p.disponible).length;
+    document.getElementById('strip-total').textContent = total;
+    document.getElementById('strip-cats').textContent = cats;
+    document.getElementById('strip-dispo').textContent = dispo;
+    document.getElementById('strip-epuise').textContent = total - dispo;
+  } catch (err) { console.error(err); }
+}
+
+function renderCategories() {
+  const cats = [...new Set(state.menu.map(p => p.categorie).filter(Boolean))].sort();
+  const bar = document.getElementById('category-filters');
+  if (state.activeCategory && !cats.includes(state.activeCategory)) state.activeCategory = cats[0] || '';
+  if (!state.activeCategory && cats.length > 0) state.activeCategory = cats[0];
+  bar.innerHTML = '';
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip ' + (state.activeCategory === c ? 'active' : '');
+    btn.dataset.cat = c;
+    btn.textContent = c;
+    bar.appendChild(btn);
+  });
+  bar.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      state.activeCategory = chip.dataset.cat;
+      renderCategories();
+      renderMenu();
+    });
+  });
+}
+
+function renderMenu() {
+  const grid = document.getElementById('menu-grid');
+  const filtered = state.activeCategory ? state.menu.filter(p => p.categorie === state.activeCategory) : state.menu;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1/-1;">
+        <div class="empty-state-icon">${ICONS.plate}</div>
+        <div class="empty-state-title">Aucun plat</div>
+        <p>Clique sur "Nouveau plat" pour commencer</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="plat-card ${p.disponible ? '' : 'indisponible'}">
+      <div class="plat-photo" style="${p.photo_url ? `background-image: url('${escapeAttr(p.photo_url)}')` : ''}">
+        ${!p.photo_url ? `<div class="plat-photo-placeholder">${ICONS.image}</div>` : ''}
+        ${p.categorie ? `<div class="plat-tag">${escapeHtml(p.categorie)}</div>` : ''}
+      </div>
+      <div class="plat-body">
+        <div class="plat-head">
+          <div class="plat-nom">${escapeHtml(p.nom || '')}</div>
+          <div class="plat-prix">${p.prix.toFixed(2)}€</div>
+        </div>
+        <div class="plat-desc">${escapeHtml(p.description || '')}</div>
+        <div class="plat-footer">
+          <label class="plat-dispo" onclick="event.stopPropagation(); toggleDispoPlat('${p.id}', ${!p.disponible})">
+            <span class="toggle ${p.disponible ? 'on' : ''}"></span>
+            <span>${p.disponible ? 'Dispo' : 'Épuisé'}</span>
+          </label>
+          <button class="btn btn-ghost" onclick="openPlatModal('${p.id}')">Modifier</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function toggleDispoPlat(id, newVal) {
+  const plat = state.menu.find(p => p.id === id);
+  if (plat) plat.disponible = newVal;
+  renderMenu();
+  try {
+    await api('update_statut_plat', { id, disponible: newVal ? 'true' : 'false' });
+    showToast(newVal ? 'Plat disponible' : 'Plat épuisé', 'success');
+  } catch (err) {
+    if (plat) plat.disponible = !newVal;
+    renderMenu();
+  }
+}
+
+function openPlatModal(id = null) {
+  state.editingPlatId = id;
+  const modal = document.getElementById('modal-plat');
+  const title = document.getElementById('modal-plat-title');
+  const deleteBtn = document.getElementById('plat-delete-btn');
+
+  if (id) {
+    const p = state.menu.find(x => x.id === id);
+    if (!p) return;
+    title.textContent = 'Modifier le plat';
+    deleteBtn.style.display = '';
+    document.getElementById('plat-id').value = p.id;
+    document.getElementById('plat-nom').value = p.nom || '';
+    document.getElementById('plat-categorie').value = p.categorie || '';
+    document.getElementById('plat-prix').value = p.prix || '';
+    document.getElementById('plat-description').value = p.description || '';
+    document.getElementById('plat-photo_url').value = p.photo_url || '';
+    setPhotoPreview(p.photo_url || '');
+    document.getElementById('plat-allergenes').value = p.allergenes || '';
+    document.getElementById('plat-options').value = p.options && p.options.length ? JSON.stringify(p.options) : '';
+    state.platDisponible = p.disponible !== false;
+  } else {
+    title.textContent = 'Nouveau plat';
+    deleteBtn.style.display = 'none';
+    document.getElementById('plat-id').value = '';
+    ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-description', 'plat-photo_url', 'plat-allergenes', 'plat-options']
+      .forEach(id => document.getElementById(id).value = '');
+    setPhotoPreview('');
+    state.platDisponible = true;
+  }
+  document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
+  modal.classList.add('active');
+}
+
+function setPhotoPreview(url) {
+  const picker = document.getElementById('photo-picker');
+  const empty = document.getElementById('photo-picker-empty');
+  if (url) {
+    picker.style.backgroundImage = `url('${url.replace(/'/g, "\\'")}')`;
+    picker.classList.add('has-photo');
+    empty.style.display = 'none';
+  } else {
+    picker.style.backgroundImage = '';
+    picker.classList.remove('has-photo');
+    empty.style.display = 'flex';
+  }
+}
+
+function triggerPhotoUpload() { document.getElementById('plat-photo-file').click(); }
+
+function removePhoto() {
+  document.getElementById('plat-photo_url').value = '';
+  document.getElementById('plat-photo-file').value = '';
+  setPhotoPreview('');
+}
+
+document.getElementById('plat-photo-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const processing = document.getElementById('photo-processing');
+  processing.classList.add('show');
+  try {
+    const dataUrl = await compressImage(file, 1080);
+    document.getElementById('plat-photo_url').value = dataUrl;
+    setPhotoPreview(dataUrl);
+    showToast('Photo prête', 'success');
+  } catch (err) {
+    showToast('Erreur : ' + err.message, 'error');
+  } finally {
+    processing.classList.remove('show');
+    e.target.value = '';
+  }
+});
+
+async function compressImage(file, maxDim = 1080) {
+  const TARGET_LEN = 45000;
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) { reject(new Error("Ce n'est pas une image")); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const render = (w, h, q) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          return canvas.toDataURL('image/jpeg', q);
+        };
+        let quality = 0.88;
+        let dataUrl = render(width, height, quality);
+        while (dataUrl.length > TARGET_LEN && quality > 0.35) {
+          quality -= 0.08;
+          dataUrl = render(width, height, quality);
+        }
+        while (dataUrl.length > TARGET_LEN && Math.max(width, height) > 320) {
+          width = Math.round(width * 0.85);
+          height = Math.round(height * 0.85);
+          dataUrl = render(width, height, 0.75);
+          while (dataUrl.length > TARGET_LEN && quality > 0.35) {
+            quality -= 0.05;
+            dataUrl = render(width, height, quality);
+          }
+        }
+        if (dataUrl.length > TARGET_LEN) { reject(new Error("Image trop complexe")); return; }
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Image illisible'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Lecture impossible'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function toggleDisponible() {
+  state.platDisponible = !state.platDisponible;
+  document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
+}
+
+async function savePlat() {
+  const btn = document.getElementById('plat-save-btn');
+  const nom = document.getElementById('plat-nom').value.trim();
+  if (!nom) { showToast('Le nom est requis', 'error'); return; }
+  const params = {
+    id: document.getElementById('plat-id').value || undefined,
+    nom,
+    categorie: document.getElementById('plat-categorie').value.trim(),
+    prix: document.getElementById('plat-prix').value,
+    description: document.getElementById('plat-description').value.trim(),
+    photo_url: document.getElementById('plat-photo_url').value.trim(),
+    allergenes: document.getElementById('plat-allergenes').value.trim(),
+    options: document.getElementById('plat-options').value.trim() || '[]',
+    disponible: state.platDisponible ? 'true' : 'false'
+  };
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  try {
+    await api('save_plat', params);
+    showToast('Plat enregistré', 'success');
+    closeModal('modal-plat');
+    await loadMenu();
+  } catch (err) {}
+  btn.innerHTML = 'Enregistrer';
+  btn.disabled = false;
+}
+
+async function deletePlat() {
+  const id = document.getElementById('plat-id').value;
+  if (!id) return;
+  if (!confirm('Supprimer ce plat définitivement ?')) return;
+  try {
+    await api('delete_plat', { id });
+    showToast('Plat supprimé', 'success');
+    closeModal('modal-plat');
+    await loadMenu();
+  } catch (err) {}
+}
+
+async function loadTables() {
+  try {
+    const data = await api('get_tables');
+    state.tables = data.tables || [];
+    renderTables();
+    const total = state.tables.length;
+    const libres = state.tables.filter(t => t.statut === 'libre').length;
+    const occ = state.tables.filter(t => t.statut === 'occupee').length;
+    const couverts = state.tables.reduce((s, t) => s + (parseInt(t.capacite) || 0), 0);
+    document.getElementById('tstrip-total').textContent = total;
+    document.getElementById('tstrip-libre').textContent = libres;
+    document.getElementById('tstrip-occ').textContent = occ;
+    document.getElementById('tstrip-couv').textContent = couverts;
+  } catch (err) { console.error(err); }
+}
+
+function renderTables() {
+  const grid = document.getElementById('tables-grid');
+  if (state.tables.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1/-1;">
+        <div class="empty-state-icon">${ICONS.chair}</div>
+        <div class="empty-state-title">Aucune table</div>
+        <p>Crée tes tables pour générer leur QR code</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = state.tables.map(t => `
+    <div class="table-card">
+      <div class="table-head">
+        <div>
+          <div class="table-nom">${escapeHtml(t.nom || 'Sans nom')}</div>
+          <div class="table-cap">${t.capacite} personne${t.capacite > 1 ? 's' : ''}</div>
+        </div>
+        <div class="table-badge ${t.statut}">${t.statut}</div>
+      </div>
+      <div class="table-actions">
+        <button class="btn btn-secondary" onclick="showQR('${t.id}')">
+          ${ICONS.qr}
+          <span>QR code</span>
+        </button>
+        <button class="btn btn-ghost" onclick="openTableModal('${t.id}')">Modifier</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openTableModal(id = null) {
+  state.editingTableId = id;
+  const modal = document.getElementById('modal-table');
+  const title = document.getElementById('modal-table-title');
+  if (id) {
+    const t = state.tables.find(x => x.id === id);
+    if (!t) return;
+    title.textContent = 'Modifier la table';
+    document.getElementById('table-id').value = t.id;
+    document.getElementById('table-nom').value = t.nom || '';
+    document.getElementById('table-capacite').value = t.capacite || 2;
+  } else {
+    title.textContent = 'Nouvelle table';
+    document.getElementById('table-id').value = '';
+    document.getElementById('table-nom').value = '';
+    document.getElementById('table-capacite').value = 2;
+  }
+  modal.classList.add('active');
+}
+
+async function saveTable() {
+  const nom = document.getElementById('table-nom').value.trim();
+  if (!nom) { showToast('Le nom est requis', 'error'); return; }
+  const existingId = document.getElementById('table-id').value;
+  const id = existingId || 't_' + Date.now();
+  try {
+    await api('update_table', { id, nom, capacite: document.getElementById('table-capacite').value, statut: 'libre' });
+    showToast('Table enregistrée', 'success');
+    closeModal('modal-table');
+    await loadTables();
+  } catch (err) {}
+}
+
+function showQR(tableId) {
+  const table = state.tables.find(t => t.id === tableId);
+  if (!table) return;
+  const baseUrl = state.config.url_client || '';
+  if (!baseUrl) { showToast('Configure l\'URL client dans Config', 'error'); return; }
+  const sep = baseUrl.includes('?') ? '&' : '?';
+  const fullUrl = baseUrl + sep + 'table_id=' + encodeURIComponent(tableId);
+  document.getElementById('qr-title').textContent = 'QR — ' + table.nom;
+  document.getElementById('qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=20&data=' + encodeURIComponent(fullUrl);
+  document.getElementById('qr-url').textContent = fullUrl;
+  document.getElementById('qr-img').dataset.name = 'qr-' + table.nom.replace(/\s+/g, '-');
+  document.getElementById('modal-qr').classList.add('active');
+}
+
+function downloadQR() {
+  const img = document.getElementById('qr-img');
+  const name = img.dataset.name || 'qr-code';
+  const a = document.createElement('a');
+  a.href = img.src; a.download = name + '.png'; a.target = '_blank';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+document.querySelectorAll('[data-periode]').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('[data-periode]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    state.activePeriode = chip.dataset.periode;
+    loadStats();
+  });
+});
+
+async function loadStats() {
+  try {
+    const data = await api('get_stats', { periode: state.activePeriode });
+    const s = data.stats;
+    document.getElementById('stat-ca').textContent = s.ca.toFixed(2) + '€';
+    document.getElementById('stat-commandes').textContent = s.nb_commandes;
+    document.getElementById('stat-panier').textContent = s.panier_moyen.toFixed(2) + '€';
+    document.getElementById('stat-tables').textContent = s.tables_occupees;
+
+    const list = document.getElementById('top-plats-list');
+    if (!s.top_plats || s.top_plats.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state" style="padding: 12px 0 0;">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
+            </svg>
+          </div>
+          <p>Pas encore de données</p>
+        </div>`;
+    } else {
+      list.innerHTML = s.top_plats.map((p, i) => `
+        <div class="top-plat-row">
+          <div class="top-plat-info">
+            <div class="top-plat-rank">${i + 1}</div>
+            <div>${escapeHtml(p.nom)}</div>
+          </div>
+          <div class="top-plat-qte">× ${p.qte}</div>
+        </div>`).join('');
+    }
+  } catch (err) { console.error(err); }
+  loadChart();
+}
+
+async function loadChart() {
+  const periode = state.activePeriode;
+  const now = new Date();
+  const since = new Date(now);
+  if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+  if (periode === 'semaine') since.setDate(now.getDate() - 7);
+  if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
+  try {
+    const data = await api('get_commandes_table', { since: since.toISOString() });
+    renderChart(data.commandes || [], periode, since, now);
+  } catch (err) {
+    document.getElementById('chart-container').innerHTML =
+      '<div class="chart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/></svg><div>Impossible de charger les données</div></div>';
+  }
+}
+
+function renderChart(commandes, periode, since, now) {
+  const container = document.getElementById('chart-container');
+  let buckets = [];
+  if (periode === 'jour') {
+    for (let h = 0; h < 24; h++) buckets.push({ label: String(h).padStart(2, '0') + 'h', total: 0, date: new Date(since.getFullYear(), since.getMonth(), since.getDate(), h) });
+  } else if (periode === 'semaine') {
+    const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    for (let d = 6; d >= 0; d--) {
+      const date = new Date(now); date.setDate(now.getDate() - d); date.setHours(0, 0, 0, 0);
+      buckets.push({ label: jours[date.getDay()], total: 0, date });
+    }
+  } else {
+    for (let d = 29; d >= 0; d--) {
+      const date = new Date(now); date.setDate(now.getDate() - d); date.setHours(0, 0, 0, 0);
+      buckets.push({ label: date.getDate() + '/' + (date.getMonth() + 1), total: 0, date });
+    }
+  }
+
+  commandes.forEach(c => {
+    if (!c.heure) return;
+    const d = new Date(c.heure);
+    let idx = -1;
+    if (periode === 'jour') idx = d.getHours();
+    else idx = buckets.findIndex(b => b.date.getFullYear() === d.getFullYear() && b.date.getMonth() === d.getMonth() && b.date.getDate() === d.getDate());
+    if (idx >= 0) buckets[idx].total += parseFloat(c.total) || 0;
+  });
+
+  const totalCA = buckets.reduce((s, b) => s + b.total, 0);
+  const maxVal = Math.max(...buckets.map(b => b.total), 1);
+
+  document.getElementById('chart-total').textContent = totalCA.toFixed(2) + '€';
+  const pLabel = periode === 'jour' ? "aujourd'hui" : periode === 'semaine' ? 'cette semaine' : 'ce mois';
+  document.getElementById('chart-delta').textContent = `${commandes.length} commande${commandes.length !== 1 ? 's' : ''} ${pLabel}`;
+
+  if (totalCA === 0) {
+    container.innerHTML = `
+      <div class="chart-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7" opacity="0.3"/>
+        </svg>
+        <div>Aucune vente sur cette période</div>
+      </div>`;
+    return;
+  }
+
+  const W = 800, H = 280;
+  const padLeft = 50, padRight = 20, padTop = 20, padBottom = 40;
+  const chartW = W - padLeft - padRight, chartH = H - padTop - padBottom;
+  const n = buckets.length;
+  const yTicks = 4, yStep = maxVal / yTicks;
+
+  const points = buckets.map((b, i) => {
+    const x = padLeft + (n === 1 ? chartW / 2 : (i / (n - 1)) * chartW);
+    const y = padTop + chartH - (b.total / maxVal) * chartH;
+    return { x, y, bucket: b };
+  });
+
+  let pathD = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1], curr = points[i];
+    const midX = (prev.x + curr.x) / 2;
+    pathD += ` Q ${midX} ${prev.y}, ${midX} ${(prev.y + curr.y) / 2} T ${curr.x} ${curr.y}`;
+  }
+  const areaD = pathD + ` L ${points[points.length - 1].x} ${padTop + chartH} L ${points[0].x} ${padTop + chartH} Z`;
+  const labelInterval = periode === 'jour' ? 3 : periode === 'semaine' ? 1 : 5;
+
+  let gridY = '';
+  for (let i = 0; i <= yTicks; i++) {
+    const y = padTop + (i / yTicks) * chartH;
+    const val = maxVal - i * yStep;
+    gridY += `<line x1="${padLeft}" x2="${W - padRight}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    gridY += `<text x="${padLeft - 10}" y="${y + 4}" text-anchor="end" fill="rgba(245,245,247,0.35)" font-size="10" font-family="Inter" font-weight="600">${Math.round(val)}€</text>`;
+  }
+
+  let xLabels = '';
+  points.forEach((p, i) => {
+    if (i % labelInterval === 0 || i === points.length - 1) {
+      xLabels += `<text x="${p.x}" y="${H - 12}" text-anchor="middle" fill="rgba(245,245,247,0.4)" font-size="10" font-family="Inter" font-weight="600">${p.bucket.label}</text>`;
+    }
+  });
+
+  const peak = points.reduce((a, b) => b.bucket.total > a.bucket.total ? b : a, points[0]);
+
+  container.innerHTML = `
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="chart-line-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#ffffff"/>
+          </linearGradient>
+          <filter id="chart-glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        ${gridY}
+        <path d="${areaD}" fill="url(#chart-grad)"/>
+        <path d="${pathD}" fill="none" stroke="url(#chart-line-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#chart-glow)"/>
+        ${peak.bucket.total > 0 ? `
+          <circle cx="${peak.x}" cy="${peak.y}" r="5" fill="#0A84FF" stroke="#0A0A0A" stroke-width="2"/>
+          <circle cx="${peak.x}" cy="${peak.y}" r="10" fill="#0A84FF" opacity="0.25">
+            <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.35;0;0.35" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <text x="${peak.x}" y="${peak.y - 14}" text-anchor="middle" fill="#0A84FF" font-size="11" font-family="Inter" font-weight="700">${peak.bucket.total.toFixed(0)}€</text>
+        ` : ''}
+        ${xLabels}
+      </svg>
+    </div>`;
+}
+
+async function generateAISummary() {
+  const btn = document.getElementById('ai-btn');
+  const out = document.getElementById('ai-summary');
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  try {
+    const data = await api('ai_summary', { periode: state.activePeriode });
+    out.textContent = data.summary;
+    out.style.display = 'block';
+  } catch (err) {
+    out.textContent = err.message;
+    out.style.display = 'block';
+  }
+  btn.innerHTML = 'Régénérer';
+  btn.disabled = false;
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+function escapeAttr(s) { return escapeHtml(s).replace(/\(/g, '%28').replace(/\)/g, '%29'); }
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
+});
+
+(async function init() {
+  await loadConfig();
+  await loadMenu();
+})();
+</script>
+</body>
+</html>

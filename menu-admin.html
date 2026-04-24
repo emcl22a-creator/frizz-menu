@@ -1916,6 +1916,11 @@ async function loadConfig() {
   try {
     const data = await api('get_config');
     state.config = data.config || {};
+    // Logo stocké en localStorage (workaround POST)
+    try {
+      const localLogo = localStorage.getItem('frizz_logo');
+      if (localLogo) state.config.logo_url = localLogo;
+    } catch (e) {}
     if (state.config.restaurant_nom) {
       document.getElementById('brand-sub').textContent = state.config.restaurant_nom;
       document.title = state.config.restaurant_nom + ' — Frizz Admin';
@@ -2001,7 +2006,17 @@ async function toggleOpen() {
 async function saveAllConfig() {
   const btn = event && event.target ? event.target : null;
   if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
-  const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
+
+  // Logo stocké en localStorage (évite le POST qui bloque sur Apps Script)
+  const logoValue = document.getElementById('cfg-logo_url').value;
+  try {
+    if (logoValue) localStorage.setItem('frizz_logo', logoValue);
+    else localStorage.removeItem('frizz_logo');
+    state.config.logo_url = logoValue;
+  } catch (e) { console.error('LocalStorage:', e); }
+
+  // Seulement les petits champs vont au backend (GET uniquement)
+  const keys = ['restaurant_nom', 'url_client', 'google_link', 'langue_defaut'];
   let savedCount = 0;
   let lastError = null;
   for (const k of keys) {

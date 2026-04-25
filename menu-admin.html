@@ -1334,10 +1334,15 @@
         <span class="brand-sub" id="brand-sub">Admin</span>
       </div>
     </div>
-    <button class="status-pill" id="status-pill" onclick="toggleOpen()">
-      <span class="dot"></span>
-      <span id="status-label">En service</span>
-    </button>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="status-pill" id="status-pill" onclick="toggleOpen()">
+        <span class="dot"></span>
+        <span id="status-label">En service</span>
+      </button>
+      <button onclick="logout()" title="Déconnexion" style="width:38px; height:38px; border-radius:50%; background:var(--fill-1); border:1px solid var(--sep); color:var(--label-2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='var(--red)'; this.style.borderColor='rgba(255,69,58,0.4)';" onmouseout="this.style.color='var(--label-2)'; this.style.borderColor='var(--sep)';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -1839,20 +1844,81 @@ const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ============ MULTI-TENANT (restaurant courant) ============
 const RESTO_SLUG = new URLSearchParams(location.search).get('resto') || 'chez-nico';
 let RESTO = null; // {id, slug, nom, email, logo_url, statut, plan, trial_ends_at, ...}
+let CURRENT_USER = null;
+
+async function requireAuth() {
+  // Récupère la session active
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session || !session.user) {
+    // Pas connecté → vers login
+    location.href = 'login.html';
+    throw new Error('Non connecté');
+  }
+  CURRENT_USER = session.user;
+  return session.user;
+}
 
 async function loadRestaurant() {
   const { data, error } = await supa.from('restaurants').select('*').eq('slug', RESTO_SLUG).maybeSingle();
   if (error) throw new Error('Restaurant: ' + error.message);
   if (!data) throw new Error('Restaurant introuvable : ' + RESTO_SLUG);
+
+  // Vérification ownership : l'utilisateur connecté doit être propriétaire du resto
+  // Exception : restaurant "chez-nico" reste accessible publiquement (compte démo)
+  if (data.slug !== 'chez-nico') {
+    if (!data.user_id || data.user_id !== CURRENT_USER.id) {
+      throw new Error('Tu n\'as pas accès à ce restaurant.');
+    }
+  }
+
   RESTO = data;
-  // Maj l'état global pour le reste du code
   state.activeResto = data;
-  // Affiche un éventuel statut de trial dans la console
+
+  // Bandeau trial si applicable
   if (data.plan === 'trial' && data.trial_ends_at) {
-    const remaining = Math.max(0, Math.round((new Date(data.trial_ends_at) - Date.now()) / 86400000));
-    console.log(`[Frizz] Période d'essai : ${remaining} jours restants`);
+    const remaining = Math.max(0, Math.ceil((new Date(data.trial_ends_at) - Date.now()) / 86400000));
+    showTrialBanner(remaining);
   }
   return data;
+}
+
+function showTrialBanner(daysLeft) {
+  let banner = document.getElementById('trial-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'trial-banner';
+    banner.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: ${daysLeft <= 7 ? 'linear-gradient(90deg, #FF9F0A, #FF6B35)' : 'linear-gradient(90deg, #0A84FF, #5856D6)'};
+      color: #fff; padding: 9px 18px; font-size: 13px; font-weight: 700;
+      text-align: center; letter-spacing: -0.012em;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    `;
+    document.body.appendChild(banner);
+    document.body.style.paddingTop = '38px';
+  }
+  if (daysLeft <= 0) {
+    banner.style.background = 'linear-gradient(90deg, #FF453A, #C93635)';
+    banner.innerHTML = `
+      <span>⚠ Ton mois d'essai est terminé. Active ton abonnement pour continuer.</span>
+      <button onclick="alert('La page de paiement Stripe arrive bientôt !')" style="background:#fff; color:#000; border:0; padding:6px 14px; border-radius:100px; font-size:12px; font-weight:800; cursor:pointer;">S'abonner</button>
+    `;
+  } else if (daysLeft <= 7) {
+    banner.innerHTML = `
+      <span>⏰ Plus que ${daysLeft} jour${daysLeft>1?'s':''} d'essai gratuit</span>
+      <button onclick="alert('La page de paiement Stripe arrive bientôt !')" style="background:#fff; color:#000; border:0; padding:6px 14px; border-radius:100px; font-size:12px; font-weight:800; cursor:pointer;">S'abonner maintenant</button>
+    `;
+  } else {
+    banner.innerHTML = `
+      <span>✨ Mois d'essai gratuit · ${daysLeft} jours restants</span>
+    `;
+  }
+}
+
+async function logout() {
+  await supa.auth.signOut();
+  location.href = 'login.html';
 }
 
 let state = {
@@ -2683,15 +2749,16 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 // ============ INIT ============
 (async function init() {
   try {
-    await loadRestaurant();
+    await requireAuth();      // Bloque + redirige si pas connecté
+    await loadRestaurant();   // Vérifie ownership
     await loadConfig();
     await loadMenu();
   } catch (err) {
     console.error('Init:', err);
+    if (err.message === 'Non connecté') return; // Déjà redirigé
     showToast(err.message || 'Erreur de chargement', 'error');
-    // On affiche un message clair en haut de page
     const brand = document.getElementById('brand-sub');
-    if (brand) brand.textContent = '⚠ ' + (err.message || 'Restaurant introuvable');
+    if (brand) brand.textContent = '⚠ ' + (err.message || 'Erreur');
   }
 })();
 </script>

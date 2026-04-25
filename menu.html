@@ -1419,12 +1419,22 @@ function renderMenu() {
   const main = document.getElementById('main');
   const catBar = document.getElementById('cat-bar');
 
-  // Catégories ordonnées
-  const cats = [];
-  const seen = new Set();
-  state.menu.forEach(p => {
-    const c = p.categorie || 'Autres';
-    if (!seen.has(c)) { seen.add(c); cats.push(c); }
+  // Catégories ordonnées selon ordre logique d'un menu
+  const ORDER = ['entrées', 'entrees', 'starters', 'apéritifs', 'aperitifs', 'tapas',
+                 'plats', 'plat', 'mains', 'pizzas', 'pâtes', 'pates', 'burgers', 'salades', 'viandes', 'poissons',
+                 'desserts', 'dessert', 'pâtisseries', 'patisseries',
+                 'boissons', 'boisson', 'drinks', 'softs', 'cocktails', 'vins', 'bières', 'bieres', 'cafés', 'cafes'];
+  function catRank(c) {
+    const norm = String(c || '').toLowerCase().trim();
+    const idx = ORDER.indexOf(norm);
+    return idx === -1 ? 999 : idx;
+  }
+  const catsSet = new Set();
+  state.menu.forEach(p => catsSet.add(p.categorie || 'Autres'));
+  const cats = [...catsSet].sort((a, b) => {
+    const ra = catRank(a), rb = catRank(b);
+    if (ra !== rb) return ra - rb;
+    return a.localeCompare(b, 'fr', { sensitivity: 'base' });
   });
 
   if (cats.length === 0) {
@@ -1532,6 +1542,7 @@ let scrollSpyDone = false;
 function setupScrollSpy(cats) {
   if (scrollSpyDone) return;
   scrollSpyDone = true;
+  const catBar = document.getElementById('cat-bar');
   const obs = new IntersectionObserver(entries => {
     const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
     if (visible.length === 0) return;
@@ -1540,7 +1551,14 @@ function setupScrollSpy(cats) {
     document.querySelectorAll('.cat-chip').forEach(c => {
       const isActive = c.dataset.cat === cat;
       c.classList.toggle('active', isActive);
-      if (isActive) c.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      if (isActive && catBar) {
+        // Scroll horizontal uniquement (pas de scrollIntoView qui agit aussi vertical)
+        const chipLeft = c.offsetLeft;
+        const chipWidth = c.offsetWidth;
+        const barWidth = catBar.clientWidth;
+        const targetScroll = chipLeft - (barWidth / 2) + (chipWidth / 2);
+        catBar.scrollTo({ left: targetScroll, behavior: 'smooth' });
+      }
     });
   }, { rootMargin: '-160px 0px -50% 0px', threshold: [0, 0.5, 1] });
   cats.forEach(c => {

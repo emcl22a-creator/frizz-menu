@@ -683,6 +683,165 @@
   .toggle.on { background: var(--blue); }
   .toggle.on::after { transform: translateX(16px); }
 
+  /* MENUS CHECKBOXES (dans le formulaire plat) */
+  .menus-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .menu-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px 9px 12px;
+    border-radius: 100px;
+    background: var(--fill-2);
+    border: 1.5px solid var(--sep-opaque);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--label-2);
+    user-select: none;
+  }
+  .menu-check:hover { background: var(--fill-1); border-color: var(--sep); color: var(--label); }
+  .menu-check.checked {
+    background: rgba(10,132,255,0.12);
+    border-color: rgba(10,132,255,0.5);
+    color: var(--blue);
+  }
+  .menu-check input { display: none; }
+  .menu-check .box {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .menu-check.checked .box { background: var(--blue); border-color: var(--blue); }
+  .menu-check.checked .box::after {
+    content: '';
+    width: 9px; height: 9px;
+    background: #fff;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+
+  /* MENU CARDS (onglet Menus) */
+  .menu-card {
+    background: var(--fill-2);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-xl);
+    padding: 24px 22px;
+    transition: all 0.3s var(--ease);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    cursor: default;
+  }
+  .menu-card:hover { border-color: var(--sep); transform: translateY(-2px); }
+  .menu-card.active {
+    background: rgba(10,132,255,0.06);
+    border-color: rgba(10,132,255,0.4);
+    box-shadow: 0 0 28px rgba(10,132,255,0.15);
+  }
+  .menu-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .menu-card-info { flex: 1; min-width: 0; }
+  .menu-card-name {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 4px;
+    color: var(--label);
+  }
+  .menu-card-meta {
+    font-size: 12.5px;
+    color: var(--label-3);
+    font-weight: 500;
+  }
+  .menu-card-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: rgba(48,209,88,0.14);
+    border: 1px solid rgba(48,209,88,0.3);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .menu-card-active-badge .pdot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+  .menu-card-actions {
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--sep-opaque);
+    padding-top: 16px;
+  }
+  .menu-card-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    letter-spacing: -0.012em;
+  }
+  .menu-card-btn svg { width: 13px; height: 13px; stroke-width: 2.5; }
+  .menu-card-btn.activate {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+  }
+  .menu-card-btn.activate:hover { transform: translateY(-1px); }
+  .menu-card-btn.active-state {
+    background: rgba(48,209,88,0.18);
+    color: var(--green);
+    border: 1px solid rgba(48,209,88,0.3);
+    cursor: default;
+  }
+  .menu-card-btn.edit {
+    background: var(--fill-1);
+    color: var(--label-2);
+    border: 1px solid var(--sep);
+  }
+  .menu-card-btn.edit:hover { background: var(--fill-2); color: var(--label); }
+  .menu-card-counts {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--label-2);
+    padding: 4px 0;
+  }
+  .menu-card-counts strong { color: var(--label); font-weight: 800; font-variant-numeric: tabular-nums; }
+
   /* TABLE CARD */
   .table-card {
     background: var(--fill-2);
@@ -1358,7 +1517,16 @@
         <path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
         <path d="M8 8h8M8 12h8M8 16h5"/>
       </svg>
-      <span class="tab-text">Menu</span>
+      <span class="tab-text">Plats</span>
+    </button>
+    <button class="tab" data-tab="menus">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h18M3 12h18M3 21h18"/>
+        <circle cx="6" cy="3" r="1.5" fill="currentColor"/>
+        <circle cx="14" cy="12" r="1.5" fill="currentColor"/>
+        <circle cx="9" cy="21" r="1.5" fill="currentColor"/>
+      </svg>
+      <span class="tab-text">Menus</span>
     </button>
     <button class="tab" data-tab="tables">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1520,6 +1688,23 @@
       </div>
     </div>
     <div class="grid" id="tables-grid"></div>
+  </section>
+
+  <!-- ============ MENUS ============ -->
+  <section class="section" id="section-menus">
+    <div class="hero-card">
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        <span>Bascule en 1 clic</span>
+      </div>
+      <h1 class="hero-title">Menus</h1>
+      <p class="hero-lede">Crée plusieurs menus (Midi, Soir, Brunch…) et active celui que ton resto sert maintenant. Tes clients voient instantanément le bon menu sur leur téléphone.</p>
+      <button class="btn btn-primary" onclick="openMenuModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nouveau menu
+      </button>
+    </div>
+    <div class="grid" id="menus-grid"></div>
   </section>
 
   <!-- ============ STATS ============ -->
@@ -1770,6 +1955,12 @@
         <label class="field-label">Allergènes</label>
         <input type="text" id="plat-allergenes" placeholder="gluten, lactose, œufs…">
       </div>
+      <div class="field" id="plat-menus-field">
+        <label class="field-label">Apparaît dans les menus</label>
+        <div id="plat-menus-checks" class="menus-checks">
+          <div style="font-size:12.5px; color:var(--label-3); padding:8px 0;">Aucun menu créé. Va dans l'onglet Menus pour en créer.</div>
+        </div>
+      </div>
       <div class="field" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0 0; border-top: 1px solid var(--sep-opaque); margin-top: 4px;">
         <span style="font-size: 14px; font-weight: 600; color: var(--label);">Disponible à la commande</span>
         <span class="toggle on" id="plat-disponible-toggle" onclick="toggleDisponible()"></span>
@@ -1808,6 +1999,33 @@
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-table')">Annuler</button>
       <button class="btn btn-primary" onclick="saveTable()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL MENU ============ -->
+<div class="modal-overlay" id="modal-menu">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-menu-title">Nouveau menu</h2>
+      <button class="modal-close" onclick="closeModal('modal-menu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="menu-id">
+      <div class="field">
+        <label class="field-label">Nom du menu</label>
+        <input type="text" id="menu-nom" placeholder="Ex: Menu Midi, Menu Soir, Brunch…">
+        <div class="field-hint">Le nom apparaît côté restaurant uniquement (pas pour le client).</div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;">
+      <button class="btn btn-secondary" id="menu-delete-btn" onclick="deleteMenu()" style="display:none; color:var(--red);">Supprimer</button>
+      <div style="display:flex; gap:10px; margin-left:auto;">
+        <button class="btn btn-secondary" onclick="closeModal('modal-menu')">Annuler</button>
+        <button class="btn btn-primary" onclick="saveMenu()">Enregistrer</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1938,9 +2156,10 @@ function openCuisine() {
 }
 
 let state = {
-  menu: [], tables: [], config: {},
+  menu: [], tables: [], menus: [], config: {},
   activeCategory: '', activePeriode: 'jour',
-  editingPlatId: null, editingTableId: null, platDisponible: true
+  editingPlatId: null, editingTableId: null, editingMenuId: null,
+  platDisponible: true, platMenuIds: []
 };
 
 const ICONS = {
@@ -1965,6 +2184,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById('section-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'stats') loadStats();
     if (tab.dataset.tab === 'tables') loadTables();
+    if (tab.dataset.tab === 'menus') loadMenus();
   });
 });
 
@@ -2154,7 +2374,8 @@ async function loadMenu() {
       photo_url: p.photo_url || '',
       disponible: p.disponible !== false,
       allergenes: p.allergenes || '',
-      options: Array.isArray(p.options) ? p.options : []
+      options: Array.isArray(p.options) ? p.options : [],
+      menu_ids: Array.isArray(p.menu_ids) ? p.menu_ids : []
     }));
     renderCategories();
     renderMenu();
@@ -2266,6 +2487,7 @@ function openPlatModal(id = null) {
     setPhotoPreview(p.photo_url || '');
     document.getElementById('plat-allergenes').value = p.allergenes || '';
     state.platDisponible = p.disponible !== false;
+    state.platMenuIds = Array.isArray(p.menu_ids) ? [...p.menu_ids] : [];
   } else {
     title.textContent = 'Nouveau plat';
     deleteBtn.style.display = 'none';
@@ -2274,8 +2496,16 @@ function openPlatModal(id = null) {
       .forEach(id => document.getElementById(id).value = '');
     setPhotoPreview('');
     state.platDisponible = true;
+    // Par défaut: cocher tous les menus existants (un nouveau plat dispo dans tous les services)
+    state.platMenuIds = state.menus ? state.menus.map(m => m.id) : [];
   }
   document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
+  // S'assurer que les menus sont chargés (premier ouvert sans avoir cliqué l'onglet Menus)
+  if (!state.menus || state.menus.length === 0) {
+    loadMenus().then(() => renderPlatMenuChecks());
+  } else {
+    renderPlatMenuChecks();
+  }
   modal.classList.add('active');
 }
 
@@ -2338,7 +2568,8 @@ async function savePlat() {
     description: document.getElementById('plat-description').value.trim(),
     photo_url: document.getElementById('plat-photo_url').value.trim(),
     allergenes: document.getElementById('plat-allergenes').value.trim(),
-    disponible: state.platDisponible
+    disponible: state.platDisponible,
+    menu_ids: state.platMenuIds || []
   };
   btn.innerHTML = '<span class="spinner"></span>';
   btn.disabled = true;
@@ -2369,6 +2600,186 @@ async function deletePlat() {
     await loadMenu();
   } catch (err) {
     showToast('Erreur: ' + err.message, 'error');
+  }
+}
+
+// ============ MENUS (Midi / Soir / etc.) ============
+async function loadMenus() {
+  try {
+    const { data, error } = await supa.from('menus').select('*').eq('restaurant_id', RESTO.id).order('ordre', { ascending: true });
+    if (error) throw error;
+    state.menus = data || [];
+    renderMenus();
+  } catch (err) {
+    console.error('loadMenus:', err);
+    showToast('Erreur menus: ' + err.message, 'error');
+  }
+}
+
+function renderMenus() {
+  const grid = document.getElementById('menus-grid');
+  if (!state.menus || state.menus.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">${ICONS.plate}</div>
+        <h3>Aucun menu créé</h3>
+        <p>Crée ton premier menu (ex: "Menu Midi") pour commencer.</p>
+      </div>`;
+    return;
+  }
+
+  // Compter les plats par menu
+  const countByMenu = {};
+  state.menus.forEach(m => { countByMenu[m.id] = 0; });
+  state.menu.forEach(p => {
+    const ids = Array.isArray(p.menu_ids) ? p.menu_ids : [];
+    ids.forEach(mid => {
+      if (countByMenu[mid] !== undefined) countByMenu[mid]++;
+    });
+  });
+
+  grid.innerHTML = state.menus.map(m => {
+    const isActive = !!m.actif;
+    const platsCount = countByMenu[m.id] || 0;
+    return `
+      <div class="menu-card ${isActive ? 'active' : ''}">
+        <div class="menu-card-head">
+          <div class="menu-card-info">
+            <div class="menu-card-name">${escapeHtml(m.nom)}</div>
+            <div class="menu-card-meta">${platsCount} plat${platsCount > 1 ? 's' : ''} dans ce menu</div>
+            ${isActive ? `
+              <div class="menu-card-active-badge">
+                <span class="pdot"></span>
+                Servi maintenant
+              </div>` : ''}
+          </div>
+        </div>
+        <div class="menu-card-actions">
+          ${isActive ?
+            `<button class="menu-card-btn active-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Actif
+            </button>` :
+            `<button class="menu-card-btn activate" onclick="activateMenu('${m.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Activer
+            </button>`}
+          <button class="menu-card-btn edit" onclick="editMenu('${m.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Éditer
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openMenuModal() {
+  state.editingMenuId = null;
+  document.getElementById('modal-menu-title').textContent = 'Nouveau menu';
+  document.getElementById('menu-id').value = '';
+  document.getElementById('menu-nom').value = '';
+  document.getElementById('menu-delete-btn').style.display = 'none';
+  document.getElementById('modal-menu').classList.add('active');
+  setTimeout(() => document.getElementById('menu-nom').focus(), 100);
+}
+
+function editMenu(id) {
+  const m = state.menus.find(x => x.id === id);
+  if (!m) return;
+  state.editingMenuId = id;
+  document.getElementById('modal-menu-title').textContent = 'Éditer le menu';
+  document.getElementById('menu-id').value = id;
+  document.getElementById('menu-nom').value = m.nom || '';
+  document.getElementById('menu-delete-btn').style.display = 'inline-flex';
+  document.getElementById('modal-menu').classList.add('active');
+  setTimeout(() => document.getElementById('menu-nom').focus(), 100);
+}
+
+async function saveMenu() {
+  const nom = document.getElementById('menu-nom').value.trim();
+  if (!nom) { showToast('Le nom est requis', 'error'); return; }
+  const existingId = document.getElementById('menu-id').value;
+  const id = existingId || ('m_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
+  // Calcul de l'ordre (à la fin si nouveau)
+  const ordre = existingId
+    ? (state.menus.find(m => m.id === existingId)?.ordre ?? state.menus.length)
+    : state.menus.length;
+  const payload = {
+    id,
+    restaurant_id: RESTO.id,
+    nom,
+    ordre,
+    actif: existingId ? (state.menus.find(m => m.id === existingId)?.actif ?? false) : false
+  };
+  try {
+    const { error } = await supa.from('menus').upsert(payload);
+    if (error) throw error;
+    showToast(existingId ? 'Menu modifié' : 'Menu créé', 'success');
+    closeModal('modal-menu');
+    await loadMenus();
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+    console.error(err);
+  }
+}
+
+async function deleteMenu() {
+  const id = document.getElementById('menu-id').value;
+  if (!id) return;
+  const m = state.menus.find(x => x.id === id);
+  if (!m) return;
+  if (!confirm(`Supprimer le menu "${m.nom}" ?\n\nLes plats ne sont pas supprimés mais ne seront plus liés à ce menu.`)) return;
+  try {
+    const { error } = await supa.from('menus').delete().eq('id', id).eq('restaurant_id', RESTO.id);
+    if (error) throw error;
+    showToast('Menu supprimé', 'success');
+    closeModal('modal-menu');
+    await loadMenus();
+    await loadMenu(); // recharger les plats pour mettre à jour les compteurs
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+  }
+}
+
+async function activateMenu(id) {
+  // Désactive tous les autres menus de ce resto, active celui-ci
+  try {
+    const { error: e1 } = await supa.from('menus').update({ actif: false }).eq('restaurant_id', RESTO.id);
+    if (e1) throw e1;
+    const { error: e2 } = await supa.from('menus').update({ actif: true }).eq('id', id).eq('restaurant_id', RESTO.id);
+    if (e2) throw e2;
+    const m = state.menus.find(x => x.id === id);
+    showToast(`${m ? m.nom : 'Menu'} activé 🍽`, 'success');
+    await loadMenus();
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+  }
+}
+
+// Helpers utilisés par le modal plat
+function renderPlatMenuChecks() {
+  const wrap = document.getElementById('plat-menus-checks');
+  if (!state.menus || state.menus.length === 0) {
+    wrap.innerHTML = `<div style="font-size:12.5px; color:var(--label-3); padding:8px 0;">Aucun menu créé. Va dans l'onglet Menus pour en créer.</div>`;
+    return;
+  }
+  const checked = new Set(state.platMenuIds || []);
+  wrap.innerHTML = state.menus.map(m => `
+    <label class="menu-check ${checked.has(m.id) ? 'checked' : ''}" data-mid="${m.id}" onclick="togglePlatMenu('${m.id}', this)">
+      <span class="box"></span>
+      ${escapeHtml(m.nom)}
+    </label>
+  `).join('');
+}
+
+function togglePlatMenu(menuId, el) {
+  const idx = state.platMenuIds.indexOf(menuId);
+  if (idx === -1) {
+    state.platMenuIds.push(menuId);
+    el.classList.add('checked');
+  } else {
+    state.platMenuIds.splice(idx, 1);
+    el.classList.remove('checked');
   }
 }
 
@@ -2765,13 +3176,13 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 // ============ INIT ============
 (async function init() {
   try {
-    await requireAuth();      // Bloque + redirige si pas connecté
-    await loadRestaurant();   // Vérifie ownership
+    await requireAuth();
+    await loadRestaurant();
     await loadConfig();
-    await loadMenu();
+    await Promise.all([loadMenu(), loadMenus()]);
   } catch (err) {
     console.error('Init:', err);
-    if (err.message === 'Non connecté') return; // Déjà redirigé
+    if (err.message === 'Non connecté') return;
     showToast(err.message || 'Erreur de chargement', 'error');
     const brand = document.getElementById('brand-sub');
     if (brand) brand.textContent = '⚠ ' + (err.message || 'Erreur');

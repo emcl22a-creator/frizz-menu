@@ -683,6 +683,128 @@
   .toggle.on { background: var(--blue); }
   .toggle.on::after { transform: translateX(16px); }
 
+  /* MENU BAR (sélecteur de menu Midi/Soir au-dessus des plats) */
+  .menu-bar {
+    background: var(--fill-2);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--sep-opaque);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .menu-bar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-right: 12px;
+    border-right: 1px solid var(--sep);
+    flex-shrink: 0;
+  }
+  .menu-bar-pills {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+  .menu-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 12px;
+    border-radius: 100px;
+    background: var(--fill-1);
+    border: 1.5px solid var(--sep);
+    color: var(--label-2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    user-select: none;
+    letter-spacing: -0.012em;
+    position: relative;
+  }
+  .menu-pill:hover { color: var(--label); border-color: var(--sep-strong); background: var(--fill-2); }
+  .menu-pill.active {
+    background: rgba(48,209,88,0.14);
+    border-color: rgba(48,209,88,0.5);
+    color: var(--green);
+    box-shadow: 0 0 14px rgba(48,209,88,0.18);
+  }
+  .menu-pill.active .pill-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+  .menu-pill .pill-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--label-3);
+    flex-shrink: 0;
+  }
+  .menu-pill .pill-edit {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    opacity: 0.55;
+    transition: all 0.15s;
+  }
+  .menu-pill .pill-edit:hover { opacity: 1; background: rgba(255,255,255,0.12); }
+  .menu-pill .pill-edit svg { width: 10px; height: 10px; stroke-width: 2.5; }
+  .menu-pill-empty {
+    font-size: 12.5px;
+    color: var(--label-3);
+    padding: 6px 0;
+    font-weight: 500;
+  }
+  .menu-bar-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 100px;
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.35);
+    letter-spacing: -0.012em;
+  }
+  .menu-bar-add:hover { transform: translateY(-1px); }
+  .menu-bar-add svg { width: 12px; height: 12px; }
+
+  @media (max-width: 600px) {
+    .menu-bar { flex-direction: column; align-items: stretch; }
+    .menu-bar-label {
+      border-right: 0;
+      border-bottom: 1px solid var(--sep);
+      padding-right: 0;
+      padding-bottom: 10px;
+    }
+    .menu-bar-add { width: 100%; justify-content: center; }
+  }
+
   /* MENUS CHECKBOXES (dans le formulaire plat) */
   .menus-checks {
     display: flex;
@@ -1494,12 +1616,8 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
-      <button class="status-pill" id="status-pill" onclick="toggleOpen()">
-        <span class="dot"></span>
-        <span id="status-label">En service</span>
-      </button>
       <button onclick="openCuisine()" title="Ouvrir l'écran cuisine" style="display:flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:100px; background:var(--fill-1); border:1px solid var(--sep); color:var(--label); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:-0.012em;" onmouseover="this.style.background='var(--blue-soft)'; this.style.borderColor='rgba(10,132,255,0.4)'; this.style.color='var(--blue)';" onmouseout="this.style.background='var(--fill-1)'; this.style.borderColor='var(--sep)'; this.style.color='var(--label)';">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 13 2 2 4-4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
         Cuisine
       </button>
       <button onclick="logout()" title="Déconnexion" style="width:38px; height:38px; border-radius:50%; background:var(--fill-1); border:1px solid var(--sep); color:var(--label-2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='var(--red)'; this.style.borderColor='rgba(255,69,58,0.4)';" onmouseout="this.style.color='var(--label-2)'; this.style.borderColor='var(--sep)';">
@@ -1518,15 +1636,6 @@
         <path d="M8 8h8M8 12h8M8 16h5"/>
       </svg>
       <span class="tab-text">Plats</span>
-    </button>
-    <button class="tab" data-tab="menus">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 3h18M3 12h18M3 21h18"/>
-        <circle cx="6" cy="3" r="1.5" fill="currentColor"/>
-        <circle cx="14" cy="12" r="1.5" fill="currentColor"/>
-        <circle cx="9" cy="21" r="1.5" fill="currentColor"/>
-      </svg>
-      <span class="tab-text">Menus</span>
     </button>
     <button class="tab" data-tab="tables">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1618,6 +1727,19 @@
       </div>
     </div>
 
+    <!-- Barre des menus (Midi/Soir/Brunch...) -->
+    <div class="menu-bar" id="menu-bar">
+      <div class="menu-bar-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M3 3h18M3 12h18M3 21h18"/><circle cx="6" cy="3" r="1.5" fill="currentColor"/><circle cx="14" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="21" r="1.5" fill="currentColor"/></svg>
+        <span>Menus servis</span>
+      </div>
+      <div class="menu-bar-pills" id="menu-bar-pills"></div>
+      <button class="menu-bar-add" onclick="openMenuModal()" title="Créer un menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nouveau menu
+      </button>
+    </div>
+
     <div class="filter-bar" id="category-filters"></div>
     <div class="grid" id="menu-grid"></div>
   </section>
@@ -1688,23 +1810,6 @@
       </div>
     </div>
     <div class="grid" id="tables-grid"></div>
-  </section>
-
-  <!-- ============ MENUS ============ -->
-  <section class="section" id="section-menus">
-    <div class="hero-card">
-      <div class="hero-badge">
-        <span class="live-dot"></span>
-        <span>Bascule en 1 clic</span>
-      </div>
-      <h1 class="hero-title">Menus</h1>
-      <p class="hero-lede">Crée plusieurs menus (Midi, Soir, Brunch…) et active celui que ton resto sert maintenant. Tes clients voient instantanément le bon menu sur leur téléphone.</p>
-      <button class="btn btn-primary" onclick="openMenuModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Nouveau menu
-      </button>
-    </div>
-    <div class="grid" id="menus-grid"></div>
   </section>
 
   <!-- ============ STATS ============ -->
@@ -2184,7 +2289,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById('section-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'stats') loadStats();
     if (tab.dataset.tab === 'tables') loadTables();
-    if (tab.dataset.tab === 'menus') loadMenus();
   });
 });
 
@@ -2617,58 +2721,42 @@ async function loadMenus() {
 }
 
 function renderMenus() {
-  const grid = document.getElementById('menus-grid');
+  // Délègue à renderMenuBar (les menus s'affichent maintenant en pills au-dessus des plats)
+  renderMenuBar();
+}
+
+function renderMenuBar() {
+  const pillsWrap = document.getElementById('menu-bar-pills');
+  if (!pillsWrap) return;
+
   if (!state.menus || state.menus.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">${ICONS.plate}</div>
-        <h3>Aucun menu créé</h3>
-        <p>Crée ton premier menu (ex: "Menu Midi") pour commencer.</p>
-      </div>`;
+    pillsWrap.innerHTML = '<div class="menu-pill-empty">Aucun menu — clique sur « Nouveau menu » pour démarrer.</div>';
     return;
   }
 
   // Compter les plats par menu
   const countByMenu = {};
   state.menus.forEach(m => { countByMenu[m.id] = 0; });
-  state.menu.forEach(p => {
+  (state.menu || []).forEach(p => {
     const ids = Array.isArray(p.menu_ids) ? p.menu_ids : [];
     ids.forEach(mid => {
       if (countByMenu[mid] !== undefined) countByMenu[mid]++;
     });
   });
 
-  grid.innerHTML = state.menus.map(m => {
+  pillsWrap.innerHTML = state.menus.map(m => {
     const isActive = !!m.actif;
-    const platsCount = countByMenu[m.id] || 0;
+    const count = countByMenu[m.id] || 0;
+    const onClick = isActive ? '' : `onclick="activateMenu('${m.id}')"`;
+    const titleAttr = isActive ? 'title="Servi maintenant"' : 'title="Cliquer pour activer"';
     return `
-      <div class="menu-card ${isActive ? 'active' : ''}">
-        <div class="menu-card-head">
-          <div class="menu-card-info">
-            <div class="menu-card-name">${escapeHtml(m.nom)}</div>
-            <div class="menu-card-meta">${platsCount} plat${platsCount > 1 ? 's' : ''} dans ce menu</div>
-            ${isActive ? `
-              <div class="menu-card-active-badge">
-                <span class="pdot"></span>
-                Servi maintenant
-              </div>` : ''}
-          </div>
-        </div>
-        <div class="menu-card-actions">
-          ${isActive ?
-            `<button class="menu-card-btn active-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Actif
-            </button>` :
-            `<button class="menu-card-btn activate" onclick="activateMenu('${m.id}')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Activer
-            </button>`}
-          <button class="menu-card-btn edit" onclick="editMenu('${m.id}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Éditer
-          </button>
-        </div>
+      <div class="menu-pill ${isActive ? 'active' : ''}" ${onClick} ${titleAttr}>
+        <span class="pill-dot"></span>
+        <span>${escapeHtml(m.nom)}</span>
+        <span style="opacity:0.6; font-weight:500;">·&nbsp;${count}</span>
+        <button class="pill-edit" onclick="event.stopPropagation(); editMenu('${m.id}')" title="Éditer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
       </div>`;
   }).join('');
 }

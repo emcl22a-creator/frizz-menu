@@ -213,39 +213,63 @@
   .tabs {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    background: rgba(28,28,30,0.72);
-    backdrop-filter: blur(50px) saturate(180%);
-    -webkit-backdrop-filter: blur(50px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      linear-gradient(135deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.02) 60%, transparent 100%),
+      rgba(20,20,22,0.65);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--sep-opaque);
     border-radius: var(--pill);
-    padding: 5px;
+    padding: 7px;
     gap: 2px;
     box-shadow:
-      inset 0 0.5px 0 rgba(255,255,255,0.1),
-      0 12px 40px -12px rgba(0,0,0,0.5);
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      0 18px 40px -16px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .tabs::before {
+    content: '';
+    position: absolute;
+    top: -200%; right: -30%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--blue-glow) 0%, transparent 60%);
+    opacity: 0.18;
+    pointer-events: none;
+    animation: hero-glow 14s ease-in-out infinite;
+  }
+  .tabs::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+    pointer-events: none;
   }
   .tab {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 11px 8px;
-    font-size: 13.5px;
+    gap: 8px;
+    padding: 13px 8px;
+    font-size: 14px;
     font-weight: 600;
-    color: rgba(235,235,245,0.6);
+    color: var(--label-2);
     border-radius: var(--pill);
-    transition: color 0.2s var(--ease), background 0.2s var(--ease);
-    letter-spacing: -0.01em;
+    transition: all 0.25s var(--ease);
+    letter-spacing: -0.015em;
     white-space: nowrap;
+    position: relative;
+    z-index: 1;
   }
-  .tab svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .tab:hover { color: rgba(235,235,245,0.9); }
+  .tab svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .tab:hover { color: var(--label); }
   .tab.active {
-    color: #fff;
-    background: rgba(99,99,102,0.6);
+    color: #000;
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8ea 100%);
     box-shadow:
-      inset 0 0.5px 0 rgba(255,255,255,0.18),
-      0 1px 2px rgba(0,0,0,0.3);
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      0 4px 10px rgba(0,0,0,0.3);
   }
 
   /* ======== MAIN ======== */

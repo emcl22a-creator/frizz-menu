@@ -843,8 +843,11 @@
   .toast {
     position: fixed;
     bottom: 110px;
-    left: 50%;
-    transform: translateX(-50%) translateY(140px);
+    left: 16px;
+    right: 16px;
+    margin: 0 auto;
+    max-width: max-content;
+    transform: translateY(140px);
     background: rgba(22,22,24,0.95);
     backdrop-filter: blur(32px) saturate(200%);
     border: 1px solid var(--sep);
@@ -859,10 +862,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    white-space: nowrap;
   }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+  .toast.show { transform: translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); flex-shrink: 0; }
   .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+  #toast-text { overflow: hidden; text-overflow: ellipsis; }
 
   /* ========== LOADING ========== */
   .loading-screen {
@@ -1117,11 +1122,16 @@ function escapeHtml(s) {
   return String(s||'').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 function escapeAttr(s) { return escapeHtml(s).replace(/\(/g,'%28').replace(/\)/g,'%29'); }
+let toastTimer = null;
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
   document.getElementById('toast-text').textContent = msg;
   t.className = 'toast show ' + type;
-  setTimeout(() => t.classList.remove('show'), 2600);
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.classList.remove('show');
+    toastTimer = null;
+  }, 2600);
 }
 function showError(title, msg) {
   document.getElementById('loading').classList.add('hidden');

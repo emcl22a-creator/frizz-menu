@@ -2,44 +2,42 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <title>Frizz — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  /* ============================================================
-     DESIGN TOKENS
-     ============================================================ */
   :root {
     --bg: #000;
     --label: #F5F5F7;
     --label-2: rgba(245,245,247,0.6);
-    --label-3: rgba(245,245,247,0.38);
+    --label-3: rgba(245,245,247,0.4);
     --label-4: rgba(245,245,247,0.18);
     --fill-1: rgba(255,255,255,0.06);
-    --fill-2: rgba(255,255,255,0.035);
-    --fill-3: rgba(255,255,255,0.02);
+    --fill-2: rgba(255,255,255,0.04);
+    --fill-3: rgba(255,255,255,0.025);
     --sep: rgba(255,255,255,0.1);
-    --sep-opaque: rgba(255,255,255,0.06);
-    --green: #0A84FF;
-    --green-glow: rgba(10,132,255,0.5);
-    --green-soft: rgba(10,132,255,0.1);
+    --sep-opaque: rgba(255,255,255,0.07);
     --blue: #0A84FF;
+    --blue-glow: rgba(10,132,255,0.5);
+    --blue-soft: rgba(10,132,255,0.12);
+    --green: #30D158;
+    --green-soft: rgba(48,209,88,0.12);
     --red: #FF453A;
-    --red-soft: rgba(255,69,58,0.1);
-    --r-sm: 10px;
-    --r: 14px;
-    --r-lg: 18px;
-    --r-xl: 22px;
-    --r-2xl: 28px;
+    --red-soft: rgba(255,69,58,0.12);
+    --r-sm: 12px;
+    --r: 16px;
+    --r-lg: 20px;
+    --r-xl: 24px;
     --pill: 100px;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  *::selection { background: var(--green); color: #fff; }
+  *::selection { background: var(--blue); color: #fff; }
 
   html, body {
     background: var(--bg);
@@ -56,7 +54,7 @@
   button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
   input, textarea, select {
     font-family: inherit;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
     background: var(--fill-2);
     color: var(--label);
@@ -70,9 +68,9 @@
   input::placeholder, textarea::placeholder { color: var(--label-3); }
   input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: rgba(255,255,255,0.3);
+    border-color: rgba(10,132,255,0.5);
     background: var(--fill-1);
-    box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.12);
   }
   textarea { resize: vertical; min-height: 96px; line-height: 1.5; font-size: 14px; }
   select {
@@ -83,17 +81,14 @@
     padding-right: 40px;
   }
 
-  /* ============================================================
-     ANIMATED BACKGROUND — refined
-     ============================================================ */
+  /* ======== BACKGROUND ======== */
   .bg-layer {
     position: fixed;
     inset: 0;
     z-index: -2;
     overflow: hidden;
     pointer-events: none;
-    background: radial-gradient(ellipse at 50% 0%, rgba(8,12,18,1) 0%, #000 55%),
-      #000;
+    background: #000;
   }
   .orb {
     position: absolute;
@@ -103,123 +98,100 @@
     mix-blend-mode: screen;
   }
   .orb-1 {
-    width: 680px; height: 680px;
-    background: radial-gradient(circle, var(--green) 0%, transparent 70%);
-    top: -220px; left: -180px;
-    opacity: 0.45;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+    top: -200px; left: -150px;
+    opacity: 0.35;
     animation: drift-1 32s ease-in-out infinite;
   }
   .orb-2 {
-    width: 520px; height: 520px;
+    width: 480px; height: 480px;
     background: radial-gradient(circle, #FF375F 0%, transparent 70%);
-    bottom: -160px; right: 5%;
-    opacity: 0.22;
+    bottom: -140px; right: 5%;
+    opacity: 0.18;
     animation: drift-2 38s ease-in-out infinite;
   }
   .orb-3 {
-    width: 420px; height: 420px;
+    width: 400px; height: 400px;
     background: radial-gradient(circle, #BF5AF2 0%, transparent 70%);
-    top: 40%; right: -140px;
-    opacity: 0.2;
+    top: 40%; right: -120px;
+    opacity: 0.18;
     animation: drift-3 44s ease-in-out infinite;
   }
-  @keyframes drift-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(120px, 100px) scale(1.12); } }
+  @keyframes drift-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(120px, 100px) scale(1.1); } }
   @keyframes drift-2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-100px, -80px) scale(1.1); } }
   @keyframes drift-3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(-70px, 90px) scale(1.1); } }
 
-  .bg-grid {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-    background-size: 96px 96px;
-    pointer-events: none;
-    mask-image: radial-gradient(ellipse 75% 55% at 50% 35%, #000 20%, transparent 85%);
-    -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 35%, #000 20%, transparent 85%);
-  }
-  .bg-grain {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.03;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
-    mix-blend-mode: overlay;
-  }
-
-  /* ============================================================
-     HEADER
-     ============================================================ */
+  /* ======== HEADER ======== */
   .header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(0,0,0,0.65);
+    background: rgba(0,0,0,0.7);
     backdrop-filter: blur(32px) saturate(200%);
     -webkit-backdrop-filter: blur(32px) saturate(200%);
     border-bottom: 1px solid var(--sep-opaque);
   }
   .header-inner {
-    max-width: 1280px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 18px 28px;
+    padding: 24px 22px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.0; }
   .brand-logo {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
+    gap: 6px;
     font-weight: 900;
-    font-size: 22px;
-    letter-spacing: -0.04em;
-    color: var(--green);
-    text-shadow: 0 0 24px rgba(10,132,255,0.35);
+    font-size: 24px;
+    letter-spacing: -0.045em;
+    color: var(--blue);
+    text-shadow:
+      0 0 16px rgba(10,132,255,0.5),
+      0 0 32px rgba(10,132,255,0.25);
   }
   .brand-logo .spark {
     font-size: 18px;
     line-height: 1;
-    animation: twinkle 3.5s ease-in-out infinite;
+    animation: twinkle 3.2s ease-in-out infinite;
     display: inline-block;
+    color: var(--blue);
+    filter: drop-shadow(0 0 8px rgba(10,132,255,0.95)) drop-shadow(0 0 18px rgba(10,132,255,0.55));
   }
   @keyframes twinkle {
-    0%,100% { opacity: 1; transform: scale(1) rotate(0); }
-    50% { opacity: 0.55; transform: scale(0.85) rotate(180deg); }
+    0%,100% { opacity: 1; transform: scale(1) rotate(0); filter: drop-shadow(0 0 9px rgba(10,132,255,1)) drop-shadow(0 0 22px rgba(10,132,255,0.65)); }
+    50% { opacity: 0.7; transform: scale(0.85) rotate(180deg); filter: drop-shadow(0 0 5px rgba(10,132,255,0.7)) drop-shadow(0 0 12px rgba(10,132,255,0.35)); }
   }
   .brand-sub {
-    font-size: 11.5px;
-    color: var(--label-2);
+    font-size: 13px;
+    color: rgba(245,245,247,0.85);
     font-weight: 500;
     margin-top: 3px;
+    letter-spacing: -0.015em;
   }
 
   .status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    padding: 9px 16px;
+    gap: 8px;
+    padding: 8px 14px;
     border-radius: var(--pill);
     font-size: 13px;
     font-weight: 600;
-    background: var(--fill-1);
-    border: 1px solid var(--sep-opaque);
+    background: var(--blue-soft);
+    border: 1px solid rgba(10,132,255,0.3);
+    color: var(--blue);
     cursor: pointer;
     transition: all 0.25s var(--ease);
     letter-spacing: -0.01em;
   }
-  .status-pill:hover { border-color: var(--sep); background: var(--fill-2); }
-  .status-pill.open { background: var(--green-soft); border-color: rgba(10,132,255,0.3); color: var(--green); }
+  .status-pill:hover { background: rgba(10,132,255,0.18); }
   .status-pill.closed { background: var(--red-soft); border-color: rgba(255,69,58,0.3); color: var(--red); }
   .status-pill .dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -232,148 +204,131 @@
     50% { opacity: 0.55; transform: scale(0.85); }
   }
 
-  /* ============================================================
-     TABS — liquid glass
-     ============================================================ */
+  /* ======== TABS ======== */
   .tabs-wrap {
-    max-width: 1280px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 0 28px;
-    display: flex;
-    justify-content: center;
+    padding: 26px 22px 0;
   }
   .tabs {
-    display: inline-flex;
-    background: rgba(255,255,255,0.04);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--fill-2);
     backdrop-filter: blur(30px) saturate(200%);
     -webkit-backdrop-filter: blur(30px) saturate(200%);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--sep-opaque);
     border-radius: var(--pill);
-    padding: 6px;
+    padding: 7px;
     gap: 2px;
-    margin-top: 20px;
-    margin-bottom: 48px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      inset 0 -1px 0 rgba(0,0,0,0.4),
-      0 20px 50px -20px rgba(0,0,0,0.6);
-    position: relative;
-  }
-  .tabs::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
-    pointer-events: none;
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 18px 40px -16px rgba(0,0,0,0.5);
   }
   .tab {
-    padding: 10px 24px;
-    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 8px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--label-2);
     border-radius: var(--pill);
-    transition: all 0.3s var(--ease);
+    transition: all 0.25s var(--ease);
     letter-spacing: -0.015em;
-    position: relative;
-    z-index: 1;
+    white-space: nowrap;
   }
+  .tab svg { width: 17px; height: 17px; flex-shrink: 0; }
   .tab:hover { color: var(--label); }
   .tab.active {
     color: #000;
-    background: linear-gradient(180deg, #eaeaec 0%, #ffffff 50%, #eaeaec 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8ea 100%);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.6),
-      inset 0 -1px 0 rgba(0,0,0,0.15),
-      0 4px 12px rgba(0,0,0,0.35);
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      0 4px 10px rgba(0,0,0,0.3);
   }
 
-  /* ============================================================
-     MAIN
-     ============================================================ */
+  /* ======== MAIN ======== */
   main {
-    max-width: 1280px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 8px 28px 160px;
-    padding-bottom: calc(160px + env(safe-area-inset-bottom));
+    padding: 28px 22px 140px;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
   }
   .section { display: none; }
   .section.active {
     display: block;
-    animation: section-in 0.6s var(--ease-spring) both;
+    animation: section-in 0.5s var(--ease-spring) both;
   }
   @keyframes section-in {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ============================================================
-     HERO
-     ============================================================ */
-  .hero {
+  /* ======== HERO CARD (one big card containing everything) ======== */
+  .hero-card {
     position: relative;
-    padding: 44px 40px;
-    margin-bottom: 32px;
-    border-radius: var(--r-2xl);
+    padding: 36px 30px 30px;
+    border-radius: var(--r-xl);
     background:
-      linear-gradient(135deg, rgba(10,132,255,0.06) 0%, rgba(10,132,255,0.03) 55%, transparent 100%),
-      rgba(18,18,20,0.55);
-    backdrop-filter: blur(32px) saturate(180%);
-    -webkit-backdrop-filter: blur(32px) saturate(180%);
+      linear-gradient(135deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.02) 60%, transparent 100%),
+      rgba(20,20,22,0.65);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
     border: 1px solid var(--sep-opaque);
     overflow: hidden;
   }
-  .hero::before {
+  .hero-card::before {
     content: '';
     position: absolute;
-    top: -35%; right: -8%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, var(--green-glow) 0%, transparent 60%);
+    top: -40%; right: -20%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--blue-glow) 0%, transparent 60%);
     opacity: 0.25;
     pointer-events: none;
-    animation: hero-glow 16s ease-in-out infinite;
+    animation: hero-glow 14s ease-in-out infinite;
   }
-  .hero::after {
+  .hero-card::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0; left: 14%; right: 14%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
   }
   @keyframes hero-glow {
     0%,100% { transform: translate(0,0) scale(1); opacity: 0.25; }
-    50% { transform: translate(-70px, 50px) scale(1.15); opacity: 0.45; }
+    50% { transform: translate(-40px, 30px) scale(1.15); opacity: 0.4; }
   }
 
   .hero-badge {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 13px 6px 11px;
+    gap: 9px;
+    padding: 8px 15px 8px 13px;
     border-radius: var(--pill);
-    background: var(--green-soft);
+    background: var(--blue-soft);
     border: 1px solid rgba(10,132,255,0.3);
-    color: var(--green);
-    font-size: 11.5px;
+    color: var(--blue);
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: -0.01em;
-    margin-bottom: 22px;
-    position: relative;
-    z-index: 2;
+    margin-bottom: 24px;
   }
   .hero-badge .live-dot {
     position: relative;
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
   }
   .hero-badge .live-dot::after {
     content: '';
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    background: var(--green);
+    background: var(--blue);
     opacity: 0.4;
     animation: ping 1.8s ease-out infinite;
   }
@@ -381,201 +336,195 @@
     0% { transform: scale(0.5); opacity: 0.6; }
     100% { transform: scale(2.2); opacity: 0; }
   }
+  @keyframes spin-slow {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+  }
 
-  .hero-grid {
+  .hero-title {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 32px;
-    align-items: end;
-    margin-bottom: 32px;
-  }
-  .hero-title {
-    font-size: 72px;
+    font-size: 60px;
     font-weight: 800;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.05em;
     line-height: 1;
     padding-bottom: 0.08em;
     background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.62) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
   }
   .hero-lede {
+    position: relative;
+    z-index: 1;
     color: var(--label-2);
     font-size: 16px;
     font-weight: 500;
-    margin-top: 16px;
-    max-width: 520px;
-    line-height: 1.5;
-    letter-spacing: -0.015em;
+    line-height: 1.55;
+    letter-spacing: -0.013em;
+    max-width: 480px;
+    margin-bottom: 30px;
   }
-  .hero-cta { display: flex; align-items: flex-end; }
 
-  .hero-divider {
+  /* ======== BIG CTA BUTTON (mobile-first) ======== */
+  .btn-cta {
     position: relative;
     z-index: 1;
-    height: 1px;
-    margin-bottom: 26px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 13px 22px;
+    border-radius: var(--pill);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: #fff;
+    background: linear-gradient(180deg, #1a92ff 0%, #0A84FF 50%, #0070E0 100%);
+    box-shadow:
+      0 0 20px rgba(10,132,255,0.4),
+      0 6px 18px -4px rgba(10,132,255,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+    transition: all 0.2s var(--ease);
+    margin-bottom: 30px;
   }
+  .btn-cta:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 26px rgba(10,132,255,0.55),
+      0 12px 24px -4px rgba(10,132,255,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+  }
+  .btn-cta:active { transform: translateY(0); }
+  .btn-cta svg { width: 16px; height: 16px; }
 
-  /* ============================================================
-     STATS STRIP — glass cards with SF icons
-     ============================================================ */
-  .stats-strip {
+  /* ======== STATS GRID 2x2 — iPhone screenshot exact ======== */
+  .stats-grid {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
+    width: 100%;
   }
-  .strip-item {
+  .stat-card {
     position: relative;
-    background: rgba(255,255,255,0.035);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid var(--sep-opaque);
-    border-radius: var(--r-lg);
-    padding: 20px 22px 22px;
-    overflow: hidden;
-    transition: all 0.35s var(--ease);
-    min-height: 116px;
+    background: rgba(20,20,22,0.5);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 18px 14px 18px 16px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s var(--ease);
+    overflow: hidden;
+    cursor: pointer;
+    isolation: isolate;
+    min-width: 0;
+    min-height: 92px;
   }
-  .strip-item:hover {
-    border-color: rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.055);
-    transform: translateY(-3px);
-    box-shadow: 0 18px 40px -12px rgba(0,0,0,0.4);
-  }
-  .strip-item::before {
+  .stat-card::before {
     content: '';
     position: absolute;
     top: 0; left: 14%; right: 14%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    z-index: 1;
   }
-  .strip-item::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle at 50% 120%, rgba(255,255,255,0.04), transparent 60%);
-    pointer-events: none;
+  .stat-card:hover {
+    background: rgba(28,28,30,0.6);
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px -16px rgba(0,0,0,0.5);
   }
-  .strip-icon {
-    position: absolute;
-    top: 18px; right: 18px;
-    width: 18px; height: 18px;
-    color: rgba(255,255,255,0.22);
-    transition: color 0.25s var(--ease);
+  .stat-head { flex-shrink: 0; }
+  .stat-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1.5px solid;
   }
-  .strip-item:hover .strip-icon { color: rgba(255,255,255,0.4); }
-  .strip-icon svg { width: 100%; height: 100%; display: block; }
-  .strip-head {
+  .stat-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+  .stat-icon.blue {
+    background: var(--blue-soft);
+    border-color: rgba(10,132,255,0.55);
+    color: var(--blue);
+  }
+  .stat-icon.green {
+    background: var(--green-soft);
+    border-color: rgba(48,209,88,0.55);
+    color: var(--green);
+  }
+  .stat-icon.red {
+    background: var(--red-soft);
+    border-color: rgba(255,69,58,0.55);
+    color: var(--red);
+  }
+  .stat-body {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    padding-right: 28px;
+    gap: 4px;
   }
-  .strip-label {
-    font-size: 11px;
+  .stat-label {
+    font-size: 12.5px;
     color: var(--label-2);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-weight: 600;
+    font-weight: 500;
+    letter-spacing: -0.013em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .strip-value {
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -0.045em;
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
     line-height: 1;
     color: var(--label);
-    margin-top: 4px;
   }
-
-  /* ============================================================
-     BUTTONS
-     ============================================================ */
-  .btn {
-    display: inline-flex;
+  .stat-chevron {
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 22px;
-    border-radius: var(--pill);
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.2s var(--ease);
-    white-space: nowrap;
-    letter-spacing: -0.01em;
-    position: relative;
+    color: var(--label-3);
+    flex-shrink: 0;
+    transition: all 0.25s var(--ease);
   }
-  .btn svg { width: 15px; height: 15px; }
-  .btn-primary {
-    background: linear-gradient(180deg, #ffffff 0%, #e8e8ea 100%);
-    color: #0a0a0a;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.8),
-      inset 0 -1px 0 rgba(0,0,0,0.15),
-      0 4px 14px -2px rgba(255,255,255,0.15);
-  }
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.9),
-      inset 0 -1px 0 rgba(0,0,0,0.15),
-      0 8px 22px -4px rgba(255,255,255,0.25);
-  }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-secondary {
-    background: var(--fill-1);
-    color: var(--label);
-    border: 1px solid var(--sep);
-    backdrop-filter: blur(12px);
-  }
-  .btn-secondary:hover { background: var(--fill-2); border-color: rgba(255,255,255,0.2); }
-  .btn-ghost {
+  .stat-chevron svg { width: 13px; height: 13px; stroke-width: 2; }
+  .stat-card:hover .stat-chevron {
     color: var(--label-2);
-    padding: 10px 14px;
-    font-size: 13px;
+    transform: translateX(2px);
   }
-  .btn-ghost:hover { color: var(--label); background: var(--fill-2); }
-  .btn-danger {
-    background: var(--red-soft);
-    color: var(--red);
+  /* Hide chevron on narrow screens to give labels more room */
+  @media (max-width: 420px) {
+    .stat-chevron { display: none; }
+    .stat-card { padding-right: 16px; }
   }
-  .btn-danger:hover { background: rgba(255,69,58,0.18); }
-  .icon-btn {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: var(--fill-1);
-    border: 1px solid var(--sep-opaque);
-    color: var(--label-2);
-    display: inline-flex; align-items: center; justify-content: center;
-    transition: all 0.2s var(--ease);
-  }
-  .icon-btn:hover { background: var(--fill-2); color: var(--label); border-color: var(--sep); }
-  .icon-btn svg { width: 16px; height: 16px; }
 
-  /* ============================================================
-     FILTER CHIPS
-     ============================================================ */
+  /* ======== FILTER CHIPS ======== */
   .filter-bar {
     display: flex;
     gap: 8px;
-    margin-bottom: 28px;
+    margin: 24px 0 18px;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
     scrollbar-width: none;
   }
   .filter-bar::-webkit-scrollbar { display: none; }
   .chip {
-    padding: 9px 18px;
+    padding: 9px 16px;
     border-radius: var(--pill);
     background: var(--fill-2);
     border: 1px solid var(--sep-opaque);
@@ -593,43 +542,40 @@
     color: #000;
   }
 
-  /* ============================================================
-     GRID & CARDS
-     ============================================================ */
+  /* ======== GRID CARDS (plats + tables) ======== */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
-  .grid > * { animation: card-in 0.5s var(--ease-spring) both; }
+  @media (min-width: 600px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  }
+  .grid > * { animation: card-in 0.45s var(--ease-spring) both; }
   .grid > *:nth-child(1) { animation-delay: 0.02s; }
   .grid > *:nth-child(2) { animation-delay: 0.05s; }
   .grid > *:nth-child(3) { animation-delay: 0.08s; }
   .grid > *:nth-child(4) { animation-delay: 0.11s; }
-  .grid > *:nth-child(5) { animation-delay: 0.14s; }
-  .grid > *:nth-child(6) { animation-delay: 0.17s; }
-  .grid > *:nth-child(7) { animation-delay: 0.20s; }
-  .grid > *:nth-child(8) { animation-delay: 0.23s; }
   @keyframes card-in {
-    from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   /* PLAT CARD */
   .plat-card {
     background: var(--fill-2);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--sep-opaque);
     border-radius: var(--r-xl);
     overflow: hidden;
-    transition: all 0.35s var(--ease);
+    transition: all 0.3s var(--ease);
     position: relative;
   }
   .plat-card:hover {
     border-color: var(--sep);
-    transform: translateY(-4px);
-    box-shadow: 0 24px 48px -14px rgba(0,0,0,0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 22px 44px -14px rgba(0,0,0,0.45);
   }
   .plat-card.indisponible { opacity: 0.42; }
   .plat-photo {
@@ -651,37 +597,37 @@
     display: flex; align-items: center; justify-content: center;
     color: var(--label-4);
   }
-  .plat-photo-placeholder svg { width: 40px; height: 40px; }
+  .plat-photo-placeholder svg { width: 38px; height: 38px; }
   .plat-tag {
     position: absolute;
-    top: 14px; left: 14px;
+    top: 12px; left: 12px;
     background: rgba(0,0,0,0.55);
     backdrop-filter: blur(14px);
-    padding: 5px 11px;
+    padding: 5px 10px;
     border-radius: var(--pill);
     font-size: 10.5px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     border: 1px solid rgba(255,255,255,0.08);
     z-index: 1;
   }
-  .plat-body { padding: 18px 20px 16px; }
+  .plat-body { padding: 16px 18px 14px; }
   .plat-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: 14px;
-    margin-bottom: 6px;
+    gap: 12px;
+    margin-bottom: 5px;
   }
   .plat-nom {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.025em;
     line-height: 1.25;
   }
   .plat-prix {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
     color: var(--label);
     white-space: nowrap;
@@ -696,11 +642,11 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 40px;
+    min-height: 38px;
   }
   .plat-footer {
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px solid var(--sep-opaque);
     display: flex;
     align-items: center;
@@ -715,11 +661,9 @@
     color: var(--label-2);
     font-weight: 600;
     cursor: pointer;
-    letter-spacing: -0.01em;
     user-select: none;
   }
 
-  /* Toggle iOS-style */
   .toggle {
     position: relative;
     width: 38px; height: 22px;
@@ -738,18 +682,18 @@
     transition: transform 0.25s var(--ease);
     box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   }
-  .toggle.on { background: var(--green); }
+  .toggle.on { background: var(--blue); }
   .toggle.on::after { transform: translateX(16px); }
 
   /* TABLE CARD */
   .table-card {
     background: var(--fill-2);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--sep-opaque);
     border-radius: var(--r-xl);
-    padding: 24px;
-    transition: all 0.35s var(--ease);
+    padding: 22px;
+    transition: all 0.3s var(--ease);
     position: relative;
     overflow: hidden;
   }
@@ -762,17 +706,16 @@
   }
   .table-card:hover {
     border-color: var(--sep);
-    transform: translateY(-3px);
-    box-shadow: 0 22px 44px -14px rgba(0,0,0,0.45);
+    transform: translateY(-2px);
   }
   .table-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
   }
   .table-nom {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.035em;
     line-height: 1.1;
@@ -789,277 +732,80 @@
     font-size: 10.5px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
   }
-  .table-badge.libre { background: var(--green-soft); color: var(--green); }
+  .table-badge.libre { background: var(--blue-soft); color: var(--blue); }
   .table-badge.occupee { background: var(--red-soft); color: var(--red); }
   .table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-  /* ============================================================
-     STATS SECTION
-     ============================================================ */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-  .stat-card {
-    position: relative;
-    background: var(--fill-2);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid var(--sep-opaque);
-    border-radius: var(--r-lg);
-    padding: 24px 24px 26px;
-    overflow: hidden;
-  }
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 14%; right: 14%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--label-2);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+  /* ======== BUTTONS ======== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: var(--pill);
+    font-size: 14px;
     font-weight: 600;
-    margin-bottom: 14px;
+    transition: all 0.2s var(--ease);
+    white-space: nowrap;
+    letter-spacing: -0.01em;
   }
-  .stat-value {
-    font-size: 42px;
-    font-weight: 700;
-    letter-spacing: -0.045em;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
+  .btn svg { width: 15px; height: 15px; }
+  .btn-primary {
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8ea 100%);
+    color: #0a0a0a;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.8),
+      0 4px 14px -2px rgba(255,255,255,0.15);
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--fill-1);
     color: var(--label);
+    border: 1px solid var(--sep);
   }
-  .stat-value.accent {
-    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.55) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .btn-secondary:hover { background: var(--fill-2); border-color: rgba(255,255,255,0.2); }
+  .btn-ghost {
+    color: var(--label-2);
+    padding: 9px 14px;
+    font-size: 13px;
   }
+  .btn-ghost:hover { color: var(--label); background: var(--fill-2); }
+  .btn-danger {
+    background: var(--red-soft);
+    color: var(--red);
+  }
+  .btn-danger:hover { background: rgba(255,69,58,0.18); }
 
-  /* PANEL (generic) */
-  .panel {
-    position: relative;
+  /* ======== CONFIG FORM ======== */
+  .config-form {
+    max-width: 560px;
+    margin: 0 auto;
     background: var(--fill-2);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--sep-opaque);
     border-radius: var(--r-xl);
-    padding: 28px 30px;
-    margin-bottom: 20px;
+    padding: 28px;
+    position: relative;
     overflow: hidden;
   }
-  .panel::before {
+  .config-form::before {
     content: '';
     position: absolute;
     top: 0; left: 14%; right: 14%;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-  }
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .panel-title {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--label-2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .panel-title svg { width: 14px; height: 14px; color: var(--label-2); }
-
-  /* TOP PLATS LIST */
-  .top-plat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--sep-opaque);
-  }
-  .top-plat-row:last-child { border-bottom: 0; }
-  .top-plat-info { display: flex; align-items: center; gap: 14px; flex: 1; font-weight: 600; letter-spacing: -0.015em; }
-  .top-plat-rank {
-    width: 28px; height: 28px;
-    background: var(--fill-1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--label-2);
-  }
-  .top-plat-row:nth-child(1) .top-plat-rank { background: rgba(255,215,0,0.14); color: #FFD60A; }
-  .top-plat-row:nth-child(2) .top-plat-rank { background: rgba(192,192,192,0.12); color: #E5E5E7; }
-  .top-plat-row:nth-child(3) .top-plat-rank { background: rgba(205,127,50,0.14); color: #FFA07A; }
-  .top-plat-qte {
-    font-weight: 800;
-    color: var(--label);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
-  }
-
-  /* CHART */
-  .chart-total {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.045em;
-    font-variant-numeric: tabular-nums;
-    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.55) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
-    margin-top: 8px;
-  }
-  .chart-delta {
-    font-size: 12.5px;
-    color: var(--label-2);
-    margin-top: 8px;
-    font-weight: 500;
-  }
-  .chart-wrap {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    margin-top: 8px;
-  }
-  .chart-svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .chart-empty {
-    height: 280px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: var(--label-2);
-    gap: 12px;
-  }
-  .chart-empty svg { width: 40px; height: 40px; opacity: 0.4; }
-
-  /* AI CARD */
-  .ai-card {
-    position: relative;
-    background: linear-gradient(135deg, rgba(10,132,255,0.05) 0%, rgba(10,132,255,0.03) 100%), var(--fill-2);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(10,132,255,0.22);
-    border-radius: var(--r-xl);
-    padding: 28px 30px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .ai-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -18%;
-    width: 420px; height: 420px;
-    background: radial-gradient(circle, var(--green-glow) 0%, transparent 60%);
-    opacity: 0.22;
-    pointer-events: none;
-    animation: hero-glow 10s ease-in-out infinite;
-  }
-  .ai-card > * { position: relative; z-index: 1; }
-  .ai-summary-text {
-    white-space: pre-wrap;
-    line-height: 1.65;
-    color: var(--label);
-    font-size: 15px;
-    margin-top: 20px;
-    letter-spacing: -0.013em;
-    font-weight: 500;
-  }
-
-  /* ============================================================
-     MODAL
-     ============================================================ */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    z-index: 100;
-  }
-  .modal-overlay.active {
-    display: flex;
-    animation: overlay-in 0.25s var(--ease-spring);
-  }
-  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
-  .modal {
-    background: rgba(22,22,24,0.92);
-    backdrop-filter: blur(44px) saturate(180%);
-    -webkit-backdrop-filter: blur(44px) saturate(180%);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-2xl);
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: modal-in 0.4s var(--ease-spring);
-    box-shadow: 0 32px 80px -12px rgba(0,0,0,0.7);
-  }
-  @keyframes modal-in {
-    from { opacity: 0; transform: translateY(28px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .modal::-webkit-scrollbar { width: 6px; }
-  .modal::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 3px; }
-  .modal-header {
-    padding: 30px 30px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .modal-title {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.035em;
-  }
-  .modal-close {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: var(--fill-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--label-2);
-    transition: all 0.2s var(--ease);
-  }
-  .modal-close:hover { background: var(--fill-2); color: var(--label); transform: rotate(90deg); }
-  .modal-close svg { width: 14px; height: 14px; }
-  .modal-body { padding: 24px 30px; }
-  .modal-footer {
-    padding: 0 30px 30px;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
   }
 
   .field { margin-bottom: 18px; }
   .field-label {
     display: block;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--label-2);
     margin-bottom: 9px;
     text-transform: uppercase;
@@ -1077,16 +823,140 @@
     gap: 12px;
   }
 
-  /* ============================================================
-     PHOTO PICKER
-     ============================================================ */
+  /* ======== LOGO UPLOADER (compact row) ======== */
+  .logo-upload {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 10px 8px 8px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    height: 60px;
+    overflow: hidden;
+  }
+  .logo-upload:hover { background: var(--fill-1); border-color: var(--sep); }
+  .logo-thumb {
+    width: 44px; height: 44px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: var(--fill-1);
+    border: 1px solid var(--sep-opaque);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-2);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  .logo-thumb svg { width: 18px; height: 18px; opacity: 0.6; }
+  .logo-upload.has-photo .logo-thumb { border: none; }
+  .logo-upload.has-photo .logo-thumb svg { display: none; }
+  .logo-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .logo-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.015em;
+  }
+  .logo-hint { font-size: 11.5px; color: var(--label-3); font-weight: 500; }
+  .logo-remove-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--label-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+    border: 0;
+    cursor: pointer;
+  }
+  .logo-remove-btn:hover { background: var(--red-soft); color: var(--red); }
+  .logo-remove-btn svg { width: 14px; height: 14px; }
+
+  /* ======== MODAL ======== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .modal-overlay.active {
+    display: flex;
+    animation: overlay-in 0.25s var(--ease-spring);
+  }
+  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: rgba(22,22,24,0.95);
+    backdrop-filter: blur(44px) saturate(180%);
+    -webkit-backdrop-filter: blur(44px) saturate(180%);
+    border: 1px solid var(--sep);
+    border-radius: var(--r-xl);
+    width: 100%;
+    max-width: 540px;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: modal-in 0.4s var(--ease-spring);
+    box-shadow: 0 32px 80px -12px rgba(0,0,0,0.7);
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(28px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal::-webkit-scrollbar { width: 6px; }
+  .modal::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 3px; }
+  .modal-header {
+    padding: 28px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--fill-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-2);
+    transition: all 0.2s var(--ease);
+  }
+  .modal-close:hover { background: var(--fill-2); color: var(--label); transform: rotate(90deg); }
+  .modal-close svg { width: 14px; height: 14px; }
+  .modal-body { padding: 22px 28px; }
+  .modal-footer {
+    padding: 0 28px 28px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  /* ======== PHOTO PICKER (for plats) ======== */
   .photo-picker {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 10;
     border-radius: var(--r);
     background: var(--fill-2);
-    border: 1px dashed rgba(255,255,255,0.16);
+    border: 1px dashed rgba(255,255,255,0.18);
     background-size: cover;
     background-position: center;
     cursor: pointer;
@@ -1108,15 +978,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     color: var(--label-2);
-    padding: 20px;
+    padding: 18px;
     text-align: center;
   }
-  .photo-picker-empty svg {
-    width: 32px; height: 32px;
-    opacity: 0.5;
-  }
+  .photo-picker-empty svg { width: 28px; height: 28px; opacity: 0.5; }
   .photo-picker-empty-label {
     font-size: 14px;
     font-weight: 600;
@@ -1149,7 +1016,7 @@
     backdrop-filter: blur(8px);
     cursor: pointer;
   }
-  .photo-picker-change { background: rgba(0,0,0,0.5); }
+  .photo-picker-change { background: rgba(0,0,0,0.55); }
   .photo-picker-remove { background: rgba(255,69,58,0.9); border: 0; }
   .photo-picker-remove:hover { background: var(--red); }
   .photo-processing {
@@ -1173,44 +1040,40 @@
     width: 22px; height: 22px;
   }
 
-  /* ============================================================
-     QR MODAL
-     ============================================================ */
+  /* ======== QR MODAL ======== */
   .qr-container {
     background: #fff;
     border-radius: var(--r);
-    padding: 28px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: 0 12px 40px rgba(0,0,0,0.3);
   }
-  .qr-container img { width: 240px; height: 240px; display: block; }
+  .qr-container img { width: 220px; height: 220px; display: block; }
   .qr-url {
     font-size: 11px;
     color: var(--label-2);
     word-break: break-all;
     text-align: center;
-    padding: 14px;
+    padding: 12px;
     background: var(--fill-2);
     border: 1px solid var(--sep-opaque);
     border-radius: var(--r-sm);
-    margin-top: 18px;
+    margin-top: 16px;
     font-family: 'SF Mono', 'Menlo', monospace;
     line-height: 1.5;
   }
 
-  /* ============================================================
-     EMPTY & SPINNER
-     ============================================================ */
+  /* ======== EMPTY STATE ======== */
   .empty-state {
     text-align: center;
-    padding: 24px 24px 48px;
+    padding: 24px;
     color: var(--label-2);
   }
   .empty-state-icon {
     width: 56px; height: 56px;
-    margin: 0 auto 18px;
+    margin: 0 auto 16px;
     border-radius: var(--r);
     background: var(--fill-1);
     border: 1px solid var(--sep-opaque);
@@ -1221,13 +1084,14 @@
   }
   .empty-state-icon svg { width: 26px; height: 26px; }
   .empty-state-title {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--label);
     margin-bottom: 6px;
     letter-spacing: -0.025em;
   }
   .empty-state p { font-size: 14px; font-weight: 500; }
+
   .spinner {
     width: 16px; height: 16px;
     border: 2px solid rgba(0,0,0,0.2);
@@ -1238,15 +1102,13 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ============================================================
-     TOAST
-     ============================================================ */
+  /* ======== TOAST ======== */
   .toast {
     position: fixed;
-    bottom: 32px;
+    bottom: 28px;
     left: 50%;
     transform: translateX(-50%) translateY(140px);
-    background: rgba(22,22,24,0.92);
+    background: rgba(22,22,24,0.95);
     backdrop-filter: blur(32px) saturate(200%);
     -webkit-backdrop-filter: blur(32px) saturate(200%);
     border: 1px solid var(--sep);
@@ -1264,124 +1126,87 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--label-2); }
+  .toast.success .toast-dot { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
   .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
-  .toast.success .toast-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
 
-  /* ============================================================
-     CONFIG
-     ============================================================ */
-  .config-form {
-    max-width: 620px;
-    margin: 0 auto;
+  /* ======== STATS PAGE ======== */
+  .stat-big-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 600px) {
+    .stat-big-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .panel {
+    position: relative;
     background: var(--fill-2);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--sep-opaque);
     border-radius: var(--r-xl);
-    padding: 32px;
-    position: relative;
+    padding: 24px;
+    margin-bottom: 16px;
     overflow: hidden;
   }
-  .config-form::before {
+  .panel::before {
     content: '';
     position: absolute;
     top: 0; left: 14%; right: 14%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
   }
-
-  /* Logo uploader — compact, même hauteur que les inputs */
-  .logo-upload {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 8px 10px 8px 8px;
-    background: var(--fill-2);
-    border: 1px solid var(--sep-opaque);
-    border-radius: var(--r-sm);
-    cursor: pointer;
-    transition: all 0.2s var(--ease);
-    height: 56px;
-    overflow: hidden;
-  }
-  .logo-upload:hover { background: var(--fill-1); border-color: var(--sep); }
-  .logo-thumb {
-    width: 40px; height: 40px;
-    flex-shrink: 0;
-    border-radius: 9px;
-    background: var(--fill-1);
-    border: 1px solid var(--sep-opaque);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .panel-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
     color: var(--label-2);
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-  }
-  .logo-thumb svg { width: 18px; height: 18px; opacity: 0.6; transition: opacity 0.2s; }
-  .logo-upload.has-photo .logo-thumb { border: none; }
-  .logo-upload.has-photo .logo-thumb svg { display: none; }
-  .logo-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .logo-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--label);
-    letter-spacing: -0.015em;
-  }
-  .logo-hint { font-size: 11.5px; color: var(--label-3); font-weight: 500; }
-  .logo-remove-btn {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--label-3);
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: all 0.2s var(--ease);
-    flex-shrink: 0;
-    border: 0;
-    cursor: pointer;
+    gap: 9px;
+    margin-bottom: 14px;
   }
-  .logo-remove-btn:hover { background: var(--red-soft); color: var(--red); }
-  .logo-remove-btn svg { width: 14px; height: 14px; }
+  .panel-title svg { width: 14px; height: 14px; }
 
-  /* ============================================================
-     RESPONSIVE
-     ============================================================ */
-  @media (max-width: 720px) {
-    .header-inner { padding: 14px 18px; }
-    .tabs-wrap { padding: 0 16px; }
-    .tabs { margin-top: 14px; margin-bottom: 32px; padding: 4px; }
-    .tab { padding: 9px 16px; font-size: 13px; }
-    main { padding: 4px 18px 120px; }
+  /* ======== RESPONSIVE ======== */
+  @media (max-width: 480px) {
+    .header-inner { padding: 18px 18px 16px; }
+    .tabs-wrap { padding: 18px 16px 0; }
+    .tab { font-size: 13px; padding: 11px 6px; gap: 6px; }
+    .tab .tab-text { display: none; }
+    @media (min-width: 380px) { .tab .tab-text { display: inline; } }
+    main { padding: 22px 16px 100px; }
+    .hero-card { padding: 28px 22px 24px; border-radius: var(--r-lg); }
+    .hero-title { font-size: 48px; }
+    .hero-lede { font-size: 14.5px; }
 
-    .hero { padding: 28px 22px; border-radius: var(--r-xl); }
-    .hero-title { font-size: 44px; }
-    .hero-lede { font-size: 15px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 20px; }
-    .hero-cta { justify-content: flex-start; align-items: flex-start; }
+    /* Stat cards: VERTICAL on mobile to give labels full width */
+    .stats-grid { gap: 10px; }
+    .stat-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 16px 18px;
+      min-height: 130px;
+      border-radius: 18px;
+    }
+    .stat-icon { width: 40px; height: 40px; }
+    .stat-icon svg { width: 18px; height: 18px; }
+    .stat-body { gap: 5px; width: 100%; }
+    .stat-label {
+      font-size: 13px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
+    .stat-value { font-size: 28px; }
+    .stat-chevron { display: none; }
 
-    .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .strip-item { padding: 16px 16px 18px; min-height: 104px; border-radius: var(--r); }
-    .strip-value { font-size: 30px; }
-    .strip-icon { top: 14px; right: 14px; width: 16px; height: 16px; }
-    .strip-label { font-size: 10px; letter-spacing: 0.12em; }
-    .strip-head { padding-right: 22px; }
-
-    .stat-value { font-size: 32px; }
-    .stat-card, .panel, .ai-card, .config-form { padding: 22px; border-radius: var(--r-lg); }
-    .panel-header { margin-bottom: 16px; }
-    .chart-total { font-size: 28px; }
-    .chart-wrap { height: 220px; }
-
+    .config-form { padding: 22px; border-radius: var(--r-lg); }
     .field-row { grid-template-columns: 1fr; }
-    .modal-header, .modal-body, .modal-footer { padding-left: 22px; padding-right: 22px; }
-
-    .brand-logo { font-size: 19px; }
-    .brand-logo .spark { font-size: 15px; }
-    .brand-sub { font-size: 10.5px; }
+    .modal-header, .modal-body, .modal-footer { padding-left: 20px; padding-right: 20px; }
   }
 </style>
 </head>
@@ -1392,8 +1217,6 @@
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 </div>
-<div class="bg-grid"></div>
-<div class="bg-grain"></div>
 
 <!-- ============ HEADER ============ -->
 <header class="header">
@@ -1404,7 +1227,7 @@
         <span class="brand-sub" id="brand-sub">Admin</span>
       </div>
     </div>
-    <button class="status-pill open" id="status-pill" onclick="toggleOpen()">
+    <button class="status-pill" id="status-pill" onclick="toggleOpen()">
       <span class="dot"></span>
       <span id="status-label">En service</span>
     </button>
@@ -1414,71 +1237,99 @@
 <!-- ============ TABS ============ -->
 <div class="tabs-wrap">
   <nav class="tabs">
-    <button class="tab active" data-tab="menu">Menu</button>
-    <button class="tab" data-tab="tables">Tables</button>
-    <button class="tab" data-tab="stats">Stats</button>
-    <button class="tab" data-tab="config">Config</button>
+    <button class="tab active" data-tab="menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+        <path d="M8 8h8M8 12h8M8 16h5"/>
+      </svg>
+      <span class="tab-text">Menu</span>
+    </button>
+    <button class="tab" data-tab="tables">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="4" width="14" height="9" rx="1.5"/>
+        <path d="M7 13v7M17 13v7M5 17h14"/>
+      </svg>
+      <span class="tab-text">Tables</span>
+    </button>
+    <button class="tab" data-tab="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 6-7"/>
+      </svg>
+      <span class="tab-text">Stats</span>
+    </button>
+    <button class="tab" data-tab="config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span class="tab-text">Config</span>
+    </button>
   </nav>
 </div>
 
 <main>
   <!-- ============ MENU ============ -->
   <section class="section active" id="section-menu">
-    <div class="hero">
-      <div class="hero-grid">
-        <div>
-          <div class="hero-badge">
-            <span class="live-dot"></span>
-            <span>Synchro temps réel</span>
-          </div>
-          <h1 class="hero-title">Menu</h1>
-          <p class="hero-lede">Ta carte en direct. Modifie un prix, marque un plat épuisé, ajoute une nouveauté — tout se met à jour instantanément pour tes clients.</p>
-        </div>
-        <div class="hero-cta">
-          <button class="btn btn-primary" onclick="openPlatModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            Nouveau plat
-          </button>
-        </div>
+    <div class="hero-card">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;animation:spin-slow 3s linear infinite;"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        <span>Synchro temps réel</span>
       </div>
-      <div class="hero-divider"></div>
-      <div class="stats-strip">
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <h1 class="hero-title">Menu</h1>
+      <p class="hero-lede">Ta carte en direct. Modifie un prix, marque un plat épuisé, ajoute une nouveauté — tout se met à jour instantanément pour tes clients.</p>
+      <button class="btn-cta" onclick="openPlatModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nouveau plat
+      </button>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 12h18"/><path d="M4 12a8 8 0 0 1 16 0"/><path d="M2 18h20"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Total plats</div>
+            <div class="stat-value" id="strip-total">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Total plats</div></div>
-          <div class="strip-value" id="strip-total">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/>
               <rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Catégories</div>
+            <div class="stat-value" id="strip-cats">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Catégories</div></div>
-          <div class="strip-value" id="strip-cats">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Disponibles</div>
+            <div class="stat-value" id="strip-dispo">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Disponibles</div></div>
-          <div class="strip-value" id="strip-dispo">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Épuisés</div>
+            <div class="stat-value" id="strip-epuise">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Épuisés</div></div>
-          <div class="strip-value" id="strip-epuise">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
       </div>
     </div>
@@ -1489,63 +1340,66 @@
 
   <!-- ============ TABLES ============ -->
   <section class="section" id="section-tables">
-    <div class="hero">
-      <div class="hero-grid">
-        <div>
-          <div class="hero-badge">
-            <span class="live-dot"></span>
-            <span>QR codes actifs</span>
-          </div>
-          <h1 class="hero-title">Tables</h1>
-          <p class="hero-lede">Chaque table a son QR code unique. Les clients scannent, commandent, paient — tu gardes la main sur ce qui se passe en salle.</p>
-        </div>
-        <div class="hero-cta">
-          <button class="btn btn-primary" onclick="openTableModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            Nouvelle table
-          </button>
-        </div>
+    <div class="hero-card">
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        <span>QR codes actifs</span>
       </div>
-      <div class="hero-divider"></div>
-      <div class="stats-strip">
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <h1 class="hero-title">Tables</h1>
+      <p class="hero-lede">Chaque table a son QR code unique. Les clients scannent, commandent, paient — tu gardes la main sur ce qui se passe en salle.</p>
+      <button class="btn-cta" onclick="openTableModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nouvelle table
+      </button>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/>
               <rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Total tables</div>
+            <div class="stat-value" id="tstrip-total">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Total tables</div></div>
-          <div class="strip-value" id="tstrip-total">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>
-            </svg>
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Libres</div>
+            <div class="stat-value" id="tstrip-libre">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Libres</div></div>
-          <div class="strip-value" id="tstrip-libre">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/>
               <path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"/><path d="M15 20c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Occupées</div>
+            <div class="stat-value" id="tstrip-occ">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Occupées</div></div>
-          <div class="strip-value" id="tstrip-occ">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
-        <div class="strip-item">
-          <div class="strip-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="stat-card">
+          <div class="stat-head"><div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 3v8a2.5 2.5 0 0 0 5 0V3"/><path d="M9.5 11v10"/>
               <path d="M17 3c-1.5 0-2.5 1.5-2.5 3v6H17"/><path d="M17 3v18"/>
             </svg>
+          </div></div>
+          <div class="stat-body">
+            <div class="stat-label">Couverts</div>
+            <div class="stat-value" id="tstrip-couv">0</div>
           </div>
-          <div class="strip-head"><div class="strip-label">Couverts</div></div>
-          <div class="strip-value" id="tstrip-couv">0</div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
         </div>
       </div>
     </div>
@@ -1554,112 +1408,89 @@
 
   <!-- ============ STATS ============ -->
   <section class="section" id="section-stats">
-    <div class="hero">
-      <div class="hero-grid">
-        <div>
-          <div class="hero-badge">
-            <span class="live-dot"></span>
-            <span>Mis à jour en direct</span>
-          </div>
-          <h1 class="hero-title">Stats</h1>
-          <p class="hero-lede">Chiffre d'affaires, panier moyen, top plats, évolution — tous les signaux de ton service en un coup d'œil.</p>
-        </div>
-        <div class="hero-cta" style="flex-direction: column; gap: 12px; align-items: flex-end;">
-          <div class="filter-bar" style="margin: 0;">
-            <button class="chip active" data-periode="jour">Jour</button>
-            <button class="chip" data-periode="semaine">Semaine</button>
-            <button class="chip" data-periode="mois">Mois</button>
-          </div>
-        </div>
+    <div class="hero-card">
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        <span>Mis à jour en direct</span>
+      </div>
+      <h1 class="hero-title">Stats</h1>
+      <p class="hero-lede">Chiffre d'affaires, panier moyen, top plats — les signaux de ton service en un coup d'œil.</p>
+      <div class="filter-bar" style="margin: 0;">
+        <button class="chip active" data-periode="jour">Jour</button>
+        <button class="chip" data-periode="semaine">Semaine</button>
+        <button class="chip" data-periode="mois">Mois</button>
       </div>
     </div>
 
-    <div class="stat-grid">
+    <div class="stat-big-grid">
       <div class="stat-card">
-        <div class="stat-label">Chiffre d'affaires</div>
-        <div class="stat-value accent" id="stat-ca">—</div>
+        <div class="stat-head"><div class="stat-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div></div>
+        <div class="stat-body">
+          <div class="stat-label">CA</div>
+          <div class="stat-value" id="stat-ca">—</div>
+        </div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Commandes</div>
-        <div class="stat-value" id="stat-commandes">—</div>
+        <div class="stat-head"><div class="stat-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+        </div></div>
+        <div class="stat-body">
+          <div class="stat-label">Commandes</div>
+          <div class="stat-value" id="stat-commandes">—</div>
+        </div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Panier moyen</div>
-        <div class="stat-value" id="stat-panier">—</div>
+        <div class="stat-head"><div class="stat-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        </div></div>
+        <div class="stat-body">
+          <div class="stat-label">Panier moyen</div>
+          <div class="stat-value" id="stat-panier">—</div>
+        </div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Tables occupées</div>
-        <div class="stat-value" id="stat-tables">—</div>
+        <div class="stat-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"/><path d="M15 20c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5"/></svg>
+        </div></div>
+        <div class="stat-body">
+          <div class="stat-label">Tables occupées</div>
+          <div class="stat-value" id="stat-tables">—</div>
+        </div>
+          <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
 
     <div class="panel">
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
-            </svg>
-            Évolution
-          </div>
-          <div class="chart-total" id="chart-total">—</div>
-          <div class="chart-delta" id="chart-delta">Calcul en cours…</div>
-        </div>
-      </div>
-      <div id="chart-container"></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 3h12v4a6 6 0 0 1-12 0V3z"/>
-            <path d="M6 7H4a2 2 0 0 0-2 2 3 3 0 0 0 3 3h1"/>
-            <path d="M18 7h2a2 2 0 0 1 2 2 3 3 0 0 1-3 3h-1"/>
-            <path d="M9 21h6"/><path d="M12 17v4"/>
-          </svg>
-          Top plats
-        </div>
+      <div class="panel-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 3h12v4a6 6 0 0 1-12 0V3z"/>
+          <path d="M6 7H4a2 2 0 0 0-2 2 3 3 0 0 0 3 3h1"/>
+          <path d="M18 7h2a2 2 0 0 1 2 2 3 3 0 0 1-3 3h-1"/>
+          <path d="M9 21h6"/><path d="M12 17v4"/>
+        </svg>
+        Top plats
       </div>
       <div id="top-plats-list">
-        <div class="empty-state">
-          <div class="empty-state-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
-            </svg>
-          </div>
+        <div class="empty-state" style="padding: 12px 0;">
           <p>Pas encore de données</p>
         </div>
       </div>
-    </div>
-
-    <div class="ai-card">
-      <div class="panel-header">
-        <div class="panel-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>
-            <path d="M19 14l0.9 2.4 2.4 0.9-2.4 0.9-0.9 2.4-0.9-2.4-2.4-0.9 2.4-0.9z" opacity="0.7"/>
-          </svg>
-          Résumé IA
-        </div>
-        <button class="btn btn-secondary" onclick="generateAISummary()" id="ai-btn">Générer</button>
-      </div>
-      <div class="ai-summary-text" id="ai-summary" style="display: none;"></div>
     </div>
   </section>
 
   <!-- ============ CONFIG ============ -->
   <section class="section" id="section-config">
-    <div class="hero">
-      <div class="hero-grid">
-        <div>
-          <h1 class="hero-title">Configuration</h1>
-          <p class="hero-lede">Paramètres de ton restaurant — nom, logo, URL client et langue par défaut.</p>
-        </div>
-      </div>
+    <div class="hero-card" style="text-align: left;">
+      <h1 class="hero-title">Configuration</h1>
+      <p class="hero-lede">Paramètres de ton restaurant — nom, logo, URL client et langue par défaut.</p>
     </div>
 
-    <div class="config-form">
+    <div class="config-form" style="margin-top: 16px;">
       <div class="field">
         <label class="field-label">Nom du restaurant</label>
         <input type="text" id="cfg-restaurant_nom" placeholder="Ex: Chez Marco">
@@ -1690,7 +1521,7 @@
       </div>
       <div class="field">
         <label class="field-label">URL client (GitHub Pages)</label>
-        <input type="url" id="cfg-url_client" placeholder="https://ton-user.github.io/frizz-client/menu.html">
+        <input type="url" id="cfg-url_client" placeholder="https://ton-user.github.io/frizz-menu/menu.html">
         <div class="field-hint">Utilisée pour générer les QR codes. Le paramètre ?table_id=X est ajouté automatiquement.</div>
       </div>
       <div class="field">
@@ -1704,7 +1535,7 @@
           <option value="en">English</option>
         </select>
       </div>
-      <button class="btn btn-primary" onclick="saveAllConfig(this)" style="width: 100%; margin-top: 12px;">Enregistrer</button>
+      <button class="btn-cta" onclick="saveAllConfig(this)" style="margin-top: 16px; margin-bottom: 0;">Enregistrer</button>
     </div>
   </section>
 </main>
@@ -1753,10 +1584,10 @@
               <path d="M8 5l1.5-2h5L16 5"/>
             </svg>
             <div class="photo-picker-empty-label">Ajouter une photo</div>
-            <div class="photo-picker-empty-hint">JPG · PNG · HEIC — depuis ton appareil</div>
+            <div class="photo-picker-empty-hint">JPG · PNG · HEIC</div>
           </div>
           <div class="photo-picker-overlay">
-            <span class="photo-picker-change">Changer la photo</span>
+            <span class="photo-picker-change">Changer</span>
             <button type="button" class="photo-picker-remove" onclick="event.stopPropagation(); removePhoto()">Supprimer</button>
           </div>
           <div class="photo-processing" id="photo-processing">
@@ -1764,16 +1595,10 @@
             <span>Optimisation…</span>
           </div>
         </div>
-        <div class="field-hint">Redimensionnement auto en 1080p, compression intelligente.</div>
       </div>
       <div class="field">
         <label class="field-label">Allergènes</label>
         <input type="text" id="plat-allergenes" placeholder="gluten, lactose, œufs…">
-      </div>
-      <div class="field">
-        <label class="field-label">Options (avancé)</label>
-        <textarea id="plat-options" placeholder='[{"type":"Cuisson","choix":["saignant","à point","bien cuit"]}]'></textarea>
-        <div class="field-hint">Format JSON. Laisse vide si pas d'options.</div>
       </div>
       <div class="field" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0 0; border-top: 1px solid var(--sep-opaque); margin-top: 4px;">
         <span style="font-size: 14px; font-weight: 600; color: var(--label);">Disponible à la commande</span>
@@ -1845,14 +1670,10 @@
 </div>
 
 <script>
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxwZccmELQhZm1OIlOK-S-0HbqgSwj0MoSG7w3Q-sAtwobo8ha_NzSB8O636LrNvnXSog/exec';
-
-const ICONS = {
-  plate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg>',
-  chair: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="10" rx="2"/><path d="M7 14v6M17 14v6M5 18h14"/></svg>',
-  qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3M14 17v4M17 17v1M20 14v3M20 20h1"/></svg>',
-  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
-};
+// ============ SUPABASE CONNECTION ============
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let state = {
   menu: [], tables: [], config: {},
@@ -1860,39 +1681,12 @@ let state = {
   editingPlatId: null, editingTableId: null, platDisponible: true
 };
 
-async function api(action, params = {}) {
-  try {
-    // Estime la taille de l'URL GET pour décider POST vs GET
-    const paramsStr = Object.entries(params)
-      .filter(([k, v]) => v !== undefined && v !== null)
-      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-      .join('&');
-    const totalLen = BACKEND_URL.length + action.length + paramsStr.length + 20;
-
-    let res;
-    if (totalLen > 6000) {
-      // POST avec text/plain pour éviter le preflight CORS
-      res = await fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action, ...params })
-      });
-    } else {
-      const url = new URL(BACKEND_URL);
-      url.searchParams.set('action', action);
-      Object.entries(params).forEach(([k, v]) => {
-        if (v !== undefined && v !== null) url.searchParams.set(k, v);
-      });
-      res = await fetch(url.toString());
-    }
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || 'Erreur inconnue');
-    return data;
-  } catch (err) {
-    showToast(err.message, 'error');
-    throw err;
-  }
-}
+const ICONS = {
+  plate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg>',
+  chair: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="10" rx="2"/><path d="M7 14v6M17 14v6M5 18h14"/></svg>',
+  qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3M14 17v4M17 17v1M20 14v3M20 20h1"/></svg>',
+  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
+};
 
 function showToast(msg, type = '') {
   const toast = document.getElementById('toast');
@@ -1912,15 +1706,19 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+// ============ CONFIG ============
 async function loadConfig() {
   try {
-    const data = await api('get_config');
-    state.config = data.config || {};
+    const { data, error } = await supa.from('config').select('*');
+    if (error) throw new Error(error.message || error.details || JSON.stringify(error));
+    state.config = {};
+    (data || []).forEach(r => { state.config[r.cle] = r.valeur; });
+
     if (state.config.restaurant_nom) {
       document.getElementById('brand-sub').textContent = state.config.restaurant_nom;
       document.title = state.config.restaurant_nom + ' — Frizz Admin';
     }
-    const isOpen = String(state.config.ouvert).toLowerCase() === 'true' || state.config.ouvert === true;
+    const isOpen = String(state.config.ouvert).toLowerCase() === 'true';
     updateOpenPill(isOpen);
     document.getElementById('cfg-restaurant_nom').value = state.config.restaurant_nom || '';
     document.getElementById('cfg-logo_url').value = state.config.logo_url || '';
@@ -1928,9 +1726,61 @@ async function loadConfig() {
     document.getElementById('cfg-url_client').value = state.config.url_client || '';
     document.getElementById('cfg-google_link').value = state.config.google_link || '';
     document.getElementById('cfg-langue_defaut').value = state.config.langue_defaut || 'fr';
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error('loadConfig:', err);
+    showToast('Config: ' + (err.message || 'erreur inconnue'), 'error');
+  }
 }
 
+function updateOpenPill(isOpen) {
+  const pill = document.getElementById('status-pill');
+  const label = document.getElementById('status-label');
+  if (isOpen) {
+    pill.classList.remove('closed');
+    label.textContent = 'En service';
+  } else {
+    pill.classList.add('closed');
+    label.textContent = 'Hors service';
+  }
+}
+
+async function toggleOpen() {
+  const current = String(state.config.ouvert).toLowerCase() === 'true';
+  const next = !current;
+  updateOpenPill(next);
+  try {
+    const { error } = await supa.from('config').upsert({ cle: 'ouvert', valeur: next ? 'true' : 'false' });
+    if (error) throw error;
+    state.config.ouvert = next ? 'true' : 'false';
+    showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
+  } catch (err) {
+    updateOpenPill(current);
+    showToast('Erreur: ' + err.message, 'error');
+  }
+}
+
+async function saveAllConfig(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
+  const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
+  const upserts = keys.map(k => ({
+    cle: k,
+    valeur: document.getElementById('cfg-' + k).value
+  }));
+  try {
+    const { error } = await supa.from('config').upsert(upserts);
+    if (error) throw error;
+    upserts.forEach(u => { state.config[u.cle] = u.valeur; });
+    document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
+    showToast('Configuration enregistrée', 'success');
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+    console.error(err);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+  }
+}
+
+// ============ LOGO UPLOAD ============
 function setLogoPreview(url) {
   const picker = document.getElementById('logo-picker');
   const thumb = document.getElementById('logo-thumb');
@@ -1975,60 +1825,61 @@ document.getElementById('cfg-logo-file').addEventListener('change', async (e) =>
   }
 });
 
-function updateOpenPill(isOpen) {
-  const pill = document.getElementById('status-pill');
-  const label = document.getElementById('status-label');
-  if (isOpen) {
-    pill.classList.add('open'); pill.classList.remove('closed');
-    label.textContent = 'En service';
-  } else {
-    pill.classList.add('closed'); pill.classList.remove('open');
-    label.textContent = 'Hors service';
-  }
+async function compressImage(file, maxDim = 1080) {
+  const TARGET_LEN = 200000;
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) { reject(new Error("Ce n'est pas une image")); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const render = (w, h, q) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          return canvas.toDataURL('image/jpeg', q);
+        };
+        let quality = 0.88;
+        let dataUrl = render(width, height, quality);
+        while (dataUrl.length > TARGET_LEN && quality > 0.4) {
+          quality -= 0.08;
+          dataUrl = render(width, height, quality);
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Image illisible'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Lecture impossible'));
+    reader.readAsDataURL(file);
+  });
 }
 
-async function toggleOpen() {
-  const current = String(state.config.ouvert).toLowerCase() === 'true' || state.config.ouvert === true;
-  const next = !current;
-  updateOpenPill(next);
-  try {
-    await api('save_config', { cle: 'ouvert', valeur: next ? 'true' : 'false' });
-    state.config.ouvert = next;
-    showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
-  } catch (err) { updateOpenPill(current); }
-}
-
-async function saveAllConfig(btn) {
-  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
-  const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
-  let savedCount = 0;
-  let lastError = null;
-  for (const k of keys) {
-    const val = document.getElementById('cfg-' + k).value;
-    try {
-      await api('save_config', { cle: k, valeur: val });
-      state.config[k] = val;
-      savedCount++;
-    } catch (err) {
-      lastError = err;
-      console.error('Erreur save ' + k + ':', err);
-    }
-  }
-  document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
-  if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
-  if (savedCount === keys.length) {
-    showToast('Configuration enregistrée', 'success');
-  } else if (savedCount > 0) {
-    showToast(`${savedCount}/${keys.length} champs enregistrés`, 'error');
-  } else {
-    showToast('Échec : ' + (lastError ? lastError.message : 'erreur inconnue'), 'error');
-  }
-}
-
+// ============ MENU ============
 async function loadMenu() {
   try {
-    const data = await api('get_menu');
-    state.menu = data.items || [];
+    const { data, error } = await supa.from('menu').select('*').order('created_at', { ascending: true });
+    if (error) throw new Error(error.message || error.details || JSON.stringify(error));
+    state.menu = (data || []).map(p => ({
+      id: p.id,
+      categorie: p.categorie || '',
+      nom: p.nom || '',
+      description: p.description || '',
+      prix: parseFloat(p.prix) || 0,
+      photo_url: p.photo_url || '',
+      disponible: p.disponible !== false,
+      allergenes: p.allergenes || '',
+      options: Array.isArray(p.options) ? p.options : []
+    }));
     renderCategories();
     renderMenu();
     const total = state.menu.length;
@@ -2038,7 +1889,10 @@ async function loadMenu() {
     document.getElementById('strip-cats').textContent = cats;
     document.getElementById('strip-dispo').textContent = dispo;
     document.getElementById('strip-epuise').textContent = total - dispo;
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error('loadMenu:', err);
+    showToast('Menu: ' + (err.message || 'erreur inconnue'), 'error');
+  }
 }
 
 function renderCategories() {
@@ -2106,11 +1960,13 @@ async function toggleDispoPlat(id, newVal) {
   if (plat) plat.disponible = newVal;
   renderMenu();
   try {
-    await api('update_statut_plat', { id, disponible: newVal ? 'true' : 'false' });
+    const { error } = await supa.from('menu').update({ disponible: newVal }).eq('id', id);
+    if (error) throw error;
     showToast(newVal ? 'Plat disponible' : 'Plat épuisé', 'success');
   } catch (err) {
     if (plat) plat.disponible = !newVal;
     renderMenu();
+    showToast('Erreur: ' + err.message, 'error');
   }
 }
 
@@ -2133,13 +1989,12 @@ function openPlatModal(id = null) {
     document.getElementById('plat-photo_url').value = p.photo_url || '';
     setPhotoPreview(p.photo_url || '');
     document.getElementById('plat-allergenes').value = p.allergenes || '';
-    document.getElementById('plat-options').value = p.options && p.options.length ? JSON.stringify(p.options) : '';
     state.platDisponible = p.disponible !== false;
   } else {
     title.textContent = 'Nouveau plat';
     deleteBtn.style.display = 'none';
     document.getElementById('plat-id').value = '';
-    ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-description', 'plat-photo_url', 'plat-allergenes', 'plat-options']
+    ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-description', 'plat-photo_url', 'plat-allergenes']
       .forEach(id => document.getElementById(id).value = '');
     setPhotoPreview('');
     state.platDisponible = true;
@@ -2188,55 +2043,6 @@ document.getElementById('plat-photo-file').addEventListener('change', async (e) 
   }
 });
 
-async function compressImage(file, maxDim = 1080) {
-  const TARGET_LEN = 45000;
-  return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) { reject(new Error("Ce n'est pas une image")); return; }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const scale = maxDim / Math.max(width, height);
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-        }
-        const render = (w, h, q) => {
-          const canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(img, 0, 0, w, h);
-          return canvas.toDataURL('image/jpeg', q);
-        };
-        let quality = 0.88;
-        let dataUrl = render(width, height, quality);
-        while (dataUrl.length > TARGET_LEN && quality > 0.35) {
-          quality -= 0.08;
-          dataUrl = render(width, height, quality);
-        }
-        while (dataUrl.length > TARGET_LEN && Math.max(width, height) > 320) {
-          width = Math.round(width * 0.85);
-          height = Math.round(height * 0.85);
-          dataUrl = render(width, height, 0.75);
-          while (dataUrl.length > TARGET_LEN && quality > 0.35) {
-            quality -= 0.05;
-            dataUrl = render(width, height, quality);
-          }
-        }
-        if (dataUrl.length > TARGET_LEN) { reject(new Error("Image trop complexe")); return; }
-        resolve(dataUrl);
-      };
-      img.onerror = () => reject(new Error('Image illisible'));
-      img.src = e.target.result;
-    };
-    reader.onerror = () => reject(new Error('Lecture impossible'));
-    reader.readAsDataURL(file);
-  });
-}
-
 function toggleDisponible() {
   state.platDisponible = !state.platDisponible;
   document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
@@ -2246,27 +2052,32 @@ async function savePlat() {
   const btn = document.getElementById('plat-save-btn');
   const nom = document.getElementById('plat-nom').value.trim();
   if (!nom) { showToast('Le nom est requis', 'error'); return; }
-  const params = {
-    id: document.getElementById('plat-id').value || undefined,
+  const id = document.getElementById('plat-id').value || ('p_' + Date.now());
+  const payload = {
+    id,
     nom,
     categorie: document.getElementById('plat-categorie').value.trim(),
-    prix: document.getElementById('plat-prix').value,
+    prix: parseFloat(document.getElementById('plat-prix').value) || 0,
     description: document.getElementById('plat-description').value.trim(),
     photo_url: document.getElementById('plat-photo_url').value.trim(),
     allergenes: document.getElementById('plat-allergenes').value.trim(),
-    options: document.getElementById('plat-options').value.trim() || '[]',
-    disponible: state.platDisponible ? 'true' : 'false'
+    disponible: state.platDisponible
   };
   btn.innerHTML = '<span class="spinner"></span>';
   btn.disabled = true;
   try {
-    await api('save_plat', params);
+    const { error } = await supa.from('menu').upsert(payload);
+    if (error) throw error;
     showToast('Plat enregistré', 'success');
     closeModal('modal-plat');
     await loadMenu();
-  } catch (err) {}
-  btn.innerHTML = 'Enregistrer';
-  btn.disabled = false;
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+    console.error(err);
+  } finally {
+    btn.innerHTML = 'Enregistrer';
+    btn.disabled = false;
+  }
 }
 
 async function deletePlat() {
@@ -2274,17 +2085,29 @@ async function deletePlat() {
   if (!id) return;
   if (!confirm('Supprimer ce plat définitivement ?')) return;
   try {
-    await api('delete_plat', { id });
+    const { error } = await supa.from('menu').delete().eq('id', id);
+    if (error) throw error;
     showToast('Plat supprimé', 'success');
     closeModal('modal-plat');
     await loadMenu();
-  } catch (err) {}
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+  }
 }
 
+// ============ TABLES ============
 async function loadTables() {
   try {
-    const data = await api('get_tables');
-    state.tables = data.tables || [];
+    const { data, error } = await supa.from('tables').select('*').order('created_at', { ascending: true });
+    if (error) throw error;
+    state.tables = (data || []).map(t => ({
+      id: t.id,
+      nom: t.nom || '',
+      capacite: parseInt(t.capacite) || 2,
+      statut: t.statut || 'libre',
+      session_id: t.session_id || '',
+      heure_ouverture: t.heure_ouverture || ''
+    }));
     renderTables();
     const total = state.tables.length;
     const libres = state.tables.filter(t => t.statut === 'libre').length;
@@ -2294,7 +2117,10 @@ async function loadTables() {
     document.getElementById('tstrip-libre').textContent = libres;
     document.getElementById('tstrip-occ').textContent = occ;
     document.getElementById('tstrip-couv').textContent = couverts;
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error('loadTables:', err);
+    showToast('Erreur chargement tables', 'error');
+  }
 }
 
 function renderTables() {
@@ -2353,12 +2179,20 @@ async function saveTable() {
   if (!nom) { showToast('Le nom est requis', 'error'); return; }
   const existingId = document.getElementById('table-id').value;
   const id = existingId || 't_' + Date.now();
+  const payload = {
+    id, nom,
+    capacite: parseInt(document.getElementById('table-capacite').value) || 2,
+    statut: 'libre'
+  };
   try {
-    await api('update_table', { id, nom, capacite: document.getElementById('table-capacite').value, statut: 'libre' });
+    const { error } = await supa.from('tables').upsert(payload);
+    if (error) throw error;
     showToast('Table enregistrée', 'success');
     closeModal('modal-table');
     await loadTables();
-  } catch (err) {}
+  } catch (err) {
+    showToast('Erreur: ' + err.message, 'error');
+  }
 }
 
 function showQR(tableId) {
@@ -2383,6 +2217,7 @@ function downloadQR() {
   document.body.appendChild(a); a.click(); a.remove();
 }
 
+// ============ STATS ============
 document.querySelectorAll('[data-periode]').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('[data-periode]').forEach(c => c.classList.remove('active'));
@@ -2394,187 +2229,61 @@ document.querySelectorAll('[data-periode]').forEach(chip => {
 
 async function loadStats() {
   try {
-    const data = await api('get_stats', { periode: state.activePeriode });
-    const s = data.stats;
-    document.getElementById('stat-ca').textContent = s.ca.toFixed(2) + '€';
-    document.getElementById('stat-commandes').textContent = s.nb_commandes;
-    document.getElementById('stat-panier').textContent = s.panier_moyen.toFixed(2) + '€';
-    document.getElementById('stat-tables').textContent = s.tables_occupees;
+    const periode = state.activePeriode;
+    const now = new Date();
+    const since = new Date(now);
+    if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+    if (periode === 'semaine') since.setDate(now.getDate() - 7);
+    if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
+
+    const { data: cmds, error: e1 } = await supa.from('commandes').select('*').gte('heure', since.toISOString());
+    if (e1) throw e1;
+    const commandes = cmds || [];
+
+    const ca = commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = commandes.length;
+    const panier = nb ? ca / nb : 0;
+
+    const { data: tbls } = await supa.from('tables').select('statut');
+    const tables_occupees = (tbls || []).filter(t => t.statut === 'occupee').length;
+
+    document.getElementById('stat-ca').textContent = ca.toFixed(2) + '€';
+    document.getElementById('stat-commandes').textContent = nb;
+    document.getElementById('stat-panier').textContent = panier.toFixed(2) + '€';
+    document.getElementById('stat-tables').textContent = tables_occupees;
+
+    // Top plats
+    const platCount = {};
+    commandes.forEach(c => {
+      (Array.isArray(c.items) ? c.items : []).forEach(it => {
+        const nom = it.nom || it.name || 'Inconnu';
+        platCount[nom] = (platCount[nom] || 0) + (parseInt(it.qte) || 1);
+      });
+    });
+    const top = Object.entries(platCount)
+      .map(([nom, qte]) => ({ nom, qte }))
+      .sort((a, b) => b.qte - a.qte)
+      .slice(0, 5);
 
     const list = document.getElementById('top-plats-list');
-    if (!s.top_plats || s.top_plats.length === 0) {
-      list.innerHTML = `
-        <div class="empty-state" style="padding: 12px 0 0;">
-          <div class="empty-state-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7"/>
-            </svg>
-          </div>
-          <p>Pas encore de données</p>
-        </div>`;
+    if (top.length === 0) {
+      list.innerHTML = `<div class="empty-state" style="padding: 12px 0;"><p>Pas encore de données</p></div>`;
     } else {
-      list.innerHTML = s.top_plats.map((p, i) => `
-        <div class="top-plat-row">
-          <div class="top-plat-info">
-            <div class="top-plat-rank">${i + 1}</div>
-            <div>${escapeHtml(p.nom)}</div>
+      list.innerHTML = top.map((p, i) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom: 1px solid var(--sep-opaque);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:26px; height:26px; border-radius:50%; background:var(--fill-1); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--label-2);">${i+1}</div>
+            <div style="font-weight:600;">${escapeHtml(p.nom)}</div>
           </div>
-          <div class="top-plat-qte">× ${p.qte}</div>
+          <div style="font-weight:800;">×${p.qte}</div>
         </div>`).join('');
     }
-  } catch (err) { console.error(err); }
-  loadChart();
-}
-
-async function loadChart() {
-  const periode = state.activePeriode;
-  const now = new Date();
-  const since = new Date(now);
-  if (periode === 'jour')    since.setHours(0, 0, 0, 0);
-  if (periode === 'semaine') since.setDate(now.getDate() - 7);
-  if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
-  try {
-    const data = await api('get_commandes_table', { since: since.toISOString() });
-    renderChart(data.commandes || [], periode, since, now);
   } catch (err) {
-    document.getElementById('chart-container').innerHTML =
-      '<div class="chart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/></svg><div>Impossible de charger les données</div></div>';
+    console.error('loadStats:', err);
   }
 }
 
-function renderChart(commandes, periode, since, now) {
-  const container = document.getElementById('chart-container');
-  let buckets = [];
-  if (periode === 'jour') {
-    for (let h = 0; h < 24; h++) buckets.push({ label: String(h).padStart(2, '0') + 'h', total: 0, date: new Date(since.getFullYear(), since.getMonth(), since.getDate(), h) });
-  } else if (periode === 'semaine') {
-    const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    for (let d = 6; d >= 0; d--) {
-      const date = new Date(now); date.setDate(now.getDate() - d); date.setHours(0, 0, 0, 0);
-      buckets.push({ label: jours[date.getDay()], total: 0, date });
-    }
-  } else {
-    for (let d = 29; d >= 0; d--) {
-      const date = new Date(now); date.setDate(now.getDate() - d); date.setHours(0, 0, 0, 0);
-      buckets.push({ label: date.getDate() + '/' + (date.getMonth() + 1), total: 0, date });
-    }
-  }
-
-  commandes.forEach(c => {
-    if (!c.heure) return;
-    const d = new Date(c.heure);
-    let idx = -1;
-    if (periode === 'jour') idx = d.getHours();
-    else idx = buckets.findIndex(b => b.date.getFullYear() === d.getFullYear() && b.date.getMonth() === d.getMonth() && b.date.getDate() === d.getDate());
-    if (idx >= 0) buckets[idx].total += parseFloat(c.total) || 0;
-  });
-
-  const totalCA = buckets.reduce((s, b) => s + b.total, 0);
-  const maxVal = Math.max(...buckets.map(b => b.total), 1);
-
-  document.getElementById('chart-total').textContent = totalCA.toFixed(2) + '€';
-  const pLabel = periode === 'jour' ? "aujourd'hui" : periode === 'semaine' ? 'cette semaine' : 'ce mois';
-  document.getElementById('chart-delta').textContent = `${commandes.length} commande${commandes.length !== 1 ? 's' : ''} ${pLabel}`;
-
-  if (totalCA === 0) {
-    container.innerHTML = `
-      <div class="chart-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-7" opacity="0.3"/>
-        </svg>
-        <div>Aucune vente sur cette période</div>
-      </div>`;
-    return;
-  }
-
-  const W = 800, H = 280;
-  const padLeft = 50, padRight = 20, padTop = 20, padBottom = 40;
-  const chartW = W - padLeft - padRight, chartH = H - padTop - padBottom;
-  const n = buckets.length;
-  const yTicks = 4, yStep = maxVal / yTicks;
-
-  const points = buckets.map((b, i) => {
-    const x = padLeft + (n === 1 ? chartW / 2 : (i / (n - 1)) * chartW);
-    const y = padTop + chartH - (b.total / maxVal) * chartH;
-    return { x, y, bucket: b };
-  });
-
-  let pathD = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 1; i < points.length; i++) {
-    const prev = points[i - 1], curr = points[i];
-    const midX = (prev.x + curr.x) / 2;
-    pathD += ` Q ${midX} ${prev.y}, ${midX} ${(prev.y + curr.y) / 2} T ${curr.x} ${curr.y}`;
-  }
-  const areaD = pathD + ` L ${points[points.length - 1].x} ${padTop + chartH} L ${points[0].x} ${padTop + chartH} Z`;
-  const labelInterval = periode === 'jour' ? 3 : periode === 'semaine' ? 1 : 5;
-
-  let gridY = '';
-  for (let i = 0; i <= yTicks; i++) {
-    const y = padTop + (i / yTicks) * chartH;
-    const val = maxVal - i * yStep;
-    gridY += `<line x1="${padLeft}" x2="${W - padRight}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
-    gridY += `<text x="${padLeft - 10}" y="${y + 4}" text-anchor="end" fill="rgba(245,245,247,0.35)" font-size="10" font-family="Inter" font-weight="600">${Math.round(val)}€</text>`;
-  }
-
-  let xLabels = '';
-  points.forEach((p, i) => {
-    if (i % labelInterval === 0 || i === points.length - 1) {
-      xLabels += `<text x="${p.x}" y="${H - 12}" text-anchor="middle" fill="rgba(245,245,247,0.4)" font-size="10" font-family="Inter" font-weight="600">${p.bucket.label}</text>`;
-    }
-  });
-
-  const peak = points.reduce((a, b) => b.bucket.total > a.bucket.total ? b : a, points[0]);
-
-  container.innerHTML = `
-    <div class="chart-wrap">
-      <svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-          </linearGradient>
-          <linearGradient id="chart-line-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#ffffff"/>
-          </linearGradient>
-          <filter id="chart-glow">
-            <feGaussianBlur stdDeviation="2.5" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        ${gridY}
-        <path d="${areaD}" fill="url(#chart-grad)"/>
-        <path d="${pathD}" fill="none" stroke="url(#chart-line-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#chart-glow)"/>
-        ${peak.bucket.total > 0 ? `
-          <circle cx="${peak.x}" cy="${peak.y}" r="5" fill="#0A84FF" stroke="#0A0A0A" stroke-width="2"/>
-          <circle cx="${peak.x}" cy="${peak.y}" r="10" fill="#0A84FF" opacity="0.25">
-            <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.35;0;0.35" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          <text x="${peak.x}" y="${peak.y - 14}" text-anchor="middle" fill="#0A84FF" font-size="11" font-family="Inter" font-weight="700">${peak.bucket.total.toFixed(0)}€</text>
-        ` : ''}
-        ${xLabels}
-      </svg>
-    </div>`;
-}
-
-async function generateAISummary() {
-  const btn = document.getElementById('ai-btn');
-  const out = document.getElementById('ai-summary');
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled = true;
-  try {
-    const data = await api('ai_summary', { periode: state.activePeriode });
-    out.textContent = data.summary;
-    out.style.display = 'block';
-  } catch (err) {
-    out.textContent = err.message;
-    out.style.display = 'block';
-  }
-  btn.innerHTML = 'Régénérer';
-  btn.disabled = false;
-}
-
+// ============ UTILS ============
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
@@ -2585,6 +2294,7 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
   o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
 });
 
+// ============ INIT ============
 (async function init() {
   await loadConfig();
   await loadMenu();

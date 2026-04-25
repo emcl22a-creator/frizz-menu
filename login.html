@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Connexion — Frizz Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #000;
+    --bg-elev: #0c0c0e;
+    --label: #ffffff;
+    --label-2: rgba(255,255,255,0.65);
+    --label-3: rgba(255,255,255,0.42);
+    --fill-1: rgba(255,255,255,0.06);
+    --fill-2: rgba(255,255,255,0.04);
+    --sep: rgba(255,255,255,0.1);
+    --blue: #0A84FF;
+    --blue-soft: rgba(10,132,255,0.12);
+    --green: #30D158;
+    --red: #FF453A;
+    --red-soft: rgba(255,69,58,0.12);
+    --r-sm: 12px;
+    --pill: 100px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *::selection { background: var(--blue); color: #fff; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--label);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.013em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+    background: #000;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    mix-blend-mode: screen;
+  }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, var(--blue), transparent 70%); top: -150px; left: -100px; opacity: 0.25; animation: drift 25s ease-in-out infinite; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #BF5AF2, transparent 70%); bottom: -100px; right: -100px; opacity: 0.18; animation: drift 30s ease-in-out infinite reverse; }
+  @keyframes drift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(80px,60px) scale(1.1); }
+  }
+
+  .wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 32px 22px 60px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.045em;
+    color: var(--blue);
+    text-shadow: 0 0 14px rgba(10,132,255,0.5);
+  }
+  .logo .spark {
+    font-size: 17px;
+    animation: twinkle 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(10,132,255,0.95));
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+  .header-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--label-2);
+  }
+  .header-link:hover { color: var(--label); }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #fff, rgba(255,255,255,0.6));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-bottom: 0.05em;
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--label-2);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 30px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  }
+
+  .form { display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep);
+    border-radius: var(--r-sm);
+    color: var(--label);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s var(--ease);
+  }
+  .input::placeholder { color: var(--label-3); }
+  .input:focus {
+    outline: none;
+    border-color: rgba(10,132,255,0.5);
+    background: var(--fill-1);
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.12);
+  }
+
+  .forgot {
+    text-align: right;
+    font-size: 12.5px;
+    margin-top: -2px;
+  }
+  .forgot a { color: var(--label-2); font-weight: 600; }
+  .forgot a:hover { color: var(--blue); }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(180deg, #1a92ff 0%, #0A84FF 50%, #0070E0 100%);
+    color: #fff;
+    border: 0;
+    border-radius: var(--pill);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.012em;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    box-shadow:
+      0 0 28px rgba(10,132,255,0.4),
+      0 12px 28px -6px rgba(10,132,255,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 8px;
+  }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-primary svg { width: 16px; height: 16px; }
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .footer-link {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 14px;
+    color: var(--label-2);
+    font-weight: 500;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(140px);
+    background: rgba(22,22,24,0.95);
+    backdrop-filter: blur(32px);
+    border: 1px solid var(--sep);
+    border-radius: var(--pill);
+    padding: 13px 22px;
+    font-size: 13.5px;
+    font-weight: 700;
+    z-index: 200;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s var(--ease-spring);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    max-width: calc(100vw - 32px);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .toast.success .toast-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+  @media (max-width: 460px) {
+    .wrap { padding: 22px 16px 40px; }
+    .hero h1 { font-size: 32px; }
+    .card { padding: 26px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+
+<div class="wrap">
+  <header class="header">
+    <a href="index.html" class="logo">Frizz<span class="spark">✦</span></a>
+    <a href="inscription.html" class="header-link">Pas de compte ? Inscription →</a>
+  </header>
+
+  <div class="hero">
+    <h1>Connexion</h1>
+    <p>Accède à ton dashboard restaurant.</p>
+  </div>
+
+  <div class="card">
+    <form class="form" id="login-form" onsubmit="handleLogin(event)" autocomplete="on">
+      <div class="field">
+        <label class="field-label" for="email">Email</label>
+        <input class="input" type="email" id="email" placeholder="ton@email.com" required autocomplete="email" autofocus>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="password">Mot de passe</label>
+        <input class="input" type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+
+      <div class="forgot">
+        <a href="#" onclick="handleForgot(event)">Mot de passe oublié ?</a>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submit-btn">
+        <span id="btn-text">Se connecter</span>
+      </button>
+    </form>
+  </div>
+
+  <div class="footer-link">
+    Pas encore de compte ? <a href="inscription.html">Crée ton mois gratuit</a>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let toastTimer = null;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.className = 'toast show ' + type;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> Connexion…';
+
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const password = document.getElementById('password').value;
+
+  try {
+    const { data, error } = await supa.auth.signInWithPassword({ email, password });
+    if (error) {
+      if (error.message.toLowerCase().includes('invalid login') || error.message.toLowerCase().includes('credentials')) {
+        throw new Error('Email ou mot de passe incorrect.');
+      }
+      throw error;
+    }
+    if (!data.user) throw new Error('Connexion échouée');
+
+    // Charger le resto de cet user
+    const { data: resto, error: restoErr } = await supa.from('restaurants').select('slug').eq('user_id', data.user.id).maybeSingle();
+    if (restoErr) throw new Error('Erreur récupération resto: ' + restoErr.message);
+    if (!resto) throw new Error('Aucun restaurant lié à ce compte. Contacte le support.');
+
+    showToast('Connecté ! Redirection…', 'success');
+    setTimeout(() => {
+      location.href = 'menu-admin.html?resto=' + encodeURIComponent(resto.slug);
+    }, 600);
+
+  } catch (err) {
+    console.error('Login:', err);
+    showToast(err.message || 'Erreur de connexion', 'error');
+    btn.disabled = false;
+    btnText.textContent = 'Se connecter';
+  }
+}
+
+async function handleForgot(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  if (!email) {
+    showToast('Entre ton email d\'abord', 'error');
+    document.getElementById('email').focus();
+    return;
+  }
+  try {
+    const { error } = await supa.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + location.pathname.replace(/login\.html$/, 'login.html')
+    });
+    if (error) throw error;
+    showToast('Email de réinitialisation envoyé ✓', 'success');
+  } catch (err) {
+    console.error('Forgot:', err);
+    showToast(err.message || 'Erreur envoi email', 'error');
+  }
+}
+
+// Si déjà connecté, rediriger vers le dashboard
+(async function checkSession() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (session && session.user) {
+    const { data: resto } = await supa.from('restaurants').select('slug').eq('user_id', session.user.id).maybeSingle();
+    if (resto && resto.slug) {
+      location.href = 'menu-admin.html?resto=' + encodeURIComponent(resto.slug);
+    }
+  }
+})();
+</script>
+</body>
+</html>

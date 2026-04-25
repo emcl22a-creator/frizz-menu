@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cuisine — Frizz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #000;
+    --bg-elev: #0e0e10;
+    --label: #ffffff;
+    --label-2: rgba(255,255,255,0.65);
+    --label-3: rgba(255,255,255,0.42);
+    --label-4: rgba(255,255,255,0.18);
+    --fill-1: rgba(255,255,255,0.06);
+    --fill-2: rgba(255,255,255,0.04);
+    --sep: rgba(255,255,255,0.1);
+    --sep-strong: rgba(255,255,255,0.18);
+    --blue: #0A84FF;
+    --blue-soft: rgba(10,132,255,0.14);
+    --green: #30D158;
+    --green-soft: rgba(48,209,88,0.14);
+    --orange: #FF9F0A;
+    --orange-soft: rgba(255,159,10,0.14);
+    --red: #FF453A;
+    --red-soft: rgba(255,69,58,0.14);
+    --r: 14px;
+    --r-lg: 18px;
+    --r-xl: 22px;
+    --pill: 100px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *::selection { background: var(--blue); color: #fff; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--label);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.013em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
+
+  /* ========== HEADER ========== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid var(--sep-strong);
+  }
+  .header-inner {
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: -0.045em;
+    color: var(--blue);
+    text-shadow: 0 0 16px rgba(10,132,255,0.5);
+  }
+  .brand-logo .spark {
+    font-size: 18px;
+    animation: twinkle 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(10,132,255,0.95));
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(0.85); }
+  }
+  .brand-sub {
+    padding-left: 14px;
+    border-left: 1px solid var(--sep-strong);
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .brand-name {
+    font-size: 13px;
+    color: var(--label-2);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+  }
+  .brand-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .clock {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    padding: 8px 16px;
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    border-radius: var(--pill);
+    margin-right: 4px;
+  }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    color: var(--label-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--fill-2); color: var(--label); border-color: var(--sep-strong); }
+  .icon-btn.active {
+    background: var(--blue-soft);
+    border-color: rgba(10,132,255,0.4);
+    color: var(--blue);
+  }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  /* ========== KANBAN BOARD ========== */
+  .board {
+    height: calc(100vh - 73px);
+    height: calc(100dvh - 73px);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--sep-strong);
+    min-width: 0;
+  }
+  .col:last-child { border-right: 0; }
+
+  .col-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--sep);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .col-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .col-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .col[data-statut="en_attente"] .col-dot { background: var(--red); box-shadow: 0 0 10px var(--red); }
+  .col[data-statut="en_cours"] .col-dot { background: var(--orange); box-shadow: 0 0 10px var(--orange); }
+  .col[data-statut="prete"] .col-dot { background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .col-count {
+    font-size: 13px;
+    color: var(--label-2);
+    font-weight: 700;
+    padding: 4px 10px;
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    border-radius: var(--pill);
+    font-variant-numeric: tabular-nums;
+    min-width: 28px;
+    text-align: center;
+  }
+  .col[data-statut="en_attente"] .col-count {
+    background: var(--red-soft);
+    border-color: rgba(255,69,58,0.3);
+    color: var(--red);
+  }
+  .col[data-statut="en_cours"] .col-count {
+    background: var(--orange-soft);
+    border-color: rgba(255,159,10,0.3);
+    color: var(--orange);
+  }
+  .col[data-statut="prete"] .col-count {
+    background: var(--green-soft);
+    border-color: rgba(48,209,88,0.3);
+    color: var(--green);
+  }
+
+  .col-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .col-body::-webkit-scrollbar { width: 8px; }
+  .col-body::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 4px; }
+
+  /* ========== ORDER CARD ========== */
+  .order {
+    background: var(--bg-elev);
+    border: 1px solid var(--sep);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition: all 0.3s var(--ease);
+    animation: card-in 0.4s var(--ease-spring) both;
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .order.flash {
+    animation: flash 1.2s ease-out, card-in 0.4s var(--ease-spring);
+  }
+  @keyframes flash {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(10,132,255,0); border-color: var(--sep); }
+    50% { box-shadow: 0 0 0 4px rgba(10,132,255,0.4); border-color: var(--blue); }
+  }
+  .order:hover { transform: translateY(-2px); border-color: var(--sep-strong); }
+
+  .order-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--sep);
+    background: var(--fill-2);
+    gap: 10px;
+  }
+  .order-table {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .order-meta {
+    font-size: 12px;
+    color: var(--label-2);
+    margin-top: 2px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .order-time {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--label);
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    padding: 6px 11px;
+    border-radius: var(--pill);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+  }
+  .order-time.urgent {
+    background: var(--red-soft);
+    border-color: rgba(255,69,58,0.3);
+    color: var(--red);
+    animation: pulse-urgent 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-urgent {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .order-items {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .order-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.3;
+  }
+  .order-item-qty {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--label);
+    min-width: 36px;
+    padding-top: 1px;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .order-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .order-item-nom {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .order-item-note {
+    font-size: 12.5px;
+    color: var(--orange);
+    margin-top: 4px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .order-item-note::before {
+    content: '✏️';
+    font-style: normal;
+    flex-shrink: 0;
+  }
+
+  .order-footer {
+    padding: 12px 14px;
+    border-top: 1px solid var(--sep);
+    background: var(--fill-2);
+    display: flex;
+    gap: 8px;
+  }
+  .btn-action {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: var(--pill);
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    transition: all 0.2s var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+  }
+  .btn-action svg { width: 14px; height: 14px; stroke-width: 2.5; }
+  .btn-primary {
+    background: var(--label);
+    color: #000;
+    box-shadow: 0 4px 14px rgba(255,255,255,0.12);
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary.green {
+    background: var(--green);
+    color: #000;
+    box-shadow: 0 4px 14px rgba(48,209,88,0.4);
+  }
+  .btn-primary.orange {
+    background: var(--orange);
+    color: #000;
+    box-shadow: 0 4px 14px rgba(255,159,10,0.4);
+  }
+  .btn-secondary {
+    background: var(--fill-1);
+    color: var(--label-2);
+    border: 1px solid var(--sep);
+    flex: 0;
+    padding: 12px 14px;
+  }
+  .btn-secondary:hover { background: var(--fill-2); color: var(--label); }
+
+  /* ========== EMPTY STATE ========== */
+  .col-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-3);
+    text-align: center;
+    padding: 30px 20px;
+    gap: 12px;
+  }
+  .col-empty-icon {
+    width: 48px; height: 48px;
+    border-radius: var(--r);
+    background: var(--fill-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-3);
+  }
+  .col-empty-icon svg { width: 22px; height: 22px; }
+  .col-empty-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-3);
+  }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(140px);
+    background: rgba(20,20,22,0.95);
+    backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid var(--sep-strong);
+    border-radius: var(--pill);
+    padding: 13px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    z-index: 200;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s var(--ease-spring);
+    letter-spacing: -0.013em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+  .toast.success .toast-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+  /* ========== LOADING / ERROR ========== */
+  .center-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 30px;
+  }
+  .center-screen.hidden { display: none; }
+  .loading-logo {
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--blue);
+    text-shadow: 0 0 28px rgba(10,132,255,0.55);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .loading-logo .spark {
+    font-size: 30px;
+    animation: spark-pulse 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 14px rgba(10,132,255,0.95));
+  }
+  @keyframes spark-pulse {
+    0%,100% { opacity: 1; transform: scale(1) rotate(0); }
+    50% { opacity: 0.4; transform: scale(0.7) rotate(180deg); }
+  }
+  .error-card {
+    text-align: center;
+    max-width: 360px;
+  }
+  .error-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    background: var(--red-soft);
+    border: 1px solid rgba(255,69,58,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+  }
+  .error-icon svg { width: 30px; height: 30px; }
+  .error-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .error-msg {
+    color: var(--label-2);
+    font-size: 14.5px;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+
+  /* ========== AUDIO UNLOCK BANNER ========== */
+  .audio-banner {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blue);
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: var(--pill);
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 14px 32px -8px rgba(10,132,255,0.6), 0 0 24px rgba(10,132,255,0.3);
+    z-index: 150;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.25s var(--ease);
+    animation: bounce 1s ease-in-out infinite;
+  }
+  .audio-banner:hover { transform: translateX(-50%) translateY(-2px); }
+  .audio-banner.hidden { display: none; }
+  .audio-banner svg { width: 18px; height: 18px; }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-4px); }
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .board { grid-template-columns: 1fr; overflow-y: auto; height: auto; min-height: calc(100vh - 73px); }
+    .col { border-right: 0; border-bottom: 1px solid var(--sep-strong); }
+    .col:last-child { border-bottom: 0; }
+    .col-body { max-height: none; padding: 14px; }
+    .header-inner { padding: 12px 16px; flex-wrap: wrap; }
+    .clock { font-size: 15px; padding: 6px 12px; }
+    .brand-logo { font-size: 21px; }
+    .brand-title { font-size: 15px; }
+    .brand-name { font-size: 12px; }
+  }
+  @media (max-width: 480px) {
+    .brand-sub { display: none; }
+    body { overflow: auto; }
+    html, body { height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="center-screen" id="loading">
+  <div class="loading-logo">Frizz<span class="spark">✦</span></div>
+</div>
+
+<!-- Error -->
+<div class="center-screen hidden" id="error">
+  <div class="error-card">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h1 class="error-title" id="error-title">Erreur</h1>
+    <p class="error-msg" id="error-msg">Impossible de charger les commandes.</p>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">Frizz<span class="spark">✦</span></div>
+        <div class="brand-sub">
+          <span class="brand-name" id="resto-name">—</span>
+          <span class="brand-title">Cuisine</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="clock" id="clock">--:--</div>
+        <button class="icon-btn active" id="sound-btn" onclick="toggleSound()" title="Activer/désactiver le son">
+          <svg id="sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <svg id="sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+        <button class="icon-btn" onclick="reload()" title="Rafraîchir">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Kanban -->
+  <div class="board">
+    <div class="col" data-statut="en_attente">
+      <div class="col-head">
+        <div class="col-title-wrap">
+          <span class="col-dot"></span>
+          <span class="col-title">Nouvelles</span>
+        </div>
+        <span class="col-count" id="count-en_attente">0</span>
+      </div>
+      <div class="col-body" id="col-en_attente"></div>
+    </div>
+    <div class="col" data-statut="en_cours">
+      <div class="col-head">
+        <div class="col-title-wrap">
+          <span class="col-dot"></span>
+          <span class="col-title">En cours</span>
+        </div>
+        <span class="col-count" id="count-en_cours">0</span>
+      </div>
+      <div class="col-body" id="col-en_cours"></div>
+    </div>
+    <div class="col" data-statut="prete">
+      <div class="col-head">
+        <div class="col-title-wrap">
+          <span class="col-dot"></span>
+          <span class="col-title">Prêtes</span>
+        </div>
+        <span class="col-count" id="count-prete">0</span>
+      </div>
+      <div class="col-body" id="col-prete"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Audio unlock banner -->
+<div class="audio-banner hidden" id="audio-banner" onclick="unlockAudio()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+  <span>Activer les notifications sonores</span>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+// ========== SUPABASE ==========
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let state = {
+  config: {},
+  tablesById: {},
+  orders: [],
+  knownIds: new Set(),
+  soundEnabled: true,
+  audioCtx: null,
+  audioReady: false,
+  pollInterval: null,
+  clockInterval: null,
+  ageInterval: null
+};
+
+// ========== UTILS ==========
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+function showError(title, msg) {
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('error-title').textContent = title;
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error').classList.remove('hidden');
+}
+
+// ========== HORLOGE ==========
+function tickClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('clock').textContent = `${h}:${m}`;
+}
+
+function ageString(heureIso) {
+  const now = Date.now();
+  const t = new Date(heureIso).getTime();
+  const sec = Math.max(0, Math.floor((now - t) / 1000));
+  if (sec < 60) return sec + 's';
+  const min = Math.floor(sec / 60);
+  if (min < 60) return min + ' min';
+  const h = Math.floor(min / 60);
+  const restMin = min % 60;
+  return h + 'h' + String(restMin).padStart(2, '0');
+}
+
+function ageMinutes(heureIso) {
+  return Math.floor((Date.now() - new Date(heureIso).getTime()) / 60000);
+}
+
+// ========== AUDIO (bing iPhone) ==========
+function unlockAudio() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!state.audioCtx) state.audioCtx = new Ctx();
+    if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+    // Joue un son silencieux pour débloquer
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    g.gain.value = 0.0001;
+    o.connect(g); g.connect(state.audioCtx.destination);
+    o.start();
+    o.stop(state.audioCtx.currentTime + 0.01);
+    state.audioReady = true;
+    document.getElementById('audio-banner').classList.add('hidden');
+    showToast('Son activé 🔔', 'success');
+  } catch (e) {
+    console.error('audio unlock:', e);
+  }
+}
+
+function playBing() {
+  if (!state.soundEnabled || !state.audioReady || !state.audioCtx) return;
+  try {
+    const ctx = state.audioCtx;
+    const now = ctx.currentTime;
+    // 2 notes courtes (style notification iPhone)
+    [
+      { freq: 1318.5, start: 0, dur: 0.18 },   // E6
+      { freq: 1760, start: 0.16, dur: 0.32 }  // A6
+    ].forEach(note => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = note.freq;
+      gain.gain.setValueAtTime(0, now + note.start);
+      gain.gain.linearRampToValueAtTime(0.32, now + note.start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + note.start + note.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + note.start);
+      osc.stop(now + note.start + note.dur + 0.05);
+    });
+  } catch (e) { console.error('bing:', e); }
+}
+
+function toggleSound() {
+  state.soundEnabled = !state.soundEnabled;
+  const btn = document.getElementById('sound-btn');
+  const on = document.getElementById('sound-on');
+  const off = document.getElementById('sound-off');
+  if (state.soundEnabled) {
+    btn.classList.add('active');
+    on.style.display = '';
+    off.style.display = 'none';
+    showToast('Son activé', 'success');
+  } else {
+    btn.classList.remove('active');
+    on.style.display = 'none';
+    off.style.display = '';
+    showToast('Son coupé');
+  }
+}
+
+// ========== INIT ==========
+async function init() {
+  try {
+    // Charge config + tables (pour mapper table_id → nom) en parallèle
+    const [confRes, tableRes] = await Promise.all([
+      supa.from('config').select('*'),
+      supa.from('tables').select('*')
+    ]);
+    if (confRes.error) throw new Error('Config: ' + confRes.error.message);
+    if (tableRes.error) throw new Error('Tables: ' + tableRes.error.message);
+
+    state.config = {};
+    (confRes.data || []).forEach(r => { state.config[r.cle] = r.valeur; });
+    state.tablesById = {};
+    (tableRes.data || []).forEach(t => { state.tablesById[t.id] = t; });
+
+    document.getElementById('resto-name').textContent = state.config.restaurant_nom || 'Restaurant';
+    document.title = (state.config.restaurant_nom || 'Frizz') + ' — Cuisine';
+
+    await loadOrders(true);
+
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('app').style.display = 'block';
+
+    // Audio banner si pas encore activé
+    document.getElementById('audio-banner').classList.remove('hidden');
+
+    // Polling toutes les 3s
+    state.pollInterval = setInterval(() => loadOrders(false), 3000);
+    // Clock toutes les secondes
+    tickClock();
+    state.clockInterval = setInterval(tickClock, 1000);
+    // Re-render des ages toutes les 20s
+    state.ageInterval = setInterval(renderBoard, 20000);
+  } catch (err) {
+    console.error(err);
+    showError('Erreur de chargement', err.message || 'Impossible de joindre la base.');
+  }
+}
+
+async function loadOrders(initial) {
+  try {
+    // On charge les commandes des dernières 8h, en attente / en cours / prêtes
+    const since = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supa.from('commandes')
+      .select('*')
+      .gte('heure', since)
+      .in('statut', ['en_attente', 'en_cours', 'prete'])
+      .order('heure', { ascending: true });
+    if (error) throw error;
+
+    const newOrders = data || [];
+    // Détecter nouvelles commandes "en_attente" pour son
+    if (!initial) {
+      const newInQueue = newOrders.filter(o =>
+        o.statut === 'en_attente' && !state.knownIds.has(o.id)
+      );
+      if (newInQueue.length > 0) {
+        playBing();
+        showToast(newInQueue.length + ' nouvelle' + (newInQueue.length>1?'s':'') + ' commande' + (newInQueue.length>1?'s':''), 'success');
+      }
+    }
+    newOrders.forEach(o => state.knownIds.add(o.id));
+    state.orders = newOrders;
+    renderBoard(initial ? null : 'flash');
+  } catch (err) {
+    console.error('loadOrders:', err);
+  }
+}
+
+function reload() {
+  loadOrders(false);
+  showToast('Rechargé', 'success');
+}
+
+// ========== RENDER ==========
+function renderBoard(flashMode) {
+  const grouped = { en_attente: [], en_cours: [], prete: [] };
+  state.orders.forEach(o => {
+    if (grouped[o.statut]) grouped[o.statut].push(o);
+  });
+
+  // Trier: en_attente du plus ancien au plus récent (FIFO cuisine)
+  // en_cours et prete: idem
+  Object.keys(grouped).forEach(k => {
+    grouped[k].sort((a, b) => new Date(a.heure) - new Date(b.heure));
+  });
+
+  ['en_attente', 'en_cours', 'prete'].forEach(statut => {
+    const arr = grouped[statut];
+    document.getElementById('count-' + statut).textContent = arr.length;
+    const col = document.getElementById('col-' + statut);
+
+    if (arr.length === 0) {
+      col.innerHTML = `
+        <div class="col-empty">
+          <div class="col-empty-icon">
+            ${statut === 'en_attente' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' :
+              statut === 'en_cours' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 13 2 2 4-4"/></svg>' :
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'}
+          </div>
+          <div class="col-empty-text">${statut === 'en_attente' ? "Pas de nouvelle commande" : statut === 'en_cours' ? "Aucune en préparation" : "Rien à servir"}</div>
+        </div>`;
+    } else {
+      col.innerHTML = arr.map(o => renderOrder(o, flashMode)).join('');
+    }
+  });
+}
+
+function renderOrder(o, flashMode) {
+  const table = state.tablesById[o.table_id];
+  const tableName = table ? table.nom : ('Table ' + (o.table_id || '?'));
+  const items = Array.isArray(o.items) ? o.items : [];
+  const totalQte = items.reduce((s, it) => s + (parseInt(it.qte) || 1), 0);
+  const ageMin = ageMinutes(o.heure);
+  const isUrgent = o.statut !== 'prete' && ageMin >= 10;
+  const flashClass = (flashMode === 'flash' && !state.knownIds_renderedOnce) ? 'flash' : '';
+  const isNew = (flashMode === 'flash' && o.statut === 'en_attente' && o._isNew);
+
+  const heureCmd = new Date(o.heure);
+  const hh = String(heureCmd.getHours()).padStart(2,'0');
+  const mm = String(heureCmd.getMinutes()).padStart(2,'0');
+
+  let actionsHtml = '';
+  if (o.statut === 'en_attente') {
+    actionsHtml = `
+      <button class="btn-action btn-primary orange" onclick="updateStatut('${o.id}', 'en_cours')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Démarrer
+      </button>
+      <button class="btn-action btn-secondary" onclick="updateStatut('${o.id}', 'annulee')" title="Annuler">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>`;
+  } else if (o.statut === 'en_cours') {
+    actionsHtml = `
+      <button class="btn-action btn-primary green" onclick="updateStatut('${o.id}', 'prete')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Marquer prête
+      </button>
+      <button class="btn-action btn-secondary" onclick="updateStatut('${o.id}', 'en_attente')" title="Retour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>`;
+  } else if (o.statut === 'prete') {
+    actionsHtml = `
+      <button class="btn-action btn-primary" onclick="updateStatut('${o.id}', 'servie')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l7 7L21 7"/></svg>
+        Servie
+      </button>
+      <button class="btn-action btn-secondary" onclick="updateStatut('${o.id}', 'en_cours')" title="Retour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>`;
+  }
+
+  return `
+    <div class="order ${isNew ? 'flash' : ''}" data-id="${o.id}">
+      <div class="order-head">
+        <div>
+          <div class="order-table">${escapeHtml(tableName)}</div>
+          <div class="order-meta">${escapeHtml(o.personne_nom || 'Client')} · ${totalQte} item${totalQte>1?'s':''} · ${hh}:${mm}</div>
+        </div>
+        <div class="order-time ${isUrgent?'urgent':''}">${ageString(o.heure)}</div>
+      </div>
+      <div class="order-items">
+        ${items.map(it => `
+          <div class="order-item">
+            <div class="order-item-qty">×${parseInt(it.qte) || 1}</div>
+            <div class="order-item-info">
+              <div class="order-item-nom">${escapeHtml(it.nom || '')}</div>
+              ${it.note ? `<div class="order-item-note">${escapeHtml(it.note)}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="order-footer">
+        ${actionsHtml}
+      </div>
+    </div>`;
+}
+
+// ========== ACTIONS ==========
+async function updateStatut(orderId, nouveauStatut) {
+  // Optimistic update
+  const order = state.orders.find(o => o.id === orderId);
+  const oldStatut = order ? order.statut : null;
+  if (order) order.statut = nouveauStatut;
+
+  // Si servie/annulée → on retire de la liste
+  if (nouveauStatut === 'servie' || nouveauStatut === 'annulee') {
+    state.orders = state.orders.filter(o => o.id !== orderId);
+  }
+  renderBoard();
+
+  try {
+    const { error } = await supa.from('commandes').update({ statut: nouveauStatut }).eq('id', orderId);
+    if (error) throw error;
+    if (nouveauStatut === 'en_cours') showToast('Commande démarrée 🍳', 'success');
+    else if (nouveauStatut === 'prete') showToast('Commande prête 🛎', 'success');
+    else if (nouveauStatut === 'servie') showToast('Servie ✓', 'success');
+    else if (nouveauStatut === 'annulee') showToast('Annulée');
+  } catch (err) {
+    // Rollback
+    if (order && oldStatut) order.statut = oldStatut;
+    showToast('Erreur : ' + (err.message || 'mise à jour'), 'error');
+    await loadOrders(false);
+  }
+}
+
+// Démarrer
+init();
+
+// Cleanup
+window.addEventListener('beforeunload', () => {
+  if (state.pollInterval) clearInterval(state.pollInterval);
+  if (state.clockInterval) clearInterval(state.clockInterval);
+  if (state.ageInterval) clearInterval(state.ageInterval);
+});
+</script>
+</body>
+</html>

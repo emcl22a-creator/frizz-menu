@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<title>Menu — Frizz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-elev: #141416;
+    --label: #F5F5F7;
+    --label-2: rgba(245,245,247,0.62);
+    --label-3: rgba(245,245,247,0.42);
+    --label-4: rgba(245,245,247,0.18);
+    --fill-1: rgba(255,255,255,0.06);
+    --fill-2: rgba(255,255,255,0.04);
+    --fill-3: rgba(255,255,255,0.025);
+    --sep: rgba(255,255,255,0.1);
+    --sep-opaque: rgba(255,255,255,0.07);
+    --blue: #0A84FF;
+    --blue-glow: rgba(10,132,255,0.5);
+    --blue-soft: rgba(10,132,255,0.12);
+    --green: #30D158;
+    --green-soft: rgba(48,209,88,0.12);
+    --red: #FF453A;
+    --red-soft: rgba(255,69,58,0.12);
+    --orange: #FF9F0A;
+    --r-sm: 12px;
+    --r: 16px;
+    --r-lg: 20px;
+    --r-xl: 24px;
+    --pill: 100px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *::selection { background: var(--blue); color: #fff; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--label);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
+  input, textarea {
+    font-family: inherit;
+    font-size: 16px;
+    background: var(--fill-2);
+    color: var(--label);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-sm);
+    padding: 14px 16px;
+    width: 100%;
+    transition: all 0.2s var(--ease);
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: rgba(10,132,255,0.5);
+    background: var(--fill-1);
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.12);
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid var(--sep-opaque);
+  }
+  .header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .header-restaurant {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+  }
+  .resto-logo {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+  .resto-info { min-width: 0; flex: 1; }
+  .resto-name {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .resto-table {
+    font-size: 12.5px;
+    color: var(--label-2);
+    margin-top: 2px;
+    font-weight: 500;
+    letter-spacing: -0.013em;
+  }
+  .salon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: var(--pill);
+    background: var(--blue-soft);
+    border: 1px solid rgba(10,132,255,0.3);
+    color: var(--blue);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .salon-badge:hover { background: rgba(10,132,255,0.18); }
+  .salon-badge .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  /* ========== CATEGORY TABS (sticky horizontal scroll) ========== */
+  .cat-bar-wrap {
+    position: sticky;
+    top: 78px;
+    z-index: 20;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--sep-opaque);
+  }
+  .cat-bar {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px 18px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-bar::-webkit-scrollbar { display: none; }
+  .cat-chip {
+    padding: 9px 16px;
+    border-radius: var(--pill);
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-2);
+    white-space: nowrap;
+    transition: all 0.2s var(--ease);
+    letter-spacing: -0.01em;
+  }
+  .cat-chip:hover { color: var(--label); }
+  .cat-chip.active {
+    background: var(--label);
+    border-color: var(--label);
+    color: #000;
+  }
+
+  /* ========== MAIN ========== */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px 18px 140px;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+  }
+
+  /* ========== CATEGORY SECTION ========== */
+  .cat-section {
+    margin-bottom: 36px;
+    scroll-margin-top: 140px;
+  }
+  .cat-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cat-count {
+    font-size: 13px;
+    color: var(--label-3);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+
+  /* ========== PLAT CARD (Uber Eats style: photo dominante) ========== */
+  .plat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .plat {
+    position: relative;
+    background: var(--bg-elev);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    min-height: 130px;
+  }
+  .plat:hover {
+    border-color: var(--sep);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px -16px rgba(0,0,0,0.6);
+  }
+  .plat:active { transform: translateY(0); }
+  .plat.indispo { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+  .plat-text {
+    padding: 18px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .plat-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    margin-bottom: 5px;
+  }
+  .plat-desc {
+    font-size: 13px;
+    color: var(--label-2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .plat-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .plat-price {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--label);
+    font-variant-numeric: tabular-nums;
+  }
+  .plat-add {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--label);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .plat-add:hover { transform: scale(1.08); }
+  .plat-add svg { width: 14px; height: 14px; stroke-width: 2.5; }
+  .plat-add.has-qty {
+    background: var(--blue);
+    color: #fff;
+    width: auto;
+    min-width: 60px;
+    padding: 0 12px;
+    border-radius: var(--pill);
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+  }
+
+  .plat-photo {
+    background: var(--fill-3);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .plat-photo-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--label-4);
+  }
+  .plat-photo-empty svg { width: 32px; height: 32px; }
+  .plat-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 9px;
+    border-radius: var(--pill);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .indispo-badge {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ========== EMPTY STATE ========== */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--label-3);
+  }
+  .empty-icon {
+    width: 60px; height: 60px;
+    margin: 0 auto 20px;
+    border-radius: var(--r);
+    background: var(--fill-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-3);
+  }
+  .empty-icon svg { width: 28px; height: 28px; }
+  .empty-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--label);
+    margin-bottom: 6px;
+    letter-spacing: -0.025em;
+  }
+  .empty p { font-size: 14px; }
+
+  /* ========== CART BAR (sticky bottom) ========== */
+  .cart-bar {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    max-width: 688px;
+    margin: 0 auto;
+    z-index: 50;
+    transform: translateY(140px);
+    transition: transform 0.45s var(--ease-spring);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .cart-bar.show { transform: translateY(0); }
+  .cart-button {
+    background: var(--blue);
+    color: #fff;
+    border-radius: 18px;
+    padding: 14px 18px 14px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow:
+      0 0 32px rgba(10,132,255,0.45),
+      0 14px 40px -8px rgba(10,132,255,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+  }
+  .cart-button:hover { transform: translateY(-2px); }
+  .cart-icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cart-icon svg { width: 18px; height: 18px; }
+  .cart-count {
+    position: absolute;
+    top: -5px; right: -5px;
+    background: #fff;
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 800;
+    min-width: 19px; height: 19px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid var(--blue);
+  }
+  .cart-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .cart-label {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.85;
+    letter-spacing: -0.01em;
+  }
+  .cart-total {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cart-cta {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    padding: 10px 16px;
+    border-radius: var(--pill);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+
+  /* ========== MODAL ========== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-overlay.active {
+    display: flex;
+    animation: overlay-in 0.25s var(--ease-spring);
+  }
+  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--bg-elev);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: modal-in 0.45s var(--ease-spring);
+    box-shadow: 0 -32px 80px rgba(0,0,0,0.5);
+    border-top: 1px solid var(--sep);
+  }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; }
+    .modal { border-radius: 28px; max-height: 88vh; }
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(60px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal::-webkit-scrollbar { width: 6px; }
+  .modal::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 3px; }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--label-4);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  @media (min-width: 600px) {
+    .modal-handle { display: none; }
+  }
+  .modal-photo {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    background: var(--fill-3);
+    background-size: cover;
+    background-position: center;
+  }
+  .modal-photo-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-4);
+  }
+  .modal-photo-empty svg { width: 60px; height: 60px; }
+  .modal-body {
+    padding: 24px 24px 20px;
+  }
+  .modal-name {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .modal-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 16px;
+  }
+  .modal-desc {
+    font-size: 14.5px;
+    color: var(--label-2);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .modal-allergenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .allergene-chip {
+    padding: 5px 10px;
+    border-radius: var(--pill);
+    background: var(--orange);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: capitalize;
+    letter-spacing: -0.01em;
+  }
+  .modal-note-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 9px;
+    margin-top: 4px;
+  }
+  .modal-note {
+    width: 100%;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--r-sm);
+    padding: 12px 14px;
+    color: var(--label);
+    font-size: 14px;
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.5;
+  }
+  .modal-footer {
+    padding: 16px 24px 24px;
+    background: var(--bg-elev);
+    position: sticky;
+    bottom: 0;
+    border-top: 1px solid var(--sep-opaque);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .qty-control {
+    display: flex;
+    align-items: center;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--pill);
+    padding: 4px;
+    flex-shrink: 0;
+  }
+  .qty-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label);
+    transition: all 0.15s var(--ease);
+  }
+  .qty-btn:hover:not(:disabled) { background: var(--fill-1); }
+  .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .qty-btn svg { width: 14px; height: 14px; stroke-width: 2.5; }
+  .qty-value {
+    width: 32px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .modal-add-btn {
+    flex: 1;
+    background: var(--blue);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: var(--pill);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    box-shadow: 0 0 24px rgba(10,132,255,0.4);
+    transition: all 0.2s var(--ease);
+  }
+  .modal-add-btn:hover { transform: translateY(-1px); }
+  .modal-close-x {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: all 0.2s var(--ease);
+  }
+  .modal-close-x:hover { background: rgba(0,0,0,0.75); transform: rotate(90deg); }
+  .modal-close-x svg { width: 16px; height: 16px; }
+
+  /* ========== CART MODAL ========== */
+  .cart-modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--sep-opaque);
+  }
+  .cart-item:last-child { border-bottom: 0; }
+  .cart-item-photo {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: var(--fill-3);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+  .cart-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .cart-item-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+  .cart-item-meta {
+    font-size: 12.5px;
+    color: var(--label-2);
+    font-weight: 500;
+  }
+  .cart-item-meta .person {
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .cart-item-price {
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--label);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .cart-item-remove {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--fill-2);
+    color: var(--label-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease);
+    flex-shrink: 0;
+  }
+  .cart-item-remove:hover { background: var(--red-soft); color: var(--red); }
+  .cart-item-remove svg { width: 12px; height: 12px; }
+  .cart-summary {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--sep);
+  }
+  .cart-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--label-2);
+  }
+  .cart-row.total {
+    font-size: 18px;
+    color: var(--label);
+    font-weight: 800;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--sep-opaque);
+    letter-spacing: -0.025em;
+  }
+  .cart-row .v {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== SALON MODAL (live partagé) ========== */
+  .salon-section { margin-bottom: 22px; }
+  .salon-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--label-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .person-card {
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .person-card.me {
+    border-color: rgba(10,132,255,0.3);
+    background: var(--blue-soft);
+  }
+  .person-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .person-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .person-card.me .person-name::after {
+    content: ' · toi';
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .person-total {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--label);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .person-items {
+    font-size: 13px;
+    color: var(--label-2);
+    line-height: 1.55;
+  }
+  .person-items .it { display: block; padding: 2px 0; }
+
+  /* ========== EMPTY CART ========== */
+  .cart-empty {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--label-3);
+  }
+  .cart-empty p { font-size: 14px; }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: fixed;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%) translateY(140px);
+    background: rgba(22,22,24,0.95);
+    backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid var(--sep);
+    border-radius: var(--pill);
+    padding: 12px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 200;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s var(--ease-spring);
+    letter-spacing: -0.013em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+  .toast.error .toast-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+  /* ========== LOADING ========== */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    z-index: 999;
+  }
+  .loading-screen.hidden { display: none; }
+  .loading-logo {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--blue);
+    text-shadow: 0 0 24px rgba(10,132,255,0.55);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .loading-logo .spark {
+    font-size: 28px;
+    animation: spark-pulse 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(10,132,255,0.95));
+  }
+  @keyframes spark-pulse {
+    0%,100% { opacity: 1; transform: scale(1) rotate(0); }
+    50% { opacity: 0.5; transform: scale(0.7) rotate(180deg); }
+  }
+
+  /* ========== ERROR SCREEN ========== */
+  .error-screen {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+  .error-screen.show { display: flex; }
+  .error-card {
+    text-align: center;
+    max-width: 340px;
+  }
+  .error-icon {
+    width: 68px; height: 68px;
+    margin: 0 auto 22px;
+    border-radius: 20px;
+    background: var(--red-soft);
+    border: 1px solid rgba(255,69,58,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+  }
+  .error-icon svg { width: 32px; height: 32px; }
+  .error-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .error-msg {
+    color: var(--label-2);
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 380px) {
+    .plat { grid-template-columns: 1fr 100px; min-height: 110px; }
+    .plat-text { padding: 14px 14px 12px; }
+    .cat-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-screen" id="loading">
+  <div class="loading-logo">Frizz<span class="spark">✦</span></div>
+</div>
+
+<!-- Error -->
+<div class="error-screen" id="error">
+  <div class="error-card">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h1 class="error-title" id="error-title">Oups</h1>
+    <p class="error-msg" id="error-msg">Cette page n'a pas pu charger.</p>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" style="display:none;">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-restaurant">
+        <div class="resto-logo" id="resto-logo"></div>
+        <div class="resto-info">
+          <div class="resto-name" id="resto-name">—</div>
+          <div class="resto-table" id="resto-table">—</div>
+        </div>
+      </div>
+      <button class="salon-badge" onclick="openSalon()">
+        <span class="dot"></span>
+        <span id="salon-count">Salon</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="cat-bar-wrap" id="cat-bar-wrap">
+    <div class="cat-bar" id="cat-bar"></div>
+  </div>
+
+  <main id="main"></main>
+</div>
+
+<!-- Cart bar -->
+<div class="cart-bar" id="cart-bar" onclick="openCart()">
+  <div class="cart-button">
+    <div class="cart-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>
+      </svg>
+      <span class="cart-count" id="cart-count">0</span>
+    </div>
+    <div class="cart-info">
+      <div class="cart-label">Mon panier</div>
+      <div class="cart-total" id="cart-total">0.00€</div>
+    </div>
+    <span class="cart-cta">Voir →</span>
+  </div>
+</div>
+
+<!-- Modal plat (détail) -->
+<div class="modal-overlay" id="modal-plat">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close-x" onclick="closeModal('modal-plat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-photo" id="m-photo">
+      <div class="modal-photo-empty" id="m-photo-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-name" id="m-name"></div>
+      <div class="modal-price" id="m-price"></div>
+      <div class="modal-desc" id="m-desc"></div>
+      <div class="modal-allergenes" id="m-allerg"></div>
+      <label class="modal-note-label">Note pour le chef</label>
+      <textarea class="modal-note" id="m-note" placeholder="Sans oignons, cuisson saignante…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <div class="qty-control">
+        <button class="qty-btn" id="m-qty-minus" onclick="changeQty(-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14"/></svg>
+        </button>
+        <span class="qty-value" id="m-qty-value">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <button class="modal-add-btn" onclick="addCurrentToCart()">
+        <span id="m-add-text">Ajouter · 0.00€</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal panier -->
+<div class="modal-overlay" id="modal-cart">
+  <div class="modal" style="position:relative;">
+    <div class="modal-handle"></div>
+    <div class="modal-body" style="padding-top: 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px;">
+        <div class="modal-name" style="margin-bottom:0;">Mon panier</div>
+        <button class="modal-close-x" style="position:relative; top:auto; right:auto; background: var(--fill-1);" onclick="closeModal('modal-cart')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="cart-content"></div>
+    </div>
+    <div class="modal-footer" id="cart-footer" style="display:none;">
+      <button class="modal-add-btn" onclick="sendOrder()">
+        <span id="send-btn-text">Envoyer en cuisine · 0.00€</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal salon partagé -->
+<div class="modal-overlay" id="modal-salon">
+  <div class="modal" style="position:relative;">
+    <div class="modal-handle"></div>
+    <div class="modal-body" style="padding-top: 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 6px;">
+        <div class="modal-name" style="margin-bottom:0;">Table</div>
+        <button class="modal-close-x" style="position:relative; top:auto; right:auto; background: var(--fill-1);" onclick="closeModal('modal-salon')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div style="font-size:13.5px; color: var(--label-2); margin-bottom: 22px;">Tout le monde voit les commandes en temps réel.</div>
+      <div id="salon-content"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+// ========== SUPABASE ==========
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ========== STATE ==========
+const params = new URLSearchParams(location.search);
+const TABLE_ID = params.get('table_id') || params.get('table') || '';
+
+const SESSION_KEY = 'frizz_session_' + TABLE_ID;
+const PERSONNE_KEY = 'frizz_personne_' + TABLE_ID;
+const CART_KEY = 'frizz_cart_' + TABLE_ID;
+
+let state = {
+  config: {},
+  table: null,
+  menu: [],
+  cart: [], // [{id, nom, prix, photo_url, qte, note}]
+  currentPlat: null,
+  currentQty: 1,
+  sessionId: '',
+  personneId: '',
+  personneNom: '',
+  allOrders: [], // commandes envoyées (toi + autres)
+  pollInterval: null
+};
+
+// ========== UTILS ==========
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(s) { return escapeHtml(s).replace(/\(/g,'%28').replace(/\)/g,'%29'); }
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+function showError(title, msg) {
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('error-title').textContent = title;
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error').classList.add('show');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
+});
+
+function saveCart() {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(state.cart)); } catch(e){}
+}
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (raw) state.cart = JSON.parse(raw) || [];
+  } catch(e) { state.cart = []; }
+}
+
+// ========== SESSION (table partagée) ==========
+function ensureSession() {
+  // On stocke la session pour cette table localement
+  let sid = '';
+  try { sid = localStorage.getItem(SESSION_KEY) || ''; } catch(e){}
+  if (!sid || (state.table && state.table.session_id && state.table.session_id !== sid)) {
+    // Si la table a une session active, on l'utilise. Sinon on en crée une.
+    if (state.table && state.table.session_id) {
+      sid = state.table.session_id;
+    } else {
+      sid = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    }
+    try { localStorage.setItem(SESSION_KEY, sid); } catch(e){}
+  }
+  state.sessionId = sid;
+
+  // ID de personne (unique pour ce navigateur sur cette table)
+  let pid = '';
+  try { pid = localStorage.getItem(PERSONNE_KEY) || ''; } catch(e){}
+  if (!pid) {
+    pid = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    try { localStorage.setItem(PERSONNE_KEY, pid); } catch(e){}
+  }
+  state.personneId = pid;
+}
+
+async function ensureTableSession() {
+  // Si la table n'a pas de session ouverte, on l'ouvre avec la nôtre
+  if (!state.table) return;
+  if (!state.table.session_id) {
+    try {
+      await supa.from('tables').update({
+        session_id: state.sessionId,
+        statut: 'occupee',
+        heure_ouverture: new Date().toISOString()
+      }).eq('id', TABLE_ID);
+      state.table.session_id = state.sessionId;
+      state.table.statut = 'occupee';
+    } catch (e) { console.error('open session:', e); }
+  }
+}
+
+// ========== INIT ==========
+async function init() {
+  if (!TABLE_ID) {
+    showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');
+    return;
+  }
+  try {
+    // Charger config + table + menu en parallèle
+    const [confRes, tableRes, menuRes] = await Promise.all([
+      supa.from('config').select('*'),
+      supa.from('tables').select('*').eq('id', TABLE_ID).maybeSingle(),
+      supa.from('menu').select('*').order('created_at', { ascending: true })
+    ]);
+
+    if (confRes.error) throw new Error('Config: ' + confRes.error.message);
+    if (tableRes.error) throw new Error('Table: ' + tableRes.error.message);
+    if (menuRes.error) throw new Error('Menu: ' + menuRes.error.message);
+
+    state.config = {};
+    (confRes.data || []).forEach(r => { state.config[r.cle] = r.valeur; });
+
+    state.table = tableRes.data;
+    if (!state.table) {
+      showError('Table introuvable', 'Cette table n\'existe pas dans le système.');
+      return;
+    }
+
+    // Vérifier resto ouvert
+    const isOpen = String(state.config.ouvert).toLowerCase() === 'true';
+    if (!isOpen) {
+      showError('Restaurant fermé', 'Le restaurant n\'accepte pas de commandes pour le moment. Reviens plus tard !');
+      return;
+    }
+
+    state.menu = (menuRes.data || []).map(p => ({
+      id: p.id,
+      categorie: p.categorie || '',
+      nom: p.nom || '',
+      description: p.description || '',
+      prix: parseFloat(p.prix) || 0,
+      photo_url: p.photo_url || '',
+      disponible: p.disponible !== false,
+      allergenes: p.allergenes || ''
+    }));
+
+    ensureSession();
+    await ensureTableSession();
+    await loadOrders();
+    assignPersonneNom();
+    loadCart();
+    renderHeader();
+    renderMenu();
+    renderCart();
+    updateSalonCount();
+
+    // Hide loading, show app
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('app').style.display = 'block';
+
+    // Polling temps réel toutes les 4s
+    state.pollInterval = setInterval(pollOrders, 4000);
+  } catch (err) {
+    console.error(err);
+    showError('Erreur de chargement', err.message || 'Impossible de charger le menu. Vérifie ta connexion.');
+  }
+}
+
+// ========== HEADER ==========
+function renderHeader() {
+  document.getElementById('resto-name').textContent = state.config.restaurant_nom || 'Menu';
+  document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + (state.personneNom || 'Toi');
+  if (state.config.logo_url) {
+    document.getElementById('resto-logo').style.backgroundImage = `url('${state.config.logo_url.replace(/'/g, "\\'")}')`;
+  }
+}
+
+// ========== MENU ==========
+function renderMenu() {
+  const main = document.getElementById('main');
+  const catBar = document.getElementById('cat-bar');
+
+  // Catégories ordonnées
+  const cats = [];
+  const seen = new Set();
+  state.menu.forEach(p => {
+    const c = p.categorie || 'Autres';
+    if (!seen.has(c)) { seen.add(c); cats.push(c); }
+  });
+
+  if (cats.length === 0) {
+    catBar.innerHTML = '';
+    main.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+          </svg>
+        </div>
+        <div class="empty-title">Menu en préparation</div>
+        <p>Le restaurant n'a pas encore ajouté de plats.</p>
+      </div>`;
+    return;
+  }
+
+  catBar.innerHTML = cats.map((c, i) => `<button class="cat-chip ${i===0?'active':''}" data-cat="${escapeAttr(c)}" onclick="scrollToCat('${escapeAttr(c)}')">${escapeHtml(c)}</button>`).join('');
+
+  main.innerHTML = cats.map(c => {
+    const plats = state.menu.filter(p => (p.categorie || 'Autres') === c);
+    return `
+      <section class="cat-section" id="cat-${escapeAttr(c)}">
+        <h2 class="cat-title">${escapeHtml(c)}</h2>
+        <div class="cat-count">${plats.length} plat${plats.length>1?'s':''}</div>
+        <div class="plat-list">
+          ${plats.map(p => renderPlatCard(p)).join('')}
+        </div>
+      </section>`;
+  }).join('');
+
+  // Observer pour mettre à jour le chip actif au scroll
+  setupScrollSpy(cats);
+}
+
+function renderPlatCard(p) {
+  const inCart = state.cart.find(it => it.id === p.id);
+  const qte = inCart ? inCart.qte : 0;
+  return `
+    <div class="plat ${p.disponible?'':'indispo'}" onclick="${p.disponible ? `openPlat('${p.id}')` : ''}">
+      <div class="plat-text">
+        <div>
+          <div class="plat-name">${escapeHtml(p.nom)}</div>
+          <div class="plat-desc">${escapeHtml(p.description || '')}</div>
+        </div>
+        <div class="plat-bottom">
+          <div class="plat-price">${p.prix.toFixed(2)}€</div>
+          <button class="plat-add ${qte>0?'has-qty':''}" onclick="event.stopPropagation(); ${p.disponible?`quickAdd('${p.id}')`:''}">
+            ${qte > 0 ? `${qte} · +` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`}
+          </button>
+        </div>
+      </div>
+      <div class="plat-photo" ${p.photo_url ? `style="background-image: url('${escapeAttr(p.photo_url)}')"` : ''}>
+        ${!p.photo_url ? `<div class="plat-photo-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></div>` : ''}
+        ${!p.disponible ? `<div class="indispo-badge">Épuisé</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function scrollToCat(cat) {
+  const target = document.getElementById('cat-' + cat);
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
+}
+
+let scrollSpyDone = false;
+function setupScrollSpy(cats) {
+  if (scrollSpyDone) return;
+  scrollSpyDone = true;
+  const obs = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+    if (visible.length === 0) return;
+    const id = visible[0].target.id;
+    const cat = id.replace('cat-', '');
+    document.querySelectorAll('.cat-chip').forEach(c => {
+      const isActive = c.dataset.cat === cat;
+      c.classList.toggle('active', isActive);
+      if (isActive) c.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
+  }, { rootMargin: '-160px 0px -50% 0px', threshold: [0, 0.5, 1] });
+  cats.forEach(c => {
+    const el = document.getElementById('cat-' + c);
+    if (el) obs.observe(el);
+  });
+}
+
+// ========== PLAT MODAL ==========
+function openPlat(id) {
+  const p = state.menu.find(x => x.id === id);
+  if (!p) return;
+  state.currentPlat = p;
+  const existing = state.cart.find(it => it.id === id);
+  state.currentQty = existing ? existing.qte : 1;
+
+  document.getElementById('m-name').textContent = p.nom;
+  document.getElementById('m-price').textContent = p.prix.toFixed(2) + '€';
+  document.getElementById('m-desc').textContent = p.description || '';
+  document.getElementById('m-note').value = existing ? (existing.note || '') : '';
+  const photoEl = document.getElementById('m-photo');
+  const photoEmpty = document.getElementById('m-photo-empty');
+  if (p.photo_url) {
+    photoEl.style.backgroundImage = `url('${p.photo_url.replace(/'/g, "\\'")}')`;
+    photoEmpty.style.display = 'none';
+  } else {
+    photoEl.style.backgroundImage = '';
+    photoEmpty.style.display = 'flex';
+  }
+
+  // Allergènes
+  const allerg = (p.allergenes || '').split(',').map(s => s.trim()).filter(Boolean);
+  const allergEl = document.getElementById('m-allerg');
+  if (allerg.length) {
+    allergEl.innerHTML = allerg.map(a => `<span class="allergene-chip">${escapeHtml(a)}</span>`).join('');
+    allergEl.style.display = 'flex';
+  } else {
+    allergEl.style.display = 'none';
+  }
+
+  updateQtyUI();
+  document.getElementById('modal-plat').classList.add('active');
+}
+
+function changeQty(delta) {
+  state.currentQty = Math.max(1, state.currentQty + delta);
+  updateQtyUI();
+}
+
+function updateQtyUI() {
+  document.getElementById('m-qty-value').textContent = state.currentQty;
+  document.getElementById('m-qty-minus').disabled = state.currentQty <= 1;
+  if (state.currentPlat) {
+    const total = state.currentPlat.prix * state.currentQty;
+    document.getElementById('m-add-text').textContent = `Ajouter · ${total.toFixed(2)}€`;
+  }
+}
+
+function quickAdd(id) {
+  const p = state.menu.find(x => x.id === id);
+  if (!p) return;
+  state.currentPlat = p;
+  state.currentQty = 1;
+  document.getElementById('m-note').value = '';
+  addCurrentToCart(true);
+}
+
+function addCurrentToCart(silent) {
+  const p = state.currentPlat;
+  if (!p) return;
+  const note = document.getElementById('m-note') ? document.getElementById('m-note').value.trim() : '';
+  const existing = state.cart.find(it => it.id === p.id && (it.note || '') === note);
+  if (existing) {
+    existing.qte = (silent ? existing.qte + 1 : state.currentQty);
+  } else {
+    state.cart.push({
+      id: p.id,
+      nom: p.nom,
+      prix: p.prix,
+      photo_url: p.photo_url,
+      qte: silent ? 1 : state.currentQty,
+      note
+    });
+  }
+  saveCart();
+  renderMenu();
+  renderCart();
+  closeModal('modal-plat');
+  showToast(`${p.nom} ajouté`, 'success');
+}
+
+// ========== CART ==========
+function renderCart() {
+  const total = state.cart.reduce((s, it) => s + it.prix * it.qte, 0);
+  const count = state.cart.reduce((s, it) => s + it.qte, 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total').textContent = total.toFixed(2) + '€';
+  const bar = document.getElementById('cart-bar');
+  bar.classList.toggle('show', count > 0);
+
+  const content = document.getElementById('cart-content');
+  const footer = document.getElementById('cart-footer');
+  if (count === 0) {
+    content.innerHTML = `<div class="cart-empty"><p>Ton panier est vide.<br>Choisis un plat pour démarrer 🍽</p></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  content.innerHTML = `
+    <div class="cart-modal-list">
+      ${state.cart.map((it, i) => `
+        <div class="cart-item">
+          <div class="cart-item-photo" ${it.photo_url ? `style="background-image: url('${escapeAttr(it.photo_url)}')"` : ''}></div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${escapeHtml(it.nom)}</div>
+            <div class="cart-item-meta">×${it.qte}${it.note?` · <em>${escapeHtml(it.note)}</em>`:''}</div>
+          </div>
+          <div class="cart-item-price">${(it.prix * it.qte).toFixed(2)}€</div>
+          <button class="cart-item-remove" onclick="removeCartItem(${i})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="cart-summary">
+      <div class="cart-row total">
+        <span>Total</span>
+        <span class="v">${total.toFixed(2)}€</span>
+      </div>
+    </div>`;
+  footer.style.display = 'flex';
+  document.getElementById('send-btn-text').textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
+}
+
+function removeCartItem(idx) {
+  state.cart.splice(idx, 1);
+  saveCart();
+  renderMenu();
+  renderCart();
+}
+
+function openCart() { document.getElementById('modal-cart').classList.add('active'); }
+
+async function sendOrder() {
+  if (state.cart.length === 0) return;
+  const btn = document.getElementById('send-btn-text');
+  btn.textContent = 'Envoi…';
+  const total = state.cart.reduce((s, it) => s + it.prix * it.qte, 0);
+  const items = state.cart.map(it => ({
+    id: it.id, nom: it.nom, prix: it.prix, qte: it.qte, note: it.note || ''
+  }));
+  const cmdId = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+  try {
+    const { error } = await supa.from('commandes').insert({
+      id: cmdId,
+      table_id: TABLE_ID,
+      session_id: state.sessionId,
+      personne_id: state.personneId,
+      personne_nom: state.personneNom,
+      items,
+      statut: 'en_attente',
+      heure: new Date().toISOString(),
+      total
+    });
+    if (error) throw error;
+    state.cart = [];
+    saveCart();
+    renderMenu();
+    renderCart();
+    closeModal('modal-cart');
+    showToast('Commande envoyée en cuisine 🍳', 'success');
+    await loadOrders();
+    updateSalonCount();
+  } catch (err) {
+    console.error(err);
+    showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
+    btn.textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
+  }
+}
+
+// ========== SALON (commandes partagées) ==========
+async function loadOrders() {
+  if (!state.sessionId) return;
+  try {
+    const { data, error } = await supa.from('commandes')
+      .select('*')
+      .eq('table_id', TABLE_ID)
+      .eq('session_id', state.sessionId)
+      .order('heure', { ascending: true });
+    if (error) throw error;
+    state.allOrders = data || [];
+  } catch (err) {
+    console.error('loadOrders:', err);
+  }
+}
+
+async function pollOrders() {
+  await loadOrders();
+  updateSalonCount();
+  // Si modal salon ouvert, rerender
+  if (document.getElementById('modal-salon').classList.contains('active')) {
+    renderSalon();
+  }
+}
+
+function assignPersonneNom() {
+  // Récupérer la liste des personnes uniques sur cette session
+  const personIds = [...new Set(state.allOrders.map(o => o.personne_id))];
+  // Si je suis déjà dans la liste, garder mon numéro
+  let myIdx = personIds.indexOf(state.personneId);
+  if (myIdx === -1) {
+    // Je n'ai pas encore commandé → je serai "Personne N+1" basé sur le nombre de personnes existantes
+    myIdx = personIds.length;
+  }
+  state.personneNom = 'Personne ' + (myIdx + 1);
+}
+
+function updateSalonCount() {
+  const personIds = [...new Set(state.allOrders.map(o => o.personne_id))];
+  if (!personIds.includes(state.personneId)) personIds.push(state.personneId);
+  const n = personIds.length;
+  document.getElementById('salon-count').textContent = n + ' à table';
+  // Mettre à jour aussi le sous-titre du resto
+  if (state.table) {
+    assignPersonneNom();
+    document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + state.personneNom;
+  }
+}
+
+function openSalon() {
+  renderSalon();
+  document.getElementById('modal-salon').classList.add('active');
+}
+
+function renderSalon() {
+  const personIds = [...new Set(state.allOrders.map(o => o.personne_id))];
+  if (!personIds.includes(state.personneId)) personIds.push(state.personneId);
+
+  // Grouper les commandes par personne
+  const byPerson = {};
+  personIds.forEach((pid, idx) => {
+    byPerson[pid] = {
+      idx,
+      nom: 'Personne ' + (idx + 1),
+      items: [],
+      total: 0
+    };
+  });
+  state.allOrders.forEach(o => {
+    const p = byPerson[o.personne_id];
+    if (!p) return;
+    (Array.isArray(o.items) ? o.items : []).forEach(it => {
+      p.items.push(it);
+      p.total += (parseFloat(it.prix) || 0) * (parseInt(it.qte) || 1);
+    });
+  });
+
+  const totalTable = Object.values(byPerson).reduce((s, p) => s + p.total, 0);
+  const nbCmds = state.allOrders.length;
+
+  const content = document.getElementById('salon-content');
+  let html = `
+    <div class="salon-section">
+      <div class="salon-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"/><path d="M15 20c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5"/></svg>
+        ${personIds.length} personne${personIds.length>1?'s':''} · ${nbCmds} commande${nbCmds!==1?'s':''}
+      </div>
+      ${Object.values(byPerson).map(p => `
+        <div class="person-card ${state.allOrders.some(o => o.personne_id === personIds[p.idx]) ? '' : ''} ${personIds[p.idx] === state.personneId ? 'me' : ''}">
+          <div class="person-head">
+            <div class="person-name">${escapeHtml(p.nom)}</div>
+            <div class="person-total">${p.total.toFixed(2)}€</div>
+          </div>
+          <div class="person-items">
+            ${p.items.length === 0 ? `<span style="color:var(--label-3);">N'a pas encore commandé</span>` :
+              p.items.map(it => `<span class="it">×${it.qte} ${escapeHtml(it.nom)}${it.note?` · <em style="opacity:0.7;">${escapeHtml(it.note)}</em>`:''}</span>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="display:flex; justify-content:space-between; padding: 16px 0 0; border-top: 1px solid var(--sep); margin-top: 6px;">
+      <div style="font-size: 17px; font-weight: 800; letter-spacing: -0.025em;">Total table</div>
+      <div style="font-size: 17px; font-weight: 800; letter-spacing: -0.025em; font-variant-numeric: tabular-nums;">${totalTable.toFixed(2)}€</div>
+    </div>`;
+  content.innerHTML = html;
+}
+
+// Démarrer
+init();
+
+window.addEventListener('beforeunload', () => {
+  if (state.pollInterval) clearInterval(state.pollInterval);
+});
+</script>
+</body>
+</html>

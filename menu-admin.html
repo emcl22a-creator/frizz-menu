@@ -1883,13 +1883,21 @@ async function loadRestaurant() {
 }
 
 function showTrialBanner(daysLeft) {
+  // On n'affiche le bandeau que si la période d'essai touche à sa fin (≤ 7j) ou est expirée
+  if (daysLeft > 7) {
+    // Si un bandeau existait, on le retire
+    const existing = document.getElementById('trial-banner');
+    if (existing) existing.remove();
+    document.body.style.paddingTop = '';
+    return;
+  }
   let banner = document.getElementById('trial-banner');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'trial-banner';
     banner.style.cssText = `
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: ${daysLeft <= 7 ? 'linear-gradient(90deg, #FF9F0A, #FF6B35)' : 'linear-gradient(90deg, #0A84FF, #5856D6)'};
+      background: ${daysLeft <= 0 ? 'linear-gradient(90deg, #FF453A, #C93635)' : 'linear-gradient(90deg, #FF9F0A, #FF6B35)'};
       color: #fff; padding: 9px 18px; font-size: 13px; font-weight: 700;
       text-align: center; letter-spacing: -0.012em;
       display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -1899,19 +1907,14 @@ function showTrialBanner(daysLeft) {
     document.body.style.paddingTop = '38px';
   }
   if (daysLeft <= 0) {
-    banner.style.background = 'linear-gradient(90deg, #FF453A, #C93635)';
     banner.innerHTML = `
       <span>⚠ Ton mois d'essai est terminé. Active ton abonnement pour continuer.</span>
       <button onclick="alert('La page de paiement Stripe arrive bientôt !')" style="background:#fff; color:#000; border:0; padding:6px 14px; border-radius:100px; font-size:12px; font-weight:800; cursor:pointer;">S'abonner</button>
     `;
-  } else if (daysLeft <= 7) {
+  } else {
     banner.innerHTML = `
       <span>⏰ Plus que ${daysLeft} jour${daysLeft>1?'s':''} d'essai gratuit</span>
       <button onclick="alert('La page de paiement Stripe arrive bientôt !')" style="background:#fff; color:#000; border:0; padding:6px 14px; border-radius:100px; font-size:12px; font-weight:800; cursor:pointer;">S'abonner maintenant</button>
-    `;
-  } else {
-    banner.innerHTML = `
-      <span>✨ Mois d'essai gratuit · ${daysLeft} jours restants</span>
     `;
   }
 }

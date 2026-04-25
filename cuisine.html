@@ -429,6 +429,94 @@
     color: var(--label-3);
   }
 
+  /* ========== ALERTS BAR (Appels serveur) ========== */
+  .alerts-bar {
+    background: linear-gradient(180deg, rgba(255,159,10,0.12) 0%, rgba(255,159,10,0.04) 100%);
+    border-bottom: 1px solid rgba(255,159,10,0.3);
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: none;
+  }
+  .alerts-bar::-webkit-scrollbar { display: none; }
+  .alerts-bar.show { display: flex; }
+  .alerts-bar-inner {
+    display: flex;
+    gap: 10px;
+    padding: 12px 18px;
+    min-width: max-content;
+  }
+  .alert-card {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--orange);
+    border-radius: var(--pill);
+    padding: 10px 16px 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(255,159,10,0.6);
+    animation: alert-pulse 2s ease-in-out infinite;
+    transition: all 0.25s var(--ease);
+  }
+  @keyframes alert-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,159,10,0.6); }
+    50% { box-shadow: 0 0 0 8px rgba(255,159,10,0); }
+  }
+  .alert-icon-wrap {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--orange-soft);
+    border: 1.5px solid rgba(255,159,10,0.5);
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .alert-icon-wrap svg { width: 15px; height: 15px; }
+  .alert-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .alert-table {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .alert-msg {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--label-2);
+    margin-top: 2px;
+  }
+  .alert-time {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    background: var(--orange-soft);
+    padding: 4px 10px;
+    border-radius: var(--pill);
+    margin-left: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .alert-done {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease);
+    margin-left: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 0;
+  }
+  .alert-done:hover { transform: scale(1.08); }
+  .alert-done svg { width: 14px; height: 14px; stroke-width: 2.5; }
+
   /* ========== TOAST ========== */
   .toast {
     position: fixed;
@@ -605,6 +693,9 @@
     </div>
   </header>
 
+  <!-- Bandeau alertes appels serveur -->
+  <div id="alerts-bar" class="alerts-bar"></div>
+
   <!-- Kanban -->
   <div class="board">
     <div class="col" data-statut="en_attente">
@@ -661,7 +752,9 @@ let state = {
   config: {},
   tablesById: {},
   orders: [],
+  appels: [],
   knownIds: new Set(),
+  knownAppelIds: new Set(),
   soundEnabled: true,
   audioCtx: null,
   audioReady: false,
@@ -758,6 +851,32 @@ function playBing() {
   } catch (e) { console.error('bing:', e); }
 }
 
+function playDing() {
+  // Son distinct pour appel serveur : 3 notes plus graves "ding ding ding"
+  if (!state.soundEnabled || !state.audioReady || !state.audioCtx) return;
+  try {
+    const ctx = state.audioCtx;
+    const now = ctx.currentTime;
+    [
+      { freq: 880, start: 0, dur: 0.22 },    // A5
+      { freq: 880, start: 0.28, dur: 0.22 }, // A5
+      { freq: 1108, start: 0.56, dur: 0.4 }  // C#6
+    ].forEach(note => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = note.freq;
+      gain.gain.setValueAtTime(0, now + note.start);
+      gain.gain.linearRampToValueAtTime(0.3, now + note.start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + note.start + note.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + note.start);
+      osc.stop(now + note.start + note.dur + 0.05);
+    });
+  } catch (e) { console.error('ding:', e); }
+}
+
 function toggleSound() {
   state.soundEnabled = !state.soundEnabled;
   const btn = document.getElementById('sound-btn');
@@ -809,7 +928,7 @@ async function init() {
     tickClock();
     state.clockInterval = setInterval(tickClock, 1000);
     // Re-render des ages toutes les 20s
-    state.ageInterval = setInterval(renderBoard, 20000);
+    state.ageInterval = setInterval(() => { renderBoard(); renderAlerts(); }, 20000);
   } catch (err) {
     console.error(err);
     showError('Erreur de chargement', err.message || 'Impossible de joindre la base.');
@@ -818,17 +937,27 @@ async function init() {
 
 async function loadOrders(initial) {
   try {
-    // On charge les commandes des dernières 8h, en attente / en cours / prêtes
+    // Commandes des dernières 8h, en attente / en cours / prêtes
     const since = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
-    const { data, error } = await supa.from('commandes')
-      .select('*')
-      .gte('heure', since)
-      .in('statut', ['en_attente', 'en_cours', 'prete'])
-      .order('heure', { ascending: true });
-    if (error) throw error;
+    const [ordersRes, appelsRes] = await Promise.all([
+      supa.from('commandes')
+        .select('*')
+        .gte('heure', since)
+        .in('statut', ['en_attente', 'en_cours', 'prete'])
+        .order('heure', { ascending: true }),
+      supa.from('appels')
+        .select('*')
+        .eq('statut', 'en_attente')
+        .gte('heure', since)
+        .order('heure', { ascending: true })
+    ]);
+    if (ordersRes.error) throw ordersRes.error;
+    if (appelsRes.error) console.error('appels:', appelsRes.error);
 
-    const newOrders = data || [];
-    // Détecter nouvelles commandes "en_attente" pour son
+    const newOrders = ordersRes.data || [];
+    const newAppels = appelsRes.data || [];
+
+    // Détecter nouvelles commandes pour son
     if (!initial) {
       const newInQueue = newOrders.filter(o =>
         o.statut === 'en_attente' && !state.knownIds.has(o.id)
@@ -837,10 +966,23 @@ async function loadOrders(initial) {
         playBing();
         showToast(newInQueue.length + ' nouvelle' + (newInQueue.length>1?'s':'') + ' commande' + (newInQueue.length>1?'s':''), 'success');
       }
+      // Détecter nouveaux appels pour son distinct
+      const newCalls = newAppels.filter(a => !state.knownAppelIds.has(a.id));
+      if (newCalls.length > 0) {
+        playDing();
+        const tableNames = newCalls.map(a => {
+          const t = state.tablesById[a.table_id];
+          return t ? t.nom : 'Table';
+        }).join(', ');
+        showToast('🔔 Appel : ' + tableNames, 'success');
+      }
     }
     newOrders.forEach(o => state.knownIds.add(o.id));
+    newAppels.forEach(a => state.knownAppelIds.add(a.id));
     state.orders = newOrders;
+    state.appels = newAppels;
     renderBoard();
+    renderAlerts();
   } catch (err) {
     console.error('loadOrders:', err);
   }
@@ -849,6 +991,50 @@ async function loadOrders(initial) {
 function reload() {
   loadOrders(false);
   showToast('Rechargé', 'success');
+}
+
+function renderAlerts() {
+  const bar = document.getElementById('alerts-bar');
+  if (!state.appels || state.appels.length === 0) {
+    bar.classList.remove('show');
+    bar.innerHTML = '';
+    return;
+  }
+  bar.classList.add('show');
+  bar.innerHTML = `
+    <div class="alerts-bar-inner">
+      ${state.appels.map(a => {
+        const t = state.tablesById[a.table_id];
+        const tableName = t ? t.nom : 'Table';
+        return `
+          <div class="alert-card" data-id="${a.id}">
+            <div class="alert-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div class="alert-content">
+              <div class="alert-table">${escapeHtml(tableName)}</div>
+              <div class="alert-msg">${escapeHtml(a.message || 'Demande le serveur')}</div>
+            </div>
+            <span class="alert-time">${ageString(a.heure)}</span>
+            <button class="alert-done" onclick="dismissAlert('${a.id}')" title="Marquer comme traité">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+async function dismissAlert(id) {
+  state.appels = state.appels.filter(a => a.id !== id);
+  renderAlerts();
+  try {
+    const { error } = await supa.from('appels').update({ statut: 'traite' }).eq('id', id);
+    if (error) throw error;
+    showToast('Appel traité ✓', 'success');
+  } catch (err) {
+    showToast('Erreur : ' + err.message, 'error');
+    await loadOrders(false);
+  }
 }
 
 // ========== RENDER ==========

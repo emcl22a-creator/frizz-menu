@@ -689,44 +689,46 @@
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--sep-opaque);
-    border-radius: 18px;
-    padding: 14px 16px;
-    margin: 0 0 18px;
+    border-radius: 22px;
+    padding: 22px 26px;
+    margin: 0 0 26px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 24px;
     flex-wrap: wrap;
   }
   .menu-bar-label {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
+    gap: 9px;
+    font-size: 11.5px;
     font-weight: 700;
     color: var(--label-2);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding-right: 12px;
+    letter-spacing: 0.09em;
+    padding-right: 22px;
     border-right: 1px solid var(--sep);
     flex-shrink: 0;
+    min-height: 38px;
   }
   .menu-bar-pills {
     display: flex;
-    gap: 7px;
+    gap: 12px;
     flex-wrap: wrap;
     flex: 1;
     min-width: 0;
+    align-items: center;
   }
   .menu-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 14px 8px 12px;
+    gap: 10px;
+    padding: 10px 16px 10px 14px;
     border-radius: 100px;
     background: var(--fill-1);
     border: 1.5px solid var(--sep);
     color: var(--label-2);
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s var(--ease);
@@ -739,7 +741,7 @@
     background: rgba(48,209,88,0.14);
     border-color: rgba(48,209,88,0.5);
     color: var(--green);
-    box-shadow: 0 0 14px rgba(48,209,88,0.18);
+    box-shadow: 0 0 16px rgba(48,209,88,0.18);
   }
   .menu-pill.active .pill-dot {
     background: var(--green);
@@ -752,8 +754,16 @@
     background: var(--label-3);
     flex-shrink: 0;
   }
+  .menu-pill .pill-count {
+    opacity: 0.55;
+    font-weight: 500;
+    margin-left: 2px;
+    padding-left: 9px;
+    border-left: 1px solid currentColor;
+    font-size: 12.5px;
+  }
   .menu-pill .pill-edit {
-    width: 18px; height: 18px;
+    width: 22px; height: 22px;
     border-radius: 50%;
     background: rgba(255,255,255,0.06);
     border: 0;
@@ -762,47 +772,169 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-left: 4px;
-    opacity: 0.55;
+    margin-left: 6px;
+    opacity: 0.5;
     transition: all 0.15s;
   }
-  .menu-pill .pill-edit:hover { opacity: 1; background: rgba(255,255,255,0.12); }
-  .menu-pill .pill-edit svg { width: 10px; height: 10px; stroke-width: 2.5; }
+  .menu-pill .pill-edit:hover { opacity: 1; background: rgba(255,255,255,0.14); }
+  .menu-pill .pill-edit svg { width: 11px; height: 11px; stroke-width: 2.5; }
   .menu-pill-empty {
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--label-3);
-    padding: 6px 0;
+    padding: 8px 4px;
     font-weight: 500;
+    font-style: italic;
   }
   .menu-bar-add {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
+    gap: 7px;
+    padding: 10px 18px;
     border-radius: 100px;
     background: var(--blue);
     color: #fff;
     border: 0;
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s var(--ease);
     flex-shrink: 0;
     box-shadow: 0 4px 14px rgba(10,132,255,0.35);
     letter-spacing: -0.012em;
+    margin-left: auto;
   }
   .menu-bar-add:hover { transform: translateY(-1px); }
-  .menu-bar-add svg { width: 12px; height: 12px; }
+  .menu-bar-add svg { width: 13px; height: 13px; }
 
-  @media (max-width: 600px) {
-    .menu-bar { flex-direction: column; align-items: stretch; }
+  @media (max-width: 720px) {
+    .menu-bar { padding: 18px 18px; gap: 16px; }
     .menu-bar-label {
       border-right: 0;
       border-bottom: 1px solid var(--sep);
       padding-right: 0;
-      padding-bottom: 10px;
+      padding-bottom: 12px;
+      width: 100%;
+      min-height: 0;
     }
-    .menu-bar-add { width: 100%; justify-content: center; }
+    .menu-bar-add { width: 100%; justify-content: center; margin-left: 0; }
+  }
+
+  /* MENU MODAL — liste des plats à cocher */
+  .btn-mini {
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    color: var(--label-2);
+    padding: 5px 11px;
+    border-radius: 100px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s var(--ease);
+    letter-spacing: -0.01em;
+  }
+  .btn-mini:hover { background: var(--fill-2); color: var(--label); border-color: var(--sep-strong); }
+
+  .menu-plats-counter {
+    font-size: 12px;
+    color: var(--label-3);
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+
+  .menu-plats-list {
+    background: var(--fill-2);
+    border: 1px solid var(--sep);
+    border-radius: 14px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .menu-plats-list::-webkit-scrollbar { width: 6px; }
+  .menu-plats-list::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 3px; }
+
+  .menu-plats-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--label-3);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .menu-plats-cat {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--label-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 12px 12px 6px;
+  }
+  .menu-plats-cat:first-child { padding-top: 6px; }
+
+  .menu-plat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s var(--ease);
+    user-select: none;
+  }
+  .menu-plat-item:hover { background: var(--fill-1); }
+  .menu-plat-item.checked { background: rgba(10,132,255,0.08); }
+
+  .menu-plat-check {
+    width: 22px; height: 22px;
+    border-radius: 7px;
+    border: 1.5px solid var(--sep-strong);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: var(--fill-1);
+  }
+  .menu-plat-item.checked .menu-plat-check {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .menu-plat-item.checked .menu-plat-check::after {
+    content: '';
+    width: 12px; height: 12px;
+    background: #fff;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+
+  .menu-plat-info { flex: 1; min-width: 0; }
+  .menu-plat-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+  .menu-plat-meta {
+    font-size: 11.5px;
+    color: var(--label-3);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+  .menu-plat-price {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--label-2);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.018em;
+    flex-shrink: 0;
+  }
+  .menu-plat-item.indispo { opacity: 0.5; }
+  .menu-plat-item.indispo .menu-plat-name::after {
+    content: ' · épuisé';
+    color: var(--red);
+    font-weight: 600;
+    font-size: 11px;
   }
 
   /* MENUS CHECKBOXES (dans le formulaire plat) */
@@ -2110,7 +2242,7 @@
 
 <!-- ============ MODAL MENU ============ -->
 <div class="modal-overlay" id="modal-menu">
-  <div class="modal">
+  <div class="modal" style="max-width:580px;">
     <div class="modal-header">
       <h2 class="modal-title" id="modal-menu-title">Nouveau menu</h2>
       <button class="modal-close" onclick="closeModal('modal-menu')">
@@ -2122,7 +2254,22 @@
       <div class="field">
         <label class="field-label">Nom du menu</label>
         <input type="text" id="menu-nom" placeholder="Ex: Menu Midi, Menu Soir, Brunch…">
-        <div class="field-hint">Le nom apparaît côté restaurant uniquement (pas pour le client).</div>
+        <div class="field-hint">Visible côté restaurant uniquement.</div>
+      </div>
+
+      <!-- Liste des plats à cocher -->
+      <div class="field" id="menu-plats-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <label class="field-label" style="margin:0;">Plats dans ce menu</label>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-mini" onclick="menuPlatsSelectAll(true)">Tout cocher</button>
+            <button type="button" class="btn-mini" onclick="menuPlatsSelectAll(false)">Tout décocher</button>
+          </div>
+        </div>
+        <div class="menu-plats-counter" id="menu-plats-counter">0 plat sélectionné</div>
+        <div class="menu-plats-list" id="menu-plats-list">
+          <!-- rempli dynamiquement -->
+        </div>
       </div>
     </div>
     <div class="modal-footer" style="justify-content:space-between;">
@@ -2753,7 +2900,7 @@ function renderMenuBar() {
       <div class="menu-pill ${isActive ? 'active' : ''}" ${onClick} ${titleAttr}>
         <span class="pill-dot"></span>
         <span>${escapeHtml(m.nom)}</span>
-        <span style="opacity:0.6; font-weight:500;">·&nbsp;${count}</span>
+        <span class="pill-count">${count}</span>
         <button class="pill-edit" onclick="event.stopPropagation(); editMenu('${m.id}')" title="Éditer">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
@@ -2763,10 +2910,12 @@ function renderMenuBar() {
 
 function openMenuModal() {
   state.editingMenuId = null;
+  state.menuPlatsSelection = new Set();
   document.getElementById('modal-menu-title').textContent = 'Nouveau menu';
   document.getElementById('menu-id').value = '';
   document.getElementById('menu-nom').value = '';
   document.getElementById('menu-delete-btn').style.display = 'none';
+  renderMenuPlatsList();
   document.getElementById('modal-menu').classList.add('active');
   setTimeout(() => document.getElementById('menu-nom').focus(), 100);
 }
@@ -2775,12 +2924,105 @@ function editMenu(id) {
   const m = state.menus.find(x => x.id === id);
   if (!m) return;
   state.editingMenuId = id;
+  // Initialiser la sélection avec les plats déjà dans ce menu
+  state.menuPlatsSelection = new Set(
+    (state.menu || [])
+      .filter(p => Array.isArray(p.menu_ids) && p.menu_ids.includes(id))
+      .map(p => p.id)
+  );
   document.getElementById('modal-menu-title').textContent = 'Éditer le menu';
   document.getElementById('menu-id').value = id;
   document.getElementById('menu-nom').value = m.nom || '';
   document.getElementById('menu-delete-btn').style.display = 'inline-flex';
+  renderMenuPlatsList();
   document.getElementById('modal-menu').classList.add('active');
   setTimeout(() => document.getElementById('menu-nom').focus(), 100);
+}
+
+function renderMenuPlatsList() {
+  const list = document.getElementById('menu-plats-list');
+  if (!list) return;
+
+  const plats = state.menu || [];
+  if (plats.length === 0) {
+    list.innerHTML = `
+      <div class="menu-plats-empty">
+        Tu n'as pas encore créé de plats.<br>
+        Ferme cette fenêtre, ajoute des plats, puis reviens ici pour les cocher.
+      </div>`;
+    updateMenuPlatsCounter();
+    return;
+  }
+
+  // Ordonner les catégories selon l'ORDER configuré ailleurs (entrées, plats, desserts, etc.)
+  const ORDER = ['entrée','entrées','entree','entrees','plat','plats','plat principal','plats principaux','dessert','desserts','boisson','boissons'];
+  const norm = (s) => (s || '').toLowerCase().trim();
+  const platsByCat = {};
+  plats.forEach(p => {
+    const cat = p.categorie || 'Sans catégorie';
+    if (!platsByCat[cat]) platsByCat[cat] = [];
+    platsByCat[cat].push(p);
+  });
+
+  const orderedCats = Object.keys(platsByCat).sort((a, b) => {
+    const ia = ORDER.findIndex(o => norm(a).startsWith(o));
+    const ib = ORDER.findIndex(o => norm(b).startsWith(o));
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+
+  let html = '';
+  orderedCats.forEach(cat => {
+    html += `<div class="menu-plats-cat">${escapeHtml(cat)}</div>`;
+    platsByCat[cat].forEach(p => {
+      const checked = state.menuPlatsSelection.has(p.id);
+      const indispoClass = p.disponible === false ? ' indispo' : '';
+      const prix = (parseFloat(p.prix) || 0).toFixed(2);
+      html += `
+        <div class="menu-plat-item${checked ? ' checked' : ''}${indispoClass}" onclick="toggleMenuPlat('${p.id}', this)">
+          <div class="menu-plat-check"></div>
+          <div class="menu-plat-info">
+            <div class="menu-plat-name">${escapeHtml(p.nom)}</div>
+            ${p.description ? `<div class="menu-plat-meta">${escapeHtml(p.description.substring(0, 60))}${p.description.length > 60 ? '…' : ''}</div>` : ''}
+          </div>
+          <div class="menu-plat-price">${prix}€</div>
+        </div>`;
+    });
+  });
+
+  list.innerHTML = html;
+  updateMenuPlatsCounter();
+}
+
+function toggleMenuPlat(platId, el) {
+  if (state.menuPlatsSelection.has(platId)) {
+    state.menuPlatsSelection.delete(platId);
+    el.classList.remove('checked');
+  } else {
+    state.menuPlatsSelection.add(platId);
+    el.classList.add('checked');
+  }
+  updateMenuPlatsCounter();
+}
+
+function menuPlatsSelectAll(selectAll) {
+  if (selectAll) {
+    state.menuPlatsSelection = new Set((state.menu || []).map(p => p.id));
+  } else {
+    state.menuPlatsSelection.clear();
+  }
+  // Re-render pour MAJ visuelle
+  renderMenuPlatsList();
+}
+
+function updateMenuPlatsCounter() {
+  const counter = document.getElementById('menu-plats-counter');
+  if (!counter) return;
+  const total = (state.menu || []).length;
+  const sel = state.menuPlatsSelection ? state.menuPlatsSelection.size : 0;
+  counter.textContent = `${sel} plat${sel > 1 ? 's' : ''} sélectionné${sel > 1 ? 's' : ''} sur ${total}`;
 }
 
 async function saveMenu() {
@@ -2788,10 +3030,11 @@ async function saveMenu() {
   if (!nom) { showToast('Le nom est requis', 'error'); return; }
   const existingId = document.getElementById('menu-id').value;
   const id = existingId || ('m_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
-  // Calcul de l'ordre (à la fin si nouveau)
+
   const ordre = existingId
     ? (state.menus.find(m => m.id === existingId)?.ordre ?? state.menus.length)
     : state.menus.length;
+
   const payload = {
     id,
     restaurant_id: RESTO.id,
@@ -2799,12 +3042,48 @@ async function saveMenu() {
     ordre,
     actif: existingId ? (state.menus.find(m => m.id === existingId)?.actif ?? false) : false
   };
+
   try {
-    const { error } = await supa.from('menus').upsert(payload);
-    if (error) throw error;
-    showToast(existingId ? 'Menu modifié' : 'Menu créé', 'success');
+    // 1) Upsert le menu lui-même
+    const { error: errMenu } = await supa.from('menus').upsert(payload);
+    if (errMenu) throw errMenu;
+
+    // 2) Mettre à jour menu_ids sur chaque plat selon la sélection
+    const selection = state.menuPlatsSelection || new Set();
+    const platsToUpdate = [];
+    (state.menu || []).forEach(p => {
+      const currentIds = Array.isArray(p.menu_ids) ? [...p.menu_ids] : [];
+      const wasIn = currentIds.includes(id);
+      const shouldBeIn = selection.has(p.id);
+      if (wasIn !== shouldBeIn) {
+        let newIds;
+        if (shouldBeIn) {
+          newIds = [...currentIds, id];
+        } else {
+          newIds = currentIds.filter(x => x !== id);
+        }
+        platsToUpdate.push({ id: p.id, menu_ids: newIds });
+      }
+    });
+
+    // 3) Persister les plats modifiés
+    for (const upd of platsToUpdate) {
+      const { error: errPlat } = await supa.from('menu')
+        .update({ menu_ids: upd.menu_ids })
+        .eq('id', upd.id)
+        .eq('restaurant_id', RESTO.id);
+      if (errPlat) throw errPlat;
+    }
+
+    showToast(
+      existingId
+        ? `Menu modifié · ${selection.size} plat${selection.size > 1 ? 's' : ''}`
+        : `Menu créé · ${selection.size} plat${selection.size > 1 ? 's' : ''}`,
+      'success'
+    );
     closeModal('modal-menu');
-    await loadMenus();
+    // Recharger menus + plats pour rafraîchir compteurs
+    await Promise.all([loadMenus(), loadMenu()]);
   } catch (err) {
     showToast('Erreur: ' + err.message, 'error');
     console.error(err);
@@ -2818,12 +3097,24 @@ async function deleteMenu() {
   if (!m) return;
   if (!confirm(`Supprimer le menu "${m.nom}" ?\n\nLes plats ne sont pas supprimés mais ne seront plus liés à ce menu.`)) return;
   try {
+    // Retirer le menu_id de tous les plats qui le contiennent
+    const platsAvec = (state.menu || []).filter(p =>
+      Array.isArray(p.menu_ids) && p.menu_ids.includes(id)
+    );
+    for (const p of platsAvec) {
+      const newIds = p.menu_ids.filter(x => x !== id);
+      const { error: errClean } = await supa.from('menu')
+        .update({ menu_ids: newIds })
+        .eq('id', p.id)
+        .eq('restaurant_id', RESTO.id);
+      if (errClean) throw errClean;
+    }
+    // Supprimer le menu
     const { error } = await supa.from('menus').delete().eq('id', id).eq('restaurant_id', RESTO.id);
     if (error) throw error;
     showToast('Menu supprimé', 'success');
     closeModal('modal-menu');
-    await loadMenus();
-    await loadMenu(); // recharger les plats pour mettre à jour les compteurs
+    await Promise.all([loadMenus(), loadMenu()]);
   } catch (err) {
     showToast('Erreur: ' + err.message, 'error');
   }

@@ -192,6 +192,81 @@
     color: #000;
   }
 
+  /* ========== FILTRES RÉGIMES ========== */
+  .filter-regimes-wrap {
+    position: sticky;
+    top: 134px;
+    z-index: 19;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--sep-opaque);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 10px 18px;
+    padding: 7px 13px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    border-radius: var(--pill);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--label-2);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    letter-spacing: -0.012em;
+  }
+  .filter-toggle:hover { color: var(--label); }
+  .filter-toggle.has-active {
+    background: rgba(48,209,88,0.14);
+    border-color: rgba(48,209,88,0.5);
+    color: var(--green);
+  }
+  .filter-count {
+    background: var(--green);
+    color: #000;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 100px;
+    min-width: 18px;
+    text-align: center;
+  }
+  .filter-chips {
+    padding: 0 18px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    animation: filter-in 0.25s var(--ease-spring) both;
+  }
+  @keyframes filter-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .filter-chip {
+    padding: 7px 12px;
+    background: var(--fill-1);
+    border: 1.5px solid var(--sep-opaque);
+    border-radius: var(--pill);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--label-2);
+    cursor: pointer;
+    transition: all 0.15s var(--ease);
+    letter-spacing: -0.01em;
+    user-select: none;
+  }
+  .filter-chip:hover { color: var(--label); }
+  .filter-chip.active {
+    background: rgba(48,209,88,0.14);
+    border-color: rgba(48,209,88,0.5);
+    color: var(--green);
+  }
+
   /* ========== MAIN ========== */
   main {
     max-width: 720px;
@@ -410,6 +485,90 @@
   .empty p { font-size: 14px; }
 
   /* ========== CART BAR (sticky bottom) ========== */
+  /* TIMER BAR — commande en cours côté client */
+  .timer-bar {
+    position: fixed;
+    bottom: 88px;
+    left: 16px;
+    right: 16px;
+    max-width: 688px;
+    margin: 0 auto;
+    z-index: 49;
+    background: linear-gradient(135deg, rgba(10,132,255,0.95) 0%, rgba(0,113,227,0.95) 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow:
+      0 0 28px rgba(10,132,255,0.5),
+      0 8px 24px rgba(0,0,0,0.3);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.18);
+    animation: timer-in 0.4s var(--ease-spring) both;
+    overflow: hidden;
+  }
+  .timer-bar.ready {
+    background: linear-gradient(135deg, rgba(48,209,88,0.95) 0%, rgba(40,180,75,0.95) 100%);
+    box-shadow: 0 0 28px rgba(48,209,88,0.55), 0 8px 24px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.25);
+  }
+  @keyframes timer-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .timer-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .timer-icon svg { width: 20px; height: 20px; }
+  .timer-bar:not(.ready) .timer-icon svg {
+    animation: timer-tick 2s ease-in-out infinite;
+  }
+  @keyframes timer-tick {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(8deg); }
+  }
+  .timer-text {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.25;
+  }
+  .timer-label {
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: -0.018em;
+  }
+  .timer-sub {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.82);
+    margin-top: 2px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .timer-pulse {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
+    animation: timer-pulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(255,255,255,0.8);
+  }
+  @keyframes timer-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+  /* Décaler le cart-bar quand le timer est visible */
+  body.has-timer .cart-bar.show { transform: translateY(0); }
+  body.has-timer .fab-help { bottom: 168px; }
+
   .cart-bar {
     position: fixed;
     bottom: 16px;
@@ -1079,6 +1238,16 @@
     <div class="cat-bar" id="cat-bar"></div>
   </div>
 
+  <!-- Filtres régimes -->
+  <div class="filter-regimes-wrap" id="filter-regimes-wrap" style="display:none;">
+    <button class="filter-toggle" onclick="toggleFilterRegimes()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      <span>Filtres</span>
+      <span class="filter-count" id="filter-count" style="display:none;">0</span>
+    </button>
+    <div class="filter-chips" id="filter-chips" style="display:none;"></div>
+  </div>
+
   <main id="main"></main>
 </div>
 
@@ -1097,6 +1266,18 @@
     </div>
     <span class="cart-cta">Voir →</span>
   </div>
+</div>
+
+<!-- Bandeau Timer commande en cours -->
+<div class="timer-bar" id="timer-bar" style="display:none;">
+  <div class="timer-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  </div>
+  <div class="timer-text">
+    <div class="timer-label" id="timer-label">Ta commande arrive bientôt</div>
+    <div class="timer-sub" id="timer-sub">En cuisine</div>
+  </div>
+  <div class="timer-pulse"></div>
 </div>
 
 <!-- Bouton flottant Appeler serveur -->
@@ -1257,7 +1438,8 @@ let state = {
   personneId: '',
   personneNom: '',
   allOrders: [], // commandes envoyées (toi + autres)
-  pollInterval: null
+  pollInterval: null,
+  activeRegimeFilters: new Set() // filtres régimes activés
 };
 
 // ========== UTILS ==========
@@ -1460,6 +1642,12 @@ function renderMenu() {
   const main = document.getElementById('main');
   const catBar = document.getElementById('cat-bar');
 
+  // Render barre de filtres régimes
+  renderFilterRegimes();
+
+  // Filtrer les plats selon régimes actifs
+  const filtered = applyRegimeFilters(state.menu);
+
   // Catégories ordonnées selon ordre logique d'un menu
   const ORDER = ['entrées', 'entrees', 'starters', 'apéritifs', 'aperitifs', 'tapas',
                  'plats', 'plat', 'mains', 'pizzas', 'pâtes', 'pates', 'burgers', 'salades', 'viandes', 'poissons',
@@ -1471,7 +1659,7 @@ function renderMenu() {
     return idx === -1 ? 999 : idx;
   }
   const catsSet = new Set();
-  state.menu.forEach(p => catsSet.add(p.categorie || 'Autres'));
+  filtered.forEach(p => catsSet.add(p.categorie || 'Autres'));
   const cats = [...catsSet].sort((a, b) => {
     const ra = catRank(a), rb = catRank(b);
     if (ra !== rb) return ra - rb;
@@ -1480,6 +1668,7 @@ function renderMenu() {
 
   if (cats.length === 0) {
     catBar.innerHTML = '';
+    const isFiltered = state.activeRegimeFilters.size > 0;
     main.innerHTML = `
       <div class="empty">
         <div class="empty-icon">
@@ -1488,8 +1677,8 @@ function renderMenu() {
             <path d="M8 8h8M8 12h8M8 16h5"/>
           </svg>
         </div>
-        <div class="empty-title">Menu en préparation</div>
-        <p>Le restaurant n'a pas encore ajouté de plats.</p>
+        <div class="empty-title">${isFiltered ? 'Aucun plat ne correspond' : 'Menu en préparation'}</div>
+        <p>${isFiltered ? 'Essaie de retirer un filtre pour voir plus de plats.' : 'Le restaurant n\'a pas encore ajouté de plats.'}</p>
       </div>`;
     return;
   }
@@ -1497,7 +1686,7 @@ function renderMenu() {
   catBar.innerHTML = cats.map((c, i) => `<button class="cat-chip ${i===0?'active':''}" data-cat="${escapeAttr(c)}" onclick="scrollToCat('${escapeAttr(c)}')">${escapeHtml(c)}</button>`).join('');
 
   main.innerHTML = cats.map(c => {
-    const plats = state.menu.filter(p => (p.categorie || 'Autres') === c);
+    const plats = filtered.filter(p => (p.categorie || 'Autres') === c);
     return `
       <section class="cat-section" id="cat-${escapeAttr(c)}">
         <h2 class="cat-title">${escapeHtml(c)}</h2>
@@ -1510,6 +1699,85 @@ function renderMenu() {
 
   // Observer pour mettre à jour le chip actif au scroll
   setupScrollSpy(cats);
+}
+
+// ========== FILTRES RÉGIMES ==========
+const REGIME_LABELS = {
+  vegetarien: '🥬 Végétarien',
+  vegan: '🌱 Vegan',
+  sans_gluten: '🌾 Sans gluten',
+  sans_lactose: '🥛 Sans lactose',
+  halal: '☪ Halal',
+  casher: '✡ Casher'
+};
+
+function applyRegimeFilters(plats) {
+  if (!state.activeRegimeFilters || state.activeRegimeFilters.size === 0) return plats;
+  return plats.filter(p => {
+    const r = Array.isArray(p.regimes) ? p.regimes : [];
+    // Le plat doit avoir TOUS les régimes filtrés (ET logique)
+    for (const filter of state.activeRegimeFilters) {
+      if (!r.includes(filter)) return false;
+    }
+    return true;
+  });
+}
+
+function renderFilterRegimes() {
+  const wrap = document.getElementById('filter-regimes-wrap');
+  const chipsBox = document.getElementById('filter-chips');
+  const toggle = document.querySelector('.filter-toggle');
+  const countEl = document.getElementById('filter-count');
+  if (!wrap || !chipsBox) return;
+
+  // Détecter quels régimes existent dans le menu (au moins un plat les a)
+  const availableRegimes = new Set();
+  (state.menu || []).forEach(p => {
+    if (Array.isArray(p.regimes)) {
+      p.regimes.forEach(r => availableRegimes.add(r));
+    }
+  });
+
+  if (availableRegimes.size === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+
+  // Compteur
+  const activeCount = state.activeRegimeFilters.size;
+  if (activeCount > 0) {
+    countEl.style.display = 'inline-block';
+    countEl.textContent = activeCount;
+    toggle.classList.add('has-active');
+  } else {
+    countEl.style.display = 'none';
+    toggle.classList.remove('has-active');
+  }
+
+  // Chips
+  const order = ['vegetarien','vegan','sans_gluten','sans_lactose','halal','casher'];
+  chipsBox.innerHTML = order
+    .filter(r => availableRegimes.has(r))
+    .map(r => {
+      const isActive = state.activeRegimeFilters.has(r);
+      return `<button class="filter-chip ${isActive?'active':''}" onclick="toggleRegimeFilter('${r}')">${REGIME_LABELS[r]}</button>`;
+    }).join('');
+}
+
+function toggleFilterRegimes() {
+  const chipsBox = document.getElementById('filter-chips');
+  if (!chipsBox) return;
+  chipsBox.style.display = chipsBox.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleRegimeFilter(regime) {
+  if (state.activeRegimeFilters.has(regime)) {
+    state.activeRegimeFilters.delete(regime);
+  } else {
+    state.activeRegimeFilters.add(regime);
+  }
+  renderMenu();
 }
 
 function renderPlatCard(p) {
@@ -1831,11 +2099,83 @@ async function loadOrders() {
 async function pollOrders() {
   await loadOrders();
   updateSalonCount();
+  updateTimerBar();
   // Si modal salon ouvert, rerender
   if (document.getElementById('modal-salon').classList.contains('active')) {
     renderSalon();
   }
 }
+
+// ============ TIMER COMMANDE ============
+// Affiche un bandeau "Ta commande arrive dans X min" si une de tes commandes est en cours
+function updateTimerBar() {
+  const bar = document.getElementById('timer-bar');
+  if (!bar) return;
+  const labelEl = document.getElementById('timer-label');
+  const subEl = document.getElementById('timer-sub');
+
+  // Mes commandes dans cette session (en cours ou prêtes)
+  const mine = (state.allOrders || []).filter(o =>
+    o.personne_id === state.personneId &&
+    (o.statut === 'en_cours' || o.statut === 'prete')
+  );
+
+  if (mine.length === 0) {
+    bar.style.display = 'none';
+    document.body.classList.remove('has-timer');
+    return;
+  }
+
+  // Trier par priorité : prête > en_cours
+  const prete = mine.find(o => o.statut === 'prete');
+  const enCours = mine.find(o => o.statut === 'en_cours');
+
+  bar.style.display = 'flex';
+  document.body.classList.add('has-timer');
+
+  if (prete) {
+    // Commande prête → bandeau vert
+    bar.classList.add('ready');
+    labelEl.textContent = '🛎 Ta commande est prête !';
+    subEl.textContent = mine.length > 1 ? 'Le serveur arrive · ' + (mine.length-1) + ' autre(s) en cours' : 'Le serveur arrive';
+    return;
+  }
+
+  // Sinon : en cours → bandeau bleu avec timer
+  bar.classList.remove('ready');
+
+  if (!enCours.heure_demarrage) {
+    // Démarrée mais pas de timer (cas où le serveur a skip le prompt)
+    labelEl.textContent = 'Ta commande est en préparation';
+    subEl.textContent = 'Bientôt servie';
+    return;
+  }
+
+  const startMs = new Date(enCours.heure_demarrage).getTime();
+  const elapsed = Math.floor((Date.now() - startMs) / 60000); // minutes écoulées
+  const estimated = parseInt(enCours.temps_estime_min) || 0;
+
+  if (estimated > 0) {
+    const remaining = Math.max(0, estimated - elapsed);
+    if (remaining === 0) {
+      labelEl.textContent = 'Plus que quelques instants…';
+      subEl.textContent = 'Le chef finalise ta commande';
+    } else if (remaining === 1) {
+      labelEl.textContent = 'Plus qu\'1 minute !';
+      subEl.textContent = 'Ta commande arrive';
+    } else {
+      labelEl.textContent = `Ta commande arrive dans ${remaining} min`;
+      subEl.textContent = 'En cuisine · ' + (estimated - remaining) + '/' + estimated + ' min écoulées';
+    }
+  } else {
+    // Pas de temps estimé saisi → on affiche juste le temps écoulé
+    labelEl.textContent = 'Ta commande est en préparation';
+    subEl.textContent = elapsed === 0 ? 'Démarrée à l\'instant' : 'Démarrée il y a ' + elapsed + ' min';
+  }
+}
+
+// Tick toutes les 30s pour mettre à jour le compte à rebours sans recharger les commandes
+setInterval(updateTimerBar, 30000);
 
 function assignPersonneNom() {
   // Récupérer la liste des personnes uniques sur cette session

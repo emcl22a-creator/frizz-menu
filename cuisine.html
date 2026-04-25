@@ -242,21 +242,23 @@
     border: 1px solid var(--sep);
     border-radius: var(--r-lg);
     overflow: hidden;
-    transition: all 0.3s var(--ease);
-    animation: card-in 0.4s var(--ease-spring) both;
+    transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .order.is-new {
+    animation: card-in 0.5s var(--ease-spring) both;
   }
   @keyframes card-in {
     from { opacity: 0; transform: translateY(20px) scale(0.96); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
   .order.flash {
-    animation: flash 1.2s ease-out, card-in 0.4s var(--ease-spring);
+    animation: flash 1.4s ease-out 1;
   }
   @keyframes flash {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(10,132,255,0); border-color: var(--sep); }
-    50% { box-shadow: 0 0 0 4px rgba(10,132,255,0.4); border-color: var(--blue); }
+    0% { box-shadow: 0 0 0 0 rgba(10,132,255,0.6); border-color: var(--blue); }
+    100% { box-shadow: 0 0 0 0 rgba(10,132,255,0); border-color: var(--sep); }
   }
-  .order:hover { transform: translateY(-2px); border-color: var(--sep-strong); }
+  .order:hover { border-color: var(--sep-strong); transform: translateY(-2px); }
 
   .order-head {
     display: flex;
@@ -838,7 +840,7 @@ async function loadOrders(initial) {
     }
     newOrders.forEach(o => state.knownIds.add(o.id));
     state.orders = newOrders;
-    renderBoard(initial ? null : 'flash');
+    renderBoard();
   } catch (err) {
     console.error('loadOrders:', err);
   }
@@ -850,14 +852,13 @@ function reload() {
 }
 
 // ========== RENDER ==========
-function renderBoard(flashMode) {
+function renderBoard() {
   const grouped = { en_attente: [], en_cours: [], prete: [] };
   state.orders.forEach(o => {
     if (grouped[o.statut]) grouped[o.statut].push(o);
   });
 
-  // Trier: en_attente du plus ancien au plus récent (FIFO cuisine)
-  // en_cours et prete: idem
+  // Trier: FIFO (du plus ancien au plus récent)
   Object.keys(grouped).forEach(k => {
     grouped[k].sort((a, b) => new Date(a.heure) - new Date(b.heure));
   });
@@ -868,30 +869,69 @@ function renderBoard(flashMode) {
     const col = document.getElementById('col-' + statut);
 
     if (arr.length === 0) {
-      col.innerHTML = `
-        <div class="col-empty">
-          <div class="col-empty-icon">
-            ${statut === 'en_attente' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' :
-              statut === 'en_cours' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 13 2 2 4-4"/></svg>' :
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'}
-          </div>
-          <div class="col-empty-text">${statut === 'en_attente' ? "Pas de nouvelle commande" : statut === 'en_cours' ? "Aucune en préparation" : "Rien à servir"}</div>
-        </div>`;
-    } else {
-      col.innerHTML = arr.map(o => renderOrder(o, flashMode)).join('');
+      // Empty state seulement si pas déjà affiché
+      if (!col.querySelector('.col-empty')) {
+        col.innerHTML = `
+          <div class="col-empty">
+            <div class="col-empty-icon">
+              ${statut === 'en_attente' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' :
+                statut === 'en_cours' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 13 2 2 4-4"/></svg>' :
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'}
+            </div>
+            <div class="col-empty-text">${statut === 'en_attente' ? "Pas de nouvelle commande" : statut === 'en_cours' ? "Aucune en préparation" : "Rien à servir"}</div>
+          </div>`;
+      }
+      return;
     }
+
+    // Si l'empty state est là, on le retire
+    const empty = col.querySelector('.col-empty');
+    if (empty) col.innerHTML = '';
+
+    // Set des IDs attendus dans cette colonne
+    const expectedIds = new Set(arr.map(o => o.id));
+    // Retirer les cards qui ne devraient plus être là
+    [...col.children].forEach(node => {
+      const id = node.dataset.id;
+      if (id && !expectedIds.has(id)) node.remove();
+    });
+
+    // Ajouter / mettre à jour les cards dans le bon ordre
+    arr.forEach((o, idx) => {
+      let existing = col.querySelector(`[data-id="${o.id}"]`);
+      if (existing) {
+        // Mise à jour des champs dynamiques (âge, urgence) sans recréer la card
+        const ageEl = existing.querySelector('.order-time');
+        if (ageEl) {
+          ageEl.textContent = ageString(o.heure);
+          const isUrgent = o.statut !== 'prete' && ageMinutes(o.heure) >= 10;
+          ageEl.classList.toggle('urgent', isUrgent);
+        }
+        // Vérifier que la card est à la bonne position
+        const currentChildren = [...col.children];
+        if (currentChildren[idx] !== existing) {
+          col.insertBefore(existing, currentChildren[idx] || null);
+        }
+      } else {
+        // Nouvelle card → on la crée avec animation
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = renderOrder(o);
+        const newCard = wrapper.firstElementChild;
+        newCard.classList.add('is-new');
+        const currentChildren = [...col.children];
+        col.insertBefore(newCard, currentChildren[idx] || null);
+      }
+    });
   });
 }
 
-function renderOrder(o, flashMode) {
+function renderOrder(o) {
   const table = state.tablesById[o.table_id];
   const tableName = table ? table.nom : ('Table ' + (o.table_id || '?'));
   const items = Array.isArray(o.items) ? o.items : [];
   const totalQte = items.reduce((s, it) => s + (parseInt(it.qte) || 1), 0);
   const ageMin = ageMinutes(o.heure);
   const isUrgent = o.statut !== 'prete' && ageMin >= 10;
-  const flashClass = (flashMode === 'flash' && !state.knownIds_renderedOnce) ? 'flash' : '';
-  const isNew = (flashMode === 'flash' && o.statut === 'en_attente' && o._isNew);
 
   const heureCmd = new Date(o.heure);
   const hh = String(heureCmd.getHours()).padStart(2,'0');
@@ -928,7 +968,7 @@ function renderOrder(o, flashMode) {
   }
 
   return `
-    <div class="order ${isNew ? 'flash' : ''}" data-id="${o.id}">
+    <div class="order" data-id="${o.id}">
       <div class="order-head">
         <div>
           <div class="order-table">${escapeHtml(tableName)}</div>

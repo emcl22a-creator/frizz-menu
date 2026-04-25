@@ -297,19 +297,46 @@
     transition: all 0.2s var(--ease);
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border: 0;
+    cursor: pointer;
   }
   .plat-add:hover { transform: scale(1.08); }
   .plat-add svg { width: 14px; height: 14px; stroke-width: 2.5; }
-  .plat-add.has-qty {
+
+  /* Quantity control inline (when item is in cart) */
+  .plat-qty-control {
+    display: inline-flex;
+    align-items: center;
     background: var(--blue);
-    color: #fff;
-    width: auto;
-    min-width: 60px;
-    padding: 0 12px;
     border-radius: var(--pill);
-    font-size: 14px;
-    font-weight: 700;
+    padding: 3px;
     box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+  }
+  .plat-qty-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease);
+    border: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .plat-qty-btn:hover { background: rgba(255,255,255,0.3); }
+  .plat-qty-btn:active { transform: scale(0.92); }
+  .plat-qty-btn svg { width: 12px; height: 12px; stroke-width: 2.5; }
+  .plat-qty-num {
+    min-width: 24px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    padding: 0 4px;
+    letter-spacing: -0.02em;
   }
 
   .plat-photo {
@@ -1295,9 +1322,21 @@ function renderPlatCard(p) {
         </div>
         <div class="plat-bottom">
           <div class="plat-price">${p.prix.toFixed(2)}€</div>
-          <button class="plat-add ${qte>0?'has-qty':''}" onclick="event.stopPropagation(); ${p.disponible?`quickAdd('${p.id}')`:''}">
-            ${qte > 0 ? `${qte} · +` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`}
-          </button>
+          ${qte > 0 ? `
+            <div class="plat-qty-control" onclick="event.stopPropagation();">
+              <button class="plat-qty-btn" onclick="event.stopPropagation(); decrementPlat('${p.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14"/></svg>
+              </button>
+              <span class="plat-qty-num">${qte}</span>
+              <button class="plat-qty-btn" onclick="event.stopPropagation(); incrementPlat('${p.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+          ` : `
+            <button class="plat-add" onclick="event.stopPropagation(); ${p.disponible?`quickAdd('${p.id}')`:''}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          `}
         </div>
       </div>
       <div class="plat-photo" ${p.photo_url ? `style="background-image: url('${escapeAttr(p.photo_url)}')"` : ''}>
@@ -1305,6 +1344,30 @@ function renderPlatCard(p) {
         ${!p.disponible ? `<div class="indispo-badge">Épuisé</div>` : ''}
       </div>
     </div>`;
+}
+
+function incrementPlat(id) {
+  const item = state.cart.find(it => it.id === id);
+  if (item) {
+    item.qte += 1;
+    saveCart();
+    renderMenu();
+    renderCart();
+  } else {
+    quickAdd(id);
+  }
+}
+
+function decrementPlat(id) {
+  const idx = state.cart.findIndex(it => it.id === id);
+  if (idx === -1) return;
+  state.cart[idx].qte -= 1;
+  if (state.cart[idx].qte <= 0) {
+    state.cart.splice(idx, 1);
+  }
+  saveCart();
+  renderMenu();
+  renderCart();
 }
 
 function scrollToCat(cat) {

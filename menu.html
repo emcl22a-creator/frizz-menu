@@ -124,6 +124,38 @@
     font-weight: 500;
     letter-spacing: -0.013em;
   }
+  /* Header actions group (help button + salon badge) */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .help-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--fill-2);
+    border: 1px solid var(--sep-opaque);
+    color: var(--label-2);
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .help-btn:hover {
+    background: var(--blue-soft);
+    color: var(--blue);
+    border-color: rgba(10,132,255,0.4);
+    transform: scale(1.05);
+  }
+  .help-btn span { display: block; line-height: 1; padding-bottom: 1px; }
+
   .salon-badge {
     display: inline-flex;
     align-items: center;
@@ -1190,6 +1222,170 @@
     line-height: 1.55;
   }
 
+  /* ========== WELCOME MODAL (popup d'accueil) ========== */
+  .welcome-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: welcome-overlay-in 0.3s var(--ease) both;
+  }
+  .welcome-overlay.show { display: flex; }
+  @keyframes welcome-overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .welcome-card {
+    width: 100%;
+    max-width: 420px;
+    background:
+      linear-gradient(135deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.02) 60%, transparent 100%),
+      rgba(28,28,30,0.95);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    padding: 36px 28px 28px;
+    text-align: center;
+    box-shadow:
+      0 0 60px rgba(10,132,255,0.25),
+      0 24px 60px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: welcome-card-in 0.5s var(--ease-spring) both;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  @keyframes welcome-card-in {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .welcome-emoji {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 14px;
+    animation: welcome-emoji-bounce 0.8s var(--ease-spring) 0.2s both;
+  }
+  @keyframes welcome-emoji-bounce {
+    0% { opacity: 0; transform: scale(0.5); }
+    60% { transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .welcome-title {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--label);
+    margin: 0 0 6px;
+    line-height: 1.1;
+  }
+  .welcome-sub {
+    font-size: 15.5px;
+    color: var(--label-2);
+    margin: 0 0 28px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .welcome-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .welcome-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    animation: welcome-step-in 0.5s var(--ease-spring) both;
+  }
+  .welcome-step:nth-child(1) { animation-delay: 0.25s; }
+  .welcome-step:nth-child(2) { animation-delay: 0.35s; }
+  .welcome-step:nth-child(3) { animation-delay: 0.45s; }
+  @keyframes welcome-step-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .welcome-step-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+    line-height: 1;
+  }
+  .welcome-step-content { flex: 1; min-width: 0; }
+  .welcome-step-title {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: var(--label);
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .welcome-step-desc {
+    font-size: 13.5px;
+    color: var(--label-2);
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .welcome-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    box-shadow:
+      0 0 32px rgba(10,132,255,0.45),
+      0 6px 20px rgba(10,132,255,0.4);
+    letter-spacing: -0.018em;
+    animation: welcome-btn-in 0.5s var(--ease-spring) 0.55s both;
+  }
+  @keyframes welcome-btn-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .welcome-btn:hover { transform: translateY(-1px); }
+  .welcome-btn:active { transform: translateY(0); }
+  .welcome-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  @media (max-width: 380px) {
+    .welcome-card { padding: 30px 22px 24px; border-radius: 24px; }
+    .welcome-emoji { font-size: 48px; }
+    .welcome-title { font-size: 26px; }
+    .welcome-sub { font-size: 14.5px; }
+    .welcome-step { padding: 12px 14px; gap: 12px; }
+    .welcome-step-num { width: 34px; height: 34px; font-size: 15px; }
+    .welcome-step-title { font-size: 15.5px; }
+    .welcome-step-desc { font-size: 13px; }
+  }
+
   /* ========== RESPONSIVE ========== */
   @media (max-width: 380px) {
     .plat { grid-template-columns: 1fr 100px; min-height: 110px; }
@@ -1227,12 +1423,55 @@
           <div class="resto-table" id="resto-table">—</div>
         </div>
       </div>
-      <button class="salon-badge" onclick="openSalon()">
-        <span class="dot"></span>
-        <span id="salon-count">Salon</span>
-      </button>
+      <div class="header-actions">
+        <button class="help-btn" onclick="openWelcomeModal()" aria-label="Aide" title="Comment ça marche ?">
+          <span>?</span>
+        </button>
+        <button class="salon-badge" onclick="openSalon()">
+          <span class="dot"></span>
+          <span id="salon-count">Salon</span>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- Popup d'accueil — explique comment commander -->
+  <div class="welcome-overlay" id="welcome-overlay">
+    <div class="welcome-card">
+      <div class="welcome-emoji">🍽️</div>
+      <h1 class="welcome-title">Bienvenue !</h1>
+      <p class="welcome-sub">Voici comment commander en 3 étapes</p>
+
+      <div class="welcome-steps">
+        <div class="welcome-step">
+          <div class="welcome-step-num">1</div>
+          <div class="welcome-step-content">
+            <div class="welcome-step-title">Choisis tes plats</div>
+            <div class="welcome-step-desc">Touche un plat pour l'ajouter à ton panier</div>
+          </div>
+        </div>
+        <div class="welcome-step">
+          <div class="welcome-step-num">2</div>
+          <div class="welcome-step-content">
+            <div class="welcome-step-title">Vérifie ton panier</div>
+            <div class="welcome-step-desc">Le bouton bleu en bas de l'écran</div>
+          </div>
+        </div>
+        <div class="welcome-step">
+          <div class="welcome-step-num">3</div>
+          <div class="welcome-step-content">
+            <div class="welcome-step-title">Confirme</div>
+            <div class="welcome-step-desc">Le chef prépare ta commande tout de suite 👨‍🍳</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="welcome-btn" onclick="closeWelcomeModal()">
+        J'ai compris
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
 
   <div class="cat-bar-wrap" id="cat-bar-wrap">
     <div class="cat-bar" id="cat-bar"></div>
@@ -1619,6 +1858,9 @@ async function init() {
     // Hide loading, show app
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
+
+    // Afficher le popup d'accueil à la 1ère visite uniquement
+    maybeShowWelcomeOnFirstVisit();
 
     // Polling temps réel toutes les 4s
     state.pollInterval = setInterval(pollOrders, 4000);
@@ -2200,6 +2442,50 @@ function updateSalonCount() {
     document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + state.personneNom;
   }
 }
+
+// ============ WELCOME MODAL (popup d'accueil) ============
+const WELCOME_KEY = 'frizz_welcome_seen_v1';
+
+function openWelcomeModal() {
+  const overlay = document.getElementById('welcome-overlay');
+  if (!overlay) return;
+  overlay.classList.add('show');
+  // Empêcher le scroll du body en arrière-plan
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWelcomeModal() {
+  const overlay = document.getElementById('welcome-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('show');
+  document.body.style.overflow = '';
+  // Marquer comme vu pour ne plus l'afficher automatiquement
+  try { localStorage.setItem(WELCOME_KEY, '1'); } catch(_) {}
+}
+
+function maybeShowWelcomeOnFirstVisit() {
+  let seen = false;
+  try { seen = localStorage.getItem(WELCOME_KEY) === '1'; } catch(_) {}
+  if (!seen) {
+    // Petit délai pour laisser la page se charger / l'utilisateur voir le contexte
+    setTimeout(() => openWelcomeModal(), 500);
+  }
+}
+
+// Fermer en cliquant sur le fond (mais pas sur la carte)
+document.addEventListener('click', (e) => {
+  const overlay = document.getElementById('welcome-overlay');
+  if (!overlay || !overlay.classList.contains('show')) return;
+  if (e.target === overlay) closeWelcomeModal();
+});
+
+// Fermer avec Escape (utile en desktop / démo)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('welcome-overlay');
+    if (overlay && overlay.classList.contains('show')) closeWelcomeModal();
+  }
+});
 
 function openSalon() {
   renderSalon();

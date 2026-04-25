@@ -78,17 +78,18 @@
   .brand-logo {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-weight: 900;
-    font-size: 24px;
+    font-size: 26px;
     letter-spacing: -0.045em;
     color: var(--blue);
     text-shadow: 0 0 16px rgba(10,132,255,0.5);
   }
   .brand-logo .spark {
-    font-size: 18px;
+    font-size: 26px;
     animation: twinkle 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 8px rgba(10,132,255,0.95));
+    filter: drop-shadow(0 0 12px rgba(10,132,255,1));
+    line-height: 1;
   }
   @keyframes twinkle {
     0%,100% { opacity: 1; transform: scale(1); }
@@ -243,7 +244,52 @@
     border-radius: var(--r-lg);
     overflow: hidden;
     transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    position: relative;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
   }
+  .order-content {
+    background: var(--bg-elev);
+    border-radius: var(--r-lg);
+    transition: transform 0.3s var(--ease);
+    position: relative;
+    z-index: 2;
+    touch-action: pan-y;
+  }
+  .order.swiping .order-content {
+    transition: none;
+  }
+  .order.swipe-done .order-content {
+    transform: translateX(110%);
+    transition: transform 0.35s var(--ease-spring);
+  }
+
+  /* Hint visuel sous la carte qui apparaît au swipe */
+  .swipe-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 28px;
+    border-radius: var(--r-lg);
+    background: linear-gradient(90deg, transparent 0%, rgba(48,209,88,0.16) 35%, rgba(48,209,88,0.32) 100%);
+    color: var(--green);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.018em;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+  }
+  .order[data-statut="en_attente"] .swipe-hint {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,159,10,0.16) 35%, rgba(255,159,10,0.32) 100%);
+    color: var(--orange);
+  }
+  .swipe-hint svg { width: 22px; height: 22px; margin-right: 8px; }
+  .order.swiping .swipe-hint { opacity: 1; }
   .order.is-new {
     animation: card-in 0.5s var(--ease-spring) both;
   }
@@ -1163,7 +1209,12 @@ function renderOrder(o) {
   }
 
   return `
-    <div class="order" data-id="${o.id}">
+    <div class="order" data-id="${o.id}" data-statut="${o.statut}" data-action-id="${nextStatut(o.statut)}">
+      <div class="swipe-hint swipe-hint-right">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>${swipeLabel(o.statut)}</span>
+      </div>
+      <div class="order-content">
       <div class="order-head">
         <div>
           <div class="order-table">${escapeHtml(tableName)}</div>
@@ -1185,8 +1236,137 @@ function renderOrder(o) {
       <div class="order-footer">
         ${actionsHtml}
       </div>
+      </div>
     </div>`;
 }
+
+// Utilitaires pour le swipe
+function nextStatut(statut) {
+  if (statut === 'en_attente') return 'en_cours';
+  if (statut === 'en_cours') return 'prete';
+  if (statut === 'prete') return 'servie';
+  return null;
+}
+function swipeLabel(statut) {
+  if (statut === 'en_attente') return 'Démarrer';
+  if (statut === 'en_cours') return 'Marquer prête';
+  if (statut === 'prete') return 'Servie';
+  return '';
+}
+
+// ========== SWIPE GESTUEL SUR LES CARTES ==========
+// Délégation d'événements sur le board entier
+(function setupSwipe() {
+  const board = document.querySelector('.board');
+  if (!board) return;
+
+  let activeCard = null;
+  let activeContent = null;
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let isDragging = false;
+  let isHorizontal = null; // null = pas encore décidé, true = swipe horizontal, false = scroll vertical
+
+  const SWIPE_THRESHOLD = 90; // px à swiper pour valider l'action
+  const MAX_SWIPE = 220;
+
+  function onStart(e) {
+    const card = e.target.closest('.order');
+    if (!card) return;
+    // On ne swipe pas sur les boutons d'action (ils ont leur onclick)
+    if (e.target.closest('button')) return;
+    // Pas de swipe si la commande n'a pas de "next status"
+    if (!card.dataset.actionId || card.dataset.actionId === 'null') return;
+
+    activeCard = card;
+    activeContent = card.querySelector('.order-content');
+    if (!activeContent) { activeCard = null; return; }
+    const t = e.touches ? e.touches[0] : e;
+    startX = t.clientX;
+    startY = t.clientY;
+    currentX = 0;
+    isDragging = true;
+    isHorizontal = null;
+  }
+
+  function onMove(e) {
+    if (!isDragging || !activeCard) return;
+    const t = e.touches ? e.touches[0] : e;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+
+    // Détecter le sens du geste sur les premiers pixels
+    if (isHorizontal === null) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        isHorizontal = Math.abs(dx) > Math.abs(dy);
+        if (isHorizontal) {
+          activeCard.classList.add('swiping');
+        } else {
+          // Scroll vertical → on annule le swipe
+          isDragging = false;
+          activeCard = null;
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
+    // Swipe horizontal en cours : on suit le doigt (uniquement vers la droite)
+    if (dx > 0) {
+      currentX = Math.min(dx, MAX_SWIPE);
+      activeContent.style.transform = `translateX(${currentX}px)`;
+      if (e.cancelable) e.preventDefault();
+    } else {
+      currentX = 0;
+      activeContent.style.transform = '';
+    }
+  }
+
+  function onEnd() {
+    if (!isDragging || !activeCard) {
+      isDragging = false;
+      activeCard = null;
+      return;
+    }
+    const card = activeCard;
+    const content = activeContent;
+    const reached = currentX >= SWIPE_THRESHOLD;
+    card.classList.remove('swiping');
+
+    if (reached && isHorizontal) {
+      const orderId = card.dataset.id;
+      const nextStatut = card.dataset.actionId;
+      // Animation de sortie
+      card.classList.add('swipe-done');
+      // Trigger l'update après l'animation
+      setTimeout(() => {
+        updateStatut(orderId, nextStatut);
+      }, 280);
+    } else {
+      // Snap back
+      content.style.transform = '';
+    }
+
+    isDragging = false;
+    activeCard = null;
+    activeContent = null;
+    isHorizontal = null;
+    currentX = 0;
+  }
+
+  // Touch
+  board.addEventListener('touchstart', onStart, { passive: true });
+  board.addEventListener('touchmove', onMove, { passive: false });
+  board.addEventListener('touchend', onEnd);
+  board.addEventListener('touchcancel', onEnd);
+  // Mouse (pour debug desktop)
+  board.addEventListener('mousedown', onStart);
+  board.addEventListener('mousemove', e => { if (isDragging) onMove(e); });
+  board.addEventListener('mouseup', onEnd);
+  board.addEventListener('mouseleave', onEnd);
+})();
 
 // ========== ACTIONS ==========
 async function updateStatut(orderId, nouveauStatut) {

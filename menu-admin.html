@@ -690,34 +690,37 @@
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--sep-opaque);
     border-radius: 22px;
-    padding: 22px 26px;
+    padding: 22px 26px 24px;
     margin: 0 0 26px;
     display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .menu-bar-top {
+    display: flex;
     align-items: center;
-    gap: 24px;
+    justify-content: space-between;
+    gap: 16px;
     flex-wrap: wrap;
   }
   .menu-bar-label {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     font-size: 11.5px;
     font-weight: 700;
     color: var(--label-2);
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    padding-right: 22px;
-    border-right: 1px solid var(--sep);
     flex-shrink: 0;
-    min-height: 38px;
   }
+  .menu-bar-label svg { flex-shrink: 0; }
   .menu-bar-pills {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    flex: 1;
-    min-width: 0;
     align-items: center;
+    width: 100%;
   }
   .menu-pill {
     display: inline-flex;
@@ -781,9 +784,11 @@
   .menu-pill-empty {
     font-size: 13px;
     color: var(--label-3);
-    padding: 8px 4px;
+    padding: 4px 0;
     font-weight: 500;
     font-style: italic;
+    flex: 1;
+    min-width: 200px;
   }
   .menu-bar-add {
     display: inline-flex;
@@ -801,22 +806,15 @@
     flex-shrink: 0;
     box-shadow: 0 4px 14px rgba(10,132,255,0.35);
     letter-spacing: -0.012em;
-    margin-left: auto;
   }
   .menu-bar-add:hover { transform: translateY(-1px); }
   .menu-bar-add svg { width: 13px; height: 13px; }
 
-  @media (max-width: 720px) {
-    .menu-bar { padding: 18px 18px; gap: 16px; }
-    .menu-bar-label {
-      border-right: 0;
-      border-bottom: 1px solid var(--sep);
-      padding-right: 0;
-      padding-bottom: 12px;
-      width: 100%;
-      min-height: 0;
-    }
-    .menu-bar-add { width: 100%; justify-content: center; margin-left: 0; }
+  @media (max-width: 600px) {
+    .menu-bar { padding: 18px 18px 20px; gap: 14px; }
+    .menu-bar-top { flex-direction: column; align-items: stretch; gap: 12px; }
+    .menu-bar-add { width: 100%; justify-content: center; }
+    .menu-pill-empty { min-width: 0; text-align: center; }
   }
 
   /* MENU MODAL — liste des plats à cocher */
@@ -1923,15 +1921,17 @@
 
     <!-- Barre des menus (Midi/Soir/Brunch...) -->
     <div class="menu-bar" id="menu-bar">
-      <div class="menu-bar-label">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M3 3h18M3 12h18M3 21h18"/><circle cx="6" cy="3" r="1.5" fill="currentColor"/><circle cx="14" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="21" r="1.5" fill="currentColor"/></svg>
-        <span>Menus servis</span>
+      <div class="menu-bar-top">
+        <div class="menu-bar-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M3 3h18M3 12h18M3 21h18"/><circle cx="6" cy="3" r="1.5" fill="currentColor"/><circle cx="14" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="21" r="1.5" fill="currentColor"/></svg>
+          <span>Menus servis</span>
+        </div>
+        <button class="menu-bar-add" onclick="openMenuModal()" title="Créer un menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Nouveau menu
+        </button>
       </div>
       <div class="menu-bar-pills" id="menu-bar-pills"></div>
-      <button class="menu-bar-add" onclick="openMenuModal()" title="Créer un menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Nouveau menu
-      </button>
     </div>
 
     <div class="filter-bar" id="category-filters"></div>

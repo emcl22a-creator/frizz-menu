@@ -1164,7 +1164,75 @@
     gap: 9px;
     margin-bottom: 14px;
   }
+  .ai-panel {
+    background:
+      linear-gradient(135deg, rgba(10,132,255,0.06) 0%, rgba(191,90,242,0.04) 50%, transparent 100%),
+      var(--fill-2);
+    border-color: rgba(10,132,255,0.18);
+  }
   .panel-title svg { width: 14px; height: 14px; }
+  .ai-summary-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--label);
+    letter-spacing: -0.012em;
+    font-weight: 500;
+  }
+  .ai-summary-text strong {
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .ai-recommendation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--blue-soft);
+    border: 1px solid rgba(10,132,255,0.25);
+    border-radius: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .ai-recommendation-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .ai-recommendation-icon svg { width: 14px; height: 14px; stroke-width: 2.5; }
+  .ai-recommendation-text {
+    font-size: 14px;
+    color: var(--label);
+    line-height: 1.55;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+  }
+  .ai-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--label-2);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 8px 0;
+  }
+  .ai-shimmer {
+    height: 14px;
+    background: linear-gradient(90deg, var(--fill-1) 0%, var(--fill-2) 50%, var(--fill-1) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+    border-radius: 7px;
+    margin-bottom: 10px;
+  }
+  .ai-shimmer:last-child { width: 70%; }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .panel.ai-panel + .panel { margin-top: 16px; }
   .panel-head {
     display: flex;
     align-items: center;
@@ -1533,6 +1601,27 @@
         </svg>
         <div class="chart-empty" id="chart-empty">
           <p>Pas encore de données</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel ai-panel">
+      <div class="panel-head">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l1.79 5.31L19 9l-5.21 1.69L12 16l-1.79-5.31L5 9l5.21-1.69L12 2z"/>
+            <path d="M19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/>
+          </svg>
+          Résumé intelligent
+        </div>
+        <button class="btn btn-secondary" onclick="generateAISummary()" id="ai-generate-btn" style="padding: 8px 16px; font-size: 12.5px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          <span>Générer</span>
+        </button>
+      </div>
+      <div id="ai-summary-content">
+        <div class="empty-state" style="padding: 18px 0;">
+          <p>Clique sur <strong style="color:var(--label);">Générer</strong> pour obtenir une analyse de cette période.</p>
         </div>
       </div>
     </div>
@@ -2431,6 +2520,117 @@ function renderChart(commandes, periode, since, now, totalCA) {
   } else {
     empty.classList.add('hidden');
     meta.textContent = totalCA.toFixed(2) + '€';
+  }
+}
+
+// ============ AI SUMMARY (simulé localement à partir des vraies données) ============
+async function generateAISummary() {
+  const btn = document.getElementById('ai-generate-btn');
+  const content = document.getElementById('ai-summary-content');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span><span>Analyse…</span>';
+  content.innerHTML = `
+    <div class="ai-shimmer" style="width:100%;"></div>
+    <div class="ai-shimmer" style="width:90%;"></div>
+    <div class="ai-shimmer"></div>`;
+
+  try {
+    // Récupérer les données fraîches
+    const periode = state.activePeriode;
+    const now = new Date();
+    const since = new Date(now);
+    if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+    if (periode === 'semaine') since.setDate(now.getDate() - 7);
+    if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
+
+    const { data: cmds } = await supa.from('commandes').select('*').gte('heure', since.toISOString());
+    const commandes = cmds || [];
+
+    const ca = commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = commandes.length;
+    const panier = nb ? ca / nb : 0;
+
+    // Top plats
+    const platCount = {};
+    const platCA = {};
+    commandes.forEach(c => {
+      (Array.isArray(c.items) ? c.items : []).forEach(it => {
+        const nom = it.nom || it.name || 'Inconnu';
+        const qte = parseInt(it.qte) || 1;
+        const prix = parseFloat(it.prix) || 0;
+        platCount[nom] = (platCount[nom] || 0) + qte;
+        platCA[nom] = (platCA[nom] || 0) + prix * qte;
+      });
+    });
+    const top = Object.entries(platCount)
+      .map(([nom, qte]) => ({ nom, qte, ca: platCA[nom] || 0 }))
+      .sort((a, b) => b.qte - a.qte);
+
+    // Délai animation pour l'effet "AI réfléchit"
+    await new Promise(r => setTimeout(r, 900));
+
+    // Génération du résumé à partir des chiffres
+    const periodeLabel = periode === 'jour' ? "aujourd'hui" : (periode === 'semaine' ? 'cette semaine' : 'ce mois-ci');
+    const periodeLabelCap = periode === 'jour' ? "Aujourd'hui" : (periode === 'semaine' ? 'Cette semaine' : 'Ce mois-ci');
+
+    let summary = '';
+    let recommendation = '';
+
+    if (nb === 0) {
+      summary = `<strong>Pas encore de commandes ${periodeLabel}.</strong> Le service n'a pas démarré ou aucun client n'est passé sur la période sélectionnée.`;
+      recommendation = `Vérifie que les QR codes sont bien visibles sur les tables et que le restaurant est marqué "En service" en haut du dashboard.`;
+    } else {
+      const caStr = ca.toFixed(2) + '€';
+      const panierStr = panier.toFixed(2) + '€';
+      summary = `${periodeLabelCap} le restaurant a réalisé <strong>${caStr}</strong> de chiffre d'affaires sur <strong>${nb} commande${nb>1?'s':''}</strong>, avec un panier moyen de <strong>${panierStr}</strong>.`;
+
+      if (top.length > 0) {
+        const champion = top[0];
+        const partCA = ca > 0 ? Math.round((champion.ca / ca) * 100) : 0;
+        summary += ` Le plat phare est <strong>${escapeHtml(champion.nom)}</strong> avec ${champion.qte} vente${champion.qte>1?'s':''}`;
+        if (partCA >= 15) {
+          summary += `, soit ${partCA}% du chiffre d'affaires`;
+        }
+        summary += '.';
+      }
+
+      // Recommandation contextuelle
+      if (top.length === 0) {
+        recommendation = `Aucun plat n'a été commandé. Vérifie que le menu est bien visible côté client.`;
+      } else if (panier < 12 && nb >= 3) {
+        recommendation = `Le panier moyen est bas (${panierStr}). Crée un menu combo ou propose les desserts en suggestion à la fin de la commande pour augmenter le ticket moyen.`;
+      } else if (top.length >= 1 && top[0].qte >= 5) {
+        const champion = top[0];
+        recommendation = `<strong>${escapeHtml(champion.nom)}</strong> tire la performance. Mets-le en mise en avant dans la première catégorie du menu et envisage un visuel encore plus appétissant pour booster les ventes.`;
+      } else if (nb >= 1 && nb < 5 && periode === 'jour') {
+        recommendation = `Service calme aujourd'hui. C'est le bon moment pour tester un nouveau plat ou pousser une promo flash sur les réseaux pour dynamiser l'après-midi.`;
+      } else if (top.length >= 3) {
+        const totalTopQte = top.slice(0, 3).reduce((s, p) => s + p.qte, 0);
+        const partTop = nb > 0 ? Math.round((totalTopQte / commandes.reduce((s, c) => s + (Array.isArray(c.items)?c.items.reduce((q,i)=>q+(parseInt(i.qte)||1),0):0), 0)) * 100) : 0;
+        if (partTop >= 60) {
+          recommendation = `Tes 3 best-sellers représentent ${partTop}% des ventes. Assure-toi d'avoir toujours leur stock — un épuisé sur ces plats fait perdre du chiffre.`;
+        } else {
+          recommendation = `Bonne diversité de ventes : aucun plat ne domine totalement, ce qui montre une carte équilibrée. Continue à observer pour identifier les futures stars.`;
+        }
+      } else {
+        recommendation = `Continue le service. Avec plus de commandes, l'analyse pourra identifier des tendances précises.`;
+      }
+    }
+
+    content.innerHTML = `
+      <div class="ai-summary-text">${summary}</div>
+      <div class="ai-recommendation">
+        <div class="ai-recommendation-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7h10c0-2 2-4 2-7a7 7 0 0 0-7-7z"/></svg>
+        </div>
+        <div class="ai-recommendation-text">${recommendation}</div>
+      </div>`;
+  } catch (err) {
+    console.error('AI summary:', err);
+    content.innerHTML = `<div class="empty-state" style="padding: 8px 0;"><p>Erreur : ${escapeHtml(err.message || 'analyse impossible')}</p></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg><span>Régénérer</span>';
   }
 }
 

@@ -841,6 +841,143 @@
     .menu-pill-empty { min-width: 0; text-align: center; }
   }
 
+  /* RÉGIMES (chips multi-sélection) */
+  .regimes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .regime-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--fill-1);
+    border: 1.5px solid var(--sep);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.15s var(--ease);
+    user-select: none;
+  }
+  .regime-chip:hover { border-color: var(--sep-strong); background: var(--fill-2); }
+  .regime-chip input { display: none; }
+  .regime-chip span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-2);
+    letter-spacing: -0.012em;
+  }
+  .regime-chip:has(input:checked) {
+    background: rgba(48,209,88,0.14);
+    border-color: rgba(48,209,88,0.5);
+  }
+  .regime-chip:has(input:checked) span { color: var(--green); }
+
+  /* AUTO BASCULE (horaires menu) */
+  .auto-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep);
+    border-radius: 14px;
+  }
+  .auto-toggle-info { flex: 1; min-width: 0; }
+  .auto-toggle-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    line-height: 1.25;
+  }
+  .auto-toggle-sub {
+    font-size: 12px;
+    color: var(--label-3);
+    margin-top: 2px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  /* Apple-style switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 51px;
+    height: 31px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(120,120,128,0.32);
+    border-radius: 31px;
+    transition: 0.25s var(--ease);
+  }
+  .switch-slider::before {
+    content: '';
+    position: absolute;
+    height: 27px;
+    width: 27px;
+    left: 2px;
+    bottom: 2px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.25s var(--ease);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .switch input:checked + .switch-slider { background: var(--green); }
+  .switch input:checked + .switch-slider::before { transform: translateX(20px); }
+
+  .auto-times {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: var(--fill-2);
+    border: 1px solid var(--sep);
+    border-radius: 14px;
+    animation: auto-times-in 0.3s var(--ease-spring) both;
+  }
+  @keyframes auto-times-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .auto-time-item { flex: 1; min-width: 0; }
+  .auto-time-item label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--label-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .auto-time-item input[type=time] {
+    width: 100%;
+    background: var(--fill-1);
+    border: 1px solid var(--sep);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color-scheme: dark;
+  }
+  .auto-time-item input[type=time]:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+  .auto-time-arrow {
+    font-size: 18px;
+    color: var(--label-3);
+    padding-bottom: 10px;
+    font-weight: 600;
+  }
+
   /* MENU MODAL — liste des plats à cocher */
   .btn-mini {
     background: var(--fill-1);
@@ -2287,6 +2424,18 @@
         <label class="field-label">Allergènes</label>
         <input type="text" id="plat-allergenes" placeholder="gluten, lactose, œufs…">
       </div>
+      <div class="field">
+        <label class="field-label">Régimes adaptés</label>
+        <div class="regimes-grid">
+          <label class="regime-chip"><input type="checkbox" id="regime-vegetarien" value="vegetarien"><span>🥬 Végétarien</span></label>
+          <label class="regime-chip"><input type="checkbox" id="regime-vegan" value="vegan"><span>🌱 Vegan</span></label>
+          <label class="regime-chip"><input type="checkbox" id="regime-sans_gluten" value="sans_gluten"><span>🌾 Sans gluten</span></label>
+          <label class="regime-chip"><input type="checkbox" id="regime-sans_lactose" value="sans_lactose"><span>🥛 Sans lactose</span></label>
+          <label class="regime-chip"><input type="checkbox" id="regime-halal" value="halal"><span>☪ Halal</span></label>
+          <label class="regime-chip"><input type="checkbox" id="regime-casher" value="casher"><span>✡ Casher</span></label>
+        </div>
+        <div class="field-hint">Apparaît côté client dans les filtres rapides.</div>
+      </div>
       <div class="field" id="plat-menus-field">
         <label class="field-label">Apparaît dans les menus</label>
         <div id="plat-menus-checks" class="menus-checks">
@@ -2350,6 +2499,31 @@
         <label class="field-label">Nom du menu</label>
         <input type="text" id="menu-nom" placeholder="Ex: Menu Midi, Menu Soir, Brunch…">
         <div class="field-hint">Visible côté restaurant uniquement.</div>
+      </div>
+
+      <!-- Bascule auto selon les horaires -->
+      <div class="field">
+        <div class="auto-toggle-row">
+          <div class="auto-toggle-info">
+            <div class="auto-toggle-title">⏰ Bascule automatique</div>
+            <div class="auto-toggle-sub">Activer ce menu automatiquement à certaines heures</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="menu-auto-actif" onchange="toggleAutoFields()">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="auto-times" id="menu-auto-times" style="display:none;">
+          <div class="auto-time-item">
+            <label>De</label>
+            <input type="time" id="menu-heure-debut" value="11:30">
+          </div>
+          <div class="auto-time-arrow">→</div>
+          <div class="auto-time-item">
+            <label>À</label>
+            <input type="time" id="menu-heure-fin" value="14:30">
+          </div>
+        </div>
       </div>
 
       <!-- Liste des plats à cocher -->
@@ -2899,6 +3073,12 @@ function openPlatModal(id = null) {
     document.getElementById('plat-photo_url').value = p.photo_url || '';
     setPhotoPreview(p.photo_url || '');
     document.getElementById('plat-allergenes').value = p.allergenes || '';
+    // Charger les régimes
+    const regimes = Array.isArray(p.regimes) ? p.regimes : [];
+    ['vegetarien','vegan','sans_gluten','sans_lactose','halal','casher'].forEach(r => {
+      const cb = document.getElementById('regime-' + r);
+      if (cb) cb.checked = regimes.includes(r);
+    });
     state.platDisponible = p.disponible !== false;
     state.platMenuIds = Array.isArray(p.menu_ids) ? [...p.menu_ids] : [];
   } else {
@@ -2908,6 +3088,11 @@ function openPlatModal(id = null) {
     ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-description', 'plat-photo_url', 'plat-allergenes']
       .forEach(id => document.getElementById(id).value = '');
     setPhotoPreview('');
+    // Réinit régimes
+    ['vegetarien','vegan','sans_gluten','sans_lactose','halal','casher'].forEach(r => {
+      const cb = document.getElementById('regime-' + r);
+      if (cb) cb.checked = false;
+    });
     state.platDisponible = true;
     // Par défaut: cocher tous les menus existants (un nouveau plat dispo dans tous les services)
     state.platMenuIds = state.menus ? state.menus.map(m => m.id) : [];
@@ -2972,6 +3157,9 @@ async function savePlat() {
   const nom = document.getElementById('plat-nom').value.trim();
   if (!nom) { showToast('Le nom est requis', 'error'); return; }
   const id = document.getElementById('plat-id').value || ('p_' + Date.now());
+  // Collecter les régimes cochés
+  const regimes = ['vegetarien','vegan','sans_gluten','sans_lactose','halal','casher']
+    .filter(r => document.getElementById('regime-' + r)?.checked);
   const payload = {
     id,
     restaurant_id: RESTO.id,
@@ -2981,6 +3169,7 @@ async function savePlat() {
     description: document.getElementById('plat-description').value.trim(),
     photo_url: document.getElementById('plat-photo_url').value.trim(),
     allergenes: document.getElementById('plat-allergenes').value.trim(),
+    regimes,
     disponible: state.platDisponible,
     menu_ids: state.platMenuIds || []
   };
@@ -3022,12 +3211,67 @@ async function loadMenus() {
     const { data, error } = await supa.from('menus').select('*').eq('restaurant_id', RESTO.id).order('ordre', { ascending: true });
     if (error) throw error;
     state.menus = data || [];
+    // Bascule auto selon l'heure (avant de rendre)
+    await applyAutoMenuSchedule();
     renderMenus();
   } catch (err) {
     console.error('loadMenus:', err);
     showToast('Erreur menus: ' + err.message, 'error');
   }
 }
+
+// Bascule automatique du menu selon l'heure courante
+// Si un menu a auto_actif=true et qu'on est dans son créneau, on l'active
+async function applyAutoMenuSchedule() {
+  if (!state.menus || state.menus.length === 0) return;
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes(); // minutes depuis 00:00
+
+  // Trouver le menu qui devrait être actif maintenant
+  let menuShouldBeActive = null;
+  for (const m of state.menus) {
+    if (!m.auto_actif || !m.heure_debut || !m.heure_fin) continue;
+    const [h1, m1] = m.heure_debut.split(':').map(Number);
+    const [h2, m2] = m.heure_fin.split(':').map(Number);
+    const start = h1 * 60 + m1;
+    const end = h2 * 60 + m2;
+    // Cas normal (ex: 11:30 → 14:30)
+    if (start < end) {
+      if (currentTime >= start && currentTime < end) {
+        menuShouldBeActive = m;
+        break;
+      }
+    } else {
+      // Cas qui passe minuit (ex: 18:00 → 02:00)
+      if (currentTime >= start || currentTime < end) {
+        menuShouldBeActive = m;
+        break;
+      }
+    }
+  }
+
+  // Si un menu auto doit être actif et qu'il ne l'est pas déjà, on le bascule
+  if (menuShouldBeActive && !menuShouldBeActive.actif) {
+    try {
+      // Désactiver tous les autres
+      await supa.from('menus').update({ actif: false }).eq('restaurant_id', RESTO.id).neq('id', menuShouldBeActive.id);
+      // Activer celui-ci
+      await supa.from('menus').update({ actif: true }).eq('id', menuShouldBeActive.id);
+      // MAJ local
+      state.menus.forEach(m => { m.actif = (m.id === menuShouldBeActive.id); });
+      console.log('🔄 Bascule auto vers:', menuShouldBeActive.nom);
+    } catch (e) {
+      console.warn('Auto-bascule échouée:', e);
+    }
+  }
+}
+
+// Re-vérifier toutes les 60 secondes
+setInterval(() => {
+  if (state.menus && state.menus.length > 0) {
+    applyAutoMenuSchedule().then(() => renderMenus());
+  }
+}, 60000);
 
 function renderMenus() {
   // Délègue à renderMenuBar (les menus s'affichent maintenant en pills au-dessus des plats)
@@ -3076,6 +3320,14 @@ function openMenuModal() {
   document.getElementById('modal-menu-title').textContent = 'Nouveau menu';
   document.getElementById('menu-id').value = '';
   document.getElementById('menu-nom').value = '';
+  // Réinit horaires
+  const autoCb = document.getElementById('menu-auto-actif');
+  if (autoCb) autoCb.checked = false;
+  const hd = document.getElementById('menu-heure-debut');
+  const hf = document.getElementById('menu-heure-fin');
+  if (hd) hd.value = '11:30';
+  if (hf) hf.value = '14:30';
+  toggleAutoFields();
   document.getElementById('menu-delete-btn').style.display = 'none';
   renderMenuPlatsList();
   document.getElementById('modal-menu').classList.add('active');
@@ -3095,10 +3347,25 @@ function editMenu(id) {
   document.getElementById('modal-menu-title').textContent = 'Éditer le menu';
   document.getElementById('menu-id').value = id;
   document.getElementById('menu-nom').value = m.nom || '';
+  // Charger les horaires
+  const autoCb = document.getElementById('menu-auto-actif');
+  if (autoCb) autoCb.checked = !!m.auto_actif;
+  const hd = document.getElementById('menu-heure-debut');
+  const hf = document.getElementById('menu-heure-fin');
+  if (hd) hd.value = m.heure_debut ? m.heure_debut.substring(0, 5) : '11:30';
+  if (hf) hf.value = m.heure_fin ? m.heure_fin.substring(0, 5) : '14:30';
+  toggleAutoFields();
   document.getElementById('menu-delete-btn').style.display = 'inline-flex';
   renderMenuPlatsList();
   document.getElementById('modal-menu').classList.add('active');
   setTimeout(() => document.getElementById('menu-nom').focus(), 100);
+}
+
+function toggleAutoFields() {
+  const cb = document.getElementById('menu-auto-actif');
+  const wrap = document.getElementById('menu-auto-times');
+  if (!cb || !wrap) return;
+  wrap.style.display = cb.checked ? 'flex' : 'none';
 }
 
 function renderMenuPlatsList() {
@@ -3202,7 +3469,14 @@ async function saveMenu() {
     restaurant_id: RESTO.id,
     nom,
     ordre,
-    actif: existingId ? (state.menus.find(m => m.id === existingId)?.actif ?? false) : false
+    actif: existingId ? (state.menus.find(m => m.id === existingId)?.actif ?? false) : false,
+    auto_actif: !!document.getElementById('menu-auto-actif')?.checked,
+    heure_debut: document.getElementById('menu-auto-actif')?.checked
+      ? (document.getElementById('menu-heure-debut')?.value || null)
+      : null,
+    heure_fin: document.getElementById('menu-auto-actif')?.checked
+      ? (document.getElementById('menu-heure-fin')?.value || null)
+      : null
   };
 
   try {

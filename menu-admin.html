@@ -1704,7 +1704,7 @@
           <option value="en">English</option>
         </select>
       </div>
-      <button class="btn btn-primary" onclick="saveAllConfig()" style="width: 100%; margin-top: 12px;">Enregistrer</button>
+      <button class="btn btn-primary" onclick="saveAllConfig(this)" style="width: 100%; margin-top: 12px;">Enregistrer</button>
     </div>
   </section>
 </main>
@@ -1998,8 +1998,7 @@ async function toggleOpen() {
   } catch (err) { updateOpenPill(current); }
 }
 
-async function saveAllConfig() {
-  const btn = event && event.target ? event.target : null;
+async function saveAllConfig(btn) {
   if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
   const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
   let savedCount = 0;

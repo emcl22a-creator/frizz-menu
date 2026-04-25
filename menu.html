@@ -1381,10 +1381,11 @@ async function init() {
       ouvert: RESTO.ouvert === false ? 'false' : 'true'
     };
 
-    // 5) Charger table + menu en parallèle (filtrés par resto)
-    const [tableRes, menuRes] = await Promise.all([
+    // 5) Charger table + menu + menus en parallèle (filtrés par resto)
+    const [tableRes, menuRes, menusRes] = await Promise.all([
       supa.from('tables').select('*').eq('restaurant_id', RESTO.id).eq('id', TABLE_ID).maybeSingle(),
-      supa.from('menu').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true })
+      supa.from('menu').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true }),
+      supa.from('menus').select('*').eq('restaurant_id', RESTO.id)
     ]);
 
     if (tableRes.error) throw new Error('Table: ' + tableRes.error.message);
@@ -1396,7 +1397,11 @@ async function init() {
       return;
     }
 
-    state.menu = (menuRes.data || []).map(p => ({
+    // Détection du menu actif (Midi, Soir, etc.)
+    const allMenus = (menusRes.data || []);
+    const activeMenu = allMenus.find(m => m.actif === true);
+
+    let plats = (menuRes.data || []).map(p => ({
       id: p.id,
       categorie: p.categorie || '',
       nom: p.nom || '',
@@ -1404,8 +1409,20 @@ async function init() {
       prix: parseFloat(p.prix) || 0,
       photo_url: p.photo_url || '',
       disponible: p.disponible !== false,
-      allergenes: p.allergenes || ''
+      allergenes: p.allergenes || '',
+      menu_ids: Array.isArray(p.menu_ids) ? p.menu_ids : []
     }));
+
+    // Si un menu est actif, on filtre les plats qui appartiennent à ce menu
+    // Si aucun menu n'est actif (ou aucun menu créé), on affiche TOUS les plats (rétrocompat)
+    if (activeMenu) {
+      plats = plats.filter(p => Array.isArray(p.menu_ids) && p.menu_ids.includes(activeMenu.id));
+      state.activeMenuName = activeMenu.nom;
+    } else {
+      state.activeMenuName = null;
+    }
+
+    state.menu = plats;
 
     ensureSession();
     await ensureTableSession();

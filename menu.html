@@ -1238,11 +1238,13 @@ const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ========== STATE ==========
 const params = new URLSearchParams(location.search);
+const RESTO_SLUG = params.get('resto') || '';
 const TABLE_ID = params.get('table_id') || params.get('table') || '';
+let RESTO = null; // chargé en init
 
-const SESSION_KEY = 'frizz_session_' + TABLE_ID;
-const PERSONNE_KEY = 'frizz_personne_' + TABLE_ID;
-const CART_KEY = 'frizz_cart_' + TABLE_ID;
+const SESSION_KEY = 'frizz_session_' + RESTO_SLUG + '_' + TABLE_ID;
+const PERSONNE_KEY = 'frizz_personne_' + RESTO_SLUG + '_' + TABLE_ID;
+const CART_KEY = 'frizz_cart_' + RESTO_SLUG + '_' + TABLE_ID;
 
 let state = {
   config: {},
@@ -1331,7 +1333,7 @@ async function ensureTableSession() {
         session_id: state.sessionId,
         statut: 'occupee',
         heure_ouverture: new Date().toISOString()
-      }).eq('id', TABLE_ID);
+      }).eq('id', TABLE_ID).eq('restaurant_id', RESTO.id);
       state.table.session_id = state.sessionId;
       state.table.statut = 'occupee';
     } catch (e) { console.error('open session:', e); }
@@ -1340,35 +1342,57 @@ async function ensureTableSession() {
 
 // ========== INIT ==========
 async function init() {
+  if (!RESTO_SLUG) {
+    showError('Restaurant inconnu', 'Cette page doit être ouverte en scannant un QR code de table.');
+    return;
+  }
   if (!TABLE_ID) {
     showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');
     return;
   }
   try {
-    // Charger config + table + menu en parallèle
-    const [confRes, tableRes, menuRes] = await Promise.all([
-      supa.from('config').select('*'),
-      supa.from('tables').select('*').eq('id', TABLE_ID).maybeSingle(),
-      supa.from('menu').select('*').order('created_at', { ascending: true })
+    // 1) Charger le restaurant via slug
+    const restoRes = await supa.from('restaurants').select('*').eq('slug', RESTO_SLUG).maybeSingle();
+    if (restoRes.error) throw new Error('Restaurant: ' + restoRes.error.message);
+    if (!restoRes.data) {
+      showError('Restaurant introuvable', 'Ce restaurant n\'existe pas ou plus.');
+      return;
+    }
+    RESTO = restoRes.data;
+
+    // 2) Vérifier que le compte est actif
+    if (RESTO.statut !== 'actif') {
+      showError('Service indisponible', 'Ce restaurant n\'est pas accessible pour le moment.');
+      return;
+    }
+
+    // 3) Vérifier ouverture
+    if (RESTO.ouvert === false) {
+      showError('Restaurant fermé', 'Le restaurant n\'accepte pas de commandes pour le moment. Reviens plus tard !');
+      return;
+    }
+
+    // 4) Construire config depuis le restaurant
+    state.config = {
+      restaurant_nom: RESTO.nom || '',
+      logo_url: RESTO.logo_url || '',
+      google_link: RESTO.google_link || '',
+      langue: RESTO.langue || 'fr',
+      ouvert: RESTO.ouvert === false ? 'false' : 'true'
+    };
+
+    // 5) Charger table + menu en parallèle (filtrés par resto)
+    const [tableRes, menuRes] = await Promise.all([
+      supa.from('tables').select('*').eq('restaurant_id', RESTO.id).eq('id', TABLE_ID).maybeSingle(),
+      supa.from('menu').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true })
     ]);
 
-    if (confRes.error) throw new Error('Config: ' + confRes.error.message);
     if (tableRes.error) throw new Error('Table: ' + tableRes.error.message);
     if (menuRes.error) throw new Error('Menu: ' + menuRes.error.message);
-
-    state.config = {};
-    (confRes.data || []).forEach(r => { state.config[r.cle] = r.valeur; });
 
     state.table = tableRes.data;
     if (!state.table) {
       showError('Table introuvable', 'Cette table n\'existe pas dans le système.');
-      return;
-    }
-
-    // Vérifier resto ouvert
-    const isOpen = String(state.config.ouvert).toLowerCase() === 'true';
-    if (!isOpen) {
-      showError('Restaurant fermé', 'Le restaurant n\'accepte pas de commandes pour le moment. Reviens plus tard !');
       return;
     }
 
@@ -1716,6 +1740,7 @@ async function callServer(type, message) {
   try {
     const { error } = await supa.from('appels').insert({
       id,
+      restaurant_id: RESTO.id,
       table_id: TABLE_ID,
       session_id: state.sessionId,
       type,
@@ -1743,6 +1768,7 @@ async function sendOrder() {
   try {
     const { error } = await supa.from('commandes').insert({
       id: cmdId,
+      restaurant_id: RESTO.id,
       table_id: TABLE_ID,
       session_id: state.sessionId,
       personne_id: state.personneId,
@@ -1774,6 +1800,7 @@ async function loadOrders() {
   try {
     const { data, error } = await supa.from('commandes')
       .select('*')
+      .eq('restaurant_id', RESTO.id)
       .eq('table_id', TABLE_ID)
       .eq('session_id', state.sessionId)
       .order('heure', { ascending: true });

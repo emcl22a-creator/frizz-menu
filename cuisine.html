@@ -1254,7 +1254,7 @@ function renderOrder(o) {
   let actionsHtml = '';
   if (o.statut === 'en_attente') {
     actionsHtml = `
-      <button class="btn-action btn-primary orange" onclick="updateStatut('${o.id}', 'en_cours')">
+      <button class="btn-action btn-primary orange" onclick="startOrder('${o.id}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Démarrer
       </button>
@@ -1415,7 +1415,11 @@ function swipeLabel(statut) {
       card.classList.add('swipe-done');
       // Trigger l'update après l'animation
       setTimeout(() => {
-        updateStatut(orderId, nextStatut);
+        if (nextStatut === 'en_cours') {
+          startOrder(orderId);
+        } else {
+          updateStatut(orderId, nextStatut);
+        }
       }, 280);
     } else {
       // Snap back
@@ -1540,7 +1544,7 @@ function swipeLabel(statut) {
 })();
 
 // ========== ACTIONS ==========
-async function updateStatut(orderId, nouveauStatut) {
+async function updateStatut(orderId, nouveauStatut, extraData = {}) {
   // Optimistic update
   const order = state.orders.find(o => o.id === orderId);
   const oldStatut = order ? order.statut : null;
@@ -1552,8 +1556,14 @@ async function updateStatut(orderId, nouveauStatut) {
   }
   renderBoard();
 
+  // Build payload
+  const payload = { statut: nouveauStatut, ...extraData };
+  if (nouveauStatut === 'en_cours' && !payload.heure_demarrage) {
+    payload.heure_demarrage = new Date().toISOString();
+  }
+
   try {
-    const { error } = await supa.from('commandes').update({ statut: nouveauStatut }).eq('id', orderId);
+    const { error } = await supa.from('commandes').update(payload).eq('id', orderId);
     if (error) throw error;
     if (nouveauStatut === 'en_cours') showToast('Commande démarrée 🍳', 'success');
     else if (nouveauStatut === 'prete') showToast('Commande prête 🛎', 'success');
@@ -1565,6 +1575,24 @@ async function updateStatut(orderId, nouveauStatut) {
     showToast('Erreur : ' + (err.message || 'mise à jour'), 'error');
     await loadOrders(false);
   }
+}
+
+// Démarrer une commande avec demande du temps estimé
+async function startOrder(orderId) {
+  const tempsStr = prompt('Temps estimé en minutes ?\n(15 par défaut, vide pour skip)', '15');
+  if (tempsStr === null) return; // annulé
+  let temps = parseInt(tempsStr);
+  if (isNaN(temps) || temps < 0) temps = null;
+  // Update optimistic local
+  const order = state.orders.find(o => o.id === orderId);
+  if (order) {
+    order.temps_estime_min = temps;
+    order.heure_demarrage = new Date().toISOString();
+  }
+  await updateStatut(orderId, 'en_cours', {
+    temps_estime_min: temps,
+    heure_demarrage: new Date().toISOString()
+  });
 }
 
 // Démarrer

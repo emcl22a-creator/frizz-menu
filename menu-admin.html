@@ -1836,6 +1836,25 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ============ MULTI-TENANT (restaurant courant) ============
+const RESTO_SLUG = new URLSearchParams(location.search).get('resto') || 'chez-nico';
+let RESTO = null; // {id, slug, nom, email, logo_url, statut, plan, trial_ends_at, ...}
+
+async function loadRestaurant() {
+  const { data, error } = await supa.from('restaurants').select('*').eq('slug', RESTO_SLUG).maybeSingle();
+  if (error) throw new Error('Restaurant: ' + error.message);
+  if (!data) throw new Error('Restaurant introuvable : ' + RESTO_SLUG);
+  RESTO = data;
+  // Maj l'état global pour le reste du code
+  state.activeResto = data;
+  // Affiche un éventuel statut de trial dans la console
+  if (data.plan === 'trial' && data.trial_ends_at) {
+    const remaining = Math.max(0, Math.round((new Date(data.trial_ends_at) - Date.now()) / 86400000));
+    console.log(`[Frizz] Période d'essai : ${remaining} jours restants`);
+  }
+  return data;
+}
+
 let state = {
   menu: [], tables: [], config: {},
   activeCategory: '', activePeriode: 'jour',
@@ -1867,26 +1886,32 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// ============ CONFIG ============
+// ============ CONFIG (sur table restaurants) ============
 async function loadConfig() {
   try {
-    const { data, error } = await supa.from('config').select('*');
-    if (error) throw new Error(error.message || error.details || JSON.stringify(error));
-    state.config = {};
-    (data || []).forEach(r => { state.config[r.cle] = r.valeur; });
+    if (!RESTO) await loadRestaurant();
+    // On utilise les colonnes du restaurant directement
+    state.config = {
+      restaurant_nom: RESTO.nom || '',
+      logo_url: RESTO.logo_url || '',
+      url_client: RESTO.url_client || '',
+      google_link: RESTO.google_link || '',
+      langue_defaut: RESTO.langue || 'fr',
+      ouvert: RESTO.ouvert === false ? 'false' : 'true'
+    };
 
     if (state.config.restaurant_nom) {
       document.getElementById('brand-sub').textContent = state.config.restaurant_nom;
       document.title = state.config.restaurant_nom + ' — Frizz Admin';
     }
-    const isOpen = String(state.config.ouvert).toLowerCase() === 'true';
+    const isOpen = state.config.ouvert === 'true';
     updateOpenPill(isOpen);
-    document.getElementById('cfg-restaurant_nom').value = state.config.restaurant_nom || '';
-    document.getElementById('cfg-logo_url').value = state.config.logo_url || '';
-    setLogoPreview(state.config.logo_url || '');
-    document.getElementById('cfg-url_client').value = state.config.url_client || '';
-    document.getElementById('cfg-google_link').value = state.config.google_link || '';
-    document.getElementById('cfg-langue_defaut').value = state.config.langue_defaut || 'fr';
+    document.getElementById('cfg-restaurant_nom').value = state.config.restaurant_nom;
+    document.getElementById('cfg-logo_url').value = state.config.logo_url;
+    setLogoPreview(state.config.logo_url);
+    document.getElementById('cfg-url_client').value = state.config.url_client;
+    document.getElementById('cfg-google_link').value = state.config.google_link;
+    document.getElementById('cfg-langue_defaut').value = state.config.langue_defaut;
   } catch (err) {
     console.error('loadConfig:', err);
     showToast('Config: ' + (err.message || 'erreur inconnue'), 'error');
@@ -1906,13 +1931,14 @@ function updateOpenPill(isOpen) {
 }
 
 async function toggleOpen() {
-  const current = String(state.config.ouvert).toLowerCase() === 'true';
+  const current = state.config.ouvert === 'true';
   const next = !current;
   updateOpenPill(next);
   try {
-    const { error } = await supa.from('config').upsert({ cle: 'ouvert', valeur: next ? 'true' : 'false' });
+    const { error } = await supa.from('restaurants').update({ ouvert: next }).eq('id', RESTO.id);
     if (error) throw error;
     state.config.ouvert = next ? 'true' : 'false';
+    RESTO.ouvert = next;
     showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
   } catch (err) {
     updateOpenPill(current);
@@ -1922,16 +1948,23 @@ async function toggleOpen() {
 
 async function saveAllConfig(btn) {
   if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
-  const keys = ['restaurant_nom', 'logo_url', 'url_client', 'google_link', 'langue_defaut'];
-  const upserts = keys.map(k => ({
-    cle: k,
-    valeur: document.getElementById('cfg-' + k).value
-  }));
+  const payload = {
+    nom:         document.getElementById('cfg-restaurant_nom').value,
+    logo_url:    document.getElementById('cfg-logo_url').value,
+    url_client:  document.getElementById('cfg-url_client').value,
+    google_link: document.getElementById('cfg-google_link').value,
+    langue:      document.getElementById('cfg-langue_defaut').value
+  };
   try {
-    const { error } = await supa.from('config').upsert(upserts);
+    const { error } = await supa.from('restaurants').update(payload).eq('id', RESTO.id);
     if (error) throw error;
-    upserts.forEach(u => { state.config[u.cle] = u.valeur; });
-    document.getElementById('brand-sub').textContent = state.config.restaurant_nom || 'Admin';
+    Object.assign(RESTO, payload);
+    state.config.restaurant_nom = payload.nom;
+    state.config.logo_url = payload.logo_url;
+    state.config.url_client = payload.url_client;
+    state.config.google_link = payload.google_link;
+    state.config.langue_defaut = payload.langue;
+    document.getElementById('brand-sub').textContent = payload.nom || 'Admin';
     showToast('Configuration enregistrée', 'success');
   } catch (err) {
     showToast('Erreur: ' + err.message, 'error');
@@ -2028,7 +2061,7 @@ async function compressImage(file, maxDim = 1080) {
 // ============ MENU ============
 async function loadMenu() {
   try {
-    const { data, error } = await supa.from('menu').select('*').order('created_at', { ascending: true });
+    const { data, error } = await supa.from('menu').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true });
     if (error) throw new Error(error.message || error.details || JSON.stringify(error));
     state.menu = (data || []).map(p => ({
       id: p.id,
@@ -2216,6 +2249,7 @@ async function savePlat() {
   const id = document.getElementById('plat-id').value || ('p_' + Date.now());
   const payload = {
     id,
+    restaurant_id: RESTO.id,
     nom,
     categorie: document.getElementById('plat-categorie').value.trim(),
     prix: parseFloat(document.getElementById('plat-prix').value) || 0,
@@ -2259,7 +2293,7 @@ async function deletePlat() {
 // ============ TABLES ============
 async function loadTables() {
   try {
-    const { data, error } = await supa.from('tables').select('*').order('created_at', { ascending: true });
+    const { data, error } = await supa.from('tables').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true });
     if (error) throw error;
     state.tables = (data || []).map(t => ({
       id: t.id,
@@ -2342,6 +2376,7 @@ async function saveTable() {
   const id = existingId || 't_' + Date.now();
   const payload = {
     id, nom,
+    restaurant_id: RESTO.id,
     capacite: parseInt(document.getElementById('table-capacite').value) || 2,
     statut: 'libre'
   };
@@ -2362,7 +2397,7 @@ function showQR(tableId) {
   const baseUrl = state.config.url_client || '';
   if (!baseUrl) { showToast('Configure l\'URL client dans Config', 'error'); return; }
   const sep = baseUrl.includes('?') ? '&' : '?';
-  const fullUrl = baseUrl + sep + 'table_id=' + encodeURIComponent(tableId);
+  const fullUrl = baseUrl + sep + 'resto=' + encodeURIComponent(RESTO.slug) + '&table=' + encodeURIComponent(tableId);
   document.getElementById('qr-title').textContent = 'QR — ' + table.nom;
   document.getElementById('qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=20&data=' + encodeURIComponent(fullUrl);
   document.getElementById('qr-url').textContent = fullUrl;
@@ -2397,7 +2432,7 @@ async function loadStats() {
     if (periode === 'semaine') since.setDate(now.getDate() - 7);
     if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
 
-    const { data: cmds, error: e1 } = await supa.from('commandes').select('*').gte('heure', since.toISOString());
+    const { data: cmds, error: e1 } = await supa.from('commandes').select('*').eq('restaurant_id', RESTO.id).gte('heure', since.toISOString());
     if (e1) throw e1;
     const commandes = cmds || [];
 
@@ -2405,7 +2440,7 @@ async function loadStats() {
     const nb = commandes.length;
     const panier = nb ? ca / nb : 0;
 
-    const { data: tbls } = await supa.from('tables').select('statut');
+    const { data: tbls } = await supa.from('tables').select('statut').eq('restaurant_id', RESTO.id);
     const tables_occupees = (tbls || []).filter(t => t.statut === 'occupee').length;
 
     document.getElementById('stat-ca').textContent = ca.toFixed(2) + '€';
@@ -2543,7 +2578,7 @@ async function generateAISummary() {
     if (periode === 'semaine') since.setDate(now.getDate() - 7);
     if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
 
-    const { data: cmds } = await supa.from('commandes').select('*').gte('heure', since.toISOString());
+    const { data: cmds } = await supa.from('commandes').select('*').eq('restaurant_id', RESTO.id).gte('heure', since.toISOString());
     const commandes = cmds || [];
 
     const ca = commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
@@ -2647,8 +2682,17 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 
 // ============ INIT ============
 (async function init() {
-  await loadConfig();
-  await loadMenu();
+  try {
+    await loadRestaurant();
+    await loadConfig();
+    await loadMenu();
+  } catch (err) {
+    console.error('Init:', err);
+    showToast(err.message || 'Erreur de chargement', 'error');
+    // On affiche un message clair en haut de page
+    const brand = document.getElementById('brand-sub');
+    if (brand) brand.textContent = '⚠ ' + (err.message || 'Restaurant introuvable');
+  }
 })();
 </script>
 </body>

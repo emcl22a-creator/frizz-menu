@@ -683,6 +683,103 @@
   .toggle.on { background: var(--blue); }
   .toggle.on::after { transform: translateX(16px); }
 
+  /* URL BANNER : ton lien Frizz, toujours visible */
+  .url-banner {
+    background: linear-gradient(135deg, rgba(10,132,255,0.14) 0%, rgba(10,132,255,0.06) 100%);
+    border-bottom: 1px solid rgba(10,132,255,0.18);
+    padding: 12px 20px;
+    position: sticky;
+    top: 70px;
+    z-index: 40;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  .url-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .url-banner-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+  }
+  .url-banner-icon svg { width: 16px; height: 16px; }
+  .url-banner-text {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.2;
+  }
+  .url-banner-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+  .url-banner-url {
+    font-family: 'SF Mono', 'Roboto Mono', monospace;
+    font-size: 13px;
+    color: var(--label);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .url-banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 100px;
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(10,132,255,0.35);
+    letter-spacing: -0.012em;
+  }
+  .url-banner-btn:hover { transform: translateY(-1px); }
+  .url-banner-btn-open {
+    width: 34px;
+    padding: 0;
+    justify-content: center;
+    background: var(--fill-2);
+    color: var(--label-2);
+    border: 1px solid var(--sep);
+    box-shadow: none;
+  }
+  .url-banner-btn-open:hover { color: var(--blue); border-color: rgba(10,132,255,0.4); background: rgba(10,132,255,0.1); }
+  .url-banner-btn.copied {
+    background: var(--green);
+    box-shadow: 0 4px 14px rgba(48,209,88,0.35);
+  }
+
+  @media (max-width: 600px) {
+    .url-banner { padding: 10px 14px; top: 64px; }
+    .url-banner-inner { gap: 10px; }
+    .url-banner-icon { width: 32px; height: 32px; border-radius: 9px; }
+    .url-banner-url { font-size: 11.5px; }
+    .url-banner-btn { font-size: 11.5px; padding: 0 12px; height: 32px; }
+    #url-banner-copy-text { display: none; }
+    .url-banner-btn-copy { width: 32px; padding: 0; justify-content: center; }
+  }
+
   /* MENU BAR (sélecteur de menu Midi/Soir au-dessus des plats) */
   .menu-bar {
     background: var(--fill-2);
@@ -1792,6 +1889,26 @@
   </nav>
 </div>
 
+<!-- Bandeau URL Frizz : visible partout dans l'admin -->
+<div class="url-banner" id="url-banner" style="display:none;">
+  <div class="url-banner-inner">
+    <div class="url-banner-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    </div>
+    <div class="url-banner-text">
+      <div class="url-banner-label">Ton lien Frizz</div>
+      <div class="url-banner-url" id="url-banner-url">—</div>
+    </div>
+    <button class="url-banner-btn url-banner-btn-copy" onclick="copyMyUrl()" title="Copier mon lien">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="url-banner-copy-text">Copier</span>
+    </button>
+    <button class="url-banner-btn url-banner-btn-open" onclick="openMyUrl()" title="Ouvrir le menu client">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </button>
+  </div>
+</div>
+
 <main>
   <!-- ============ MENU ============ -->
   <section class="section active" id="section-menu">
@@ -2353,6 +2470,8 @@ async function loadRestaurant() {
     const remaining = Math.max(0, Math.ceil((new Date(data.trial_ends_at) - Date.now()) / 86400000));
     showTrialBanner(remaining);
   }
+  // Bandeau URL : toujours visible
+  showUrlBanner();
   return data;
 }
 
@@ -2404,6 +2523,57 @@ function openCuisine() {
     return;
   }
   const url = location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(RESTO.slug);
+  window.open(url, '_blank');
+}
+
+// ============ URL BANNER ============
+function buildClientBaseUrl() {
+  if (!RESTO || !RESTO.slug) return '';
+  // URL de base du menu client (sans table = vue carte uniquement)
+  return location.origin + location.pathname.replace(/menu-admin\.html$/, 'menu.html') + '?resto=' + encodeURIComponent(RESTO.slug);
+}
+
+function showUrlBanner() {
+  if (!RESTO || !RESTO.slug) return;
+  const banner = document.getElementById('url-banner');
+  const urlEl = document.getElementById('url-banner-url');
+  if (!banner || !urlEl) return;
+  // Affiche une version courte et lisible (sans le https:// pour gain de place)
+  const url = buildClientBaseUrl();
+  urlEl.textContent = url.replace(/^https?:\/\//, '');
+  urlEl.title = url; // tooltip avec l'URL complète
+  banner.style.display = 'block';
+}
+
+async function copyMyUrl() {
+  const url = buildClientBaseUrl();
+  if (!url) return;
+  const btn = document.querySelector('.url-banner-btn-copy');
+  const txt = document.getElementById('url-banner-copy-text');
+  try {
+    await navigator.clipboard.writeText(url);
+    if (btn) btn.classList.add('copied');
+    if (txt) txt.textContent = 'Copié ✓';
+    showToast('Lien copié dans le presse-papier', 'success');
+    setTimeout(() => {
+      if (btn) btn.classList.remove('copied');
+      if (txt) txt.textContent = 'Copier';
+    }, 2200);
+  } catch (err) {
+    // Fallback navigateurs anciens
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('Lien copié', 'success'); }
+    catch(_) { showToast('Impossible de copier — sélectionne et copie manuellement', 'error'); }
+    document.body.removeChild(ta);
+  }
+}
+
+function openMyUrl() {
+  const url = buildClientBaseUrl();
+  if (!url) return;
   window.open(url, '_blank');
 }
 

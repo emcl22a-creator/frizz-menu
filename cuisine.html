@@ -748,6 +748,10 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ========== MULTI-TENANT ==========
+const RESTO_SLUG = new URLSearchParams(location.search).get('resto') || 'chez-nico';
+let RESTO = null;
+
 let state = {
   config: {},
   tablesById: {},
@@ -898,21 +902,24 @@ function toggleSound() {
 // ========== INIT ==========
 async function init() {
   try {
-    // Charge config + tables (pour mapper table_id → nom) en parallèle
-    const [confRes, tableRes] = await Promise.all([
-      supa.from('config').select('*'),
-      supa.from('tables').select('*')
-    ]);
-    if (confRes.error) throw new Error('Config: ' + confRes.error.message);
+    // 1) Charge le restaurant via slug
+    const restoRes = await supa.from('restaurants').select('*').eq('slug', RESTO_SLUG).maybeSingle();
+    if (restoRes.error) throw new Error('Restaurant: ' + restoRes.error.message);
+    if (!restoRes.data) throw new Error('Restaurant introuvable : ' + RESTO_SLUG);
+    RESTO = restoRes.data;
+
+    // 2) Charge les tables du restaurant pour mapper id → nom
+    const tableRes = await supa.from('tables').select('*').eq('restaurant_id', RESTO.id);
     if (tableRes.error) throw new Error('Tables: ' + tableRes.error.message);
 
-    state.config = {};
-    (confRes.data || []).forEach(r => { state.config[r.cle] = r.valeur; });
+    state.config = {
+      restaurant_nom: RESTO.nom || 'Restaurant'
+    };
     state.tablesById = {};
     (tableRes.data || []).forEach(t => { state.tablesById[t.id] = t; });
 
-    document.getElementById('resto-name').textContent = state.config.restaurant_nom || 'Restaurant';
-    document.title = (state.config.restaurant_nom || 'Frizz') + ' — Cuisine';
+    document.getElementById('resto-name').textContent = state.config.restaurant_nom;
+    document.title = state.config.restaurant_nom + ' — Cuisine';
 
     await loadOrders(true);
 
@@ -942,11 +949,13 @@ async function loadOrders(initial) {
     const [ordersRes, appelsRes] = await Promise.all([
       supa.from('commandes')
         .select('*')
+        .eq('restaurant_id', RESTO.id)
         .gte('heure', since)
         .in('statut', ['en_attente', 'en_cours', 'prete'])
         .order('heure', { ascending: true }),
       supa.from('appels')
         .select('*')
+        .eq('restaurant_id', RESTO.id)
         .eq('statut', 'en_attente')
         .gte('heure', since)
         .order('heure', { ascending: true })

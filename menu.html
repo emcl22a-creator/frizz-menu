@@ -174,6 +174,95 @@
     .help-info-btn svg { width: 15px; height: 15px; }
   }
 
+  /* === SÉLECTEUR DE LANGUE === */
+  .lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--label);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    margin-right: 8px;
+  }
+  .lang-btn:hover {
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .lang-btn svg {
+    width: 14px;
+    height: 14px;
+    color: var(--label-2);
+  }
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 16px;
+    background: rgba(28, 28, 30, 0.96);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 6px;
+    min-width: 180px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1500;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+    animation: lang-menu-in 0.18s var(--ease-spring);
+  }
+  @keyframes lang-menu-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .lang-menu.show { display: flex; }
+  .lang-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    color: var(--label);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+  }
+  .lang-option:hover { background: rgba(255,255,255,0.06); }
+  .lang-flag { font-size: 18px; line-height: 1; }
+  .lang-name { flex: 1; }
+  .lang-check {
+    color: var(--blue);
+    font-weight: 800;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .lang-option.active .lang-check { opacity: 1; }
+  .lang-option.active { background: rgba(10,132,255,0.10); }
+
+  /* Cacher le widget Google Translate visuel */
+  #google_translate_element { display: none !important; }
+  .skiptranslate, .goog-te-banner-frame, .goog-te-gadget {
+    display: none !important;
+  }
+  body { top: 0 !important; }
+  .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
+    display: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
   .salon-badge {
     display: inline-flex;
     align-items: center;
@@ -1844,6 +1933,41 @@
         </div>
       </div>
       <div class="header-actions">
+        <button class="lang-btn" onclick="toggleLangMenu(event)" title="Changer de langue" aria-label="Langue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span id="lang-current">FR</span>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button class="lang-option active" data-lang="fr" onclick="setLang('fr')">
+            <span class="lang-flag">🇫🇷</span>
+            <span class="lang-name">Français</span>
+            <span class="lang-check">✓</span>
+          </button>
+          <button class="lang-option" data-lang="en" onclick="setLang('en')">
+            <span class="lang-flag">🇬🇧</span>
+            <span class="lang-name">English</span>
+            <span class="lang-check">✓</span>
+          </button>
+          <button class="lang-option" data-lang="de" onclick="setLang('de')">
+            <span class="lang-flag">🇩🇪</span>
+            <span class="lang-name">Deutsch</span>
+            <span class="lang-check">✓</span>
+          </button>
+          <button class="lang-option" data-lang="it" onclick="setLang('it')">
+            <span class="lang-flag">🇮🇹</span>
+            <span class="lang-name">Italiano</span>
+            <span class="lang-check">✓</span>
+          </button>
+          <button class="lang-option" data-lang="es" onclick="setLang('es')">
+            <span class="lang-flag">🇪🇸</span>
+            <span class="lang-name">Español</span>
+            <span class="lang-check">✓</span>
+          </button>
+        </div>
         <button class="salon-badge" onclick="openSalon()">
           <span class="dot"></span>
           <span id="salon-count">Salon</span>
@@ -3171,6 +3295,85 @@ init();
 window.addEventListener('beforeunload', () => {
   if (state.pollInterval) clearInterval(state.pollInterval);
 });
+
+// ========== MULTI-LANGUES (Google Translate widget caché) ==========
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'fr',
+    includedLanguages: 'fr,en,de,it,es',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+// Toggle ouverture/fermeture du menu langue
+function toggleLangMenu(event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.toggle('show');
+}
+
+// Change la langue active
+function setLang(lang) {
+  // Fermer le menu
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.remove('show');
+
+  // Mettre à jour le bouton
+  document.getElementById('lang-current').textContent = lang.toUpperCase();
+
+  // Mettre à jour l'état actif des options
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+
+  // Sauvegarder le choix
+  try { localStorage.setItem('frizz_client_lang', lang); } catch(e) {}
+
+  // Appliquer la traduction via Google Translate (cookie googtrans)
+  // Le format est /fr/<langue> où fr est la langue source
+  const path = (lang === 'fr') ? '/fr/fr' : '/fr/' + lang;
+  // Cookie pour le domaine actuel
+  const hostname = location.hostname;
+  // Cookie pour le sous-domaine et le domaine principal
+  document.cookie = 'googtrans=' + path + ';path=/;max-age=31536000';
+  document.cookie = 'googtrans=' + path + ';path=/;domain=.' + hostname + ';max-age=31536000';
+
+  // Rafraîchir la page pour appliquer la traduction
+  // (Google Translate lit le cookie au chargement)
+  if (lang === 'fr') {
+    // Si retour au français, on supprime le cookie et on recharge
+    document.cookie = 'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=.' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  }
+  setTimeout(() => location.reload(), 200);
+}
+
+// Restaurer la langue au chargement
+(function initLang() {
+  let savedLang = 'fr';
+  try { savedLang = localStorage.getItem('frizz_client_lang') || 'fr'; } catch(e) {}
+
+  // Met à jour visuellement le bouton et l'option active
+  const btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = savedLang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === savedLang);
+  });
+})();
+
+// Fermer le menu langue si on clique ailleurs
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('lang-menu');
+  const btn = document.querySelector('.lang-btn');
+  if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('show');
+  }
+});
 </script>
+
+<!-- Google Translate widget (caché par CSS, piloté via cookie googtrans) -->
+<div id="google_translate_element"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

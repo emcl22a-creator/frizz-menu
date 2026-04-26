@@ -1222,18 +1222,19 @@
     line-height: 1.55;
   }
 
-  /* ========== WELCOME MODAL (popup d'accueil) ========== */
+  /* ========== WELCOME MODAL v2 (popup d'accueil ultra-accessible) ========== */
   .welcome-overlay {
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.78);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     display: none;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
+    overflow-y: auto;
     animation: welcome-overlay-in 0.3s var(--ease) both;
   }
   .welcome-overlay.show { display: flex; }
@@ -1243,121 +1244,331 @@
   }
   .welcome-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     background:
-      linear-gradient(135deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.02) 60%, transparent 100%),
-      rgba(28,28,30,0.95);
+      linear-gradient(135deg, rgba(10,132,255,0.06) 0%, transparent 70%),
+      rgba(28,28,30,0.97);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 28px;
-    padding: 36px 28px 28px;
+    padding: 28px 24px 22px;
     text-align: center;
     box-shadow:
-      0 0 60px rgba(10,132,255,0.25),
+      0 0 60px rgba(10,132,255,0.18),
       0 24px 60px rgba(0,0,0,0.5),
       inset 0 1px 0 rgba(255,255,255,0.08);
     animation: welcome-card-in 0.5s var(--ease-spring) both;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
+    margin: auto;
+    position: relative;
   }
   @keyframes welcome-card-in {
-    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    from { opacity: 0; transform: scale(0.94) translateY(16px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
-  .welcome-emoji {
-    font-size: 56px;
-    line-height: 1;
-    margin-bottom: 14px;
-    animation: welcome-emoji-bounce 0.8s var(--ease-spring) 0.2s both;
+
+  /* Bouton X de fermeture en haut à droite */
+  .welcome-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 0;
+    color: var(--label-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease);
+    z-index: 2;
   }
-  @keyframes welcome-emoji-bounce {
-    0% { opacity: 0; transform: scale(0.5); }
-    60% { transform: scale(1.15); }
-    100% { opacity: 1; transform: scale(1); }
+  .welcome-close:hover { background: rgba(255,255,255,0.14); color: var(--label); }
+  .welcome-close svg { width: 16px; height: 16px; }
+
+  /* Hello header */
+  .welcome-hello {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .welcome-wave {
+    font-size: 38px;
+    line-height: 1;
+    display: inline-block;
+    transform-origin: 70% 70%;
+    animation: welcome-wave 1.2s ease-in-out 0.3s both;
+  }
+  @keyframes welcome-wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-18deg); }
+    50% { transform: rotate(14deg); }
+    75% { transform: rotate(-10deg); }
   }
   .welcome-title {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 900;
     letter-spacing: -0.04em;
     color: var(--label);
-    margin: 0 0 6px;
-    line-height: 1.1;
+    margin: 0;
+    line-height: 1;
   }
   .welcome-sub {
-    font-size: 15.5px;
+    font-size: 17px;
     color: var(--label-2);
-    margin: 0 0 28px;
+    margin: 0 0 24px;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.45;
   }
+
+  /* Steps */
   .welcome-steps {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-bottom: 28px;
-    text-align: left;
+    gap: 16px;
+    margin-bottom: 24px;
   }
   .welcome-step {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
     background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
-    animation: welcome-step-in 0.5s var(--ease-spring) both;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 20px 16px 18px;
+    text-align: center;
+    animation: welcome-step-in 0.55s var(--ease-spring) both;
+    position: relative;
   }
-  .welcome-step:nth-child(1) { animation-delay: 0.25s; }
+  .welcome-step:nth-child(1) { animation-delay: 0.2s; }
   .welcome-step:nth-child(2) { animation-delay: 0.35s; }
-  .welcome-step:nth-child(3) { animation-delay: 0.45s; }
+  .welcome-step:nth-child(3) { animation-delay: 0.5s; }
   @keyframes welcome-step-in {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
   .welcome-step-num {
-    width: 38px;
-    height: 38px;
+    width: 40px; height: 40px;
     border-radius: 50%;
     background: var(--blue);
     color: #fff;
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 14px rgba(10,132,255,0.4);
+    margin: 0 auto 12px;
+    box-shadow: 0 6px 20px rgba(10,132,255,0.5);
     line-height: 1;
   }
-  .welcome-step-content { flex: 1; min-width: 0; }
   .welcome-step-title {
-    font-size: 16.5px;
+    font-size: 19px;
     font-weight: 800;
     color: var(--label);
     letter-spacing: -0.022em;
     line-height: 1.2;
-    margin-bottom: 3px;
+    margin-bottom: 14px;
   }
   .welcome-step-desc {
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--label-2);
     line-height: 1.4;
     font-weight: 500;
     letter-spacing: -0.005em;
+    margin-top: 14px;
   }
+
+  /* MOCKUPS — visuels animés qui montrent ce qu'il faut faire */
+  .welcome-mock {
+    position: relative;
+    margin: 6px auto 0;
+    max-width: 280px;
+  }
+
+  /* Mockup étape 1 : carte de plat */
+  .welcome-mock-plat-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    transition: all 0.4s var(--ease);
+    animation: mock-tap-card-1 2.4s ease-in-out 0.8s infinite;
+  }
+  @keyframes mock-tap-card-1 {
+    0%, 50%, 100% {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.1);
+      transform: scale(1);
+    }
+    25%, 35% {
+      background: rgba(10,132,255,0.18);
+      border-color: rgba(10,132,255,0.6);
+      transform: scale(0.97);
+      box-shadow: 0 0 24px rgba(10,132,255,0.4);
+    }
+  }
+  .welcome-mock-plat-img {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .welcome-mock-plat-text { flex: 1; min-width: 0; text-align: left; }
+  .welcome-mock-plat-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.018em;
+  }
+  .welcome-mock-plat-price {
+    font-size: 13px;
+    color: var(--label-2);
+    font-weight: 600;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .welcome-mock-plat-plus {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  /* Mockup étape 2 : barre panier */
+  .welcome-mock-cart-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px 12px 12px;
+    background: linear-gradient(135deg, var(--blue) 0%, #0071e3 100%);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    color: #fff;
+    box-shadow:
+      0 0 28px rgba(10,132,255,0.5),
+      0 6px 18px rgba(10,132,255,0.35);
+    animation: mock-pulse-cart 2s ease-in-out 0.8s infinite;
+  }
+  @keyframes mock-pulse-cart {
+    0%, 100% {
+      box-shadow:
+        0 0 28px rgba(10,132,255,0.5),
+        0 6px 18px rgba(10,132,255,0.35);
+    }
+    50% {
+      box-shadow:
+        0 0 44px rgba(10,132,255,0.8),
+        0 6px 18px rgba(10,132,255,0.5);
+    }
+  }
+  .welcome-mock-cart-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .welcome-mock-cart-info { flex: 1; text-align: left; }
+  .welcome-mock-cart-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .welcome-mock-cart-total {
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.022em;
+    font-variant-numeric: tabular-nums;
+  }
+  .welcome-mock-cart-arrow {
+    font-size: 22px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* Mockup étape 3 : bouton commander */
+  .welcome-mock-confirm-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, var(--green) 0%, #28b44b 100%);
+    color: #fff;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.018em;
+    box-shadow: 0 0 28px rgba(48,209,88,0.5);
+    animation: mock-pulse-confirm 2s ease-in-out 0.8s infinite;
+  }
+  @keyframes mock-pulse-confirm {
+    0%, 100% { box-shadow: 0 0 28px rgba(48,209,88,0.5); }
+    50% { box-shadow: 0 0 44px rgba(48,209,88,0.8); }
+  }
+  .welcome-mock-check {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  /* Doigt animé qui pointe sur les mockups */
+  .welcome-finger {
+    position: absolute;
+    bottom: -14px;
+    right: 18px;
+    font-size: 32px;
+    line-height: 1;
+    z-index: 2;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  }
+  .welcome-finger-tap-1 { animation: finger-tap 2.4s ease-in-out 0.8s infinite; }
+  .welcome-finger-tap-2 { animation: finger-tap 2s ease-in-out 0.8s infinite; }
+  .welcome-finger-tap-3 { animation: finger-tap 2s ease-in-out 0.8s infinite; }
+  @keyframes finger-tap {
+    0%, 50%, 100% { transform: translateY(0) scale(1); }
+    25%, 35% { transform: translateY(-8px) scale(0.92); }
+  }
+
+  /* Bouton CTA principal */
   .welcome-btn {
     width: 100%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 16px 20px;
+    padding: 17px 20px;
     background: var(--blue);
     color: #fff;
     border: 0;
     border-radius: 100px;
-    font-size: 16px;
+    font-size: 16.5px;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s var(--ease);
@@ -1365,7 +1576,7 @@
       0 0 32px rgba(10,132,255,0.45),
       0 6px 20px rgba(10,132,255,0.4);
     letter-spacing: -0.018em;
-    animation: welcome-btn-in 0.5s var(--ease-spring) 0.55s both;
+    animation: welcome-btn-in 0.55s var(--ease-spring) 0.65s both;
   }
   @keyframes welcome-btn-in {
     from { opacity: 0; transform: translateY(10px); }
@@ -1375,15 +1586,37 @@
   .welcome-btn:active { transform: translateY(0); }
   .welcome-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
+  /* Footer rappel */
+  .welcome-foot {
+    font-size: 12.5px;
+    color: var(--label-3);
+    margin: 14px 0 0;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+  .welcome-foot-help {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    font-weight: 800;
+    color: var(--label-2);
+    margin: 0 1px;
+    vertical-align: middle;
+    font-size: 11px;
+  }
+
   @media (max-width: 380px) {
-    .welcome-card { padding: 30px 22px 24px; border-radius: 24px; }
-    .welcome-emoji { font-size: 48px; }
-    .welcome-title { font-size: 26px; }
-    .welcome-sub { font-size: 14.5px; }
-    .welcome-step { padding: 12px 14px; gap: 12px; }
-    .welcome-step-num { width: 34px; height: 34px; font-size: 15px; }
-    .welcome-step-title { font-size: 15.5px; }
-    .welcome-step-desc { font-size: 13px; }
+    .welcome-card { padding: 24px 18px 18px; border-radius: 24px; }
+    .welcome-title { font-size: 28px; }
+    .welcome-sub { font-size: 15.5px; margin-bottom: 20px; }
+    .welcome-step { padding: 16px 12px 14px; }
+    .welcome-step-num { width: 36px; height: 36px; font-size: 17px; }
+    .welcome-step-title { font-size: 17px; }
+    .welcome-step-desc { font-size: 14px; }
+    .welcome-btn { padding: 15px 18px; font-size: 15.5px; }
   }
 
   /* ========== RESPONSIVE ========== */
@@ -1435,41 +1668,81 @@
     </div>
   </header>
 
-  <!-- Popup d'accueil — explique comment commander -->
+  <!-- Popup d'accueil v2 — explique comment commander avec mockups visuels -->
   <div class="welcome-overlay" id="welcome-overlay">
     <div class="welcome-card">
-      <div class="welcome-emoji">🍽️</div>
-      <h1 class="welcome-title">Bienvenue !</h1>
-      <p class="welcome-sub">Voici comment commander en 3 étapes</p>
+      <button class="welcome-close" onclick="closeWelcomeModal()" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="welcome-hello">
+        <span class="welcome-wave">👋</span>
+        <h1 class="welcome-title">Bonjour !</h1>
+      </div>
+      <p class="welcome-sub">Voici comment commander<br>en 3 étapes simples</p>
 
       <div class="welcome-steps">
+
+        <!-- ÉTAPE 1 : Toucher un plat -->
         <div class="welcome-step">
           <div class="welcome-step-num">1</div>
-          <div class="welcome-step-content">
-            <div class="welcome-step-title">Choisis tes plats</div>
-            <div class="welcome-step-desc">Touche un plat pour l'ajouter à ton panier</div>
+          <div class="welcome-step-title">Touchez un plat</div>
+          <div class="welcome-mock welcome-mock-plat">
+            <div class="welcome-mock-plat-card">
+              <div class="welcome-mock-plat-img">🍔</div>
+              <div class="welcome-mock-plat-text">
+                <div class="welcome-mock-plat-name">Burger</div>
+                <div class="welcome-mock-plat-price">12.50 €</div>
+              </div>
+              <div class="welcome-mock-plat-plus">+</div>
+            </div>
+            <div class="welcome-finger welcome-finger-tap-1">👆</div>
           </div>
+          <div class="welcome-step-desc">Le plat est ajouté à votre panier</div>
         </div>
+
+        <!-- ÉTAPE 2 : Voir le panier en bas -->
         <div class="welcome-step">
           <div class="welcome-step-num">2</div>
-          <div class="welcome-step-content">
-            <div class="welcome-step-title">Vérifie ton panier</div>
-            <div class="welcome-step-desc">Le bouton bleu en bas de l'écran</div>
+          <div class="welcome-step-title">Touchez le bouton bleu</div>
+          <div class="welcome-mock welcome-mock-panier">
+            <div class="welcome-mock-cart-bar">
+              <div class="welcome-mock-cart-icon">🛒</div>
+              <div class="welcome-mock-cart-info">
+                <div class="welcome-mock-cart-label">Mon panier</div>
+                <div class="welcome-mock-cart-total">12.50 €</div>
+              </div>
+              <div class="welcome-mock-cart-arrow">→</div>
+            </div>
+            <div class="welcome-finger welcome-finger-tap-2">👆</div>
           </div>
+          <div class="welcome-step-desc">Il est tout en bas de l'écran</div>
         </div>
+
+        <!-- ÉTAPE 3 : Commander -->
         <div class="welcome-step">
           <div class="welcome-step-num">3</div>
-          <div class="welcome-step-content">
-            <div class="welcome-step-title">Confirme</div>
-            <div class="welcome-step-desc">Le chef prépare ta commande tout de suite 👨‍🍳</div>
+          <div class="welcome-step-title">Validez votre commande</div>
+          <div class="welcome-mock welcome-mock-valider">
+            <div class="welcome-mock-confirm-btn">
+              <span>Commander · 12.50 €</span>
+              <span class="welcome-mock-check">✓</span>
+            </div>
+            <div class="welcome-finger welcome-finger-tap-3">👆</div>
           </div>
+          <div class="welcome-step-desc">C'est parti, le chef cuisine 👨‍🍳</div>
         </div>
+
       </div>
 
       <button class="welcome-btn" onclick="closeWelcomeModal()">
-        J'ai compris
+        J'ai compris, je commence
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </button>
+
+      <p class="welcome-foot">
+        Besoin d'aide ? Touchez le <span class="welcome-foot-help">?</span> en haut à droite à tout moment.
+      </p>
     </div>
   </div>
 

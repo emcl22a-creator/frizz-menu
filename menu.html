@@ -55,6 +55,18 @@
     min-height: 100dvh;
     overflow-x: hidden;
   }
+  /* Bande noire qui couvre la safe-area en bas pour que Safari iOS
+     ne prenne pas la couleur du panier bleu pour la barre d'adresse */
+  body::after {
+    content: '';
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 0;
+    height: env(safe-area-inset-bottom, 0);
+    background: var(--bg);
+    z-index: 100;
+    pointer-events: none;
+  }
   button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
   input, textarea {
     font-family: inherit;
@@ -624,7 +636,7 @@
 
   .cart-bar {
     position: fixed;
-    bottom: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
     left: 16px;
     right: 16px;
     max-width: 688px;
@@ -632,7 +644,6 @@
     z-index: 50;
     transform: translateY(140px);
     transition: transform 0.45s var(--ease-spring);
-    padding-bottom: env(safe-area-inset-bottom);
   }
   .cart-bar.show { transform: translateY(0); }
   .cart-button {
@@ -1071,7 +1082,7 @@
     transition: bottom 0.3s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease), border-color 0.25s var(--ease);
   }
   /* Quand panier seul visible : FAB monte au-dessus du panier */
-  body.has-cart .fab-help { bottom: calc(108px + env(safe-area-inset-bottom)); }
+  body.has-cart .fab-help { bottom: calc(140px + env(safe-area-inset-bottom)); }
   .fab-help:hover {
     background: var(--fill-1);
     transform: translateY(-2px);

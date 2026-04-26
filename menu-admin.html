@@ -1977,9 +1977,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
         Cuisine
       </button>
-      <button onclick="logout()" title="Déconnexion" style="width:38px; height:38px; border-radius:50%; background:var(--fill-1); border:1px solid var(--sep); color:var(--label-2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='var(--red)'; this.style.borderColor='rgba(255,69,58,0.4)';" onmouseout="this.style.color='var(--label-2)'; this.style.borderColor='var(--sep)';">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </button>
     </div>
   </div>
 </header>
@@ -2032,7 +2029,7 @@
         Nouveau plat
       </button>
       <div class="stats-grid">
-        <div class="stat-card">
+        <button type="button" class="stat-card" onclick="setPlatFilter('all')" id="stat-card-all">
           <div class="stat-head"><div class="stat-icon blue">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 12h18"/><path d="M4 12a8 8 0 0 1 16 0"/><path d="M2 18h20"/>
@@ -2043,8 +2040,8 @@
             <div class="stat-value" id="strip-total">0</div>
           </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </div>
-        <div class="stat-card">
+        </button>
+        <button type="button" class="stat-card" onclick="openCategoriesPicker()" id="stat-card-cats">
           <div class="stat-head"><div class="stat-icon blue">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/>
@@ -2056,8 +2053,8 @@
             <div class="stat-value" id="strip-cats">0</div>
           </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </div>
-        <div class="stat-card">
+        </button>
+        <button type="button" class="stat-card" onclick="setPlatFilter('dispo')" id="stat-card-dispo">
           <div class="stat-head"><div class="stat-icon green">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
@@ -2068,8 +2065,8 @@
             <div class="stat-value" id="strip-dispo">0</div>
           </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </div>
-        <div class="stat-card">
+        </button>
+        <button type="button" class="stat-card" onclick="setPlatFilter('epuise')" id="stat-card-epuise">
           <div class="stat-head"><div class="stat-icon red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -2080,7 +2077,7 @@
             <div class="stat-value" id="strip-epuise">0</div>
           </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -2364,6 +2361,21 @@
         </select>
       </div>
       <button class="btn-cta" onclick="saveAllConfig(this)" style="margin-top: 16px; margin-bottom: 0;">Enregistrer</button>
+    </div>
+
+    <!-- Section Déconnexion (zone dangereuse, séparée) -->
+    <div style="margin-top: 32px; padding: 24px; background: var(--fill-2); border: 1px solid var(--sep); border-radius: 22px;">
+      <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">Compte</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 14.5px; font-weight: 700; color: var(--label); letter-spacing: -0.018em; line-height: 1.25;">Se déconnecter</div>
+          <div style="font-size: 12.5px; color: var(--label-3); margin-top: 2px; font-weight: 500; line-height: 1.4;">Tu peux te reconnecter à tout moment avec ton email et mot de passe.</div>
+        </div>
+        <button onclick="logout()" style="display: inline-flex; align-items: center; gap: 7px; padding: 11px 18px; background: rgba(255,69,58,0.08); border: 1px solid rgba(255,69,58,0.3); color: var(--red); font-size: 13.5px; font-weight: 700; border-radius: 100px; cursor: pointer; transition: all 0.2s; letter-spacing: -0.012em; flex-shrink: 0;" onmouseover="this.style.background='rgba(255,69,58,0.16)'; this.style.borderColor='var(--red)';" onmouseout="this.style.background='rgba(255,69,58,0.08)'; this.style.borderColor='rgba(255,69,58,0.3)';">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Déconnexion
+        </button>
+      </div>
     </div>
   </section>
 </main>
@@ -2739,6 +2751,7 @@ function openConfigUrl() {
 let state = {
   menu: [], tables: [], menus: [], config: {},
   activeCategory: '', activePeriode: 'jour',
+  platStatusFilter: 'all',
   editingPlatId: null, editingTableId: null, editingMenuId: null,
   platDisponible: true, platMenuIds: []
 };
@@ -3016,14 +3029,38 @@ function renderCategories() {
 
 function renderMenu() {
   const grid = document.getElementById('menu-grid');
-  const filtered = state.activeCategory ? state.menu.filter(p => p.categorie === state.activeCategory) : state.menu;
+  // Filtrer par catégorie active
+  let filtered = state.activeCategory ? state.menu.filter(p => p.categorie === state.activeCategory) : state.menu;
+  // Filtrer par statut disponibilité (depuis stat-cards cliquables)
+  if (state.platStatusFilter === 'dispo') {
+    filtered = filtered.filter(p => p.disponible !== false);
+  } else if (state.platStatusFilter === 'epuise') {
+    filtered = filtered.filter(p => p.disponible === false);
+  }
 
   if (filtered.length === 0) {
+    let emptyMsg = 'Aucun plat';
+    let emptySub = 'Clique sur "Nouveau plat" pour commencer';
+    if (state.platStatusFilter === 'dispo') {
+      emptyMsg = 'Aucun plat disponible';
+      emptySub = 'Tous tes plats sont marqués comme épuisés.';
+    } else if (state.platStatusFilter === 'epuise') {
+      emptyMsg = 'Aucun plat épuisé';
+      emptySub = 'Tous tes plats sont disponibles 🎉';
+    } else if (state.activeCategory) {
+      emptyMsg = `Aucun plat dans "${state.activeCategory}"`;
+      emptySub = 'Change de catégorie ou ajoute un nouveau plat.';
+    }
     grid.innerHTML = `
       <div class="empty-state" style="grid-column: 1/-1;">
         <div class="empty-state-icon">${ICONS.plate}</div>
-        <div class="empty-state-title">Aucun plat</div>
-        <p>Clique sur "Nouveau plat" pour commencer</p>
+        <div class="empty-state-title">${escapeHtml(emptyMsg)}</div>
+        <p>${escapeHtml(emptySub)}</p>
+        ${state.platStatusFilter !== 'all' || state.activeCategory ? `
+          <button class="btn btn-ghost" style="margin-top: 14px;" onclick="clearAllFilters()">
+            Voir tous les plats
+          </button>
+        ` : ''}
       </div>`;
     return;
   }
@@ -3050,6 +3087,139 @@ function renderMenu() {
       </div>
     </div>
   `).join('');
+}
+
+// ============ FILTRES STATS CARDS ============
+function setPlatFilter(filter) {
+  // Toggle si on clique sur le filtre déjà actif
+  if (state.platStatusFilter === filter && filter !== 'all') {
+    state.platStatusFilter = 'all';
+  } else {
+    state.platStatusFilter = filter;
+  }
+  // Si on clique sur "Total plats", on reset aussi la catégorie
+  if (filter === 'all') {
+    state.activeCategory = null;
+    renderCategories();
+  }
+  updateStatCardsActive();
+  renderMenu();
+  // Scroller vers la grille de plats
+  const grid = document.getElementById('menu-grid');
+  if (grid) {
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function clearAllFilters() {
+  state.platStatusFilter = 'all';
+  state.activeCategory = null;
+  updateStatCardsActive();
+  renderCategories();
+  renderMenu();
+}
+
+function updateStatCardsActive() {
+  // Retire la classe active de toutes les cartes
+  ['stat-card-all', 'stat-card-dispo', 'stat-card-epuise', 'stat-card-cats'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('stat-card-active');
+  });
+  // Ajoute sur la carte active
+  if (state.platStatusFilter === 'all' && !state.activeCategory) {
+    const el = document.getElementById('stat-card-all');
+    if (el) el.classList.add('stat-card-active');
+  } else if (state.platStatusFilter === 'dispo') {
+    const el = document.getElementById('stat-card-dispo');
+    if (el) el.classList.add('stat-card-active');
+  } else if (state.platStatusFilter === 'epuise') {
+    const el = document.getElementById('stat-card-epuise');
+    if (el) el.classList.add('stat-card-active');
+  } else if (state.activeCategory) {
+    const el = document.getElementById('stat-card-cats');
+    if (el) el.classList.add('stat-card-active');
+  }
+}
+
+// Ouvrir un picker de catégories : modal qui liste les catégories cliquables
+function openCategoriesPicker() {
+  const cats = [...new Set(state.menu.map(p => p.categorie).filter(Boolean))];
+  if (cats.length === 0) {
+    showToast('Aucune catégorie pour l\'instant', 'info');
+    return;
+  }
+
+  const ORDER = ['entrée','entrées','entree','entrees','plat','plats','dessert','desserts','boisson','boissons'];
+  cats.sort((a, b) => {
+    const ia = ORDER.findIndex(o => (a||'').toLowerCase().startsWith(o));
+    const ib = ORDER.findIndex(o => (b||'').toLowerCase().startsWith(o));
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+
+  // Compter plats par catégorie
+  const counts = {};
+  cats.forEach(c => {
+    counts[c] = state.menu.filter(p => p.categorie === c).length;
+  });
+
+  const html = `
+    <div class="modal-overlay show" id="modal-cat-picker" onclick="if(event.target===this)closeCatPicker()">
+      <div class="modal" style="max-width: 440px;">
+        <div class="modal-header">
+          <h2 class="modal-title">Filtrer par catégorie</h2>
+          <button class="modal-close" onclick="closeCatPicker()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 0 22px 22px;">
+          <p style="font-size: 13.5px; color: var(--label-2); margin-bottom: 16px;">Touche une catégorie pour voir uniquement ses plats.</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="cat-picker-item ${!state.activeCategory ? 'active' : ''}" onclick="pickCategory(null)">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--fill-2); border: 1px solid var(--sep); border-radius: 14px; cursor: pointer; transition: all 0.15s; ${!state.activeCategory ? 'background: var(--blue-soft); border-color: var(--blue); color: var(--blue);' : ''}">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-weight: 800; font-size: 14px;">Toutes les catégories</span>
+                </div>
+                <span style="font-size: 12px; font-weight: 700; opacity: 0.7;">${state.menu.length} plats</span>
+              </div>
+            </button>
+            ${cats.map(c => `
+              <button class="cat-picker-item" onclick="pickCategory('${escapeAttr(c)}')">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--fill-2); border: 1px solid var(--sep); border-radius: 14px; cursor: pointer; transition: all 0.15s; ${state.activeCategory === c ? 'background: var(--blue-soft); border-color: var(--blue); color: var(--blue);' : ''}">
+                  <span style="font-weight: 800; font-size: 14px;">${escapeHtml(c)}</span>
+                  <span style="font-size: 12px; font-weight: 700; opacity: 0.7;">${counts[c]} plat${counts[c]>1?'s':''}</span>
+                </div>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // Insérer dans le DOM
+  const existing = document.getElementById('modal-cat-picker');
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCatPicker() {
+  const m = document.getElementById('modal-cat-picker');
+  if (m) m.remove();
+  document.body.style.overflow = '';
+}
+
+function pickCategory(cat) {
+  state.activeCategory = cat;
+  state.platStatusFilter = 'all'; // Reset le filtre dispo/épuisé
+  closeCatPicker();
+  renderCategories();
+  updateStatCardsActive();
+  renderMenu();
+  const grid = document.getElementById('menu-grid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function toggleDispoPlat(id, newVal) {

@@ -2114,6 +2114,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Nouvelle table
       </button>
+      <button class="btn-cta" style="background: var(--blue-soft); color: var(--blue); margin-left: 10px;" onclick="printAllQRs()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimer tous les QR
+      </button>
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-head"><div class="stat-icon blue">
@@ -2581,7 +2585,8 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-qr')">Fermer</button>
-      <button class="btn btn-primary" onclick="downloadQR()">Télécharger</button>
+      <button class="btn btn-secondary" onclick="downloadQR()">PNG</button>
+      <button class="btn btn-primary" onclick="printSingleQR()">📄 Imprimer PDF</button>
     </div>
   </div>
 </div>
@@ -3949,6 +3954,280 @@ function downloadQR() {
   const a = document.createElement('a');
   a.href = img.src; a.download = name + '.png'; a.target = '_blank';
   document.body.appendChild(a); a.click(); a.remove();
+}
+
+// ============ IMPRESSION PDF DES QR CODES ============
+
+// Génère le HTML d'une "carte de table" pour impression
+function buildQRCardHTML(table, fullUrl) {
+  const restoNom = (state.config && state.config.restaurant_nom) || RESTO.nom || '';
+  const logoUrl = (state.config && state.config.logo_url) || RESTO.logo_url || '';
+  const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=10&data=' + encodeURIComponent(fullUrl);
+  return `
+    <div class="qr-card">
+      <div class="qr-card-header">
+        ${logoUrl ? `<img src="${logoUrl}" alt="logo" class="qr-card-logo">` : ''}
+        <div class="qr-card-resto">${escapeHtml(restoNom)}</div>
+      </div>
+      <div class="qr-card-table-name">${escapeHtml(table.nom || '')}</div>
+      <div class="qr-card-qr">
+        <img src="${qrSrc}" alt="QR code">
+      </div>
+      <div class="qr-card-instructions">
+        <div class="qr-card-instr-title">Scannez pour commander</div>
+        <div class="qr-card-instr-sub">Pas d'application à télécharger.<br>Pointez votre appareil photo sur le code.</div>
+      </div>
+      <div class="qr-card-footer">
+        <span class="qr-card-spark">✦</span>
+        <span class="qr-card-brand">Frizz</span>
+        <span class="qr-card-spark">✦</span>
+      </div>
+    </div>
+  `;
+}
+
+// CSS commun pour les pages d'impression (A6 par carte, 4 cartes par A4 si plusieurs)
+function getPrintStyles() {
+  return `
+    <style>
+      @page { size: A4; margin: 0; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: white;
+        color: #1A1A1A;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .pages-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+      .page {
+        width: 210mm;
+        height: 297mm;
+        page-break-after: always;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        padding: 8mm;
+        gap: 4mm;
+        background: white;
+      }
+      .page:last-child { page-break-after: auto; }
+      .qr-card {
+        border: 1px dashed #C0C0C0;
+        border-radius: 6mm;
+        padding: 8mm 6mm;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        background: white;
+        position: relative;
+        overflow: hidden;
+      }
+      .qr-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4mm;
+        background: linear-gradient(90deg, #0A84FF, #5AB4FF);
+      }
+      .qr-card-header {
+        display: flex;
+        align-items: center;
+        gap: 3mm;
+        margin-top: 2mm;
+        margin-bottom: 6mm;
+      }
+      .qr-card-logo {
+        width: 12mm; height: 12mm;
+        border-radius: 3mm;
+        object-fit: cover;
+      }
+      .qr-card-resto {
+        font-size: 14pt;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #1A1A1A;
+      }
+      .qr-card-table-name {
+        font-size: 28pt;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: #0A84FF;
+        margin-bottom: 4mm;
+        line-height: 1;
+      }
+      .qr-card-qr {
+        background: white;
+        padding: 3mm;
+        border-radius: 4mm;
+        margin-bottom: 5mm;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .qr-card-qr img {
+        width: 60mm;
+        height: 60mm;
+        display: block;
+      }
+      .qr-card-instructions {
+        margin-bottom: 4mm;
+      }
+      .qr-card-instr-title {
+        font-size: 11pt;
+        font-weight: 700;
+        color: #1A1A1A;
+        margin-bottom: 1.5mm;
+        letter-spacing: -0.01em;
+      }
+      .qr-card-instr-sub {
+        font-size: 8pt;
+        color: #6E6E73;
+        font-style: italic;
+        line-height: 1.3;
+      }
+      .qr-card-footer {
+        margin-top: auto;
+        padding-top: 3mm;
+        border-top: 1px solid #E8E8E8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3mm;
+        font-size: 9pt;
+        color: #8C8880;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+      }
+      .qr-card-spark { color: #0A84FF; font-style: italic; }
+      .qr-card-brand { font-weight: 700; }
+
+      /* Page seule : un seul QR centré, plus grand */
+      .single-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        page-break-after: auto;
+      }
+      .single-page .qr-card {
+        width: 110mm;
+        max-height: 170mm;
+      }
+      .single-page .qr-card-table-name {
+        font-size: 36pt;
+      }
+      .single-page .qr-card-qr img {
+        width: 75mm;
+        height: 75mm;
+      }
+
+      @media print {
+        .no-print { display: none !important; }
+      }
+    </style>
+  `;
+}
+
+// Imprimer le QR de la table actuellement ouverte (modal QR)
+function printSingleQR() {
+  if (!state.editingTableId) {
+    // Récupérer la table depuis le titre du modal
+    const titleEl = document.getElementById('qr-title');
+    if (!titleEl) return;
+  }
+  const tableNomFromTitle = (document.getElementById('qr-title').textContent || '').replace('QR — ', '').trim();
+  const table = state.tables.find(t => t.nom === tableNomFromTitle);
+  if (!table) {
+    showToast('Table introuvable', 'error');
+    return;
+  }
+  printQRCards([table]);
+}
+
+// Imprimer les QR de toutes les tables
+function printAllQRs() {
+  if (!state.tables || state.tables.length === 0) {
+    showToast('Aucune table à imprimer', 'error');
+    return;
+  }
+  printQRCards(state.tables);
+}
+
+// Génère et ouvre une fenêtre d'impression avec les QR cards
+function printQRCards(tables) {
+  const baseUrl = state.config.url_client || '';
+  if (!baseUrl) {
+    showToast('Configure l\'URL client dans Config', 'error');
+    return;
+  }
+
+  const win = window.open('', '_blank', 'width=900,height=1100');
+  if (!win) {
+    showToast('Bloqueur de popup activé. Autorise les popups pour imprimer.', 'error');
+    return;
+  }
+
+  // Construire les pages
+  let pagesHtml = '';
+  if (tables.length === 1) {
+    // Une seule table → une page centrée plus grande
+    const table = tables[0];
+    const sep = baseUrl.includes('?') ? '&' : '?';
+    const fullUrl = baseUrl + sep + 'resto=' + encodeURIComponent(RESTO.slug) + '&table=' + encodeURIComponent(table.id);
+    pagesHtml = `<div class="page single-page">${buildQRCardHTML(table, fullUrl)}</div>`;
+  } else {
+    // Plusieurs tables → 4 par page A4
+    const cardsPerPage = 4;
+    for (let i = 0; i < tables.length; i += cardsPerPage) {
+      const pageCards = tables.slice(i, i + cardsPerPage);
+      // Compléter avec des cartes vides si moins de 4
+      const cardsHtml = pageCards.map(t => {
+        const sep = baseUrl.includes('?') ? '&' : '?';
+        const fullUrl = baseUrl + sep + 'resto=' + encodeURIComponent(RESTO.slug) + '&table=' + encodeURIComponent(t.id);
+        return buildQRCardHTML(t, fullUrl);
+      }).join('');
+      // Ajout cellules vides pour compléter la grille
+      const emptyCells = cardsPerPage - pageCards.length;
+      const empties = Array.from({length: emptyCells}, () => '<div></div>').join('');
+      pagesHtml += `<div class="page">${cardsHtml}${empties}</div>`;
+    }
+  }
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+    <meta charset="UTF-8">
+    <title>QR codes — ${escapeHtml((state.config && state.config.restaurant_nom) || RESTO.nom || 'Frizz')}</title>
+    ${getPrintStyles()}
+    </head>
+    <body>
+    <div class="no-print" style="position: fixed; top: 0; left: 0; right: 0; background: #1A1A1A; color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+      <div style="font-weight: 700; font-size: 14px;">
+        ✦ ${tables.length} QR code${tables.length > 1 ? 's' : ''} prêt${tables.length > 1 ? 's' : ''} à imprimer
+      </div>
+      <div>
+        <button onclick="window.print()" style="background: #0A84FF; color: #fff; border: 0; padding: 10px 20px; border-radius: 100px; font-weight: 600; cursor: pointer; font-size: 14px;">📄 Imprimer / Sauver en PDF</button>
+        <button onclick="window.close()" style="background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 100px; font-weight: 500; cursor: pointer; margin-left: 8px; font-size: 14px;">Fermer</button>
+      </div>
+    </div>
+    <div style="height: 70px;" class="no-print"></div>
+    <div class="pages-wrapper">${pagesHtml}</div>
+    </body>
+    </html>
+  `;
+
+  win.document.write(html);
+  win.document.close();
+
+  // Attendre que les images QR soient chargées avant d'auto-déclencher l'impression
+  // (On laisse l'utilisateur cliquer manuellement pour qu'il voit le résultat avant)
 }
 
 // ============ STATS ============

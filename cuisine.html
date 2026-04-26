@@ -47,9 +47,11 @@
     letter-spacing: -0.013em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
 
@@ -713,10 +715,10 @@
 
   /* ========== RESPONSIVE ========== */
   @media (max-width: 900px) {
-    .board { grid-template-columns: 1fr; overflow-y: auto; height: auto; min-height: calc(100vh - 73px); }
-    .col { border-right: 0; border-bottom: 1px solid var(--sep-strong); }
+    .board { grid-template-columns: 1fr; overflow: visible; height: auto; }
+    .col { border-right: 0; border-bottom: 1px solid var(--sep-strong); overflow: visible; }
     .col:last-child { border-bottom: 0; }
-    .col-body { max-height: none; padding: 14px; }
+    .col-body { max-height: none; padding: 14px; overflow: visible; }
     .header-inner { padding: 12px 16px; flex-wrap: wrap; }
     .clock { font-size: 15px; padding: 6px 12px; }
     .brand-logo { font-size: 21px; }
@@ -725,8 +727,6 @@
   }
   @media (max-width: 480px) {
     .brand-sub { display: none; }
-    body { overflow: auto; }
-    html, body { height: auto; }
   }
 </style>
 </head>

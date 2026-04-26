@@ -774,6 +774,18 @@
         </div>
       </div>
       <div class="header-actions">
+        <button id="sound-toggle" onclick="toggleSound()" title="Activer/désactiver les notifications sonores" style="background: var(--blue-soft, rgba(10,132,255,0.14)); color: var(--blue, #0A84FF); border: 1px solid rgba(10,132,255,0.28); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s;">
+          <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+          <svg id="sound-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; display:none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+          <span id="sound-label">Son ON</span>
+        </button>
         <div class="clock" id="clock">--:--</div>
       </div>
     </div>
@@ -836,6 +848,58 @@
 
   </main>
 
+  <!-- ========= MODAL NOTIFICATION : PLAT PRÊT ========= -->
+  <div id="ready-notif-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; animation: notif-fade-in 0.3s ease;">
+    <div id="ready-notif-card" style="background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%); border: 2px solid #0A84FF; border-radius: 28px; padding: 36px 32px; max-width: 480px; width: 100%; box-shadow: 0 30px 80px rgba(10,132,255,0.4), 0 0 0 8px rgba(10,132,255,0.15); position: relative; animation: notif-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;">
+
+      <!-- Pastille pulsante en haut -->
+      <div style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #0A84FF; color: #fff; padding: 8px 18px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; box-shadow: 0 6px 20px rgba(10,132,255,0.5); display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #30D158; box-shadow: 0 0 12px #30D158; animation: pulse-dot 1.4s ease-in-out infinite;"></span>
+        Plat prêt
+      </div>
+
+      <!-- Numéro de table en grand -->
+      <div style="text-align: center; margin-top: 16px; margin-bottom: 22px;">
+        <div style="font-size: 13px; color: #6E6E73; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Servir maintenant</div>
+        <div id="ready-notif-table" style="font-size: 72px; font-weight: 800; color: #0A84FF; letter-spacing: -0.04em; line-height: 1; font-feature-settings: 'tnum';">Table —</div>
+      </div>
+
+      <!-- Liste des plats -->
+      <div style="background: rgba(10,132,255,0.06); border: 1px solid rgba(10,132,255,0.18); border-radius: 16px; padding: 16px 18px; margin-bottom: 24px; max-height: 240px; overflow-y: auto;">
+        <div style="font-size: 11px; color: #6E6E73; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;">À servir</div>
+        <div id="ready-notif-items" style="display: flex; flex-direction: column; gap: 8px; font-family: -apple-system, sans-serif;"></div>
+      </div>
+
+      <!-- Personne qui a commandé -->
+      <div id="ready-notif-personne" style="font-size: 13px; color: #6E6E73; text-align: center; margin-bottom: 22px; font-weight: 500;"></div>
+
+      <!-- Bouton confirmation -->
+      <button onclick="confirmReadyNotification()" style="width: 100%; background: #0A84FF; color: #fff; border: 0; padding: 18px; border-radius: 100px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(10,132,255,0.4); transition: all 0.2s; letter-spacing: -0.01em;">
+        ✓ Servi à la table
+      </button>
+
+      <!-- Compteur si plusieurs notifs en attente -->
+      <div id="ready-notif-queue" style="display: none; text-align: center; margin-top: 14px; font-size: 12.5px; color: #6E6E73; font-weight: 600;"></div>
+    </div>
+  </div>
+
+  <!-- Audio pour notification sonore (généré via Web Audio API, voir JS) -->
+
+  <style>
+  @keyframes notif-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes notif-pop {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+  </style>
+
   <!-- Order cart (en bas, visible en mode commande) -->
   <div class="order-cart" id="order-cart" onclick="sendCart()">
     <div class="order-cart-icon">
@@ -884,7 +948,12 @@ const state = {
   // Pourboire
   tipPct: 0,
   // Polling
-  pollInterval: null
+  pollInterval: null,
+  // Notifications "plat prêt"
+  notifiedOrderIds: new Set(),  // IDs déjà notifiés (pour éviter de re-notifier après confirmation)
+  pendingNotifications: [],     // queue des commandes prêtes à montrer
+  currentNotification: null,    // notif actuellement affichée dans la modal
+  soundEnabled: true            // toggle son
 };
 
 const params = new URLSearchParams(location.search);
@@ -957,6 +1026,17 @@ async function init() {
     // 5) Affichage
     tickClock();
     renderTables();
+
+    // Restaurer la préférence "son ON/OFF" depuis localStorage
+    try {
+      const stored = localStorage.getItem('frizz_serveur_sound');
+      if (stored === '0') {
+        // L'utilisateur avait désactivé → on désactive (sans rejouer le ding)
+        state.soundEnabled = true;  // pour que toggleSound() bascule à false
+        toggleSound();
+      }
+    } catch(e) {}
+
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
 
@@ -972,7 +1052,6 @@ async function init() {
 async function loadOrders() {
   if (!state.resto) return;
   // On charge les commandes des dernières 24h (toutes statuts sauf annulee)
-  // pour pouvoir afficher l'état "Payée" et permettre l'annulation du paiement
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { data, error } = await supa.from('commandes')
     .select('*')
@@ -981,7 +1060,34 @@ async function loadOrders() {
     .gte('heure', yesterday)
     .order('heure', { ascending: true });
   if (!error) {
+    const oldOrders = state.orders;
     state.orders = data || [];
+
+    // ⚠ Détection des nouvelles commandes en statut "prete"
+    // Une commande est notifiée si :
+    //   - Elle est maintenant en statut 'prete'
+    //   - Elle n'a pas déjà été notifiée (notifiedOrderIds)
+    // Lors du tout premier chargement (oldOrders.length === 0), on ne notifie pas
+    // (pour éviter de spammer le serveur qui ouvre l'app au milieu d'un service)
+    if (oldOrders.length > 0) {
+      const newReady = state.orders.filter(o =>
+        o.statut === 'prete' && !state.notifiedOrderIds.has(o.id)
+      );
+      if (newReady.length > 0) {
+        newReady.forEach(o => {
+          state.notifiedOrderIds.add(o.id);
+          state.pendingNotifications.push(o);
+        });
+        showNextNotification();
+      }
+    } else {
+      // Premier chargement : on marque toutes les commandes prêtes comme déjà notifiées
+      // pour ne notifier QUE les nouvelles à partir de maintenant
+      state.orders.filter(o => o.statut === 'prete').forEach(o => {
+        state.notifiedOrderIds.add(o.id);
+      });
+    }
+
     // Refresh la vue active
     if (document.getElementById('screen-tables').classList.contains('active')) {
       renderTables();
@@ -1255,6 +1361,160 @@ async function sendCart() {
 // ============================================================================
 // MARQUAGE PAYÉ / NON PAYÉ
 // ============================================================================
+// ============================================================================
+// NOTIFICATIONS "PLAT PRÊT" (modal bloquante + son)
+// ============================================================================
+
+// Génère un son d'alerte court via Web Audio API (pas besoin de fichier audio externe)
+let _audioCtx = null;
+function playNotificationSound() {
+  if (!state.soundEnabled) return;
+  try {
+    if (!_audioCtx) {
+      _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = _audioCtx;
+    // Si le contexte est suspendu (autoplay policy), on tente de le reprendre
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+    const now = ctx.currentTime;
+    // Joue 2 notes courtes (do-mi) pour faire un "ding" agréable
+    [
+      { freq: 880, start: 0, duration: 0.18 },     // La5
+      { freq: 1175, start: 0.12, duration: 0.22 }  // Ré6
+    ].forEach(note => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = note.freq;
+      gain.gain.setValueAtTime(0, now + note.start);
+      gain.gain.linearRampToValueAtTime(0.32, now + note.start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + note.start + note.duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + note.start);
+      osc.stop(now + note.start + note.duration);
+    });
+  } catch (err) {
+    console.warn('Audio non disponible:', err);
+  }
+}
+
+// Toggle on/off le son
+function toggleSound() {
+  state.soundEnabled = !state.soundEnabled;
+  const iconOn = document.getElementById('sound-icon-on');
+  const iconOff = document.getElementById('sound-icon-off');
+  const label = document.getElementById('sound-label');
+  const btn = document.getElementById('sound-toggle');
+  if (state.soundEnabled) {
+    iconOn.style.display = '';
+    iconOff.style.display = 'none';
+    label.textContent = 'Son ON';
+    btn.style.background = 'rgba(10,132,255,0.14)';
+    btn.style.color = '#0A84FF';
+    btn.style.borderColor = 'rgba(10,132,255,0.28)';
+    // Initialise le contexte audio (geste utilisateur requis pour autoplay)
+    try {
+      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (_audioCtx.state === 'suspended') _audioCtx.resume();
+      playNotificationSound();  // petit "ding" de confirmation
+    } catch(e) {}
+  } else {
+    iconOn.style.display = 'none';
+    iconOff.style.display = '';
+    label.textContent = 'Son OFF';
+    btn.style.background = 'rgba(0,0,0,0.06)';
+    btn.style.color = '#6E6E73';
+    btn.style.borderColor = 'rgba(0,0,0,0.10)';
+  }
+  // Persiste le choix en localStorage pour la prochaine session
+  try { localStorage.setItem('frizz_serveur_sound', state.soundEnabled ? '1' : '0'); } catch(e) {}
+}
+
+// Affiche la prochaine notification dans la queue (s'il y en a)
+function showNextNotification() {
+  // Si une modal est déjà affichée, on ne fait rien (l'user doit confirmer d'abord)
+  if (state.currentNotification) return;
+  if (state.pendingNotifications.length === 0) return;
+
+  const order = state.pendingNotifications.shift();
+  state.currentNotification = order;
+
+  // Trouver le nom de la table
+  const table = state.tables.find(t => t.id === order.table_id);
+  const tableName = table ? (table.nom || '?') : '?';
+
+  // Remplir la modal
+  document.getElementById('ready-notif-table').textContent = 'Table ' + tableName;
+
+  // Liste des plats
+  const items = Array.isArray(order.items) ? order.items : [];
+  const itemsHtml = items.map(it => {
+    const qte = it.qte || 1;
+    const nom = it.nom || '?';
+    const note = it.note ? `<div style="font-size:12px; color:#6E6E73; font-style:italic; margin-top:2px;">↳ ${escapeHtml(it.note)}</div>` : '';
+    return `<div style="display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid rgba(10,132,255,0.10);">
+      <span style="font-weight:800; color:#0A84FF; min-width:24px; font-feature-settings:'tnum';">${qte}×</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; color:#1D1D1F; letter-spacing:-0.01em;">${escapeHtml(nom)}</div>
+        ${note}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ready-notif-items').innerHTML = itemsHtml;
+
+  // Personne (si présente)
+  const personne = order.personne_nom ? `Commandé par ${escapeHtml(order.personne_nom)}` : '';
+  document.getElementById('ready-notif-personne').textContent = personne;
+
+  // Compteur queue
+  const queueEl = document.getElementById('ready-notif-queue');
+  if (state.pendingNotifications.length > 0) {
+    queueEl.style.display = 'block';
+    queueEl.textContent = `+ ${state.pendingNotifications.length} autre${state.pendingNotifications.length > 1 ? 's' : ''} en attente`;
+  } else {
+    queueEl.style.display = 'none';
+  }
+
+  // Afficher la modal
+  document.getElementById('ready-notif-overlay').style.display = 'flex';
+
+  // Jouer le son
+  playNotificationSound();
+
+  // Vibration mobile (bonus)
+  if (navigator.vibrate) {
+    navigator.vibrate([200, 100, 200]);
+  }
+}
+
+// Le serveur confirme avoir servi le plat → passe la commande en statut "servie"
+async function confirmReadyNotification() {
+  const order = state.currentNotification;
+  if (!order) return;
+
+  // Optimistic UI : on ferme tout de suite pour pas bloquer le serveur
+  document.getElementById('ready-notif-overlay').style.display = 'none';
+  state.currentNotification = null;
+
+  try {
+    const { error } = await supa.from('commandes')
+      .update({ statut: 'servie' })
+      .eq('id', order.id);
+    if (error) throw error;
+    showToast('Servi à la table ✓');
+    await loadOrders();
+  } catch (err) {
+    console.error('confirm notif error:', err);
+    showToast('Erreur : ' + (err.message || 'mise à jour impossible'));
+  }
+
+  // Afficher la prochaine notif après 400ms (laisse respirer)
+  setTimeout(() => showNextNotification(), 400);
+}
+
 async function togglePaiementTable() {
   const t = state.tables.find(x => x.id === state.selectedTableId);
   if (!t) {

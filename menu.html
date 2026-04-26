@@ -3036,6 +3036,20 @@ document.addEventListener('click', (e) => {
   if (e.target === overlay) closeGoogleModal();
 });
 
+// Met à jour le badge "Salon" en haut à droite avec le nombre de personnes à table
+function updateSalonCount() {
+  const el = document.getElementById('salon-count');
+  if (!el) return;
+  const personIds = new Set();
+  (state.allOrders || []).forEach(o => {
+    if (o.personne_id) personIds.add(o.personne_id);
+  });
+  // On ajoute soi-même même si on n'a pas encore commandé
+  personIds.add(state.personneId);
+  const n = personIds.size;
+  el.textContent = n > 1 ? `Salon · ${n}` : 'Salon';
+}
+
 function openSalon() {
   renderSalon();
   document.getElementById('modal-salon').classList.add('active');

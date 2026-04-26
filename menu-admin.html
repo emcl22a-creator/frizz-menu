@@ -467,6 +467,21 @@
     transform: translateY(-2px);
     box-shadow: 0 18px 32px -16px rgba(0,0,0,0.5);
   }
+  /* Carte active : effet sobre, juste le chevron qui pivote pour signaler le filtre */
+  .stat-card.stat-card-active {
+    border-color: rgba(255,255,255,0.18);
+  }
+  .stat-card.stat-card-active .stat-chevron {
+    transform: rotate(90deg);
+    color: var(--label);
+  }
+  /* Reset pour <button> qui sont les stat-cards */
+  button.stat-card {
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+  }
   .stat-head { flex-shrink: 0; }
   .stat-icon {
     width: 38px; height: 38px;
@@ -1969,7 +1984,7 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
-      <button onclick="openServeur()" title="Ouvrir le mode serveur" style="display:flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:100px; background:var(--blue); border:1px solid var(--blue); color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:-0.012em; box-shadow:0 4px 14px rgba(10,132,255,0.35);" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+      <button onclick="openServeur()" title="Ouvrir le mode serveur" style="display:flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:100px; background:transparent; border:1.5px solid var(--blue); color:var(--blue); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:-0.012em;" onmouseover="this.style.background='var(--blue-soft)';" onmouseout="this.style.background='transparent';">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-2-2"/></svg>
         Serveur
       </button>
@@ -2999,6 +3014,7 @@ async function loadMenu() {
     document.getElementById('strip-cats').textContent = cats;
     document.getElementById('strip-dispo').textContent = dispo;
     document.getElementById('strip-epuise').textContent = total - dispo;
+    updateStatCardsActive();
   } catch (err) {
     console.error('loadMenu:', err);
     showToast('Menu: ' + (err.message || 'erreur inconnue'), 'error');

@@ -902,6 +902,51 @@
   .modal-close-x svg { width: 16px; height: 16px; }
 
   /* ========== CART MODAL ========== */
+  /* ========== GROUP STATUS (commande de groupe) ========== */
+  .group-status {
+    background: linear-gradient(135deg, rgba(10,132,255,0.12) 0%, rgba(10,132,255,0.04) 100%);
+    border: 1px solid rgba(10,132,255,0.3);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .group-status-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .group-status-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--label);
+    letter-spacing: -0.013em;
+  }
+  .group-status-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .group-status-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue) 0%, #5AB4FF 100%);
+    border-radius: 100px;
+    transition: width 0.5s var(--ease-spring);
+    box-shadow: 0 0 12px rgba(10,132,255,0.5);
+  }
+  .group-status-sub {
+    font-size: 12.5px;
+    color: var(--label-2);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
   .cart-modal-list {
     display: flex;
     flex-direction: column;
@@ -2009,7 +2054,7 @@
       <span class="cart-count" id="cart-count">0</span>
     </div>
     <div class="cart-info">
-      <div class="cart-label">Ma commande</div>
+      <div class="cart-label">Notre commande</div>
       <div class="cart-total" id="cart-total">0.00€</div>
     </div>
     <span class="cart-cta">Voir →</span>
@@ -2090,7 +2135,7 @@
     <div class="modal-handle"></div>
     <div class="modal-body" style="padding-top: 16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px;">
-        <div class="modal-name" style="margin-bottom:0;">Ma commande</div>
+        <div class="modal-name" style="margin-bottom:0;">Notre commande</div>
         <button class="modal-close-x" style="position:relative; top:auto; right:auto; background: var(--fill-1);" onclick="closeModal('modal-cart')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
@@ -2099,7 +2144,7 @@
     </div>
     <div class="modal-footer" id="cart-footer" style="display:none;">
       <button class="modal-add-btn" onclick="sendOrder()">
-        <span id="send-btn-text">Envoyer en cuisine · 0.00€</span>
+        <span id="send-btn-text">Valider ma part · 0.00€</span>
       </button>
     </div>
   </div>
@@ -2716,48 +2761,167 @@ function renderCart() {
   document.getElementById('cart-count').textContent = count;
   document.getElementById('cart-total').textContent = total.toFixed(2) + '€';
   const bar = document.getElementById('cart-bar');
-  bar.classList.toggle('show', count > 0);
-  // Toggle de la classe body pour repositionner le timer-bar au-dessus
-  document.body.classList.toggle('has-cart', count > 0);
+
+  // Récupérer les commandes pending de groupe (autres personnes qui ont déjà validé/ajouté)
+  const groupOrders = (state.allOrders || []).filter(o => o.statut === 'en_attente_groupe');
+  const myGroupOrder = groupOrders.find(o => o.personne_id === state.personneId);
+  const otherGroupOrders = groupOrders.filter(o => o.personne_id !== state.personneId);
+
+  // Le panier en bas est visible si on a des items locaux OU si quelqu'un dans le groupe a validé
+  const hasGroupActivity = groupOrders.length > 0;
+  bar.classList.toggle('show', count > 0 || hasGroupActivity);
+  document.body.classList.toggle('has-cart', count > 0 || hasGroupActivity);
+
+  // Mettre à jour le total de la barre flottante avec total groupé
+  const groupTotal = groupOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+  const grandTotal = total + groupTotal;
+  document.getElementById('cart-total').textContent = grandTotal.toFixed(2) + '€';
+  const groupCount = groupOrders.reduce((s, o) => {
+    return s + (Array.isArray(o.items) ? o.items.reduce((ss, it) => ss + (it.qte || 1), 0) : 0);
+  }, 0);
+  document.getElementById('cart-count').textContent = count + groupCount;
 
   const content = document.getElementById('cart-content');
   const footer = document.getElementById('cart-footer');
-  if (count === 0) {
-    content.innerHTML = `<div class="cart-empty"><p>Ton panier est vide.<br>Choisis un plat pour démarrer 🍽</p></div>`;
+
+  // Cas 1 : aucun panier (ni perso, ni groupe)
+  if (count === 0 && groupOrders.length === 0) {
+    content.innerHTML = `<div class="cart-empty"><p>Votre commande est vide.<br>Choisissez un plat pour démarrer 🍽</p></div>`;
     footer.style.display = 'none';
     return;
   }
+
+  // Construire la liste agrégée par plat (anonyme : juste plat + qte totale)
+  // On compile tous les items : ceux de moi (locaux) + ceux des commandes groupe (mienne validée + autres)
+  const aggregated = {};
+  // Mes items locaux (panier non encore validé)
+  state.cart.forEach(it => {
+    const key = it.id + '|' + (it.note || '');
+    if (!aggregated[key]) {
+      aggregated[key] = {
+        id: it.id,
+        nom: it.nom,
+        prix: it.prix,
+        photo_url: it.photo_url,
+        note: it.note || '',
+        qte: 0,
+        myLocal: 0,
+        validated: 0
+      };
+    }
+    aggregated[key].qte += it.qte;
+    aggregated[key].myLocal += it.qte;
+  });
+  // Items des commandes groupe (validées par moi ou par les autres)
+  groupOrders.forEach(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    items.forEach(it => {
+      const key = it.id + '|' + (it.note || '');
+      if (!aggregated[key]) {
+        aggregated[key] = {
+          id: it.id,
+          nom: it.nom,
+          prix: it.prix,
+          photo_url: it.photo_url,
+          note: it.note || '',
+          qte: 0,
+          myLocal: 0,
+          validated: 0
+        };
+      }
+      aggregated[key].qte += it.qte || 1;
+      aggregated[key].validated += it.qte || 1;
+    });
+  });
+
+  const aggList = Object.values(aggregated);
+
+  // Statut validation par personne
+  const allPersonneIds = new Set([state.personneId]);
+  groupOrders.forEach(o => allPersonneIds.add(o.personne_id));
+  // Aussi ajouter les personnes qui ont commandé sur cette table dans le passé (présentes encore)
+  (state.allOrders || []).forEach(o => {
+    if (o.session_id === state.sessionId && o.personne_id) {
+      allPersonneIds.add(o.personne_id);
+    }
+  });
+  const totalPersonnes = allPersonneIds.size;
+  const validatedPersonnes = groupOrders.length; // chaque commande groupe = 1 personne qui a validé
+  const myValidated = !!myGroupOrder;
+  const allValidated = totalPersonnes > 0 && validatedPersonnes >= totalPersonnes;
+
   content.innerHTML = `
+    ${groupOrders.length > 0 ? `
+    <div class="group-status">
+      <div class="group-status-header">
+        <div class="group-status-title">
+          <span>${validatedPersonnes}/${totalPersonnes} ${totalPersonnes > 1 ? 'personnes ont validé' : 'personne a validé'}</span>
+        </div>
+        <div class="group-status-progress">
+          <div class="group-status-progress-bar" style="width: ${totalPersonnes > 0 ? (validatedPersonnes/totalPersonnes*100) : 0}%"></div>
+        </div>
+      </div>
+      <div class="group-status-sub">
+        ${allValidated ?
+          '🚀 Tout le monde a validé ! Envoi en cuisine…' :
+          myValidated ?
+            '⏳ En attente des autres convives. Tu peux ajouter des plats si tu veux.' :
+            '✋ Valide ta commande quand tu es prêt(e). Les autres font de même.'}
+      </div>
+    </div>
+    ` : ''}
+
     <div class="cart-modal-list">
-      ${state.cart.map((it, i) => `
+      ${aggList.map((it, i) => `
         <div class="cart-item">
           <div class="cart-item-photo" ${it.photo_url ? `style="background-image: url('${escapeAttr(it.photo_url)}')"` : ''}></div>
           <div class="cart-item-info">
             <div class="cart-item-name">${escapeHtml(it.nom)}</div>
-            <div class="cart-item-meta">×${it.qte}${it.note?` · <em>${escapeHtml(it.note)}</em>`:''}</div>
+            <div class="cart-item-meta">×${it.qte}${it.note?` · <em>${escapeHtml(it.note)}</em>`:''}${it.validated > 0 ? ` <span style="color: var(--green); font-weight:700;">· ${it.validated} validé${it.validated>1?'s':''}</span>` : ''}</div>
           </div>
           <div class="cart-item-price">${(it.prix * it.qte).toFixed(2)}€</div>
-          <button class="cart-item-remove" onclick="removeCartItem(${i})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
+          ${it.myLocal > 0 ? `
+            <button class="cart-item-remove" onclick="removeCartItemById('${escapeHtml(it.id)}', ${JSON.stringify(it.note || '').replace(/"/g, '&quot;')})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          ` : `<div style="width:32px;flex-shrink:0;"></div>`}
         </div>
       `).join('')}
     </div>
     <div class="cart-summary">
       <div class="cart-row total">
         <span>Total</span>
-        <span class="v">${total.toFixed(2)}€</span>
+        <span class="v">${grandTotal.toFixed(2)}€</span>
       </div>
     </div>`;
   footer.style.display = 'flex';
-  document.getElementById('send-btn-text').textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
+
+  // Texte du bouton dynamique
+  const btn = document.getElementById('send-btn-text');
+  if (myValidated) {
+    btn.textContent = `Tu as validé ✓`;
+    document.getElementById('send-btn').disabled = true;
+    document.getElementById('send-btn').style.opacity = '0.6';
+  } else if (count === 0) {
+    btn.textContent = 'Ajoute des plats pour valider';
+    document.getElementById('send-btn').disabled = true;
+    document.getElementById('send-btn').style.opacity = '0.6';
+  } else {
+    btn.textContent = `Valider ma part · ${total.toFixed(2)}€`;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('send-btn').style.opacity = '1';
+  }
 }
 
-function removeCartItem(idx) {
-  state.cart.splice(idx, 1);
-  saveCart();
-  renderMenu();
-  renderCart();
+function removeCartItemById(platId, note) {
+  // Trouver l'index dans state.cart pour les items locaux uniquement
+  const idx = state.cart.findIndex(it => it.id === platId && (it.note || '') === note);
+  if (idx >= 0) {
+    state.cart.splice(idx, 1);
+    saveCart();
+    renderMenu();
+    renderCart();
+  }
 }
 
 function openCart() { document.getElementById('modal-cart').classList.add('active'); }
@@ -2795,24 +2959,30 @@ async function callServer(type, message) {
 
 async function sendOrder() {
   if (state.cart.length === 0) return;
-  // Si paiement avant le repas activé → ouvrir modal paiement
+  // Si paiement avant le repas activé → ouvrir modal paiement (le paiement déclenche aussi la validation groupe)
   if (state.config && state.config.paiement_avant === true) {
     openPaiementClientModal();
     return;
   }
-  // Sinon : envoi direct comme avant (paiement à la fin)
-  await actuallySendOrder();
+  // Mode normal : valider ma part dans la commande de groupe
+  await validateMyPart();
 }
 
-async function actuallySendOrder(paiementInfo = null) {
+// Valide ma partie du panier dans la commande de groupe.
+// Si tous les convives ont validé → bascule auto en cuisine.
+async function validateMyPart(paiementInfo = null) {
   if (state.cart.length === 0) return;
   const btn = document.getElementById('send-btn-text');
+  const sendBtn = document.getElementById('send-btn');
   if (btn) btn.textContent = 'Envoi…';
+  if (sendBtn) sendBtn.disabled = true;
+
   const total = state.cart.reduce((s, it) => s + it.prix * it.qte, 0);
   const items = state.cart.map(it => ({
-    id: it.id, nom: it.nom, prix: it.prix, qte: it.qte, note: it.note || ''
+    id: it.id, nom: it.nom, prix: it.prix, qte: it.qte, note: it.note || '', photo_url: it.photo_url || ''
   }));
   const cmdId = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+
   try {
     const insertData = {
       id: cmdId,
@@ -2822,11 +2992,11 @@ async function actuallySendOrder(paiementInfo = null) {
       personne_id: state.personneId,
       personne_nom: state.personneNom,
       items,
-      statut: 'en_attente',
+      statut: 'en_attente_groupe',  // ⚠ statut intermédiaire : pas encore en cuisine
       heure: new Date().toISOString(),
-      total
+      total,
+      validations: { [state.personneId]: true }
     };
-    // Si paiement effectué (mode pay-first), marquer la commande comme payée
     if (paiementInfo) {
       insertData.payee = true;
       insertData.paiement_method = paiementInfo.method;
@@ -2838,17 +3008,78 @@ async function actuallySendOrder(paiementInfo = null) {
     state.cart = [];
     saveCart();
     renderMenu();
-    renderCart();
-    closeModal('modal-cart');
-    showToast('Commande envoyée en cuisine 🍳', 'success');
+    showToast('Tu as validé ✓ En attente des autres convives', 'success');
     await loadOrders();
+    renderCart();
     updateSalonCount();
-    // Proposer de laisser un avis Google après un petit délai
-    setTimeout(() => openGoogleModal(), 2200);
+    // Vérifier si tout le monde a validé → envoi auto cuisine
+    await checkGroupValidation();
   } catch (err) {
     console.error(err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
-    if (btn) btn.textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
+    if (btn) btn.textContent = `Valider ma part · ${total.toFixed(2)}€`;
+    if (sendBtn) sendBtn.disabled = false;
+  }
+}
+
+// Si toutes les personnes de la table ont validé leur panier → bascule en cuisine
+async function checkGroupValidation() {
+  const groupOrders = (state.allOrders || []).filter(o => o.statut === 'en_attente_groupe');
+  if (groupOrders.length === 0) return;
+
+  // Calcul des personnes uniques sur la session de table
+  const allPersonneIds = new Set([state.personneId]);
+  groupOrders.forEach(o => allPersonneIds.add(o.personne_id));
+  (state.allOrders || []).forEach(o => {
+    if (o.session_id === state.sessionId && o.personne_id) {
+      allPersonneIds.add(o.personne_id);
+    }
+  });
+
+  const validatedIds = new Set(groupOrders.map(o => o.personne_id));
+  const allValidated = [...allPersonneIds].every(pid => validatedIds.has(pid));
+
+  if (allValidated && groupOrders.length > 0) {
+    // Tout le monde a validé → bascule toutes les commandes en_attente_groupe → en_attente
+    showToast('🚀 Commande envoyée en cuisine !', 'success');
+    try {
+      const ids = groupOrders.map(o => o.id);
+      await supa.from('commandes').update({ statut: 'en_attente' }).in('id', ids);
+      // Reload + fermer modal
+      await loadOrders();
+      renderCart();
+      closeModal('modal-cart');
+      // Proposer Google review
+      setTimeout(() => openGoogleModal(), 2200);
+    } catch (err) {
+      console.error('Erreur bascule groupe :', err);
+    }
+  }
+}
+
+// Bouton "Forcer l'envoi" (au cas où quelqu'un oublie de valider)
+async function forceGroupSend() {
+  const groupOrders = (state.allOrders || []).filter(o => o.statut === 'en_attente_groupe');
+  if (groupOrders.length === 0) return;
+  if (!confirm('Envoyer la commande en cuisine maintenant, même si tout le monde n\'a pas encore validé ?')) return;
+  try {
+    const ids = groupOrders.map(o => o.id);
+    await supa.from('commandes').update({ statut: 'en_attente' }).in('id', ids);
+    showToast('🚀 Commande envoyée en cuisine !', 'success');
+    await loadOrders();
+    renderCart();
+    closeModal('modal-cart');
+    setTimeout(() => openGoogleModal(), 2200);
+  } catch (err) {
+    showToast('Erreur : ' + err.message, 'error');
+  }
+}
+
+// Conservé pour compat avec le mode paiement avant
+async function actuallySendOrder(paiementInfo = null) {
+  // En mode paiement avant, on saute la phase groupe (le paiement vaut validation)
+  await validateMyPart(paiementInfo);
+}
   }
 }
 
@@ -2873,6 +3104,10 @@ async function pollOrders() {
   await loadOrders();
   updateSalonCount();
   updateTimerBar();
+  // Re-render le panier pour refléter les nouvelles validations des autres convives
+  renderCart();
+  // Vérifier si tout le monde a validé → bascule auto cuisine
+  await checkGroupValidation();
   // Si modal salon ouvert, rerender
   if (document.getElementById('modal-salon').classList.contains('active')) {
     renderSalon();

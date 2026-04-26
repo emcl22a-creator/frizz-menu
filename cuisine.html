@@ -1450,22 +1450,9 @@ async function updateStatut(orderId, nouveauStatut, extraData = {}) {
   }
 }
 
-// Démarrer une commande avec demande du temps estimé
+// Démarrer une commande (plus de prompt temps estimé - feature désactivée)
 async function startOrder(orderId) {
-  const tempsStr = prompt('Temps estimé en minutes ?\n(15 par défaut, vide pour skip)', '15');
-  if (tempsStr === null) return; // annulé
-  let temps = parseInt(tempsStr);
-  if (isNaN(temps) || temps < 0) temps = null;
-  // Update optimistic local
-  const order = state.orders.find(o => o.id === orderId);
-  if (order) {
-    order.temps_estime_min = temps;
-    order.heure_demarrage = new Date().toISOString();
-  }
-  await updateStatut(orderId, 'en_cours', {
-    temps_estime_min: temps,
-    heure_demarrage: new Date().toISOString()
-  });
+  await updateStatut(orderId, 'en_cours');
 }
 
 // Démarrer

@@ -2182,10 +2182,16 @@
       </div>
       <h1 class="hero-title">Stats</h1>
       <p class="hero-lede">Chiffre d'affaires, panier moyen, top plats — les signaux de ton service en un coup d'œil.</p>
-      <div class="filter-bar" style="margin: 0;">
-        <button class="chip active" data-periode="jour">Jour</button>
-        <button class="chip" data-periode="semaine">Semaine</button>
-        <button class="chip" data-periode="mois">Mois</button>
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
+        <div class="filter-bar" style="margin: 0;">
+          <button class="chip active" data-periode="jour">Jour</button>
+          <button class="chip" data-periode="semaine">Semaine</button>
+          <button class="chip" data-periode="mois">Mois</button>
+        </div>
+        <button class="btn-cta" style="margin: 0; padding: 10px 16px; font-size: 13.5px; background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(10,132,255,0.25);" onclick="openExportModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter CSV
+        </button>
       </div>
     </div>
 
@@ -2569,6 +2575,76 @@
 </div>
 
 <!-- ============ MODAL QR ============ -->
+<!-- ============ MODAL EXPORT CSV ============ -->
+<div class="modal-overlay" id="modal-export">
+  <div class="modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <h2 class="modal-title">📥 Exporter les ventes</h2>
+      <button class="modal-close" onclick="closeModal('modal-export')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="color: var(--label-2); font-size: 13.5px; line-height: 1.5; margin-bottom: 18px;">Génère un fichier CSV avec toutes les commandes payées sur la période choisie. Compatible <strong>Excel, Pennylane, Bexio, Indy, Sage</strong>.</p>
+
+      <label style="display:block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--label-2); margin-bottom: 8px;">Période</label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px;">
+        <button class="export-period-btn active" data-export-period="today" onclick="setExportPeriod('today')">Aujourd'hui</button>
+        <button class="export-period-btn" data-export-period="week" onclick="setExportPeriod('week')">Cette semaine</button>
+        <button class="export-period-btn" data-export-period="month" onclick="setExportPeriod('month')">Ce mois</button>
+        <button class="export-period-btn" data-export-period="custom" onclick="setExportPeriod('custom')">Personnalisé</button>
+      </div>
+
+      <div id="export-custom-dates" style="display: none; margin-bottom: 18px; padding: 14px; background: rgba(10,132,255,0.06); border-radius: 12px;">
+        <label style="display:block; font-size: 12px; font-weight: 600; color: var(--label-2); margin-bottom: 6px;">Du</label>
+        <input type="date" id="export-date-start" class="form-input" style="margin-bottom: 10px;">
+        <label style="display:block; font-size: 12px; font-weight: 600; color: var(--label-2); margin-bottom: 6px;">Au</label>
+        <input type="date" id="export-date-end" class="form-input">
+      </div>
+
+      <div style="background: rgba(0,0,0,0.04); border-radius: 12px; padding: 14px; margin-bottom: 6px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--label-2); margin-bottom: 8px;">Le fichier contiendra</div>
+        <div style="font-size: 13.5px; color: var(--label); line-height: 1.6;">
+          • Date · Heure · Table · Plat · Quantité<br>
+          • Prix unitaire · TVA · Total<br>
+          • Mode de paiement · Statut
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-export')">Annuler</button>
+      <button class="btn btn-primary" onclick="exportSalesCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le CSV
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.export-period-btn {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--label);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+.export-period-btn:hover {
+  background: rgba(10,132,255,0.08);
+}
+.export-period-btn.active {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+</style>
+
 <div class="modal-overlay" id="modal-qr">
   <div class="modal">
     <div class="modal-header">
@@ -4132,6 +4208,242 @@ function getPrintStyles() {
       }
     </style>
   `;
+}
+
+// ============================================================================
+// EXPORT CSV DES VENTES (compatible Excel, Pennylane, Bexio, Indy, Sage)
+// ============================================================================
+
+// État de la période choisie pour l'export
+let exportPeriodState = 'today';
+
+function openExportModal() {
+  // Réinitialiser à "aujourd'hui" par défaut
+  exportPeriodState = 'today';
+  document.querySelectorAll('.export-period-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.exportPeriod === 'today');
+  });
+  document.getElementById('export-custom-dates').style.display = 'none';
+
+  // Pré-remplir les dates personnalisées avec aujourd'hui
+  const today = new Date().toISOString().split('T')[0];
+  const startInput = document.getElementById('export-date-start');
+  const endInput = document.getElementById('export-date-end');
+  if (startInput) startInput.value = today;
+  if (endInput) endInput.value = today;
+
+  document.getElementById('modal-export').classList.add('active');
+}
+
+function setExportPeriod(period) {
+  exportPeriodState = period;
+  document.querySelectorAll('.export-period-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.exportPeriod === period);
+  });
+  // Afficher les dates custom si nécessaire
+  document.getElementById('export-custom-dates').style.display = (period === 'custom') ? 'block' : 'none';
+}
+
+// Calcule [dateStart, dateEnd] selon la période choisie
+function getExportDateRange() {
+  const now = new Date();
+  let start, end;
+
+  if (exportPeriodState === 'today') {
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+  } else if (exportPeriodState === 'week') {
+    // Semaine courante (lundi → dimanche)
+    const day = now.getDay() || 7; // 0 = dimanche → 7
+    start = new Date(now);
+    start.setDate(now.getDate() - day + 1);
+    start.setHours(0, 0, 0, 0);
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+  } else if (exportPeriodState === 'month') {
+    start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+    end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  } else if (exportPeriodState === 'custom') {
+    const startVal = document.getElementById('export-date-start').value;
+    const endVal = document.getElementById('export-date-end').value;
+    if (!startVal || !endVal) {
+      showToast('Choisis une date de début et de fin', 'error');
+      return null;
+    }
+    start = new Date(startVal + 'T00:00:00');
+    end = new Date(endVal + 'T23:59:59');
+    if (start > end) {
+      showToast('La date de début doit être avant la date de fin', 'error');
+      return null;
+    }
+  }
+  return { start, end };
+}
+
+// Échappe une cellule CSV : double les guillemets et entoure de guillemets si besoin
+function csvCell(value) {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  // Si contient virgule, point-virgule, guillemet, retour à la ligne → entourer
+  if (/[",;\n\r]/.test(str)) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+// Formatte une date au format DD/MM/YYYY (lisible Excel FR)
+function formatDateFR(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return '';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
+function formatTimeFR(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return '';
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+// Lit la TVA depuis la config (par défaut 7.7% Suisse, 10% France resto à table)
+function getTVARate() {
+  if (state.config && state.config.tva_taux) {
+    return parseFloat(state.config.tva_taux) || 0;
+  }
+  // Pas configuré → on laisse 0 et la cellule sera vide
+  return 0;
+}
+
+async function exportSalesCSV() {
+  const range = getExportDateRange();
+  if (!range) return;
+  const { start, end } = range;
+
+  showToast('Génération du CSV en cours…');
+
+  try {
+    // Récupérer toutes les commandes de la période (statut payee)
+    const { data: orders, error } = await supa.from('commandes')
+      .select('*')
+      .eq('restaurant_id', RESTO.id)
+      .gte('heure', start.toISOString())
+      .lte('heure', end.toISOString())
+      .order('heure', { ascending: true });
+
+    if (error) throw error;
+
+    if (!orders || orders.length === 0) {
+      showToast('Aucune commande sur cette période', 'error');
+      closeModal('modal-export');
+      return;
+    }
+
+    // Construire le CSV
+    // En-tête (séparateur ; pour compatibilité Excel FR / Pennylane / Bexio)
+    const headers = [
+      'Date',
+      'Heure',
+      'Table',
+      'N° Commande',
+      'Plat',
+      'Quantité',
+      'Prix unitaire',
+      'Total ligne',
+      'TVA %',
+      'TVA montant',
+      'Mode paiement',
+      'Statut',
+      'Personne',
+      'Note'
+    ];
+
+    const tvaRate = getTVARate(); // ex: 7.7 ou 10
+
+    const rows = [];
+    rows.push(headers.map(csvCell).join(';'));
+
+    orders.forEach(order => {
+      const dateStr = formatDateFR(order.heure);
+      const timeStr = formatTimeFR(order.heure);
+      const tableName = (() => {
+        const t = state.tables.find(x => x.id === order.table_id);
+        return t ? t.nom : '';
+      })();
+      const orderNum = order.id ? order.id.substring(0, 8) : '';
+      const modePaiement = order.mode_paiement || (order.statut === 'payee' ? 'Non spécifié' : '');
+      const statut = order.statut || '';
+      const personne = order.personne_nom || '';
+
+      // 1 ligne par item dans la commande
+      const items = Array.isArray(order.items) ? order.items : [];
+      if (items.length === 0) {
+        // Si pas d'items détaillés, ligne unique avec total
+        const total = parseFloat(order.total) || 0;
+        const tvaMontant = tvaRate > 0 ? +(total - (total / (1 + tvaRate / 100))).toFixed(2) : '';
+        rows.push([
+          dateStr, timeStr, tableName, orderNum,
+          '(commande sans détail)', 1,
+          total.toFixed(2),
+          total.toFixed(2),
+          tvaRate > 0 ? tvaRate : '',
+          tvaMontant,
+          modePaiement, statut, personne, ''
+        ].map(csvCell).join(';'));
+      } else {
+        items.forEach(item => {
+          const qte = parseFloat(item.qte) || 1;
+          const prixUnit = parseFloat(item.prix) || 0;
+          const totalLigne = +(qte * prixUnit).toFixed(2);
+          const tvaMontant = tvaRate > 0 ? +(totalLigne - (totalLigne / (1 + tvaRate / 100))).toFixed(2) : '';
+          rows.push([
+            dateStr, timeStr, tableName, orderNum,
+            item.nom || '',
+            qte,
+            prixUnit.toFixed(2),
+            totalLigne.toFixed(2),
+            tvaRate > 0 ? tvaRate : '',
+            tvaMontant,
+            modePaiement, statut, personne,
+            item.note || ''
+          ].map(csvCell).join(';'));
+        });
+      }
+    });
+
+    const csvContent = rows.join('\r\n');
+
+    // BOM UTF-8 pour qu'Excel ouvre correctement les accents
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    // Nom du fichier avec la période
+    const restoSlug = (RESTO.slug || 'frizz').replace(/[^a-z0-9-]/gi, '');
+    const startStr = start.toISOString().split('T')[0];
+    const endStr = end.toISOString().split('T')[0];
+    const filename = `frizz-ventes-${restoSlug}-${startStr}_au_${endStr}.csv`;
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    closeModal('modal-export');
+    showToast(`✓ ${orders.length} commandes exportées`);
+
+  } catch (err) {
+    console.error('export CSV error:', err);
+    showToast('Erreur : ' + (err.message || 'export impossible'), 'error');
+  }
 }
 
 // Imprimer le QR de la table actuellement ouverte (modal QR)

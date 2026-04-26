@@ -2207,11 +2207,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-head"><div class="stat-icon blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
         </div></div>
         <div class="stat-body">
-          <div class="stat-label">Commandes</div>
-          <div class="stat-value" id="stat-commandes">—</div>
+          <div class="stat-label">Marges</div>
+          <div class="stat-value" id="stat-marges">—</div>
         </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
@@ -2410,8 +2410,19 @@
           </datalist>
         </div>
         <div class="field">
-          <label class="field-label">Prix (€)</label>
-          <input type="number" id="plat-prix" step="0.10" min="0" placeholder="0.00">
+          <label class="field-label">Prix de vente (€)</label>
+          <input type="number" id="plat-prix" step="0.10" min="0" placeholder="0.00" oninput="updateMargeLive()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Coût matière (€)</label>
+          <input type="number" id="plat-cout" step="0.10" min="0" placeholder="0.00" oninput="updateMargeLive()">
+          <div class="field-hint" style="font-size:11.5px; color:var(--label-2); margin-top:4px;">Ce que vous coûte le plat (ingrédients). Optionnel.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">Marge calculée</label>
+          <div id="plat-marge-display" style="background: rgba(10,132,255,0.06); border: 1px solid rgba(10,132,255,0.18); padding: 13px 14px; border-radius: 12px; font-weight: 700; color: var(--blue, #0A84FF); font-size: 15px; min-height: 46px; display: flex; align-items: center;">—</div>
         </div>
       </div>
       <div class="field">
@@ -3379,6 +3390,7 @@ function openPlatModal(id = null) {
     document.getElementById('plat-nom').value = p.nom || '';
     document.getElementById('plat-categorie').value = p.categorie || '';
     document.getElementById('plat-prix').value = p.prix || '';
+    document.getElementById('plat-cout').value = p.cout || '';
     document.getElementById('plat-description').value = p.description || '';
     document.getElementById('plat-photo_url').value = p.photo_url || '';
     setPhotoPreview(p.photo_url || '');
@@ -3391,11 +3403,12 @@ function openPlatModal(id = null) {
     });
     state.platDisponible = p.disponible !== false;
     state.platMenuIds = Array.isArray(p.menu_ids) ? [...p.menu_ids] : [];
+    updateMargeLive();
   } else {
     title.textContent = 'Nouveau plat';
     deleteBtn.style.display = 'none';
     document.getElementById('plat-id').value = '';
-    ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-description', 'plat-photo_url', 'plat-allergenes']
+    ['plat-nom', 'plat-categorie', 'plat-prix', 'plat-cout', 'plat-description', 'plat-photo_url', 'plat-allergenes']
       .forEach(id => document.getElementById(id).value = '');
     setPhotoPreview('');
     // Réinit régimes
@@ -3406,6 +3419,7 @@ function openPlatModal(id = null) {
     state.platDisponible = true;
     // Par défaut: cocher tous les menus existants (un nouveau plat dispo dans tous les services)
     state.platMenuIds = state.menus ? state.menus.map(m => m.id) : [];
+    updateMargeLive();
   }
   document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
   // S'assurer que les menus sont chargés (premier ouvert sans avoir cliqué l'onglet Menus)
@@ -3462,6 +3476,27 @@ function toggleDisponible() {
   document.getElementById('plat-disponible-toggle').classList.toggle('on', state.platDisponible);
 }
 
+// Calcule la marge en direct quand le user tape prix ou coût
+function updateMargeLive() {
+  const display = document.getElementById('plat-marge-display');
+  if (!display) return;
+  const prix = parseFloat(document.getElementById('plat-prix').value) || 0;
+  const cout = parseFloat(document.getElementById('plat-cout').value) || 0;
+  if (prix <= 0 || cout <= 0) {
+    display.textContent = '—';
+    display.style.color = 'var(--label-2)';
+    return;
+  }
+  const marge = prix - cout;
+  const pct = (marge / prix) * 100;
+  let color = 'var(--blue, #0A84FF)';
+  if (pct < 50) color = '#FF9F0A';   // marge faible
+  if (pct < 30) color = '#FF453A';   // marge critique
+  if (pct >= 70) color = '#30D158';  // excellente marge
+  display.style.color = color;
+  display.textContent = marge.toFixed(2) + '€ · ' + pct.toFixed(0) + '%';
+}
+
 async function savePlat() {
   const btn = document.getElementById('plat-save-btn');
   const nom = document.getElementById('plat-nom').value.trim();
@@ -3476,6 +3511,7 @@ async function savePlat() {
     nom,
     categorie: document.getElementById('plat-categorie').value.trim(),
     prix: parseFloat(document.getElementById('plat-prix').value) || 0,
+    cout: parseFloat(document.getElementById('plat-cout').value) || 0,
     description: document.getElementById('plat-description').value.trim(),
     photo_url: document.getElementById('plat-photo_url').value.trim(),
     allergenes: document.getElementById('plat-allergenes').value.trim(),
@@ -4108,7 +4144,7 @@ function getPrintStyles() {
         position: absolute;
         top: 0; left: 0; right: 0;
         height: 4mm;
-        background: linear-gradient(90deg, #0A84FF, #5AB4FF);
+        background: #000000;
       }
       .qr-card-header {
         display: flex;
@@ -4121,18 +4157,19 @@ function getPrintStyles() {
         width: 12mm; height: 12mm;
         border-radius: 3mm;
         object-fit: cover;
+        filter: grayscale(100%) contrast(1.1);
       }
       .qr-card-resto {
         font-size: 14pt;
         font-weight: 700;
         letter-spacing: -0.02em;
-        color: #1A1A1A;
+        color: #000000;
       }
       .qr-card-table-name {
         font-size: 28pt;
         font-weight: 800;
         letter-spacing: -0.04em;
-        color: #0A84FF;
+        color: #000000;
         margin-bottom: 4mm;
         line-height: 1;
       }
@@ -4157,31 +4194,31 @@ function getPrintStyles() {
       .qr-card-instr-title {
         font-size: 11pt;
         font-weight: 700;
-        color: #1A1A1A;
+        color: #000000;
         margin-bottom: 1.5mm;
         letter-spacing: -0.01em;
       }
       .qr-card-instr-sub {
         font-size: 8pt;
-        color: #6E6E73;
+        color: #555555;
         font-style: italic;
         line-height: 1.3;
       }
       .qr-card-footer {
         margin-top: auto;
         padding-top: 3mm;
-        border-top: 1px solid #E8E8E8;
+        border-top: 1px solid #000000;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 3mm;
         font-size: 9pt;
-        color: #8C8880;
+        color: #000000;
         font-weight: 500;
         letter-spacing: 0.05em;
       }
-      .qr-card-spark { color: #0A84FF; font-style: italic; }
-      .qr-card-brand { font-weight: 700; }
+      .qr-card-spark { color: #000000; font-style: italic; }
+      .qr-card-brand { font-weight: 700; color: #000000; }
 
       /* Page seule : un seul QR centré, plus grand */
       .single-page {
@@ -4524,7 +4561,7 @@ function printQRCards(tables) {
         ✦ ${tables.length} QR code${tables.length > 1 ? 's' : ''} prêt${tables.length > 1 ? 's' : ''} à imprimer
       </div>
       <div>
-        <button onclick="window.print()" style="background: #0A84FF; color: #fff; border: 0; padding: 10px 20px; border-radius: 100px; font-weight: 600; cursor: pointer; font-size: 14px;">📄 Imprimer / Sauver en PDF</button>
+        <button onclick="window.print()" style="background: #fff; color: #000; border: 0; padding: 10px 20px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 14px;">📄 Imprimer / Sauver en PDF</button>
         <button onclick="window.close()" style="background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 100px; font-weight: 500; cursor: pointer; margin-left: 8px; font-size: 14px;">Fermer</button>
       </div>
     </div>
@@ -4576,8 +4613,39 @@ async function loadStats() {
     });
     const nbPersonnes = personnesSet.size;
 
+    // ====== CALCUL DES MARGES ======
+    // Pour chaque commande, on additionne (prix - cout) × qté pour chaque plat
+    // On utilise le prix réel du plat dans le menu pour récupérer le coût
+    // On construit un index nom → coût pour chercher rapidement
+    const coutByName = {};
+    (state.menu || []).forEach(p => {
+      coutByName[(p.nom || '').toLowerCase().trim()] = parseFloat(p.cout) || 0;
+    });
+
+    let totalMarge = 0;
+    let totalAvecCout = 0; // CA des plats dont on connaît le coût
+    commandes.forEach(c => {
+      (Array.isArray(c.items) ? c.items : []).forEach(it => {
+        const nom = (it.nom || '').toLowerCase().trim();
+        const prix = parseFloat(it.prix) || 0;
+        const qte = parseInt(it.qte) || 1;
+        const cout = coutByName[nom];
+        if (cout !== undefined && cout > 0) {
+          totalMarge += (prix - cout) * qte;
+          totalAvecCout += prix * qte;
+        }
+      });
+    });
+    // Pourcentage de marge sur les plats dont on connaît le coût
+    const margePct = totalAvecCout > 0 ? (totalMarge / totalAvecCout) * 100 : 0;
+
     document.getElementById('stat-ca').textContent = ca.toFixed(2) + '€';
-    document.getElementById('stat-commandes').textContent = nb;
+    // Affichage marge : si aucun coût configuré → "—" + tooltip implicite
+    if (totalAvecCout === 0) {
+      document.getElementById('stat-marges').textContent = '—';
+    } else {
+      document.getElementById('stat-marges').textContent = totalMarge.toFixed(0) + '€ · ' + margePct.toFixed(0) + '%';
+    }
     document.getElementById('stat-panier').textContent = panier.toFixed(2) + '€';
     document.getElementById('stat-tables').textContent = nbPersonnes;
 

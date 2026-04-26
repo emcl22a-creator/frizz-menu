@@ -2099,9 +2099,6 @@
         </button>
       </div>
     </div>
-
-    <div class="filter-bar" id="category-filters"></div>
-    <div class="grid" id="menu-grid"></div>
   </section>
 
   <!-- ============ TABLES ============ -->
@@ -3049,8 +3046,9 @@ async function loadMenu() {
 }
 
 function renderCategories() {
-  const cats = [...new Set(state.menu.map(p => p.categorie).filter(Boolean))].sort();
   const bar = document.getElementById('category-filters');
+  if (!bar) return; // L'élément n'existe plus dans le DOM, plus rien à faire
+  const cats = [...new Set(state.menu.map(p => p.categorie).filter(Boolean))].sort();
   if (state.activeCategory && !cats.includes(state.activeCategory)) state.activeCategory = cats[0] || '';
   if (!state.activeCategory && cats.length > 0) state.activeCategory = cats[0];
   bar.innerHTML = '';
@@ -3072,6 +3070,7 @@ function renderCategories() {
 
 function renderMenu() {
   const grid = document.getElementById('menu-grid');
+  if (!grid) return; // L'élément n'existe plus dans le DOM, plus rien à faire
   // Filtrer par catégorie active si on a cliqué sur une catégorie via les pills (préservé pour compat)
   let filtered = state.activeCategory ? state.menu.filter(p => p.categorie === state.activeCategory) : state.menu;
 
@@ -3195,7 +3194,7 @@ function openPlatsListModal(title, plats, emptyMsg) {
   }
 
   const html = `
-    <div class="modal-overlay show" id="modal-plats-list" onclick="if(event.target===this)closePlatsListModal()">
+    <div class="modal-overlay active" id="modal-plats-list" onclick="if(event.target===this)closePlatsListModal()">
       <div class="modal" style="max-width: 480px; max-height: 85vh; display: flex; flex-direction: column;">
         <div class="modal-header" style="flex-shrink: 0;">
           <h2 class="modal-title">${escapeHtml(title)}${plats.length > 0 ? ` · ${plats.length}` : ''}</h2>
@@ -3258,7 +3257,7 @@ function openCategoriesPicker() {
   });
 
   const html = `
-    <div class="modal-overlay show" id="modal-cat-picker" onclick="if(event.target===this)closeCatPicker()">
+    <div class="modal-overlay active" id="modal-cat-picker" onclick="if(event.target===this)closeCatPicker()">
       <div class="modal" style="max-width: 440px;">
         <div class="modal-header">
           <h2 class="modal-title">Filtrer par catégorie</h2>

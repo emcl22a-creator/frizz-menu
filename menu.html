@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Menu — Frizz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -558,9 +560,10 @@
   }
   /* Quand le panier est aussi visible, on remonte le timer au-dessus de lui */
   body.has-cart .timer-bar { bottom: calc(88px + env(safe-area-inset-bottom)); }
-  /* Quand le timer est visible, on remonte le bouton FAB d'aide */
-  body.has-timer .fab-help { bottom: calc(88px + env(safe-area-inset-bottom)); }
-  body.has-timer.has-cart .fab-help { bottom: calc(160px + env(safe-area-inset-bottom)); }
+  /* Quand le timer est visible (sans panier), le FAB monte au-dessus du timer */
+  body.has-timer:not(.has-cart) .fab-help { bottom: calc(98px + env(safe-area-inset-bottom)); }
+  /* Quand timer + panier visibles, FAB encore plus haut */
+  body.has-timer.has-cart .fab-help { bottom: calc(168px + env(safe-area-inset-bottom)); }
     overflow: hidden;
   }
   .timer-bar.ready {
@@ -1051,7 +1054,7 @@
   /* ========== FAB HELP (Appeler serveur) ========== */
   .fab-help {
     position: fixed;
-    bottom: 110px;
+    bottom: calc(28px + env(safe-area-inset-bottom));
     right: 18px;
     width: 52px;
     height: 52px;
@@ -1065,9 +1068,10 @@
     box-shadow: 0 10px 24px -8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
     cursor: pointer;
     z-index: 40;
-    transition: all 0.25s var(--ease);
-    padding-bottom: env(safe-area-inset-bottom);
+    transition: bottom 0.3s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease), border-color 0.25s var(--ease);
   }
+  /* Quand panier seul visible : FAB monte au-dessus du panier */
+  body.has-cart .fab-help { bottom: calc(108px + env(safe-area-inset-bottom)); }
   .fab-help:hover {
     background: var(--fill-1);
     transform: translateY(-2px);

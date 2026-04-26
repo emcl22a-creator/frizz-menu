@@ -2231,11 +2231,11 @@
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon red">
+        <div class="stat-head"><div class="stat-icon red">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"/><path d="M15 20c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5"/></svg>
         </div></div>
         <div class="stat-body">
-          <div class="stat-label">Tables occupées</div>
+          <div class="stat-label">Personnes</div>
           <div class="stat-value" id="stat-tables">—</div>
         </div>
           <div class="stat-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
@@ -3947,13 +3947,18 @@ async function loadStats() {
     const nb = commandes.length;
     const panier = nb ? ca / nb : 0;
 
-    const { data: tbls } = await supa.from('tables').select('statut').eq('restaurant_id', RESTO.id);
-    const tables_occupees = (tbls || []).filter(t => t.statut === 'occupee').length;
+    // Nombre de personnes uniques ayant commandé sur la période
+    // (chaque personne_id distinct = 1 client)
+    const personnesSet = new Set();
+    commandes.forEach(c => {
+      if (c.personne_id) personnesSet.add(c.personne_id);
+    });
+    const nbPersonnes = personnesSet.size;
 
     document.getElementById('stat-ca').textContent = ca.toFixed(2) + '€';
     document.getElementById('stat-commandes').textContent = nb;
     document.getElementById('stat-panier').textContent = panier.toFixed(2) + '€';
-    document.getElementById('stat-tables').textContent = tables_occupees;
+    document.getElementById('stat-tables').textContent = nbPersonnes;
 
     // ====== GRAPHIQUE — buckets de CA selon la période ======
     renderChart(commandes, periode, since, now, ca);

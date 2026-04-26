@@ -2222,6 +2222,29 @@ function ensureSession() {
   state.personneId = pid;
 }
 
+// Attribue un nom "Personne N" à l'utilisateur en fonction des autres personnes déjà présentes à table
+function assignPersonneNom() {
+  // Si on a déjà un nom stocké pour cette personne, on le garde
+  let stored = '';
+  try { stored = localStorage.getItem(PERSONNE_KEY + '_nom') || ''; } catch(e){}
+  if (stored) {
+    state.personneNom = stored;
+    return;
+  }
+  // Sinon, on regarde les commandes existantes pour cette session de table
+  // pour savoir quel numéro attribuer
+  const personnesIds = new Set();
+  (state.allOrders || []).forEach(o => {
+    if (o.personne_id && o.personne_id !== state.personneId) {
+      personnesIds.add(o.personne_id);
+    }
+  });
+  // On est la (N+1)-ième personne
+  const num = personnesIds.size + 1;
+  state.personneNom = 'Personne ' + num;
+  try { localStorage.setItem(PERSONNE_KEY + '_nom', state.personneNom); } catch(e){}
+}
+
 async function ensureTableSession() {
   // Si la table n'a pas de session ouverte, on l'ouvre avec la nôtre
   if (!state.table) return;
@@ -2351,6 +2374,16 @@ function renderHeader() {
   document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + (state.personneNom || 'Toi');
   if (state.config.logo_url) {
     document.getElementById('resto-logo').style.backgroundImage = `url('${state.config.logo_url.replace(/'/g, "\\'")}')`;
+  }
+  // Masquer le bouton "Demander l'addition" si paiement avant le repas activé
+  // (puisque le client paye lui-même via son téléphone, pas besoin d'appeler le serveur pour l'addition)
+  const fab = document.getElementById('fab-help');
+  if (fab) {
+    if (state.config.paiement_avant === true) {
+      fab.style.display = 'none';
+    } else {
+      fab.style.display = '';
+    }
   }
 }
 

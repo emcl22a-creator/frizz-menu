@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Frizz · Le menu QR pour les vrais restaurants</title>
+<meta name="description" content="Frizz transforme votre restaurant. Vos clients commandent, votre équipe respire, votre cuisine reçoit tout en temps réel.">
+<meta name="theme-color" content="#FAFAFA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,400;1,8..60,600;1,8..60,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Apple-inspired palette (clair, premium, spacieux) */
+  --bg: #FAFAFA;
+  --bg-2: #F2F2F2;
+  --bg-3: #E8E8E8;
+  --paper: #FCFBF8;       /* hint papier crème pour zones éditoriales (touche Claude) */
+
+  /* Texte - hiérarchie Apple stricte */
+  --ink: #1D1D1F;          /* noir Apple */
+  --ink-2: #424245;
+  --ink-3: #6E6E73;
+  --ink-4: #86868B;
+  --ink-5: #A1A1A6;
+
+  /* Bleu iOS (l'accent demandé - même que l'app) */
+  --blue: #0A84FF;
+  --blue-deep: #0066CC;
+  --blue-soft: #E5F1FF;
+  --blue-glow: rgba(10, 132, 255, 0.25);
+
+  /* Lignes très subtiles - Apple style */
+  --rule: rgba(29, 29, 31, 0.08);
+  --rule-2: rgba(29, 29, 31, 0.14);
+
+  --t-fast: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 17px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  font-feature-settings: 'cv11', 'ss01';
+  position: relative;
+}
+
+/* === LAYER FOND ANIMÉ GLOBAL === */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.orb-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.35), transparent 70%);
+  top: -200px;
+  left: -200px;
+  animation: orb-float-1 22s ease-in-out infinite;
+}
+.orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.25), transparent 70%);
+  top: 30%;
+  right: -150px;
+  animation: orb-float-2 28s ease-in-out infinite;
+}
+.orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.20), transparent 70%);
+  bottom: -150px;
+  left: 30%;
+  animation: orb-float-3 32s ease-in-out infinite;
+}
+.orb-4 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.18), transparent 70%);
+  top: 60%;
+  left: 10%;
+  animation: orb-float-4 36s ease-in-out infinite;
+}
+@keyframes orb-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(80px, 60px) scale(1.15); }
+  66% { transform: translate(40px, 120px) scale(0.95); }
+}
+@keyframes orb-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-100px, 80px) scale(1.2); }
+}
+@keyframes orb-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(120px, -60px) scale(0.9); }
+  80% { transform: translate(-60px, -100px) scale(1.1); }
+}
+@keyframes orb-float-4 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(60px, -120px); }
+}
+
+/* Grain texture papier (touche Claude) */
+.bg-layer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.4 0'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.55'/></svg>");
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Tout le contenu doit être au dessus des animations */
+nav, section, footer { position: relative; z-index: 1; }
+
+img, svg { display: block; max-width: 100%; }
+
+/* === RÈGLE GLOBALE : italiques serif (style Claude) en GRAS === */
+em, .serif-italic, .editorial,
+h1 em, h2 em, h3 em, p em,
+.feature-tag-text em, .pricing-left p em, .pricing-card-eyebrow,
+.editorial-quote em, .editorial-attr em, .footer-bottom em,
+.feature-list-num, .pricing-list-bullet, .num,
+.hero-meta-value em, .gallery-header h3 em {
+  font-family: 'Source Serif 4', serif !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
+}
+
+/* === Typographie === */
+.serif {
+  font-family: 'Source Serif 4', serif;
+  font-variation-settings: 'opsz' 32;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.serif-italic, em.editorial {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+h1, h2, h3 {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--blue);
+  text-transform: none;
+}
+.num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* ============ NAV (style Apple) ============ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 14px 28px;
+  background: rgba(250, 250, 250, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: 'Source Serif 4', serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+.logo-star {
+  font-style: italic;
+  color: var(--blue);
+}
+.nav-links {
+  display: flex;
+  gap: 32px;
+}
+.nav-link {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.25s var(--t-fast);
+  letter-spacing: -0.005em;
+}
+.nav-link:hover { color: var(--blue); }
+.nav-cta {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 8px 17px;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 13.5px;
+  text-decoration: none;
+  transition: all 0.25s var(--t-spring);
+  letter-spacing: -0.005em;
+}
+.nav-cta:hover {
+  background: var(--blue);
+  transform: translateY(-1px);
+}
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+}
+
+/* ============ HERO ============ */
+.hero {
+  padding: 160px 28px 120px;
+  position: relative;
+  overflow: hidden;
+}
+/* Glow bleu subtil en arrière-plan, signature Frizz */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  right: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(10,132,255,0.08), transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  background: var(--blue-soft);
+  border-radius: 100px;
+  margin-bottom: 36px;
+}
+.hero-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 12px var(--blue-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.hero-eyebrow-wrap .eyebrow {
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+}
+.hero h1 {
+  font-size: clamp(52px, 8.5vw, 116px);
+  font-weight: 600;
+  margin-bottom: 32px;
+  letter-spacing: -0.05em;
+  max-width: 1100px;
+  line-height: 1;
+}
+.hero h1 em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--blue);
+  letter-spacing: -0.03em;
+}
+.hero-lede {
+  font-size: clamp(19px, 1.6vw, 24px);
+  line-height: 1.5;
+  color: var(--ink-3);
+  font-weight: 400;
+  max-width: 720px;
+  margin-bottom: 50px;
+  letter-spacing: -0.018em;
+}
+.hero-lede em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s var(--t-spring);
+  letter-spacing: -0.008em;
+  box-shadow: 0 4px 20px rgba(10,132,255,0.28);
+}
+.btn-primary:hover {
+  background: var(--blue-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(10,132,255,0.40);
+}
+.btn-primary svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s;
+}
+.btn-primary:hover svg { transform: translateX(4px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  padding: 14px 24px;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1px solid var(--rule-2);
+  transition: all 0.25s var(--t-fast);
+  letter-spacing: -0.008em;
+}
+.btn-ghost:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* Méta-infos sous le hero (style Apple specs) */
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+}
+.hero-meta-item {
+  padding: 0 24px;
+  border-right: 1px solid var(--rule);
+}
+.hero-meta-item:first-child { padding-left: 0; }
+.hero-meta-item:last-child { border-right: 0; padding-right: 0; }
+.hero-meta-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.hero-meta-value {
+  font-family: 'Source Serif 4', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.hero-meta-value em { font-style: italic; color: var(--blue); }
+
+@media (max-width: 760px) {
+  .hero { padding: 120px 24px 70px; }
+  .hero-meta {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .hero-meta-item {
+    padding: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+  }
+  .hero-meta-item:last-child { border-bottom: 0; padding-bottom: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- === FOND ANIMÉ === -->
+<div class="bg-layer">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+
+<!-- === NAV === -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">Frizz<span class="logo-star">✦</span></a>
+    <div class="nav-links">
+      <a href="#service" class="nav-link">Service</a>
+      <a href="#qr" class="nav-link">QR Code</a>
+      <a href="#cuisine" class="nav-link">Cuisine</a>
+      <a href="#compare" class="nav-link">Comparatif</a>
+      <a href="#tarif" class="nav-link">Tarif</a>
+    </div>
+    <a href="#tarif" class="nav-cta">Démarrer</a>
+  </div>
+</nav>
+
+<!-- === HERO === -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow-wrap">
+      <span class="hero-eyebrow-dot"></span>
+      <span class="eyebrow">Disponible en France &amp; Suisse · 2026</span>
+    </div>
+    <h1>Le menu QR pour<br>les <em>vrais</em> restaurants.</h1>
+    <p class="hero-lede">
+      Vos clients commandent depuis leur téléphone. Vos serveurs gagnent <em>vingt minutes</em> par service. Votre cuisine reçoit chaque commande en temps réel. Et vous, vous voyez tout depuis votre tableau de bord.
+    </p>
+    <div class="hero-actions">
+      <a href="#tarif" class="btn-primary">
+        Premier mois gratuit
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#service" class="btn-ghost">Voir l'application</a>
+    </div>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Tarif</div>
+        <div class="hero-meta-value"><em>29 €</em> par mois</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Engagement</div>
+        <div class="hero-meta-value"><em>Aucun</em>, sans condition</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Mise en service</div>
+        <div class="hero-meta-value"><em>30</em> minutes, formation incluse</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === FEATURES SECTIONS === -->
+<style>
+.feature {
+  padding: 120px 0;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+.feature.dark {
+  background: var(--ink);
+  color: var(--bg);
+  border-top-color: transparent;
+}
+.feature.paper {
+  background: var(--paper);
+}
+.feature-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+.feature.reverse .feature-grid > div:first-child {
+  order: 2;
+}
+.feature-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 36px;
+  display: block;
+}
+.feature.dark .feature-num { color: #4DA9FF; }
+
+.feature-text h2 {
+  font-size: clamp(40px, 5vw, 76px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  margin-bottom: 28px;
+}
+.feature-text h2 em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--blue);
+  letter-spacing: -0.025em;
+}
+.feature.dark .feature-text h2 em { color: #4DA9FF; }
+
+.feature-lede {
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.5;
+  color: var(--ink-3);
+  margin-bottom: 40px;
+  max-width: 480px;
+  letter-spacing: -0.012em;
+}
+.feature.dark .feature-lede { color: rgba(250, 250, 250, 0.65); }
+.feature-lede em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+}
+.feature.dark .feature-lede em { color: #4DA9FF; }
+
+.feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.feature-list li {
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  gap: 18px;
+  font-size: 16px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  font-weight: 400;
+  align-items: baseline;
+  letter-spacing: -0.008em;
+}
+.feature-list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.feature.dark .feature-list li {
+  border-top-color: rgba(250, 250, 250, 0.10);
+  color: rgba(250, 250, 250, 0.85);
+}
+.feature.dark .feature-list li:last-child {
+  border-bottom-color: rgba(250, 250, 250, 0.10);
+}
+.feature-list-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-size: 14px;
+  flex-shrink: 0;
+  min-width: 22px;
+}
+.feature.dark .feature-list-num { color: #4DA9FF; }
+
+/* Visual side — iPhone avec halo bleu signature */
+.feature-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 640px;
+}
+.feature-bg-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10,132,255,0.18), transparent 65%);
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+.feature.dark .feature-bg-glow {
+  background: radial-gradient(circle, rgba(10,132,255,0.30), transparent 65%);
+}
+.feature .iphone-frame {
+  position: relative;
+  z-index: 2;
+  --w: 300px;
+  --h: 620px;
+  transform: none;
+  animation: float-phone 8s ease-in-out infinite;
+}
+.feature .iphone-frame:nth-child(odd) { transform: none; }
+.feature .iphone-frame:nth-child(even) { transform: none; }
+.feature .iphone-frame:hover { transform: translateY(-8px); animation-play-state: paused; }
+@keyframes float-phone {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Petite carte de légende flottante - style Claude */
+.feature-tag {
+  position: absolute;
+  background: var(--bg);
+  border: 1px solid var(--rule-2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  z-index: 4;
+  box-shadow: 0 18px 40px -12px rgba(29, 29, 31, 0.18);
+  max-width: 220px;
+  line-height: 1.4;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.feature.dark .feature-tag {
+  background: rgba(40, 40, 42, 0.95);
+  border-color: rgba(250, 250, 250, 0.15);
+  color: var(--bg);
+}
+.feature-tag-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--blue);
+  margin-bottom: 4px;
+  display: block;
+}
+.feature.dark .feature-tag-eyebrow { color: #4DA9FF; }
+.feature-tag-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.feature.dark .feature-tag-text { color: var(--bg); }
+.feature-tag-text em {
+  font-style: italic;
+  color: var(--blue);
+}
+.feature.dark .feature-tag-text em { color: #4DA9FF; }
+.feature-tag.tl { top: 10%; left: -8%; transform: rotate(-2.5deg); }
+.feature-tag.br { bottom: 12%; right: -8%; transform: rotate(2deg); }
+.feature-tag.tr { top: 8%; right: -6%; transform: rotate(2deg); }
+.feature-tag.bl { bottom: 14%; left: -6%; transform: rotate(-1.5deg); }
+
+@media (max-width: 960px) {
+  .feature { padding: 80px 0; }
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  .feature.reverse .feature-grid > div:first-child { order: unset; }
+  .feature-visual { min-height: auto; padding: 30px 0; }
+  .feature-tag { display: none; }
+  .feature-num { font-size: 48px; margin-bottom: 24px; }
+}
+</style>
+
+<!-- 01 — Mode service -->
+<section class="feature" id="service">
+  <div class="feature-grid">
+    <div class="feature-text">
+      <span class="feature-num">01</span>
+      <h2>Le service<br><em>réinventé</em>.</h2>
+      <p class="feature-lede">
+        Une vue d'ensemble instantanée. Vos serveurs voient l'état de chaque table, savent qui attend l'addition, qui est prêt à être servi, et peuvent prendre une commande directement quand le client préfère parler à un humain.
+      </p>
+      <ul class="feature-list">
+        <li><span class="feature-list-num">i.</span><span>Toutes les tables visibles en un seul écran, avec leur état coloré</span></li>
+        <li><span class="feature-list-num">ii.</span><span>Le serveur peut prendre la commande quand le client n'a pas son téléphone</span></li>
+        <li><span class="feature-list-num">iii.</span><span>Marquer une table payée en un seul tap — elle redevient libre</span></li>
+        <li><span class="feature-list-num">iv.</span><span>Notification immédiate quand le client demande l'addition</span></li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-bg-glow"></div>
+      <div class="feature-tag tl">
+        <span class="feature-tag-eyebrow">Gain de temps</span>
+        <span class="feature-tag-text">Vingt minutes <em>récupérées</em> par service.</span>
+      </div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="iphone-island"></div>
+          <img src="https://i.ibb.co/3mS0Zm26/IMG-3875.png" alt="Mode service Frizz">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 — QR Code par table -->
+<section class="feature reverse paper" id="qr">
+  <div class="feature-grid">
+    <div class="feature-text">
+      <span class="feature-num">02</span>
+      <h2>Un QR code<br>par <em>table</em>.</h2>
+      <p class="feature-lede">
+        Chaque table reçoit son propre QR unique. Le client scanne, voit votre carte, commande. Pas d'application à télécharger. Pas de friction. Pas d'inscription.
+      </p>
+      <ul class="feature-list">
+        <li><span class="feature-list-num">i.</span><span>Vous créez vos tables (T1, T2, Terrasse 4) en 30 secondes</span></li>
+        <li><span class="feature-list-num">ii.</span><span>Frizz génère automatiquement un QR unique pour chaque table</span></li>
+        <li><span class="feature-list-num">iii.</span><span>Imprimez et placez sur les tables (chevalets, autocollants, sous-verres)</span></li>
+        <li><span class="feature-list-num">iv.</span><span>Chaque scan ouvre votre menu en moins d'une seconde</span></li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-bg-glow"></div>
+      <div class="feature-tag br">
+        <span class="feature-tag-eyebrow">Sans installation</span>
+        <span class="feature-tag-text">Le client <em>scanne</em> et commande.</span>
+      </div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="iphone-island"></div>
+          <img src="https://i.ibb.co/hFt6dwqx/IMG-3876.png" alt="Menu client Frizz">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 — Cuisine (dark) -->
+<section class="feature dark" id="cuisine">
+  <div class="feature-grid">
+    <div class="feature-text">
+      <span class="feature-num">03</span>
+      <h2>La cuisine,<br>en <em>temps réel</em>.</h2>
+      <p class="feature-lede">
+        Un écran dédié dans votre cuisine affiche les commandes au fur et à mesure. Le chef sait quoi préparer en priorité. Plus de tickets papier, plus de cris au passe, plus d'erreurs.
+      </p>
+      <ul class="feature-list">
+        <li><span class="feature-list-num">i.</span><span>Commandes affichées dans l'ordre d'arrivée, en grand format lisible</span></li>
+        <li><span class="feature-list-num">ii.</span><span>Trois statuts simples : en attente, en cours, prête</span></li>
+        <li><span class="feature-list-num">iii.</span><span>Notifications sonores activables pour les nouvelles commandes</span></li>
+        <li><span class="feature-list-num">iv.</span><span>Numéro de table en grand, notes spéciales du client en évidence</span></li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-bg-glow"></div>
+      <div class="feature-tag tl">
+        <span class="feature-tag-eyebrow">Plus de papier</span>
+        <span class="feature-tag-text">Tout arrive à <em>l'écran</em>.</span>
+      </div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="iphone-island"></div>
+          <img src="https://i.ibb.co/xQM80Rc/IMG-3874.png" alt="Écran cuisine Frizz">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 — Analytique -->
+<section class="feature" id="analytics">
+  <div class="feature-grid">
+    <div class="feature-text">
+      <span class="feature-num">04</span>
+      <h2>Comprenez<br>votre <em>chiffre</em>.</h2>
+      <p class="feature-lede">
+        Votre tableau de bord vous montre tout : chiffre d'affaires, panier moyen, plats les plus vendus, heures de pointe. En temps réel. Sans Excel. Avec un résumé intelligent généré chaque semaine.
+      </p>
+      <ul class="feature-list">
+        <li><span class="feature-list-num">i.</span><span>Chiffre d'affaires en direct — jour, semaine, mois</span></li>
+        <li><span class="feature-list-num">ii.</span><span>Panier moyen, couverts servis, plats les plus commandés</span></li>
+        <li><span class="feature-list-num">iii.</span><span>Graphique du CA, lissé et lisible en un coup d'œil</span></li>
+        <li><span class="feature-list-num">iv.</span><span>Résumé intelligent généré par IA chaque semaine</span></li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-bg-glow"></div>
+      <div class="feature-tag br">
+        <span class="feature-tag-eyebrow">Vue d'ensemble</span>
+        <span class="feature-tag-text">Tout le restaurant <em>en un regard</em>.</span>
+      </div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="iphone-island"></div>
+          <img src="https://i.ibb.co/C37kHRD8/IMG-3873.png" alt="Analytics Frizz">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === COMPARATIF === -->
+<style>
+.compare {
+  padding: 140px 28px;
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.compare::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(10,132,255,0.10), transparent 65%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.compare-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.compare-header {
+  text-align: center;
+  margin-bottom: 70px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.compare-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-size: 64px;
+  font-weight: 700 !important;
+  line-height: 1;
+  margin-bottom: 28px;
+  display: block;
+}
+.compare-header h2 {
+  font-size: clamp(40px, 5.5vw, 88px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  margin-bottom: 24px;
+}
+.compare-header h2 em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 700 !important;
+  letter-spacing: -0.025em;
+}
+.compare-header p {
+  font-size: 19px;
+  color: var(--ink-3);
+  letter-spacing: -0.012em;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.compare-header p em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 700 !important;
+}
+
+/* Tableau comparatif */
+.compare-table {
+  background: var(--bg);
+  border: 1px solid var(--rule-2);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px -20px rgba(29,29,31,0.12);
+}
+.compare-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+  transition: background 0.2s;
+}
+.compare-row:last-child { border-bottom: 0; }
+.compare-row.body:hover { background: rgba(10,132,255,0.025); }
+.compare-cell {
+  padding: 22px 18px;
+  font-size: 14.5px;
+  text-align: center;
+  letter-spacing: -0.008em;
+  border-right: 1px solid var(--rule);
+}
+.compare-cell:last-child { border-right: 0; }
+.compare-cell.label {
+  text-align: left;
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* Header row */
+.compare-row.head {
+  background: var(--ink);
+  color: var(--bg);
+}
+.compare-row.head .compare-cell {
+  border-color: rgba(255,255,255,0.10);
+  padding: 24px 18px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.compare-row.head .compare-cell.label {
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Colonne Frizz mise en valeur */
+.compare-cell.frizz {
+  background: linear-gradient(180deg, rgba(10,132,255,0.06), rgba(10,132,255,0.03));
+  position: relative;
+}
+.compare-row.head .compare-cell.frizz {
+  background: var(--blue);
+  color: #fff;
+}
+.compare-row.head .compare-cell.frizz::after {
+  content: '✦';
+  display: block;
+  font-size: 14px;
+  margin-top: 6px;
+  font-style: italic;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Cells avec checks et X */
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(10,132,255,0.12);
+  color: var(--blue);
+}
+.check svg { width: 14px; height: 14px; stroke-width: 3; }
+.cross {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(29,29,31,0.06);
+  color: var(--ink-4);
+}
+.cross svg { width: 12px; height: 12px; stroke-width: 2.5; }
+.partial {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 700 !important;
+}
+
+.price-tag {
+  font-family: 'Source Serif 4', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.price-tag .small {
+  font-size: 12px;
+  color: var(--ink-4);
+  font-weight: 400;
+  display: block;
+  margin-top: 4px;
+  letter-spacing: 0;
+  font-family: 'Inter', sans-serif;
+}
+.price-tag.frizz-price {
+  color: var(--blue);
+  font-weight: 700 !important;
+  font-style: italic;
+}
+.price-tag.warning {
+  color: var(--ink);
+}
+.price-tag.warning .small {
+  color: #C04040;
+  font-style: italic;
+  font-family: 'Source Serif 4', serif;
+}
+
+.compare-footnote {
+  text-align: center;
+  margin-top: 30px;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-4);
+  letter-spacing: -0.01em;
+}
+
+/* Mobile : transforme en cartes empilées */
+@media (max-width: 960px) {
+  .compare { padding: 80px 20px; }
+  .compare-table {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .compare-row {
+    grid-template-columns: 1fr;
+    border: 1px solid var(--rule-2);
+    border-radius: 16px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .compare-row.head { display: none; }
+  .compare-row.body {
+    padding: 0;
+  }
+  .compare-cell {
+    padding: 14px 18px;
+    text-align: left;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .compare-cell:last-child { border-bottom: 0; }
+  .compare-cell.label {
+    background: var(--paper);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    padding: 12px 18px;
+  }
+  .compare-cell.label::after { display: none; }
+  .compare-cell:not(.label)::before {
+    content: attr(data-label);
+    font-size: 13px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .compare-cell.frizz {
+    background: linear-gradient(90deg, rgba(10,132,255,0.08), rgba(10,132,255,0.02));
+  }
+  .compare-cell.frizz::before {
+    color: var(--blue);
+    font-weight: 700;
+  }
+}
+</style>
+<section class="compare" id="compare">
+  <div class="compare-inner">
+    <div class="compare-header">
+      <span class="compare-num">05</span>
+      <h2>Frizz face à<br>la <em>concurrence</em>.</h2>
+      <p>Les autres acteurs du marché ont leurs forces. Mais aucun ne réunit ce que Frizz fait pour <em>vingt-neuf euros</em> sans engagement.</p>
+    </div>
+    <div class="compare-table">
+      <div class="compare-row head">
+        <div class="compare-cell label">Comparé sur</div>
+        <div class="compare-cell frizz">Frizz</div>
+        <div class="compare-cell">Sunday</div>
+        <div class="compare-cell">Appero</div>
+        <div class="compare-cell">Le Pronto</div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Tarif mensuel</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="price-tag frizz-price">29 €</span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="price-tag warning">0 €<span class="small">+ commissions</span></span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="price-tag">49–99 €</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="price-tag">30 €+</span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Frais cachés client</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="small" style="display:block; font-size:11px; color:var(--ink-4); margin-top:4px;">Aucun</span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+          <span class="small" style="display:block; font-size:11px; color:#C04040; margin-top:4px; font-style:italic; font-family:'Source Serif 4',serif; font-weight:700 !important;">~1,5 % facturé au client</span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Engagement</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="partial">Aucun</span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="partial">12 mois</span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="partial">12 mois</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="partial">12 mois</span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Mode service</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="partial">Option</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Écran cuisine inclus</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="partial">+ payant</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Commande de groupe</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="partial">Paiement seul</span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Statistiques temps réel</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="partial">Limité</span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Résumé IA hebdomadaire</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="cross"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Mise en service</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="partial">30 min</span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="partial">Plusieurs jours</span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="partial">1–2 semaines</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="partial">Quelques jours</span>
+        </div>
+      </div>
+
+      <div class="compare-row body">
+        <div class="compare-cell label">Support</div>
+        <div class="compare-cell frizz" data-label="Frizz">
+          <span class="partial">Direct créateur</span>
+        </div>
+        <div class="compare-cell" data-label="Sunday">
+          <span class="partial">Hotline</span>
+        </div>
+        <div class="compare-cell" data-label="Appero">
+          <span class="partial">Email</span>
+        </div>
+        <div class="compare-cell" data-label="Le Pronto">
+          <span class="partial">Hotline 7/7</span>
+        </div>
+      </div>
+    </div>
+    <p class="compare-footnote">Données collectées sur les sites publics des éditeurs · Avril 2026.</p>
+  </div>
+</section>
+
+<!-- === ÉDITORIAL === -->
+<style>
+.editorial {
+  padding: 140px 28px;
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  background: var(--paper);
+}
+.editorial::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(10,132,255,0.10), transparent 65%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.editorial-quote {
+  position: relative;
+  font-family: 'Source Serif 4', serif;
+  font-variation-settings: 'opsz' 60;
+  font-size: clamp(36px, 5.4vw, 78px);
+  line-height: 1.08;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: var(--ink);
+}
+.editorial-quote em {
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+}
+.editorial-attr {
+  position: relative;
+  margin-top: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+.editorial-attr em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+}
+</style>
+<section class="editorial">
+  <p class="editorial-quote">
+    « Vos clients ne devraient pas <em>attendre</em>.<br>
+    Vos serveurs ne devraient pas <em>courir</em>.<br>
+    Votre cuisine devrait juste <em>cuisiner</em>. »
+  </p>
+  <p class="editorial-attr">— <em>La promesse Frizz</em></p>
+</section>
+
+<!-- === PRICING (style Apple specs) === -->
+<style>
+.pricing {
+  padding: 140px 28px;
+  background: var(--bg);
+}
+.pricing-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 100px;
+  align-items: start;
+}
+.pricing-left {
+  position: sticky;
+  top: 100px;
+}
+.pricing-left .feature-num {
+  font-size: 64px;
+  margin-bottom: 36px;
+}
+.pricing-left h2 {
+  font-size: clamp(40px, 5vw, 76px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin-bottom: 28px;
+}
+.pricing-left h2 em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+.pricing-left p {
+  font-size: 19px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  max-width: 380px;
+  letter-spacing: -0.012em;
+}
+.pricing-left p em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+}
+
+/* Card pricing — style Apple précis avec touche Claude */
+.pricing-card {
+  background: var(--bg);
+  border: 1px solid var(--rule-2);
+  border-radius: 28px;
+  padding: 50px;
+  position: relative;
+  overflow: hidden;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(10,132,255,0.10), transparent 65%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.pricing-card-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-size: 17px;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+.pricing-card-name {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.pricing-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 44px;
+  position: relative;
+}
+.pricing-amount {
+  font-family: 'Source Serif 4', serif;
+  font-size: 110px;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: var(--ink);
+}
+.pricing-currency {
+  font-family: 'Source Serif 4', serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: var(--ink);
+}
+.pricing-period {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-left: 12px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+.pricing-list {
+  list-style: none;
+  margin-bottom: 40px;
+  position: relative;
+}
+.pricing-list li {
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 15.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.008em;
+}
+.pricing-list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.pricing-list-bullet {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-size: 14px;
+  flex-shrink: 0;
+  min-width: 18px;
+}
+.pricing-cta {
+  display: block;
+  text-align: center;
+  background: var(--blue);
+  color: #fff;
+  padding: 17px;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 15.5px;
+  text-decoration: none;
+  transition: all 0.3s var(--t-spring);
+  margin-bottom: 14px;
+  letter-spacing: -0.008em;
+  box-shadow: 0 6px 24px rgba(10,132,255,0.30);
+  position: relative;
+}
+.pricing-cta:hover {
+  background: var(--blue-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(10,132,255,0.42);
+}
+.pricing-note {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  position: relative;
+}
+
+@media (max-width: 960px) {
+  .pricing { padding: 80px 28px; }
+  .pricing-inner {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  .pricing-left { position: static; }
+  .pricing-card { padding: 36px 28px; }
+  .pricing-amount { font-size: 80px; }
+}
+</style>
+<section class="pricing" id="tarif">
+  <div class="pricing-inner">
+    <div class="pricing-left">
+      <span class="feature-num">06</span>
+      <h2>Un seul prix.<br><em>Tout</em> compris.</h2>
+      <p>Pas de modules en plus. Pas d'engagement de durée. Pas de surprise sur la facture. Vous restez tant que <em>ça vous sert</em>.</p>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-card-eyebrow">L'offre fondateur</div>
+      <div class="pricing-card-name">Frizz Restaurant</div>
+      <div class="pricing-amount-row">
+        <span class="pricing-amount">29</span>
+        <span class="pricing-currency">€</span>
+        <span class="pricing-period">par mois HT</span>
+      </div>
+      <ul class="pricing-list">
+        <li><span class="pricing-list-bullet">i.</span><span>Menu client illimité — autant de plats que vous voulez</span></li>
+        <li><span class="pricing-list-bullet">ii.</span><span>Tables &amp; QR codes illimités</span></li>
+        <li><span class="pricing-list-bullet">iii.</span><span>Mode service inclus pour tous vos serveurs</span></li>
+        <li><span class="pricing-list-bullet">iv.</span><span>Écran cuisine inclus, sur autant d'appareils que nécessaire</span></li>
+        <li><span class="pricing-list-bullet">v.</span><span>Statistiques et analyse en temps réel</span></li>
+        <li><span class="pricing-list-bullet">vi.</span><span>Mise en place &amp; formation incluses</span></li>
+        <li><span class="pricing-list-bullet">vii.</span><span>Support direct par le créateur de l'application</span></li>
+      </ul>
+      <a href="mailto:contact@frizz-menu.com" class="pricing-cta">Démarrer mon mois gratuit</a>
+      <p class="pricing-note">Aucune carte bancaire requise.</p>
+    </div>
+  </div>
+</section>
+
+<!-- === CTA FINAL === -->
+<style>
+.cta-final {
+  padding: 160px 28px 120px;
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.cta-final::before {
+  content: '';
+  position: absolute;
+  bottom: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(10,132,255,0.12), transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+.cta-final h2 {
+  position: relative;
+  font-size: clamp(48px, 7.5vw, 116px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 32px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-final h2 em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+.cta-final p {
+  position: relative;
+  font-size: 20px;
+  color: var(--ink-3);
+  max-width: 600px;
+  margin: 0 auto 50px;
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+}
+.cta-final-buttons {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+</style>
+<section class="cta-final" id="contact">
+  <h2>Prêt à <em>moderniser</em><br>votre service&nbsp;?</h2>
+  <p>Je viens chez vous, on regarde votre carte ensemble, je vous montre l'application sur votre téléphone. Trente minutes. Sans engagement.</p>
+  <div class="cta-final-buttons">
+    <a href="mailto:contact@frizz-menu.com" class="btn-primary">
+      Demander une démonstration
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#tarif" class="btn-ghost">Voir le tarif</a>
+  </div>
+</section>
+
+<!-- === FOOTER === -->
+<style>
+.footer {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 80px 28px 40px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid rgba(250, 250, 250, 0.10);
+}
+.footer-brand .logo {
+  color: var(--bg);
+  font-size: 32px;
+}
+.footer-brand .logo-star { color: var(--blue); }
+.footer-brand p {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: rgba(250, 250, 250, 0.55);
+  margin-top: 16px;
+  max-width: 320px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.footer-col-title {
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-col a {
+  color: rgba(250, 250, 250, 0.7);
+  text-decoration: none;
+  font-size: 14.5px;
+  font-weight: 400;
+  transition: color 0.2s;
+  letter-spacing: -0.005em;
+}
+.footer-col a:hover { color: var(--bg); }
+.footer-bottom {
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12.5px;
+  color: rgba(250, 250, 250, 0.45);
+}
+.footer-bottom em {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--blue);
+}
+@media (max-width: 760px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+</style>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">Frizz<span class="logo-star">✦</span></a>
+        <p>Le menu QR pensé pour les vrais restaurants — et pour ceux qui les font tourner.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Produit</div>
+        <ul>
+          <li><a href="#service">Mode service</a></li>
+          <li><a href="#qr">QR Code</a></li>
+          <li><a href="#cuisine">Écran cuisine</a></li>
+          <li><a href="#analytics">Analytique</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Entreprise</div>
+        <ul>
+          <li><a href="#tarif">Tarif</a></li>
+          <li><a href="#contact">Démonstration</a></li>
+          <li><a href="mailto:contact@frizz-menu.com">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Légal</div>
+        <ul>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Confidentialité</a></li>
+          <li><a href="#">Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Frizz. Tous droits réservés.</span>
+      <span>Conçu en <em>Suisse</em> 🇨🇭</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -658,158 +658,6 @@
     margin-bottom: 22px;
   }
 
-  .pay-amount {
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-md);
-    padding: 18px;
-    text-align: center;
-    margin-bottom: 18px;
-  }
-  .pay-amount-label {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--label-3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-  .pay-amount-value {
-    font-size: 38px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .tip-section {
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-md);
-    padding: 16px;
-    margin-bottom: 18px;
-  }
-  .tip-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--label-2);
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .tip-current {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--green);
-    font-variant-numeric: tabular-nums;
-  }
-  .tip-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 7px;
-  }
-  .tip-btn {
-    padding: 11px 6px;
-    background: var(--fill-1);
-    border: 1.5px solid var(--sep);
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--label-2);
-    cursor: pointer;
-    transition: all 0.15s var(--ease);
-  }
-  .tip-btn:hover { color: var(--label); border-color: var(--sep-strong); }
-  .tip-btn.active {
-    background: var(--green-soft);
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  .total-final {
-    background: linear-gradient(135deg, rgba(48,209,88,0.18) 0%, rgba(48,209,88,0.06) 100%);
-    border: 1px solid rgba(48,209,88,0.4);
-    border-radius: var(--r-md);
-    padding: 14px 18px;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .total-final-label {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--label);
-  }
-  .total-final-value {
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--green);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.03em;
-  }
-
-  .pay-buttons {
-    display: grid;
-    gap: 10px;
-  }
-  .pay-btn {
-    padding: 16px;
-    border-radius: var(--pill);
-    font-size: 15.5px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s var(--ease);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    letter-spacing: -0.015em;
-  }
-  .pay-btn-card {
-    background: var(--blue);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(10,132,255,0.4);
-  }
-  .pay-btn-cash {
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    color: var(--label);
-  }
-  .pay-btn-cancel {
-    background: transparent;
-    color: var(--label-3);
-    font-size: 13.5px;
-    padding: 10px;
-  }
-  .pay-btn-cancel:hover { color: var(--label-2); }
-
-  /* Success screen post-paiement */
-  .pay-success {
-    text-align: center;
-    padding: 8px 0;
-  }
-  .pay-success-icon {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: var(--green);
-    color: #fff;
-    margin: 0 auto 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 40px rgba(48,209,88,0.5);
-    animation: success-pop 0.55s var(--ease-spring) both;
-  }
-  @keyframes success-pop {
-    0% { opacity: 0; transform: scale(0.5); }
-    60% { transform: scale(1.15); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  .pay-success-icon svg { width: 40px; height: 40px; stroke-width: 3; }
-  .pay-success-title { font-size: 24px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 4px; }
-  .pay-success-sub { font-size: 14px; color: var(--label-2); margin-bottom: 18px; }
-
   /* ========== TOAST ========== */
   .toast {
     position: fixed;
@@ -962,9 +810,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
             Ajouter des plats
           </button>
-          <button class="action-btn action-btn-success full" id="td-pay-btn" onclick="openPayModal()" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            <span id="td-pay-label">Encaisser</span>
+          <button class="action-btn action-btn-success full" id="td-pay-btn" onclick="togglePaiementTable()" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="td-pay-icon"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="td-pay-label">Marquer payée</span>
           </button>
         </div>
       </div>
@@ -1006,71 +854,7 @@
     <span id="toast-text"></span>
   </div>
 
-  <!-- Modal Encaissement -->
-  <div class="modal-overlay" id="modal-pay">
-    <div class="modal" id="pay-step1">
-      <h2 class="modal-title">Encaisser</h2>
-      <p class="modal-sub" id="pay-sub">Table —</p>
-
-      <div class="pay-amount">
-        <div class="pay-amount-label">Total addition</div>
-        <div class="pay-amount-value" id="pay-amount">0.00€</div>
-      </div>
-
-      <div class="tip-section">
-        <div class="tip-label">
-          <span>Pourboire</span>
-          <span class="tip-current" id="tip-current">+ 0.00€</span>
-        </div>
-        <div class="tip-grid">
-          <button class="tip-btn active" data-tip="0" onclick="setTip(0)">0%</button>
-          <button class="tip-btn" data-tip="5" onclick="setTip(5)">5%</button>
-          <button class="tip-btn" data-tip="10" onclick="setTip(10)">10%</button>
-          <button class="tip-btn" data-tip="15" onclick="setTip(15)">15%</button>
-        </div>
-      </div>
-
-      <div class="total-final">
-        <div class="total-final-label">Total à payer</div>
-        <div class="total-final-value" id="total-final">0.00€</div>
-      </div>
-
-      <div class="pay-buttons">
-        <button class="pay-btn pay-btn-card" onclick="processPayment('carte')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-          Payer par carte
-        </button>
-        <button class="pay-btn pay-btn-cash" onclick="processPayment('especes')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h4.5a2 2 0 0 1 0 4H10a2 2 0 0 0 0 4h4"/></svg>
-          Espèces
-        </button>
-        <button class="pay-btn pay-btn-cancel" onclick="closeModal('modal-pay')">Annuler</button>
-      </div>
-    </div>
-
-    <!-- Step 2 : succès paiement -->
-    <div class="modal" id="pay-step2" style="display:none;">
-      <div class="pay-success">
-        <div class="pay-success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="pay-success-title">Paiement réussi</div>
-        <div class="pay-success-sub" id="pay-success-sub">—</div>
-
-        <div class="total-final" style="margin-bottom:18px;">
-          <div class="total-final-label">Encaissé</div>
-          <div class="total-final-value" id="pay-success-amount">—</div>
-        </div>
-
-        <button class="pay-btn pay-btn-card" onclick="closePaySuccess()" style="width:100%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          Continuer
-        </button>
-      </div>
-    </div>
   </div>
-
-</div>
 
 <script>
 // ============================================================================
@@ -1187,10 +971,14 @@ async function init() {
 
 async function loadOrders() {
   if (!state.resto) return;
+  // On charge les commandes des dernières 24h (toutes statuts sauf annulee)
+  // pour pouvoir afficher l'état "Payée" et permettre l'annulation du paiement
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { data, error } = await supa.from('commandes')
     .select('*')
     .eq('restaurant_id', state.resto.id)
-    .in('statut', ['en_attente','en_cours','prete','servie']) // commandes non payées
+    .in('statut', ['en_attente','en_cours','prete','servie','payee'])
+    .gte('heure', yesterday)
     .order('heure', { ascending: true });
   if (!error) {
     state.orders = data || [];
@@ -1328,8 +1116,22 @@ function renderTableDetail() {
     </div>
   `;
 
-  document.getElementById('td-pay-btn').style.display = 'inline-flex';
-  document.getElementById('td-pay-label').textContent = `Encaisser ${fmtMoney(total)}`;
+  const btn = document.getElementById('td-pay-btn');
+  const label = document.getElementById('td-pay-label');
+  btn.style.display = 'inline-flex';
+
+  // Si toutes les commandes sont payées → bouton "Annuler le paiement"
+  // Sinon → bouton "Marquer payée"
+  const allPaid = tableOrders.every(o => o.statut === 'payee');
+  if (allPaid) {
+    label.textContent = `↺ Annuler le paiement`;
+    btn.classList.remove('action-btn-success');
+    btn.classList.add('action-btn-secondary');
+  } else {
+    label.textContent = `Marquer payée · ${fmtMoney(total)}`;
+    btn.classList.remove('action-btn-secondary');
+    btn.classList.add('action-btn-success');
+  }
 }
 
 // ============================================================================
@@ -1456,100 +1258,43 @@ async function sendCart() {
 }
 
 // ============================================================================
-// PAIEMENT (mockup convaincant - faux Stripe)
+// MARQUAGE PAYÉ / NON PAYÉ
 // ============================================================================
-function openPayModal() {
+async function togglePaiementTable() {
   const t = state.tables.find(x => x.id === state.selectedTableId);
   if (!t) return;
   const tableOrders = state.orders.filter(o => o.table_id === t.id);
-  const total = tableOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
-  state._payTotal = total;
-  state.tipPct = 0;
-
-  document.getElementById('pay-sub').textContent = 'Table ' + (t.nom || '?');
-  document.getElementById('pay-amount').textContent = fmtMoney(total);
-  updateTip();
-
-  // reset visibility steps
-  document.getElementById('pay-step1').style.display = 'block';
-  document.getElementById('pay-step2').style.display = 'none';
-  document.getElementById('modal-pay').classList.add('show');
-}
-
-function setTip(pct) {
-  state.tipPct = pct;
-  document.querySelectorAll('.tip-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.tip) === pct);
-  });
-  updateTip();
-}
-
-function updateTip() {
-  const total = state._payTotal || 0;
-  const tip = total * state.tipPct / 100;
-  const final = total + tip;
-  document.getElementById('tip-current').textContent = '+ ' + fmtMoney(tip);
-  document.getElementById('total-final').textContent = fmtMoney(final);
-}
-
-async function processPayment(method) {
-  const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) return;
-
-  // Animation faux paiement
-  const btnCard = document.querySelector('.pay-btn-card');
-  const originalHtml = btnCard.innerHTML;
-  if (method === 'carte') {
-    btnCard.innerHTML = '<div style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></div> Traitement...';
-    btnCard.disabled = true;
-    // Style spin si pas existant
-    if (!document.getElementById('spin-style')) {
-      const style = document.createElement('style');
-      style.id = 'spin-style';
-      style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-      document.head.appendChild(style);
-    }
+  if (tableOrders.length === 0) {
+    showToast('Aucune commande sur cette table');
+    return;
   }
-  // Simuler 1.4s pour avoir l'air "vrai"
-  await new Promise(r => setTimeout(r, method === 'carte' ? 1400 : 200));
+  // Si toutes les commandes sont déjà payées → on les remet en non payé (toggle)
+  // Sinon → on marque toutes comme payées
+  const allPaid = tableOrders.every(o => o.statut === 'payee');
+  const newStatut = allPaid ? 'servie' : 'payee';
 
-  // Marquer toutes les commandes de cette table comme payées
   try {
-    const tableOrders = state.orders.filter(o => o.table_id === t.id);
-    for (const o of tableOrders) {
-      await supa.from('commandes').update({ statut: 'payee' }).eq('id', o.id);
-    }
+    const ids = tableOrders.map(o => o.id);
+    const { error } = await supa.from('commandes').update({ statut: newStatut }).in('id', ids);
+    if (error) throw error;
     await loadOrders();
+    if (newStatut === 'payee') {
+      showToast('✓ Table marquée payée');
+      // Retour automatique à la liste des tables après 600ms
+      setTimeout(() => showScreen('tables'), 600);
+    } else {
+      showToast('Table marquée non payée');
+      renderTableDetail();
+    }
   } catch (err) {
-    console.warn('Update statut:', err);
+    console.error(err);
+    showToast('Erreur : ' + err.message);
   }
-
-  // Afficher succès
-  const total = state._payTotal || 0;
-  const tip = total * state.tipPct / 100;
-  const final = total + tip;
-  document.getElementById('pay-success-amount').textContent = fmtMoney(final);
-  document.getElementById('pay-success-sub').textContent = method === 'carte' ?
-    'Carte bancaire — Table ' + (t.nom || '?') :
-    'Espèces — Table ' + (t.nom || '?');
-
-  document.getElementById('pay-step1').style.display = 'none';
-  document.getElementById('pay-step2').style.display = 'block';
-
-  if (method === 'carte') {
-    btnCard.innerHTML = originalHtml;
-    btnCard.disabled = false;
-  }
-}
-
-function closePaySuccess() {
-  closeModal('modal-pay');
-  showScreen('tables');
-  showToast('Table libérée ✓');
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('show');
 }
 
 // Fermer en cliquant en dehors

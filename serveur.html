@@ -977,7 +977,7 @@ async function loadOrders() {
   const { data, error } = await supa.from('commandes')
     .select('*')
     .eq('restaurant_id', state.resto.id)
-    .in('statut', ['en_attente','en_cours','prete','servie','payee'])
+    .in('statut', ['en_attente','en_cours','prete','servie'])
     .gte('heure', yesterday)
     .order('heure', { ascending: true });
   if (!error) {
@@ -1030,13 +1030,15 @@ function renderTables() {
   }
 
   wrap.innerHTML = state.tables.map(t => {
-    const tableOrders = state.orders.filter(o => o.table_id === t.id);
-    const total = tableOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
-    const hasReady = tableOrders.some(o => o.statut === 'prete');
-    const hasOrders = tableOrders.length > 0;
+    // ⚠ Important : on ne compte QUE les commandes ACTIVES (non payées)
+    // pour déterminer si la table est occupée ou libre
+    const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
+    const total = activeOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+    const hasReady = activeOrders.some(o => o.statut === 'prete');
+    const hasOrders = activeOrders.length > 0;
     const cls = hasReady ? 'has-ready' : (hasOrders ? 'has-orders' : '');
     const status = hasReady ? '🛎 Prête à servir' :
-                   hasOrders ? `${tableOrders.length} commande${tableOrders.length>1?'s':''}` :
+                   hasOrders ? `${activeOrders.length} commande${activeOrders.length>1?'s':''}` :
                    'Libre';
     return `
       <button class="table-card ${cls}" onclick="openTable('${escapeHtml(t.id)}')">
@@ -1068,15 +1070,17 @@ function renderTableDetail() {
   if (!t) { showScreen('tables'); return; }
   document.getElementById('td-table-name').textContent = 'Table ' + (t.nom || '?');
 
-  const tableOrders = state.orders.filter(o => o.table_id === t.id);
-  const meta = tableOrders.length === 0 ?
+  // ⚠ On ne montre QUE les commandes actives (non payées) de CETTE table
+  const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
+
+  const meta = activeOrders.length === 0 ?
     'Aucune commande en cours' :
-    `${tableOrders.length} commande${tableOrders.length>1?'s':''}`;
+    `${activeOrders.length} commande${activeOrders.length>1?'s':''}`;
   document.getElementById('td-table-meta').textContent = meta;
 
   const ordersBox = document.getElementById('td-orders');
-  if (tableOrders.length === 0) {
-    ordersBox.innerHTML = `<div style="padding: 20px 0; text-align:center; color: var(--label-3); font-size: 13.5px; font-weight: 600;">Aucune commande sur cette table</div>`;
+  if (activeOrders.length === 0) {
+    ordersBox.innerHTML = `<div style="padding: 20px 0; text-align:center; color: var(--label-3); font-size: 13.5px; font-weight: 600;">Table libre · Aucune commande en cours</div>`;
     document.getElementById('td-pay-btn').style.display = 'none';
     return;
   }
@@ -1084,7 +1088,7 @@ function renderTableDetail() {
   // Aplatir les items des commandes
   const allItems = [];
   let total = 0;
-  tableOrders.forEach(o => {
+  activeOrders.forEach(o => {
     const items = Array.isArray(o.items) ? o.items : [];
     items.forEach(it => {
       allItems.push({
@@ -1100,7 +1104,7 @@ function renderTableDetail() {
   const statutLabels = { en_attente: 'En attente', en_cours: 'En cuisine', prete: 'Prête', servie: 'Servie' };
 
   ordersBox.innerHTML = `
-    <div class="table-orders-title">Commandes (${tableOrders.length})</div>
+    <div class="table-orders-title">Commandes (${activeOrders.length})</div>
     ${allItems.map(it => `
       <div class="order-line">
         <div class="order-line-info">
@@ -1116,22 +1120,13 @@ function renderTableDetail() {
     </div>
   `;
 
+  // Bouton "Marquer payée · X€" toujours visible quand il y a des commandes actives
   const btn = document.getElementById('td-pay-btn');
   const label = document.getElementById('td-pay-label');
   btn.style.display = 'inline-flex';
-
-  // Si toutes les commandes sont payées → bouton "Annuler le paiement"
-  // Sinon → bouton "Marquer payée"
-  const allPaid = tableOrders.every(o => o.statut === 'payee');
-  if (allPaid) {
-    label.textContent = `↺ Annuler le paiement`;
-    btn.classList.remove('action-btn-success');
-    btn.classList.add('action-btn-secondary');
-  } else {
-    label.textContent = `Marquer payée · ${fmtMoney(total)}`;
-    btn.classList.remove('action-btn-secondary');
-    btn.classList.add('action-btn-success');
-  }
+  btn.classList.remove('action-btn-secondary');
+  btn.classList.add('action-btn-success');
+  label.textContent = `Marquer payée · ${fmtMoney(total)}`;
 }
 
 // ============================================================================
@@ -1262,33 +1257,45 @@ async function sendCart() {
 // ============================================================================
 async function togglePaiementTable() {
   const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) return;
-  const tableOrders = state.orders.filter(o => o.table_id === t.id);
-  if (tableOrders.length === 0) {
-    showToast('Aucune commande sur cette table');
+  if (!t) {
+    showToast('Aucune table sélectionnée');
     return;
   }
-  // Si toutes les commandes sont déjà payées → on les remet en non payé (toggle)
-  // Sinon → on marque toutes comme payées
-  const allPaid = tableOrders.every(o => o.statut === 'payee');
-  const newStatut = allPaid ? 'servie' : 'payee';
+  // ⚠ On ne prend QUE les commandes actives (non payées) de cette table précise
+  const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
+
+  if (activeOrders.length === 0) {
+    showToast('Aucune commande à régler sur cette table');
+    return;
+  }
+
+  console.log(`[Paiement] Table ${t.nom} (id=${t.id}) → ${activeOrders.length} commandes actives à marquer payées`);
 
   try {
-    const ids = tableOrders.map(o => o.id);
-    const { error } = await supa.from('commandes').update({ statut: newStatut }).in('id', ids);
-    if (error) throw error;
-    await loadOrders();
-    if (newStatut === 'payee') {
-      showToast('✓ Table marquée payée');
-      // Retour automatique à la liste des tables après 600ms
-      setTimeout(() => showScreen('tables'), 600);
-    } else {
-      showToast('Table marquée non payée');
-      renderTableDetail();
+    // 1) Marquer toutes les commandes actives de CETTE table comme payées
+    const ids = activeOrders.map(o => o.id);
+    const { error: errCmd } = await supa.from('commandes')
+      .update({ statut: 'payee' })
+      .in('id', ids);
+    if (errCmd) throw errCmd;
+
+    // 2) Libérer la session de la table : la table redevient "libre"
+    // (le prochain client qui scanne le QR aura une nouvelle session)
+    const { error: errTable } = await supa.from('tables')
+      .update({ session_id: null })
+      .eq('id', t.id);
+    if (errTable) {
+      // Pas critique : on log mais on continue
+      console.warn('Impossible de libérer la session de la table :', errTable);
     }
+
+    await loadOrders();
+    showToast(`✓ Table ${t.nom} libérée`);
+    // Retour automatique à la liste des tables
+    setTimeout(() => showScreen('tables'), 500);
   } catch (err) {
-    console.error(err);
-    showToast('Erreur : ' + err.message);
+    console.error('togglePaiementTable error:', err);
+    showToast('Erreur : ' + (err.message || 'paiement impossible'));
   }
 }
 

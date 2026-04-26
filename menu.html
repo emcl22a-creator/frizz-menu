@@ -1799,14 +1799,6 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="help-info-btn" onclick="openWelcomeModal()" aria-label="Comment ça marche ?" title="Comment ça marche ?">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-          <span>Aide</span>
-        </button>
         <button class="salon-badge" onclick="openSalon()">
           <span class="dot"></span>
           <span id="salon-count">Salon</span>
@@ -1928,6 +1920,65 @@
     </div>
   </div>
 
+  <!-- Modal Paiement avant repas (si activé par le restaurateur) -->
+  <div class="welcome-overlay" id="paiement-client-overlay" style="z-index: 220;">
+    <div class="welcome-card" id="paiement-client-card" style="max-width: 440px;">
+      <button class="welcome-close" onclick="closePaiementClientModal()" aria-label="Annuler">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <!-- Step 1 : récapitulatif + paiement -->
+      <div id="paiement-step1">
+        <div style="text-align: center; margin-bottom: 22px;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Total à payer</div>
+          <div style="font-size: 44px; font-weight: 900; letter-spacing: -0.045em; color: var(--label); font-variant-numeric: tabular-nums;" id="paiement-amount">0.00€</div>
+        </div>
+
+        <!-- Pourboire -->
+        <div style="background: var(--fill-2); border: 1px solid var(--sep); border-radius: 16px; padding: 16px; margin-bottom: 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: var(--label-2);">Pourboire</span>
+            <span style="font-size: 13px; font-weight: 800; color: var(--green); font-variant-numeric: tabular-nums;" id="paiement-tip-amount">+ 0.00€</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;">
+            <button class="paiement-tip-btn active" data-tip="0" onclick="setClientTip(0)" style="padding: 11px 6px; background: rgba(48,209,88,0.16); border: 1.5px solid var(--green); border-radius: 12px; font-size: 13px; font-weight: 800; color: var(--green); cursor: pointer; transition: 0.15s var(--ease);">0%</button>
+            <button class="paiement-tip-btn" data-tip="5" onclick="setClientTip(5)" style="padding: 11px 6px; background: var(--fill-1); border: 1.5px solid var(--sep); border-radius: 12px; font-size: 13px; font-weight: 800; color: var(--label-2); cursor: pointer; transition: 0.15s var(--ease);">5%</button>
+            <button class="paiement-tip-btn" data-tip="10" onclick="setClientTip(10)" style="padding: 11px 6px; background: var(--fill-1); border: 1.5px solid var(--sep); border-radius: 12px; font-size: 13px; font-weight: 800; color: var(--label-2); cursor: pointer; transition: 0.15s var(--ease);">10%</button>
+            <button class="paiement-tip-btn" data-tip="15" onclick="setClientTip(15)" style="padding: 11px 6px; background: var(--fill-1); border: 1.5px solid var(--sep); border-radius: 12px; font-size: 13px; font-weight: 800; color: var(--label-2); cursor: pointer; transition: 0.15s var(--ease);">15%</button>
+          </div>
+        </div>
+
+        <!-- Total final -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: linear-gradient(135deg, rgba(48,209,88,0.18) 0%, rgba(48,209,88,0.06) 100%); border: 1px solid rgba(48,209,88,0.4); border-radius: 16px; margin-bottom: 18px;">
+          <div style="font-size: 14px; font-weight: 800; color: var(--label);">Total final</div>
+          <div style="font-size: 22px; font-weight: 900; color: var(--green); font-variant-numeric: tabular-nums; letter-spacing: -0.03em;" id="paiement-total-final">0.00€</div>
+        </div>
+
+        <!-- Bouton paiement carte (mockup) -->
+        <button id="paiement-card-btn" onclick="processClientPayment()" style="width: 100%; padding: 16px; background: var(--blue); color: #fff; border: 0; border-radius: 100px; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(10,132,255,0.45); letter-spacing: -0.018em; margin-bottom: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px; flex-shrink: 0;"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Payer par carte
+        </button>
+
+        <p style="font-size: 11.5px; color: var(--label-3); text-align: center; margin: 12px 0 0; line-height: 1.4; font-weight: 500;">
+          🔒 Paiement sécurisé · Votre commande part en cuisine après paiement
+        </p>
+      </div>
+
+      <!-- Step 2 : succès paiement -->
+      <div id="paiement-step2" style="display: none; text-align: center; padding: 8px 0;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--green); color: #fff; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(48,209,88,0.5); animation: success-pop 0.55s var(--ease-spring) both;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; stroke-width: 3;"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size: 26px; font-weight: 900; letter-spacing: -0.035em; margin-bottom: 6px;">Paiement réussi !</div>
+        <div style="font-size: 14.5px; color: var(--label-2); margin-bottom: 22px; line-height: 1.45;">
+          Votre commande est partie en cuisine.<br>
+          <strong style="color: var(--label);">Bon appétit ! 🍽️</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="cat-bar-wrap" id="cat-bar-wrap">
     <div class="cat-bar" id="cat-bar"></div>
   </div>
@@ -1950,75 +2001,46 @@
   <div class="cart-button">
     <div class="cart-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>
+        <path d="M3 2v7c0 1.1.9 2 2 2h1v11"/>
+        <path d="M5 2v9"/>
+        <path d="M7 2v7"/>
+        <path d="M19 22V2c-1.5 0-3 2.5-3 6 0 2 1 3.5 3 4"/>
       </svg>
       <span class="cart-count" id="cart-count">0</span>
     </div>
     <div class="cart-info">
-      <div class="cart-label">Mon panier</div>
+      <div class="cart-label">Ma commande</div>
       <div class="cart-total" id="cart-total">0.00€</div>
     </div>
     <span class="cart-cta">Voir →</span>
   </div>
 </div>
 
-<!-- Bandeau Timer commande en cours -->
-<div class="timer-bar" id="timer-bar" style="display:none;">
-  <div class="timer-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-  </div>
-  <div class="timer-text">
-    <div class="timer-label" id="timer-label">Ta commande arrive bientôt</div>
-    <div class="timer-sub" id="timer-sub">En cuisine</div>
-  </div>
-  <div class="timer-pulse"></div>
-</div>
-
 <!-- Bouton flottant Appeler serveur -->
-<button class="fab-help" id="fab-help" onclick="openHelpModal()" aria-label="Appeler le serveur">
+<button class="fab-help" id="fab-help" onclick="openHelpModal()" aria-label="Demander l'addition" title="Demander l'addition">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
   </svg>
 </button>
 
-<!-- Modal "Appeler le serveur" -->
+<!-- Modal "Demander l'addition" -->
 <div class="modal-overlay" id="modal-help">
   <div class="modal" style="position:relative;">
     <div class="modal-handle"></div>
     <div class="modal-body" style="padding-top:16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 6px;">
-        <div class="modal-name" style="margin-bottom:0;">Besoin d'aide ?</div>
+        <div class="modal-name" style="margin-bottom:0;">L'addition</div>
         <button class="modal-close-x" style="position:relative; top:auto; right:auto; background: var(--fill-1);" onclick="closeModal('modal-help')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
-      <div style="font-size:14px; color: var(--label-2); margin-bottom: 22px;">Le serveur reçoit ta demande instantanément.</div>
-      <div class="help-grid">
-        <button class="help-btn" onclick="callServer('serveur', 'Demande le serveur')">
-          <div class="help-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          </div>
-          <div class="help-label">Appeler<br>le serveur</div>
-        </button>
-        <button class="help-btn" onclick="callServer('addition', 'Demande l\'addition')">
-          <div class="help-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-          </div>
-          <div class="help-label">Demander<br>l'addition</div>
-        </button>
-        <button class="help-btn" onclick="callServer('eau', 'Demande de l\'eau')">
-          <div class="help-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-          </div>
-          <div class="help-label">Apporter<br>de l'eau</div>
-        </button>
-        <button class="help-btn" onclick="callServer('couverts', 'Demande des couverts')">
-          <div class="help-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8a2.5 2.5 0 0 0 5 0V3"/><path d="M9.5 11v10"/><path d="M17 3c-1.5 0-2.5 1.5-2.5 3v6H17"/><path d="M17 3v18"/></svg>
-          </div>
-          <div class="help-label">Plus de<br>couverts</div>
-        </button>
-      </div>
+      <div style="font-size:14px; color: var(--label-2); margin-bottom: 22px;">Le serveur sera prévenu instantanément.</div>
+      <button class="help-btn" style="width: 100%; padding: 22px; flex-direction: row; gap: 16px; justify-content: flex-start;" onclick="callServer('addition', 'Demande l\'addition')">
+        <div class="help-icon blue" style="margin: 0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        </div>
+        <div class="help-label" style="text-align: left; font-size: 16px;">Demander l'addition</div>
+      </button>
     </div>
   </div>
 </div>
@@ -2068,7 +2090,7 @@
     <div class="modal-handle"></div>
     <div class="modal-body" style="padding-top: 16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px;">
-        <div class="modal-name" style="margin-bottom:0;">Mon panier</div>
+        <div class="modal-name" style="margin-bottom:0;">Ma commande</div>
         <button class="modal-close-x" style="position:relative; top:auto; right:auto; background: var(--fill-1);" onclick="closeModal('modal-cart')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
@@ -2253,6 +2275,7 @@ async function init() {
       restaurant_nom: RESTO.nom || '',
       logo_url: RESTO.logo_url || '',
       google_link: RESTO.google_link || '',
+      paiement_avant: RESTO.paiement_avant === true,
       langue: RESTO.langue || 'fr',
       ouvert: RESTO.ouvert === false ? 'false' : 'true'
     };
@@ -2313,9 +2336,6 @@ async function init() {
     // Hide loading, show app
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
-
-    // Afficher le popup d'accueil à la 1ère visite uniquement
-    maybeShowWelcomeOnFirstVisit();
 
     // Polling temps réel toutes les 4s
     state.pollInterval = setInterval(pollOrders, 4000);
@@ -2742,15 +2762,26 @@ async function callServer(type, message) {
 
 async function sendOrder() {
   if (state.cart.length === 0) return;
+  // Si paiement avant le repas activé → ouvrir modal paiement
+  if (state.config && state.config.paiement_avant === true) {
+    openPaiementClientModal();
+    return;
+  }
+  // Sinon : envoi direct comme avant (paiement à la fin)
+  await actuallySendOrder();
+}
+
+async function actuallySendOrder(paiementInfo = null) {
+  if (state.cart.length === 0) return;
   const btn = document.getElementById('send-btn-text');
-  btn.textContent = 'Envoi…';
+  if (btn) btn.textContent = 'Envoi…';
   const total = state.cart.reduce((s, it) => s + it.prix * it.qte, 0);
   const items = state.cart.map(it => ({
     id: it.id, nom: it.nom, prix: it.prix, qte: it.qte, note: it.note || ''
   }));
   const cmdId = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
   try {
-    const { error } = await supa.from('commandes').insert({
+    const insertData = {
       id: cmdId,
       restaurant_id: RESTO.id,
       table_id: TABLE_ID,
@@ -2761,7 +2792,15 @@ async function sendOrder() {
       statut: 'en_attente',
       heure: new Date().toISOString(),
       total
-    });
+    };
+    // Si paiement effectué (mode pay-first), marquer la commande comme payée
+    if (paiementInfo) {
+      insertData.payee = true;
+      insertData.paiement_method = paiementInfo.method;
+      insertData.paiement_montant = paiementInfo.montant;
+      insertData.paiement_pourboire = paiementInfo.pourboire || 0;
+    }
+    const { error } = await supa.from('commandes').insert(insertData);
     if (error) throw error;
     state.cart = [];
     saveCart();
@@ -2771,12 +2810,12 @@ async function sendOrder() {
     showToast('Commande envoyée en cuisine 🍳', 'success');
     await loadOrders();
     updateSalonCount();
-    // Proposer de laisser un avis Google après un petit délai (laisse le toast respirer)
+    // Proposer de laisser un avis Google après un petit délai
     setTimeout(() => openGoogleModal(), 2200);
   } catch (err) {
     console.error(err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
-    btn.textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
+    if (btn) btn.textContent = `Envoyer en cuisine · ${total.toFixed(2)}€`;
   }
 }
 
@@ -2807,151 +2846,118 @@ async function pollOrders() {
   }
 }
 
-// ============ TIMER COMMANDE ============
-// Affiche un bandeau "Ta commande arrive dans X min" si une de tes commandes est en cours
-function updateTimerBar() {
-  const bar = document.getElementById('timer-bar');
-  if (!bar) return;
-  const labelEl = document.getElementById('timer-label');
-  const subEl = document.getElementById('timer-sub');
-
-  // Mes commandes dans cette session (en cours ou prêtes)
-  const mine = (state.allOrders || []).filter(o =>
-    o.personne_id === state.personneId &&
-    (o.statut === 'en_cours' || o.statut === 'prete')
-  );
-
-  if (mine.length === 0) {
-    bar.style.display = 'none';
-    document.body.classList.remove('has-timer');
-    return;
-  }
-
-  // Trier par priorité : prête > en_cours
-  const prete = mine.find(o => o.statut === 'prete');
-  const enCours = mine.find(o => o.statut === 'en_cours');
-
-  bar.style.display = 'flex';
-  document.body.classList.add('has-timer');
-
-  if (prete) {
-    // Commande prête → bandeau vert
-    bar.classList.add('ready');
-    labelEl.textContent = '🛎 Ta commande est prête !';
-    subEl.textContent = mine.length > 1 ? 'Le serveur arrive · ' + (mine.length-1) + ' autre(s) en cours' : 'Le serveur arrive';
-    return;
-  }
-
-  // Sinon : en cours → bandeau bleu avec timer
-  bar.classList.remove('ready');
-
-  if (!enCours.heure_demarrage) {
-    // Démarrée mais pas de timer (cas où le serveur a skip le prompt)
-    labelEl.textContent = 'Ta commande est en préparation';
-    subEl.textContent = 'Bientôt servie';
-    return;
-  }
-
-  const startMs = new Date(enCours.heure_demarrage).getTime();
-  const elapsed = Math.floor((Date.now() - startMs) / 60000); // minutes écoulées
-  const estimated = parseInt(enCours.temps_estime_min) || 0;
-
-  if (estimated > 0) {
-    const remaining = Math.max(0, estimated - elapsed);
-    if (remaining === 0) {
-      labelEl.textContent = 'Plus que quelques instants…';
-      subEl.textContent = 'Le chef finalise ta commande';
-    } else if (remaining === 1) {
-      labelEl.textContent = 'Plus qu\'1 minute !';
-      subEl.textContent = 'Ta commande arrive';
-    } else {
-      labelEl.textContent = `Ta commande arrive dans ${remaining} min`;
-      subEl.textContent = 'En cuisine · ' + (estimated - remaining) + '/' + estimated + ' min écoulées';
-    }
-  } else {
-    // Pas de temps estimé saisi → on affiche juste le temps écoulé
-    labelEl.textContent = 'Ta commande est en préparation';
-    subEl.textContent = elapsed === 0 ? 'Démarrée à l\'instant' : 'Démarrée il y a ' + elapsed + ' min';
-  }
-}
-
-// Tick toutes les 30s pour mettre à jour le compte à rebours sans recharger les commandes
-setInterval(updateTimerBar, 30000);
-
-function assignPersonneNom() {
-  // Récupérer la liste des personnes uniques sur cette session
-  const personIds = [...new Set(state.allOrders.map(o => o.personne_id))];
-  // Si je suis déjà dans la liste, garder mon numéro
-  let myIdx = personIds.indexOf(state.personneId);
-  if (myIdx === -1) {
-    // Je n'ai pas encore commandé → je serai "Personne N+1" basé sur le nombre de personnes existantes
-    myIdx = personIds.length;
-  }
-  state.personneNom = 'Personne ' + (myIdx + 1);
-}
-
-function updateSalonCount() {
-  const personIds = [...new Set(state.allOrders.map(o => o.personne_id))];
-  if (!personIds.includes(state.personneId)) personIds.push(state.personneId);
-  const n = personIds.length;
-  document.getElementById('salon-count').textContent = n + ' à table';
-  // Mettre à jour aussi le sous-titre du resto
-  if (state.table) {
-    assignPersonneNom();
-    document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + state.personneNom;
-  }
-}
-
-// ============ WELCOME MODAL (popup d'accueil) ============
-const WELCOME_KEY = 'frizz_welcome_seen_v1';
-
-function openWelcomeModal() {
-  const overlay = document.getElementById('welcome-overlay');
-  if (!overlay) return;
-  overlay.classList.add('show');
-  // Empêcher le scroll du body en arrière-plan
-  document.body.style.overflow = 'hidden';
-}
-
-function closeWelcomeModal() {
-  const overlay = document.getElementById('welcome-overlay');
-  if (!overlay) return;
-  overlay.classList.remove('show');
-  document.body.style.overflow = '';
-  // Marquer comme vu pour ne plus l'afficher automatiquement
-  try { localStorage.setItem(WELCOME_KEY, '1'); } catch(_) {}
-}
-
-function maybeShowWelcomeOnFirstVisit() {
-  let seen = false;
-  try { seen = localStorage.getItem(WELCOME_KEY) === '1'; } catch(_) {}
-  if (!seen) {
-    // Petit délai pour laisser la page se charger / l'utilisateur voir le contexte
-    setTimeout(() => openWelcomeModal(), 500);
-  }
-}
-
-// Fermer en cliquant sur le fond (mais pas sur la carte)
-document.addEventListener('click', (e) => {
-  const overlay = document.getElementById('welcome-overlay');
-  if (!overlay || !overlay.classList.contains('show')) return;
-  if (e.target === overlay) closeWelcomeModal();
-});
-
-// Fermer avec Escape (utile en desktop / démo)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const overlay = document.getElementById('welcome-overlay');
-    if (overlay && overlay.classList.contains('show')) closeWelcomeModal();
-    const goog = document.getElementById('google-overlay');
-    if (goog && goog.classList.contains('show')) closeGoogleModal();
-  }
-});
+// ============ TIMER COMMANDE (DESACTIVE) ============
+// La feature timer a été désactivée à la demande du restaurateur.
+// La fonction reste en no-op pour ne pas casser les anciens appels.
+function updateTimerBar() { /* no-op */ }
 
 // ============ GOOGLE REVIEW MODAL ============
 // Apparaît après une commande confirmée, si le restaurateur a configuré son lien Google.
 // N'apparaît qu'UNE FOIS par session de table (sessionStorage).
 const GOOGLE_KEY_PREFIX = 'frizz_google_shown_';
+
+// ============ PAIEMENT CLIENT (mode pay-first) ============
+let paiementClientState = { tipPct: 0, total: 0 };
+
+function openPaiementClientModal() {
+  const total = state.cart.reduce((s, it) => s + it.prix * it.qte, 0);
+  paiementClientState.total = total;
+  paiementClientState.tipPct = 0;
+  document.getElementById('paiement-amount').textContent = total.toFixed(2) + '€';
+  updateClientTipDisplay();
+  // Reset steps
+  document.getElementById('paiement-step1').style.display = 'block';
+  document.getElementById('paiement-step2').style.display = 'none';
+  // Reset tip buttons
+  document.querySelectorAll('.paiement-tip-btn').forEach(b => {
+    const isActive = parseInt(b.dataset.tip) === 0;
+    if (isActive) {
+      b.classList.add('active');
+      b.style.background = 'rgba(48,209,88,0.16)';
+      b.style.borderColor = 'var(--green)';
+      b.style.color = 'var(--green)';
+    } else {
+      b.classList.remove('active');
+      b.style.background = 'var(--fill-1)';
+      b.style.borderColor = 'var(--sep)';
+      b.style.color = 'var(--label-2)';
+    }
+  });
+  // Reset bouton
+  const btn = document.getElementById('paiement-card-btn');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px; flex-shrink: 0;"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Payer par carte';
+  }
+  document.getElementById('paiement-client-overlay').classList.add('show');
+}
+
+function closePaiementClientModal() {
+  document.getElementById('paiement-client-overlay').classList.remove('show');
+}
+
+function setClientTip(pct) {
+  paiementClientState.tipPct = pct;
+  document.querySelectorAll('.paiement-tip-btn').forEach(b => {
+    const isActive = parseInt(b.dataset.tip) === pct;
+    if (isActive) {
+      b.classList.add('active');
+      b.style.background = 'rgba(48,209,88,0.16)';
+      b.style.borderColor = 'var(--green)';
+      b.style.color = 'var(--green)';
+    } else {
+      b.classList.remove('active');
+      b.style.background = 'var(--fill-1)';
+      b.style.borderColor = 'var(--sep)';
+      b.style.color = 'var(--label-2)';
+    }
+  });
+  updateClientTipDisplay();
+}
+
+function updateClientTipDisplay() {
+  const tip = paiementClientState.total * paiementClientState.tipPct / 100;
+  const final = paiementClientState.total + tip;
+  document.getElementById('paiement-tip-amount').textContent = '+ ' + tip.toFixed(2) + '€';
+  document.getElementById('paiement-total-final').textContent = final.toFixed(2) + '€';
+}
+
+async function processClientPayment() {
+  const btn = document.getElementById('paiement-card-btn');
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.innerHTML = '<div style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></div> Traitement…';
+  // Style spin si pas existant
+  if (!document.getElementById('paiement-spin-style')) {
+    const style = document.createElement('style');
+    style.id = 'paiement-spin-style';
+    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+  }
+  // Simuler 1.6s pour avoir l'air "vrai"
+  await new Promise(r => setTimeout(r, 1600));
+
+  // Calculer infos paiement
+  const tip = paiementClientState.total * paiementClientState.tipPct / 100;
+  const final = paiementClientState.total + tip;
+  const paiementInfo = {
+    method: 'carte',
+    montant: final,
+    pourboire: tip
+  };
+
+  // Envoyer la commande maintenant (avec flag payee = true)
+  await actuallySendOrder(paiementInfo);
+
+  // Afficher succès
+  document.getElementById('paiement-step1').style.display = 'none';
+  document.getElementById('paiement-step2').style.display = 'block';
+
+  // Auto-fermer après 2.5s
+  setTimeout(() => {
+    closePaiementClientModal();
+  }, 2500);
+}
 
 function openGoogleModal() {
   // Vérifier qu'un lien Google est configuré

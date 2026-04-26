@@ -169,6 +169,157 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ========== RÉSERVATIONS ========== */
+  .resa-filter-pill {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--label-2);
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .resa-filter-pill:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .resa-filter-pill.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .resa-day-header {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--label-2);
+    margin: 24px 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .resa-day-header.today { color: var(--blue); }
+  .resa-card {
+    background: var(--card-bg, rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .resa-card.pending {
+    border-color: rgba(10,132,255,0.4);
+    background: rgba(10,132,255,0.06);
+    box-shadow: 0 4px 18px rgba(10,132,255,0.10);
+  }
+  .resa-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .resa-card-left {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    flex: 1;
+    min-width: 0;
+  }
+  .resa-time {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--label);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .resa-info { flex: 1; min-width: 0; }
+  .resa-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.015em;
+    word-break: break-word;
+    margin-bottom: 2px;
+  }
+  .resa-meta {
+    font-size: 13px;
+    color: var(--label-2);
+  }
+  .resa-meta a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .resa-status-badge {
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: -0.005em;
+  }
+  .resa-status-badge.en_attente { background: rgba(255,159,10,0.18); color: #FF9F0A; }
+  .resa-status-badge.confirmee  { background: rgba(48,209,88,0.18); color: #30D158; }
+  .resa-status-badge.annulee    { background: rgba(255,69,58,0.18); color: #FF453A; }
+  .resa-status-badge.passee     { background: rgba(134,134,139,0.18); color: #999; }
+  .resa-status-badge.no_show    { background: rgba(255,69,58,0.18); color: #FF453A; }
+  .resa-card-email {
+    font-size: 12.5px;
+    color: var(--label-2);
+    margin-bottom: 8px;
+  }
+  .resa-card-message {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--label-2);
+    margin-bottom: 10px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .resa-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .resa-btn {
+    background: rgba(255,255,255,0.08);
+    border: 0;
+    color: var(--label);
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: -0.01em;
+    transition: all 0.15s;
+  }
+  .resa-btn:hover { background: rgba(255,255,255,0.12); }
+  .resa-btn.primary {
+    background: var(--blue);
+    color: #fff;
+  }
+  .resa-btn.primary:hover { background: #0066CC; }
+  .resa-btn.danger {
+    background: rgba(255,69,58,0.15);
+    color: #FF453A;
+  }
+  .resa-btn.danger:hover { background: rgba(255,69,58,0.25); }
+
   /* ========== HERO BANNER ========== */
   .hero {
     margin-bottom: 24px;
@@ -774,6 +925,16 @@
         </div>
       </div>
       <div class="header-actions">
+        <button id="resa-btn" onclick="showScreen('resa')" title="Voir les réservations" style="background: rgba(255,255,255,0.06); color: var(--label, #fff); border: 1px solid rgba(255,255,255,0.12); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s; position: relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span>Résa</span>
+          <span id="resa-pending-badge" style="display:none; background: var(--blue, #0A84FF); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 100px; min-width: 18px; text-align: center;">0</span>
+        </button>
         <button id="sound-toggle" onclick="toggleSound()" title="Activer/désactiver les notifications sonores" style="background: var(--blue-soft, rgba(10,132,255,0.14)); color: var(--blue, #0A84FF); border: 1px solid rgba(10,132,255,0.28); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s;">
           <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
@@ -800,6 +961,35 @@
         <p>Sélectionne une table pour voir ses commandes ou prendre une nouvelle commande.</p>
       </div>
       <div class="tables-grid" id="tables-grid"></div>
+    </section>
+
+    <!-- ========= ÉCRAN RÉSERVATIONS ========= -->
+    <section class="screen" id="screen-resa">
+      <button class="back-btn" onclick="showScreen('tables')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour aux tables
+      </button>
+
+      <div class="hero">
+        <h1>Réservations</h1>
+        <p>Validez ou refusez les demandes de réservation. Appuyez sur le numéro pour appeler le client.</p>
+      </div>
+
+      <!-- Filtres -->
+      <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;">
+        <button class="resa-filter-pill active" data-resa-filter="all" onclick="setResaFilter('all')">Toutes</button>
+        <button class="resa-filter-pill" data-resa-filter="en_attente" onclick="setResaFilter('en_attente')">⏳ En attente</button>
+        <button class="resa-filter-pill" data-resa-filter="confirmee" onclick="setResaFilter('confirmee')">✓ Confirmées</button>
+        <button class="resa-filter-pill" data-resa-filter="annulee" onclick="setResaFilter('annulee')">Annulées</button>
+        <button class="resa-filter-pill" data-resa-filter="passee" onclick="setResaFilter('passee')">Passées</button>
+      </div>
+
+      <div id="resa-list"></div>
+      <div id="resa-empty" style="display:none; text-align: center; padding: 60px 20px; color: var(--label-2);">
+        <div style="font-size: 48px; margin-bottom: 12px;">📅</div>
+        <div style="font-size: 17px; font-weight: 700; color: var(--label); margin-bottom: 6px;">Aucune réservation</div>
+        <p style="font-size: 13.5px; max-width: 280px; margin: 0 auto;">Les nouvelles demandes de réservation apparaîtront ici.</p>
+      </div>
     </section>
 
     <!-- ========= ÉCRAN 2 : Détail d'une table ========= -->
@@ -953,7 +1143,10 @@ const state = {
   notifiedOrderIds: new Set(),  // IDs déjà notifiés (pour éviter de re-notifier après confirmation)
   pendingNotifications: [],     // queue des commandes prêtes à montrer
   currentNotification: null,    // notif actuellement affichée dans la modal
-  soundEnabled: true            // toggle son
+  soundEnabled: true,           // toggle son
+  // Réservations
+  resas: [],
+  resaFilter: 'all'
 };
 
 const params = new URLSearchParams(location.search);
@@ -1043,6 +1236,11 @@ async function init() {
     // 6) Polling commandes toutes les 5s
     state.pollInterval = setInterval(loadOrders, 5000);
 
+    // 7) Charger les réservations en arrière-plan (pour le badge "en attente")
+    loadResas().catch(() => {});
+    // Polling léger des réservations toutes les 30s
+    setInterval(() => loadResas().catch(() => {}), 30000);
+
   } catch (err) {
     console.error('init:', err);
     document.getElementById('loading').innerHTML = `<div style="text-align:center; padding:30px;"><div style="font-size:18px; font-weight:800; margin-bottom:8px;">Erreur</div><div style="font-size:13px; color:var(--label-2); max-width:300px; margin:0 auto;">${escapeHtml(err.message || 'Impossible de charger la page')}</div><a href="login.html" style="display:inline-block; margin-top:18px; padding:10px 18px; background:var(--blue); color:#fff; border-radius:100px; font-weight:700; text-decoration:none;">Se reconnecter</a></div>`;
@@ -1116,6 +1314,9 @@ function showScreen(name) {
     renderTableDetail();
   } else if (name === 'order') {
     renderOrderScreen();
+  } else if (name === 'resa') {
+    loadResas();
+    renderResas();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1513,6 +1714,181 @@ async function confirmReadyNotification() {
 
   // Afficher la prochaine notif après 400ms (laisse respirer)
   setTimeout(() => showNextNotification(), 400);
+}
+
+// ============================================================================
+// RÉSERVATIONS — gestion côté serveur
+// ============================================================================
+
+async function loadResas() {
+  if (!state.resto) return;
+  try {
+    const { data, error } = await supa.from('reservations')
+      .select('*')
+      .eq('restaurant_id', state.resto.id)
+      .order('date_resa', { ascending: false })
+      .order('heure_resa', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+
+    // Auto-passage en "passee" pour les confirmées dont la date est passée
+    const today = new Date().toISOString().split('T')[0];
+    state.resas = (data || []).map(r => {
+      if (r.statut === 'confirmee' && r.date_resa < today) {
+        return { ...r, statut: 'passee', _autoPassed: true };
+      }
+      return r;
+    });
+
+    // Mise à jour du badge "en attente"
+    const pendingCount = state.resas.filter(r => r.statut === 'en_attente').length;
+    const badge = document.getElementById('resa-pending-badge');
+    if (badge) {
+      if (pendingCount > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = pendingCount;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Refresh la vue si on est sur l'écran résa
+    const resaScreen = document.getElementById('screen-resa');
+    if (resaScreen && resaScreen.classList.contains('active')) {
+      renderResas();
+    }
+  } catch (err) {
+    console.error('loadResas:', err);
+  }
+}
+
+function setResaFilter(filter) {
+  state.resaFilter = filter;
+  document.querySelectorAll('.resa-filter-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.resaFilter === filter);
+  });
+  renderResas();
+}
+
+function renderResas() {
+  const list = document.getElementById('resa-list');
+  const empty = document.getElementById('resa-empty');
+  if (!list) return;
+
+  let filtered = state.resas;
+  if (state.resaFilter !== 'all') {
+    filtered = state.resas.filter(r => r.statut === state.resaFilter);
+  }
+
+  if (filtered.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  // Grouper par date
+  const byDate = {};
+  filtered.forEach(r => {
+    if (!byDate[r.date_resa]) byDate[r.date_resa] = [];
+    byDate[r.date_resa].push(r);
+  });
+
+  const sortedDates = Object.keys(byDate).sort().reverse();
+  const today = new Date().toISOString().split('T')[0];
+
+  list.innerHTML = sortedDates.map(date => {
+    const resas = byDate[date].sort((a, b) => a.heure_resa.localeCompare(b.heure_resa));
+    const dateObj = new Date(date + 'T12:00:00');
+    const dateStr = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    const isToday = date === today;
+    return `
+      <div>
+        <div class="resa-day-header ${isToday ? 'today' : ''}">
+          ${isToday ? '● ' : ''}${escapeHtml(dateStr)}${isToday ? " · aujourd'hui" : ''}
+        </div>
+        ${resas.map(r => renderResaCard(r)).join('')}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderResaCard(r) {
+  const statutLabels = {
+    'en_attente':  '⏳ En attente',
+    'confirmee':   '✓ Confirmée',
+    'annulee':     '✗ Annulée',
+    'passee':      '✓ Passée',
+    'no_show':     '⚠ No-show'
+  };
+  const isPending = r.statut === 'en_attente';
+  const isConfirmed = r.statut === 'confirmee';
+  const heure = r.heure_resa.substring(0, 5);
+
+  return `
+    <div class="resa-card ${isPending ? 'pending' : ''}">
+      <div class="resa-card-top">
+        <div class="resa-card-left">
+          <div class="resa-time">${heure}</div>
+          <div class="resa-info">
+            <div class="resa-name">${escapeHtml(r.client_nom)}</div>
+            <div class="resa-meta">
+              ${r.nb_personnes} pers. · <a href="tel:${escapeHtml(r.client_tel)}">${escapeHtml(r.client_tel)}</a>
+            </div>
+          </div>
+        </div>
+        <div class="resa-status-badge ${r.statut}">${statutLabels[r.statut] || r.statut}</div>
+      </div>
+
+      ${r.client_email ? `<div class="resa-card-email">📧 ${escapeHtml(r.client_email)}</div>` : ''}
+      ${r.message ? `<div class="resa-card-message">"${escapeHtml(r.message)}"</div>` : ''}
+
+      <div class="resa-card-actions">
+        ${isPending ? `
+          <button class="resa-btn primary" onclick="updateResaStatus('${r.id}', 'confirmee')">✓ Confirmer</button>
+          <button class="resa-btn danger" onclick="updateResaStatus('${r.id}', 'annulee')">Refuser</button>
+        ` : ''}
+        ${isConfirmed ? `
+          <button class="resa-btn danger" onclick="updateResaStatus('${r.id}', 'annulee')">Annuler</button>
+          <button class="resa-btn" onclick="updateResaStatus('${r.id}', 'no_show')">No-show</button>
+        ` : ''}
+        <a class="resa-btn" href="tel:${escapeHtml(r.client_tel)}">📞 Appeler</a>
+        ${!isPending ? `<button class="resa-btn" onclick="deleteResa('${r.id}')">Supprimer</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+async function updateResaStatus(resaId, newStatus) {
+  try {
+    const { error } = await supa.from('reservations')
+      .update({ statut: newStatus })
+      .eq('id', resaId);
+    if (error) throw error;
+    const labels = {
+      'confirmee': 'Réservation confirmée ✓',
+      'annulee': 'Réservation refusée',
+      'no_show': 'Marquée no-show'
+    };
+    showToast(labels[newStatus] || 'Statut mis à jour');
+    await loadResas();
+  } catch (err) {
+    console.error('updateResaStatus:', err);
+    showToast('Erreur : ' + (err.message || 'mise à jour impossible'));
+  }
+}
+
+async function deleteResa(resaId) {
+  if (!confirm('Supprimer cette réservation définitivement ?')) return;
+  try {
+    const { error } = await supa.from('reservations').delete().eq('id', resaId);
+    if (error) throw error;
+    showToast('Réservation supprimée');
+    await loadResas();
+  } catch (err) {
+    console.error('deleteResa:', err);
+    showToast('Erreur lors de la suppression');
+  }
 }
 
 async function togglePaiementTable() {

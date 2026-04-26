@@ -1969,6 +1969,10 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
+      <button onclick="openServeur()" title="Ouvrir le mode serveur" style="display:flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:100px; background:var(--blue); border:1px solid var(--blue); color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:-0.012em; box-shadow:0 4px 14px rgba(10,132,255,0.35);" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-2-2"/></svg>
+        Serveur
+      </button>
       <button onclick="openCuisine()" title="Ouvrir l'écran cuisine" style="display:flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:100px; background:var(--fill-1); border:1px solid var(--sep); color:var(--label); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:-0.012em;" onmouseover="this.style.background='var(--blue-soft)'; this.style.borderColor='rgba(10,132,255,0.4)'; this.style.color='var(--blue)';" onmouseout="this.style.background='var(--fill-1)'; this.style.borderColor='var(--sep)'; this.style.color='var(--label)';">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
         Cuisine
@@ -2675,6 +2679,15 @@ function openCuisine() {
     return;
   }
   const url = location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(RESTO.slug);
+  window.open(url, '_blank');
+}
+
+function openServeur() {
+  if (!RESTO || !RESTO.slug) {
+    showToast('Restaurant non chargé', 'error');
+    return;
+  }
+  const url = location.pathname.replace(/menu-admin\.html$/, 'serveur.html') + '?resto=' + encodeURIComponent(RESTO.slug);
   window.open(url, '_blank');
 }
 

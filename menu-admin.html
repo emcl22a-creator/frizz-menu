@@ -2350,22 +2350,6 @@
         </div>
         <div class="field-hint">Lien généré automatiquement à partir du nom de ton restaurant. C'est l'URL à donner à tes clients ou à intégrer dans tes QR codes.</div>
       </div>
-      <div class="field" style="margin-top: 4px; padding-top: 22px; border-top: 1px solid var(--sep);">
-        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-          <div style="flex: 1; min-width: 220px;">
-            <label class="field-label" style="margin-bottom: 6px;">Paiement avant le repas</label>
-            <div style="font-size: 12.5px; color: var(--label-3); line-height: 1.45; font-weight: 500;">
-              <strong style="color: var(--label-2);">Activé :</strong> le client paye sa commande directement sur son téléphone avant de manger (mode self-service / fast-food).<br>
-              <strong style="color: var(--label-2);">Désactivé :</strong> le client commande puis paye à la fin via le serveur (mode bistrot classique).
-            </div>
-          </div>
-          <label style="position: relative; display: inline-block; width: 56px; height: 32px; flex-shrink: 0; cursor: pointer;">
-            <input type="checkbox" id="cfg-paiement_avant" style="opacity: 0; width: 0; height: 0;" onchange="updatePaiementAvantToggle()">
-            <span id="cfg-paiement_avant-slider" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--fill-2); border: 1px solid var(--sep); border-radius: 100px; transition: 0.25s var(--ease);"></span>
-            <span id="cfg-paiement_avant-knob" style="position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background: #fff; border-radius: 50%; transition: 0.25s var(--ease); box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></span>
-          </label>
-        </div>
-      </div>
       <div class="field">
         <label class="field-label">Langue par défaut</label>
         <select id="cfg-langue_defaut">
@@ -2716,23 +2700,6 @@ function openServeur() {
   window.open(url, '_blank');
 }
 
-// Toggle visuel "Paiement avant repas"
-function updatePaiementAvantToggle() {
-  const cb = document.getElementById('cfg-paiement_avant');
-  const slider = document.getElementById('cfg-paiement_avant-slider');
-  const knob = document.getElementById('cfg-paiement_avant-knob');
-  if (!cb || !slider || !knob) return;
-  if (cb.checked) {
-    slider.style.background = 'var(--blue)';
-    slider.style.borderColor = 'var(--blue)';
-    knob.style.left = '29px';
-  } else {
-    slider.style.background = 'var(--fill-2)';
-    slider.style.borderColor = 'var(--sep)';
-    knob.style.left = '3px';
-  }
-}
-
 // ============ URL CLIENT ============
 function buildClientBaseUrl() {
   if (!RESTO || !RESTO.slug) return '';
@@ -2827,7 +2794,6 @@ async function loadConfig() {
       restaurant_nom: RESTO.nom || '',
       logo_url: RESTO.logo_url || '',
       url_client: computedClientUrl,
-      paiement_avant: RESTO.paiement_avant === true,
       langue_defaut: RESTO.langue || 'fr',
       ouvert: RESTO.ouvert === false ? 'false' : 'true'
     };
@@ -2846,12 +2812,6 @@ async function loadConfig() {
     try { setLogoPreview(state.config.logo_url); } catch(e) { console.warn('setLogoPreview:', e); }
     setVal('cfg-url_client', state.config.url_client);
     setVal('cfg-langue_defaut', state.config.langue_defaut);
-    // Toggle paiement avant
-    const paiementCheckbox = document.getElementById('cfg-paiement_avant');
-    if (paiementCheckbox) {
-      paiementCheckbox.checked = state.config.paiement_avant === true;
-      updatePaiementAvantToggle();
-    }
   } catch (err) {
     console.error('loadConfig stack:', err && err.stack ? err.stack : err);
     showToast('Config : ' + (err && err.message ? err.message : 'erreur inconnue'), 'error');
@@ -2904,17 +2864,15 @@ async function saveAllConfig(btn) {
     };
     // url_client n'est plus sauvegardée : elle est générée automatiquement à partir du slug
     const payload = {
-      nom:            getVal('cfg-restaurant_nom') || RESTO.nom || '',
-      logo_url:       getVal('cfg-logo_url'),
-      paiement_avant: getCheck('cfg-paiement_avant'),
-      langue:         getVal('cfg-langue_defaut') || 'fr'
+      nom:      getVal('cfg-restaurant_nom') || RESTO.nom || '',
+      logo_url: getVal('cfg-logo_url'),
+      langue:   getVal('cfg-langue_defaut') || 'fr'
     };
     const { error } = await supa.from('restaurants').update(payload).eq('id', RESTO.id);
     if (error) throw error;
     Object.assign(RESTO, payload);
     state.config.restaurant_nom = payload.nom;
     state.config.logo_url = payload.logo_url;
-    state.config.paiement_avant = payload.paiement_avant;
     state.config.langue_defaut = payload.langue;
     const brandSub = document.getElementById('brand-sub');
     if (brandSub) brandSub.textContent = payload.nom || 'Admin';

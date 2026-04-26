@@ -3072,25 +3072,13 @@ function renderCategories() {
 
 function renderMenu() {
   const grid = document.getElementById('menu-grid');
-  // Filtrer par catégorie active
+  // Filtrer par catégorie active si on a cliqué sur une catégorie via les pills (préservé pour compat)
   let filtered = state.activeCategory ? state.menu.filter(p => p.categorie === state.activeCategory) : state.menu;
-  // Filtrer par statut disponibilité (depuis stat-cards cliquables)
-  if (state.platStatusFilter === 'dispo') {
-    filtered = filtered.filter(p => p.disponible !== false);
-  } else if (state.platStatusFilter === 'epuise') {
-    filtered = filtered.filter(p => p.disponible === false);
-  }
 
   if (filtered.length === 0) {
     let emptyMsg = 'Aucun plat';
     let emptySub = 'Clique sur "Nouveau plat" pour commencer';
-    if (state.platStatusFilter === 'dispo') {
-      emptyMsg = 'Aucun plat disponible';
-      emptySub = 'Tous tes plats sont marqués comme épuisés.';
-    } else if (state.platStatusFilter === 'epuise') {
-      emptyMsg = 'Aucun plat épuisé';
-      emptySub = 'Tous tes plats sont disponibles 🎉';
-    } else if (state.activeCategory) {
+    if (state.activeCategory) {
       emptyMsg = `Aucun plat dans "${state.activeCategory}"`;
       emptySub = 'Change de catégorie ou ajoute un nouveau plat.';
     }
@@ -3099,7 +3087,7 @@ function renderMenu() {
         <div class="empty-state-icon">${ICONS.plate}</div>
         <div class="empty-state-title">${escapeHtml(emptyMsg)}</div>
         <p>${escapeHtml(emptySub)}</p>
-        ${state.platStatusFilter !== 'all' || state.activeCategory ? `
+        ${state.activeCategory ? `
           <button class="btn btn-ghost" style="margin-top: 14px;" onclick="clearAllFilters()">
             Voir tous les plats
           </button>
@@ -3133,55 +3121,116 @@ function renderMenu() {
 }
 
 // ============ FILTRES STATS CARDS ============
+// setPlatFilter ouvre une popup avec la liste filtrée des plats
 function setPlatFilter(filter) {
-  // Toggle si on clique sur le filtre déjà actif
-  if (state.platStatusFilter === filter && filter !== 'all') {
-    state.platStatusFilter = 'all';
+  let plats = [...state.menu];
+  let title = 'Tous les plats';
+  let emptyMsg = 'Aucun plat dans le menu.';
+
+  if (filter === 'dispo') {
+    plats = plats.filter(p => p.disponible !== false);
+    title = 'Plats disponibles';
+    emptyMsg = 'Tous tes plats sont épuisés.';
+  } else if (filter === 'epuise') {
+    plats = plats.filter(p => p.disponible === false);
+    title = 'Plats épuisés';
+    emptyMsg = 'Aucun plat épuisé. Tout est dispo 🎉';
+  }
+
+  openPlatsListModal(title, plats, emptyMsg);
+}
+
+// Popup générique : liste de plats cliquables
+function openPlatsListModal(title, plats, emptyMsg) {
+  // Ordonner par catégorie (entrées, plats, desserts...) puis par nom
+  const ORDER = ['entrée','entrées','entree','entrees','plat','plats','plat principal','plats principaux','dessert','desserts','boisson','boissons'];
+  const norm = (s) => (s || '').toLowerCase().trim();
+  const platsByCat = {};
+  plats.forEach(p => {
+    const cat = p.categorie || 'Sans catégorie';
+    if (!platsByCat[cat]) platsByCat[cat] = [];
+    platsByCat[cat].push(p);
+  });
+  const orderedCats = Object.keys(platsByCat).sort((a, b) => {
+    const ia = ORDER.findIndex(o => norm(a).startsWith(o));
+    const ib = ORDER.findIndex(o => norm(b).startsWith(o));
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+  // Tri alpha à l'intérieur de chaque cat
+  orderedCats.forEach(cat => {
+    platsByCat[cat].sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+  });
+
+  let bodyHtml;
+  if (plats.length === 0) {
+    bodyHtml = `<div style="text-align: center; padding: 40px 20px; color: var(--label-3);">
+      <div style="font-size: 14px; font-weight: 600;">${escapeHtml(emptyMsg)}</div>
+    </div>`;
   } else {
-    state.platStatusFilter = filter;
+    bodyHtml = orderedCats.map(cat => `
+      <div style="margin-bottom: 18px;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; padding: 0 4px;">${escapeHtml(cat)} · ${platsByCat[cat].length}</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${platsByCat[cat].map(p => `
+            <button onclick="closePlatsListModal(); openPlatModal('${escapeAttr(p.id)}')" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--fill-2); border: 1px solid var(--sep); border-radius: 14px; cursor: pointer; transition: all 0.15s var(--ease); text-align: left; width: 100%; ${p.disponible === false ? 'opacity: 0.55;' : ''}" onmouseover="this.style.background='var(--fill-1)'; this.style.borderColor='var(--sep-strong)';" onmouseout="this.style.background='var(--fill-2)'; this.style.borderColor='var(--sep)';">
+              <div style="width: 44px; height: 44px; border-radius: 10px; background-color: var(--fill-1); ${p.photo_url ? `background-image: url('${escapeAttr(p.photo_url)}'); background-size: cover; background-position: center;` : 'display:flex; align-items:center; justify-content:center;'} flex-shrink: 0;">
+                ${!p.photo_url ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--label-3);"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>` : ''}
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14.5px; font-weight: 700; color: var(--label); letter-spacing: -0.018em; line-height: 1.2; ${p.disponible === false ? 'text-decoration: line-through; text-decoration-color: var(--label-3);' : ''}">${escapeHtml(p.nom || '')}</div>
+                <div style="font-size: 12px; color: var(--label-3); margin-top: 2px; font-weight: 600;">
+                  ${(parseFloat(p.prix) || 0).toFixed(2)}€
+                  ${p.disponible === false ? ` · <span style="color: var(--red); font-weight: 700;">Épuisé</span>` : ` · <span style="color: var(--green); font-weight: 700;">Dispo</span>`}
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; color: var(--label-3); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
   }
-  // Si on clique sur "Total plats", on reset aussi la catégorie
-  if (filter === 'all') {
-    state.activeCategory = null;
-    renderCategories();
-  }
-  updateStatCardsActive();
-  renderMenu();
-  // Scroller vers la grille de plats
-  const grid = document.getElementById('menu-grid');
-  if (grid) {
-    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+
+  const html = `
+    <div class="modal-overlay show" id="modal-plats-list" onclick="if(event.target===this)closePlatsListModal()">
+      <div class="modal" style="max-width: 480px; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-header" style="flex-shrink: 0;">
+          <h2 class="modal-title">${escapeHtml(title)}${plats.length > 0 ? ` · ${plats.length}` : ''}</h2>
+          <button class="modal-close" onclick="closePlatsListModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 0 22px 22px; overflow-y: auto;">
+          ${bodyHtml}
+        </div>
+      </div>
+    </div>`;
+
+  // Insérer ou remplacer
+  const existing = document.getElementById('modal-plats-list');
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlatsListModal() {
+  const m = document.getElementById('modal-plats-list');
+  if (m) m.remove();
+  document.body.style.overflow = '';
 }
 
 function clearAllFilters() {
   state.platStatusFilter = 'all';
   state.activeCategory = null;
-  updateStatCardsActive();
   renderCategories();
   renderMenu();
 }
 
 function updateStatCardsActive() {
-  // Retire la classe active de toutes les cartes
-  ['stat-card-all', 'stat-card-dispo', 'stat-card-epuise', 'stat-card-cats'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('stat-card-active');
-  });
-  // Ajoute sur la carte active
-  if (state.platStatusFilter === 'all' && !state.activeCategory) {
-    const el = document.getElementById('stat-card-all');
-    if (el) el.classList.add('stat-card-active');
-  } else if (state.platStatusFilter === 'dispo') {
-    const el = document.getElementById('stat-card-dispo');
-    if (el) el.classList.add('stat-card-active');
-  } else if (state.platStatusFilter === 'epuise') {
-    const el = document.getElementById('stat-card-epuise');
-    if (el) el.classList.add('stat-card-active');
-  } else if (state.activeCategory) {
-    const el = document.getElementById('stat-card-cats');
-    if (el) el.classList.add('stat-card-active');
-  }
+  // Plus d'effet visuel "actif" : les cartes ouvrent juste des popups (pas de filtre persistant)
 }
 
 // Ouvrir un picker de catégories : modal qui liste les catégories cliquables
@@ -3255,14 +3304,12 @@ function closeCatPicker() {
 }
 
 function pickCategory(cat) {
-  state.activeCategory = cat;
-  state.platStatusFilter = 'all'; // Reset le filtre dispo/épuisé
   closeCatPicker();
-  renderCategories();
-  updateStatCardsActive();
-  renderMenu();
-  const grid = document.getElementById('menu-grid');
-  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Ouvre la popup plats filtrée par catégorie
+  const plats = cat ? state.menu.filter(p => p.categorie === cat) : state.menu;
+  const title = cat ? `Catégorie : ${cat}` : 'Tous les plats';
+  const emptyMsg = cat ? `Aucun plat dans "${cat}"` : 'Aucun plat dans le menu';
+  openPlatsListModal(title, plats, emptyMsg);
 }
 
 async function toggleDispoPlat(id, newVal) {

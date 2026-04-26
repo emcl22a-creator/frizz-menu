@@ -2143,7 +2143,7 @@
       <div id="cart-content"></div>
     </div>
     <div class="modal-footer" id="cart-footer" style="display:none;">
-      <button class="modal-add-btn" onclick="sendOrder()">
+      <button class="modal-add-btn" id="send-btn" onclick="sendOrder()">
         <span id="send-btn-text">Valider ma part · 0.00€</span>
       </button>
     </div>
@@ -2898,18 +2898,20 @@ function renderCart() {
 
   // Texte du bouton dynamique
   const btn = document.getElementById('send-btn-text');
+  const sendBtn = document.getElementById('send-btn');
+  if (!btn || !sendBtn) return; // Garde-fou si le DOM n'est pas encore prêt
   if (myValidated) {
     btn.textContent = `Tu as validé ✓`;
-    document.getElementById('send-btn').disabled = true;
-    document.getElementById('send-btn').style.opacity = '0.6';
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.6';
   } else if (count === 0) {
     btn.textContent = 'Ajoute des plats pour valider';
-    document.getElementById('send-btn').disabled = true;
-    document.getElementById('send-btn').style.opacity = '0.6';
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.6';
   } else {
     btn.textContent = `Valider ma part · ${total.toFixed(2)}€`;
-    document.getElementById('send-btn').disabled = false;
-    document.getElementById('send-btn').style.opacity = '1';
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '1';
   }
 }
 

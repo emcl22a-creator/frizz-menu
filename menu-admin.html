@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   /* ═══════════════════════════════════════════════════════════════
      FRIZZ ADMIN — Design system éditorial glass (mockup-glass.html)
@@ -20,9 +22,9 @@
 
   :root {
     --bg: #050506;
-    --surface: rgba(255,255,255,0.04);
-    --surface-strong: rgba(255,255,255,0.06);
-    --surface-glass: rgba(28, 28, 32, 0.50);
+    --surface: rgba(255,255,255,0.03);
+    --surface-strong: rgba(255,255,255,0.05);
+    --surface-glass: rgba(20, 20, 26, 0.35);
 
     --text: #F2F2F4;
     --text-2: rgba(255,255,255,0.65);
@@ -55,7 +57,6 @@
   }
 
   html, body {
-    background: var(--bg);
     color: var(--text);
     font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 700;
@@ -66,27 +67,41 @@
     overflow-x: hidden;
   }
 
-  /* ════════════ AURORA BACKGROUND — visible sur chaque page derrière le glass ════════════ */
+  /* ════════════ AURORA BACKGROUND — fond bleu DIRECT sur html ════════════ */
+  /* Mis sur html (pas pseudo-element) pour qu'il ne soit jamais bloqué */
+  html {
+    background:
+      /* Halo bleu MASSIF top-left */
+      radial-gradient(ellipse 100% 80% at 15% 5%, rgba(10,132,255,0.85), transparent 55%),
+      /* Halo bleu clair top-right */
+      radial-gradient(ellipse 90% 70% at 88% 15%, rgba(91,143,249,0.65), transparent 55%),
+      /* Halo bleu profond centre haut */
+      radial-gradient(ellipse 80% 70% at 50% 35%, rgba(10,132,255,0.45), transparent 55%),
+      /* Halo bleu vif droit milieu */
+      radial-gradient(ellipse 70% 60% at 95% 55%, rgba(46,157,255,0.50), transparent 55%),
+      /* Halo bleu gauche bas */
+      radial-gradient(ellipse 80% 60% at 5% 70%, rgba(10,132,255,0.40), transparent 55%),
+      /* Halo violet bas */
+      radial-gradient(ellipse 110% 80% at 50% 100%, rgba(167,139,250,0.50), transparent 55%),
+      /* Fond noir profond */
+      #020203 !important;
+    background-attachment: fixed !important;
+  }
+  body {
+    background: transparent !important;
+  }
+  /* Animation séparée sur un overlay dédié */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: -1;
     pointer-events: none;
     background:
-      /* Halo bleu MASSIF top-left */
-      radial-gradient(ellipse 100% 80% at 15% 5%, rgba(10,132,255,0.75), transparent 55%),
-      /* Halo bleu clair top-right */
-      radial-gradient(ellipse 90% 70% at 88% 15%, rgba(91,143,249,0.55), transparent 55%),
-      /* Halo bleu profond centre haut */
-      radial-gradient(ellipse 80% 70% at 50% 35%, rgba(10,132,255,0.40), transparent 55%),
-      /* Halo bleu vif droit milieu */
-      radial-gradient(ellipse 70% 60% at 95% 55%, rgba(46,157,255,0.45), transparent 55%),
-      /* Halo bleu gauche bas */
-      radial-gradient(ellipse 80% 60% at 5% 70%, rgba(10,132,255,0.35), transparent 55%),
-      /* Halo violet bas */
-      radial-gradient(ellipse 110% 80% at 50% 100%, rgba(167,139,250,0.45), transparent 55%);
+      radial-gradient(ellipse 60% 40% at 30% 30%, rgba(10,132,255,0.25), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 70% 70%, rgba(167,139,250,0.20), transparent 50%);
     animation: auroraDrift 24s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
   }
   body::after {
     content: '';
@@ -100,13 +115,10 @@
   }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
-    33%  { transform: translate(3%, 2%) scale(1.06); }
-    66%  { transform: translate(-3%, 3%) scale(1.04); }
-    100% { transform: translate(2%, -2%) scale(1.05); }
+    50%  { transform: translate(5%, 3%) scale(1.1); }
+    100% { transform: translate(-3%, 5%) scale(1.05); }
   }
-  /* Force le fond très sombre pour faire ressortir l'aurora */
-  html, body { background: #020203 !important; }
-  /* Les sections doivent rester transparentes pour laisser passer l'aurora */
+  /* Sections transparentes pour laisser passer l'aurora */
   .section, .app, main { background: transparent !important; }
 
   /* ════════════ APP SHELL ════════════ */
@@ -975,6 +987,125 @@
   }
   .ed-img-upload.has-image:hover .img-overlay { opacity: 1; }
 
+  /* ════════════ TABLES CARDS — GLASS GRID ════════════ */
+  .ed-tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .ed-table-card {
+    padding: 16px 14px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 4px 14px -6px rgba(0,0,0,0.3);
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .ed-table-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .ed-table-num {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.024em;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .ed-table-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 12.5px;
+    color: var(--text-2);
+    letter-spacing: -0.012em;
+    margin-bottom: 12px;
+  }
+  .ed-table-meta {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+    margin-bottom: 10px;
+  }
+  .ed-table-actions {
+    display: flex;
+    gap: 4px;
+  }
+  .ed-table-btn {
+    flex: 1;
+    padding: 8px 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--text-2);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .ed-table-btn svg { width: 13px; height: 13px; stroke-width: 2.2; }
+  .ed-table-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  .ed-table-btn.qr-btn:hover {
+    background: var(--blue-soft);
+    color: var(--blue);
+    border-color: rgba(10,132,255,0.30);
+  }
+  .ed-table-btn.delete:hover {
+    background: var(--red-soft);
+    color: var(--red);
+    border-color: rgba(255,107,92,0.30);
+  }
+
+  /* QR Modal preview */
+  .qr-preview-wrap {
+    background: white;
+    padding: 24px;
+    border-radius: var(--r);
+    text-align: center;
+    margin: 16px 0;
+  }
+  .qr-preview-wrap canvas, .qr-preview-wrap svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 240px;
+    width: 100%;
+    height: auto;
+  }
+  .qr-table-num {
+    color: #000;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    margin-bottom: 8px;
+    letter-spacing: -0.018em;
+  }
+  .qr-resto-name {
+    color: #666;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
   /* ════════════ CHART CARDS — GLASS ════════════ */
   .ed-chart-card {
     margin: 14px 22px 0;
@@ -1102,9 +1233,6 @@
         <span id="resto-name">—</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <button class="icon-btn" id="logout-btn" title="Déconnexion">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </button>
     </div>
   </header>
 
@@ -1213,13 +1341,35 @@
 
   </section>
 
-  <!-- ════════ SECTION TABLES (morceau 4/5) ════════ -->
+  <!-- ════════ SECTION TABLES ════════ -->
   <section class="section" id="section-tables" data-tab="tables">
+
+    <!-- Hero éditorial -->
     <div class="ed-hero">
       <div class="ed-section-num">— 03 · La salle</div>
       <h1 class="ed-hero-title">Vos <em>tables</em>.</h1>
-      <p class="ed-hero-sub">À venir au morceau 4/5.</p>
+      <p class="ed-hero-sub" id="ed-tables-sub">Configurez vos tables et imprimez les QR codes pour le service.</p>
+
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
+        <button class="btn btn-secondary" id="print-all-qr-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimer tous les QR
+        </button>
+        <button class="btn btn-primary" id="add-table-btn" style="margin-left: auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter
+        </button>
+      </div>
     </div>
+
+    <!-- Liste des tables -->
+    <div id="ed-tables-list" style="margin: 14px 22px 0;">
+      <div style="text-align: center; padding: 40px 0; color: var(--text-3); font-size: 13px;">
+        <div class="spinner"></div>
+        <p style="margin-top: 12px;">Chargement de la salle…</p>
+      </div>
+    </div>
+
   </section>
 
   <!-- ════════ SECTION CONFIG (morceau 5/5) ════════ -->
@@ -1408,12 +1558,13 @@ document.getElementById('resto-selector').addEventListener('click', () => {
   showToast('Sélecteur multi-resto au morceau 5/5');
 });
 
-// Logout ─────────────────────────────────────────────────────────
-document.getElementById('logout-btn').addEventListener('click', async () => {
+// Logout (sera attaché au bouton dans Config au morceau 5) ────────
+async function doLogout() {
   if (!confirm('Se déconnecter ?')) return;
   await supa.auth.signOut();
   location.href = 'login.html';
-});
+}
+window.doLogout = doLogout;
 
 // BOOT ───────────────────────────────────────────────────────────
 (async function boot() {
@@ -2296,7 +2447,446 @@ async function deletePlat(platId) {
     showToast('Erreur de suppression', 'error');
   }
 }
-async function loadTables() { console.log('loadTables — morceau 4/5'); }
+// ═══════════════════════════════════════════════════════════════
+// SECTION TABLES — CRUD + génération QR codes + impression PDF
+// ═══════════════════════════════════════════════════════════════
+
+async function loadTables() {
+  if (!state.resto) return;
+  try {
+    const { data, error } = await supa
+      .from('tables')
+      .select('*')
+      .eq('restaurant_id', state.resto.id)
+      .order('numero', { ascending: true });
+
+    if (error) {
+      console.error('loadTables:', error);
+      // Si la table n'existe pas, créer une liste vide
+      state.tables = [];
+    } else {
+      state.tables = data || [];
+    }
+    renderTablesList();
+  } catch (err) {
+    console.error('loadTables:', err);
+    state.tables = [];
+    renderTablesList();
+  }
+}
+
+function renderTablesList() {
+  const list = document.getElementById('ed-tables-list');
+  if (!list) return;
+
+  if (state.tables.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <h3>Aucune table</h3>
+        <p>Commencez par ajouter vos tables. Chaque table a son propre QR code.</p>
+        <button class="btn btn-primary" onclick="openTableModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter une table
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = `
+    <div class="ed-tables-grid">
+      ${state.tables.map(t => renderTableCard(t)).join('')}
+    </div>
+  `;
+}
+
+function renderTableCard(t) {
+  const numero = t.numero || '?';
+  const label = t.label || `Table ${numero}`;
+  const places = t.places || t.capacite;
+  return `
+    <div class="ed-table-card" data-id="${t.id}">
+      <div class="ed-table-num">${escapeHtml(numero)}</div>
+      <div class="ed-table-label">${escapeHtml(label)}</div>
+      <div class="ed-table-meta">${places ? `— ${places} place${places > 1 ? 's' : ''}` : '— Capacité libre'}</div>
+      <div class="ed-table-actions">
+        <button class="ed-table-btn qr-btn" onclick="showTableQR('${t.id}')" title="Voir le QR code">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+          QR
+        </button>
+        <button class="ed-table-btn" onclick="openTableModal('${t.id}')" title="Modifier">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Modif
+        </button>
+        <button class="ed-table-btn delete" onclick="deleteTable('${t.id}')" title="Supprimer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// Bouton "Ajouter"
+document.getElementById('add-table-btn').addEventListener('click', () => openTableModal());
+
+// Bouton "Imprimer tous les QR"
+document.getElementById('print-all-qr-btn').addEventListener('click', () => printAllQR());
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL ADD/EDIT TABLE
+// ═══════════════════════════════════════════════════════════════
+
+function openTableModal(tableId = null) {
+  const isEdit = !!tableId;
+  const table = isEdit ? state.tables.find(t => t.id === tableId) : null;
+
+  // Suggestion de numéro (max actuel + 1)
+  const maxNum = state.tables.reduce((m, t) => Math.max(m, parseInt(t.numero) || 0), 0);
+  const suggestedNum = maxNum + 1;
+
+  let overlay = document.getElementById('modal-table');
+  if (overlay) overlay.remove();
+
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-table';
+  overlay.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">${isEdit ? 'Modifier la' : 'Ajouter une'} <em>table</em></h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="field-row">
+          <div>
+            <label class="field-label">Numéro</label>
+            <input type="text" id="table-numero" placeholder="ex. 1" value="${escapeHtml(table?.numero || suggestedNum)}">
+          </div>
+          <div>
+            <label class="field-label">Places (facultatif)</label>
+            <input type="number" id="table-places" min="1" max="20" placeholder="ex. 4" value="${table?.places || table?.capacite || ''}">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Nom personnalisé (facultatif)</label>
+          <input type="text" id="table-label" placeholder="ex. Terrasse 1, Salon, Bar..." value="${escapeHtml(table?.label || '')}">
+          <p style="font-size: 11.5px; font-weight: 600; color: var(--text-3); margin-top: 6px; line-height: 1.4;">
+            Si vide, sera affiché comme "Table N°" automatiquement.
+          </p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-table" style="margin-right: auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          Supprimer
+        </button>` : ''}
+        <button class="btn btn-secondary" data-close>Annuler</button>
+        <button class="btn btn-primary" id="save-table">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ${isEdit ? 'Enregistrer' : 'Ajouter'}
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.remove()));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  overlay.querySelector('#save-table').addEventListener('click', async () => {
+    const btn = overlay.querySelector('#save-table');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Enregistrement…';
+    try {
+      await saveTable(tableId);
+      overlay.remove();
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || 'Erreur', 'error');
+      btn.disabled = false;
+      btn.innerHTML = (isEdit ? 'Enregistrer' : 'Ajouter');
+    }
+  });
+
+  if (isEdit) {
+    overlay.querySelector('#confirm-delete-table').addEventListener('click', async () => {
+      if (!confirm('Supprimer cette table ?')) return;
+      await deleteTable(tableId);
+      overlay.remove();
+    });
+  }
+
+  overlay.classList.add('show');
+  setTimeout(() => overlay.querySelector('#table-numero').focus(), 100);
+}
+
+async function saveTable(tableId = null) {
+  const overlay = document.getElementById('modal-table');
+  const numero = overlay.querySelector('#table-numero').value.trim();
+  const places = parseInt(overlay.querySelector('#table-places').value) || null;
+  const label = overlay.querySelector('#table-label').value.trim();
+
+  if (!numero) throw new Error('Le numéro est obligatoire');
+
+  const payload = {
+    restaurant_id: state.resto.id,
+    numero,
+    label: label || null,
+    places
+  };
+
+  if (tableId) {
+    const { error } = await supa.from('tables').update(payload).eq('id', tableId);
+    if (error) throw error;
+    showToast('Table modifiée', 'success');
+  } else {
+    const { error } = await supa.from('tables').insert(payload);
+    if (error) throw error;
+    showToast('Table ajoutée', 'success');
+  }
+
+  await loadTables();
+}
+
+async function deleteTable(tableId) {
+  if (!confirm('Supprimer cette table ?')) return;
+  try {
+    const { error } = await supa.from('tables').delete().eq('id', tableId);
+    if (error) throw error;
+    showToast('Table supprimée', 'success');
+    await loadTables();
+  } catch (err) {
+    console.error('deleteTable:', err);
+    showToast('Erreur de suppression', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QR CODES — affichage + génération PDF
+// ═══════════════════════════════════════════════════════════════
+
+function getTableQRUrl(table) {
+  // URL client de menu.html avec resto + table
+  const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
+  return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&table=${encodeURIComponent(table.numero)}`;
+}
+
+async function showTableQR(tableId) {
+  const table = state.tables.find(t => t.id === tableId);
+  if (!table) return;
+  const url = getTableQRUrl(table);
+
+  let overlay = document.getElementById('modal-qr');
+  if (overlay) overlay.remove();
+
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-qr';
+  overlay.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">QR — Table <em>${escapeHtml(table.numero)}</em></h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-preview-wrap">
+          <div class="qr-table-num">Table ${escapeHtml(table.numero)}</div>
+          <canvas id="qr-canvas"></canvas>
+          <div class="qr-resto-name">${escapeHtml(state.resto.nom || '')}</div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-3); font-weight: 700; line-height: 1.5; word-break: break-all;">
+          <strong style="color: var(--text-2);">Lien :</strong><br>${escapeHtml(url)}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Fermer</button>
+        <button class="btn btn-primary" id="download-qr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Télécharger PDF
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.remove()));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  // Générer le QR
+  try {
+    const canvas = overlay.querySelector('#qr-canvas');
+    await QRCode.toCanvas(canvas, url, {
+      width: 240,
+      margin: 1,
+      color: { dark: '#000000', light: '#FFFFFF' },
+      errorCorrectionLevel: 'H'
+    });
+  } catch (err) {
+    console.error('QR error:', err);
+    showToast('Erreur QR', 'error');
+  }
+
+  overlay.querySelector('#download-qr').addEventListener('click', () => printSingleTableQR(table));
+  overlay.classList.add('show');
+}
+
+async function printSingleTableQR(table) {
+  try {
+    showToast('Génération du PDF…');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    await drawQRPage(doc, table, 0);
+    doc.save(`qr-table-${table.numero}-${state.resto.slug || 'resto'}.pdf`);
+    showToast('PDF téléchargé', 'success');
+  } catch (err) {
+    console.error('printSingleTableQR:', err);
+    showToast('Erreur génération PDF', 'error');
+  }
+}
+
+async function printAllQR() {
+  if (state.tables.length === 0) {
+    showToast('Aucune table à imprimer', 'error');
+    return;
+  }
+  try {
+    showToast('Génération du PDF…');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    // 4 QR par page A4 (2x2 grille)
+    for (let i = 0; i < state.tables.length; i++) {
+      const t = state.tables[i];
+      const pageIdx = Math.floor(i / 4);
+      const slotIdx = i % 4;
+      if (slotIdx === 0 && i > 0) doc.addPage();
+      await drawQRSlot(doc, t, slotIdx);
+    }
+
+    doc.save(`qr-tables-${state.resto.slug || 'resto'}.pdf`);
+    showToast('PDF téléchargé', 'success');
+  } catch (err) {
+    console.error('printAllQR:', err);
+    showToast('Erreur génération PDF', 'error');
+  }
+}
+
+// Une page A4 entière pour 1 seul QR (centré, gros)
+async function drawQRPage(doc, table) {
+  const url = getTableQRUrl(table);
+  const tmp = document.createElement('canvas');
+  await QRCode.toCanvas(tmp, url, {
+    width: 800,
+    margin: 1,
+    color: { dark: '#000000', light: '#FFFFFF' },
+    errorCorrectionLevel: 'H'
+  });
+  const dataUrl = tmp.toDataURL('image/png');
+
+  const pageW = 210; // A4 mm
+  const pageH = 297;
+  const qrSize = 120;
+  const x = (pageW - qrSize) / 2;
+  const y = 80;
+
+  // Logo Frizz✦
+  doc.setFontSize(28);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(0, 0, 0);
+  doc.text('Frizz', pageW / 2, 40, { align: 'center' });
+  doc.setTextColor(10, 132, 255);
+  doc.text('✦', pageW / 2 + 14, 40);
+
+  // Table N°
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(36);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Table ${table.numero}`, pageW / 2, 65, { align: 'center' });
+
+  // QR Code
+  doc.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize);
+
+  // Sous le QR
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Scannez pour commander', pageW / 2, y + qrSize + 12, { align: 'center' });
+
+  doc.setFontSize(11);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(100, 100, 100);
+  doc.text(state.resto.nom || '', pageW / 2, y + qrSize + 22, { align: 'center' });
+}
+
+// 4 QR par page A4 (2x2)
+async function drawQRSlot(doc, table, slotIdx) {
+  const url = getTableQRUrl(table);
+  const tmp = document.createElement('canvas');
+  await QRCode.toCanvas(tmp, url, {
+    width: 600,
+    margin: 1,
+    color: { dark: '#000000', light: '#FFFFFF' },
+    errorCorrectionLevel: 'H'
+  });
+  const dataUrl = tmp.toDataURL('image/png');
+
+  const pageW = 210;
+  const pageH = 297;
+  const slotW = pageW / 2;
+  const slotH = pageH / 2;
+
+  const col = slotIdx % 2;
+  const row = Math.floor(slotIdx / 2);
+  const slotX = col * slotW;
+  const slotY = row * slotH;
+
+  const qrSize = 70;
+  const qrX = slotX + (slotW - qrSize) / 2;
+  const qrY = slotY + 28;
+
+  // Bordure légère du slot
+  doc.setDrawColor(220, 220, 220);
+  doc.setLineWidth(0.2);
+  if (col === 0) doc.line(slotW, slotY, slotW, slotY + slotH);
+  if (row === 0) doc.line(slotX, slotH, slotX + slotW, slotH);
+
+  // Logo
+  doc.setFontSize(14);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(0, 0, 0);
+  doc.text('Frizz', slotX + slotW / 2 - 4, slotY + 14, { align: 'center' });
+  doc.setTextColor(10, 132, 255);
+  doc.text('✦', slotX + slotW / 2 + 6, slotY + 14);
+
+  // Table N°
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Table ${table.numero}`, slotX + slotW / 2, slotY + 24, { align: 'center' });
+
+  // QR
+  doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+  // Sous le QR
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Scannez pour commander', slotX + slotW / 2, qrY + qrSize + 8, { align: 'center' });
+
+  doc.setFontSize(8);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(120, 120, 120);
+  doc.text(state.resto.nom || '', slotX + slotW / 2, qrY + qrSize + 14, { align: 'center' });
+}
+
+// Stub pour le morceau 5
 async function loadConfig() { console.log('loadConfig — morceau 5/5'); }
 </script>
 </body>

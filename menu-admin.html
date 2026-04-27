@@ -2373,7 +2373,107 @@
         <input type="url" id="cfg-google_review_url" placeholder="https://g.page/r/votre-resto/review" style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px;">
         <div class="field-hint">Une popup invitera vos clients à laisser un avis Google après leur paiement. Pour obtenir le lien : Google Maps → votre fiche → "Partager un lien d'évaluation".</div>
       </div>
-      <button class="btn-cta" onclick="saveAllConfig(this)" style="margin-top: 16px; margin-bottom: 0;">Enregistrer</button>
+
+      <!-- ═══════════════ FISCALITÉ ═══════════════ -->
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--sep);">
+        <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">Fiscalité</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Pays fiscal</label>
+        <select id="cfg-fiscal_country">
+          <option value="FR">🇫🇷 France</option>
+          <option value="CH">🇨🇭 Suisse</option>
+        </select>
+        <div class="field-hint">Détermine les taux de TVA appliqués sur vos exports comptables.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Numéro de TVA <span style="font-weight: 500; color: var(--label-3); font-size: 12px; letter-spacing: 0;">— optionnel</span></label>
+        <input type="text" id="cfg-tva_number" placeholder="FR12345678901 ou CHE-123.456.789 TVA" style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px;">
+        <div class="field-hint">Apparaît sur vos exports CSV pour votre comptable.</div>
+      </div>
+
+      <!-- ═══════════════ COMPTABLE ═══════════════ -->
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--sep);">
+        <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">Comptable</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Email de mon comptable <span style="font-weight: 500; color: var(--label-3); font-size: 12px; letter-spacing: 0;">— optionnel</span></label>
+        <input type="email" id="cfg-accountant_email" placeholder="comptable@cabinet.fr" style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px;">
+        <div class="field-hint">Si défini, votre comptable peut recevoir automatiquement le récap mensuel des ventes.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="toggleAccountantAuto()">
+          <span>Envoi automatique le 1er du mois</span>
+          <div id="accountant-toggle" class="toggle-switch" style="width: 44px; height: 26px; background: var(--fill-1); border-radius: 100px; position: relative; transition: background 0.2s; cursor: pointer; flex-shrink: 0;">
+            <div class="toggle-knob" style="position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.2s;"></div>
+          </div>
+        </label>
+        <div class="field-hint">Récap CSV envoyé chaque 1er du mois à l'email ci-dessus.</div>
+      </div>
+
+      <button onclick="sendTestReportToAccountant(this)" type="button" style="display: inline-flex; align-items: center; gap: 7px; padding: 11px 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--label); font-size: 13.5px; font-weight: 700; border-radius: 100px; cursor: pointer; transition: all 0.2s; letter-spacing: -0.012em; font-family: inherit;" onmouseover="this.style.background='rgba(255,255,255,0.10)';" onmouseout="this.style.background='rgba(255,255,255,0.06)';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Envoyer un test maintenant
+      </button>
+
+      <button class="btn-cta" onclick="saveAllConfig(this)" style="margin-top: 24px; margin-bottom: 0;">Enregistrer</button>
+    </div>
+
+    <!-- ═══════════════ PAIEMENT EN LIGNE (STRIPE) ═══════════════ -->
+    <div style="margin-top: 32px; padding: 24px; background: rgba(255,255,255,0.04); border: 1px solid var(--sep); border-radius: 22px;">
+      <div style="font-size: 11px; font-weight: 800; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">Paiement en ligne</div>
+
+      <!-- État : pas connecté -->
+      <div id="stripe-state-disconnected">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+          <div style="flex: 1; min-width: 180px;">
+            <div style="font-size: 14.5px; font-weight: 700; color: var(--label); letter-spacing: -0.018em; line-height: 1.25;">Acceptez les paiements par carte</div>
+            <div style="font-size: 12.5px; color: var(--label-3); margin-top: 4px; font-weight: 500; line-height: 1.4;">Vos clients paient directement depuis leur téléphone. Stripe garde 1,4–1,5 % par transaction. Frizz prend 0 %.</div>
+          </div>
+        </div>
+        <button id="stripe-connect-btn" onclick="connectStripe(this)" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px 18px; background: #635BFF; color: #fff; border: 0; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.2s; letter-spacing: -0.012em; font-family: inherit;" onmouseover="this.style.background='#7269FF'" onmouseout="this.style.background='#635BFF'">
+          <svg viewBox="0 0 28 28" fill="currentColor" style="width:16px; height:16px;"><path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm3.5 17.5l-2.917-1.75-2.916 1.75v-3.5L8.75 14.583 11.667 12.833V9.333l2.916 1.75L17.5 9.333v3.5l2.917 1.75L17.5 16.333v3.5z"/></svg>
+          Connecter mon compte Stripe
+        </button>
+      </div>
+
+      <!-- État : en attente d'activation -->
+      <div id="stripe-state-pending" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: rgba(255,159,10,0.08); border: 1px solid rgba(255,159,10,0.3); border-radius: 12px; margin-bottom: 14px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #FF9F0A; flex-shrink: 0;"></div>
+          <div style="font-size: 13px; color: var(--label); font-weight: 600;">Onboarding Stripe en cours — finissez la configuration sur Stripe pour activer.</div>
+        </div>
+        <button onclick="continueStripeOnboarding(this)" style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; padding: 11px 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--label); font-size: 13.5px; font-weight: 700; border-radius: 100px; cursor: pointer; transition: all 0.2s; letter-spacing: -0.012em; font-family: inherit;">Continuer la configuration Stripe</button>
+      </div>
+
+      <!-- État : actif -->
+      <div id="stripe-state-active" style="display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px;">
+          <div style="flex: 1; min-width: 180px;">
+            <div style="font-size: 14.5px; font-weight: 700; color: var(--label); letter-spacing: -0.018em; line-height: 1.25;">Stripe connecté ✓</div>
+            <div style="font-size: 12.5px; color: var(--label-3); margin-top: 2px; font-weight: 500; line-height: 1.4;" id="stripe-account-display">Compte actif</div>
+          </div>
+          <span style="padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; background: rgba(48,209,88,0.14); color: var(--green); white-space: nowrap; border: 1px solid rgba(48,209,88,0.28);">Actif</span>
+        </div>
+
+        <div class="field" style="margin-bottom: 14px;">
+          <label class="field-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="togglePaymentEnabled()">
+            <span>Activer le paiement en ligne pour mes clients</span>
+            <div id="payment-toggle" class="toggle-switch" style="width: 44px; height: 26px; background: var(--fill-1); border-radius: 100px; position: relative; transition: background 0.2s; cursor: pointer; flex-shrink: 0;">
+              <div class="toggle-knob" style="position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.2s;"></div>
+            </div>
+          </label>
+          <div class="field-hint">Si désactivé, vos clients paient comme avant (au serveur, en espèces ou CB).</div>
+        </div>
+
+        <button onclick="openStripeDashboard()" style="display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; padding: 11px 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--label); font-size: 13.5px; font-weight: 700; border-radius: 100px; cursor: pointer; transition: all 0.2s; letter-spacing: -0.012em; font-family: inherit;" onmouseover="this.style.background='rgba(255,255,255,0.10)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+          Ouvrir mon tableau de bord Stripe
+        </button>
+      </div>
     </div>
 
     <!-- ============ ABONNEMENT ============ -->
@@ -2833,7 +2933,134 @@ async function logout() {
   location.href = 'login.html';
 }
 
-// ============ ABONNEMENT (Stripe) ============
+// ============ TOGGLE COMPTABLE AUTO ============
+function setAccountantToggle(on) {
+  const toggle = document.getElementById('accountant-toggle');
+  const knob = toggle ? toggle.querySelector('.toggle-knob') : null;
+  if (!toggle || !knob) return;
+  if (on) {
+    toggle.style.background = 'var(--blue)';
+    knob.style.transform = 'translateX(18px)';
+  } else {
+    toggle.style.background = 'var(--fill-1)';
+    knob.style.transform = 'translateX(0)';
+  }
+}
+
+function toggleAccountantAuto() {
+  state.config.accountant_auto_send = !state.config.accountant_auto_send;
+  setAccountantToggle(state.config.accountant_auto_send);
+}
+
+// ============ TOGGLE PAIEMENT ============
+function setPaymentToggle(on) {
+  const toggle = document.getElementById('payment-toggle');
+  const knob = toggle ? toggle.querySelector('.toggle-knob') : null;
+  if (!toggle || !knob) return;
+  if (on) {
+    toggle.style.background = 'var(--blue)';
+    knob.style.transform = 'translateX(18px)';
+  } else {
+    toggle.style.background = 'var(--fill-1)';
+    knob.style.transform = 'translateX(0)';
+  }
+}
+
+function togglePaymentEnabled() {
+  // Ne peut être activé que si Stripe est en statut "active"
+  if (state.config.stripe_account_status !== 'active') {
+    showToast('Connectez d\'abord votre compte Stripe', 'error');
+    return;
+  }
+  state.config.payment_enabled = !state.config.payment_enabled;
+  setPaymentToggle(state.config.payment_enabled);
+}
+
+// ============ STRIPE CONNECT ============
+function refreshStripeUI() {
+  const status = state.config.stripe_account_status || 'none';
+  const elDisco = document.getElementById('stripe-state-disconnected');
+  const elPending = document.getElementById('stripe-state-pending');
+  const elActive = document.getElementById('stripe-state-active');
+  if (!elDisco || !elPending || !elActive) return;
+
+  elDisco.style.display = 'none';
+  elPending.style.display = 'none';
+  elActive.style.display = 'none';
+
+  if (status === 'active') {
+    elActive.style.display = 'block';
+    const display = document.getElementById('stripe-account-display');
+    if (display) {
+      display.textContent = state.config.stripe_account_id
+        ? 'Compte ' + state.config.stripe_account_id.substring(0, 12) + '… · Suisse / France'
+        : 'Compte actif';
+    }
+  } else if (status === 'pending') {
+    elPending.style.display = 'block';
+  } else {
+    elDisco.style.display = 'block';
+  }
+}
+
+async function connectStripe(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Redirection vers Stripe…'; }
+  try {
+    // Appel à l'Edge Function Supabase qui crée le compte Connect et retourne l'URL d'onboarding
+    const { data, error } = await supa.functions.invoke('stripe-connect-onboard', {
+      body: { restaurant_id: RESTO.id, return_url: location.href }
+    });
+    if (error) throw error;
+    if (!data || !data.url) throw new Error('Pas d\'URL retournée par Stripe');
+    // Redirige vers Stripe pour l'onboarding
+    location.href = data.url;
+  } catch (err) {
+    console.error('connectStripe:', err);
+    showToast('Erreur Stripe : ' + (err.message || 'inconnu'), 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 28 28" fill="currentColor" style="width:16px; height:16px;"><path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm3.5 17.5l-2.917-1.75-2.916 1.75v-3.5L8.75 14.583 11.667 12.833V9.333l2.916 1.75L17.5 9.333v3.5l2.917 1.75L17.5 16.333v3.5z"/></svg> Connecter mon compte Stripe'; }
+  }
+}
+
+async function continueStripeOnboarding(btn) {
+  // Même logique : génère un nouveau lien d'onboarding pour reprendre où on s'était arrêté
+  await connectStripe(btn);
+}
+
+function openStripeDashboard() {
+  // Ouvre le dashboard Stripe Express dans un nouvel onglet
+  window.open('https://dashboard.stripe.com/', '_blank');
+}
+
+// ============ ENVOI TEST AU COMPTABLE ============
+async function sendTestReportToAccountant(btn) {
+  const email = (document.getElementById('cfg-accountant_email')?.value || '').trim();
+  if (!email) {
+    showToast('Renseignez d\'abord l\'email du comptable', 'error');
+    return;
+  }
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px; height:14px;"></span> Envoi…';
+  try {
+    const { data, error } = await supa.functions.invoke('send-monthly-report', {
+      body: {
+        restaurant_id: RESTO.id,
+        accountant_email: email,
+        is_test: true
+      }
+    });
+    if (error) throw error;
+    showToast('Test envoyé à ' + email + ' ✓', 'success');
+  } catch (err) {
+    console.error('sendTestReportToAccountant:', err);
+    showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+}
+
+
 // 🔧 À remplacer ce soir avec le vrai lien Customer Portal Stripe
 const STRIPE_PORTAL_URL = 'https://billing.stripe.com/p/login/REMPLACER_CE_SOIR';
 
@@ -3025,7 +3252,14 @@ async function loadConfig() {
       url_client: computedClientUrl,
       langue_defaut: RESTO.langue || 'fr',
       ouvert: RESTO.ouvert === false ? 'false' : 'true',
-      google_review_url: RESTO.google_review_url || ''
+      google_review_url: RESTO.google_review_url || '',
+      fiscal_country: RESTO.fiscal_country || 'FR',
+      tva_number: RESTO.tva_number || '',
+      accountant_email: RESTO.accountant_email || '',
+      accountant_auto_send: !!RESTO.accountant_auto_send,
+      stripe_account_id: RESTO.stripe_account_id || '',
+      stripe_account_status: RESTO.stripe_account_status || 'none',
+      payment_enabled: !!RESTO.payment_enabled
     };
 
     if (state.config.restaurant_nom) {
@@ -3043,6 +3277,14 @@ async function loadConfig() {
     setVal('cfg-url_client', state.config.url_client);
     setVal('cfg-langue_defaut', state.config.langue_defaut);
     setVal('cfg-google_review_url', state.config.google_review_url);
+    setVal('cfg-fiscal_country', state.config.fiscal_country);
+    setVal('cfg-tva_number', state.config.tva_number);
+    setVal('cfg-accountant_email', state.config.accountant_email);
+    // Toggle envoi auto comptable
+    setAccountantToggle(state.config.accountant_auto_send);
+    // Toggle paiement en ligne + état Stripe
+    refreshStripeUI();
+    setPaymentToggle(state.config.payment_enabled);
   } catch (err) {
     console.error('loadConfig stack:', err && err.stack ? err.stack : err);
     showToast('Config : ' + (err && err.message ? err.message : 'erreur inconnue'), 'error');
@@ -3098,7 +3340,12 @@ async function saveAllConfig(btn) {
       nom:      getVal('cfg-restaurant_nom') || RESTO.nom || '',
       logo_url: getVal('cfg-logo_url'),
       langue:   getVal('cfg-langue_defaut') || 'fr',
-      google_review_url: getVal('cfg-google_review_url') || null
+      google_review_url: getVal('cfg-google_review_url') || null,
+      fiscal_country: getVal('cfg-fiscal_country') || 'FR',
+      tva_number: getVal('cfg-tva_number') || null,
+      accountant_email: getVal('cfg-accountant_email') || null,
+      accountant_auto_send: !!state.config.accountant_auto_send,
+      payment_enabled: !!state.config.payment_enabled
     };
     const { error } = await supa.from('restaurants').update(payload).eq('id', RESTO.id);
     if (error) throw error;
@@ -3107,6 +3354,11 @@ async function saveAllConfig(btn) {
     state.config.logo_url = payload.logo_url;
     state.config.langue_defaut = payload.langue;
     state.config.google_review_url = payload.google_review_url;
+    state.config.fiscal_country = payload.fiscal_country;
+    state.config.tva_number = payload.tva_number;
+    state.config.accountant_email = payload.accountant_email;
+    state.config.accountant_auto_send = payload.accountant_auto_send;
+    state.config.payment_enabled = payload.payment_enabled;
     const brandSub = document.getElementById('brand-sub');
     if (brandSub) brandSub.textContent = payload.nom || 'Admin';
     showToast('Configuration enregistrée ✓', 'success');

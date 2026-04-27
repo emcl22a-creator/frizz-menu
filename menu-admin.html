@@ -66,7 +66,7 @@
     overflow-x: hidden;
   }
 
-  /* ════════════ AURORA BACKGROUND — comme dans le mockup, profondeur sur chaque page ════════════ */
+  /* ════════════ AURORA BACKGROUND — visible sur chaque page derrière le glass ════════════ */
   body::before {
     content: '';
     position: fixed;
@@ -74,16 +74,18 @@
     z-index: -2;
     pointer-events: none;
     background:
-      /* Halo bleu vif top-left (intensité mockup) */
-      radial-gradient(ellipse 90% 70% at 15% 5%, rgba(10,132,255,0.55), transparent 50%),
+      /* Halo bleu MASSIF top-left */
+      radial-gradient(ellipse 100% 80% at 15% 5%, rgba(10,132,255,0.75), transparent 55%),
       /* Halo bleu clair top-right */
-      radial-gradient(ellipse 80% 60% at 88% 20%, rgba(91,143,249,0.40), transparent 55%),
-      /* Halo bleu profond centre */
-      radial-gradient(ellipse 70% 60% at 30% 50%, rgba(10,132,255,0.25), transparent 60%),
-      /* Halo bleu droit milieu */
-      radial-gradient(ellipse 60% 50% at 95% 60%, rgba(46,157,255,0.30), transparent 60%),
+      radial-gradient(ellipse 90% 70% at 88% 15%, rgba(91,143,249,0.55), transparent 55%),
+      /* Halo bleu profond centre haut */
+      radial-gradient(ellipse 80% 70% at 50% 35%, rgba(10,132,255,0.40), transparent 55%),
+      /* Halo bleu vif droit milieu */
+      radial-gradient(ellipse 70% 60% at 95% 55%, rgba(46,157,255,0.45), transparent 55%),
+      /* Halo bleu gauche bas */
+      radial-gradient(ellipse 80% 60% at 5% 70%, rgba(10,132,255,0.35), transparent 55%),
       /* Halo violet bas */
-      radial-gradient(ellipse 100% 70% at 50% 100%, rgba(167,139,250,0.30), transparent 55%);
+      radial-gradient(ellipse 110% 80% at 50% 100%, rgba(167,139,250,0.45), transparent 55%);
     animation: auroraDrift 24s ease-in-out infinite alternate;
   }
   body::after {
@@ -98,13 +100,14 @@
   }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
-    33%  { transform: translate(2%, 1%) scale(1.05); }
-    66%  { transform: translate(-2%, 2%) scale(1.03); }
-    100% { transform: translate(1%, -1%) scale(1.04); }
+    33%  { transform: translate(3%, 2%) scale(1.06); }
+    66%  { transform: translate(-3%, 3%) scale(1.04); }
+    100% { transform: translate(2%, -2%) scale(1.05); }
   }
-
-  /* Le fond de base reste très sombre pour que l'aurora ressorte */
-  html, body { background: #030305 !important; }
+  /* Force le fond très sombre pour faire ressortir l'aurora */
+  html, body { background: #020203 !important; }
+  /* Les sections doivent rester transparentes pour laisser passer l'aurora */
+  .section, .app, main { background: transparent !important; }
 
   /* ════════════ APP SHELL ════════════ */
   .app {

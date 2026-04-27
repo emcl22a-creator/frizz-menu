@@ -200,8 +200,7 @@
 
   /* ════════════ HERO ÉDITORIAL ════════════ */
   .ed-hero {
-    padding: 28px 22px 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 28px 22px 22px;
   }
   .ed-section-num {
     font-family: 'Source Serif 4', serif;
@@ -245,7 +244,7 @@
 
   /* ════════════ BIG STAT CARD — GLASS ════════════ */
   .ed-stat-card {
-    margin: 22px 22px 0;
+    margin: 14px 22px 0;
     padding: 22px 20px 20px;
     background: var(--surface);
     backdrop-filter: saturate(180%) blur(24px);
@@ -314,7 +313,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding: 14px 22px;
+    margin: 14px 22px 0;
   }
   .ed-duo-cell {
     padding: 16px 14px;
@@ -354,7 +353,7 @@
 
   /* ════════════ COMMANDES CARD — GLASS ════════════ */
   .ed-cmd-card {
-    margin: 4px 22px 0;
+    margin: 14px 22px 0;
     padding: 18px 18px 8px;
     background: var(--surface);
     backdrop-filter: blur(20px);
@@ -957,20 +956,8 @@
       </div>
     </div>
 
-    <!-- Graphique Revenue (évolution) -->
-    <div class="ed-chart-card">
-      <div class="ed-chart-head">
-        <h2 class="ed-chart-title">Évolution du <em>revenue</em></h2>
-        <div class="ed-chart-meta" id="ed-chart-meta">—</div>
-      </div>
-      <div class="ed-chart-wrap">
-        <svg id="ed-chart-revenue" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
-        <div class="ed-chart-axis" id="ed-chart-axis"></div>
-      </div>
-    </div>
-
     <!-- Graphique Heures de pointe -->
-    <div class="ed-chart-card" style="margin-top: 14px;">
+    <div class="ed-chart-card">
       <div class="ed-chart-head">
         <h2 class="ed-chart-title">Heures de <em>pointe</em></h2>
         <div class="ed-chart-meta" id="ed-peak-meta">—</div>
@@ -993,7 +980,7 @@
     </div>
 
     <!-- Top plats du jour -->
-    <div class="ed-cmd-card" style="margin-top: 14px;">
+    <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Top <em>plats</em> du jour</h2>
       <div id="ed-top-plats">
         <p style="text-align: center; padding: 16px 0; color: var(--text-3); font-size: 13px;">—</p>
@@ -1304,7 +1291,6 @@ async function loadStats() {
     renderTopPlats(state.commandes);
 
     // ═══════ Charts ═══════
-    renderRevenueChart(state.commandes, periode, since, now);
     renderHoursChart(state.commandes);
 
   } catch (err) {
@@ -1446,102 +1432,8 @@ function renderTopPlats(cmds) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CHARTS — Revenue line + Heures de pointe bars
+// CHARTS — Heures de pointe (bars)
 // ═══════════════════════════════════════════════════════════════
-
-function renderRevenueChart(commandes, periode, since, now) {
-  const svg = document.getElementById('ed-chart-revenue');
-  const axisEl = document.getElementById('ed-chart-axis');
-  const metaEl = document.getElementById('ed-chart-meta');
-  if (!svg || !axisEl) return;
-
-  // Détermine le nombre de buckets selon la période
-  let nbBuckets, formatLabel, formatMeta;
-  if (periode === 'jour') {
-    nbBuckets = 12; // 2h chacun
-    formatLabel = i => {
-      const h = since.getHours() + i * 2;
-      return (h % 24).toString().padStart(2, '0') + 'h';
-    };
-    formatMeta = 'Sur 24 h';
-  } else if (periode === 'semaine') {
-    nbBuckets = 7;
-    formatLabel = i => {
-      const d = new Date(since);
-      d.setDate(since.getDate() + i);
-      return ['D', 'L', 'M', 'M', 'J', 'V', 'S'][d.getDay()];
-    };
-    formatMeta = '7 jours';
-  } else {
-    nbBuckets = 30;
-    formatLabel = i => i % 5 === 0 ? (i + 1) : '';
-    formatMeta = '30 jours';
-  }
-
-  // Buckets de CA
-  const buckets = new Array(nbBuckets).fill(0);
-  const totalSpan = now.getTime() - since.getTime();
-  commandes.forEach(c => {
-    const t = new Date(c.heure).getTime();
-    const idx = Math.min(nbBuckets - 1, Math.floor(((t - since.getTime()) / totalSpan) * nbBuckets));
-    if (idx >= 0 && idx < nbBuckets) {
-      buckets[idx] += parseFloat(c.total) || 0;
-    }
-  });
-
-  const maxVal = Math.max(...buckets, 1);
-  const W = 600, H = 140, P = 8;
-
-  // Génère le path de la courbe
-  const points = buckets.map((v, i) => {
-    const x = P + (i / Math.max(1, nbBuckets - 1)) * (W - 2 * P);
-    const y = H - P - (v / maxVal) * (H - 2 * P);
-    return [x, y];
-  });
-
-  // Smooth curve (cubic bezier)
-  let pathD = `M ${points[0][0]},${points[0][1]}`;
-  let areaD = `M ${points[0][0]},${H - P} L ${points[0][0]},${points[0][1]}`;
-  for (let i = 1; i < points.length; i++) {
-    const [x0, y0] = points[i-1];
-    const [x1, y1] = points[i];
-    const cx = (x0 + x1) / 2;
-    pathD += ` Q ${cx},${y0} ${cx},${(y0 + y1) / 2} T ${x1},${y1}`;
-    areaD += ` Q ${cx},${y0} ${cx},${(y0 + y1) / 2} T ${x1},${y1}`;
-  }
-  areaD += ` L ${points[points.length-1][0]},${H - P} Z`;
-
-  // Total CA
-  const total = buckets.reduce((s, v) => s + v, 0);
-  if (metaEl) metaEl.textContent = `${formatMeta} · ${Math.round(total).toLocaleString('fr-CH').replace(/\u00A0/g, ' ')} €`;
-
-  // Render SVG
-  svg.innerHTML = `
-    <defs>
-      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="rgba(10,132,255,0.40)"/>
-        <stop offset="100%" stop-color="rgba(10,132,255,0)"/>
-      </linearGradient>
-      <filter id="glow">
-        <feGaussianBlur stdDeviation="2.5" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    </defs>
-    <path d="${areaD}" fill="url(#chartGrad)"/>
-    <path d="${pathD}" fill="none" stroke="#0A84FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
-    ${points.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.5" fill="#0A84FF"/>`).join('')}
-  `;
-
-  // Axe X (labels)
-  const labelStep = nbBuckets > 12 ? Math.ceil(nbBuckets / 6) : 1;
-  const labels = [];
-  for (let i = 0; i < nbBuckets; i++) {
-    if (i % labelStep === 0 || i === nbBuckets - 1) {
-      labels.push(`<span>${formatLabel(i)}</span>`);
-    }
-  }
-  axisEl.innerHTML = labels.join('');
-}
 
 function renderHoursChart(commandes) {
   const wrap = document.getElementById('ed-bars');

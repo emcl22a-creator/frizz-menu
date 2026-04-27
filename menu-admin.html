@@ -6,7 +6,7 @@
 <title>Frizz — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
@@ -1967,6 +1967,466 @@
     .config-form { padding: 22px; border-radius: var(--r-lg); }
     .field-row { grid-template-columns: 1fr; }
     .modal-header, .modal-body, .modal-footer { padding-left: 20px; padding-right: 20px; }
+  }
+
+
+  /* ═══════════════════════════════════════════════════════════════
+     OVERRIDE FINAL — ÉDITORIAL GLASS APPLE
+     Source Serif 4 italique 700 (cohérent vitrine) + bleu Apple iOS
+     + glassmorphism Apple sur cartes, modales, tabbar
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Police de base */
+  body, input, select, textarea, button {
+    font-family: 'Inter Tight', 'Inter', -apple-system, sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.014em;
+  }
+  h1, h2, h3, h4, h5, h6,
+  .stat-value, .stat-label,
+  .tab, .field-label,
+  .brand-logo, .brand-name,
+  .menu-card-name, .menu-card-price,
+  .table-card-name, .modal-title,
+  .btn, .btn-cta, .btn-secondary, .btn-ghost, .btn-mini,
+  th, td, label, .price, .badge, .chip, .toast {
+    font-weight: 800 !important;
+    letter-spacing: -0.018em !important;
+  }
+  h1, .modal-title, .brand-logo,
+  .stat-big, .total-amount {
+    font-weight: 900 !important;
+    letter-spacing: -0.026em !important;
+  }
+
+  /* Source Serif 4 italique 700 pour les chiffres et accents (style vitrine) */
+  .stat-value, .stat-big, .total-amount,
+  .menu-card-price, .price, .price-value,
+  .stat-num, .total-num, .price-num,
+  .accent-italic, [data-accent], .ed-italic {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.018em !important;
+  }
+
+  /* ════════════ FOND : aurora + grain pour faire vivre le glass ════════════ */
+  body {
+    background: #050506 !important;
+    position: relative;
+  }
+  body::before {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 0%, rgba(10,132,255,0.18), transparent 55%),
+      radial-gradient(ellipse 70% 40% at 85% 30%, rgba(91,143,249,0.12), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(167,139,250,0.08), transparent 65%) !important;
+  }
+  body::after {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>") !important;
+    opacity: 0.04 !important;
+    mix-blend-mode: overlay !important;
+  }
+  /* Retire les anciennes orbes/aurora si présentes */
+  .bg-layer, .orb { display: none !important; }
+
+  /* ════════════ HEADER : glass top bar ════════════ */
+  .header {
+    background: rgba(20, 20, 22, 0.55) !important;
+    backdrop-filter: saturate(180%) blur(28px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(28px) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.2) !important;
+  }
+  .brand-logo {
+    font-family: 'Inter Tight' !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em !important;
+    font-size: 18px !important;
+  }
+  .spark, .brand-spark {
+    color: #0A84FF !important;
+    font-weight: 900 !important;
+    animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes sparkPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.08); }
+  }
+
+  /* CHIP "EN DIRECT" en vert */
+  .live-chip, .chip-live, .badge-live {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 4px 10px !important;
+    background: rgba(74,222,128,0.10) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(74,222,128,0.25) !important;
+    color: #4ADE80 !important;
+    border-radius: 100px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+  }
+  .live-chip::before, .chip-live::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ADE80;
+    animation: livePulse 2s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* TABS du haut cachés au profit du tabbar flottant */
+  .tabs-wrap, .tabs { display: none !important; }
+
+  /* ════════════ CARTES STAT — GLASS APPLE ════════════ */
+  .stat-card {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: saturate(180%) blur(24px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(24px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 22px !important;
+    padding: 22px 20px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 12px 40px -12px rgba(0,0,0,0.5) !important;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.16) !important;
+    transform: translateY(-1px) !important;
+  }
+  .stat-label {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    letter-spacing: -0.005em !important;
+    text-transform: none !important;
+    color: #0A84FF !important;
+  }
+  .stat-value {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-size: 38px !important;
+    letter-spacing: -0.024em !important;
+    color: #F2F2F4 !important;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-delta-up { color: #4ADE80 !important; font-weight: 800 !important; }
+  .stat-delta-down { color: #FF6B5C !important; font-weight: 800 !important; }
+
+  /* ════════════ CONFIG FORM — GLASS ════════════ */
+  .config-form {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: saturate(180%) blur(24px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(24px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 22px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 8px 24px -8px rgba(0,0,0,0.4) !important;
+  }
+
+  /* ════════════ MENU CARDS (plats) — GLASS ════════════ */
+  .menu-card {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 18px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 8px 24px -8px rgba(0,0,0,0.4) !important;
+  }
+  .menu-card:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.16) !important;
+    transform: translateY(-2px) !important;
+  }
+  .menu-card-name {
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 800 !important;
+  }
+  .menu-card-price {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums;
+    color: #F2F2F4 !important;
+  }
+
+  /* TABLES de salle */
+  .table-card {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 18px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+  }
+
+  /* ════════════ BOUTONS ════════════ */
+  .btn-cta, .btn-primary {
+    background: #0A84FF !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.20),
+      0 4px 14px -4px rgba(10,132,255,0.5) !important;
+    border-radius: 12px !important;
+    font-weight: 800 !important;
+  }
+  .btn-cta:hover, .btn-primary:hover {
+    background: #2E9DFF !important;
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.24),
+      0 8px 22px -4px rgba(10,132,255,0.6) !important;
+  }
+
+  .btn-secondary, .btn-ghost {
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    color: #fff !important;
+    font-weight: 800 !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  }
+  .btn-secondary:hover, .btn-ghost:hover {
+    background: rgba(255,255,255,0.10) !important;
+    border-color: rgba(255,255,255,0.20) !important;
+  }
+
+  /* ════════════ INPUTS ════════════ */
+  input[type="text"], input[type="email"], input[type="url"],
+  input[type="tel"], input[type="number"], input[type="password"],
+  input[type="date"], textarea, select {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 700 !important;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #0A84FF !important;
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.20) !important;
+    outline: none !important;
+  }
+
+  /* ════════════ MODALES — GLASS ÉPAIS ════════════ */
+  .modal-content {
+    background: rgba(28, 28, 32, 0.75) !important;
+    backdrop-filter: saturate(180%) blur(40px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(40px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 24px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.14),
+      0 30px 80px -20px rgba(0,0,0,0.7) !important;
+  }
+  .modal-overlay {
+    background: rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  /* ════════════ TABLES de données ════════════ */
+  table {
+    background: rgba(255,255,255,0.03) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 14px !important;
+    overflow: hidden;
+  }
+  th {
+    background: rgba(255,255,255,0.04) !important;
+    color: rgba(255,255,255,0.5) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    padding: 11px 14px !important;
+  }
+  td {
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    padding: 11px 14px !important;
+    font-size: 13px !important;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02) !important; }
+
+  /* ════════════ TOASTS ════════════ */
+  .toast {
+    background: rgba(28, 28, 32, 0.75) !important;
+    backdrop-filter: saturate(180%) blur(28px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(28px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 14px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 16px 40px -8px rgba(0,0,0,0.5) !important;
+  }
+
+  /* ════════════ CHIPS / BADGES — GLASS ════════════ */
+  .chip, .badge, .pill {
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    color: rgba(255,255,255,0.75) !important;
+    font-weight: 800 !important;
+    border-radius: 100px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  }
+  .chip-active, .chip.active, .badge-blue {
+    background: rgba(10,132,255,0.18) !important;
+    color: #0A84FF !important;
+    border-color: rgba(10,132,255,0.35) !important;
+  }
+  .badge-green, .chip-green {
+    background: rgba(74,222,128,0.14) !important;
+    color: #4ADE80 !important;
+    border-color: rgba(74,222,128,0.30) !important;
+  }
+  .badge-orange, .chip-orange {
+    background: rgba(255,180,84,0.14) !important;
+    color: #FFB454 !important;
+    border-color: rgba(255,180,84,0.30) !important;
+  }
+  .badge-red, .chip-red {
+    background: rgba(255,107,92,0.14) !important;
+    color: #FF6B5C !important;
+    border-color: rgba(255,107,92,0.30) !important;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+
+  /* ════════════ TABBAR FLOTTANT — GLASS APPLE 100% ════════════ */
+  .floating-tabbar {
+    position: fixed !important;
+    bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 200 !important;
+    width: calc(100% - 32px) !important;
+    max-width: 420px !important;
+
+    /* Glass Apple : opacité TRÈS basse + blur ÉNORME + saturation pour vivre */
+    background: rgba(28, 28, 32, 0.50) !important;
+    backdrop-filter: saturate(200%) blur(40px) !important;
+    -webkit-backdrop-filter: saturate(200%) blur(40px) !important;
+
+    /* Bordure double Apple */
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 24px !important;
+    padding: 6px !important;
+
+    /* Ombres iOS : profondeur + reflet inset */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 1px 0 rgba(0, 0, 0, 0.2),
+      0 16px 50px -12px rgba(0, 0, 0, 0.5),
+      0 24px 80px -20px rgba(0, 0, 0, 0.6) !important;
+  }
+  /* Reflet de surface (highlight subtil sur le dessus) */
+  .floating-tabbar::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 8% !important;
+    right: 8% !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent) !important;
+    border-radius: 24px !important;
+    pointer-events: none !important;
+  }
+  .floating-tabbar-inner {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 2px !important;
+  }
+  .floating-tabbar-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    padding: 9px 4px 7px !important;
+    background: transparent !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    color: rgba(255,255,255,0.45) !important;
+    border-radius: 16px !important;
+    transition: all 0.18s ease !important;
+    font-family: inherit !important;
+  }
+  .floating-tabbar-btn svg {
+    width: 19px !important;
+    height: 19px !important;
+    stroke-width: 2.4 !important;
+  }
+  .floating-tabbar-btn span {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.005em !important;
+  }
+  .floating-tabbar-btn.active {
+    color: #FFFFFF !important;
+    background: rgba(10, 132, 255, 0.85) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.30),
+      0 4px 12px -2px rgba(10,132,255,0.45) !important;
+  }
+  .floating-tabbar-btn.active svg { stroke-width: 2.6 !important; }
+  .floating-tabbar-btn:hover:not(.active) {
+    color: rgba(255,255,255,0.7) !important;
+    background: rgba(255,255,255,0.04) !important;
+  }
+
+  /* Padding bas pour ne pas que le tabbar cache du contenu */
+  main, .main, .tab-content, .container {
+    padding-bottom: 110px !important;
   }
 </style>
 </head>
@@ -5370,6 +5830,54 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
     if (brand) brand.textContent = '⚠ ' + (err.message || 'Erreur');
   }
 })();
+
+// ════ TABBAR FLOTTANT — sync avec les vrais tabs cachés ════
+(function setupFloatingTabbar() {
+  function syncFloatingTabbar() {
+    const activeTab = document.querySelector('.tab.active');
+    if (!activeTab) return;
+    const dataTab = activeTab.getAttribute('data-tab');
+    document.querySelectorAll('.floating-tabbar-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === dataTab);
+    });
+  }
+  document.querySelectorAll('.floating-tabbar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+      const realTab = document.querySelector(`.tab[data-tab="${target}"]`);
+      if (realTab) realTab.click();
+      setTimeout(syncFloatingTabbar, 50);
+    });
+  });
+  const observer = new MutationObserver(syncFloatingTabbar);
+  document.querySelectorAll('.tab').forEach(t => {
+    observer.observe(t, { attributes: true, attributeFilter: ['class'] });
+  });
+  syncFloatingTabbar();
+})();
 </script>
+
+<!-- ════════ TABBAR FLOTTANT (Stripe Dashboard style) ════════ -->
+<nav class="floating-tabbar">
+  <div class="floating-tabbar-inner">
+    <button class="floating-tabbar-btn active" data-tab="menu" aria-label="Plats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+      <span>Plats</span>
+    </button>
+    <button class="floating-tabbar-btn" data-tab="tables" aria-label="Tables">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>Tables</span>
+    </button>
+    <button class="floating-tabbar-btn" data-tab="stats" aria-label="Stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>
+      <span>Stats</span>
+    </button>
+    <button class="floating-tabbar-btn" data-tab="config" aria-label="Config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Config</span>
+    </button>
+  </div>
+</nav>
+
 </body>
 </html>

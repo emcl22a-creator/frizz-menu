@@ -817,17 +817,66 @@
     </div>
   </header>
 
-  <!-- ════════ SECTION STATS (morceau 2/5) ════════ -->
+  <!-- ════════ SECTION STATS ════════ -->
   <section class="section active" id="section-stats" data-tab="stats">
+
+    <!-- Hero éditorial -->
     <div class="ed-hero">
       <div class="ed-section-num">— 01 · Aujourd'hui</div>
       <h1 class="ed-hero-title">Aujourd'hui chez <em id="ed-resto-display">Nico</em>.</h1>
-      <p class="ed-hero-sub" id="ed-hero-sub">Service en cours.</p>
+      <p class="ed-hero-sub" id="ed-hero-sub">Chargement du service…</p>
+
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
+        <div class="filter-bar">
+          <button class="chip active" data-periode="jour">Jour</button>
+          <button class="chip" data-periode="semaine">Semaine</button>
+          <button class="chip" data-periode="mois">Mois</button>
+        </div>
+        <button class="btn btn-blue-soft" id="export-csv-btn" style="margin-left: auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter CSV
+        </button>
+      </div>
     </div>
-    <div style="padding: 60px 22px; text-align: center; color: var(--text-3);">
-      <div class="spinner"></div>
-      <p style="margin-top: 14px; font-size: 13px;">Stats détaillées au morceau 2/5…</p>
+
+    <!-- Big stat card Revenue -->
+    <div class="ed-stat-card">
+      <div class="ed-stat-eyebrow">— Revenue</div>
+      <div class="ed-stat-num" id="ed-stat-ca">—<span class="cur">€</span></div>
+      <div class="ed-stat-delta" id="ed-stat-delta">—</div>
     </div>
+
+    <!-- Duo cells -->
+    <div class="ed-duo">
+      <div class="ed-duo-cell">
+        <div class="ed-duo-label">— Commandes</div>
+        <div class="ed-duo-num" id="ed-stat-commandes">—</div>
+      </div>
+      <div class="ed-duo-cell">
+        <div class="ed-duo-label">— Panier moyen</div>
+        <div class="ed-duo-num" id="ed-stat-panier">—<span class="suffix">€</span></div>
+      </div>
+    </div>
+
+    <!-- Commandes en cours -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Commandes en <em>cours</em></h2>
+      <div id="ed-cmd-list">
+        <div style="text-align: center; padding: 24px 0; color: var(--text-3); font-size: 13px;">
+          <div class="spinner"></div>
+          <p style="margin-top: 10px;">Chargement…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top plats du jour -->
+    <div class="ed-cmd-card" style="margin-top: 14px;">
+      <h2 class="ed-cmd-head">Top <em>plats</em> du jour</h2>
+      <div id="ed-top-plats">
+        <p style="text-align: center; padding: 16px 0; color: var(--text-3); font-size: 13px;">—</p>
+      </div>
+    </div>
+
   </section>
 
   <!-- ════════ SECTION PLATS (morceau 3/5) ════════ -->
@@ -1062,8 +1111,413 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
   }
 })();
 
-// Stub functions (seront remplies aux morceaux 2-5)
-async function loadStats() { console.log('loadStats — morceau 2/5'); }
+// ═══════════════════════════════════════════════════════════════
+// SECTION STATS — Implémentation complète
+// ═══════════════════════════════════════════════════════════════
+
+let statsRefreshInterval = null;
+
+async function loadStats() {
+  if (!state.resto) return;
+
+  try {
+    const periode = state.activePeriode;
+    const now = new Date();
+    const since = new Date(now);
+    if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+    if (periode === 'semaine') since.setDate(now.getDate() - 7);
+    if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
+
+    // Charger commandes de la période
+    const { data: cmds, error } = await supa
+      .from('commandes')
+      .select('*')
+      .eq('restaurant_id', state.resto.id)
+      .gte('heure', since.toISOString())
+      .order('heure', { ascending: false });
+
+    if (error) {
+      console.error('loadStats error:', error);
+      return;
+    }
+
+    state.commandes = cmds || [];
+
+    // Calculs
+    const ca = state.commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = state.commandes.length;
+    const panier = nb ? ca / nb : 0;
+
+    // Encaissées vs en cours
+    const enCours = state.commandes.filter(c => {
+      const s = (c.statut || '').toLowerCase();
+      return s !== 'payee' && s !== 'paid' && s !== 'cloturee' && s !== 'annulee';
+    });
+    const encaissees = state.commandes.filter(c => {
+      const s = (c.statut || '').toLowerCase();
+      return s === 'payee' || s === 'paid' || s === 'cloturee';
+    });
+
+    // ═══════ Hero sub-title narratif ═══════
+    updateHeroSub(encaissees.length, enCours.length, periode);
+
+    // ═══════ Big stat Revenue ═══════
+    document.getElementById('ed-stat-ca').innerHTML =
+      Math.round(ca).toLocaleString('fr-CH').replace(/\u00A0/g, ' ') +
+      '<span class="cur">€</span>';
+
+    // ═══════ Delta vs période précédente ═══════
+    await updateDelta(periode, since, ca);
+
+    // ═══════ Duo : commandes + panier ═══════
+    document.getElementById('ed-stat-commandes').textContent = nb;
+    document.getElementById('ed-stat-panier').innerHTML =
+      Math.round(panier) + '<span class="suffix">€</span>';
+
+    // ═══════ Liste commandes en cours ═══════
+    renderCommandesEnCours(enCours.slice(0, 5));
+
+    // ═══════ Top plats ═══════
+    renderTopPlats(state.commandes);
+
+  } catch (err) {
+    console.error('loadStats:', err);
+    showToast('Erreur de chargement des stats', 'error');
+  }
+}
+
+function updateHeroSub(nbEnc, nbCours, periode) {
+  const heure = new Date().toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
+  let txt;
+  const totalNb = nbEnc + nbCours;
+
+  if (totalNb === 0) {
+    txt = 'Service prêt. Aucune commande pour le moment.';
+  } else if (periode === 'jour') {
+    if (nbCours > 0) {
+      txt = `Service en cours. <em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''}, <em>${nbCours}</em> en cours, et il est ${heure}.`;
+    } else {
+      txt = `<em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''} aujourd'hui.`;
+    }
+  } else if (periode === 'semaine') {
+    txt = `Sur les sept derniers jours : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''} au total.`;
+  } else {
+    txt = `Sur le mois écoulé : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''} au total.`;
+  }
+  document.getElementById('ed-hero-sub').innerHTML = txt;
+}
+
+async function updateDelta(periode, since, ca) {
+  // Calcule la période précédente (même durée)
+  const duration = Date.now() - since.getTime();
+  const prevSince = new Date(since.getTime() - duration);
+  const prevUntil = new Date(since);
+
+  try {
+    const { data: prevCmds } = await supa
+      .from('commandes')
+      .select('total')
+      .eq('restaurant_id', state.resto.id)
+      .gte('heure', prevSince.toISOString())
+      .lt('heure', prevUntil.toISOString());
+
+    const prevCA = (prevCmds || []).reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const el = document.getElementById('ed-stat-delta');
+
+    if (prevCA === 0) {
+      if (ca > 0) {
+        el.innerHTML = '<strong>Premier service</strong> de la période';
+        el.classList.remove('down');
+      } else {
+        el.innerHTML = 'Pas encore de comparaison disponible';
+        el.classList.remove('down');
+      }
+      return;
+    }
+
+    const pct = Math.round(((ca - prevCA) / prevCA) * 100);
+    const compareLabel = periode === 'jour' ? 'vs hier' : (periode === 'semaine' ? 'vs semaine dernière' : 'vs mois dernier');
+
+    if (pct > 0) {
+      el.innerHTML = `↑ <strong>+${pct}%</strong> ${compareLabel}`;
+      el.classList.remove('down');
+    } else if (pct < 0) {
+      el.innerHTML = `↓ <strong>${pct}%</strong> ${compareLabel}`;
+      el.classList.add('down');
+    } else {
+      el.innerHTML = `<strong>Stable</strong> ${compareLabel}`;
+      el.classList.remove('down');
+    }
+  } catch (err) {
+    console.warn('updateDelta:', err);
+  }
+}
+
+function renderCommandesEnCours(cmds) {
+  const list = document.getElementById('ed-cmd-list');
+  if (!cmds || cmds.length === 0) {
+    list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune commande en cours.</p>';
+    return;
+  }
+  list.innerHTML = cmds.map(c => {
+    const tableNum = c.table_id || c.table || c.numero_table || '?';
+    const total = formatPriceInt(c.total || 0);
+    const statut = (c.statut || 'en_cours').toLowerCase();
+    let statusLabel = 'En cours';
+    let statusClass = 'wait';
+    if (statut === 'prete' || statut === 'pret' || statut === 'ready') {
+      statusLabel = 'Prête';
+      statusClass = 'ok';
+    }
+    if (statut === 'envoyee' || statut === 'sent') {
+      statusLabel = 'Envoyée';
+      statusClass = 'ok';
+    }
+    return `
+      <div class="ed-cmd-row">
+        <div class="ed-cmd-info">
+          <div class="ed-cmd-table">Table ${escapeHtml(tableNum)}</div>
+          <div class="ed-cmd-time">${escapeHtml(timeAgo(c.heure))}</div>
+        </div>
+        <div class="ed-cmd-amt">${total}</div>
+        <div class="ed-status ${statusClass}">${statusLabel}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTopPlats(cmds) {
+  const list = document.getElementById('ed-top-plats');
+  const platCount = {};
+  cmds.forEach(c => {
+    (Array.isArray(c.items) ? c.items : []).forEach(it => {
+      const nom = it.nom || it.name || 'Inconnu';
+      platCount[nom] = (platCount[nom] || 0) + (parseInt(it.qte || it.quantity) || 1);
+    });
+  });
+  const top = Object.entries(platCount)
+    .map(([nom, qte]) => ({ nom, qte }))
+    .sort((a, b) => b.qte - a.qte)
+    .slice(0, 5);
+
+  if (top.length === 0) {
+    list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune donnée pour le moment.</p>';
+    return;
+  }
+
+  list.innerHTML = top.map((p, i) => `
+    <div class="ed-cmd-row">
+      <div class="ed-cmd-info">
+        <div class="ed-cmd-table" style="display: flex; align-items: center; gap: 10px;">
+          <span style="display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: ${i === 0 ? 'var(--blue-soft)' : 'rgba(255,255,255,0.06)'}; color: ${i === 0 ? 'var(--blue)' : 'var(--text-2)'}; align-items: center; justify-content: center; font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12px;">${i + 1}</span>
+          <span>${escapeHtml(p.nom)}</span>
+        </div>
+      </div>
+      <div class="ed-cmd-amt">×${p.qte}</div>
+    </div>
+  `).join('');
+}
+
+// Period switcher (Jour/Semaine/Mois)
+document.addEventListener('click', e => {
+  const chip = e.target.closest('#section-stats .chip[data-periode]');
+  if (!chip) return;
+  document.querySelectorAll('#section-stats .chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  state.activePeriode = chip.getAttribute('data-periode');
+  loadStats();
+});
+
+// Auto-refresh stats toutes les 15s quand sur l'onglet Stats
+function startStatsRefresh() {
+  stopStatsRefresh();
+  statsRefreshInterval = setInterval(() => {
+    if (state.activeTab === 'stats') loadStats();
+  }, 15000);
+}
+function stopStatsRefresh() {
+  if (statsRefreshInterval) {
+    clearInterval(statsRefreshInterval);
+    statsRefreshInterval = null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT CSV — modal + génération
+// ═══════════════════════════════════════════════════════════════
+
+document.getElementById('export-csv-btn').addEventListener('click', () => {
+  openExportModal();
+});
+
+function openExportModal() {
+  const overlay = document.getElementById('modal-export') || createExportModal();
+  overlay.classList.add('show');
+}
+
+function createExportModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-export';
+  overlay.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Export <em>CSV</em></h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label class="field-label">Période</label>
+          <select id="export-periode">
+            <option value="jour">Aujourd'hui</option>
+            <option value="semaine">7 derniers jours</option>
+            <option value="mois" selected>30 derniers jours</option>
+            <option value="trimestre">3 derniers mois</option>
+            <option value="annee">12 derniers mois</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Format</label>
+          <select id="export-format">
+            <option value="standard">Standard (toutes lignes)</option>
+            <option value="comptable">Comptable (récap TVA)</option>
+          </select>
+        </div>
+        <p style="font-size: 12.5px; color: var(--text-3); font-weight: 600; line-height: 1.5;">
+          Le fichier sera téléchargé avec le détail des commandes : nom, qté, prix HT/TTC, ventilation TVA, pourboire, mode de paiement, carte (4 derniers chiffres).
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Annuler</button>
+        <button class="btn btn-primary" id="confirm-export">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Télécharger
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.classList.remove('show')));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('show');
+  });
+  overlay.querySelector('#confirm-export').addEventListener('click', async () => {
+    const periode = overlay.querySelector('#export-periode').value;
+    const format = overlay.querySelector('#export-format').value;
+    overlay.classList.remove('show');
+    await exportSalesCSV(periode, format);
+  });
+  return overlay;
+}
+
+async function exportSalesCSV(periode = 'mois', format = 'standard') {
+  if (!state.resto) {
+    showToast('Aucun restaurant sélectionné', 'error');
+    return;
+  }
+  try {
+    showToast('Génération de l\'export…');
+
+    const now = new Date();
+    const since = new Date(now);
+    if (periode === 'jour')      since.setHours(0,0,0,0);
+    if (periode === 'semaine')   since.setDate(now.getDate() - 7);
+    if (periode === 'mois')      since.setMonth(now.getMonth() - 1);
+    if (periode === 'trimestre') since.setMonth(now.getMonth() - 3);
+    if (periode === 'annee')     since.setFullYear(now.getFullYear() - 1);
+
+    const { data: cmds, error } = await supa
+      .from('commandes')
+      .select('*')
+      .eq('restaurant_id', state.resto.id)
+      .gte('heure', since.toISOString())
+      .order('heure', { ascending: false });
+
+    if (error) throw error;
+
+    const fiscalCountry = state.resto.fiscal_country || 'CH';
+    const tvaNumber = state.resto.tva_number || '';
+    const restoNom = state.resto.nom || 'Restaurant';
+
+    let csv = '';
+    // En-tête info
+    csv += `# Export ${restoNom}\n`;
+    csv += `# Pays fiscal: ${fiscalCountry}\n`;
+    csv += `# N° TVA: ${tvaNumber}\n`;
+    csv += `# Période: ${since.toLocaleDateString('fr-CH')} → ${now.toLocaleDateString('fr-CH')}\n`;
+    csv += `# Total commandes: ${(cmds || []).length}\n`;
+    csv += `\n`;
+
+    // Colonnes
+    csv += 'Date;Heure;Table;Plat;Quantité;Prix unitaire HT;Prix unitaire TTC;TVA %;Total ligne HT;Total ligne TTC;Pourboire;Mode paiement;Carte (4 derniers);Statut\n';
+
+    let totalHT = 0, totalTTC = 0, totalTip = 0;
+    const tvaBreakdown = {};
+
+    (cmds || []).forEach(c => {
+      const date = new Date(c.heure);
+      const dateStr = date.toLocaleDateString('fr-CH');
+      const heureStr = date.toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
+      const items = Array.isArray(c.items) ? c.items : [];
+      const tip = parseFloat(c.amount_tip || 0);
+      const cardLast4 = c.card_last4 || '';
+      const paymentMethod = c.payment_method || (c.statut === 'payee' ? 'card' : '');
+
+      items.forEach(it => {
+        const nom = (it.nom || it.name || '').replace(/;/g, ',');
+        const qte = parseInt(it.qte || it.quantity) || 1;
+        const prixTTC = parseFloat(it.prix || it.price) || 0;
+        const tvaRate = parseFloat(it.tva_rate || 0) || (fiscalCountry === 'FR' ? 10 : 8.1);
+        const prixHT = prixTTC / (1 + tvaRate / 100);
+        const ligneTTC = prixTTC * qte;
+        const ligneHT = prixHT * qte;
+        const tva = ligneTTC - ligneHT;
+
+        totalHT += ligneHT;
+        totalTTC += ligneTTC;
+        tvaBreakdown[tvaRate] = (tvaBreakdown[tvaRate] || 0) + tva;
+
+        csv += `${dateStr};${heureStr};${escapeHtml(c.table_id || c.table || '')};${nom};${qte};${prixHT.toFixed(4)};${prixTTC.toFixed(2)};${tvaRate};${ligneHT.toFixed(2)};${ligneTTC.toFixed(2)};${tip > 0 ? tip.toFixed(2) : ''};${paymentMethod};${cardLast4};${c.statut || ''}\n`;
+      });
+      totalTip += tip;
+    });
+
+    if (format === 'comptable') {
+      csv += `\n# ═══ RÉCAPITULATIF ═══\n`;
+      csv += `# Total HT;;;;;;;;${totalHT.toFixed(2)}\n`;
+      csv += `# Total TTC;;;;;;;;${totalTTC.toFixed(2)}\n`;
+      Object.entries(tvaBreakdown).forEach(([rate, amount]) => {
+        csv += `# TVA ${rate}%;;;;;;;;${amount.toFixed(2)}\n`;
+      });
+      csv += `# Pourboires totaux;;;;;;;;${totalTip.toFixed(2)}\n`;
+      csv += `# Total encaissé;;;;;;;;${(totalTTC + totalTip).toFixed(2)}\n`;
+      csv += `# Nombre de commandes;;;;;;;;${(cmds || []).length}\n`;
+    }
+
+    // Téléchargement
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `frizz-export-${state.resto.slug || 'resto'}-${periode}-${now.toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Export téléchargé', 'success');
+  } catch (err) {
+    console.error('exportSalesCSV:', err);
+    showToast('Erreur d\'export', 'error');
+  }
+}
+
+// Lance auto-refresh quand la page est chargée et qu'on est sur Stats
+window.addEventListener('load', () => {
+  startStatsRefresh();
+});
+window.addEventListener('beforeunload', stopStatsRefresh);
+
+// Stubs pour les autres tabs (seront remplis aux morceaux 3, 4, 5)
 async function loadMenu() { console.log('loadMenu — morceau 3/5'); }
 async function loadTables() { console.log('loadTables — morceau 4/5'); }
 async function loadConfig() { console.log('loadConfig — morceau 5/5'); }

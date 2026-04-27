@@ -1659,7 +1659,10 @@ function switchTab(tabName) {
   if (tabName === 'stats' && typeof loadStats === 'function') loadStats();
   if (tabName === 'plats' && typeof loadMenu === 'function') loadMenu();
   if (tabName === 'tables' && typeof loadTables === 'function') loadTables();
-  if (tabName === 'config' && typeof loadConfig === 'function') loadConfig();
+  if (tabName === 'config' && typeof loadConfig === 'function') {
+    loadConfig();
+    if (typeof wireConfigButtons === 'function') setTimeout(wireConfigButtons, 50);
+  }
 }
 
 document.querySelectorAll('.ftb-btn[data-tab]').forEach(btn => {
@@ -1684,14 +1687,25 @@ async function checkAuth() {
 
 async function loadUserRestaurants() {
   if (!state.user) return [];
-  // 1. Tente via owner_id
-  const { data: r1 } = await supa.from('restaurants')
+
+  // 1. Tente via user_id (nom de colonne actuel)
+  let { data: r1 } = await supa.from('restaurants')
     .select('*')
-    .eq('owner_id', state.user.id);
+    .eq('user_id', state.user.id);
+
+  // Fallback : si la colonne est nommée owner_id (anciennes bases)
+  if (!r1 || r1.length === 0) {
+    const { data: r1b } = await supa.from('restaurants')
+      .select('*')
+      .eq('owner_id', state.user.id);
+    if (r1b && r1b.length > 0) r1 = r1b;
+  }
+
   if (r1 && r1.length > 0) {
     state.restos = r1;
     return r1;
   }
+
   // 2. Sinon : si URL contient ?resto=, charge ce resto seul (pour démo)
   const slug = new URLSearchParams(location.search).get('resto');
   if (slug) {
@@ -3127,8 +3141,224 @@ async function drawQRSlot(doc, table, slotIdx) {
   doc.text(state.resto.nom || '', slotX + slotW / 2, qrY + qrSize + 14, { align: 'center' });
 }
 
-// Stub pour le morceau 5
-async function loadConfig() { console.log('loadConfig — morceau 5/5'); }
+// ═══════════════════════════════════════════════════════════════
+// SECTION CONFIG — Restaurant, fiscalité, paiement, abonnement, compte
+// ═══════════════════════════════════════════════════════════════
+
+async function loadConfig() {
+  if (!state.resto) return;
+
+  try {
+    // Recharger depuis Supabase pour avoir les dernières infos
+    const { data: resto, error } = await supa
+      .from('restaurants')
+      .select('*')
+      .eq('id', state.resto.id)
+      .maybeSingle();
+
+    if (!error && resto) {
+      state.resto = resto;
+      state.config = { ...resto };
+    }
+
+    fillConfigForm();
+
+    // User email
+    if (state.user) {
+      const emailEl = document.getElementById('cfg-user-email');
+      if (emailEl) emailEl.value = state.user.email || '';
+    }
+
+    // Multi-resto
+    if (state.restos && state.restos.length > 1) {
+      const wrap = document.getElementById('cfg-multi-resto');
+      const list = document.getElementById('cfg-restos-list');
+      if (wrap && list) {
+        wrap.style.display = '';
+        list.innerHTML = state.restos.map(r => `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
+            <div>
+              <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div>
+              <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
+            </div>
+            ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
+          </div>
+        `).join('');
+      }
+    }
+  } catch (err) {
+    console.error('loadConfig:', err);
+  }
+}
+
+function fillConfigForm() {
+  const r = state.resto || {};
+  setVal('cfg-resto-nom', r.nom);
+  setVal('cfg-resto-tel', r.telephone || r.tel);
+  setVal('cfg-resto-email', r.email);
+  setVal('cfg-resto-adresse', r.adresse);
+  setVal('cfg-resto-google', r.google_review_url);
+  setVal('cfg-tva-number', r.tva_number);
+  setVal('cfg-accountant-email', r.accountant_email);
+
+  // Pays fiscal & devise
+  const fiscal = document.getElementById('cfg-fiscal-country');
+  if (fiscal) fiscal.value = r.fiscal_country || 'CH';
+  const cur = document.getElementById('cfg-currency');
+  if (cur) cur.value = r.currency || 'CHF';
+
+  // Toggles
+  const payToggle = document.getElementById('cfg-payment-enabled');
+  if (payToggle) payToggle.checked = !!r.payment_enabled;
+  const tipToggle = document.getElementById('cfg-tip-enabled');
+  if (tipToggle) tipToggle.checked = r.tip_enabled !== false; // default true
+
+  // URL client générée
+  const urlEl = document.getElementById('cfg-resto-url');
+  if (urlEl) {
+    const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
+    urlEl.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}`;
+  }
+
+  // Stripe status
+  const stripeStatus = document.getElementById('cfg-stripe-status');
+  if (stripeStatus) {
+    if (r.stripe_account_id && r.stripe_charges_enabled) {
+      stripeStatus.innerHTML = `<div class="ed-status ok" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>ACTIVÉ</div>`;
+    } else if (r.stripe_account_id) {
+      stripeStatus.innerHTML = `<div class="ed-status wait" style="display: inline-flex; align-items: center; gap: 6px;">EN ATTENTE</div>`;
+    } else {
+      stripeStatus.innerHTML = `<div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>NON CONFIGURÉ</div>`;
+    }
+  }
+}
+
+function setVal(id, v) {
+  const el = document.getElementById(id);
+  if (el) el.value = v || '';
+}
+
+async function saveAllConfig() {
+  if (!state.resto) return;
+
+  const fullPayload = {
+    nom: document.getElementById('cfg-resto-nom').value.trim(),
+    telephone: document.getElementById('cfg-resto-tel').value.trim() || null,
+    email: document.getElementById('cfg-resto-email').value.trim() || null,
+    adresse: document.getElementById('cfg-resto-adresse').value.trim() || null,
+    google_review_url: document.getElementById('cfg-resto-google').value.trim() || null,
+    fiscal_country: document.getElementById('cfg-fiscal-country').value,
+    tva_number: document.getElementById('cfg-tva-number').value.trim() || null,
+    currency: document.getElementById('cfg-currency').value,
+    accountant_email: document.getElementById('cfg-accountant-email').value.trim() || null,
+    payment_enabled: document.getElementById('cfg-payment-enabled').checked,
+    tip_enabled: document.getElementById('cfg-tip-enabled').checked
+  };
+
+  if (!fullPayload.nom) {
+    showToast('Le nom du restaurant est obligatoire', 'error');
+    return;
+  }
+
+  // Champs optionnels qu'on retire si la base les refuse
+  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'telephone', 'email', 'adresse'];
+
+  let payload = { ...fullPayload };
+  let lastError = null;
+
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const { error } = await supa.from('restaurants').update(payload).eq('id', state.resto.id);
+
+    if (!error) {
+      showToast('Configuration enregistrée', 'success');
+      Object.assign(state.resto, payload);
+      // Mettre à jour le nom dans la top bar
+      document.getElementById('resto-name').textContent = payload.nom;
+      document.getElementById('ed-resto-display').textContent = getShortName(payload.nom);
+      return;
+    }
+
+    lastError = error;
+    console.error(`saveAllConfig tentative ${attempt + 1}:`, error);
+
+    const errMsg = (error.message || '').toLowerCase();
+    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+
+    if (!colToRemove) {
+      colToRemove = optionalCols.find(c => payload[c] !== undefined);
+    }
+
+    if (colToRemove && payload[colToRemove] !== undefined) {
+      console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
+      delete payload[colToRemove];
+      continue;
+    }
+
+    break;
+  }
+
+  console.error('saveAllConfig échec final:', lastError);
+  showToast(lastError?.message || 'Erreur d\'enregistrement', 'error');
+}
+
+async function switchResto(restoId) {
+  const resto = state.restos.find(r => r.id === restoId);
+  if (!resto) return;
+  await selectRestaurant(resto);
+  showToast(`Restaurant ${getShortName(resto.nom)} actif`, 'success');
+}
+window.switchResto = switchResto;
+
+// Wire up Config buttons (en attendant DOMContentLoaded)
+function wireConfigButtons() {
+  const saveBtn = document.getElementById('cfg-save-btn');
+  if (saveBtn && !saveBtn.dataset.wired) {
+    saveBtn.dataset.wired = '1';
+    saveBtn.addEventListener('click', async () => {
+      saveBtn.disabled = true;
+      const old = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<div class="spinner"></div> Enregistrement…';
+      await saveAllConfig();
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = old;
+    });
+  }
+
+  const logoutBtn = document.getElementById('cfg-logout-btn');
+  if (logoutBtn && !logoutBtn.dataset.wired) {
+    logoutBtn.dataset.wired = '1';
+    logoutBtn.addEventListener('click', doLogout);
+  }
+
+  const stripeBtn = document.getElementById('cfg-stripe-connect-btn');
+  if (stripeBtn && !stripeBtn.dataset.wired) {
+    stripeBtn.dataset.wired = '1';
+    stripeBtn.addEventListener('click', () => {
+      showToast('Configuration Stripe disponible prochainement', '');
+    });
+  }
+
+  const billingBtn = document.getElementById('cfg-billing-portal-btn');
+  if (billingBtn && !billingBtn.dataset.wired) {
+    billingBtn.dataset.wired = '1';
+    billingBtn.addEventListener('click', () => {
+      showToast('Portail facturation disponible prochainement', '');
+    });
+  }
+
+  const addRestoBtn = document.getElementById('cfg-add-resto-btn');
+  if (addRestoBtn && !addRestoBtn.dataset.wired) {
+    addRestoBtn.dataset.wired = '1';
+    addRestoBtn.addEventListener('click', () => {
+      showToast('Ajout multi-restaurants disponible prochainement', '');
+    });
+  }
+}
+
+// Lance le wiring au load + chaque fois qu'on switch sur Config
+window.addEventListener('load', wireConfigButtons);
+const originalSwitchTab = typeof switchTab === 'function' ? switchTab : null;
 </script>
 </body>
 </html>

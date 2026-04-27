@@ -1731,13 +1731,64 @@ async function selectRestaurant(resto) {
 
 // Resto selector ─────────────────────────────────────────────────
 document.getElementById('resto-selector').addEventListener('click', () => {
-  if (state.restos.length <= 1) {
-    showToast('Vous n\'avez qu\'un seul restaurant', '');
+  // Si un seul resto, redirige vers Config pour ajouter
+  if (!state.restos || state.restos.length <= 1) {
+    switchTab('config');
+    setTimeout(() => {
+      const wrap = document.getElementById('cfg-multi-resto');
+      if (wrap) {
+        wrap.style.display = '';
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 300);
     return;
   }
-  // Modal de sélection (sera codé au morceau 5)
-  showToast('Sélecteur multi-resto au morceau 5/5');
+  // Sinon, modale de sélection rapide
+  openRestoSwitcher();
 });
+
+function openRestoSwitcher() {
+  let overlay = document.getElementById('modal-resto-switcher');
+  if (overlay) overlay.remove();
+
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-resto-switcher';
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Vos <em>restaurants</em></h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        ${state.restos.map(r => `
+          <button class="ed-table-card" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; width: 100%; text-align: left; font-family: inherit;" onclick="switchResto('${r.id}'); document.getElementById('modal-resto-switcher').remove();">
+            <div>
+              <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 14.5px; color: var(--text); letter-spacing: -0.018em;">${escapeHtml(r.nom)}</div>
+              <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
+            </div>
+            ${r.id === state.resto.id ? '<span class="ed-status ok" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>ACTIF</span>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-3);"><polyline points="9 18 15 12 9 6"/></svg>'}
+          </button>
+        `).join('')}
+
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="document.getElementById('modal-resto-switcher').remove(); openAddRestoModal();">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter un restaurant
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.remove()));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  overlay.classList.add('show');
+}
+window.openRestoSwitcher = openRestoSwitcher;
+window.openAddRestoModal = openAddRestoModal;
 
 // Logout (sera attaché au bouton dans Config au morceau 5) ────────
 async function doLogout() {
@@ -3349,10 +3400,208 @@ function wireConfigButtons() {
   const addRestoBtn = document.getElementById('cfg-add-resto-btn');
   if (addRestoBtn && !addRestoBtn.dataset.wired) {
     addRestoBtn.dataset.wired = '1';
-    addRestoBtn.addEventListener('click', () => {
-      showToast('Ajout multi-restaurants disponible prochainement', '');
-    });
+    addRestoBtn.addEventListener('click', openAddRestoModal);
   }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MULTI-RESTAURANTS — Modale ajout d'un restaurant
+// ═══════════════════════════════════════════════════════════════
+
+function openAddRestoModal() {
+  let overlay = document.getElementById('modal-add-resto');
+  if (overlay) overlay.remove();
+
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-add-resto';
+  overlay.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Nouveau <em>restaurant</em></h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <div class="modal-body">
+
+        <p style="font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5;">
+          Ajoutez un second établissement à votre compte. Chaque restaurant a sa propre carte, ses tables et ses stats.
+        </p>
+
+        <div class="field-group">
+          <label class="field-label">Nom du restaurant</label>
+          <input type="text" id="new-resto-nom" placeholder="ex. Chez Marc · Place de la gare" autocomplete="off">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Identifiant (slug)</label>
+          <input type="text" id="new-resto-slug" placeholder="ex. chez-marc-gare" autocomplete="off">
+          <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
+            Sera utilisé dans l'URL : <span id="slug-preview" style="font-family: 'Source Serif 4'; font-style: italic; color: var(--blue);">…/menu.html?resto=XXX</span>
+          </p>
+        </div>
+
+        <div class="field-row">
+          <div>
+            <label class="field-label">Pays fiscal</label>
+            <select id="new-resto-country">
+              <option value="CH">Suisse 🇨🇭</option>
+              <option value="FR">France 🇫🇷</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Devise</label>
+            <select id="new-resto-currency">
+              <option value="CHF">CHF</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Annuler</button>
+        <button class="btn btn-primary" id="confirm-add-resto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Créer
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.remove()));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  // Auto-génération slug à partir du nom
+  const nomInput = overlay.querySelector('#new-resto-nom');
+  const slugInput = overlay.querySelector('#new-resto-slug');
+  const slugPreview = overlay.querySelector('#slug-preview');
+  let slugManuallyEdited = false;
+
+  nomInput.addEventListener('input', () => {
+    if (slugManuallyEdited) return;
+    const slug = nomInput.value
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // accents
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+    slugInput.value = slug;
+    if (slugPreview) slugPreview.textContent = `…/menu.html?resto=${slug || 'XXX'}`;
+  });
+  slugInput.addEventListener('input', () => {
+    slugManuallyEdited = true;
+    if (slugPreview) slugPreview.textContent = `…/menu.html?resto=${slugInput.value || 'XXX'}`;
+  });
+
+  // Adapter devise selon pays
+  const countrySel = overlay.querySelector('#new-resto-country');
+  const curSel = overlay.querySelector('#new-resto-currency');
+  countrySel.addEventListener('change', () => {
+    curSel.value = countrySel.value === 'FR' ? 'EUR' : 'CHF';
+  });
+
+  // Confirm
+  overlay.querySelector('#confirm-add-resto').addEventListener('click', async () => {
+    const btn = overlay.querySelector('#confirm-add-resto');
+    btn.disabled = true;
+    const old = btn.innerHTML;
+    btn.innerHTML = '<div class="spinner"></div> Création…';
+    try {
+      await createNewResto();
+      overlay.remove();
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || 'Erreur de création', 'error');
+      btn.disabled = false;
+      btn.innerHTML = old;
+    }
+  });
+
+  overlay.classList.add('show');
+  setTimeout(() => nomInput.focus(), 100);
+}
+
+async function createNewResto() {
+  const overlay = document.getElementById('modal-add-resto');
+  const nom = overlay.querySelector('#new-resto-nom').value.trim();
+  const slug = overlay.querySelector('#new-resto-slug').value.trim();
+  const country = overlay.querySelector('#new-resto-country').value;
+  const currency = overlay.querySelector('#new-resto-currency').value;
+
+  if (!nom) throw new Error('Le nom est obligatoire');
+  if (!slug) throw new Error('L\'identifiant (slug) est obligatoire');
+  if (!/^[a-z0-9-]+$/.test(slug)) throw new Error('L\'identifiant ne peut contenir que des lettres minuscules, chiffres et tirets');
+
+  // Vérifier unicité du slug
+  const { data: existing } = await supa.from('restaurants').select('id').eq('slug', slug).maybeSingle();
+  if (existing) throw new Error('Cet identifiant est déjà utilisé. Choisissez-en un autre.');
+
+  // Payload complet
+  const fullPayload = {
+    nom,
+    slug,
+    user_id: state.user.id,
+    fiscal_country: country,
+    currency
+  };
+
+  // Champs optionnels qu'on retire si la base les refuse
+  const optionalCols = ['fiscal_country', 'currency', 'user_id'];
+  let payload = { ...fullPayload };
+  let lastError = null;
+  let createdResto = null;
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { data, error } = await supa.from('restaurants').insert(payload).select().single();
+
+    if (!error) {
+      createdResto = data;
+      break;
+    }
+
+    lastError = error;
+    console.error(`createNewResto tentative ${attempt + 1}:`, error);
+
+    const errMsg = (error.message || '').toLowerCase();
+    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+
+    // Si user_id rejeté, retenter avec owner_id
+    if (errMsg.includes('user_id') && payload.user_id !== undefined) {
+      payload.owner_id = payload.user_id;
+      delete payload.user_id;
+      continue;
+    }
+
+    if (!colToRemove) {
+      colToRemove = optionalCols.find(c => payload[c] !== undefined);
+    }
+
+    if (colToRemove && payload[colToRemove] !== undefined) {
+      console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
+      delete payload[colToRemove];
+      continue;
+    }
+
+    break;
+  }
+
+  if (!createdResto) {
+    throw new Error(lastError?.message || 'Impossible de créer le restaurant');
+  }
+
+  showToast(`${nom} créé`, 'success');
+
+  // Recharger la liste des restos
+  await loadUserRestaurants();
+  // Switch sur le nouveau resto
+  await selectRestaurant(createdResto);
+  // Recharger Config pour montrer la liste à jour
+  await loadConfig();
 }
 
 // Lance le wiring au load + chaque fois qu'on switch sur Config

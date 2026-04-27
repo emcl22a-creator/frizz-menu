@@ -2368,6 +2368,11 @@
           <option value="en">English</option>
         </select>
       </div>
+      <div class="field">
+        <label class="field-label">Lien Google Reviews <span style="font-weight: 500; color: var(--label-3); font-size: 12px; letter-spacing: 0;">— optionnel</span></label>
+        <input type="url" id="cfg-google_review_url" placeholder="https://g.page/r/votre-resto/review" style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px;">
+        <div class="field-hint">Une popup invitera vos clients à laisser un avis Google après leur paiement. Pour obtenir le lien : Google Maps → votre fiche → "Partager un lien d'évaluation".</div>
+      </div>
       <button class="btn-cta" onclick="saveAllConfig(this)" style="margin-top: 16px; margin-bottom: 0;">Enregistrer</button>
     </div>
 
@@ -3019,7 +3024,8 @@ async function loadConfig() {
       logo_url: RESTO.logo_url || '',
       url_client: computedClientUrl,
       langue_defaut: RESTO.langue || 'fr',
-      ouvert: RESTO.ouvert === false ? 'false' : 'true'
+      ouvert: RESTO.ouvert === false ? 'false' : 'true',
+      google_review_url: RESTO.google_review_url || ''
     };
 
     if (state.config.restaurant_nom) {
@@ -3036,6 +3042,7 @@ async function loadConfig() {
     try { setLogoPreview(state.config.logo_url); } catch(e) { console.warn('setLogoPreview:', e); }
     setVal('cfg-url_client', state.config.url_client);
     setVal('cfg-langue_defaut', state.config.langue_defaut);
+    setVal('cfg-google_review_url', state.config.google_review_url);
   } catch (err) {
     console.error('loadConfig stack:', err && err.stack ? err.stack : err);
     showToast('Config : ' + (err && err.message ? err.message : 'erreur inconnue'), 'error');
@@ -3090,7 +3097,8 @@ async function saveAllConfig(btn) {
     const payload = {
       nom:      getVal('cfg-restaurant_nom') || RESTO.nom || '',
       logo_url: getVal('cfg-logo_url'),
-      langue:   getVal('cfg-langue_defaut') || 'fr'
+      langue:   getVal('cfg-langue_defaut') || 'fr',
+      google_review_url: getVal('cfg-google_review_url') || null
     };
     const { error } = await supa.from('restaurants').update(payload).eq('id', RESTO.id);
     if (error) throw error;
@@ -3098,6 +3106,7 @@ async function saveAllConfig(btn) {
     state.config.restaurant_nom = payload.nom;
     state.config.logo_url = payload.logo_url;
     state.config.langue_defaut = payload.langue;
+    state.config.google_review_url = payload.google_review_url;
     const brandSub = document.getElementById('brand-sub');
     if (brandSub) brandSub.textContent = payload.nom || 'Admin';
     showToast('Configuration enregistrée ✓', 'success');

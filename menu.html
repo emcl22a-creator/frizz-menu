@@ -11,7 +11,7 @@
 <title>Menu — Frizz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
@@ -1901,6 +1901,348 @@
     .plat-text { padding: 14px 14px 12px; }
     .cat-title { font-size: 24px; }
   }
+
+  /* ═══════════════════════════════════════════════════════════════
+     OVERRIDE FINAL — Style validé : sombre + photos liste + bleu Apple
+     ═══════════════════════════════════════════════════════════════ */
+  body, input, select, textarea, button {
+    font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.014em;
+  }
+  h1, h2, h3, h4, h5, h6,
+  .cat-title, .plat-name, .plat-price,
+  .brand-name, .table-name,
+  .btn-primary, .btn-cta,
+  .total-amount, .group-total {
+    font-weight: 800 !important;
+    letter-spacing: -0.020em !important;
+  }
+  .plat-price, .total-amount, .cart-amount,
+  .group-total {
+    font-weight: 900 !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Fond noir uniforme */
+  body, .app, .menu-wrap {
+    background: #0a0a0a !important;
+    color: #F2F2F4 !important;
+  }
+
+  /* Header / Hero — pill Table en haut à droite */
+  .header-bg, .menu-header {
+    background: linear-gradient(180deg, transparent 0%, transparent 50%, rgba(0,0,0,0.85) 100%),
+                linear-gradient(135deg, #C8742F 0%, #4A2412 100%) !important;
+  }
+
+  /* Boutons primaires : bleu Apple iOS */
+  .btn-primary, .btn-cta, .btn-cart, .btn-validate,
+  .submit-btn, .group-validate-btn {
+    background: #0A84FF !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow: 0 8px 24px -8px rgba(10,132,255,0.5) !important;
+    border-radius: 14px !important;
+  }
+  .btn-primary:hover, .btn-cta:hover {
+    background: #2E9DFF !important;
+    transform: translateY(-1px);
+  }
+
+  /* Bouton add (+) sur chaque plat : blanc rond minimaliste */
+  .btn-add, .add-plat-btn {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    background: #fff !important;
+    color: #0a0a0a !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    border: 0 !important;
+    flex-shrink: 0;
+  }
+
+  /* Catégories underline bleu sur l'actif */
+  .cat-tab.active, .category-tab.active {
+    color: #fff !important;
+    border-bottom: 2px solid #0A84FF !important;
+  }
+
+  /* Cards plats : fond très sombre uniforme */
+  .plat, .plat-card, .menu-item {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 0 !important;
+  }
+  .plat:hover { background: rgba(255,255,255,0.02) !important; }
+
+  /* Photos plats carrées 64px */
+  .plat-image, .plat-img, .menu-item-img {
+    border-radius: 10px !important;
+    width: 64px !important;
+    height: 64px !important;
+    flex-shrink: 0;
+  }
+
+  /* Bouton panier flottant en bas */
+  .cart-bar, .floating-cart, .cart-button {
+    background: #0A84FF !important;
+    color: #fff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 24px -8px rgba(10,132,255,0.5) !important;
+    font-weight: 800 !important;
+    border: 0 !important;
+  }
+  .cart-bar .cart-count, .cart-count-badge {
+    background: rgba(255,255,255,0.22) !important;
+    color: #fff !important;
+    font-weight: 900 !important;
+    border-radius: 100px !important;
+    padding: 3px 9px !important;
+  }
+
+  /* Pill Table en haut à droite */
+  .table-pill, .table-info-pill {
+    background: rgba(255,255,255,0.16) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-radius: 100px !important;
+    color: #fff !important;
+    font-weight: 800 !important;
+    border: 0 !important;
+  }
+
+  /* Modales et popups */
+  .modal-content, .popup-content {
+    background: linear-gradient(180deg, #16161a, #0e0e11) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 22px !important;
+  }
+  .modal-overlay {
+    background: rgba(0,0,0,0.7) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Inputs */
+  input[type="text"], input[type="email"], input[type="tel"],
+  textarea, select {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 700 !important;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #0A84FF !important;
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.18) !important;
+    outline: none !important;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.10);
+    border-radius: 100px;
+  }
+
+  /* Spark logo */
+  .brand-spark, .logo-spark {
+    color: #0A84FF !important;
+    animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes sparkPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.08); }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     OVERRIDE FINAL v2 — Aligné avec menu-admin (Source Serif italique + glass + aurora)
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Aurora background sur html (jamais bloquée) */
+  html {
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
+      radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
+      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
+      #050506 !important;
+    background-attachment: fixed !important;
+  }
+  body { background: transparent !important; }
+  body::before {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background:
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%) !important;
+    animation: auroraDrift2 24s ease-in-out infinite alternate !important;
+    mix-blend-mode: screen !important;
+  }
+  @keyframes auroraDrift2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 2%) scale(1.06); }
+    100% { transform: translate(-2%, 3%) scale(1.04); }
+  }
+
+  /* Source Serif 4 italique 700 sur les chiffres et accents */
+  .plat-price, .price, .price-value,
+  .total-amount, .total-num,
+  .stat-value, .accent-italic, [data-accent], .ed-italic {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.018em !important;
+  }
+
+  /* Header glass — comme menu-admin */
+  .header, header.header, .top-bar, .topbar {
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: saturate(180%) blur(28px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(28px) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  /* Logo Frizz✦ même style que admin (italique serif) */
+  .brand-logo, .logo {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.020em !important;
+    color: #F2F2F4 !important;
+    text-shadow: none !important;
+  }
+  .spark, .brand-spark, .brand-logo .spark {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    color: #0A84FF !important;
+    font-weight: 700 !important;
+    text-shadow: 0 0 12px rgba(10,132,255,0.5) !important;
+    filter: none !important;
+    animation: sparkPulse 3.5s ease-in-out infinite !important;
+  }
+
+  /* Pill Table — glass blur fort */
+  .table-pill, .table-info, .pill {
+    background: rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 4px 12px -4px rgba(0,0,0,0.3) !important;
+  }
+
+  /* Cartes de plats — glass plus transparent */
+  .plat-card, .menu-card, .item-card {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+  }
+  .plat-card:hover, .menu-card:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.16) !important;
+  }
+
+  /* Titre catégorie en italique éditorial */
+  .cat-title, h2.cat-title, .category-title {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    color: #0A84FF !important;
+    letter-spacing: -0.005em !important;
+  }
+
+  /* Bouton "Voir mon panier" — bleu Apple avec ombre */
+  .btn-cart, .btn-cta, .cart-btn, .checkout-btn, .pay-btn {
+    background: #0A84FF !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.20),
+      0 6px 18px -4px rgba(10,132,255,0.50) !important;
+    font-weight: 800 !important;
+  }
+  .btn-cart:hover, .btn-cta:hover, .cart-btn:hover, .checkout-btn:hover, .pay-btn:hover {
+    background: #2E9DFF !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.24),
+      0 8px 24px -4px rgba(10,132,255,0.60) !important;
+  }
+
+  /* Floating cart bar — glass Apple comme tabbar admin */
+  .floating-cart, .cart-bar, .bottom-bar {
+    background: rgba(28, 28, 32, 0.50) !important;
+    backdrop-filter: saturate(200%) blur(40px) !important;
+    -webkit-backdrop-filter: saturate(200%) blur(40px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 100px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 0 0 1px rgba(255,255,255,0.04),
+      0 16px 50px -12px rgba(0,0,0,0.5),
+      0 24px 80px -20px rgba(0,0,0,0.6) !important;
+  }
+
+  /* Modale paiement / panier — glass épais */
+  .modal, .modal-content, .panel-content {
+    background: rgba(28, 28, 32, 0.85) !important;
+    backdrop-filter: saturate(180%) blur(40px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(40px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.14),
+      0 30px 80px -20px rgba(0,0,0,0.7) !important;
+  }
+  .modal-overlay, .overlay {
+    background: rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  /* Inputs glass */
+  input[type="text"], input[type="email"], input[type="number"],
+  input[type="tel"], textarea, select {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #0A84FF !important;
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.20) !important;
+    outline: none !important;
+  }
+
+  /* Total dans le panier en gros italique */
+  .cart-total, .total, .total-amount {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-size: 28px !important;
+    letter-spacing: -0.022em !important;
+    color: #F2F2F4 !important;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 100px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
 </style>
 </head>
 <body>

@@ -2200,6 +2200,38 @@ function openPlatModal(platId = null) {
   overlay.classList.add('show');
 }
 
+// Compresse une image en base64 (max 800px de large, qualité 75%)
+// Permet de stocker en base sans bucket Supabase Storage
+function compressImageToBase64(file, maxWidth = 800, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        // Calculer dimensions
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        // Canvas pour redimensionner
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        // Convertir en JPEG base64 (plus léger que PNG)
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Image invalide'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Lecture fichier échouée'));
+    reader.readAsDataURL(file);
+  });
+}
+
 async function savePlat(platId = null) {
   const overlay = document.getElementById('modal-plat');
   const nom = overlay.querySelector('#plat-nom').value.trim();
@@ -2213,25 +2245,15 @@ async function savePlat(platId = null) {
   if (!nom) throw new Error('Le nom est obligatoire');
   if (isNaN(prix) || prix < 0) throw new Error('Prix invalide');
 
-  // Upload image si nouvelle
+  // Image stockée en base64 directement (compressée à max 800px / 75% qualité)
   let imageUrl = currentPlatImageDataUrl;
   if (currentPlatImageFile) {
-    const fileName = `${state.resto.id}/${Date.now()}-${currentPlatImageFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-    const { data: upData, error: upErr } = await supa.storage
-      .from('plats-images')
-      .upload(fileName, currentPlatImageFile, { upsert: true });
-    if (upErr) {
-      console.warn('Upload image échoué:', upErr);
-      // Si bucket n'existe pas, on continue sans image (graceful)
-      if (upErr.message && upErr.message.includes('Bucket not found')) {
-        imageUrl = null;
-        showToast('Image ignorée (bucket à configurer dans Supabase)', '');
-      } else {
-        throw upErr;
-      }
-    } else {
-      const { data: pubData } = supa.storage.from('plats-images').getPublicUrl(fileName);
-      imageUrl = pubData?.publicUrl || null;
+    try {
+      imageUrl = await compressImageToBase64(currentPlatImageFile, 800, 0.75);
+    } catch (compressErr) {
+      console.warn('Compression image échouée:', compressErr);
+      // Fallback : garder l'image originale en base64
+      imageUrl = currentPlatImageDataUrl;
     }
   }
 

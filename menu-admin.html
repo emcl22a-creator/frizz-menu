@@ -121,24 +121,18 @@
       inset 0 1px 0 rgba(255,255,255,0.06),
       inset 0 -1px 0 rgba(0,0,0,0.2);
   }
-  .logo {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    letter-spacing: -0.020em;
-    font-size: 24px;
-    color: var(--text);
+  .logo-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
   }
-  .logo .spark {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    color: var(--blue);
-    font-weight: 700;
-    animation: sparkPulse 3.5s ease-in-out infinite;
-    display: inline-block;
+  .logo-link:hover { transform: scale(1.04); }
+  .logo-img {
+    height: 32px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(10,132,255,0.3));
   }
   @keyframes sparkPulse {
     0%,100% { opacity: 1; transform: scale(1); }
@@ -789,6 +783,109 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ════════════ CHART CARDS — GLASS ════════════ */
+  .ed-chart-card {
+    margin: 14px 22px 0;
+    padding: 20px 20px 16px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 8px 24px -8px rgba(0,0,0,0.4);
+  }
+  .ed-chart-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .ed-chart-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.020em;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .ed-chart-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .ed-chart-meta {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--text-2);
+    letter-spacing: -0.005em;
+  }
+
+  /* SVG line chart */
+  .ed-chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+  #ed-chart-revenue {
+    width: 100%;
+    height: 140px;
+    display: block;
+    overflow: visible;
+  }
+  .ed-chart-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+  }
+
+  /* Bars chart */
+  .ed-bars-wrap {
+    width: 100%;
+  }
+  .ed-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 90px;
+  }
+  .ed-bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--blue), rgba(10,132,255,0.3));
+    border-radius: 3px 3px 0 0;
+    min-height: 3px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .ed-bar.peak {
+    background: linear-gradient(180deg, var(--blue-bright), var(--blue));
+    box-shadow: 0 0 12px rgba(10,132,255,0.4);
+  }
+  .ed-bar.empty {
+    background: rgba(255,255,255,0.04);
+  }
+  .ed-bars-axis {
+    display: flex;
+    margin-top: 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+    gap: 4px;
+  }
+  .ed-bars-axis span {
+    flex: 1;
+    text-align: center;
+  }
+
   /* ════════════ SCROLLBAR ════════════ */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -805,7 +902,9 @@
 
   <!-- ════════ TOP BAR ════════ -->
   <header class="topbar">
-    <span class="logo">Frizz<span class="spark">✦</span></span>
+    <a href="#" class="logo-link" id="logo-link">
+      <img src="https://plain-weur-prod-public.komododecks.com/202604/27/4V8RPvyFXJyJMmVZOcHN/image.png" alt="Frizz" class="logo-img">
+    </a>
     <div class="topbar-right">
       <button class="resto-pill" id="resto-selector">
         <span id="resto-name">—</span>
@@ -855,6 +954,30 @@
       <div class="ed-duo-cell">
         <div class="ed-duo-label">— Panier moyen</div>
         <div class="ed-duo-num" id="ed-stat-panier">—<span class="suffix">€</span></div>
+      </div>
+    </div>
+
+    <!-- Graphique Revenue (évolution) -->
+    <div class="ed-chart-card">
+      <div class="ed-chart-head">
+        <h2 class="ed-chart-title">Évolution du <em>revenue</em></h2>
+        <div class="ed-chart-meta" id="ed-chart-meta">—</div>
+      </div>
+      <div class="ed-chart-wrap">
+        <svg id="ed-chart-revenue" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
+        <div class="ed-chart-axis" id="ed-chart-axis"></div>
+      </div>
+    </div>
+
+    <!-- Graphique Heures de pointe -->
+    <div class="ed-chart-card" style="margin-top: 14px;">
+      <div class="ed-chart-head">
+        <h2 class="ed-chart-title">Heures de <em>pointe</em></h2>
+        <div class="ed-chart-meta" id="ed-peak-meta">—</div>
+      </div>
+      <div class="ed-bars-wrap">
+        <div class="ed-bars" id="ed-bars"></div>
+        <div class="ed-bars-axis" id="ed-bars-axis"></div>
       </div>
     </div>
 
@@ -1180,6 +1303,10 @@ async function loadStats() {
     // ═══════ Top plats ═══════
     renderTopPlats(state.commandes);
 
+    // ═══════ Charts ═══════
+    renderRevenueChart(state.commandes, periode, since, now);
+    renderHoursChart(state.commandes);
+
   } catch (err) {
     console.error('loadStats:', err);
     showToast('Erreur de chargement des stats', 'error');
@@ -1316,6 +1443,154 @@ function renderTopPlats(cmds) {
       <div class="ed-cmd-amt">×${p.qte}</div>
     </div>
   `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHARTS — Revenue line + Heures de pointe bars
+// ═══════════════════════════════════════════════════════════════
+
+function renderRevenueChart(commandes, periode, since, now) {
+  const svg = document.getElementById('ed-chart-revenue');
+  const axisEl = document.getElementById('ed-chart-axis');
+  const metaEl = document.getElementById('ed-chart-meta');
+  if (!svg || !axisEl) return;
+
+  // Détermine le nombre de buckets selon la période
+  let nbBuckets, formatLabel, formatMeta;
+  if (periode === 'jour') {
+    nbBuckets = 12; // 2h chacun
+    formatLabel = i => {
+      const h = since.getHours() + i * 2;
+      return (h % 24).toString().padStart(2, '0') + 'h';
+    };
+    formatMeta = 'Sur 24 h';
+  } else if (periode === 'semaine') {
+    nbBuckets = 7;
+    formatLabel = i => {
+      const d = new Date(since);
+      d.setDate(since.getDate() + i);
+      return ['D', 'L', 'M', 'M', 'J', 'V', 'S'][d.getDay()];
+    };
+    formatMeta = '7 jours';
+  } else {
+    nbBuckets = 30;
+    formatLabel = i => i % 5 === 0 ? (i + 1) : '';
+    formatMeta = '30 jours';
+  }
+
+  // Buckets de CA
+  const buckets = new Array(nbBuckets).fill(0);
+  const totalSpan = now.getTime() - since.getTime();
+  commandes.forEach(c => {
+    const t = new Date(c.heure).getTime();
+    const idx = Math.min(nbBuckets - 1, Math.floor(((t - since.getTime()) / totalSpan) * nbBuckets));
+    if (idx >= 0 && idx < nbBuckets) {
+      buckets[idx] += parseFloat(c.total) || 0;
+    }
+  });
+
+  const maxVal = Math.max(...buckets, 1);
+  const W = 600, H = 140, P = 8;
+
+  // Génère le path de la courbe
+  const points = buckets.map((v, i) => {
+    const x = P + (i / Math.max(1, nbBuckets - 1)) * (W - 2 * P);
+    const y = H - P - (v / maxVal) * (H - 2 * P);
+    return [x, y];
+  });
+
+  // Smooth curve (cubic bezier)
+  let pathD = `M ${points[0][0]},${points[0][1]}`;
+  let areaD = `M ${points[0][0]},${H - P} L ${points[0][0]},${points[0][1]}`;
+  for (let i = 1; i < points.length; i++) {
+    const [x0, y0] = points[i-1];
+    const [x1, y1] = points[i];
+    const cx = (x0 + x1) / 2;
+    pathD += ` Q ${cx},${y0} ${cx},${(y0 + y1) / 2} T ${x1},${y1}`;
+    areaD += ` Q ${cx},${y0} ${cx},${(y0 + y1) / 2} T ${x1},${y1}`;
+  }
+  areaD += ` L ${points[points.length-1][0]},${H - P} Z`;
+
+  // Total CA
+  const total = buckets.reduce((s, v) => s + v, 0);
+  if (metaEl) metaEl.textContent = `${formatMeta} · ${Math.round(total).toLocaleString('fr-CH').replace(/\u00A0/g, ' ')} €`;
+
+  // Render SVG
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(10,132,255,0.40)"/>
+        <stop offset="100%" stop-color="rgba(10,132,255,0)"/>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <path d="${areaD}" fill="url(#chartGrad)"/>
+    <path d="${pathD}" fill="none" stroke="#0A84FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    ${points.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.5" fill="#0A84FF"/>`).join('')}
+  `;
+
+  // Axe X (labels)
+  const labelStep = nbBuckets > 12 ? Math.ceil(nbBuckets / 6) : 1;
+  const labels = [];
+  for (let i = 0; i < nbBuckets; i++) {
+    if (i % labelStep === 0 || i === nbBuckets - 1) {
+      labels.push(`<span>${formatLabel(i)}</span>`);
+    }
+  }
+  axisEl.innerHTML = labels.join('');
+}
+
+function renderHoursChart(commandes) {
+  const wrap = document.getElementById('ed-bars');
+  const axis = document.getElementById('ed-bars-axis');
+  const meta = document.getElementById('ed-peak-meta');
+  if (!wrap || !axis) return;
+
+  // Distribution par heure (8h-23h)
+  const startHour = 8;
+  const endHour = 23;
+  const nbBars = endHour - startHour + 1;
+  const buckets = new Array(nbBars).fill(0);
+
+  commandes.forEach(c => {
+    const h = new Date(c.heure).getHours();
+    if (h >= startHour && h <= endHour) {
+      buckets[h - startHour] += 1;
+    }
+  });
+
+  const maxVal = Math.max(...buckets, 1);
+  const peakIdx = buckets.indexOf(maxVal);
+  const peakHour = peakIdx + startHour;
+
+  if (meta) {
+    if (commandes.length === 0) {
+      meta.textContent = 'Aucune donnée';
+    } else {
+      meta.textContent = `Pic à ${peakHour}h–${peakHour + 1}h`;
+    }
+  }
+
+  wrap.innerHTML = buckets.map((v, i) => {
+    const pct = (v / maxVal) * 100;
+    const isPeak = v === maxVal && v > 0;
+    const isEmpty = v === 0;
+    return `<div class="ed-bar ${isPeak ? 'peak' : ''} ${isEmpty ? 'empty' : ''}" style="height: ${Math.max(3, pct)}%;" title="${i + startHour}h : ${v} commande${v > 1 ? 's' : ''}"></div>`;
+  }).join('');
+
+  // Axe : montrer 1 label sur 3
+  const axisLabels = [];
+  for (let i = 0; i < nbBars; i++) {
+    if (i % 3 === 0 || i === nbBars - 1) {
+      axisLabels.push(`<span>${i + startHour}h</span>`);
+    } else {
+      axisLabels.push(`<span></span>`);
+    }
+  }
+  axis.innerHTML = axisLabels.join('');
 }
 
 // Period switcher (Jour/Semaine/Mois)

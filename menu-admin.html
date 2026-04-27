@@ -76,8 +76,6 @@
       radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
       /* Halo bleu droit milieu */
       radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
-      /* Halo violet bas */
-      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(167,139,250,0.18), transparent 50%),
       /* Fond noir profond DOMINANT */
       #050506 !important;
     background-attachment: fixed !important;
@@ -85,7 +83,7 @@
   body {
     background: transparent !important;
   }
-  /* Animation séparée sur un overlay dédié, très subtile */
+  /* Animation séparée sur un overlay dédié, très subtile (BLEU UNIQUEMENT) */
   body::before {
     content: '';
     position: fixed;
@@ -94,7 +92,7 @@
     pointer-events: none;
     background:
       radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 70%, rgba(167,139,250,0.08), transparent 50%);
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
     animation: auroraDrift 24s ease-in-out infinite alternate;
     mix-blend-mode: screen;
   }
@@ -134,13 +132,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(20, 20, 22, 0.55);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: saturate(180%) blur(28px);
     -webkit-backdrop-filter: saturate(180%) blur(28px);
-    border-bottom: 1px solid var(--border);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.06),
-      inset 0 -1px 0 rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    box-shadow: none;
   }
   .logo-link {
     display: inline-flex;
@@ -1367,13 +1363,189 @@
 
   </section>
 
-  <!-- ════════ SECTION CONFIG (morceau 5/5) ════════ -->
+  <!-- ════════ SECTION CONFIG ════════ -->
   <section class="section" id="section-config" data-tab="config">
+
+    <!-- Hero éditorial -->
     <div class="ed-hero">
       <div class="ed-section-num">— 04 · Réglages</div>
       <h1 class="ed-hero-title">Votre <em>configuration</em>.</h1>
-      <p class="ed-hero-sub">À venir au morceau 5/5.</p>
+      <p class="ed-hero-sub">Restaurant, fiscalité, paiements, abonnement et compte.</p>
     </div>
+
+    <!-- Card: Restaurant -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Le <em>restaurant</em></h2>
+
+      <div class="field-group">
+        <label class="field-label">Nom du restaurant</label>
+        <input type="text" id="cfg-resto-nom" placeholder="Chez Nico">
+      </div>
+
+      <div class="field-row">
+        <div>
+          <label class="field-label">Téléphone</label>
+          <input type="tel" id="cfg-resto-tel" placeholder="+41 XX XXX XX XX">
+        </div>
+        <div>
+          <label class="field-label">Email</label>
+          <input type="email" id="cfg-resto-email" placeholder="contact@…">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Adresse</label>
+        <input type="text" id="cfg-resto-adresse" placeholder="Rue, ville, code postal">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Lien client (à mettre dans les QR)</label>
+        <input type="text" id="cfg-resto-url" readonly style="font-size: 11px; color: var(--text-3);">
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Généré automatiquement depuis le slug</p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Lien Google Reviews</label>
+        <input type="url" id="cfg-resto-google" placeholder="https://g.page/…/review">
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Affiché aux clients après paiement pour collecter des avis</p>
+      </div>
+    </div>
+
+    <!-- Card: Fiscalité -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">La <em>fiscalité</em></h2>
+
+      <div class="field-row">
+        <div>
+          <label class="field-label">Pays fiscal</label>
+          <select id="cfg-fiscal-country">
+            <option value="CH">Suisse 🇨🇭</option>
+            <option value="FR">France 🇫🇷</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">N° TVA</label>
+          <input type="text" id="cfg-tva-number" placeholder="CHE-123.456.789">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Devise</label>
+        <select id="cfg-currency">
+          <option value="CHF">CHF (Franc suisse)</option>
+          <option value="EUR">EUR (Euro)</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Email du comptable</label>
+        <input type="email" id="cfg-accountant-email" placeholder="comptable@…">
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Recevra automatiquement un export CSV chaque fin de mois</p>
+      </div>
+    </div>
+
+    <!-- Card: Paiement en ligne (Stripe Connect) -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Paiement <em>en ligne</em></h2>
+
+      <div id="cfg-stripe-status" style="margin-bottom: 14px;">
+        <div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          NON CONFIGURÉ
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
+        Activez le paiement en ligne pour que vos clients règlent depuis leur téléphone. <strong style="color: var(--text);">Frizz prend 0%</strong> — vous payez uniquement les frais Stripe (~1,4%).
+      </p>
+
+      <div class="field-group" id="cfg-stripe-toggle-wrap" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border);">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
+          <input type="checkbox" id="cfg-payment-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
+          <span style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; font-style: normal; color: var(--text);">Activer le paiement en ligne</span>
+        </label>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="btn btn-secondary" id="cfg-stripe-connect-btn" style="width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Configurer Stripe (à venir)
+        </button>
+      </div>
+    </div>
+
+    <!-- Card: Pourboire -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Le <em>pourboire</em></h2>
+
+      <div class="field-group" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border);">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
+          <input type="checkbox" id="cfg-tip-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
+          <span style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; font-style: normal; color: var(--text);">Proposer un pourboire au paiement</span>
+        </label>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-3); margin-top: 8px; line-height: 1.5;">
+        Le client verra des suggestions (10% / 15% / 20%) ou pourra choisir un montant libre.
+      </p>
+    </div>
+
+    <!-- Card: Abonnement -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Votre <em>abonnement</em></h2>
+
+      <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;">
+        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 36px; letter-spacing: -0.024em; color: var(--text);">29</span>
+        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 20px; color: var(--text-3);">€/mois</span>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 14px;">
+        Plan <strong style="color: var(--text);">Frizz Pro</strong> · Tout inclus, sans engagement.<br>
+        <span style="color: var(--text-3); font-size: 12px;">Premier mois gratuit · facturation mensuelle</span>
+      </p>
+
+      <button class="btn btn-secondary" id="cfg-billing-portal-btn" style="width: 100%;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Gérer mon abonnement
+      </button>
+    </div>
+
+    <!-- Card: Multi-restaurants -->
+    <div class="ed-cmd-card" id="cfg-multi-resto" style="display: none;">
+      <h2 class="ed-cmd-head">Vos <em>restaurants</em></h2>
+      <div id="cfg-restos-list" style="margin-bottom: 14px;"></div>
+      <button class="btn btn-secondary" style="width: 100%;" id="cfg-add-resto-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un restaurant
+      </button>
+    </div>
+
+    <!-- Card: Compte -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Votre <em>compte</em></h2>
+
+      <div class="field-group">
+        <label class="field-label">Email du compte</label>
+        <input type="email" id="cfg-user-email" readonly>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
+        <button class="btn btn-secondary" id="cfg-save-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Enregistrer
+        </button>
+        <button class="btn btn-danger" id="cfg-logout-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Déconnexion
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; margin: 24px 22px 0; font-size: 11px; color: var(--text-3); font-weight: 700; letter-spacing: -0.005em;">
+      Frizz<span style="color: var(--blue);">✦</span> · Version 1.0
+    </div>
+
   </section>
 
 </div>
@@ -2401,12 +2573,12 @@ async function savePlat(platId = null) {
       imageUrl = await compressImageToBase64(currentPlatImageFile, 800, 0.75);
     } catch (compressErr) {
       console.warn('Compression image échouée:', compressErr);
-      // Fallback : garder l'image originale en base64
       imageUrl = currentPlatImageDataUrl;
     }
   }
 
-  const payload = {
+  // Payload complet
+  const fullPayload = {
     restaurant_id: state.resto.id,
     nom,
     categorie: cat || null,
@@ -2417,17 +2589,54 @@ async function savePlat(platId = null) {
     image_url: imageUrl
   };
 
-  if (platId) {
-    const { error } = await supa.from('menu').update(payload).eq('id', platId);
-    if (error) throw error;
-    showToast('Plat modifié', 'success');
-  } else {
-    const { error } = await supa.from('menu').insert(payload);
-    if (error) throw error;
-    showToast('Plat ajouté', 'success');
+  // Champs optionnels qu'on retire si la base les refuse (colonnes manquantes)
+  const optionalCols = ['cout', 'tva_rate', 'image_url', 'description'];
+
+  let lastError = null;
+  let payload = { ...fullPayload };
+
+  // On tente jusqu'à 5 fois en retirant à chaque échec une colonne optionnelle
+  for (let attempt = 0; attempt < 5; attempt++) {
+    let error;
+    if (platId) {
+      ({ error } = await supa.from('menu').update(payload).eq('id', platId));
+    } else {
+      ({ error } = await supa.from('menu').insert(payload));
+    }
+
+    if (!error) {
+      // Succès
+      showToast(platId ? 'Plat modifié' : 'Plat ajouté', 'success');
+      await loadMenu();
+      return;
+    }
+
+    lastError = error;
+    console.error(`Tentative ${attempt + 1} échouée:`, error);
+
+    // Si erreur "column does not exist" ou "Could not find the X column"
+    const errMsg = (error.message || '').toLowerCase();
+    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+
+    // Si pas trouvé via regex, on retire les colonnes optionnelles une par une
+    if (!colToRemove) {
+      colToRemove = optionalCols.find(c => payload[c] !== undefined && payload[c] !== null);
+    }
+
+    if (colToRemove && payload[colToRemove] !== undefined) {
+      console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
+      delete payload[colToRemove];
+      continue;
+    }
+
+    // Plus rien à retirer, on sort
+    break;
   }
 
-  await loadMenu();
+  // Si on arrive ici, toutes les tentatives ont échoué
+  console.error('savePlat échec final:', lastError);
+  throw new Error(lastError?.message || 'Impossible d\'enregistrer ce plat');
 }
 
 async function deletePlat(platId) {
@@ -2631,24 +2840,61 @@ async function saveTable(tableId = null) {
 
   if (!numero) throw new Error('Le numéro est obligatoire');
 
-  const payload = {
+  // Payload complet
+  const fullPayload = {
     restaurant_id: state.resto.id,
     numero,
     label: label || null,
     places
   };
 
-  if (tableId) {
-    const { error } = await supa.from('tables').update(payload).eq('id', tableId);
-    if (error) throw error;
-    showToast('Table modifiée', 'success');
-  } else {
-    const { error } = await supa.from('tables').insert(payload);
-    if (error) throw error;
-    showToast('Table ajoutée', 'success');
+  const optionalCols = ['places', 'label'];
+  let payload = { ...fullPayload };
+  let lastError = null;
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    let error;
+    if (tableId) {
+      ({ error } = await supa.from('tables').update(payload).eq('id', tableId));
+    } else {
+      ({ error } = await supa.from('tables').insert(payload));
+    }
+
+    if (!error) {
+      showToast(tableId ? 'Table modifiée' : 'Table ajoutée', 'success');
+      await loadTables();
+      return;
+    }
+
+    lastError = error;
+    console.error(`saveTable tentative ${attempt + 1}:`, error);
+
+    const errMsg = (error.message || '').toLowerCase();
+    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+
+    // Si la colonne 'places' s'appelle 'capacite' dans cette base, on essaye
+    if (!colToRemove && payload.places !== undefined) {
+      payload.capacite = payload.places;
+      delete payload.places;
+      continue;
+    }
+
+    if (!colToRemove) {
+      colToRemove = optionalCols.find(c => payload[c] !== undefined && payload[c] !== null);
+    }
+
+    if (colToRemove && payload[colToRemove] !== undefined) {
+      console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
+      delete payload[colToRemove];
+      continue;
+    }
+
+    break;
   }
 
-  await loadTables();
+  console.error('saveTable échec final:', lastError);
+  throw new Error(lastError?.message || 'Impossible d\'enregistrer la table. Vérifiez que la table "tables" existe dans Supabase.');
 }
 
 async function deleteTable(tableId) {

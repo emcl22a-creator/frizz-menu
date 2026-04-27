@@ -2054,12 +2054,16 @@
     font-family: 'Inter Tight' !important;
     font-weight: 900 !important;
     letter-spacing: -0.045em !important;
-    font-size: 18px !important;
+    font-size: 22px !important;
+    color: #F2F2F4 !important;
+    text-shadow: none !important;
   }
-  .spark, .brand-spark {
+  .spark, .brand-spark, .brand-logo .spark {
     color: #0A84FF !important;
     font-weight: 900 !important;
-    animation: sparkPulse 3.5s ease-in-out infinite;
+    text-shadow: none !important;
+    filter: none !important;
+    animation: sparkPulse 3.5s ease-in-out infinite !important;
     display: inline-block;
   }
   @keyframes sparkPulse {
@@ -2358,7 +2362,7 @@
 
     /* Bordure double Apple */
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 24px !important;
+    border-radius: 14px !important;
     padding: 6px !important;
 
     /* Ombres iOS : profondeur + reflet inset */
@@ -2378,7 +2382,7 @@
     right: 8% !important;
     height: 1px !important;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent) !important;
-    border-radius: 24px !important;
+    border-radius: 14px !important;
     pointer-events: none !important;
   }
   .floating-tabbar-inner {
@@ -2397,7 +2401,7 @@
     border: 0 !important;
     cursor: pointer !important;
     color: rgba(255,255,255,0.45) !important;
-    border-radius: 16px !important;
+    border-radius: 10px !important;
     transition: all 0.18s ease !important;
     font-family: inherit !important;
   }
@@ -2417,6 +2421,7 @@
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,0.30),
       0 4px 12px -2px rgba(10,132,255,0.45) !important;
+    border-radius: 10px !important;
   }
   .floating-tabbar-btn.active svg { stroke-width: 2.6 !important; }
   .floating-tabbar-btn:hover:not(.active) {
@@ -5832,7 +5837,7 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 })();
 
 // ════ TABBAR FLOTTANT — sync avec les vrais tabs cachés ════
-(function setupFloatingTabbar() {
+function initFloatingTabbar() {
   function syncFloatingTabbar() {
     const activeTab = document.querySelector('.tab.active');
     if (!activeTab) return;
@@ -5842,11 +5847,21 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
     });
   }
   document.querySelectorAll('.floating-tabbar-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const target = btn.getAttribute('data-tab');
+      // Switch onglets manuellement (pas via .click() car les .tab sont cachés)
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       const realTab = document.querySelector(`.tab[data-tab="${target}"]`);
-      if (realTab) realTab.click();
-      setTimeout(syncFloatingTabbar, 50);
+      const section = document.getElementById('section-' + target);
+      if (realTab) realTab.classList.add('active');
+      if (section) section.classList.add('active');
+      // Trigger les chargements de données comme dans le handler original
+      if (target === 'stats' && typeof loadStats === 'function') loadStats();
+      if (target === 'tables' && typeof loadTables === 'function') loadTables();
+      syncFloatingTabbar();
     });
   });
   const observer = new MutationObserver(syncFloatingTabbar);
@@ -5854,7 +5869,13 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
     observer.observe(t, { attributes: true, attributeFilter: ['class'] });
   });
   syncFloatingTabbar();
-})();
+}
+// Attendre que le DOM soit prêt (le tabbar HTML est en bas du body)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFloatingTabbar);
+} else {
+  initFloatingTabbar();
+}
 </script>
 
 <!-- ════════ TABBAR FLOTTANT (Stripe Dashboard style) ════════ -->

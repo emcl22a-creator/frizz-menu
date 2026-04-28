@@ -2244,6 +2244,145 @@
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 100px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
 
+  /* ════════════ MODE SELECTOR (à emporter / Click & Collect) ════════════ */
+  .mode-selector-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: saturate(180%) blur(40px);
+    -webkit-backdrop-filter: saturate(180%) blur(40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .mode-selector-card {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    color: #fff;
+  }
+  .mode-selector-logo {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 36px;
+    letter-spacing: -0.020em;
+    margin-bottom: 28px;
+    color: #F2F2F4;
+  }
+  .mode-selector-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.030em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: #F2F2F4;
+  }
+  .mode-selector-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: #0A84FF;
+  }
+  .mode-selector-sub {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .mode-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 22px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    color: #fff;
+    font-family: inherit;
+    text-align: left;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .mode-option:hover {
+    background: rgba(10,132,255,0.12);
+    border-color: rgba(10,132,255,0.35);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 8px 24px -8px rgba(10,132,255,0.4);
+  }
+  .mode-option-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(10,132,255,0.18);
+    border: 1px solid rgba(10,132,255,0.30);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0A84FF;
+  }
+  .mode-option-icon svg { width: 22px; height: 22px; }
+  .mode-option-text { flex: 1; }
+  .mode-option-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.018em;
+    color: #F2F2F4;
+    margin-bottom: 2px;
+  }
+  .mode-option-desc {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: -0.005em;
+  }
+  .mode-footer-note {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: -0.005em;
+  }
+
+  /* Mode badge dans le header (pour rappeler le mode choisi) */
+  .mode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    background: rgba(10,132,255,0.18);
+    border: 1px solid rgba(10,132,255,0.35);
+    color: #0A84FF;
+    border-radius: 100px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .mode-badge svg { width: 11px; height: 11px; stroke-width: 2.4; }
+
 </style>
 </head>
 <body>
@@ -2251,6 +2390,70 @@
 <!-- Loading -->
 <div class="loading-screen" id="loading">
   <div class="loading-logo">Frizz<span class="spark">✦</span></div>
+</div>
+
+<!-- Mode Selector (apparaît si pas de table + modes takeaway/clickcollect activés) -->
+<div class="mode-selector-overlay" id="mode-selector" style="display: none;">
+  <div class="mode-selector-card">
+    <div class="mode-selector-logo">Frizz<span style="color: #0A84FF;">✦</span></div>
+    <h2 class="mode-selector-title">Bienvenue chez <em id="mode-resto-name">…</em></h2>
+    <p class="mode-selector-sub">Comment souhaitez-vous commander ?</p>
+
+    <div class="mode-options">
+      <button class="mode-option" data-mode="a_emporter" id="mode-takeaway-btn" style="display: none;">
+        <div class="mode-option-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3-3h12l3 3M3 7v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7M3 7h18"/><path d="M9 11v4M15 11v4"/></svg>
+        </div>
+        <div class="mode-option-text">
+          <div class="mode-option-title">À emporter</div>
+          <div class="mode-option-desc">Sur place, prêt en <span id="mode-prep-time">20</span> min</div>
+        </div>
+      </button>
+
+      <button class="mode-option" data-mode="click_collect" id="mode-clickcollect-btn" style="display: none;">
+        <div class="mode-option-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="mode-option-text">
+          <div class="mode-option-title">Click &amp; Collect</div>
+          <div class="mode-option-desc">Choisir l'heure de retrait</div>
+        </div>
+      </button>
+    </div>
+
+    <p class="mode-footer-note">Sans commission &amp; sans intermédiaire</p>
+  </div>
+</div>
+
+<!-- Modal infos client (nom + tel + heure si Click & Collect) -->
+<div class="mode-selector-overlay" id="client-info-modal" style="display: none;">
+  <div class="mode-selector-card">
+    <div class="mode-selector-logo">Frizz<span style="color: #0A84FF;">✦</span></div>
+    <h2 class="mode-selector-title">Vos <em>coordonnées</em></h2>
+    <p class="mode-selector-sub" id="client-info-sub">Pour qu'on vous reconnaisse au comptoir.</p>
+
+    <div style="margin: 20px 0; text-align: left;">
+      <label class="field-label" style="display: block; font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px;">Prénom</label>
+      <input type="text" id="client-info-nom" placeholder="ex. Marie" autocomplete="given-name" style="width: 100%; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-family: 'Inter Tight'; font-weight: 700; font-size: 14px; outline: none; margin-bottom: 14px;">
+
+      <label class="field-label" style="display: block; font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px;">Téléphone</label>
+      <input type="tel" id="client-info-tel" placeholder="+41 XX XXX XX XX" autocomplete="tel" style="width: 100%; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-family: 'Inter Tight'; font-weight: 700; font-size: 14px; outline: none; margin-bottom: 14px;">
+
+      <div id="client-info-pickup-wrap" style="display: none;">
+        <label class="field-label" style="display: block; font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px;">Heure de retrait souhaitée</label>
+        <select id="client-info-pickup-time" style="width: 100%; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-family: 'Inter Tight'; font-weight: 700; font-size: 14px; outline: none;">
+          <!-- Options injectées dynamiquement -->
+        </select>
+      </div>
+    </div>
+
+    <button class="cart-cta" id="client-info-confirm-btn" style="width: 100%; padding: 14px; border-radius: 100px; background: #0A84FF; color: #fff; border: 0; font-family: 'Inter Tight'; font-weight: 800; font-size: 14.5px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 20px -4px rgba(10,132,255,0.5);">
+      Voir le menu
+    </button>
+    <button id="client-info-back-btn" style="display: block; margin: 12px auto 0; background: transparent; border: 0; color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;">
+      ← Retour
+    </button>
+  </div>
 </div>
 
 <!-- Error -->
@@ -2716,15 +2919,216 @@ async function ensureTableSession() {
 }
 
 // ========== INIT ==========
+// ═══════════════════════════════════════════════════════════════
+// MODE SELECTOR — À emporter / Click & Collect
+// ═══════════════════════════════════════════════════════════════
+
+async function showModeSelector(takeawayOn, clickCollectOn) {
+  // Cacher le loading
+  document.getElementById('loading')?.classList.add('hidden');
+
+  const overlay = document.getElementById('mode-selector');
+  if (!overlay) return;
+
+  // Remplir nom resto
+  const nameEl = document.getElementById('mode-resto-name');
+  if (nameEl) nameEl.textContent = RESTO.nom || 'nous';
+
+  // Délai préparation
+  const prepEl = document.getElementById('mode-prep-time');
+  if (prepEl) prepEl.textContent = RESTO.prep_time_minutes || 20;
+
+  // Afficher les bonnes options
+  const taBtn = document.getElementById('mode-takeaway-btn');
+  const ccBtn = document.getElementById('mode-clickcollect-btn');
+  if (taBtn) taBtn.style.display = takeawayOn ? '' : 'none';
+  if (ccBtn) ccBtn.style.display = clickCollectOn ? '' : 'none';
+
+  overlay.style.display = 'flex';
+
+  // Attacher les handlers
+  if (taBtn && !taBtn.dataset.wired) {
+    taBtn.dataset.wired = '1';
+    taBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      state.orderMode = 'a_emporter';
+      showClientInfoModal('a_emporter');
+    });
+  }
+  if (ccBtn && !ccBtn.dataset.wired) {
+    ccBtn.dataset.wired = '1';
+    ccBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      state.orderMode = 'click_collect';
+      showClientInfoModal('click_collect');
+    });
+  }
+}
+
+function showClientInfoModal(mode) {
+  const overlay = document.getElementById('client-info-modal');
+  if (!overlay) return;
+
+  // Adapter le message selon mode
+  const sub = document.getElementById('client-info-sub');
+  if (sub) {
+    sub.textContent = mode === 'click_collect'
+      ? 'Pour qu\'on prépare votre commande à la bonne heure.'
+      : 'Pour qu\'on vous reconnaisse au comptoir.';
+  }
+
+  // Afficher heure de retrait si Click & Collect
+  const pickupWrap = document.getElementById('client-info-pickup-wrap');
+  if (pickupWrap) {
+    pickupWrap.style.display = mode === 'click_collect' ? '' : 'none';
+    if (mode === 'click_collect') {
+      populatePickupTimeOptions();
+    }
+  }
+
+  overlay.style.display = 'flex';
+
+  // Wire confirm button
+  const confirmBtn = document.getElementById('client-info-confirm-btn');
+  const backBtn = document.getElementById('client-info-back-btn');
+
+  if (confirmBtn && !confirmBtn.dataset.wired) {
+    confirmBtn.dataset.wired = '1';
+    confirmBtn.addEventListener('click', () => {
+      const nom = document.getElementById('client-info-nom')?.value.trim() || '';
+      const tel = document.getElementById('client-info-tel')?.value.trim() || '';
+      const pickupTime = document.getElementById('client-info-pickup-time')?.value || '';
+
+      if (!nom) {
+        showToast?.('Votre prénom est requis', 'error') || alert('Votre prénom est requis');
+        return;
+      }
+      if (!tel) {
+        showToast?.('Votre téléphone est requis', 'error') || alert('Votre téléphone est requis');
+        return;
+      }
+
+      state.clientNom = nom;
+      state.clientTel = tel;
+      state.pickupTime = pickupTime;
+
+      overlay.style.display = 'none';
+      // Continuer le init normalement
+      continueInitAfterMode();
+    });
+  }
+
+  if (backBtn && !backBtn.dataset.wired) {
+    backBtn.dataset.wired = '1';
+    backBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      // Réafficher le sélecteur de mode
+      const modeOverlay = document.getElementById('mode-selector');
+      if (modeOverlay) modeOverlay.style.display = 'flex';
+    });
+  }
+}
+
+function populatePickupTimeOptions() {
+  const select = document.getElementById('client-info-pickup-time');
+  if (!select) return;
+
+  const prepMin = RESTO.prep_time_minutes || 20;
+  const startStr = (RESTO.pickup_hours_start || '11:00').substring(0, 5);
+  const endStr = (RESTO.pickup_hours_end || '21:00').substring(0, 5);
+
+  const now = new Date();
+  const earliest = new Date(now.getTime() + prepMin * 60000);
+  // Arrondir aux 15 minutes supérieures
+  earliest.setMinutes(Math.ceil(earliest.getMinutes() / 15) * 15);
+  earliest.setSeconds(0, 0);
+
+  // Heures de fin de service aujourd'hui
+  const [endH, endM] = endStr.split(':').map(Number);
+  const todayEnd = new Date(now);
+  todayEnd.setHours(endH, endM, 0, 0);
+
+  // Si déjà trop tard pour aujourd'hui → on prépare pour demain à l'heure d'ouverture
+  let cursor = new Date(earliest);
+  if (cursor > todayEnd) {
+    const [startH, startM] = startStr.split(':').map(Number);
+    cursor = new Date(now);
+    cursor.setDate(cursor.getDate() + 1);
+    cursor.setHours(startH, startM, 0, 0);
+  }
+
+  // Calculer la date butoir (fin du jour de cursor)
+  const cursorEnd = new Date(cursor);
+  cursorEnd.setHours(endH, endM, 0, 0);
+
+  let options = '';
+  let count = 0;
+  while (cursor <= cursorEnd && count < 30) {
+    const isToday = cursor.toDateString() === now.toDateString();
+    const dayLabel = isToday ? 'Aujourd\'hui' : 'Demain';
+    const timeLabel = cursor.toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
+    const isoVal = cursor.toISOString();
+    options += `<option value="${isoVal}">${dayLabel} · ${timeLabel}</option>`;
+    cursor = new Date(cursor.getTime() + 15 * 60000);
+    count++;
+  }
+
+  if (!options) {
+    options = '<option value="">— Aucun créneau disponible —</option>';
+  }
+  select.innerHTML = options;
+}
+
+// Reprend le flow init après que l'utilisateur a choisi son mode et rempli ses infos
+async function continueInitAfterMode() {
+  // Afficher le loading le temps de continuer
+  const loading = document.getElementById('loading');
+  if (loading) loading.classList.remove('hidden');
+
+  try {
+    // Vérifier que le compte est actif (resto déjà chargé)
+    if (RESTO.statut !== 'actif') {
+      showError('Service indisponible', 'Ce restaurant n\'est pas accessible pour le moment.');
+      return;
+    }
+    if (RESTO.ouvert === false) {
+      showError('Restaurant fermé', 'Le restaurant n\'accepte pas de commandes pour le moment.');
+      return;
+    }
+
+    // Construire config
+    state.config = {
+      restaurant_nom: RESTO.nom || '',
+      logo_url: RESTO.logo_url || '',
+      google_link: RESTO.google_review_url || RESTO.google_link || '',
+      langue: RESTO.langue || 'fr',
+      ouvert: 'true'
+    };
+
+    // Appeler la suite du init original (chargement menu, render, etc.)
+    if (typeof finishInit === 'function') {
+      await finishInit();
+    } else {
+      // Fallback : recharger
+      location.reload();
+    }
+  } catch (err) {
+    console.error('continueInitAfterMode:', err);
+    showError('Erreur', err.message || 'Erreur de chargement');
+  }
+}
+
+
 async function init() {
   if (!RESTO_SLUG) {
     showError('Restaurant inconnu', 'Cette page doit être ouverte en scannant un QR code de table.');
     return;
   }
-  if (!TABLE_ID) {
-    showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');
-    return;
-  }
+
+  // ═══════ CHECK URL pour mode 'collect' (Click & Collect direct) ═══════
+  const urlParams = new URLSearchParams(location.search);
+  const urlMode = urlParams.get('mode');
+
   try {
     // 1) Charger le restaurant via slug
     const restoRes = await supa.from('restaurants').select('*').eq('slug', RESTO_SLUG).maybeSingle();
@@ -2734,6 +3138,30 @@ async function init() {
       return;
     }
     RESTO = restoRes.data;
+
+    // ═══════ Si pas de table : afficher mode selector ou erreur ═══════
+    if (!TABLE_ID) {
+      const takeawayOn = !!RESTO.takeaway_enabled;
+      const clickCollectOn = !!RESTO.click_collect_enabled;
+
+      if (!takeawayOn && !clickCollectOn) {
+        showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');
+        return;
+      }
+
+      // Si urlMode=collect direct → forcer Click & Collect
+      if (urlMode === 'collect' && clickCollectOn) {
+        state.orderMode = 'click_collect';
+      } else if (urlMode === 'takeaway' && takeawayOn) {
+        state.orderMode = 'a_emporter';
+      } else {
+        // Afficher le sélecteur de mode
+        await showModeSelector(takeawayOn, clickCollectOn);
+        return;
+      }
+    } else {
+      state.orderMode = 'sur_place';
+    }
 
     // 2) Vérifier que le compte est actif
     if (RESTO.statut !== 'actif') {
@@ -3392,6 +3820,23 @@ async function validateMyPart(paiementInfo = null) {
       total,
       validations: { [state.personneId]: true }
     };
+
+    // Mode commande (sur_place / a_emporter / click_collect)
+    if (state.orderMode && state.orderMode !== 'sur_place') {
+      insertData.type_commande = state.orderMode;
+      insertData.client_nom = state.clientNom || null;
+      insertData.client_telephone = state.clientTel || null;
+      if (state.pickupTime) {
+        insertData.pickup_time = state.pickupTime;
+      }
+      // Code de retrait (F-001, F-002...)
+      const codePrefix = (RESTO.pickup_code_prefix || 'F').toUpperCase();
+      const codeNum = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+      insertData.pickup_code = `${codePrefix}-${codeNum}`;
+      // Pour les modes à emporter / collect, pas de "groupe", validation directe
+      insertData.statut = paiementInfo ? 'envoyee' : 'en_attente_groupe';
+    }
+
     if (paiementInfo) {
       insertData.payee = true;
       insertData.paiement_method = paiementInfo.method;

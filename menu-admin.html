@@ -1931,6 +1931,42 @@ async function loadUserRestaurants() {
 
 async function selectRestaurant(resto) {
   state.resto = resto;
+
+  // Auto-générer un slug si le resto n'en a pas (résout le bug QR qui ne s'affiche pas)
+  if (!resto.slug && resto.nom) {
+    const generatedSlug = resto.nom
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60) || `resto-${resto.id.substring(0, 8)}`;
+
+    // Vérifier unicité
+    let finalSlug = generatedSlug;
+    let counter = 1;
+    while (true) {
+      const { data: existing } = await supa.from('restaurants').select('id').eq('slug', finalSlug).maybeSingle();
+      if (!existing || existing.id === resto.id) break;
+      finalSlug = `${generatedSlug}-${counter}`;
+      counter++;
+      if (counter > 50) break;
+    }
+
+    // Sauvegarder le slug dans Supabase
+    try {
+      const { error } = await supa.from('restaurants').update({ slug: finalSlug }).eq('id', resto.id);
+      if (!error) {
+        resto.slug = finalSlug;
+        state.resto.slug = finalSlug;
+        console.log('Slug auto-généré:', finalSlug);
+      }
+    } catch (e) {
+      console.warn('Slug auto-gen failed:', e);
+    }
+  }
+
   document.getElementById('resto-name').textContent = resto.nom || 'Restaurant';
   document.getElementById('ed-resto-display').textContent = getShortName(resto.nom);
   // Recharger les données du tab actif
@@ -3007,11 +3043,13 @@ function renderTableCard(t) {
   const numero = t.numero || '?';
   const label = t.label || `Table ${numero}`;
   const places = t.places || t.capacite;
+  const isTakeaway = t.type === 'a_emporter';
   return `
     <div class="ed-table-card" data-id="${t.id}">
+      ${isTakeaway ? `<div style="position: absolute; top: 12px; right: 12px; padding: 3px 9px; background: rgba(10,132,255,0.18); border: 1px solid rgba(10,132,255,0.35); color: var(--blue); border-radius: 100px; font-size: 9.5px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase;">À emporter</div>` : ''}
       <div class="ed-table-num">${escapeHtml(numero)}</div>
       <div class="ed-table-label">${escapeHtml(label)}</div>
-      <div class="ed-table-meta">${places ? `— ${places} place${places > 1 ? 's' : ''}` : '— Capacité libre'}</div>
+      <div class="ed-table-meta">${isTakeaway ? '— QR commande à emporter' : (places ? `— ${places} place${places > 1 ? 's' : ''}` : '— Capacité libre')}</div>
       <div class="ed-table-actions">
         <button class="ed-table-btn qr-btn" onclick="showTableQR('${t.id}')" title="Voir le QR code">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
@@ -3080,6 +3118,29 @@ function openTableModal(tableId = null) {
           </p>
         </div>
 
+        <div class="field-group">
+          <label class="field-label">Type</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+            <label class="table-type-option ${(!table || table?.type !== 'a_emporter') ? 'active' : ''}" data-type="sur_place" style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); cursor: pointer; transition: all 0.15s;">
+              <input type="radio" name="table-type" value="sur_place" ${(!table || table?.type !== 'a_emporter') ? 'checked' : ''} style="accent-color: var(--blue);">
+              <div>
+                <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 12.5px; color: var(--text);">Sur place</div>
+                <div style="font-size: 10.5px; color: var(--text-3); margin-top: 1px;">Table classique</div>
+              </div>
+            </label>
+            <label class="table-type-option ${table?.type === 'a_emporter' ? 'active' : ''}" data-type="a_emporter" style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); cursor: pointer; transition: all 0.15s;">
+              <input type="radio" name="table-type" value="a_emporter" ${table?.type === 'a_emporter' ? 'checked' : ''} style="accent-color: var(--blue);">
+              <div>
+                <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 12.5px; color: var(--text);">À emporter</div>
+                <div style="font-size: 10.5px; color: var(--text-3); margin-top: 1px;">QR pour commande à emporter</div>
+              </div>
+            </label>
+          </div>
+          <p style="font-size: 11px; color: var(--text-3); margin-top: 8px; line-height: 1.4;">
+            Le QR "À emporter" peut être affiché à l'entrée ou au comptoir pour les commandes à emporter.
+          </p>
+        </div>
+
       </div>
       <div class="modal-footer">
         ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-table" style="margin-right: auto;">
@@ -3133,6 +3194,7 @@ async function saveTable(tableId = null) {
   const numero = overlay.querySelector('#table-numero').value.trim();
   const places = parseInt(overlay.querySelector('#table-places').value) || null;
   const label = overlay.querySelector('#table-label').value.trim();
+  const type = overlay.querySelector('input[name="table-type"]:checked')?.value || 'sur_place';
 
   if (!numero) throw new Error('Le numéro est obligatoire');
 
@@ -3141,10 +3203,11 @@ async function saveTable(tableId = null) {
     restaurant_id: state.resto.id,
     numero,
     label: label || null,
-    places
+    places,
+    type
   };
 
-  const optionalCols = ['places', 'label'];
+  const optionalCols = ['places', 'label', 'type'];
   let payload = { ...fullPayload };
   let lastError = null;
 
@@ -3213,13 +3276,30 @@ async function deleteTable(tableId) {
 function getTableQRUrl(table) {
   // URL client de menu.html avec resto + table
   const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
+  // Si table de type "à emporter" : QR pointe vers le mode emporter direct (pas de table)
+  if (table.type === 'a_emporter') {
+    return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&mode=takeaway&label=${encodeURIComponent(table.label || table.numero)}`;
+  }
   return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&table=${encodeURIComponent(table.numero)}`;
 }
 
 async function showTableQR(tableId) {
   const table = state.tables.find(t => t.id === tableId);
   if (!table) return;
+
+  // Vérifier que le resto a un slug, sinon en générer un automatiquement
+  if (!state.resto.slug && state.resto.nom) {
+    showToast('Configuration du lien restaurant…', '');
+    await selectRestaurant(state.resto);
+  }
+  if (!state.resto.slug) {
+    showToast('Impossible de générer le QR : restaurant sans nom', 'error');
+    return;
+  }
+
   const url = getTableQRUrl(table);
+  const isTakeaway = table.type === 'a_emporter';
+  const qrTitle = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
 
   let overlay = document.getElementById('modal-qr');
   if (overlay) overlay.remove();
@@ -3230,12 +3310,12 @@ async function showTableQR(tableId) {
   overlay.innerHTML = `
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">QR — Table <em>${escapeHtml(table.numero)}</em></h2>
+        <h2 class="modal-title">QR — <em>${escapeHtml(qrTitle)}</em></h2>
         <button class="modal-close" data-close>×</button>
       </div>
       <div class="modal-body">
         <div class="qr-preview-wrap">
-          <div class="qr-table-num">Table ${escapeHtml(table.numero)}</div>
+          <div class="qr-table-num">${escapeHtml(qrTitle)}</div>
           <canvas id="qr-canvas"></canvas>
           <div class="qr-resto-name">${escapeHtml(state.resto.nom || '')}</div>
         </div>

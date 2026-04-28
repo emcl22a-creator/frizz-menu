@@ -150,6 +150,125 @@
     padding: 56px 22px 18px;
     text-align: center;
   }
+
+  /* Bouton appel serveur (cloche en haut à droite) */
+  .server-call-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 51;
+    font-family: inherit;
+    transition: all 0.18s ease;
+  }
+  .server-call-btn:hover {
+    background: rgba(255,255,255,0.10);
+    transform: scale(1.05);
+  }
+  .server-call-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Bouton langue (en haut à gauche) */
+  .lang-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 51;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    transition: all 0.18s ease;
+  }
+  .lang-btn:hover {
+    background: rgba(255,255,255,0.10);
+  }
+  .lang-btn svg { width: 16px; height: 16px; }
+
+  .lang-menu {
+    position: absolute;
+    top: 64px;
+    left: 16px;
+    z-index: 60;
+    background: rgba(20, 20, 26, 0.92);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 6px;
+    min-width: 180px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.96);
+    transition: all 0.2s ease;
+    box-shadow: 0 16px 40px -8px rgba(0,0,0,0.5);
+  }
+  .lang-menu.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+  .lang-option {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: 0;
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s ease;
+  }
+  .lang-option:hover {
+    background: rgba(255,255,255,0.06);
+  }
+  .lang-option .lang-check {
+    margin-left: auto;
+    color: var(--blue);
+    opacity: 0;
+  }
+  .lang-option.active .lang-check {
+    opacity: 1;
+  }
+
+  /* Google Translate widget : caché */
+  #google_translate_element { display: none !important; }
+  .goog-te-banner-frame { display: none !important; }
+  body { top: 0 !important; }
+  .skiptranslate { display: none !important; }
+  font[style*="background"] {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
   .resto-name {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
@@ -221,6 +340,70 @@
     height: 2px;
     background: var(--blue);
     border-radius: 2px;
+  }
+
+  /* ─────────── BARRE FILTRES RÉGIME ─────────── */
+  .regime-bar {
+    padding: 14px 22px 0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .regime-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 12.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .regime-toggle:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .regime-toggle.has-active {
+    background: rgba(10,132,255,0.14);
+    border-color: rgba(10,132,255,0.30);
+    color: var(--blue);
+  }
+  .regime-count {
+    background: var(--blue);
+    color: #fff;
+    padding: 1px 7px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .regime-chips {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .regime-chip {
+    padding: 7px 13px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .regime-chip:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .regime-chip.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
   }
 
   /* ─────────── HERO (avec table) ─────────── */
@@ -712,6 +895,37 @@
     transform: none;
   }
 
+  /* ─────────── BOUTONS ACTION SERVEUR ─────────── */
+  .server-action-btn {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 16px 18px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 14.5px;
+    letter-spacing: -0.012em;
+    margin-bottom: 10px;
+    transition: all 0.18s ease;
+  }
+  .server-action-btn:last-child { margin-bottom: 0; }
+  .server-action-btn:hover {
+    background: rgba(10,132,255,0.10);
+    border-color: rgba(10,132,255,0.30);
+  }
+  .server-action-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+
   /* ─────────── TOAST ─────────── */
   .toast-wrap {
     position: fixed;
@@ -821,6 +1035,27 @@
 
   <!-- Header centré : "Chez Nico" + "TABLE 7" -->
   <header class="header">
+    <button class="server-call-btn" id="server-call-btn" onclick="openServerCallMenu()" aria-label="Appeler le serveur">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </svg>
+    </button>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <span id="lang-current">FR</span>
+    </button>
+    <div class="lang-menu" id="lang-menu">
+      <button class="lang-option active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="en" onclick="setLang('en')">🇬🇧 English <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="de" onclick="setLang('de')">🇩🇪 Deutsch <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="it" onclick="setLang('it')">🇮🇹 Italiano <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español <span class="lang-check">✓</span></button>
+    </div>
     <div class="header-inner">
       <div class="resto-name" id="resto-name">—</div>
       <div class="resto-table" id="resto-table">—</div>
@@ -829,6 +1064,16 @@
 
   <!-- Barre de catégories scrollable -->
   <div class="cat-bar" id="cat-bar"></div>
+
+  <!-- Filtres régime (vegan/végé/sans gluten…) -->
+  <div class="regime-bar" id="regime-bar" style="display:none;">
+    <button class="regime-toggle" onclick="toggleRegimeFilters()" id="regime-toggle">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      <span>Filtres</span>
+      <span class="regime-count" id="regime-count" style="display:none;">0</span>
+    </button>
+    <div class="regime-chips" id="regime-chips" style="display:none;"></div>
+  </div>
 
   <!-- Banner commandes en cours -->
   <div class="orders-banner" id="orders-banner" style="display:none;">
@@ -860,6 +1105,49 @@
 <div class="modal-overlay" id="modal-plat">
   <div class="modal" id="modal-plat-content">
     <!-- Contenu injecté dynamiquement -->
+  </div>
+</div>
+
+<!-- Modal appel serveur -->
+<div class="modal-overlay" id="modal-server">
+  <div class="modal">
+    <div class="cart-modal-header">
+      <div class="cart-modal-title">Appeler le serveur</div>
+      <button class="modal-close" onclick="closeServerCallMenu()" style="position:relative; top:auto; right:auto;">×</button>
+    </div>
+    <div style="padding: 0 22px 16px;">
+      <p style="color: var(--text-3); font-size: 13px; font-weight: 700; margin-bottom: 18px; line-height: 1.45;">Choisissez votre demande, le serveur sera prévenu immédiatement.</p>
+      <button class="server-action-btn" onclick="callServer('eau')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        <span>Demander de l'eau</span>
+      </button>
+      <button class="server-action-btn" onclick="callServer('addition')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        <span>Demander l'addition</span>
+      </button>
+      <button class="server-action-btn" onclick="callServer('aide')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Besoin d'aide</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal avis Google -->
+<div class="modal-overlay" id="modal-google">
+  <div class="modal" style="text-align: center; padding: 0 22px 24px;">
+    <button class="modal-close" onclick="closeGoogleModal()">×</button>
+    <div style="padding: 38px 22px 6px;">
+      <div style="font-size: 48px; margin-bottom: 14px;">⭐</div>
+      <div class="cart-modal-title" style="margin-bottom: 8px;">Merci pour votre commande !</div>
+      <p style="color: var(--text-2); font-size: 14px; font-weight: 600; line-height: 1.5; margin-bottom: 22px;">
+        Si vous avez apprécié votre repas, un avis Google nous aiderait beaucoup. Cela ne prend que 30 secondes.
+      </p>
+      <a class="checkout-btn" id="google-btn" href="#" target="_blank" rel="noopener" onclick="trackGoogleClick()" style="text-decoration: none; display: block; margin-bottom: 10px;">
+        Laisser un avis sur Google
+      </a>
+      <button class="qty-btn" onclick="closeGoogleModal()" style="background: transparent; color: var(--text-3); font-size: 13px; font-weight: 700; padding: 10px; width: auto; height: auto; border-radius: 0; margin: 0 auto;">Plus tard</button>
+    </div>
   </div>
 </div>
 
@@ -1022,6 +1310,7 @@ async function init() {
     // 7) Render
     renderHeader();
     renderCatBar();
+    renderRegimeBar();
     renderMenu();
     loadCart();
 
@@ -1076,6 +1365,135 @@ function renderHeader() {
 }
 
 // ═════════════════════════════════════════════════════════════════
+// LANGUES (Google Translate via cookie googtrans)
+// ═════════════════════════════════════════════════════════════════
+function toggleLangMenu(event) {
+  event.stopPropagation();
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.toggle('show');
+}
+function setLang(lang) {
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.remove('show');
+
+  document.getElementById('lang-current').textContent = lang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+
+  try { localStorage.setItem('frizz_client_lang', lang); } catch(e) {}
+
+  const path = (lang === 'fr') ? '/fr/fr' : '/fr/' + lang;
+  const hostname = location.hostname;
+  document.cookie = 'googtrans=' + path + ';path=/;max-age=31536000';
+  document.cookie = 'googtrans=' + path + ';path=/;domain=.' + hostname + ';max-age=31536000';
+
+  if (lang === 'fr') {
+    document.cookie = 'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=.' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  }
+  setTimeout(() => location.reload(), 200);
+}
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'fr',
+    includedLanguages: 'en,de,it,es',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+window.googleTranslateElementInit = googleTranslateElementInit;
+
+// Restaurer la langue au chargement
+(function initLang() {
+  let savedLang = 'fr';
+  try { savedLang = localStorage.getItem('frizz_client_lang') || 'fr'; } catch(e) {}
+  const btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = savedLang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === savedLang);
+  });
+})();
+
+// Fermer le menu langue si on clique ailleurs
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('lang-menu');
+  const btn = document.getElementById('lang-btn');
+  if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !(btn && btn.contains(e.target))) {
+    menu.classList.remove('show');
+  }
+});
+
+// ═════════════════════════════════════════════════════════════════
+// FILTRES RÉGIME (vegan / végé / sans gluten…)
+// ═════════════════════════════════════════════════════════════════
+const REGIME_LABELS = {
+  vegetarien: '🥬 Végétarien',
+  vegan: '🌱 Vegan',
+  sans_gluten: '🌾 Sans gluten',
+  sans_lactose: '🥛 Sans lactose',
+  halal: '☪ Halal',
+  casher: '✡ Casher'
+};
+const activeRegimes = new Set();
+
+function renderRegimeBar() {
+  const bar = document.getElementById('regime-bar');
+  const chipsBox = document.getElementById('regime-chips');
+  const toggleBtn = document.getElementById('regime-toggle');
+  const countEl = document.getElementById('regime-count');
+  if (!bar || !chipsBox) return;
+
+  // Détecter quels régimes existent dans le menu
+  const available = new Set();
+  state.menu.forEach(p => {
+    const r = Array.isArray(p.regimes) ? p.regimes : [];
+    r.forEach(x => available.add(x));
+  });
+
+  if (available.size === 0) {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'block';
+
+  // Compteur
+  if (activeRegimes.size > 0) {
+    countEl.style.display = 'inline-block';
+    countEl.textContent = activeRegimes.size;
+    toggleBtn.classList.add('has-active');
+  } else {
+    countEl.style.display = 'none';
+    toggleBtn.classList.remove('has-active');
+  }
+
+  // Chips
+  const order = ['vegetarien','vegan','sans_gluten','sans_lactose','halal','casher'];
+  chipsBox.innerHTML = order
+    .filter(r => available.has(r))
+    .map(r => `<button class="regime-chip ${activeRegimes.has(r)?'active':''}" onclick="toggleRegimeFilter('${r}')">${REGIME_LABELS[r]}</button>`)
+    .join('');
+}
+function toggleRegimeFilters() {
+  const chipsBox = document.getElementById('regime-chips');
+  if (!chipsBox) return;
+  chipsBox.style.display = chipsBox.style.display === 'flex' ? 'none' : 'flex';
+}
+function toggleRegimeFilter(regime) {
+  if (activeRegimes.has(regime)) activeRegimes.delete(regime);
+  else activeRegimes.add(regime);
+  renderRegimeBar();
+  renderMenu();
+}
+function applyRegimeFilters(plats) {
+  if (activeRegimes.size === 0) return plats;
+  return plats.filter(p => {
+    const r = Array.isArray(p.regimes) ? p.regimes : [];
+    for (const f of activeRegimes) if (!r.includes(f)) return false;
+    return true;
+  });
+}
+
+// ═════════════════════════════════════════════════════════════════
 // RENDER CATÉGORIES + FILTRAGE
 // ═════════════════════════════════════════════════════════════════
 let activeCat = 'all';
@@ -1112,12 +1530,14 @@ function renderMenu() {
   if (activeCat !== 'all') {
     plats = plats.filter(p => (p.categorie || p.category) === activeCat);
   }
+  // Appliquer les filtres régime
+  plats = applyRegimeFilters(plats);
 
   if (plats.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🍽️</div>
-        <div class="empty-state-text">${state.menu.length === 0 ? 'La carte arrive bientôt.' : 'Aucun plat dans cette catégorie.'}</div>
+        <div class="empty-state-text">${state.menu.length === 0 ? 'La carte arrive bientôt.' : 'Aucun plat ne correspond.'}</div>
       </div>
     `;
     return;
@@ -1394,6 +1814,9 @@ async function submitOrder() {
 
     // Recharger les commandes
     await loadOrders();
+
+    // Si lien Google configuré, proposer un avis 2 secondes après
+    setTimeout(openGoogleModal, 2200);
   } catch (err) {
     console.error('submitOrder:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -1451,6 +1874,104 @@ function updateOrdersBanner() {
 }
 
 // ═════════════════════════════════════════════════════════════════
+// MODAL AVIS GOOGLE (s'ouvre après commande envoyée)
+// ═════════════════════════════════════════════════════════════════
+function openGoogleModal() {
+  if (state.previewMode) return;
+  const link = (state.resto?.google_review_url || state.resto?.google_link || '').trim();
+  if (!link) return; // Pas de lien configuré
+  // Ne montrer qu'une fois par session
+  const key = 'frizz_google_shown_' + RESTO_SLUG + '_' + (TABLE_NUM || 'anon');
+  try { if (sessionStorage.getItem(key) === '1') return; } catch(_) {}
+
+  const btn = document.getElementById('google-btn');
+  if (btn) btn.href = link;
+  try { sessionStorage.setItem(key, '1'); } catch(_) {}
+  document.getElementById('modal-google').classList.add('show');
+}
+function closeGoogleModal() {
+  document.getElementById('modal-google').classList.remove('show');
+}
+function trackGoogleClick() {
+  setTimeout(closeGoogleModal, 300);
+}
+
+// Ferme la modale Google en cliquant en dehors
+document.getElementById('modal-google').addEventListener('click', e => {
+  if (e.target.id === 'modal-google') closeGoogleModal();
+});
+
+// ═════════════════════════════════════════════════════════════════
+// APPEL SERVEUR
+// ═════════════════════════════════════════════════════════════════
+function openServerCallMenu() {
+  if (state.previewMode) {
+    showToast('Mode aperçu : appel serveur désactivé');
+    return;
+  }
+  document.getElementById('modal-server').classList.add('show');
+}
+function closeServerCallMenu() {
+  document.getElementById('modal-server').classList.remove('show');
+}
+async function callServer(type) {
+  closeServerCallMenu();
+
+  if (!state.resto || !state.table) {
+    showToast('Erreur : table non identifiée', 'error');
+    return;
+  }
+
+  const messages = {
+    'eau': 'Demande d\'eau',
+    'addition': 'Demande l\'addition',
+    'aide': 'Besoin d\'aide'
+  };
+  const msg = messages[type] || 'Demande générale';
+
+  try {
+    // On crée une "commande spéciale" avec un statut particulier
+    const payload = {
+      restaurant_id: state.resto.id,
+      table_id: state.table.id,
+      table_numero: state.table.numero || TABLE_NUM,
+      items: [{ nom: msg, prix: 0, qte: 1, type: 'service_request' }],
+      total: 0,
+      statut: 'service_request',
+      heure: new Date().toISOString(),
+      type_commande: 'service'
+    };
+
+    // Insertion avec retry
+    const optionalCols = ['table_id', 'table_numero', 'type_commande'];
+    let p = { ...payload };
+    let inserted = false;
+    for (let i = 0; i < 5; i++) {
+      const { error } = await supa.from('commandes').insert(p);
+      if (!error) { inserted = true; break; }
+      const errMsg = (error.message || '').toLowerCase();
+      const col = optionalCols.find(c => errMsg.includes(c) && p[c] !== undefined);
+      if (col) { delete p[col]; continue; }
+      break;
+    }
+
+    if (inserted) {
+      showToast('Le serveur a été prévenu', 'success');
+    } else {
+      showToast('Erreur lors de l\'appel', 'error');
+    }
+  } catch (err) {
+    console.error('callServer:', err);
+    showToast('Erreur lors de l\'appel', 'error');
+  }
+}
+
+// Ferme la modale serveur en cliquant en dehors
+document.getElementById('modal-server').addEventListener('click', e => {
+  if (e.target.id === 'modal-server') closeServerCallMenu();
+});
+
+// ═════════════════════════════════════════════════════════════════
 // LANCEMENT
 // ═════════════════════════════════════════════════════════════════
 init();
@@ -1460,5 +1981,9 @@ window.addEventListener('beforeunload', () => {
   if (state.pollInterval) clearInterval(state.pollInterval);
 });
 </script>
+
+<!-- Google Translate widget (caché, piloté via cookie googtrans) -->
+<div id="google_translate_element"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

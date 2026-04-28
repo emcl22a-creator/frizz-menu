@@ -3272,8 +3272,13 @@ async function init() {
     };
 
     // 5) Charger table + menu + menus en parallèle (filtrés par resto)
+    // En mode preview : on ne charge pas la table (TABLE_ID est vide)
+    const tableQuery = state.previewMode || !TABLE_ID
+      ? Promise.resolve({ data: null, error: null })
+      : supa.from('tables').select('*').eq('restaurant_id', RESTO.id).eq('id', TABLE_ID).maybeSingle();
+
     const [tableRes, menuRes, menusRes] = await Promise.all([
-      supa.from('tables').select('*').eq('restaurant_id', RESTO.id).eq('id', TABLE_ID).maybeSingle(),
+      tableQuery,
       supa.from('menu').select('*').eq('restaurant_id', RESTO.id).order('created_at', { ascending: true }),
       supa.from('menus').select('*').eq('restaurant_id', RESTO.id)
     ]);
@@ -3282,7 +3287,8 @@ async function init() {
     if (menuRes.error) throw new Error('Menu: ' + menuRes.error.message);
 
     state.table = tableRes.data;
-    if (!state.table) {
+    // Skip vérif "table introuvable" en mode preview
+    if (!state.previewMode && !state.table) {
       showError('Table introuvable', 'Cette table n\'existe pas dans le système.');
       return;
     }

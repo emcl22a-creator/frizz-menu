@@ -1541,45 +1541,21 @@
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Modes de <em>commande</em></h2>
       <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
-        En plus du QR à table, activez les commandes à emporter et le Click &amp; Collect (commande à distance).
+        En plus du QR à table, activez les commandes à emporter pour vos clients.
       </p>
 
       <!-- Toggle À emporter -->
-      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 14px;">
         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
           <input type="checkbox" id="cfg-takeaway-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
           <div>
             <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; color: var(--text);">Commandes à emporter</div>
-            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande sur place et vient chercher</div>
+            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande et vient chercher</div>
           </div>
         </label>
       </div>
 
-      <!-- Toggle Click & Collect -->
-      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 14px;">
-        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
-          <input type="checkbox" id="cfg-clickcollect-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
-          <div>
-            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; color: var(--text);">Click &amp; Collect</div>
-            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande à distance via un lien partagé</div>
-          </div>
-        </label>
-      </div>
-
-      <!-- Lien Click & Collect (si activé) -->
-      <div id="cfg-cc-link-wrap" style="display: none;" class="field-group">
-        <label class="field-label">Lien Click &amp; Collect à partager</label>
-        <input type="text" id="cfg-cc-link" readonly style="font-size: 11px; color: var(--text-3);">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
-          Partagez ce lien sur Instagram, Google, WhatsApp. Vos clients commandent directement, sans commission.
-        </p>
-        <button class="btn btn-secondary" id="cfg-cc-copy-btn" style="margin-top: 8px; padding: 8px 14px; font-size: 12px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copier le lien
-        </button>
-      </div>
-
-      <!-- Réglages préparation/horaires (visible si l'un des 2 modes est activé) -->
+      <!-- Réglages préparation/horaires (visible si activé) -->
       <div id="cfg-pickup-settings" style="display: none;">
         <div class="field-row">
           <div>
@@ -1835,9 +1811,8 @@ function getInitials(nom) {
 }
 function getShortName(nom) {
   if (!nom) return 'votre resto';
-  // Premier mot significatif (>2 chars)
-  const w = nom.split(/\s+/).filter(w => w.length > 2)[0];
-  return w || nom;
+  // Retourne le nom complet (avant on prenait que le 1er mot)
+  return nom;
 }
 
 // Toast ──────────────────────────────────────────────────────────
@@ -3309,26 +3284,41 @@ async function showTableQR(tableId) {
   overlay.className = 'modal-overlay';
   overlay.id = 'modal-qr';
   overlay.innerHTML = `
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">QR — <em>${escapeHtml(qrTitle)}</em></h2>
-        <button class="modal-close" data-close>×</button>
-      </div>
-      <div class="modal-body">
-        <div class="qr-preview-wrap">
-          <div class="qr-table-num">${escapeHtml(qrTitle)}</div>
-          <canvas id="qr-canvas"></canvas>
-          <div class="qr-resto-name">${escapeHtml(state.resto.nom || '')}</div>
+    <div class="modal-content" style="max-width: 380px;">
+      <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px; z-index: 2;">×</button>
+
+      <!-- Carte QR design : fond blanc, beaucoup d'espace, juste le nécessaire -->
+      <div style="padding: 32px 24px 24px; text-align: center;">
+
+        <!-- Logo Frizz en haut, discret -->
+        <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 20px; letter-spacing: -0.018em; color: var(--text-3); margin-bottom: 24px;">
+          Frizz<span style="color: var(--blue);">✦</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-3); font-weight: 700; line-height: 1.5; word-break: break-all;">
-          <strong style="color: var(--text-2);">Lien :</strong><br>${escapeHtml(url)}
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-close>Fermer</button>
-        <button class="btn btn-primary" id="download-qr">
+
+        <!-- Bloc blanc qui contient le QR -->
+        <div style="background: #fff; border-radius: 28px; padding: 28px 20px 20px; margin-bottom: 18px; box-shadow: 0 12px 40px -12px rgba(0,0,0,0.4);">
+          <!-- Titre -->
+          <div style="font-family: 'Inter Tight', sans-serif; font-weight: 900; font-size: 22px; letter-spacing: -0.024em; color: #0A0A0B; margin-bottom: 4px; line-height: 1;">
+            ${escapeHtml(qrTitle)}
+          </div>
+          <!-- Nom resto en italique -->
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 13px; color: rgba(10,10,11,0.55); margin-bottom: 18px; letter-spacing: -0.005em;">
+            ${escapeHtml(state.resto.nom || '')}
+          </div>
+
+          <!-- QR Code -->
+          <canvas id="qr-canvas" style="display: block; margin: 0 auto; max-width: 100%;"></canvas>
+
+          <!-- Footer scan -->
+          <div style="margin-top: 16px; font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: -0.005em; color: rgba(10,10,11,0.45);">
+            Scannez pour ${isTakeaway ? 'commander à emporter' : 'voir la carte'}
+          </div>
+        </div>
+
+        <!-- Bouton télécharger PDF -->
+        <button class="btn btn-primary" id="download-qr" style="width: 100%;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Télécharger PDF
+          Télécharger en PDF
         </button>
       </div>
     </div>
@@ -3348,15 +3338,14 @@ async function showTableQR(tableId) {
     await QRCode.toCanvas(canvas, url, {
       width: 240,
       margin: 1,
-      color: { dark: '#000000', light: '#FFFFFF' },
+      color: { dark: '#0A0A0B', light: '#FFFFFF' },
       errorCorrectionLevel: 'H'
     });
   } catch (err) {
     console.error('QR error (lib):', err);
-    // Fallback : utiliser l'API Google Charts pour générer le QR
+    // Fallback : utiliser une API externe pour générer le QR
     try {
-      const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&ecc=H&margin=1`;
-      // Remplacer le canvas par une <img>
+      const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&ecc=H&margin=1&color=0A0A0B&bgcolor=FFFFFF`;
       const img = document.createElement('img');
       img.src = fallbackUrl;
       img.alt = 'QR Code';
@@ -3364,7 +3353,7 @@ async function showTableQR(tableId) {
       img.style.height = '240px';
       img.style.display = 'block';
       img.style.margin = '0 auto';
-      img.crossOrigin = 'anonymous';
+      img.id = 'qr-canvas';
       canvas.parentNode.replaceChild(img, canvas);
     } catch (fallbackErr) {
       console.error('QR fallback aussi échoué:', fallbackErr);
@@ -3743,22 +3732,13 @@ function fillConfigForm() {
     }
   }
 
-  // Modes de commande (takeaway + click & collect)
+  // Modes de commande (takeaway uniquement)
   const taToggle = document.getElementById('cfg-takeaway-enabled');
-  const ccToggle = document.getElementById('cfg-clickcollect-enabled');
   if (taToggle) taToggle.checked = !!r.takeaway_enabled;
-  if (ccToggle) ccToggle.checked = !!r.click_collect_enabled;
 
   setVal('cfg-prep-time', r.prep_time_minutes || 20);
   if (r.pickup_hours_start) setVal('cfg-pickup-start', r.pickup_hours_start.substring(0, 5));
   if (r.pickup_hours_end) setVal('cfg-pickup-end', r.pickup_hours_end.substring(0, 5));
-
-  // Lien Click & Collect
-  const ccLinkInput = document.getElementById('cfg-cc-link');
-  if (ccLinkInput) {
-    const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
-    ccLinkInput.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}&mode=collect`;
-  }
 
   // Toggle visibilité des sections selon les modes activés
   updateOrderModesVisibility();
@@ -3766,11 +3746,8 @@ function fillConfigForm() {
 
 function updateOrderModesVisibility() {
   const taOn = document.getElementById('cfg-takeaway-enabled')?.checked;
-  const ccOn = document.getElementById('cfg-clickcollect-enabled')?.checked;
   const settingsWrap = document.getElementById('cfg-pickup-settings');
-  const ccLinkWrap = document.getElementById('cfg-cc-link-wrap');
-  if (settingsWrap) settingsWrap.style.display = (taOn || ccOn) ? '' : 'none';
-  if (ccLinkWrap) ccLinkWrap.style.display = ccOn ? '' : 'none';
+  if (settingsWrap) settingsWrap.style.display = taOn ? '' : 'none';
 }
 
 function setVal(id, v) {
@@ -3794,7 +3771,7 @@ async function saveAllConfig() {
     payment_enabled: document.getElementById('cfg-payment-enabled').checked,
     tip_enabled: document.getElementById('cfg-tip-enabled').checked,
     takeaway_enabled: document.getElementById('cfg-takeaway-enabled')?.checked || false,
-    click_collect_enabled: document.getElementById('cfg-clickcollect-enabled')?.checked || false,
+    click_collect_enabled: false,
     prep_time_minutes: parseInt(document.getElementById('cfg-prep-time')?.value) || 20,
     pickup_hours_start: document.getElementById('cfg-pickup-start')?.value || '11:00',
     pickup_hours_end: document.getElementById('cfg-pickup-end')?.value || '21:00'
@@ -3949,36 +3926,11 @@ function wireConfigButtons() {
     testAccountantBtn.addEventListener('click', sendTestReportToAccountant);
   }
 
-  // Toggles modes de commande : afficher/cacher les réglages
+  // Toggle modes de commande : afficher/cacher les réglages
   const taToggle = document.getElementById('cfg-takeaway-enabled');
-  const ccToggle = document.getElementById('cfg-clickcollect-enabled');
   if (taToggle && !taToggle.dataset.wired) {
     taToggle.dataset.wired = '1';
     taToggle.addEventListener('change', updateOrderModesVisibility);
-  }
-  if (ccToggle && !ccToggle.dataset.wired) {
-    ccToggle.dataset.wired = '1';
-    ccToggle.addEventListener('change', updateOrderModesVisibility);
-  }
-
-  // Bouton "Copier le lien Click & Collect"
-  const ccCopyBtn = document.getElementById('cfg-cc-copy-btn');
-  if (ccCopyBtn && !ccCopyBtn.dataset.wired) {
-    ccCopyBtn.dataset.wired = '1';
-    ccCopyBtn.addEventListener('click', async () => {
-      const link = document.getElementById('cfg-cc-link')?.value || '';
-      if (!link) return;
-      try {
-        await navigator.clipboard.writeText(link);
-        showToast('Lien copié ✓', 'success');
-      } catch {
-        // Fallback : sélectionner l'input
-        const input = document.getElementById('cfg-cc-link');
-        input.select();
-        document.execCommand('copy');
-        showToast('Lien copié ✓', 'success');
-      }
-    });
   }
 
   const billingBtn = document.getElementById('cfg-billing-portal-btn');

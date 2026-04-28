@@ -1844,7 +1844,7 @@
     </div>
 
     <!-- Card: Multi-restaurants -->
-    <div class="ed-cmd-card" id="cfg-multi-resto" style="display: none;">
+    <div class="ed-cmd-card" id="cfg-multi-resto">
       <h2 class="ed-cmd-head">Vos <em>restaurants</em></h2>
       <div id="cfg-restos-list" style="margin-bottom: 14px;"></div>
       <button class="btn btn-secondary" style="width: 100%;" id="cfg-add-resto-btn">
@@ -2174,19 +2174,7 @@ document.getElementById('open-cuisine-btn').addEventListener('click', () => {
 });
 
 document.getElementById('resto-selector').addEventListener('click', () => {
-  // Si un seul resto, redirige vers Config pour ajouter
-  if (!state.restos || state.restos.length <= 1) {
-    switchTab('config');
-    setTimeout(() => {
-      const wrap = document.getElementById('cfg-multi-resto');
-      if (wrap) {
-        wrap.style.display = '';
-        wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 300);
-    return;
-  }
-  // Sinon, modale de sélection rapide
+  // Toujours ouvrir la modale de sélection (avec option d'ajouter un nouveau resto)
   openRestoSwitcher();
 });
 
@@ -3979,12 +3967,10 @@ async function loadConfig() {
       if (emailEl) emailEl.value = state.user.email || '';
     }
 
-    // Multi-resto
-    if (state.restos && state.restos.length > 1) {
-      const wrap = document.getElementById('cfg-multi-resto');
+    // Multi-resto : toujours afficher la liste de tous les restos (même un seul)
+    if (state.restos && state.restos.length > 0) {
       const list = document.getElementById('cfg-restos-list');
-      if (wrap && list) {
-        wrap.style.display = '';
+      if (list) {
         list.innerHTML = state.restos.map(r => `
           <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
             <div>

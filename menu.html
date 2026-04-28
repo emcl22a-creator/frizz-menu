@@ -142,9 +142,9 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(5, 5, 6, 0.82);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
   .header-inner {
     padding: 18px 22px 14px;
@@ -171,6 +171,56 @@
     color: var(--text-3);
     letter-spacing: 0.10em;
     text-transform: uppercase;
+  }
+
+  /* ─────────── BARRE CATÉGORIES (sous le header) ─────────── */
+  .cat-bar {
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    padding: 16px 22px 10px;
+    border-bottom: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .cat-bar::-webkit-scrollbar { display: none; }
+  .cat-bar:empty {
+    display: none;
+  }
+  .cat-tab {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-3);
+    white-space: nowrap;
+    padding: 6px 0;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 0;
+    letter-spacing: -0.012em;
+    flex-shrink: 0;
+    transition: color 0.18s ease;
+    font-family: inherit;
+  }
+  .cat-tab:hover {
+    color: rgba(255,255,255,0.85);
+  }
+  .cat-tab.active {
+    color: var(--text);
+  }
+  .cat-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--blue);
+    border-radius: 2px;
   }
 
   /* ─────────── HERO (avec table) ─────────── */
@@ -768,6 +818,9 @@
     </div>
   </header>
 
+  <!-- Barre de catégories scrollable -->
+  <div class="cat-bar" id="cat-bar"></div>
+
   <!-- Banner commandes en cours -->
   <div class="orders-banner" id="orders-banner" style="display:none;">
     <div class="orders-banner-icon">
@@ -956,6 +1009,7 @@ async function init() {
 
     // 7) Render
     renderHeader();
+    renderCatBar();
     renderMenu();
     loadCart();
 
@@ -991,38 +1045,73 @@ function renderHeader() {
       escapeHtml(nom) + '<span class="spark">✦</span>';
   }
 
-  // Sous-titre : table ou mode
+  // Sous-titre : "TABLE X · BIENVENUE" toujours centré
   let subtitle = '';
   if (state.previewMode) {
-    subtitle = '— Aperçu';
+    subtitle = 'APERÇU · BIENVENUE';
   } else if (URL_MODE === 'takeaway') {
-    subtitle = '— À emporter' + (TABLE_LABEL ? ' · ' + TABLE_LABEL : '');
+    const label = TABLE_LABEL || 'À EMPORTER';
+    subtitle = label.toUpperCase() + ' · BIENVENUE';
   } else if (state.table) {
     const label = state.table.label || ('Table ' + state.table.numero);
-    subtitle = '— ' + label;
+    subtitle = label.toUpperCase() + ' · BIENVENUE';
   } else if (TABLE_NUM) {
-    subtitle = '— Table ' + TABLE_NUM;
+    subtitle = ('TABLE ' + TABLE_NUM).toUpperCase() + ' · BIENVENUE';
+  } else {
+    subtitle = 'BIENVENUE';
   }
   document.getElementById('resto-table').textContent = subtitle;
 }
 
 // ═════════════════════════════════════════════════════════════════
-// RENDER MENU (liste de plats sans catégories)
+// RENDER CATÉGORIES + FILTRAGE
+// ═════════════════════════════════════════════════════════════════
+let activeCat = 'all';
+
+function renderCatBar() {
+  const cats = [...new Set(state.menu.map(p => p.categorie || p.category).filter(Boolean))];
+  const bar = document.getElementById('cat-bar');
+  if (!bar) return;
+
+  if (cats.length === 0) {
+    bar.innerHTML = '';
+    return;
+  }
+
+  let html = `<button class="cat-tab ${activeCat === 'all' ? 'active' : ''}" onclick="setActiveCat('all')">Tout</button>`;
+  cats.forEach(c => {
+    html += `<button class="cat-tab ${activeCat === c ? 'active' : ''}" onclick="setActiveCat('${escapeHtml(c).replace(/'/g, "\\'")}')">${escapeHtml(c)}</button>`;
+  });
+  bar.innerHTML = html;
+}
+
+function setActiveCat(cat) {
+  activeCat = cat;
+  renderCatBar();
+  renderMenu();
+}
+
+// ═════════════════════════════════════════════════════════════════
+// RENDER MENU (liste de plats filtrée par catégorie active)
 // ═════════════════════════════════════════════════════════════════
 function renderMenu() {
   const container = document.getElementById('plat-list');
+  let plats = state.menu;
+  if (activeCat !== 'all') {
+    plats = plats.filter(p => (p.categorie || p.category) === activeCat);
+  }
 
-  if (state.menu.length === 0) {
+  if (plats.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🍽️</div>
-        <div class="empty-state-text">La carte arrive bientôt.</div>
+        <div class="empty-state-text">${state.menu.length === 0 ? 'La carte arrive bientôt.' : 'Aucun plat dans cette catégorie.'}</div>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = state.menu.map(p => renderPlatRow(p)).join('');
+  container.innerHTML = plats.map(p => renderPlatRow(p)).join('');
 }
 
 function renderPlatRow(p) {

@@ -4292,23 +4292,36 @@ async function createNewResto() {
     });
   };
 
-  // Payload complet (avec id généré côté client en cas de besoin)
+  const newId = generateUUID();
+  console.log('[createNewResto] UUID généré:', newId);
+
+  // Vérification : si l'UUID généré est invalide, on essaie un fallback
+  if (!newId || typeof newId !== 'string' || newId.length < 30) {
+    throw new Error('Génération UUID échouée : ' + JSON.stringify(newId));
+  }
+
+  // Payload complet (avec id généré côté client)
   const fullPayload = {
-    id: generateUUID(),
+    id: newId,
     nom,
     slug,
     user_id: state.user.id,
     fiscal_country: country,
     currency
   };
+  console.log('[createNewResto] Payload initial:', fullPayload);
 
   // Champs optionnels qu'on retire si la base les refuse
-  const optionalCols = ['fiscal_country', 'currency', 'user_id'];
+  const optionalCols = ['fiscal_country', 'currency', 'user_id', 'owner_id', 'statut', 'ouvert', 'tip_enabled', 'payment_enabled'];
   let payload = { ...fullPayload };
   let lastError = null;
   let createdResto = null;
 
-  for (let attempt = 0; attempt < 5; attempt++) {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    // Garantit que l'id est toujours présent à chaque tentative
+    if (!payload.id) payload.id = newId;
+
+    console.log(`[createNewResto] Tentative ${attempt + 1}, payload:`, JSON.stringify(payload));
     const { data, error } = await supa.from('restaurants').insert(payload).select().single();
 
     if (!error) {
@@ -4317,24 +4330,50 @@ async function createNewResto() {
     }
 
     lastError = error;
-    console.error(`createNewResto tentative ${attempt + 1}:`, error);
+    console.error(`createNewResto tentative ${attempt + 1}:`, error, 'payload:', payload);
 
     const errMsg = (error.message || '').toLowerCase();
-    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+    const errCode = error.code || '';
 
-    // Si user_id rejeté, retenter avec owner_id
+    // Cas spécial : RLS (Row Level Security) → message clair
+    if (errMsg.includes('row-level security') || errMsg.includes('violates row-level') || errCode === '42501') {
+      throw new Error('Permissions insuffisantes : la sécurité Supabase bloque la création. Vérifiez les policies RLS sur la table restaurants.');
+    }
+
+    // Cas spécial : foreign key violation
+    if (errMsg.includes('foreign key') || errCode === '23503') {
+      // Probablement user_id pointe vers une table users qui n'existe pas
+      if (payload.user_id !== undefined) {
+        delete payload.user_id;
+        continue;
+      }
+      if (payload.owner_id !== undefined) {
+        delete payload.owner_id;
+        continue;
+      }
+    }
+
+    // Si user_id rejeté, retenter avec owner_id (puis sans rien)
     if (errMsg.includes('user_id') && payload.user_id !== undefined) {
       payload.owner_id = payload.user_id;
       delete payload.user_id;
       continue;
     }
+    if (errMsg.includes('owner_id') && payload.owner_id !== undefined) {
+      delete payload.owner_id;
+      continue;
+    }
 
+    // Tentative de retirer la colonne mentionnée dans l'erreur
+    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+
+    // Sinon, retire la première colonne optionnelle restante
     if (!colToRemove) {
       colToRemove = optionalCols.find(c => payload[c] !== undefined);
     }
 
-    if (colToRemove && payload[colToRemove] !== undefined) {
+    if (colToRemove && payload[colToRemove] !== undefined && colToRemove !== 'id' && colToRemove !== 'nom' && colToRemove !== 'slug') {
       console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
       delete payload[colToRemove];
       continue;
@@ -4344,7 +4383,9 @@ async function createNewResto() {
   }
 
   if (!createdResto) {
-    throw new Error(lastError?.message || 'Impossible de créer le restaurant');
+    const msg = lastError?.message || 'Impossible de créer le restaurant';
+    const code = lastError?.code ? ` (code ${lastError.code})` : '';
+    throw new Error(msg + code);
   }
 
   showToast(`${nom} créé`, 'success');

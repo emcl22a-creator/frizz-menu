@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -3338,9 +3339,12 @@ async function showTableQR(tableId) {
     if (e.target === overlay) overlay.remove();
   });
 
-  // Générer le QR
+  // Générer le QR avec fallback robuste
+  const canvas = overlay.querySelector('#qr-canvas');
   try {
-    const canvas = overlay.querySelector('#qr-canvas');
+    if (typeof QRCode === 'undefined') {
+      throw new Error('Bibliothèque QR non chargée');
+    }
     await QRCode.toCanvas(canvas, url, {
       width: 240,
       margin: 1,
@@ -3348,8 +3352,24 @@ async function showTableQR(tableId) {
       errorCorrectionLevel: 'H'
     });
   } catch (err) {
-    console.error('QR error:', err);
-    showToast('Erreur QR', 'error');
+    console.error('QR error (lib):', err);
+    // Fallback : utiliser l'API Google Charts pour générer le QR
+    try {
+      const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&ecc=H&margin=1`;
+      // Remplacer le canvas par une <img>
+      const img = document.createElement('img');
+      img.src = fallbackUrl;
+      img.alt = 'QR Code';
+      img.style.width = '240px';
+      img.style.height = '240px';
+      img.style.display = 'block';
+      img.style.margin = '0 auto';
+      img.crossOrigin = 'anonymous';
+      canvas.parentNode.replaceChild(img, canvas);
+    } catch (fallbackErr) {
+      console.error('QR fallback aussi échoué:', fallbackErr);
+      showToast('Erreur QR : ' + (err.message || 'génération impossible'), 'error');
+    }
   }
 
   overlay.querySelector('#download-qr').addEventListener('click', () => printSingleTableQR(table));

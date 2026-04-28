@@ -723,6 +723,11 @@
     gap: 6px;
     flex-wrap: wrap;
   }
+  /* Filter-bar des catégories plats : 1 seule ligne avec scroll horizontal sur mobile */
+  #ed-cat-filter {
+    flex-wrap: nowrap !important;
+  }
+  #ed-cat-filter::-webkit-scrollbar { display: none; }
   .chip {
     padding: 7px 13px;
     background: rgba(255,255,255,0.04);
@@ -1630,12 +1635,12 @@
       <h1 class="ed-hero-title">Vos <em>plats</em>.</h1>
       <p class="ed-hero-sub" id="ed-plats-sub">Gérez votre carte. Ajoutez, modifiez, retirez des plats.</p>
 
-      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
-        <button class="btn btn-primary" id="add-plat-btn">
+      <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
+        <button class="btn btn-primary" id="add-plat-btn" style="flex-shrink: 0;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Ajouter
         </button>
-        <div class="filter-bar" id="ed-cat-filter">
+        <div class="filter-bar" id="ed-cat-filter" style="flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
           <button class="chip active" data-cat="all">Tout</button>
           <!-- Catégories injectées dynamiquement -->
         </div>

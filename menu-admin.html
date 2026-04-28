@@ -206,6 +206,44 @@
   .resto-pill:hover { background: rgba(255,255,255,0.12); }
   .resto-pill svg { width: 11px; height: 11px; opacity: 0.6; }
 
+  /* STATUS PILL — Ouvert/Fermé */
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    background: rgba(48,209,88,0.14);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(48,209,88,0.30);
+    border-radius: var(--r-pill);
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.012em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .status-pill:hover { background: rgba(48,209,88,0.20); }
+  .status-pill .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 100px;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(48,209,88,0.7);
+  }
+  .status-pill.closed {
+    background: rgba(255,107,92,0.14);
+    border-color: rgba(255,107,92,0.30);
+    color: var(--red);
+  }
+  .status-pill.closed:hover { background: rgba(255,107,92,0.20); }
+  .status-pill.closed .status-dot {
+    background: var(--red);
+    box-shadow: 0 0 8px rgba(255,107,92,0.7);
+  }
+
   /* QUICK ACTION BUTTONS (Service / Cuisine) */
   .topbar-quick-btn {
     display: inline-flex;
@@ -945,6 +983,92 @@
     color: var(--red);
     border-color: rgba(255,107,92,0.30);
   }
+
+  /* Toggle disponibilité du plat */
+  .ed-plat-action.avail-on {
+    background: rgba(48,209,88,0.14);
+    border-color: rgba(48,209,88,0.30);
+    color: var(--green);
+  }
+  .ed-plat-action.avail-on:hover {
+    background: rgba(48,209,88,0.22);
+  }
+  .ed-plat-action.avail-off {
+    background: rgba(255,107,92,0.14);
+    border-color: rgba(255,107,92,0.30);
+    color: var(--red);
+  }
+  .ed-plat-action.avail-off:hover {
+    background: rgba(255,107,92,0.22);
+  }
+  /* Carte plat indisponible : opacité réduite + texte barré sur le nom */
+  .ed-plat-card.unavailable {
+    opacity: 0.55;
+  }
+  .ed-plat-card.unavailable .ed-plat-name {
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,107,92,0.6);
+    text-decoration-thickness: 2px;
+  }
+
+  /* Marge en direct dans la modale plat */
+  .marge-card {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(48,209,88,0.06), rgba(10,132,255,0.04));
+    border: 1px solid rgba(48,209,88,0.18);
+    border-radius: var(--r);
+  }
+  .marge-label {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .marge-row {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 14px;
+    align-items: center;
+  }
+  .marge-stat { text-align: center; }
+  .marge-stat-num {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.024em;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .marge-stat-lbl {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: 0.005em;
+  }
+  .marge-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255,255,255,0.08);
+  }
+  /* Si marge faible (< 60%), couleur orange ; si négative, rouge */
+  .marge-card.low {
+    background: linear-gradient(135deg, rgba(255,159,10,0.06), rgba(255,159,10,0.03));
+    border-color: rgba(255,159,10,0.25);
+  }
+  .marge-card.low .marge-label { color: #FF9F0A; }
+  .marge-card.bad {
+    background: linear-gradient(135deg, rgba(255,107,92,0.08), rgba(255,107,92,0.04));
+    border-color: rgba(255,107,92,0.25);
+  }
+  .marge-card.bad .marge-label { color: var(--red); }
+  .marge-card.bad .marge-stat-num { color: var(--red); }
   .ed-plat-action svg { width: 14px; height: 14px; stroke-width: 2.2; }
 
   /* Catégorie group header */
@@ -1309,6 +1433,10 @@
       <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
     <div class="topbar-right">
+      <button class="status-pill" id="status-pill" onclick="toggleOpen()" title="Cliquer pour ouvrir/fermer le restaurant">
+        <span class="status-dot"></span>
+        <span id="status-label">—</span>
+      </button>
       <button class="resto-pill" id="resto-selector">
         <span id="resto-name">—</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1877,9 +2005,48 @@ async function selectRestaurant(resto) {
 
   document.getElementById('resto-name').textContent = resto.nom || 'Restaurant';
   document.getElementById('ed-resto-display').textContent = getShortName(resto.nom);
+  // Met à jour le pill ouvert/fermé
+  updateOpenPill(resto.ouvert !== false);
   // Recharger les données du tab actif
   switchTab(state.activeTab);
 }
+
+// ═══════════════════════════════════════════════════════════════
+// TOGGLE OUVERT / FERMÉ
+// ═══════════════════════════════════════════════════════════════
+
+function updateOpenPill(isOpen) {
+  const pill = document.getElementById('status-pill');
+  const label = document.getElementById('status-label');
+  if (!pill || !label) return;
+  if (isOpen) {
+    pill.classList.remove('closed');
+    label.textContent = 'Ouvert';
+  } else {
+    pill.classList.add('closed');
+    label.textContent = 'Fermé';
+  }
+}
+
+async function toggleOpen() {
+  if (!state.resto) return;
+  const current = state.resto.ouvert !== false;
+  const next = !current;
+  // Optimiste : on met à jour l'UI tout de suite
+  updateOpenPill(next);
+  try {
+    const { error } = await supa.from('restaurants').update({ ouvert: next }).eq('id', state.resto.id);
+    if (error) throw error;
+    state.resto.ouvert = next;
+    showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
+  } catch (err) {
+    console.error('toggleOpen:', err);
+    // Revert
+    updateOpenPill(current);
+    showToast('Erreur : ' + (err.message || 'changement impossible'), 'error');
+  }
+}
+window.toggleOpen = toggleOpen;
 
 // Resto selector ─────────────────────────────────────────────────
 document.getElementById('logo-link').addEventListener('click', e => {
@@ -2556,8 +2723,10 @@ function renderPlatCard(p) {
           <polyline points="21 15 16 10 5 21"/>
         </svg>
       </div>`;
+  // Disponibilité : par défaut true si non défini, false uniquement si explicitement à false
+  const isAvailable = p.disponible !== false;
   return `
-    <div class="ed-plat-card" data-id="${p.id}">
+    <div class="ed-plat-card ${isAvailable ? '' : 'unavailable'}" data-id="${p.id}">
       ${img}
       <div class="ed-plat-info">
         <div class="ed-plat-name">${escapeHtml(p.nom)}</div>
@@ -2565,6 +2734,11 @@ function renderPlatCard(p) {
       </div>
       <div class="ed-plat-price">${formatPrice(p.prix)}</div>
       <div class="ed-plat-actions">
+        <button class="ed-plat-action ${isAvailable ? 'avail-on' : 'avail-off'}" onclick="toggleDispoPlat('${p.id}', ${!isAvailable})" title="${isAvailable ? 'Marquer comme épuisé' : 'Remettre disponible'}">
+          ${isAvailable
+            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`}
+        </button>
         <button class="ed-plat-action" onclick="openPlatModal('${p.id}')" title="Modifier">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </button>
@@ -2575,6 +2749,23 @@ function renderPlatCard(p) {
     </div>
   `;
 }
+
+async function toggleDispoPlat(platId, newVal) {
+  if (!state.resto) return;
+  try {
+    const { error } = await supa.from('menu').update({ disponible: newVal }).eq('id', platId);
+    if (error) throw error;
+    // Met à jour l'objet local
+    const plat = state.menu.find(p => p.id === platId);
+    if (plat) plat.disponible = newVal;
+    renderPlatsList();
+    showToast(newVal ? 'Plat disponible' : 'Plat épuisé', 'success');
+  } catch (err) {
+    console.error('toggleDispoPlat:', err);
+    showToast('Erreur : ' + (err.message || 'changement impossible'), 'error');
+  }
+}
+window.toggleDispoPlat = toggleDispoPlat;
 
 // Filtre catégorie
 document.addEventListener('click', e => {
@@ -2686,6 +2877,22 @@ function openPlatModal(platId = null) {
           </div>
         </div>
 
+        <!-- Marge en direct (calculée si coût + prix renseignés) -->
+        <div class="marge-card" id="marge-card" style="display: none;">
+          <div class="marge-label">Marge en direct</div>
+          <div class="marge-row">
+            <div class="marge-stat">
+              <div class="marge-stat-num" id="marge-eur">—</div>
+              <div class="marge-stat-lbl">Marge brute</div>
+            </div>
+            <div class="marge-divider"></div>
+            <div class="marge-stat">
+              <div class="marge-stat-num" id="marge-pct">—</div>
+              <div class="marge-stat-lbl">% du prix</div>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="modal-footer">
         ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-plat" style="margin-right: auto;">
@@ -2758,7 +2965,44 @@ function openPlatModal(platId = null) {
     });
   }
 
+  // Marge en direct : recalcule à chaque saisie
+  const prixInput = overlay.querySelector('#plat-prix');
+  const coutInput = overlay.querySelector('#plat-cout');
+  const updateMarge = () => updateMargeLive(overlay);
+  if (prixInput) prixInput.addEventListener('input', updateMarge);
+  if (coutInput) coutInput.addEventListener('input', updateMarge);
+  // Calcul initial si valeurs déjà présentes
+  setTimeout(updateMarge, 50);
+
   overlay.classList.add('show');
+}
+
+// Calcule et affiche la marge en direct (prix - cout)
+function updateMargeLive(overlay) {
+  const prix = parseFloat(overlay.querySelector('#plat-prix')?.value) || 0;
+  const cout = parseFloat(overlay.querySelector('#plat-cout')?.value) || 0;
+  const card = overlay.querySelector('#marge-card');
+  if (!card) return;
+
+  // Affichage uniquement si on a au moins un prix ET un coût
+  if (prix <= 0 || cout <= 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  const marge = prix - cout;
+  const pct = prix > 0 ? Math.round((marge / prix) * 100) : 0;
+  const eurEl = overlay.querySelector('#marge-eur');
+  const pctEl = overlay.querySelector('#marge-pct');
+  if (eurEl) eurEl.textContent = (marge >= 0 ? '+' : '') + marge.toFixed(2) + '€';
+  if (pctEl) pctEl.textContent = (marge >= 0 ? '' : '-') + Math.abs(pct) + '%';
+
+  // État visuel : vert / orange / rouge
+  card.classList.remove('low', 'bad');
+  if (marge < 0) card.classList.add('bad');
+  else if (pct < 60) card.classList.add('low');
+
+  card.style.display = '';
 }
 
 // Compresse une image en base64 (max 800px de large, qualité 75%)

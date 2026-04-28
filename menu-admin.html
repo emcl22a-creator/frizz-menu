@@ -1533,8 +1533,8 @@
 
     <!-- Hero éditorial -->
     <div class="ed-hero">
-      <div class="ed-section-num">— 01 · Aujourd'hui</div>
-      <h1 class="ed-hero-title">Aujourd'hui chez<br><em id="ed-resto-display">Nico</em>.</h1>
+      <div class="ed-section-num">— 01 · Tableau de bord</div>
+      <h1 class="ed-hero-title">Bienvenue chez<br><em id="ed-resto-display">Nico</em>.</h1>
       <p class="ed-hero-sub" id="ed-hero-sub">Chargement du service…</p>
 
       <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
@@ -4306,6 +4306,7 @@ async function createNewResto() {
     nom,
     slug,
     user_id: state.user.id,
+    email: state.user.email || `${slug}@frizz-menu.com`,
     fiscal_country: country,
     currency
   };
@@ -4318,8 +4319,9 @@ async function createNewResto() {
   let createdResto = null;
 
   for (let attempt = 0; attempt < 10; attempt++) {
-    // Garantit que l'id est toujours présent à chaque tentative
+    // Garantit que l'id et l'email sont toujours présents à chaque tentative
     if (!payload.id) payload.id = newId;
+    if (!payload.email) payload.email = state.user.email || `${slug}@frizz-menu.com`;
 
     console.log(`[createNewResto] Tentative ${attempt + 1}, payload:`, JSON.stringify(payload));
     const { data, error } = await supa.from('restaurants').insert(payload).select().single();
@@ -4364,6 +4366,31 @@ async function createNewResto() {
       continue;
     }
 
+    // Cas spécial : violation NOT NULL → la colonne mentionnée est REQUISE par la base
+    // Au lieu de la retirer, on doit fournir une valeur
+    if (errMsg.includes('null value in column') || errCode === '23502') {
+      const nullColMatch = errMsg.match(/null value in column ['"]?(\w+)['"]?/i);
+      const nullCol = nullColMatch ? nullColMatch[1] : null;
+      if (nullCol === 'email' && !payload.email) {
+        payload.email = state.user.email || `${slug}@frizz-menu.com`;
+        continue;
+      }
+      if (nullCol === 'id' && !payload.id) {
+        payload.id = newId;
+        continue;
+      }
+      // Pour les autres colonnes NOT NULL on tente une valeur par défaut
+      if (nullCol && payload[nullCol] === undefined) {
+        // Heuristique : champs communs
+        if (['statut', 'status'].includes(nullCol)) payload[nullCol] = 'actif';
+        else if (['ouvert', 'is_open', 'active'].includes(nullCol)) payload[nullCol] = true;
+        else if (['currency', 'devise'].includes(nullCol)) payload[nullCol] = currency;
+        else if (['fiscal_country', 'country', 'pays'].includes(nullCol)) payload[nullCol] = country;
+        else payload[nullCol] = '';
+        continue;
+      }
+    }
+
     // Tentative de retirer la colonne mentionnée dans l'erreur
     const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
     let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
@@ -4373,7 +4400,9 @@ async function createNewResto() {
       colToRemove = optionalCols.find(c => payload[c] !== undefined);
     }
 
-    if (colToRemove && payload[colToRemove] !== undefined && colToRemove !== 'id' && colToRemove !== 'nom' && colToRemove !== 'slug') {
+    // Ne JAMAIS retirer id, nom, slug, email (champs requis)
+    const protectedCols = ['id', 'nom', 'slug', 'email'];
+    if (colToRemove && payload[colToRemove] !== undefined && !protectedCols.includes(colToRemove)) {
       console.warn(`Retrait colonne "${colToRemove}" pour réessayer`);
       delete payload[colToRemove];
       continue;

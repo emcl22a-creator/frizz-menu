@@ -146,8 +146,8 @@
   }
   .logo-link:hover { transform: scale(1.04); }
   .logo {
-    font-family: 'Playfair Display', serif;
-    font-style: normal;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
     font-weight: 700;
     letter-spacing: -0.020em;
     font-size: 26px;
@@ -158,8 +158,8 @@
     line-height: 1;
   }
   .logo .spark {
-    font-family: 'Playfair Display', serif;
-    font-style: normal;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
     color: var(--blue);
     font-weight: 700;
     font-size: 22px;
@@ -1296,6 +1296,89 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* ════════════ ARRONDIS + GLASS LÉGER (override final) ════════════ */
+
+  /* Cartes plats (Section Plats) — arrondi 22px + glass */
+  .ed-plat-card {
+    border-radius: 22px !important;
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+  }
+  .ed-plat-img, .ed-plat-img-placeholder {
+    border-radius: 16px !important;
+  }
+
+  /* Cartes tables — arrondi 22px + glass */
+  .ed-table-card {
+    border-radius: 22px !important;
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+  }
+
+  /* Boutons d'action sur les cartes plats — pill */
+  .ed-plat-action {
+    border-radius: 100px !important;
+  }
+  .ed-table-btn {
+    border-radius: 100px !important;
+  }
+
+  /* Toutes les cards Stats/Config (commandes, top plats, charts, AI, etc.) — arrondi 22px */
+  .ed-cmd-card, .ed-chart-card, .ed-stat-card {
+    border-radius: 22px !important;
+  }
+
+  /* Duo cells (Commandes / Panier) — arrondi 18px */
+  .ed-duo-cell {
+    border-radius: 18px !important;
+  }
+
+  /* Boutons primaires/secondaires — pill 100px */
+  .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-blue-soft, .btn-ghost {
+    border-radius: 100px !important;
+  }
+
+  /* Inputs / textarea / select — arrondi 14px renforcé + glass plus marqué */
+  input[type="text"], input[type="email"], input[type="url"],
+  input[type="tel"], input[type="number"], input[type="password"],
+  input[type="date"], textarea, select {
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  /* Chips (filtres période, catégories) — déjà pill, on ne touche pas */
+
+  /* Modales — arrondi 24px (déjà OK mais on s'assure) */
+  .modal-content {
+    border-radius: 24px !important;
+  }
+
+  /* Statuts en cours/prête/payée — pill (déjà OK) */
+  .ed-status {
+    border-radius: 100px !important;
+  }
+
+  /* Toast — pill */
+  .toast {
+    border-radius: 100px !important;
+  }
+
+  /* Tabbar reste pill 100px (déjà OK) */
+  /* Top bar / topbar — pas d'arrondi, c'est sticky en haut */
 </style>
 </head>
 <body>
@@ -1308,14 +1391,6 @@
       <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
     <div class="topbar-right">
-      <button class="topbar-quick-btn" id="open-serveur-btn" title="Ouvrir le mode service">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M12 2a10 10 0 1 0 0 20"/><path d="M12 2v20"/></svg>
-        <span>Service</span>
-      </button>
-      <button class="topbar-quick-btn" id="open-cuisine-btn" title="Ouvrir l'écran cuisine">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14h-4M9 22V14h6v8M14 4h-4M5 22V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v14"/></svg>
-        <span>Cuisine</span>
-      </button>
       <button class="resto-pill" id="resto-selector">
         <span id="resto-name">—</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1486,6 +1561,24 @@
       <div class="ed-section-num">— 04 · Réglages</div>
       <h1 class="ed-hero-title">Votre <em>configuration</em>.</h1>
       <p class="ed-hero-sub">Restaurant, fiscalité, paiements, abonnement et compte.</p>
+    </div>
+
+    <!-- Card: Accès rapides -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Accès <em>rapides</em></h2>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
+        Ouvrir l'interface dédiée au service en salle ou à la cuisine. Les écrans sont conçus pour rester ouverts sur une tablette pendant le service.
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="btn btn-secondary" id="open-serveur-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M12 2a10 10 0 1 0 0 20"/><path d="M12 2v20"/></svg>
+          Mode service
+        </button>
+        <button class="btn btn-secondary" id="open-cuisine-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14h-4M9 22V14h6v8M14 4h-4M5 22V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v14"/></svg>
+          Écran cuisine
+        </button>
+      </div>
     </div>
 
     <!-- Card: Restaurant -->

@@ -1821,11 +1821,11 @@
       <span>Stats</span>
     </button>
     <button class="ftb-btn" data-tab="plats">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h.01"/><path d="M5 11v11"/><path d="M5 2v9"/><path d="M9 2v9"/><path d="M9 11c0-1.1-.9-2-2-2"/><path d="M19 2v20"/><path d="M19 13c-2.21 0-4-1.79-4-4V4c0-1.1.9-2 2-2h2"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
       <span>Plats</span>
     </button>
     <button class="ftb-btn" data-tab="tables">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="20" height="6" rx="1"/><line x1="6" y1="15" x2="6" y2="20"/><line x1="18" y1="15" x2="18" y2="20"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 16a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-1H9v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
       <span>Tables</span>
     </button>
     <button class="ftb-btn" data-tab="config">
@@ -3640,177 +3640,53 @@ async function generateQRDataUrl(url, size = 800) {
 }
 
 // Une page A4 entière pour 1 seul QR (centré, gros) — épuré
-// PRÉSENTATION FRIZZ : page A4 éditoriale premium
+// PRÉSENTATION FRIZZ : page A4 noir & blanc, minimaliste
 async function drawQRPageFrizz(doc, table) {
   const url = getTableQRUrl(table);
   const dataUrl = await generateQRDataUrl(url, 1000);
 
-  const pageW = 210; // A4 mm
+  const pageW = 210;
   const pageH = 297;
   const isTakeaway = table.type === 'a_emporter';
   const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
 
   // ═══════════════════════════════════════════════════
-  // FOND : très subtil dégradé bleu en haut (effet aurora discret)
+  // TITRE PRINCIPAL (très grand, italique serif)
   // ═══════════════════════════════════════════════════
-  // Bande bleue claire en haut
-  doc.setFillColor(245, 248, 255);
-  doc.rect(0, 0, pageW, 95, 'F');
-
-  // ═══════════════════════════════════════════════════
-  // HEADER : marque Frizz minuscule + ligne fine
-  // ═══════════════════════════════════════════════════
-  // Logo Frizz✦ en haut à gauche, élégant
-  doc.setTextColor(10, 10, 11);
-  doc.setFontSize(14);
-  doc.setFont('times', 'italic');
-  doc.text('Frizz', 18, 22);
-  doc.setTextColor(10, 132, 255);
-  doc.text('✦', 32, 22);
-
-  // Petit numéro de section éditorial à droite
-  doc.setTextColor(10, 132, 255);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'bold');
-  const labelText = isTakeaway ? 'À EMPORTER · 02' : 'SUR PLACE · 01';
-  doc.text(labelText, pageW - 18, 22, { align: 'right' });
-
-  // Ligne séparatrice fine sous le header
-  doc.setDrawColor(220, 230, 245);
-  doc.setLineWidth(0.3);
-  doc.line(18, 28, pageW - 18, 28);
-
-  // ═══════════════════════════════════════════════════
-  // TITRE PRINCIPAL : énorme, italique serif (style éditorial)
-  // ═══════════════════════════════════════════════════
-  doc.setTextColor(10, 10, 11);
-  doc.setFontSize(54);
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(60);
   doc.setFont('times', 'italic');
   doc.text(titleText, pageW / 2, 60, { align: 'center' });
 
-  // Nom du resto en italique sous le titre, très discret
-  doc.setFontSize(13);
+  // Nom du resto sous le titre
+  doc.setFontSize(14);
   doc.setFont('times', 'italic');
-  doc.setTextColor(140, 140, 150);
+  doc.setTextColor(100, 100, 100);
   doc.text(state.resto.nom || '', pageW / 2, 72, { align: 'center' });
 
-  // Petit ornement (3 points centrés)
-  doc.setFillColor(10, 132, 255);
-  doc.circle(pageW / 2 - 3, 82, 0.8, 'F');
-  doc.circle(pageW / 2, 82, 0.8, 'F');
-  doc.circle(pageW / 2 + 3, 82, 0.8, 'F');
-
   // ═══════════════════════════════════════════════════
-  // QR CODE : centré dans un grand cadre blanc avec ombre
+  // QR CODE (centré, grand, sans cadre)
   // ═══════════════════════════════════════════════════
-  const qrSize = 105;
+  const qrSize = 120;
   const qrX = (pageW - qrSize) / 2;
-  const qrY = 115;
-  const cardPadding = 14;
-
-  // Ombre projetée (rectangle gris clair décalé en bas-droite)
-  doc.setFillColor(230, 234, 240);
-  doc.roundedRect(
-    qrX - cardPadding + 2,
-    qrY - cardPadding + 2,
-    qrSize + cardPadding * 2,
-    qrSize + cardPadding * 2,
-    8, 8, 'F'
-  );
-
-  // Cadre blanc principal
-  doc.setFillColor(255, 255, 255);
-  doc.setDrawColor(232, 236, 244);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(
-    qrX - cardPadding,
-    qrY - cardPadding,
-    qrSize + cardPadding * 2,
-    qrSize + cardPadding * 2,
-    8, 8, 'FD'
-  );
-
-  // QR Code
+  const qrY = 100;
   doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
   // ═══════════════════════════════════════════════════
-  // INSTRUCTIONS : sous le QR, hiérarchie claire
+  // INSTRUCTION (sous le QR, simple)
   // ═══════════════════════════════════════════════════
-  const textY = qrY + qrSize + cardPadding + 14;
-
-  // Grosse instruction
-  doc.setTextColor(10, 10, 11);
-  doc.setFontSize(18);
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.text('Scannez avec votre téléphone', pageW / 2, textY, { align: 'center' });
+  doc.text('Scannez avec votre téléphone', pageW / 2, qrY + qrSize + 18, { align: 'center' });
 
-  // Sous-texte explicatif
-  doc.setFontSize(11);
+  doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(110, 110, 120);
+  doc.setTextColor(100, 100, 100);
   doc.text(
-    isTakeaway
-      ? 'Choisissez vos plats, payez en ligne, venez les chercher.'
-      : 'Voir la carte, commander, payer — sans bouger de votre table.',
-    pageW / 2, textY + 8, { align: 'center' }
+    isTakeaway ? 'Commandez et venez chercher.' : 'Commandez depuis votre table.',
+    pageW / 2, qrY + qrSize + 27, { align: 'center' }
   );
-
-  // ═══════════════════════════════════════════════════
-  // 3 ÉTAPES (icônes textuelles) — pédagogique
-  // ═══════════════════════════════════════════════════
-  const stepsY = textY + 28;
-  const stepW = 50;
-  const stepGap = 8;
-  const totalW = stepW * 3 + stepGap * 2;
-  const stepsStartX = (pageW - totalW) / 2;
-
-  const steps = isTakeaway
-    ? [
-        { num: '1', label: 'Scannez' },
-        { num: '2', label: 'Commandez' },
-        { num: '3', label: 'Récupérez' }
-      ]
-    : [
-        { num: '1', label: 'Scannez' },
-        { num: '2', label: 'Choisissez' },
-        { num: '3', label: 'Payez' }
-      ];
-
-  steps.forEach((s, i) => {
-    const sx = stepsStartX + i * (stepW + stepGap);
-    // Cercle bleu avec numéro
-    doc.setFillColor(10, 132, 255);
-    doc.circle(sx + stepW / 2, stepsY + 4, 5, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text(s.num, sx + stepW / 2, stepsY + 5.5, { align: 'center' });
-    // Label
-    doc.setTextColor(80, 80, 90);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text(s.label, sx + stepW / 2, stepsY + 16, { align: 'center' });
-  });
-
-  // ═══════════════════════════════════════════════════
-  // FOOTER : signature Frizz minimaliste
-  // ═══════════════════════════════════════════════════
-  // Ligne séparatrice en bas
-  doc.setDrawColor(232, 236, 244);
-  doc.setLineWidth(0.3);
-  doc.line(60, pageH - 24, pageW - 60, pageH - 24);
-
-  doc.setTextColor(150, 150, 160);
-  doc.setFontSize(9);
-  doc.setFont('times', 'italic');
-  doc.text('Propulsé par Frizz', pageW / 2 - 6, pageH - 16, { align: 'center' });
-  doc.setTextColor(10, 132, 255);
-  doc.text('✦', pageW / 2 + 12, pageH - 16);
-
-  doc.setTextColor(180, 180, 190);
-  doc.setFontSize(7);
-  doc.setFont('helvetica', 'normal');
-  doc.text('frizz-menu.com', pageW / 2, pageH - 11, { align: 'center' });
 }
 
 // PRÉSENTATION SIMPLE : QR code seul en haut à gauche

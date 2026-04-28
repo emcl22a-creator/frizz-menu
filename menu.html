@@ -161,35 +161,6 @@
     text-align: center;
   }
 
-  /* Bouton appel serveur (cloche en haut à droite) */
-  .server-call-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 44px;
-    height: 44px;
-    border-radius: 100px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.10);
-    color: var(--text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    z-index: 51;
-    font-family: inherit;
-    transition: all 0.18s ease;
-  }
-  .server-call-btn:hover {
-    background: rgba(255,255,255,0.10);
-    transform: scale(1.05);
-  }
-  .server-call-btn svg {
-    width: 20px;
-    height: 20px;
-  }
 
   /* Badge Salon (à gauche de la cloche serveur) */
   .salon-badge {
@@ -980,37 +951,6 @@
     color: var(--text);
   }
 
-  /* ─────────── BOUTONS ACTION SERVEUR ─────────── */
-  .server-action-btn {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border-strong);
-    border-radius: 18px;
-    padding: 16px 18px;
-    color: var(--text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 800;
-    font-size: 14.5px;
-    letter-spacing: -0.012em;
-    margin-bottom: 10px;
-    transition: all 0.18s ease;
-  }
-  .server-action-btn:last-child { margin-bottom: 0; }
-  .server-action-btn:hover {
-    background: rgba(10,132,255,0.10);
-    border-color: rgba(10,132,255,0.30);
-  }
-  .server-action-btn svg {
-    width: 22px;
-    height: 22px;
-    color: var(--blue);
-    flex-shrink: 0;
-  }
-
   /* ─────────── TOAST ─────────── */
   .toast-wrap {
     position: fixed;
@@ -1120,12 +1060,6 @@
 
   <!-- Header centré : "Chez Nico" + "TABLE 7" -->
   <header class="header">
-    <button class="server-call-btn" id="server-call-btn" onclick="openServerCallMenu()" aria-label="Appeler le serveur">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
-        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-      </svg>
-    </button>
     <button class="salon-badge" id="salon-badge" onclick="openSalon()" aria-label="Voir le salon" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span id="salon-count">1</span>
@@ -1253,31 +1187,6 @@
 
       <div class="modal-note-label" style="margin-bottom: 10px;">Personnes connectées (<span id="salon-list-count">1</span>)</div>
       <div id="salon-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal appel serveur -->
-<div class="modal-overlay" id="modal-server">
-  <div class="modal">
-    <div class="cart-modal-header">
-      <div class="cart-modal-title">Appeler le serveur</div>
-      <button class="modal-close" onclick="closeServerCallMenu()" style="position:relative; top:auto; right:auto;">×</button>
-    </div>
-    <div style="padding: 0 22px 16px;">
-      <p style="color: var(--text-3); font-size: 13px; font-weight: 700; margin-bottom: 18px; line-height: 1.45;">Choisissez votre demande, le serveur sera prévenu immédiatement.</p>
-      <button class="server-action-btn" onclick="callServer('eau')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-        <span>Demander de l'eau</span>
-      </button>
-      <button class="server-action-btn" onclick="callServer('addition')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-        <span>Demander l'addition</span>
-      </button>
-      <button class="server-action-btn" onclick="callServer('aide')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Besoin d'aide</span>
-      </button>
     </div>
   </div>
 </div>
@@ -2413,76 +2322,6 @@ function trackGoogleClick() {
 // Ferme la modale Google en cliquant en dehors
 document.getElementById('modal-google').addEventListener('click', e => {
   if (e.target.id === 'modal-google') closeGoogleModal();
-});
-
-// ═════════════════════════════════════════════════════════════════
-// APPEL SERVEUR
-// ═════════════════════════════════════════════════════════════════
-function openServerCallMenu() {
-  if (state.previewMode) {
-    showToast('Mode aperçu : appel serveur désactivé');
-    return;
-  }
-  document.getElementById('modal-server').classList.add('show');
-}
-function closeServerCallMenu() {
-  document.getElementById('modal-server').classList.remove('show');
-}
-async function callServer(type) {
-  closeServerCallMenu();
-
-  if (!state.resto || !state.table) {
-    showToast('Erreur : table non identifiée', 'error');
-    return;
-  }
-
-  const messages = {
-    'eau': 'Demande d\'eau',
-    'addition': 'Demande l\'addition',
-    'aide': 'Besoin d\'aide'
-  };
-  const msg = messages[type] || 'Demande générale';
-
-  try {
-    // On crée une "commande spéciale" avec un statut particulier
-    const payload = {
-      restaurant_id: state.resto.id,
-      table_id: state.table.id,
-      table_numero: state.table.numero || TABLE_NUM,
-      items: [{ nom: msg, prix: 0, qte: 1, type: 'service_request' }],
-      total: 0,
-      statut: 'service_request',
-      heure: new Date().toISOString(),
-      type_commande: 'service'
-    };
-
-    // Insertion avec retry
-    const optionalCols = ['table_id', 'table_numero', 'type_commande'];
-    let p = { ...payload };
-    let inserted = false;
-    for (let i = 0; i < 5; i++) {
-      const { error } = await supa.from('commandes').insert(p);
-      if (!error) { inserted = true; break; }
-      const errMsg = (error.message || '').toLowerCase();
-      const col = optionalCols.find(c => errMsg.includes(c) && p[c] !== undefined);
-      if (col) { delete p[col]; continue; }
-      break;
-    }
-
-    if (inserted) {
-      showToast('Le serveur a été prévenu', 'success');
-    } else {
-      showToast('Erreur lors de l\'appel', 'error');
-    }
-  } catch (err) {
-    console.error('callServer:', err);
-    showToast('Erreur lors de l\'appel', 'error');
-  }
-}
-
-// Ferme la modale serveur en cliquant en dehors
-document.getElementById('modal-server').addEventListener('click', e => {
-  if (e.target.id === 'modal-server') closeServerCallMenu();
 });
 
 // ═════════════════════════════════════════════════════════════════

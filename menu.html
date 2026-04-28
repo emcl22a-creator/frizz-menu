@@ -2459,14 +2459,6 @@
 </head>
 <body>
 
-<!-- Banner Preview (visible en mode aperçu depuis l'admin) -->
-<div id="preview-banner" style="display:none; position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(167,139,250,0.95); color: #fff; padding: 8px 16px; text-align: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 12.5px; letter-spacing: 0.02em; backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.2);">
-  <span style="display: inline-flex; align-items: center; gap: 6px;">
-    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-    Aperçu — les commandes ne seront pas enregistrées
-  </span>
-</div>
-
 <!-- Loading -->
 <div class="loading-screen" id="loading">
   <div class="loading-logo">Frizz<span class="spark">✦</span></div>
@@ -3228,9 +3220,6 @@ async function init() {
       if (urlMode === 'preview') {
         state.orderMode = 'preview';
         state.previewMode = true;
-        // Afficher le banner d'aperçu
-        const banner = document.getElementById('preview-banner');
-        if (banner) banner.style.display = 'block';
         // Continue le init normalement (skip les vérifs ouvert/fermé pour la preview)
       } else if (!takeawayOn && !clickCollectOn) {
         showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');

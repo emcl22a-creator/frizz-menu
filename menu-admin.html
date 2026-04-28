@@ -205,6 +205,31 @@
   .resto-pill:hover { background: rgba(255,255,255,0.12); }
   .resto-pill svg { width: 11px; height: 11px; opacity: 0.6; }
 
+  /* QUICK ACTION BUTTONS (Service / Cuisine) */
+  .topbar-quick-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 11px;
+    background: rgba(10,132,255,0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(10,132,255,0.30);
+    border-radius: var(--r-pill);
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: -0.012em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .topbar-quick-btn svg { width: 12px; height: 12px; stroke-width: 2.2; }
+  .topbar-quick-btn:hover {
+    background: rgba(10,132,255,0.22);
+    border-color: var(--blue);
+  }
+
   /* ICON BUTTON */
   .icon-btn {
     width: 34px;
@@ -1208,6 +1233,69 @@
     border-radius: 100px;
   }
   ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+  /* ════════════ AI SUMMARY ════════════ */
+  .ai-summary-card {
+    background: linear-gradient(135deg, rgba(167,139,250,0.05), rgba(10,132,255,0.04)) !important;
+    border: 1px solid rgba(167,139,250,0.18) !important;
+  }
+  .ai-summary-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.55;
+    letter-spacing: -0.012em;
+  }
+  .ai-summary-text strong {
+    color: #A78BFA;
+    font-weight: 900;
+  }
+  .ai-recommendation {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.20);
+    border-radius: var(--r);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ai-recommendation-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: rgba(167,139,250,0.18);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A78BFA;
+  }
+  .ai-recommendation-icon svg { width: 14px; height: 14px; stroke-width: 2; }
+  .ai-recommendation-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    line-height: 1.5;
+    flex: 1;
+    letter-spacing: -0.010em;
+  }
+  .ai-recommendation-text strong {
+    color: var(--text);
+    font-weight: 900;
+  }
+  .ai-shimmer {
+    height: 12px;
+    margin: 6px 0;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
 </style>
 </head>
 <body>
@@ -1220,6 +1308,14 @@
       <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
     <div class="topbar-right">
+      <button class="topbar-quick-btn" id="open-serveur-btn" title="Ouvrir le mode service">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M12 2a10 10 0 1 0 0 20"/><path d="M12 2v20"/></svg>
+        <span>Service</span>
+      </button>
+      <button class="topbar-quick-btn" id="open-cuisine-btn" title="Ouvrir l'écran cuisine">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14h-4M9 22V14h6v8M14 4h-4M5 22V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v14"/></svg>
+        <span>Cuisine</span>
+      </button>
       <button class="resto-pill" id="resto-selector">
         <span id="resto-name">—</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1296,6 +1392,25 @@
       <h2 class="ed-cmd-head">Top <em>plats</em> du jour</h2>
       <div id="ed-top-plats">
         <p style="text-align: center; padding: 16px 0; color: var(--text-3); font-size: 13px;">—</p>
+      </div>
+    </div>
+
+    <!-- AI Summary card -->
+    <div class="ed-cmd-card ai-summary-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+        <h2 class="ed-cmd-head" style="margin-bottom: 0;">
+          Analyse <em>IA</em>
+          <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(167,139,250,0.15); color: #A78BFA; border: 1px solid rgba(167,139,250,0.30); border-radius: 100px; font-size: 9.5px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 8px; vertical-align: middle;">Beta</span>
+        </h2>
+        <button class="btn btn-secondary" id="ai-generate-btn" style="padding: 7px 12px; font-size: 11.5px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          Générer
+        </button>
+      </div>
+      <div id="ai-summary-content">
+        <p style="text-align: center; padding: 12px 0 4px; color: var(--text-3); font-size: 12.5px; font-weight: 600; line-height: 1.5;">
+          Cliquez sur <strong style="color: var(--text-2);">Générer</strong> pour obtenir une analyse intelligente de vos performances et une recommandation personnalisée.
+        </p>
       </div>
     </div>
 
@@ -1440,7 +1555,13 @@
       <div class="field-group">
         <label class="field-label">Email du comptable</label>
         <input type="email" id="cfg-accountant-email" placeholder="comptable@…">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Recevra automatiquement un export CSV chaque fin de mois</p>
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
+          Recevra automatiquement un export CSV chaque fin de mois (1er du mois à 6h).
+        </p>
+        <button class="btn btn-secondary" id="cfg-test-accountant-btn" style="margin-top: 10px; padding: 8px 14px; font-size: 12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          Tester l'envoi maintenant
+        </button>
       </div>
     </div>
 
@@ -1730,6 +1851,30 @@ async function selectRestaurant(resto) {
 }
 
 // Resto selector ─────────────────────────────────────────────────
+document.getElementById('logo-link').addEventListener('click', e => {
+  e.preventDefault();
+  switchTab('stats');
+});
+
+// Quick action buttons : Service + Cuisine ─────────────────────
+document.getElementById('open-serveur-btn').addEventListener('click', () => {
+  if (!state.resto || !state.resto.slug) {
+    showToast('Restaurant non chargé', 'error');
+    return;
+  }
+  const url = location.pathname.replace(/menu-admin\.html$/, 'serveur.html') + '?resto=' + encodeURIComponent(state.resto.slug);
+  window.open(url, '_blank');
+});
+
+document.getElementById('open-cuisine-btn').addEventListener('click', () => {
+  if (!state.resto || !state.resto.slug) {
+    showToast('Restaurant non chargé', 'error');
+    return;
+  }
+  const url = location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(state.resto.slug);
+  window.open(url, '_blank');
+});
+
 document.getElementById('resto-selector').addEventListener('click', () => {
   // Si un seul resto, redirige vers Config pour ajouter
   if (!state.restos || state.restos.length <= 1) {
@@ -3192,6 +3337,135 @@ async function drawQRSlot(doc, table, slotIdx) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// AI SUMMARY — Analyse intelligente des stats
+// ═══════════════════════════════════════════════════════════════
+
+async function generateAISummary() {
+  const btn = document.getElementById('ai-generate-btn');
+  const content = document.getElementById('ai-summary-content');
+  if (!btn || !content) return;
+  if (!state.resto) {
+    showToast('Restaurant non chargé', 'error');
+    return;
+  }
+
+  const oldHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Analyse…';
+  content.innerHTML = `
+    <div class="ai-shimmer" style="width:100%;"></div>
+    <div class="ai-shimmer" style="width:90%;"></div>
+    <div class="ai-shimmer" style="width:75%;"></div>`;
+
+  try {
+    const periode = state.activePeriode || 'jour';
+    const now = new Date();
+    const since = new Date(now);
+    if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+    if (periode === 'semaine') since.setDate(now.getDate() - 7);
+    if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
+
+    const { data: cmds } = await supa
+      .from('commandes')
+      .select('*')
+      .eq('restaurant_id', state.resto.id)
+      .gte('heure', since.toISOString());
+
+    const commandes = cmds || [];
+
+    const ca = commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = commandes.length;
+    const panier = nb ? ca / nb : 0;
+
+    const platCount = {};
+    const platCA = {};
+    commandes.forEach(c => {
+      (Array.isArray(c.items) ? c.items : []).forEach(it => {
+        const nom = it.nom || it.name || 'Inconnu';
+        const qte = parseInt(it.qte || it.quantity) || 1;
+        const prix = parseFloat(it.prix || it.price) || 0;
+        platCount[nom] = (platCount[nom] || 0) + qte;
+        platCA[nom] = (platCA[nom] || 0) + prix * qte;
+      });
+    });
+    const top = Object.entries(platCount)
+      .map(([nom, qte]) => ({ nom, qte, ca: platCA[nom] || 0 }))
+      .sort((a, b) => b.qte - a.qte);
+
+    await new Promise(r => setTimeout(r, 900));
+
+    const periodeLabel = periode === 'jour' ? "aujourd'hui" : (periode === 'semaine' ? 'cette semaine' : 'ce mois-ci');
+    const periodeLabelCap = periode === 'jour' ? "Aujourd'hui" : (periode === 'semaine' ? 'Cette semaine' : 'Ce mois-ci');
+
+    let summary = '';
+    let recommendation = '';
+
+    if (nb === 0) {
+      summary = `<strong>Pas encore de commandes ${periodeLabel}.</strong> Le service n'a pas démarré ou aucun client n'est passé sur la période sélectionnée.`;
+      recommendation = `Vérifiez que les QR codes sont bien visibles sur les tables et que vos plats sont bien renseignés dans la carte.`;
+    } else {
+      const caStr = Math.round(ca).toLocaleString('fr-CH').replace(/\u00A0/g, ' ') + '€';
+      const panierStr = panier.toFixed(2) + '€';
+      summary = `${periodeLabelCap} le restaurant a réalisé <strong>${caStr}</strong> de chiffre d'affaires sur <strong>${nb} commande${nb > 1 ? 's' : ''}</strong>, avec un panier moyen de <strong>${panierStr}</strong>.`;
+
+      if (top.length > 0) {
+        const champion = top[0];
+        const partCA = ca > 0 ? Math.round((champion.ca / ca) * 100) : 0;
+        summary += ` Le plat phare est <strong>${escapeHtml(champion.nom)}</strong> avec ${champion.qte} vente${champion.qte > 1 ? 's' : ''}`;
+        if (partCA >= 15) summary += `, soit ${partCA}% du chiffre d'affaires`;
+        summary += '.';
+      }
+
+      if (top.length === 0) {
+        recommendation = `Aucun plat n'a été commandé. Vérifiez que le menu est bien visible côté client.`;
+      } else if (panier < 12 && nb >= 3) {
+        recommendation = `Le panier moyen est bas (${panierStr}). Créez un menu combo ou proposez les desserts en suggestion à la fin de la commande pour augmenter le ticket moyen.`;
+      } else if (top.length >= 1 && top[0].qte >= 5) {
+        const champion = top[0];
+        recommendation = `<strong>${escapeHtml(champion.nom)}</strong> tire la performance. Mettez-le en avant dans la première catégorie du menu et envisagez un visuel encore plus appétissant pour booster les ventes.`;
+      } else if (nb >= 1 && nb < 5 && periode === 'jour') {
+        recommendation = `Service calme aujourd'hui. C'est le bon moment pour tester un nouveau plat ou pousser une promo flash sur les réseaux sociaux pour dynamiser l'après-midi.`;
+      } else if (top.length >= 3) {
+        const totalTopQte = top.slice(0, 3).reduce((s, p) => s + p.qte, 0);
+        const totalQte = commandes.reduce((s, c) => s + (Array.isArray(c.items) ? c.items.reduce((q, i) => q + (parseInt(i.qte || i.quantity) || 1), 0) : 0), 0);
+        const partTop = totalQte > 0 ? Math.round((totalTopQte / totalQte) * 100) : 0;
+        if (partTop >= 60) {
+          recommendation = `Vos 3 best-sellers représentent ${partTop}% des ventes. Assurez-vous d'avoir toujours leur stock — un épuisé sur ces plats fait perdre du chiffre.`;
+        } else {
+          recommendation = `Bonne diversité de ventes : aucun plat ne domine totalement, ce qui montre une carte équilibrée. Continuez à observer pour identifier les futures stars.`;
+        }
+      } else {
+        recommendation = `Continuez le service. Avec plus de commandes, l'analyse pourra identifier des tendances précises.`;
+      }
+    }
+
+    content.innerHTML = `
+      <div class="ai-summary-text">${summary}</div>
+      <div class="ai-recommendation">
+        <div class="ai-recommendation-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7h10c0-2 2-4 2-7a7 7 0 0 0-7-7z"/></svg>
+        </div>
+        <div class="ai-recommendation-text">${recommendation}</div>
+      </div>`;
+  } catch (err) {
+    console.error('AI summary:', err);
+    content.innerHTML = `<p style="color: var(--red); font-size: 13px; padding: 10px 0;">Erreur : ${escapeHtml(err.message || 'analyse impossible')}</p>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg> Régénérer';
+  }
+}
+window.generateAISummary = generateAISummary;
+
+// Wire AI button click
+document.addEventListener('click', e => {
+  if (e.target.closest('#ai-generate-btn')) {
+    e.preventDefault();
+    generateAISummary();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
 // SECTION CONFIG — Restaurant, fiscalité, paiement, abonnement, compte
 // ═══════════════════════════════════════════════════════════════
 
@@ -3360,6 +3634,65 @@ async function switchResto(restoId) {
 }
 window.switchResto = switchResto;
 
+// Email comptable : envoyer un test
+async function sendTestReportToAccountant(e) {
+  const btn = e?.currentTarget || document.getElementById('cfg-test-accountant-btn');
+  const emailInput = document.getElementById('cfg-accountant-email');
+  const email = (emailInput?.value || '').trim();
+
+  if (!email) {
+    showToast('Renseignez d\'abord l\'email du comptable', 'error');
+    emailInput?.focus();
+    return;
+  }
+  if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    showToast('Email invalide', 'error');
+    return;
+  }
+  if (!state.resto) {
+    showToast('Restaurant non chargé', 'error');
+    return;
+  }
+
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Envoi…';
+
+  try {
+    // Sauvegarde l'email d'abord dans la base
+    try {
+      await supa.from('restaurants').update({ accountant_email: email }).eq('id', state.resto.id);
+    } catch (saveErr) {
+      console.warn('Sauvegarde email comptable échouée:', saveErr);
+    }
+
+    // Appelle l'Edge Function Supabase
+    const { data, error } = await supa.functions.invoke('send-monthly-report', {
+      body: {
+        restaurant_id: state.resto.id,
+        accountant_email: email,
+        is_test: true
+      }
+    });
+
+    if (error) throw error;
+    showToast(`Test envoyé à ${email} ✓`, 'success');
+  } catch (err) {
+    console.error('sendTestReportToAccountant:', err);
+    // Si l'edge function n'existe pas encore, message clair
+    const msg = (err.message || '').toLowerCase();
+    if (msg.includes('not found') || msg.includes('404') || msg.includes('function')) {
+      showToast('Service email pas encore configuré (Edge Function à déployer)', 'error');
+    } else {
+      showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
+    }
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+}
+window.sendTestReportToAccountant = sendTestReportToAccountant;
+
 // Wire up Config buttons (en attendant DOMContentLoaded)
 function wireConfigButtons() {
   const saveBtn = document.getElementById('cfg-save-btn');
@@ -3387,6 +3720,12 @@ function wireConfigButtons() {
     stripeBtn.addEventListener('click', () => {
       showToast('Configuration Stripe disponible prochainement', '');
     });
+  }
+
+  const testAccountantBtn = document.getElementById('cfg-test-accountant-btn');
+  if (testAccountantBtn && !testAccountantBtn.dataset.wired) {
+    testAccountantBtn.dataset.wired = '1';
+    testAccountantBtn.addEventListener('click', sendTestReportToAccountant);
   }
 
   const billingBtn = document.getElementById('cfg-billing-portal-btn');

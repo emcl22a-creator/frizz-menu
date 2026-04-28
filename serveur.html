@@ -1087,17 +1087,14 @@
           <span>Résa</span>
           <span id="resa-pending-badge" style="display:none; background: var(--blue, #0A84FF); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 100px; min-width: 18px; text-align: center;">0</span>
         </button>
-        <button id="sound-toggle" onclick="toggleSound()" title="Activer/désactiver les notifications sonores" style="background: var(--blue-soft, rgba(10,132,255,0.14)); color: var(--blue, #0A84FF); border: 1px solid rgba(10,132,255,0.28); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s;">
-          <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <button id="tables-btn" onclick="showScreen('tables')" title="Retour aux tables" style="background: var(--blue-soft, rgba(10,132,255,0.14)); color: var(--blue, #0A84FF); border: 1px solid rgba(10,132,255,0.28); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s; font-family: inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
           </svg>
-          <svg id="sound-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; display:none;">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <line x1="23" y1="9" x2="17" y2="15"/>
-            <line x1="17" y1="9" x2="23" y2="15"/>
-          </svg>
-          <span id="sound-label">Son ON</span>
+          <span>Tables</span>
         </button>
         <div class="clock" id="clock">--:--</div>
       </div>
@@ -1829,12 +1826,14 @@ function toggleSound() {
   const label = document.getElementById('sound-label');
   const btn = document.getElementById('sound-toggle');
   if (state.soundEnabled) {
-    iconOn.style.display = '';
-    iconOff.style.display = 'none';
-    label.textContent = 'Son ON';
-    btn.style.background = 'rgba(10,132,255,0.14)';
-    btn.style.color = '#0A84FF';
-    btn.style.borderColor = 'rgba(10,132,255,0.28)';
+    if (iconOn) iconOn.style.display = '';
+    if (iconOff) iconOff.style.display = 'none';
+    if (label) label.textContent = 'Son ON';
+    if (btn) {
+      btn.style.background = 'rgba(10,132,255,0.14)';
+      btn.style.color = '#0A84FF';
+      btn.style.borderColor = 'rgba(10,132,255,0.28)';
+    }
     // Initialise le contexte audio (geste utilisateur requis pour autoplay)
     try {
       if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1842,12 +1841,14 @@ function toggleSound() {
       playNotificationSound();  // petit "ding" de confirmation
     } catch(e) {}
   } else {
-    iconOn.style.display = 'none';
-    iconOff.style.display = '';
-    label.textContent = 'Son OFF';
-    btn.style.background = 'rgba(0,0,0,0.06)';
-    btn.style.color = '#6E6E73';
-    btn.style.borderColor = 'rgba(0,0,0,0.10)';
+    if (iconOn) iconOn.style.display = 'none';
+    if (iconOff) iconOff.style.display = '';
+    if (label) label.textContent = 'Son OFF';
+    if (btn) {
+      btn.style.background = 'rgba(0,0,0,0.06)';
+      btn.style.color = '#6E6E73';
+      btn.style.borderColor = 'rgba(0,0,0,0.10)';
+    }
   }
   // Persiste le choix en localStorage pour la prochaine session
   try { localStorage.setItem('frizz_serveur_sound', state.soundEnabled ? '1' : '0'); } catch(e) {}

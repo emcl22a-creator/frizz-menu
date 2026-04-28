@@ -1508,85 +1508,21 @@
         <input type="text" id="cfg-resto-nom" placeholder="Chez Nico">
       </div>
 
-      <div class="field-row">
-        <div>
-          <label class="field-label">Téléphone</label>
-          <input type="tel" id="cfg-resto-tel" placeholder="+41 XX XXX XX XX">
-        </div>
-        <div>
-          <label class="field-label">Email</label>
-          <input type="email" id="cfg-resto-email" placeholder="contact@…">
-        </div>
-      </div>
-
       <div class="field-group">
-        <label class="field-label">Adresse</label>
-        <input type="text" id="cfg-resto-adresse" placeholder="Rue, ville, code postal">
+        <label class="field-label">Email</label>
+        <input type="email" id="cfg-resto-email" placeholder="contact@…">
       </div>
 
       <div class="field-group">
         <label class="field-label">Lien client (à mettre dans les QR)</label>
         <input type="text" id="cfg-resto-url" readonly style="font-size: 11px; color: var(--text-3);">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Généré automatiquement depuis le slug</p>
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Généré automatiquement</p>
       </div>
 
       <div class="field-group">
         <label class="field-label">Lien Google Reviews</label>
         <input type="url" id="cfg-resto-google" placeholder="https://g.page/…/review">
         <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Affiché aux clients après paiement pour collecter des avis</p>
-      </div>
-    </div>
-
-    <!-- Card: Modes de commande -->
-    <div class="ed-cmd-card">
-      <h2 class="ed-cmd-head">Modes de <em>commande</em></h2>
-      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
-        En plus du QR à table, activez les commandes à emporter pour vos clients.
-      </p>
-
-      <!-- Toggle À emporter -->
-      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 14px;">
-        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
-          <input type="checkbox" id="cfg-takeaway-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
-          <div>
-            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; color: var(--text);">Commandes à emporter</div>
-            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande et vient chercher</div>
-          </div>
-        </label>
-      </div>
-
-      <!-- Réglages préparation/horaires (visible si activé) -->
-      <div id="cfg-pickup-settings" style="display: none;">
-        <div class="field-row">
-          <div>
-            <label class="field-label">Délai de préparation</label>
-            <select id="cfg-prep-time">
-              <option value="10">10 minutes</option>
-              <option value="15">15 minutes</option>
-              <option value="20" selected>20 minutes</option>
-              <option value="25">25 minutes</option>
-              <option value="30">30 minutes</option>
-              <option value="40">40 minutes</option>
-              <option value="60">1 heure</option>
-            </select>
-          </div>
-          <div>
-            <label class="field-label">Code de retrait</label>
-            <input type="text" id="cfg-pickup-info" placeholder="ex. F" maxlength="3" value="F" style="text-align: center; font-family: 'Source Serif 4'; font-style: italic; font-weight: 700;">
-            <p style="font-size: 10.5px; color: var(--text-3); margin-top: 2px;">Lettre du code (F-001, F-002...)</p>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <div>
-            <label class="field-label">Retrait à partir de</label>
-            <input type="time" id="cfg-pickup-start" value="11:00">
-          </div>
-          <div>
-            <label class="field-label">Retrait jusqu'à</label>
-            <input type="time" id="cfg-pickup-end" value="21:00">
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1620,12 +1556,8 @@
         <label class="field-label">Email du comptable</label>
         <input type="email" id="cfg-accountant-email" placeholder="comptable@…">
         <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
-          Recevra automatiquement un export CSV chaque fin de mois (1er du mois à 6h).
+          Recevra automatiquement un export CSV chaque fin de mois.
         </p>
-        <button class="btn btn-secondary" id="cfg-test-accountant-btn" style="margin-top: 10px; padding: 8px 14px; font-size: 12px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          Tester l'envoi maintenant
-        </button>
       </div>
     </div>
 
@@ -3284,42 +3216,12 @@ async function showTableQR(tableId) {
   overlay.className = 'modal-overlay';
   overlay.id = 'modal-qr';
   overlay.innerHTML = `
-    <div class="modal-content" style="max-width: 380px;">
-      <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px; z-index: 2;">×</button>
-
-      <!-- Carte QR design : fond blanc, beaucoup d'espace, juste le nécessaire -->
-      <div style="padding: 32px 24px 24px; text-align: center;">
-
-        <!-- Logo Frizz en haut, discret -->
-        <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 20px; letter-spacing: -0.018em; color: var(--text-3); margin-bottom: 24px;">
-          Frizz<span style="color: var(--blue);">✦</span>
+    <div class="modal-content" style="max-width: 340px; padding: 0;">
+      <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px; z-index: 2; background: rgba(255,255,255,0.10); width: 32px; height: 32px; border-radius: 100px; border: 0; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
+      <div style="padding: 32px; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 20px; padding: 16px; display: inline-block;">
+          <canvas id="qr-canvas" style="display: block;"></canvas>
         </div>
-
-        <!-- Bloc blanc qui contient le QR -->
-        <div style="background: #fff; border-radius: 28px; padding: 28px 20px 20px; margin-bottom: 18px; box-shadow: 0 12px 40px -12px rgba(0,0,0,0.4);">
-          <!-- Titre -->
-          <div style="font-family: 'Inter Tight', sans-serif; font-weight: 900; font-size: 22px; letter-spacing: -0.024em; color: #0A0A0B; margin-bottom: 4px; line-height: 1;">
-            ${escapeHtml(qrTitle)}
-          </div>
-          <!-- Nom resto en italique -->
-          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 13px; color: rgba(10,10,11,0.55); margin-bottom: 18px; letter-spacing: -0.005em;">
-            ${escapeHtml(state.resto.nom || '')}
-          </div>
-
-          <!-- QR Code -->
-          <canvas id="qr-canvas" style="display: block; margin: 0 auto; max-width: 100%;"></canvas>
-
-          <!-- Footer scan -->
-          <div style="margin-top: 16px; font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: -0.005em; color: rgba(10,10,11,0.45);">
-            Scannez pour ${isTakeaway ? 'commander à emporter' : 'voir la carte'}
-          </div>
-        </div>
-
-        <!-- Bouton télécharger PDF -->
-        <button class="btn btn-primary" id="download-qr" style="width: 100%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Télécharger en PDF
-        </button>
       </div>
     </div>
   `;
@@ -3361,21 +3263,22 @@ async function showTableQR(tableId) {
     }
   }
 
-  overlay.querySelector('#download-qr').addEventListener('click', () => printSingleTableQR(table));
+  // Bouton télécharger retiré : QR épuré, juste le code visible
   overlay.classList.add('show');
 }
 
 async function printSingleTableQR(table) {
   try {
     showToast('Génération du PDF…');
+    if (!window.jspdf) throw new Error('Bibliothèque PDF non chargée');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    await drawQRPage(doc, table, 0);
-    doc.save(`qr-table-${table.numero}-${state.resto.slug || 'resto'}.pdf`);
+    await drawQRPage(doc, table);
+    doc.save(`qr-${table.type === 'a_emporter' ? 'a-emporter' : 'table-' + table.numero}-${state.resto.slug || 'resto'}.pdf`);
     showToast('PDF téléchargé', 'success');
   } catch (err) {
     console.error('printSingleTableQR:', err);
-    showToast('Erreur génération PDF', 'error');
+    showToast('Erreur PDF : ' + (err.message || 'génération impossible'), 'error');
   }
 }
 
@@ -3386,13 +3289,13 @@ async function printAllQR() {
   }
   try {
     showToast('Génération du PDF…');
+    if (!window.jspdf) throw new Error('Bibliothèque PDF non chargée');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
     // 4 QR par page A4 (2x2 grille)
     for (let i = 0; i < state.tables.length; i++) {
       const t = state.tables[i];
-      const pageIdx = Math.floor(i / 4);
       const slotIdx = i % 4;
       if (slotIdx === 0 && i > 0) doc.addPage();
       await drawQRSlot(doc, t, slotIdx);
@@ -3402,67 +3305,84 @@ async function printAllQR() {
     showToast('PDF téléchargé', 'success');
   } catch (err) {
     console.error('printAllQR:', err);
-    showToast('Erreur génération PDF', 'error');
+    showToast('Erreur PDF : ' + (err.message || 'génération impossible'), 'error');
   }
 }
 
-// Une page A4 entière pour 1 seul QR (centré, gros)
+// Génère un QR en dataURL via plusieurs méthodes (lib JS d'abord, API externe en fallback)
+async function generateQRDataUrl(url, size = 800) {
+  // Méthode 1 : QRCode lib JS
+  if (typeof QRCode !== 'undefined') {
+    try {
+      const tmp = document.createElement('canvas');
+      await QRCode.toCanvas(tmp, url, {
+        width: size,
+        margin: 1,
+        color: { dark: '#000000', light: '#FFFFFF' },
+        errorCorrectionLevel: 'H'
+      });
+      return tmp.toDataURL('image/png');
+    } catch (err) {
+      console.warn('QR lib failed:', err);
+    }
+  }
+
+  // Méthode 2 : API qrserver, transformée en dataURL via fetch + canvas
+  try {
+    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&ecc=H&margin=1`;
+    const res = await fetch(apiUrl);
+    if (!res.ok) throw new Error('API QR HTTP ' + res.status);
+    const blob = await res.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (err) {
+    console.error('QR API failed:', err);
+    throw new Error('Impossible de générer le QR code');
+  }
+}
+
+// Une page A4 entière pour 1 seul QR (centré, gros) — épuré
 async function drawQRPage(doc, table) {
   const url = getTableQRUrl(table);
-  const tmp = document.createElement('canvas');
-  await QRCode.toCanvas(tmp, url, {
-    width: 800,
-    margin: 1,
-    color: { dark: '#000000', light: '#FFFFFF' },
-    errorCorrectionLevel: 'H'
-  });
-  const dataUrl = tmp.toDataURL('image/png');
+  const dataUrl = await generateQRDataUrl(url, 800);
 
   const pageW = 210; // A4 mm
-  const pageH = 297;
-  const qrSize = 120;
+  const qrSize = 130;
   const x = (pageW - qrSize) / 2;
   const y = 80;
+  const isTakeaway = table.type === 'a_emporter';
+  const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
 
-  // Logo Frizz✦
-  doc.setFontSize(28);
-  doc.setFont('times', 'italic');
+  // Titre principal
   doc.setTextColor(0, 0, 0);
-  doc.text('Frizz', pageW / 2, 40, { align: 'center' });
-  doc.setTextColor(10, 132, 255);
-  doc.text('✦', pageW / 2 + 14, 40);
-
-  // Table N°
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(36);
+  doc.setFontSize(38);
   doc.setFont('helvetica', 'bold');
-  doc.text(`Table ${table.numero}`, pageW / 2, 65, { align: 'center' });
+  doc.text(titleText, pageW / 2, 60, { align: 'center' });
+
+  // Nom du resto
+  doc.setFontSize(14);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(120, 120, 120);
+  doc.text(state.resto.nom || '', pageW / 2, 70, { align: 'center' });
 
   // QR Code
   doc.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize);
 
   // Sous le QR
-  doc.setFontSize(14);
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'normal');
-  doc.text('Scannez pour commander', pageW / 2, y + qrSize + 12, { align: 'center' });
-
-  doc.setFontSize(11);
-  doc.setFont('times', 'italic');
-  doc.setTextColor(100, 100, 100);
-  doc.text(state.resto.nom || '', pageW / 2, y + qrSize + 22, { align: 'center' });
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Scannez pour ${isTakeaway ? 'commander à emporter' : 'voir la carte'}`, pageW / 2, y + qrSize + 15, { align: 'center' });
 }
 
 // 4 QR par page A4 (2x2)
 async function drawQRSlot(doc, table, slotIdx) {
   const url = getTableQRUrl(table);
-  const tmp = document.createElement('canvas');
-  await QRCode.toCanvas(tmp, url, {
-    width: 600,
-    margin: 1,
-    color: { dark: '#000000', light: '#FFFFFF' },
-    errorCorrectionLevel: 'H'
-  });
-  const dataUrl = tmp.toDataURL('image/png');
+  const dataUrl = await generateQRDataUrl(url, 600);
 
   const pageW = 210;
   const pageH = 297;
@@ -3474,9 +3394,9 @@ async function drawQRSlot(doc, table, slotIdx) {
   const slotX = col * slotW;
   const slotY = row * slotH;
 
-  const qrSize = 70;
+  const qrSize = 75;
   const qrX = slotX + (slotW - qrSize) / 2;
-  const qrY = slotY + 28;
+  const qrY = slotY + 30;
 
   // Bordure légère du slot
   doc.setDrawColor(220, 220, 220);
@@ -3484,33 +3404,25 @@ async function drawQRSlot(doc, table, slotIdx) {
   if (col === 0) doc.line(slotW, slotY, slotW, slotY + slotH);
   if (row === 0) doc.line(slotX, slotH, slotX + slotW, slotH);
 
-  // Logo
-  doc.setFontSize(14);
-  doc.setFont('times', 'italic');
-  doc.setTextColor(0, 0, 0);
-  doc.text('Frizz', slotX + slotW / 2 - 4, slotY + 14, { align: 'center' });
-  doc.setTextColor(10, 132, 255);
-  doc.text('✦', slotX + slotW / 2 + 6, slotY + 14);
+  const isTakeaway = table.type === 'a_emporter';
+  const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
 
-  // Table N°
+  // Titre
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(20);
+  doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
-  doc.text(`Table ${table.numero}`, slotX + slotW / 2, slotY + 24, { align: 'center' });
+  doc.text(titleText, slotX + slotW / 2, slotY + 22, { align: 'center' });
 
   // QR
   doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
   // Sous le QR
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Scannez pour commander', slotX + slotW / 2, qrY + qrSize + 8, { align: 'center' });
-
-  doc.setFontSize(8);
   doc.setFont('times', 'italic');
   doc.setTextColor(120, 120, 120);
-  doc.text(state.resto.nom || '', slotX + slotW / 2, qrY + qrSize + 14, { align: 'center' });
+  doc.text(state.resto.nom || '', slotX + slotW / 2, qrY + qrSize + 10, { align: 'center' });
 }
+
 
 // ═══════════════════════════════════════════════════════════════
 // AI SUMMARY — Analyse intelligente des stats
@@ -3694,12 +3606,8 @@ async function loadConfig() {
 function fillConfigForm() {
   const r = state.resto || {};
   setVal('cfg-resto-nom', r.nom);
-  setVal('cfg-resto-tel', r.telephone || r.tel);
   setVal('cfg-resto-email', r.email);
-  setVal('cfg-resto-adresse', r.adresse);
   setVal('cfg-resto-google', r.google_review_url);
-  setVal('cfg-tva-number', r.tva_number);
-  setVal('cfg-accountant-email', r.accountant_email);
 
   // Pays fiscal & devise
   const fiscal = document.getElementById('cfg-fiscal-country');
@@ -3731,23 +3639,6 @@ function fillConfigForm() {
       stripeStatus.innerHTML = `<div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>NON CONFIGURÉ</div>`;
     }
   }
-
-  // Modes de commande (takeaway uniquement)
-  const taToggle = document.getElementById('cfg-takeaway-enabled');
-  if (taToggle) taToggle.checked = !!r.takeaway_enabled;
-
-  setVal('cfg-prep-time', r.prep_time_minutes || 20);
-  if (r.pickup_hours_start) setVal('cfg-pickup-start', r.pickup_hours_start.substring(0, 5));
-  if (r.pickup_hours_end) setVal('cfg-pickup-end', r.pickup_hours_end.substring(0, 5));
-
-  // Toggle visibilité des sections selon les modes activés
-  updateOrderModesVisibility();
-}
-
-function updateOrderModesVisibility() {
-  const taOn = document.getElementById('cfg-takeaway-enabled')?.checked;
-  const settingsWrap = document.getElementById('cfg-pickup-settings');
-  if (settingsWrap) settingsWrap.style.display = taOn ? '' : 'none';
 }
 
 function setVal(id, v) {
@@ -3760,21 +3651,14 @@ async function saveAllConfig() {
 
   const fullPayload = {
     nom: document.getElementById('cfg-resto-nom').value.trim(),
-    telephone: document.getElementById('cfg-resto-tel').value.trim() || null,
     email: document.getElementById('cfg-resto-email').value.trim() || null,
-    adresse: document.getElementById('cfg-resto-adresse').value.trim() || null,
     google_review_url: document.getElementById('cfg-resto-google').value.trim() || null,
     fiscal_country: document.getElementById('cfg-fiscal-country').value,
     tva_number: document.getElementById('cfg-tva-number').value.trim() || null,
     currency: document.getElementById('cfg-currency').value,
     accountant_email: document.getElementById('cfg-accountant-email').value.trim() || null,
     payment_enabled: document.getElementById('cfg-payment-enabled').checked,
-    tip_enabled: document.getElementById('cfg-tip-enabled').checked,
-    takeaway_enabled: document.getElementById('cfg-takeaway-enabled')?.checked || false,
-    click_collect_enabled: false,
-    prep_time_minutes: parseInt(document.getElementById('cfg-prep-time')?.value) || 20,
-    pickup_hours_start: document.getElementById('cfg-pickup-start')?.value || '11:00',
-    pickup_hours_end: document.getElementById('cfg-pickup-end')?.value || '21:00'
+    tip_enabled: document.getElementById('cfg-tip-enabled').checked
   };
 
   if (!fullPayload.nom) {
@@ -3783,7 +3667,7 @@ async function saveAllConfig() {
   }
 
   // Champs optionnels qu'on retire si la base les refuse
-  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'telephone', 'email', 'adresse', 'takeaway_enabled', 'click_collect_enabled', 'prep_time_minutes', 'pickup_hours_start', 'pickup_hours_end'];
+  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'email'];
 
   let payload = { ...fullPayload };
   let lastError = null;
@@ -3833,64 +3717,6 @@ async function switchResto(restoId) {
 window.switchResto = switchResto;
 
 // Email comptable : envoyer un test
-async function sendTestReportToAccountant(e) {
-  const btn = e?.currentTarget || document.getElementById('cfg-test-accountant-btn');
-  const emailInput = document.getElementById('cfg-accountant-email');
-  const email = (emailInput?.value || '').trim();
-
-  if (!email) {
-    showToast('Renseignez d\'abord l\'email du comptable', 'error');
-    emailInput?.focus();
-    return;
-  }
-  if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-    showToast('Email invalide', 'error');
-    return;
-  }
-  if (!state.resto) {
-    showToast('Restaurant non chargé', 'error');
-    return;
-  }
-
-  const original = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Envoi…';
-
-  try {
-    // Sauvegarde l'email d'abord dans la base
-    try {
-      await supa.from('restaurants').update({ accountant_email: email }).eq('id', state.resto.id);
-    } catch (saveErr) {
-      console.warn('Sauvegarde email comptable échouée:', saveErr);
-    }
-
-    // Appelle l'Edge Function Supabase
-    const { data, error } = await supa.functions.invoke('send-monthly-report', {
-      body: {
-        restaurant_id: state.resto.id,
-        accountant_email: email,
-        is_test: true
-      }
-    });
-
-    if (error) throw error;
-    showToast(`Test envoyé à ${email} ✓`, 'success');
-  } catch (err) {
-    console.error('sendTestReportToAccountant:', err);
-    // Si l'edge function n'existe pas encore, message clair
-    const msg = (err.message || '').toLowerCase();
-    if (msg.includes('not found') || msg.includes('404') || msg.includes('function')) {
-      showToast('Service email pas encore configuré (Edge Function à déployer)', 'error');
-    } else {
-      showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
-    }
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = original;
-  }
-}
-window.sendTestReportToAccountant = sendTestReportToAccountant;
-
 // Wire up Config buttons (en attendant DOMContentLoaded)
 function wireConfigButtons() {
   const saveBtn = document.getElementById('cfg-save-btn');
@@ -3918,19 +3744,6 @@ function wireConfigButtons() {
     stripeBtn.addEventListener('click', () => {
       showToast('Configuration Stripe disponible prochainement', '');
     });
-  }
-
-  const testAccountantBtn = document.getElementById('cfg-test-accountant-btn');
-  if (testAccountantBtn && !testAccountantBtn.dataset.wired) {
-    testAccountantBtn.dataset.wired = '1';
-    testAccountantBtn.addEventListener('click', sendTestReportToAccountant);
-  }
-
-  // Toggle modes de commande : afficher/cacher les réglages
-  const taToggle = document.getElementById('cfg-takeaway-enabled');
-  if (taToggle && !taToggle.dataset.wired) {
-    taToggle.dataset.wired = '1';
-    taToggle.addEventListener('change', updateOrderModesVisibility);
   }
 
   const billingBtn = document.getElementById('cfg-billing-portal-btn');

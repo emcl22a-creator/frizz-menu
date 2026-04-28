@@ -123,6 +123,76 @@
     z-index: 1;
   }
 
+  /* ════════════ RESPONSIVE DESKTOP — Limite la largeur sur PC ════════════ */
+  /* Sur écran > 768px on centre tout dans une colonne lisible (720px max) */
+  @media (min-width: 768px) {
+    /* Conteneur principal centré */
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 120px;
+    }
+    /* Top bar reste sticky en haut, mais centrée */
+    .topbar {
+      max-width: 720px;
+      margin: 0 auto;
+      border-radius: 0 0 16px 16px;
+      border-left: 1px solid rgba(255,255,255,0.04);
+      border-right: 1px solid rgba(255,255,255,0.04);
+    }
+    /* Tabbar flottante : centrée dans la colonne, largeur fixe */
+    .floating-tabbar {
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%) !important;
+      max-width: 420px;
+      width: calc(100% - 40px);
+    }
+    /* Sections un peu plus respirées sur PC */
+    .section {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    /* Hero plus aéré sur PC */
+    .ed-hero {
+      padding: 36px 32px 28px !important;
+    }
+    .ed-hero-title {
+      font-size: 56px !important;
+    }
+    /* Cards plus respirées */
+    .ed-cmd-card {
+      padding: 28px 28px !important;
+    }
+    /* Section plats / tables */
+    #ed-plats-list,
+    #ed-tables-list {
+      margin-left: 22px !important;
+      margin-right: 22px !important;
+    }
+    /* Stats : 2 colonnes pour les KPI cards sur desktop */
+    .ed-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    /* Modales plus larges sur PC */
+    .modal-content {
+      max-width: 560px !important;
+    }
+  }
+
+  /* Très grand écran : on garde la même largeur mais on ajoute du contraste avec un fond plus marqué */
+  @media (min-width: 1200px) {
+    .app {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 30px 100px -30px rgba(0,0,0,0.5);
+    }
+  }
+
   /* ════════════ TOP BAR — GLASS APPLE ════════════ */
   .topbar {
     position: sticky;

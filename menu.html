@@ -2254,66 +2254,132 @@
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 100px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
 
-  /* ════════════ CADRE CATÉGORIE — arrondi + glass léger ════════════ */
-  /* La section qui regroupe les plats par catégorie (ex. "Entrées", "Plats", "Desserts") */
-  .cat-section {
-    border-radius: 26px !important;
-    background: rgba(255,255,255,0.025) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
-    padding: 22px 18px 20px !important;
-    margin-bottom: 16px !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.05),
-      0 4px 20px -8px rgba(0,0,0,0.3) !important;
-  }
-  /* Le titre de la catégorie (ex. "Entrées") plus respiré */
-  .cat-section .cat-title {
-    margin-bottom: 6px !important;
-    padding-left: 4px;
-  }
-  .cat-section .cat-count {
-    margin-bottom: 14px !important;
-    padding-left: 4px;
-  }
-
-  /* ════════════ CARTE PLAT — arrondi sans contour ════════════ */
-  /* On garde le glass léger, on retire la bordure */
+  /* ════════════════════════════════════════════════════════════
+     ★ STYLE MINIMAL APPLE (Option 03) ★
+     Carte plat = ligne simple avec photo ronde à droite
+     Pas de glass, pas de fond, juste un trait fin de séparation
+     ════════════════════════════════════════════════════════════ */
   .plat {
-    border-radius: 22px !important;
+    border-radius: 0 !important;
     border: 0 !important;
     outline: 0 !important;
-    background: rgba(255,255,255,0.04) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.06),
-      0 4px 14px -8px rgba(0,0,0,0.25) !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    padding: 18px 4px !important;
+    min-height: auto !important;
+    grid-template-columns: 1fr 80px !important;
+    gap: 14px !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    transition: opacity 0.18s ease !important;
   }
   .plat:hover {
     border: 0 !important;
-    background: rgba(255,255,255,0.06) !important;
-    transform: translateY(-2px);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 12px 28px -10px rgba(0,0,0,0.4) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+    background: transparent !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 0.85;
+  }
+  /* Dernière carte plat de chaque catégorie : pas de séparateur */
+  .plat:last-child {
+    border-bottom: 0 !important;
   }
 
-  /* ════════════ PHOTO PLAT — arrondie + sans contour ════════════ */
+  /* Photo plat carrée arrondie (Apple-style) */
   .plat-photo, .plat-photo-empty {
-    border-radius: 20px !important;
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 18px !important;
     border: 0 !important;
     outline: 0 !important;
-    box-shadow: none !important;
-    margin: 8px !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.06),
+      0 4px 14px -6px rgba(0,0,0,0.4) !important;
+    margin: 0 !important;
+    flex-shrink: 0;
   }
-  /* Photo dans la modale fiche plat (vue détaillée d'un plat) */
+  /* Photo dans la modale fiche plat (vue détaillée) — reste arrondie carré 20px */
   .modal-photo, .modal-photo-empty {
     border-radius: 20px !important;
     border: 0 !important;
     outline: 0 !important;
     box-shadow: none !important;
+  }
+
+  /* Texte plat : titre Inter 800 + description courte + prix italique bleu */
+  .plat-info {
+    padding: 0 !important;
+  }
+  .plat-nom {
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    letter-spacing: -0.014em !important;
+    color: var(--text) !important;
+    margin-bottom: 4px !important;
+    line-height: 1.25 !important;
+  }
+  .plat-desc {
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    color: var(--text-3) !important;
+    line-height: 1.45 !important;
+    margin-bottom: 6px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .plat-prix {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-size: 14.5px !important;
+    color: var(--blue) !important;
+    letter-spacing: -0.005em !important;
+  }
+  .plat-tag {
+    background: rgba(10,132,255,0.18) !important;
+    border: 1px solid rgba(10,132,255,0.32) !important;
+    color: var(--blue) !important;
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 9px !important;
+    letter-spacing: 0.06em !important;
+    padding: 3px 7px !important;
+    border-radius: 100px !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  /* Cadre catégorie : transparent, juste un titre + plats listés */
+  .cat-section {
+    border-radius: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 0 !important;
+    padding: 4px 4px 8px !important;
+    margin-bottom: 28px !important;
+    box-shadow: none !important;
+  }
+  /* Titre de catégorie type "Apple Settings" : souligné bleu */
+  .cat-section .cat-title {
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    color: var(--text-2) !important;
+    margin-bottom: 4px !important;
+    padding: 0 0 8px 0 !important;
+    border-bottom: 1.5px solid var(--blue) !important;
+    display: inline-block;
+  }
+  .cat-section .cat-count {
+    display: none !important;
   }
 
   /* ════════════ MODE SELECTOR (à emporter / Click & Collect) ════════════ */

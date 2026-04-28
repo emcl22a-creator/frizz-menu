@@ -1296,89 +1296,6 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-
-  /* ════════════ ARRONDIS + GLASS LÉGER (override final) ════════════ */
-
-  /* Cartes plats (Section Plats) — arrondi 22px + glass */
-  .ed-plat-card {
-    border-radius: 22px !important;
-    background: rgba(255,255,255,0.04) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 4px 14px -6px rgba(0,0,0,0.3) !important;
-  }
-  .ed-plat-img, .ed-plat-img-placeholder {
-    border-radius: 16px !important;
-  }
-
-  /* Cartes tables — arrondi 22px + glass */
-  .ed-table-card {
-    border-radius: 22px !important;
-    background: rgba(255,255,255,0.04) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 4px 14px -6px rgba(0,0,0,0.3) !important;
-  }
-
-  /* Boutons d'action sur les cartes plats — pill */
-  .ed-plat-action {
-    border-radius: 100px !important;
-  }
-  .ed-table-btn {
-    border-radius: 100px !important;
-  }
-
-  /* Toutes les cards Stats/Config (commandes, top plats, charts, AI, etc.) — arrondi 22px */
-  .ed-cmd-card, .ed-chart-card, .ed-stat-card {
-    border-radius: 22px !important;
-  }
-
-  /* Duo cells (Commandes / Panier) — arrondi 18px */
-  .ed-duo-cell {
-    border-radius: 18px !important;
-  }
-
-  /* Boutons primaires/secondaires — pill 100px */
-  .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-blue-soft, .btn-ghost {
-    border-radius: 100px !important;
-  }
-
-  /* Inputs / textarea / select — arrondi 14px renforcé + glass plus marqué */
-  input[type="text"], input[type="email"], input[type="url"],
-  input[type="tel"], input[type="number"], input[type="password"],
-  input[type="date"], textarea, select {
-    border-radius: 14px !important;
-    background: rgba(255,255,255,0.05) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
-  }
-
-  /* Chips (filtres période, catégories) — déjà pill, on ne touche pas */
-
-  /* Modales — arrondi 24px (déjà OK mais on s'assure) */
-  .modal-content {
-    border-radius: 24px !important;
-  }
-
-  /* Statuts en cours/prête/payée — pill (déjà OK) */
-  .ed-status {
-    border-radius: 100px !important;
-  }
-
-  /* Toast — pill */
-  .toast {
-    border-radius: 100px !important;
-  }
-
-  /* Tabbar reste pill 100px (déjà OK) */
-  /* Top bar / topbar — pas d'arrondi, c'est sticky en haut */
 </style>
 </head>
 <body>
@@ -1616,6 +1533,83 @@
         <label class="field-label">Lien Google Reviews</label>
         <input type="url" id="cfg-resto-google" placeholder="https://g.page/…/review">
         <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Affiché aux clients après paiement pour collecter des avis</p>
+      </div>
+    </div>
+
+    <!-- Card: Modes de commande -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Modes de <em>commande</em></h2>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
+        En plus du QR à table, activez les commandes à emporter et le Click &amp; Collect (commande à distance).
+      </p>
+
+      <!-- Toggle À emporter -->
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 10px;">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
+          <input type="checkbox" id="cfg-takeaway-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
+          <div>
+            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; color: var(--text);">Commandes à emporter</div>
+            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande sur place et vient chercher</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Toggle Click & Collect -->
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 14px;">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
+          <input type="checkbox" id="cfg-clickcollect-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
+          <div>
+            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; color: var(--text);">Click &amp; Collect</div>
+            <div style="font-size: 11.5px; font-weight: 700; color: var(--text-3); margin-top: 2px;">Le client commande à distance via un lien partagé</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Lien Click & Collect (si activé) -->
+      <div id="cfg-cc-link-wrap" style="display: none;" class="field-group">
+        <label class="field-label">Lien Click &amp; Collect à partager</label>
+        <input type="text" id="cfg-cc-link" readonly style="font-size: 11px; color: var(--text-3);">
+        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
+          Partagez ce lien sur Instagram, Google, WhatsApp. Vos clients commandent directement, sans commission.
+        </p>
+        <button class="btn btn-secondary" id="cfg-cc-copy-btn" style="margin-top: 8px; padding: 8px 14px; font-size: 12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copier le lien
+        </button>
+      </div>
+
+      <!-- Réglages préparation/horaires (visible si l'un des 2 modes est activé) -->
+      <div id="cfg-pickup-settings" style="display: none;">
+        <div class="field-row">
+          <div>
+            <label class="field-label">Délai de préparation</label>
+            <select id="cfg-prep-time">
+              <option value="10">10 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="20" selected>20 minutes</option>
+              <option value="25">25 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="40">40 minutes</option>
+              <option value="60">1 heure</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Code de retrait</label>
+            <input type="text" id="cfg-pickup-info" placeholder="ex. F" maxlength="3" value="F" style="text-align: center; font-family: 'Source Serif 4'; font-style: italic; font-weight: 700;">
+            <p style="font-size: 10.5px; color: var(--text-3); margin-top: 2px;">Lettre du code (F-001, F-002...)</p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div>
+            <label class="field-label">Retrait à partir de</label>
+            <input type="time" id="cfg-pickup-start" value="11:00">
+          </div>
+          <div>
+            <label class="field-label">Retrait jusqu'à</label>
+            <input type="time" id="cfg-pickup-end" value="21:00">
+          </div>
+        </div>
       </div>
     </div>
 
@@ -3648,6 +3642,35 @@ function fillConfigForm() {
       stripeStatus.innerHTML = `<div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>NON CONFIGURÉ</div>`;
     }
   }
+
+  // Modes de commande (takeaway + click & collect)
+  const taToggle = document.getElementById('cfg-takeaway-enabled');
+  const ccToggle = document.getElementById('cfg-clickcollect-enabled');
+  if (taToggle) taToggle.checked = !!r.takeaway_enabled;
+  if (ccToggle) ccToggle.checked = !!r.click_collect_enabled;
+
+  setVal('cfg-prep-time', r.prep_time_minutes || 20);
+  if (r.pickup_hours_start) setVal('cfg-pickup-start', r.pickup_hours_start.substring(0, 5));
+  if (r.pickup_hours_end) setVal('cfg-pickup-end', r.pickup_hours_end.substring(0, 5));
+
+  // Lien Click & Collect
+  const ccLinkInput = document.getElementById('cfg-cc-link');
+  if (ccLinkInput) {
+    const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
+    ccLinkInput.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}&mode=collect`;
+  }
+
+  // Toggle visibilité des sections selon les modes activés
+  updateOrderModesVisibility();
+}
+
+function updateOrderModesVisibility() {
+  const taOn = document.getElementById('cfg-takeaway-enabled')?.checked;
+  const ccOn = document.getElementById('cfg-clickcollect-enabled')?.checked;
+  const settingsWrap = document.getElementById('cfg-pickup-settings');
+  const ccLinkWrap = document.getElementById('cfg-cc-link-wrap');
+  if (settingsWrap) settingsWrap.style.display = (taOn || ccOn) ? '' : 'none';
+  if (ccLinkWrap) ccLinkWrap.style.display = ccOn ? '' : 'none';
 }
 
 function setVal(id, v) {
@@ -3669,7 +3692,12 @@ async function saveAllConfig() {
     currency: document.getElementById('cfg-currency').value,
     accountant_email: document.getElementById('cfg-accountant-email').value.trim() || null,
     payment_enabled: document.getElementById('cfg-payment-enabled').checked,
-    tip_enabled: document.getElementById('cfg-tip-enabled').checked
+    tip_enabled: document.getElementById('cfg-tip-enabled').checked,
+    takeaway_enabled: document.getElementById('cfg-takeaway-enabled')?.checked || false,
+    click_collect_enabled: document.getElementById('cfg-clickcollect-enabled')?.checked || false,
+    prep_time_minutes: parseInt(document.getElementById('cfg-prep-time')?.value) || 20,
+    pickup_hours_start: document.getElementById('cfg-pickup-start')?.value || '11:00',
+    pickup_hours_end: document.getElementById('cfg-pickup-end')?.value || '21:00'
   };
 
   if (!fullPayload.nom) {
@@ -3678,7 +3706,7 @@ async function saveAllConfig() {
   }
 
   // Champs optionnels qu'on retire si la base les refuse
-  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'telephone', 'email', 'adresse'];
+  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'telephone', 'email', 'adresse', 'takeaway_enabled', 'click_collect_enabled', 'prep_time_minutes', 'pickup_hours_start', 'pickup_hours_end'];
 
   let payload = { ...fullPayload };
   let lastError = null;
@@ -3819,6 +3847,38 @@ function wireConfigButtons() {
   if (testAccountantBtn && !testAccountantBtn.dataset.wired) {
     testAccountantBtn.dataset.wired = '1';
     testAccountantBtn.addEventListener('click', sendTestReportToAccountant);
+  }
+
+  // Toggles modes de commande : afficher/cacher les réglages
+  const taToggle = document.getElementById('cfg-takeaway-enabled');
+  const ccToggle = document.getElementById('cfg-clickcollect-enabled');
+  if (taToggle && !taToggle.dataset.wired) {
+    taToggle.dataset.wired = '1';
+    taToggle.addEventListener('change', updateOrderModesVisibility);
+  }
+  if (ccToggle && !ccToggle.dataset.wired) {
+    ccToggle.dataset.wired = '1';
+    ccToggle.addEventListener('change', updateOrderModesVisibility);
+  }
+
+  // Bouton "Copier le lien Click & Collect"
+  const ccCopyBtn = document.getElementById('cfg-cc-copy-btn');
+  if (ccCopyBtn && !ccCopyBtn.dataset.wired) {
+    ccCopyBtn.dataset.wired = '1';
+    ccCopyBtn.addEventListener('click', async () => {
+      const link = document.getElementById('cfg-cc-link')?.value || '';
+      if (!link) return;
+      try {
+        await navigator.clipboard.writeText(link);
+        showToast('Lien copié ✓', 'success');
+      } catch {
+        // Fallback : sélectionner l'input
+        const input = document.getElementById('cfg-cc-link');
+        input.select();
+        document.execCommand('copy');
+        showToast('Lien copié ✓', 'success');
+      }
+    });
   }
 
   const billingBtn = document.getElementById('cfg-billing-portal-btn');

@@ -1561,14 +1561,14 @@
       <p class="ed-hero-sub" id="ed-plats-sub">Gérez votre carte. Ajoutez, modifiez, retirez des plats.</p>
 
       <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
+        <button class="btn btn-primary" id="add-plat-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter
+        </button>
         <div class="filter-bar" id="ed-cat-filter">
           <button class="chip active" data-cat="all">Tout</button>
           <!-- Catégories injectées dynamiquement -->
         </div>
-        <button class="btn btn-primary" id="add-plat-btn" style="margin-left: auto;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter
-        </button>
       </div>
     </div>
 
@@ -1631,15 +1631,15 @@
       </p>
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
         <button class="btn btn-secondary quick-access-btn" id="open-menu-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
           Menu client
         </button>
         <button class="btn btn-secondary quick-access-btn" id="open-serveur-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M12 2a10 10 0 1 0 0 20"/><path d="M12 2v20"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M5 18a7 7 0 0 1 14 0"/><line x1="12" y1="11" x2="12" y2="8"/><circle cx="12" cy="6" r="1"/></svg>
           Service
         </button>
         <button class="btn btn-secondary quick-access-btn" id="open-cuisine-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14h-4M9 22V14h6v8M14 4h-4M5 22V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v14"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M6 13h12v3a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-3z"/><path d="M6 13c-1.5 0-3-1-3-3a3 3 0 0 1 3-3c0-1.5 1-3 3-3 1 0 2 .5 2.5 1.3C12 4.5 13 4 14 4c2 0 3 1.5 3 3a3 3 0 0 1 3 3c0 2-1.5 3-3 3"/></svg>
           Cuisine
         </button>
       </div>
@@ -1821,11 +1821,11 @@
       <span>Stats</span>
     </button>
     <button class="ftb-btn" data-tab="plats">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M3 12h2M19 12h2"/></svg>
       <span>Plats</span>
     </button>
     <button class="ftb-btn" data-tab="tables">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="20" height="6" rx="1"/><line x1="6" y1="15" x2="6" y2="20"/><line x1="18" y1="15" x2="18" y2="20"/></svg>
       <span>Tables</span>
     </button>
     <button class="ftb-btn" data-tab="config">
@@ -3502,10 +3502,17 @@ async function showTableQR(tableId) {
         <div style="background: #fff; border-radius: 20px; padding: 16px; display: inline-block;">
           <canvas id="qr-canvas" style="display: block;"></canvas>
         </div>
-        <button class="btn btn-primary" id="download-qr" style="width: 100%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Télécharger en PDF
-        </button>
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12px; color: rgba(255,255,255,0.45); letter-spacing: 0.02em; text-transform: uppercase; text-align: center; margin-bottom: 4px;">Télécharger en PDF</div>
+          <button class="btn btn-primary" id="download-qr-frizz" style="width: 100%;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Présentation Frizz
+          </button>
+          <button class="btn btn-secondary" id="download-qr-plain" style="width: 100%;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            QR seul (coin)
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -3547,22 +3554,27 @@ async function showTableQR(tableId) {
     }
   }
 
-  // Wire bouton télécharger PDF
-  const downloadBtn = overlay.querySelector('#download-qr');
-  if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => printSingleTableQR(table));
-  }
+  // Wire boutons télécharger PDF (2 styles)
+  const dlFrizz = overlay.querySelector('#download-qr-frizz');
+  const dlPlain = overlay.querySelector('#download-qr-plain');
+  if (dlFrizz) dlFrizz.addEventListener('click', () => printSingleTableQR(table, 'frizz'));
+  if (dlPlain) dlPlain.addEventListener('click', () => printSingleTableQR(table, 'plain'));
   overlay.classList.add('show');
 }
 
-async function printSingleTableQR(table) {
+async function printSingleTableQR(table, style = 'frizz') {
   try {
     showToast('Génération du PDF…');
     if (!window.jspdf) throw new Error('Bibliothèque PDF non chargée');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    await drawQRPage(doc, table);
-    doc.save(`qr-${table.type === 'a_emporter' ? 'a-emporter' : 'table-' + table.numero}-${state.resto.slug || 'resto'}.pdf`);
+    if (style === 'plain') {
+      await drawQRPagePlain(doc, table);
+    } else {
+      await drawQRPageFrizz(doc, table);
+    }
+    const styleSlug = style === 'plain' ? 'simple' : 'frizz';
+    doc.save(`qr-${table.type === 'a_emporter' ? 'a-emporter' : 'table-' + table.numero}-${styleSlug}-${state.resto.slug || 'resto'}.pdf`);
     showToast('PDF téléchargé', 'success');
   } catch (err) {
     console.error('printSingleTableQR:', err);
@@ -3634,37 +3646,89 @@ async function generateQRDataUrl(url, size = 800) {
 }
 
 // Une page A4 entière pour 1 seul QR (centré, gros) — épuré
-async function drawQRPage(doc, table) {
+// PRÉSENTATION FRIZZ : page A4 éditoriale avec logo, titre, QR centré, infos
+async function drawQRPageFrizz(doc, table) {
   const url = getTableQRUrl(table);
   const dataUrl = await generateQRDataUrl(url, 800);
 
   const pageW = 210; // A4 mm
-  const qrSize = 130;
-  const x = (pageW - qrSize) / 2;
-  const y = 80;
+  const pageH = 297;
   const isTakeaway = table.type === 'a_emporter';
   const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
 
-  // Titre principal
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(38);
-  doc.setFont('helvetica', 'bold');
-  doc.text(titleText, pageW / 2, 60, { align: 'center' });
-
-  // Nom du resto
-  doc.setFontSize(14);
+  // ── Logo Frizz✦ tout en haut (italique grand) ──
+  doc.setTextColor(10, 10, 11);
+  doc.setFontSize(28);
   doc.setFont('times', 'italic');
-  doc.setTextColor(120, 120, 120);
-  doc.text(state.resto.nom || '', pageW / 2, 70, { align: 'center' });
+  doc.text('Frizz', pageW / 2 - 6, 32, { align: 'center' });
+  doc.setTextColor(10, 132, 255);
+  doc.text('✦', pageW / 2 + 12, 32);
 
-  // QR Code
-  doc.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize);
+  // ── Petit numéro section éditorial ──
+  doc.setTextColor(10, 132, 255);
+  doc.setFontSize(10);
+  doc.setFont('times', 'italic');
+  doc.text(isTakeaway ? '— À EMPORTER' : '— SUR PLACE', pageW / 2, 50, { align: 'center' });
 
-  // Sous le QR
-  doc.setFontSize(13);
+  // ── Titre principal en gros ──
+  doc.setTextColor(10, 10, 11);
+  doc.setFontSize(48);
+  doc.setFont('helvetica', 'bold');
+  doc.text(titleText, pageW / 2, 70, { align: 'center' });
+
+  // ── Nom du resto en italique ──
+  doc.setFontSize(15);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(110, 110, 115);
+  doc.text(state.resto.nom || '', pageW / 2, 84, { align: 'center' });
+
+  // ── QR Code centré (gros) ──
+  const qrSize = 110;
+  const qrX = (pageW - qrSize) / 2;
+  const qrY = 110;
+  // Cadre blanc subtil autour du QR
+  doc.setDrawColor(230, 230, 232);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 6, 6);
+  doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+  // ── Instructions sous le QR ──
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(10, 10, 11);
+  doc.text('Scannez ce QR avec votre téléphone', pageW / 2, qrY + qrSize + 22, { align: 'center' });
+
+  doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(0, 0, 0);
-  doc.text(`Scannez pour ${isTakeaway ? 'commander à emporter' : 'voir la carte'}`, pageW / 2, y + qrSize + 15, { align: 'center' });
+  doc.setTextColor(110, 110, 115);
+  doc.text(isTakeaway
+    ? 'Choisissez vos plats, payez en ligne, venez chercher.'
+    : 'Voir la carte, commander, payer — tout depuis votre table.',
+    pageW / 2, qrY + qrSize + 30, { align: 'center' });
+
+  // ── Footer Frizz tout en bas ──
+  doc.setFontSize(9);
+  doc.setFont('times', 'italic');
+  doc.setTextColor(160, 160, 165);
+  doc.text('Propulsé par Frizz✦', pageW / 2, pageH - 18, { align: 'center' });
+}
+
+// PRÉSENTATION SIMPLE : QR code seul en haut à gauche
+async function drawQRPagePlain(doc, table) {
+  const url = getTableQRUrl(table);
+  const dataUrl = await generateQRDataUrl(url, 800);
+
+  // QR positionné en haut à gauche, marge de 15mm
+  const margin = 15;
+  const qrSize = 60;
+
+  // QR seul, sans rien d'autre
+  doc.addImage(dataUrl, 'PNG', margin, margin, qrSize, qrSize);
+}
+
+// Compat : ancienne API (au cas où elle est appelée ailleurs)
+async function drawQRPage(doc, table) {
+  return drawQRPageFrizz(doc, table);
 }
 
 // 4 QR par page A4 (2x2)

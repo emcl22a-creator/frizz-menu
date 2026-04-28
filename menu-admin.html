@@ -2634,18 +2634,61 @@ async function exportSalesCSV(periode = 'mois', format = 'standard') {
     const fiscalCountry = state.resto.fiscal_country || 'CH';
     const tvaNumber = state.resto.tva_number || '';
     const restoNom = state.resto.nom || 'Restaurant';
+    const currency = state.resto.currency || (fiscalCountry === 'FR' ? 'EUR' : 'CHF');
+
+    // Helper : échappe une cellule CSV
+    // - Met entre guillemets si contient ; ou , ou " ou \n
+    // - Double les guillemets internes
+    const csvCell = (val) => {
+      if (val === null || val === undefined) return '';
+      const s = String(val);
+      if (/[;,"\n\r]/.test(s)) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    };
+
+    // Helper : nombre au format Excel français (virgule décimale, sans symbole)
+    const csvNum = (n) => {
+      if (n === null || n === undefined || n === '') return '';
+      const v = parseFloat(n);
+      if (isNaN(v)) return '';
+      return v.toFixed(2).replace('.', ',');
+    };
 
     let csv = '';
-    // En-tête info
-    csv += `# Export ${restoNom}\n`;
-    csv += `# Pays fiscal: ${fiscalCountry}\n`;
-    csv += `# N° TVA: ${tvaNumber}\n`;
-    csv += `# Période: ${since.toLocaleDateString('fr-CH')} → ${now.toLocaleDateString('fr-CH')}\n`;
-    csv += `# Total commandes: ${(cmds || []).length}\n`;
+    // ═══════════════════════════════════════════════════
+    // EN-TÊTE INFOS RESTAURANT (lignes commençant par #)
+    // ═══════════════════════════════════════════════════
+    csv += `Restaurant${';'}${csvCell(restoNom)}\n`;
+    csv += `Pays fiscal${';'}${csvCell(fiscalCountry)}\n`;
+    csv += `N° TVA${';'}${csvCell(tvaNumber)}\n`;
+    csv += `Devise${';'}${csvCell(currency)}\n`;
+    csv += `Période${';'}${csvCell(since.toLocaleDateString('fr-CH') + ' → ' + now.toLocaleDateString('fr-CH'))}\n`;
+    csv += `Nombre commandes${';'}${(cmds || []).length}\n`;
+    csv += `Export généré${';'}${csvCell(now.toLocaleString('fr-CH'))}\n`;
     csv += `\n`;
 
-    // Colonnes
-    csv += 'Date;Heure;Table;Plat;Quantité;Prix unitaire HT;Prix unitaire TTC;TVA %;Total ligne HT;Total ligne TTC;Pourboire;Mode paiement;Carte (4 derniers);Statut\n';
+    // ═══════════════════════════════════════════════════
+    // EN-TÊTES DE COLONNES
+    // ═══════════════════════════════════════════════════
+    const headers = [
+      'Date',
+      'Heure',
+      'Table',
+      'Plat',
+      'Quantité',
+      'Prix unitaire HT',
+      'Prix unitaire TTC',
+      'TVA %',
+      'Total ligne HT',
+      'Total ligne TTC',
+      'Pourboire',
+      'Mode paiement',
+      'Carte (4 derniers)',
+      'Statut'
+    ];
+    csv += headers.join(';') + '\n';
 
     let totalHT = 0, totalTTC = 0, totalTip = 0;
     const tvaBreakdown = {};
@@ -2655,12 +2698,20 @@ async function exportSalesCSV(periode = 'mois', format = 'standard') {
       const dateStr = date.toLocaleDateString('fr-CH');
       const heureStr = date.toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
       const items = Array.isArray(c.items) ? c.items : [];
-      const tip = parseFloat(c.amount_tip || 0);
+      const tip = parseFloat(c.amount_tip || 0) || 0;
       const cardLast4 = c.card_last4 || '';
       const paymentMethod = c.payment_method || (c.statut === 'payee' ? 'card' : '');
+      // Récupération du nom de table : prefer table.numero/label → table_id
+      let tableLabel = '';
+      if (c.table_label) tableLabel = c.table_label;
+      else if (c.table_numero) tableLabel = 'Table ' + c.table_numero;
+      else if (c.table_id) {
+        const t = (state.tables || []).find(x => x.id === c.table_id);
+        tableLabel = t ? (t.label || ('Table ' + t.numero)) : c.table_id;
+      }
 
       items.forEach(it => {
-        const nom = (it.nom || it.name || '').replace(/;/g, ',');
+        const nom = it.nom || it.name || '';
         const qte = parseInt(it.qte || it.quantity) || 1;
         const prixTTC = parseFloat(it.prix || it.price) || 0;
         const tvaRate = parseFloat(it.tva_rate || 0) || (fiscalCountry === 'FR' ? 10 : 8.1);
@@ -2673,25 +2724,55 @@ async function exportSalesCSV(periode = 'mois', format = 'standard') {
         totalTTC += ligneTTC;
         tvaBreakdown[tvaRate] = (tvaBreakdown[tvaRate] || 0) + tva;
 
-        csv += `${dateStr};${heureStr};${escapeHtml(c.table_id || c.table || '')};${nom};${qte};${prixHT.toFixed(4)};${prixTTC.toFixed(2)};${tvaRate};${ligneHT.toFixed(2)};${ligneTTC.toFixed(2)};${tip > 0 ? tip.toFixed(2) : ''};${paymentMethod};${cardLast4};${c.statut || ''}\n`;
+        const row = [
+          dateStr,
+          heureStr,
+          csvCell(tableLabel),
+          csvCell(nom),
+          qte,
+          csvNum(prixHT),
+          csvNum(prixTTC),
+          csvNum(tvaRate),
+          csvNum(ligneHT),
+          csvNum(ligneTTC),
+          tip > 0 ? csvNum(tip) : '',
+          csvCell(paymentMethod),
+          csvCell(cardLast4),
+          csvCell(c.statut || '')
+        ];
+        csv += row.join(';') + '\n';
       });
       totalTip += tip;
     });
 
-    if (format === 'comptable') {
-      csv += `\n# ═══ RÉCAPITULATIF ═══\n`;
-      csv += `# Total HT;;;;;;;;${totalHT.toFixed(2)}\n`;
-      csv += `# Total TTC;;;;;;;;${totalTTC.toFixed(2)}\n`;
-      Object.entries(tvaBreakdown).forEach(([rate, amount]) => {
-        csv += `# TVA ${rate}%;;;;;;;;${amount.toFixed(2)}\n`;
-      });
-      csv += `# Pourboires totaux;;;;;;;;${totalTip.toFixed(2)}\n`;
-      csv += `# Total encaissé;;;;;;;;${(totalTTC + totalTip).toFixed(2)}\n`;
-      csv += `# Nombre de commandes;;;;;;;;${(cmds || []).length}\n`;
+    // ═══════════════════════════════════════════════════
+    // RÉCAPITULATIF (toujours visible, format clair)
+    // ═══════════════════════════════════════════════════
+    csv += `\n`;
+    csv += `RÉCAPITULATIF\n`;
+    csv += `Total HT;;;;;;;;${csvNum(totalHT)}\n`;
+    csv += `Total TVA;;;;;;;;${csvNum(totalTTC - totalHT)}\n`;
+    csv += `Total TTC;;;;;;;;${csvNum(totalTTC)}\n`;
+    csv += `Pourboires;;;;;;;;${csvNum(totalTip)}\n`;
+    csv += `Total encaissé;;;;;;;;${csvNum(totalTTC + totalTip)}\n`;
+
+    if (Object.keys(tvaBreakdown).length > 0) {
+      csv += `\n`;
+      csv += `DÉTAIL TVA\n`;
+      Object.entries(tvaBreakdown)
+        .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]))
+        .forEach(([rate, amount]) => {
+          csv += `TVA ${rate}%;;;;;;;;${csvNum(amount)}\n`;
+        });
     }
 
-    // Téléchargement
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    // ═══════════════════════════════════════════════════
+    // TÉLÉCHARGEMENT
+    // ═══════════════════════════════════════════════════
+    // Préfixe "sep=;" pour qu'Excel utilise le bon séparateur
+    // BOM UTF-8 (\uFEFF) pour les accents
+    const finalCsv = 'sep=;\n' + csv;
+    const blob = new Blob(['\uFEFF' + finalCsv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

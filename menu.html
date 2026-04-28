@@ -42,16 +42,26 @@
     overflow-x: hidden;
   }
 
-  /* Aurora bleue subtile sur fond noir */
-  html {
+  /* Aurora bleue subtile sur fond noir — STABLE (ne change jamais) */
+  html, body {
+    background: #050506;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
     background:
       radial-gradient(ellipse 70% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
       radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
-      radial-gradient(ellipse 45% 40% at 95% 50%, rgba(46,157,255,0.18), transparent 50%),
-      #050506;
-    background-attachment: fixed;
+      radial-gradient(ellipse 45% 40% at 95% 50%, rgba(46,157,255,0.18), transparent 50%);
   }
-  body { background: transparent; }
 
   /* ─────────── LOADING SCREEN ─────────── */
   .loading {
@@ -180,6 +190,35 @@
     width: 20px;
     height: 20px;
   }
+
+  /* Badge Salon (à gauche de la cloche serveur) */
+  .salon-badge {
+    position: absolute;
+    top: 16px;
+    right: 68px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 100px;
+    background: rgba(48,209,88,0.10);
+    border: 1px solid rgba(48,209,88,0.28);
+    color: var(--green);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 51;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    transition: all 0.18s ease;
+  }
+  .salon-badge:hover {
+    background: rgba(48,209,88,0.16);
+  }
+  .salon-badge svg { width: 16px; height: 16px; }
+  .salon-badge span { color: var(--green); }
 
   /* Bouton langue (en haut à gauche) */
   .lang-btn {
@@ -894,6 +933,52 @@
     cursor: not-allowed;
     transform: none;
   }
+  .split-btn {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    padding: 13px 22px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: -0.012em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.18s ease;
+  }
+  .split-btn:hover {
+    background: rgba(10,132,255,0.10);
+    border-color: rgba(10,132,255,0.30);
+    color: var(--blue);
+  }
+  .split-btn svg { width: 16px; height: 16px; }
+
+  /* Boutons split-mode */
+  .split-mode-btn {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Inter Tight', sans-serif;
+    transition: all 0.18s ease;
+  }
+  .split-mode-btn:hover {
+    background: rgba(255,255,255,0.06);
+  }
+  .split-mode-btn.active {
+    background: rgba(10,132,255,0.10);
+    border-color: var(--blue);
+    color: var(--text);
+  }
 
   /* ─────────── BOUTONS ACTION SERVEUR ─────────── */
   .server-action-btn {
@@ -1041,6 +1126,10 @@
         <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
       </svg>
     </button>
+    <button class="salon-badge" id="salon-badge" onclick="openSalon()" aria-label="Voir le salon" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span id="salon-count">1</span>
+    </button>
     <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -1108,6 +1197,66 @@
   </div>
 </div>
 
+<!-- Modal Diviser l'addition -->
+<div class="modal-overlay" id="modal-split">
+  <div class="modal">
+    <div class="cart-modal-header">
+      <div class="cart-modal-title">Diviser l'addition</div>
+      <button class="modal-close" onclick="closeSplitModal()" style="position:relative; top:auto; right:auto;">×</button>
+    </div>
+    <div style="padding: 0 22px 18px;">
+      <p style="color: var(--text-3); font-size: 13px; font-weight: 700; margin-bottom: 18px; line-height: 1.45;">
+        Choisissez comment diviser le total entre les personnes à votre table.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px;">
+        <button class="split-mode-btn active" data-mode="equal" onclick="setSplitMode('equal')">
+          <div style="font-family: 'Source Serif 4'; font-style: italic; font-size: 18px; font-weight: 700; margin-bottom: 2px;">Parts égales</div>
+          <div style="font-size: 11px; font-weight: 600; opacity: 0.6;">Diviser équitablement</div>
+        </button>
+        <button class="split-mode-btn" data-mode="custom" onclick="setSplitMode('custom')">
+          <div style="font-family: 'Source Serif 4'; font-style: italic; font-size: 18px; font-weight: 700; margin-bottom: 2px;">Personnalisé</div>
+          <div style="font-size: 11px; font-weight: 600; opacity: 0.6;">Saisir les montants</div>
+        </button>
+      </div>
+
+      <div id="split-content"></div>
+
+      <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 14px; color: var(--text-2);">Ma part</div>
+          <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 22px; color: var(--blue);" id="split-my-share">0.00 €</div>
+        </div>
+        <button class="checkout-btn" onclick="payMyShare()">
+          Payer ma part
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Salon (qui est à la table) -->
+<div class="modal-overlay" id="modal-salon">
+  <div class="modal">
+    <div class="cart-modal-header">
+      <div class="cart-modal-title">À votre table</div>
+      <button class="modal-close" onclick="closeSalon()" style="position:relative; top:auto; right:auto;">×</button>
+    </div>
+    <div style="padding: 0 22px 16px;">
+      <p style="color: var(--text-3); font-size: 13px; font-weight: 700; margin-bottom: 18px; line-height: 1.45;">
+        Voici les personnes connectées à votre table. Vous pouvez modifier votre nom pour vous reconnaître.
+      </p>
+
+      <label class="modal-note-label">Mon nom</label>
+      <input type="text" id="salon-my-name" class="modal-note-input" placeholder="Ex. Em" maxlength="30">
+      <button class="checkout-btn" onclick="updateMyName()" style="margin-top: 4px; margin-bottom: 22px;">Mettre à jour</button>
+
+      <div class="modal-note-label" style="margin-bottom: 10px;">Personnes connectées (<span id="salon-list-count">1</span>)</div>
+      <div id="salon-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal appel serveur -->
 <div class="modal-overlay" id="modal-server">
   <div class="modal">
@@ -1166,6 +1315,11 @@
         <div class="cart-total-label">Total</div>
         <div class="cart-total-amount" id="cart-modal-total">0.00</div>
       </div>
+      <!-- Bouton diviser l'addition (apparaît si plusieurs personnes au salon) -->
+      <button class="split-btn" id="split-btn" onclick="openSplitModal()" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Diviser l'addition (<span id="split-count">2</span>)</span>
+      </button>
       <button class="checkout-btn" id="checkout-btn" onclick="submitOrder()">
         Envoyer la commande
       </button>
@@ -1203,8 +1357,107 @@ const state = {
   cart: [],          // [{id, nom, prix, qte, note, image_url}]
   orders: [],        // commandes en cours
   previewMode: false,
-  pollInterval: null
+  pollInterval: null,
+  // Session de table partagée
+  sessionId: '',
+  personneId: '',
+  personneNom: '',
+  salon: []          // liste des personnes à la table
 };
+
+// ═════════════════════════════════════════════════════════════════
+// SESSION DE TABLE
+// ═════════════════════════════════════════════════════════════════
+function generateUUID() {
+  if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+function sessionKey() {
+  return 'frizz_session_' + RESTO_SLUG + '_' + (TABLE_NUM || 'preview');
+}
+function personneKey() {
+  return 'frizz_personne_' + RESTO_SLUG + '_' + (TABLE_NUM || 'preview');
+}
+function ensureSession() {
+  if (state.previewMode || !state.table) return;
+  // Charge le personne_id local (perso, dure tout le temps)
+  let personneId = '';
+  let personneNom = '';
+  try {
+    const raw = localStorage.getItem(personneKey());
+    if (raw) {
+      const p = JSON.parse(raw);
+      personneId = p.id || '';
+      personneNom = p.nom || '';
+    }
+  } catch(_) {}
+  if (!personneId) {
+    personneId = generateUUID();
+    personneNom = 'Client ' + (Math.floor(Math.random() * 90) + 10);
+    try { localStorage.setItem(personneKey(), JSON.stringify({id: personneId, nom: personneNom})); } catch(_) {}
+  }
+  state.personneId = personneId;
+  state.personneNom = personneNom;
+
+  // Charge ou crée la session_id (table — partagée entre clients)
+  // On garde la session 3h après le dernier scan
+  let sessionId = '';
+  try {
+    const raw = sessionStorage.getItem(sessionKey());
+    if (raw) {
+      const s = JSON.parse(raw);
+      // Validité 3h
+      if (Date.now() - (s.created || 0) < 3 * 60 * 60 * 1000) {
+        sessionId = s.id;
+      }
+    }
+  } catch(_) {}
+  if (!sessionId) {
+    // Pour qu'une session soit partagée entre plusieurs clients à la même table,
+    // on dérive sessionId de l'ID de la table + une fenêtre de temps de 3h
+    const slot = Math.floor(Date.now() / (3 * 60 * 60 * 1000));
+    sessionId = state.table.id + '-' + slot;
+    try { sessionStorage.setItem(sessionKey(), JSON.stringify({id: sessionId, created: Date.now()})); } catch(_) {}
+  }
+  state.sessionId = sessionId;
+
+  // Annoncer notre présence (insertion dans table_sessions OU dans une commande "presence")
+  announcePresence();
+}
+
+async function announcePresence() {
+  if (!state.sessionId || !state.personneId) return;
+  try {
+    // On utilise une commande "presence" comme heartbeat
+    const payload = {
+      restaurant_id: state.resto.id,
+      table_id: state.table.id,
+      table_numero: state.table.numero || TABLE_NUM,
+      session_id: state.sessionId,
+      personne_id: state.personneId,
+      personne_nom: state.personneNom,
+      items: [{ type: 'presence' }],
+      total: 0,
+      statut: 'presence',
+      heure: new Date().toISOString()
+    };
+    // Insert sans bloquer en cas d'erreur (colonnes manquantes)
+    const optionalCols = ['session_id', 'personne_id', 'personne_nom', 'table_id', 'table_numero'];
+    let p = { ...payload };
+    for (let i = 0; i < 6; i++) {
+      const { error } = await supa.from('commandes').insert(p);
+      if (!error) break;
+      const errMsg = (error.message || '').toLowerCase();
+      const col = optionalCols.find(c => errMsg.includes(c) && p[c] !== undefined);
+      if (col) { delete p[col]; continue; }
+      break;
+    }
+  } catch (e) { console.warn('announcePresence:', e); }
+}
 
 // ═════════════════════════════════════════════════════════════════
 // HELPERS
@@ -1298,6 +1551,9 @@ async function init() {
       state.table = table;
     }
 
+    // 5b) Initialiser la session de table (pour salon/groupe/paiement partagé)
+    ensureSession();
+
     // 6) Charger les plats
     const { data: menu, error: menuErr } = await supa
       .from('menu').select('*')
@@ -1363,6 +1619,252 @@ function renderHeader() {
   }
   document.getElementById('resto-table').textContent = subtitle;
 }
+
+// ═════════════════════════════════════════════════════════════════
+// DIVISER L'ADDITION (Split Bill)
+// ═════════════════════════════════════════════════════════════════
+let splitMode = 'equal';
+let splitCustomShares = {}; // {personne_id: montant}
+
+function openSplitModal() {
+  if (state.cart.length === 0) {
+    showToast('Votre panier est vide');
+    return;
+  }
+  splitMode = 'equal';
+  splitCustomShares = {};
+  document.querySelectorAll('.split-mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === 'equal');
+  });
+  renderSplitContent();
+  document.getElementById('modal-split').classList.add('show');
+}
+function closeSplitModal() {
+  document.getElementById('modal-split').classList.remove('show');
+}
+function setSplitMode(mode) {
+  splitMode = mode;
+  document.querySelectorAll('.split-mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  renderSplitContent();
+}
+function getCartTotal() {
+  return state.cart.reduce((s, it) => s + (it.prix * (it.qte || 1)), 0);
+}
+function getSplitPersons() {
+  // Personnes du salon (au moins moi)
+  return state.salon.length > 0 ? state.salon : [{id: state.personneId, nom: state.personneNom}];
+}
+function renderSplitContent() {
+  const content = document.getElementById('split-content');
+  if (!content) return;
+  const total = getCartTotal();
+  const persons = getSplitPersons();
+
+  if (splitMode === 'equal') {
+    const share = total / persons.length;
+    content.innerHTML = persons.map(p => `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 6px;">
+        <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(p.nom || 'Client')}${p.id === state.personneId ? ' <span style="color: var(--blue); font-size: 9.5px;">· VOUS</span>' : ''}</div>
+        <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 15px; color: var(--text-2);">${formatPrice(share)} €</div>
+      </div>
+    `).join('');
+    document.getElementById('split-my-share').textContent = formatPrice(share) + ' €';
+  } else {
+    // Mode custom : chacun saisit son montant
+    content.innerHTML = persons.map(p => `
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 6px;">
+        <div style="flex: 1; font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(p.nom || 'Client')}${p.id === state.personneId ? ' <span style="color: var(--blue); font-size: 9.5px;">· VOUS</span>' : ''}</div>
+        <input type="number" step="0.01" min="0" placeholder="0.00"
+               value="${splitCustomShares[p.id] || ''}"
+               onchange="setCustomShare('${p.id}', this.value)"
+               style="width: 90px; padding: 8px 12px; background: rgba(0,0,0,0.30); border: 1px solid var(--border-strong); border-radius: 100px; color: var(--text); font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 14px; text-align: right; outline: 0;">
+        <span style="font-family: 'Source Serif 4'; font-style: italic; color: var(--text-3); font-weight: 700;">€</span>
+      </div>
+    `).join('');
+    updateMyCustomShare();
+  }
+}
+function setCustomShare(personneId, value) {
+  const v = parseFloat(value);
+  if (isNaN(v) || v < 0) {
+    delete splitCustomShares[personneId];
+  } else {
+    splitCustomShares[personneId] = v;
+  }
+  updateMyCustomShare();
+}
+function updateMyCustomShare() {
+  const myShare = splitCustomShares[state.personneId] || 0;
+  document.getElementById('split-my-share').textContent = formatPrice(myShare) + ' €';
+}
+async function payMyShare() {
+  const total = getCartTotal();
+  const persons = getSplitPersons();
+  let myShare = 0;
+  if (splitMode === 'equal') {
+    myShare = total / persons.length;
+  } else {
+    myShare = splitCustomShares[state.personneId] || 0;
+  }
+  if (myShare <= 0) {
+    showToast('Indiquez votre part', 'error');
+    return;
+  }
+
+  if (state.previewMode) {
+    showToast('Mode aperçu : paiement non effectué', 'success');
+    closeSplitModal();
+    return;
+  }
+
+  // TODO: Intégration Stripe Checkout pour payer la part
+  // Pour l'instant on simule : on ajoute un "paiement partiel" en commande
+  try {
+    const payload = {
+      restaurant_id: state.resto.id,
+      table_id: state.table.id,
+      table_numero: state.table.numero || TABLE_NUM,
+      session_id: state.sessionId,
+      personne_id: state.personneId,
+      personne_nom: state.personneNom,
+      items: [{ type: 'partial_payment', amount: myShare }],
+      total: myShare,
+      statut: 'paiement_partiel',
+      heure: new Date().toISOString()
+    };
+    const optionalCols = ['session_id', 'personne_id', 'personne_nom', 'table_id', 'table_numero'];
+    let p = { ...payload };
+    let inserted = false;
+    for (let i = 0; i < 6; i++) {
+      const { error } = await supa.from('commandes').insert(p);
+      if (!error) { inserted = true; break; }
+      const errMsg = (error.message || '').toLowerCase();
+      const col = optionalCols.find(c => errMsg.includes(c) && p[c] !== undefined);
+      if (col) { delete p[col]; continue; }
+      break;
+    }
+
+    if (inserted) {
+      showToast('Votre part a été enregistrée : ' + formatPrice(myShare) + ' €', 'success');
+      closeSplitModal();
+    } else {
+      showToast('Erreur lors de l\'enregistrement', 'error');
+    }
+  } catch (err) {
+    console.error('payMyShare:', err);
+    showToast('Erreur de paiement', 'error');
+  }
+}
+
+// Met à jour le bouton Diviser dans la modale panier
+function updateSplitBtnVisibility() {
+  const btn = document.getElementById('split-btn');
+  const count = document.getElementById('split-count');
+  if (!btn) return;
+  const persons = getSplitPersons();
+  if (persons.length >= 2 && state.cart.length > 0) {
+    btn.style.display = 'flex';
+    if (count) count.textContent = persons.length;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+// Ferme la modale Split en cliquant en dehors
+document.getElementById('modal-split').addEventListener('click', e => {
+  if (e.target.id === 'modal-split') closeSplitModal();
+});
+
+// ═════════════════════════════════════════════════════════════════
+// SALON (qui est à la table)
+// ═════════════════════════════════════════════════════════════════
+function openSalon() {
+  if (state.previewMode) {
+    showToast('Mode aperçu : salon désactivé');
+    return;
+  }
+  document.getElementById('salon-my-name').value = state.personneNom || '';
+  renderSalon();
+  document.getElementById('modal-salon').classList.add('show');
+}
+function closeSalon() {
+  document.getElementById('modal-salon').classList.remove('show');
+}
+function updateMyName() {
+  const input = document.getElementById('salon-my-name');
+  const newName = input.value.trim();
+  if (!newName) { showToast('Le nom ne peut pas être vide', 'error'); return; }
+  state.personneNom = newName;
+  try {
+    localStorage.setItem(personneKey(), JSON.stringify({id: state.personneId, nom: newName}));
+  } catch(_) {}
+  announcePresence();
+  showToast('Nom mis à jour', 'success');
+  renderSalon();
+}
+function renderSalon() {
+  const list = document.getElementById('salon-list');
+  const countSpan = document.getElementById('salon-list-count');
+  if (!list) return;
+
+  const persons = state.salon.length > 0 ? state.salon : [{id: state.personneId, nom: state.personneNom, isMe: true}];
+
+  if (countSpan) countSpan.textContent = persons.length;
+
+  list.innerHTML = persons.map(p => `
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px;">
+      <div style="width: 36px; height: 36px; border-radius: 100px; background: ${p.id === state.personneId ? 'var(--blue)' : 'rgba(255,255,255,0.10)'}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; flex-shrink: 0;">
+        ${escapeHtml((p.nom || '?').charAt(0).toUpperCase())}
+      </div>
+      <div style="flex: 1;">
+        <div style="font-weight: 800; font-size: 14px; color: var(--text);">${escapeHtml(p.nom || 'Inconnu')}${p.id === state.personneId ? ' <span style="color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 0.04em;">· VOUS</span>' : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function updateSalonBadge() {
+  const badge = document.getElementById('salon-badge');
+  const count = document.getElementById('salon-count');
+  if (!badge || !count) return;
+  const n = Math.max(state.salon.length, 1);
+  count.textContent = n;
+  badge.style.display = state.sessionId ? 'flex' : 'none';
+}
+async function loadSalon() {
+  if (!state.sessionId) return;
+  try {
+    const since = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+    const { data } = await supa.from('commandes')
+      .select('personne_id, personne_nom, heure')
+      .eq('restaurant_id', state.resto.id)
+      .eq('session_id', state.sessionId)
+      .gte('heure', since)
+      .order('heure', { ascending: true });
+
+    if (!data) return;
+    // Dédoublonner par personne_id (garder le nom le plus récent)
+    const map = new Map();
+    data.forEach(o => {
+      if (o.personne_id) map.set(o.personne_id, { id: o.personne_id, nom: o.personne_nom || 'Client' });
+    });
+    // S'assurer que MOI je suis dedans
+    if (!map.has(state.personneId)) {
+      map.set(state.personneId, { id: state.personneId, nom: state.personneNom });
+    }
+    state.salon = [...map.values()];
+    updateSalonBadge();
+    if (document.getElementById('modal-salon').classList.contains('show')) {
+      renderSalon();
+    }
+  } catch (e) { console.warn('loadSalon:', e); }
+}
+
+// Ferme la modale Salon en cliquant en dehors
+document.getElementById('modal-salon').addEventListener('click', e => {
+  if (e.target.id === 'modal-salon') closeSalon();
+});
 
 // ═════════════════════════════════════════════════════════════════
 // LANGUES (Google Translate via cookie googtrans)
@@ -1692,6 +2194,7 @@ function openCartModal() {
     return;
   }
   renderCartModal();
+  updateSplitBtnVisibility();
   document.getElementById('modal-cart').classList.add('show');
 }
 function closeCartModal() {
@@ -1764,6 +2267,9 @@ async function submitOrder() {
       restaurant_id: state.resto.id,
       table_id: state.table?.id || null,
       table_numero: state.table?.numero || TABLE_NUM || null,
+      session_id: state.sessionId || null,
+      personne_id: state.personneId || null,
+      personne_nom: state.personneNom || null,
       items: state.cart.map(it => ({
         plat_id: it.id,
         nom: it.nom,
@@ -1778,7 +2284,7 @@ async function submitOrder() {
     };
 
     // Insertion avec retry intelligent (on retire les colonnes qui n'existent pas)
-    const optionalCols = ['table_id', 'table_numero', 'type_commande'];
+    const optionalCols = ['table_id', 'table_numero', 'type_commande', 'session_id', 'personne_id', 'personne_nom'];
     let payload = { ...orderData };
     let inserted = false;
 
@@ -1841,8 +2347,16 @@ async function loadOrders() {
       .order('heure', { ascending: false });
 
     if (error) return;
-    state.orders = (data || []).filter(o => o.statut !== 'servie' && o.statut !== 'annulee');
+    // Filtrer : on ne garde que les vraies commandes (pas les "presence" ni "service_request")
+    state.orders = (data || []).filter(o =>
+      o.statut !== 'servie' &&
+      o.statut !== 'annulee' &&
+      o.statut !== 'presence' &&
+      o.statut !== 'service_request'
+    );
     updateOrdersBanner();
+    // Aussi recharger le salon
+    await loadSalon();
   } catch (e) {
     console.warn('loadOrders:', e);
   }

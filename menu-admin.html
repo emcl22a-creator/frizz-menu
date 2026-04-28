@@ -4295,8 +4295,20 @@ async function createNewResto() {
   const { data: existing } = await supa.from('restaurants').select('id').eq('slug', slug).maybeSingle();
   if (existing) throw new Error('Cet identifiant est déjà utilisé. Choisissez-en un autre.');
 
-  // Payload complet
+  // Génère un UUID v4 côté client (au cas où la base n'a pas de default gen_random_uuid())
+  const generateUUID = () => {
+    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    // Fallback manuel (RFC 4122 v4)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+
+  // Payload complet (avec id généré côté client en cas de besoin)
   const fullPayload = {
+    id: generateUUID(),
     nom,
     slug,
     user_id: state.user.id,

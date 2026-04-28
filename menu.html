@@ -3320,6 +3320,21 @@ async function init() {
 
     state.menu = plats;
 
+    // En mode preview : skip toute la logique session/commandes, on affiche juste le menu
+    if (state.previewMode) {
+      state.personneNom = 'Aperçu';
+      state.allOrders = [];
+      state.cart = [];
+      renderHeader();
+      renderMenu();
+      renderCart();
+      updateSalonCount();
+
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('app').style.display = 'block';
+      return;
+    }
+
     ensureSession();
     await ensureTableSession();
     await loadOrders();
@@ -3345,7 +3360,11 @@ async function init() {
 // ========== HEADER ==========
 function renderHeader() {
   document.getElementById('resto-name').textContent = state.config.restaurant_nom || 'Menu';
-  document.getElementById('resto-table').textContent = (state.table.nom || 'Table') + ' · ' + (state.personneNom || 'Toi');
+  // En mode preview pas de table, sinon afficher nom de table
+  const tableLabel = state.previewMode
+    ? 'Aperçu'
+    : ((state.table?.nom || 'Table') + ' · ' + (state.personneNom || 'Toi'));
+  document.getElementById('resto-table').textContent = tableLabel;
   if (state.config.logo_url) {
     document.getElementById('resto-logo').style.backgroundImage = `url('${state.config.logo_url.replace(/'/g, "\\'")}')`;
   }

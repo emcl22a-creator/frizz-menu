@@ -826,9 +826,14 @@
     box-shadow: 0 -32px 80px rgba(0,0,0,0.5);
     border-top: 1px solid var(--sep);
   }
+  /* Modal panier (Notre commande) — moins haut pour ne pas envahir l'écran */
+  #modal-cart .modal {
+    max-height: 75vh;
+  }
   @media (min-width: 600px) {
     .modal-overlay { align-items: center; }
     .modal { border-radius: 28px; max-height: 88vh; }
+    #modal-cart .modal { max-height: 70vh; }
   }
   @keyframes modal-in {
     from { opacity: 0; transform: translateY(60px); }
@@ -1324,23 +1329,28 @@
   }
   .loading-screen.hidden { display: none; }
   .loading-logo {
-    font-size: 38px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    color: var(--blue);
-    text-shadow: 0 0 24px rgba(10,132,255,0.55);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 42px;
+    letter-spacing: -0.020em;
+    color: #F2F2F4;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
   }
   .loading-logo .spark {
-    font-size: 28px;
-    animation: spark-pulse 1.4s ease-in-out infinite;
-    filter: drop-shadow(0 0 12px rgba(10,132,255,0.95));
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 36px;
+    color: #0A84FF;
+    text-shadow: 0 0 12px rgba(10,132,255,0.6);
+    animation: spark-pulse 3.5s ease-in-out infinite;
+    filter: none;
   }
   @keyframes spark-pulse {
-    0%,100% { opacity: 1; transform: scale(1) rotate(0); }
-    50% { opacity: 0.5; transform: scale(0.7) rotate(180deg); }
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.08); }
   }
 
   /* ========== ERROR SCREEN ========== */

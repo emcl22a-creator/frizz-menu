@@ -9,7 +9,7 @@
 <title>Service — Frizz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
@@ -901,6 +901,162 @@
     .tables-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .plats-grid { grid-template-columns: repeat(2, 1fr); }
     .clock { display: none; }
+  }
+
+  /* ════════════ OVERRIDE FINAL — Design Frizz unifié (aurora + glass + Source Serif italique) ════════════ */
+
+  /* Police de base : Inter Tight */
+  body, input, select, textarea, button {
+    font-family: 'Inter Tight', 'Inter', -apple-system, sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.014em !important;
+  }
+
+  /* Aurora bleue subtile sur le fond (noir dominant) */
+  html {
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
+      radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
+      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
+      #050506 !important;
+    background-attachment: fixed !important;
+  }
+  body { background: transparent !important; }
+  body::before {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background:
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%) !important;
+    animation: auroraDrift 24s ease-in-out infinite alternate !important;
+    mix-blend-mode: screen !important;
+  }
+  @keyframes auroraDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 2%) scale(1.06); }
+    100% { transform: translate(-2%, 3%) scale(1.04); }
+  }
+
+  /* Logo Frizz✦ — Source Serif 4 italique 700 */
+  .brand-logo {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.020em !important;
+    font-size: 26px !important;
+    color: #F2F2F4 !important;
+    text-shadow: none !important;
+  }
+  .brand-logo .spark {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    color: #0A84FF !important;
+    font-weight: 700 !important;
+    text-shadow: 0 0 12px rgba(10,132,255,0.5) !important;
+    filter: none !important;
+  }
+
+  /* Loading screen logo */
+  .loading-logo {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    font-size: 42px !important;
+    letter-spacing: -0.020em !important;
+    color: #F2F2F4 !important;
+    text-shadow: none !important;
+  }
+  .loading-logo .spark {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    color: #0A84FF !important;
+    font-size: 36px !important;
+    text-shadow: 0 0 12px rgba(10,132,255,0.6) !important;
+    filter: none !important;
+  }
+
+  /* Header glass top bar */
+  .topbar, .header, header {
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: saturate(180%) blur(28px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(28px) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  /* Cartes glass + arrondi 22px partout */
+  .card, .table-card, .plat-card, .order-card, .panel {
+    border-radius: 22px !important;
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+  }
+
+  /* Source Serif 4 italique 700 sur chiffres et accents */
+  .stat-value, .total, .price, .amount, .clock,
+  .accent-italic, .number-big, [data-accent] {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.018em !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Boutons — pill 100px + bleu Apple */
+  .btn, button.primary, .btn-primary, .action-btn {
+    border-radius: 100px !important;
+    font-weight: 800 !important;
+  }
+  .btn.primary, .btn-primary, button.primary {
+    background: #0A84FF !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.20),
+      0 6px 18px -4px rgba(10,132,255,0.5) !important;
+  }
+
+  /* Pills / badges / chips — pill 100px + glass */
+  .badge, .pill, .chip, .status-badge, .brand-sub {
+    border-radius: 100px !important;
+  }
+
+  /* Inputs glass */
+  input, textarea, select {
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  /* Modales glass épais + arrondi 24px */
+  .modal, .modal-content {
+    border-radius: 24px !important;
+    background: rgba(28, 28, 32, 0.85) !important;
+    backdrop-filter: saturate(180%) blur(40px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(40px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+  }
+
+  /* Hero title : "Service" en italique */
+  .hero h1, .page-title h1 {
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.030em !important;
+  }
+  .hero h1 em, .page-title em {
+    font-family: 'Source Serif 4', serif !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    color: #0A84FF !important;
   }
 </style>
 </head>

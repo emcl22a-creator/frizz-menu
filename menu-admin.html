@@ -3218,10 +3218,14 @@ async function showTableQR(tableId) {
   overlay.innerHTML = `
     <div class="modal-content" style="max-width: 340px; padding: 0;">
       <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px; z-index: 2; background: rgba(255,255,255,0.10); width: 32px; height: 32px; border-radius: 100px; border: 0; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
-      <div style="padding: 32px; display: flex; align-items: center; justify-content: center;">
+      <div style="padding: 32px 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
         <div style="background: #fff; border-radius: 20px; padding: 16px; display: inline-block;">
           <canvas id="qr-canvas" style="display: block;"></canvas>
         </div>
+        <button class="btn btn-primary" id="download-qr" style="width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Télécharger en PDF
+        </button>
       </div>
     </div>
   `;
@@ -3263,7 +3267,11 @@ async function showTableQR(tableId) {
     }
   }
 
-  // Bouton télécharger retiré : QR épuré, juste le code visible
+  // Wire bouton télécharger PDF
+  const downloadBtn = overlay.querySelector('#download-qr');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => printSingleTableQR(table));
+  }
   overlay.classList.add('show');
 }
 

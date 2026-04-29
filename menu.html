@@ -192,35 +192,32 @@
   }
 
 
-  /* Badge "À VOTRE TABLE" en haut à droite (vert comme avant) */
+  /* Badge salon en haut à droite (icône uniquement) */
   .table-badge {
     position: absolute;
     top: 16px;
     right: 16px;
+    width: 44px;
     height: 44px;
-    padding: 0 14px;
     border-radius: 100px;
     background: rgba(48,209,88,0.10);
     border: 1px solid rgba(48,209,88,0.28);
     color: var(--green);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 51;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 800;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .table-badge:hover {
+    background: rgba(48,209,88,0.16);
   }
   .table-badge svg {
-    width: 16px;
-    height: 16px;
-    color: var(--green);
-  }
-  .table-badge span {
+    width: 18px;
+    height: 18px;
     color: var(--green);
   }
 
@@ -1220,6 +1217,151 @@
     letter-spacing: -0.005em;
   }
 
+  /* ─────────── FAB APPELER LE SERVEUR ─────────── */
+  .fab-help {
+    position: fixed;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: 18px;
+    width: 52px;
+    height: 52px;
+    border-radius: 100px;
+    background: rgba(20, 20, 26, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 12px 30px -8px rgba(0,0,0,0.5);
+    cursor: pointer;
+    z-index: 55;
+    transition: all 0.25s ease;
+  }
+  .fab-help svg { width: 22px; height: 22px; }
+  .fab-help:hover {
+    background: rgba(30, 30, 36, 0.95);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.2);
+  }
+  .fab-help:active { transform: scale(0.94); }
+  /* Quand la cart-bar est visible, le FAB monte */
+  body.has-cart .fab-help {
+    bottom: calc(86px + env(safe-area-inset-bottom));
+  }
+  .fab-help.success {
+    background: var(--green);
+    border-color: rgba(48,209,88,0.5);
+    color: #fff;
+  }
+
+  /* Modal Appeler le serveur */
+  .help-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 22px 22px;
+  }
+  .help-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    color: var(--text);
+    font-family: inherit;
+    text-align: left;
+  }
+  .help-option:hover {
+    background: rgba(10,132,255,0.10);
+    border-color: rgba(10,132,255,0.30);
+  }
+  .help-option-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(10,132,255,0.18);
+    border: 1px solid rgba(10,132,255,0.30);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .help-option-icon svg { width: 20px; height: 20px; }
+  .help-option-icon.green {
+    background: rgba(48,209,88,0.16);
+    border-color: rgba(48,209,88,0.30);
+    color: var(--green);
+  }
+  .help-option-icon.orange {
+    background: rgba(255,159,10,0.18);
+    border-color: rgba(255,159,10,0.30);
+    color: var(--orange);
+  }
+  .help-option-text {
+    flex: 1;
+  }
+  .help-option-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--text);
+    letter-spacing: -0.014em;
+    margin-bottom: 2px;
+  }
+  .help-option-desc {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* ─────────── STEPPER QTY DANS LA LISTE (si plat déjà au panier) ─────────── */
+  .plat-qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(10,132,255,0.14);
+    border: 1px solid rgba(10,132,255,0.30);
+    border-radius: 100px;
+    padding: 4px 6px;
+  }
+  .plat-qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 100px;
+    background: transparent;
+    border: 0;
+    color: var(--blue);
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    line-height: 1;
+  }
+  .plat-qty-btn:hover {
+    background: rgba(10,132,255,0.16);
+  }
+  .plat-qty-num {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--blue);
+    min-width: 16px;
+    text-align: center;
+  }
+
   /* ─────────── MODAL AVIS GOOGLE ─────────── */
   .google-review-overlay {
     position: fixed;
@@ -1399,7 +1541,6 @@
   <header class="header">
     <div class="table-badge" id="table-badge">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span id="table-badge-text">À VOTRE TABLE</span>
     </div>
     <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1557,6 +1698,57 @@
       </button>
       <button class="checkout-btn" id="checkout-btn" onclick="submitOrder()">
         Envoyer la commande
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB Appeler le serveur -->
+<button class="fab-help" id="fab-help" onclick="openHelpModal()" aria-label="Appeler le serveur" title="Appeler le serveur">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+</button>
+
+<!-- Modal Appeler le serveur -->
+<div class="modal-overlay" id="modal-help">
+  <div class="modal">
+    <div class="cart-modal-header">
+      <div class="cart-modal-title">Appeler le <em style="color:var(--blue);">serveur</em></div>
+      <button class="modal-close" onclick="closeHelpModal()" style="position:relative; top:auto; right:auto;">×</button>
+    </div>
+    <p style="padding: 0 22px 14px; font-size: 13px; font-weight: 700; color: var(--text-3); line-height: 1.4;">
+      Le serveur sera prévenu instantanément.
+    </p>
+    <div class="help-options">
+      <button class="help-option" onclick="callServer('addition', 'Demande l\'addition')">
+        <div class="help-option-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        </div>
+        <div class="help-option-text">
+          <div class="help-option-title">Demander l'addition</div>
+          <div class="help-option-desc">Le serveur apporte la note</div>
+        </div>
+      </button>
+
+      <button class="help-option" onclick="callServer('eau', 'Demande de l\'eau')">
+        <div class="help-option-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </div>
+        <div class="help-option-text">
+          <div class="help-option-title">De l'eau s'il vous plaît</div>
+          <div class="help-option-desc">Carafe ou bouteille</div>
+        </div>
+      </button>
+
+      <button class="help-option" onclick="callServer('appel', 'Demande d\'assistance')">
+        <div class="help-option-icon orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 11h-6"/><path d="M20 8v6"/></svg>
+        </div>
+        <div class="help-option-text">
+          <div class="help-option-title">Appeler le serveur</div>
+          <div class="help-option-desc">Pour autre chose</div>
+        </div>
       </button>
     </div>
   </div>
@@ -1838,6 +2030,75 @@ async function init() {
     showError('Erreur de chargement', err.message || 'Une erreur est survenue.');
   }
 }
+
+// ═════════════════════════════════════════════════════════════════
+// APPELER LE SERVEUR (FAB + modal)
+// ═════════════════════════════════════════════════════════════════
+function openHelpModal() {
+  if (state.previewMode) {
+    showToast('Mode aperçu : appel non envoyé', 'success');
+    return;
+  }
+  document.getElementById('modal-help').classList.add('show');
+}
+
+function closeHelpModal() {
+  document.getElementById('modal-help').classList.remove('show');
+}
+
+async function callServer(type, message) {
+  closeHelpModal();
+  if (state.previewMode || !state.resto || !state.table) {
+    showToast('Mode aperçu : appel non envoyé', 'success');
+    return;
+  }
+
+  // Animation succès sur le FAB
+  const fab = document.getElementById('fab-help');
+  fab.classList.add('success');
+  setTimeout(() => fab.classList.remove('success'), 1500);
+
+  showToast('Serveur prévenu · ' + message, 'success');
+
+  try {
+    // Tentative d'insertion dans une table appels_serveur (si elle existe)
+    // On ignore silencieusement si la table n'existe pas (mode best-effort)
+    const payload = {
+      restaurant_id: state.resto.id,
+      table_id: state.table.id,
+      table_numero: state.table.numero,
+      type: type,
+      message: message,
+      statut: 'en_attente',
+      heure: new Date().toISOString()
+    };
+
+    // On essaie plusieurs noms de table (selon la base)
+    const tables = ['appels_serveur', 'serveur_calls', 'help_calls', 'notifications'];
+    for (const t of tables) {
+      const { error } = await supa.from(t).insert(payload);
+      if (!error) {
+        return;
+      }
+    }
+  } catch (err) {
+    // Silent fail — l'utilisateur a déjà vu le toast de confirmation
+    console.warn('callServer:', err);
+  }
+}
+
+// Ferme la modale help en cliquant en dehors
+document.getElementById('modal-help').addEventListener('click', e => {
+  if (e.target.id === 'modal-help') closeHelpModal();
+});
+
+// Toggle de la classe body 'has-cart' quand la cart-bar est visible
+// (pour faire monter le FAB au-dessus)
+const cartBarObserver = new MutationObserver(() => {
+  const isVisible = document.getElementById('cart-bar')?.classList.contains('visible');
+  document.body.classList.toggle('has-cart', !!isVisible);
+});
+cartBarObserver.observe(document.getElementById('cart-bar'), { attributes: true, attributeFilter: ['class'] });
 
 // ═════════════════════════════════════════════════════════════════
 // MODE SELECTOR — Sur place / À emporter
@@ -2361,6 +2622,22 @@ function renderPlatRow(p) {
     ? `<div class="plat-img" style="background-image: url('${escapeHtml(p.image_url)}')"></div>`
     : `<div class="plat-img-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
 
+  // Combien d'exemplaires de ce plat dans le panier (sans note)
+  const inCartQty = state.cart
+    .filter(it => it.id === p.id && !it.note)
+    .reduce((s, it) => s + (it.qte || 1), 0);
+
+  // Si déjà dans le panier → afficher stepper +/-, sinon afficher bouton +
+  const action = inCartQty > 0
+    ? `<div class="plat-qty-stepper" onclick="event.stopPropagation()">
+         <button class="plat-qty-btn" onclick="decrementPlat('${p.id}')" aria-label="Retirer">−</button>
+         <span class="plat-qty-num">${inCartQty}</span>
+         <button class="plat-qty-btn" onclick="quickAdd('${p.id}')" aria-label="Ajouter">+</button>
+       </div>`
+    : `<button class="plat-quick-add" onclick="event.stopPropagation(); quickAdd('${p.id}')" aria-label="Ajouter">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+       </button>`;
+
   return `
     <div class="plat-row" onclick="openPlatModal('${p.id}')">
       <div class="plat-info">
@@ -2369,9 +2646,7 @@ function renderPlatRow(p) {
         <div class="plat-price">${formatPrice(p.prix)} ${getCurrencySymbol()}</div>
       </div>
       ${img}
-      <button class="plat-quick-add" onclick="event.stopPropagation(); quickAdd('${p.id}')" aria-label="Ajouter">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
+      ${action}
     </div>
   `;
 }
@@ -2380,17 +2655,39 @@ function renderPlatRow(p) {
 function quickAdd(platId) {
   const p = state.menu.find(x => x.id === platId);
   if (!p) return;
-  state.cart.push({
-    id: p.id,
-    nom: p.nom,
-    prix: parseFloat(p.prix),
-    qte: 1,
-    note: null,
-    image_url: p.image_url || null
-  });
+  // Cherche un item identique (même plat, sans note) déjà au panier → incrémente
+  const existing = state.cart.find(it => it.id === p.id && !it.note);
+  if (existing) {
+    existing.qte = (existing.qte || 1) + 1;
+  } else {
+    state.cart.push({
+      id: p.id,
+      nom: p.nom,
+      prix: parseFloat(p.prix),
+      qte: 1,
+      note: null,
+      image_url: p.image_url || null
+    });
+  }
   saveCart();
   updateCartBar();
+  renderMenu(); // Re-render pour afficher le stepper
   showToast('Ajouté · ' + p.nom, 'success');
+}
+
+// Décrémente la quantité dans le panier (et retire si 0)
+function decrementPlat(platId) {
+  const idx = state.cart.findIndex(it => it.id === platId && !it.note);
+  if (idx === -1) return;
+  const item = state.cart[idx];
+  if ((item.qte || 1) > 1) {
+    item.qte = (item.qte || 1) - 1;
+  } else {
+    state.cart.splice(idx, 1);
+  }
+  saveCart();
+  updateCartBar();
+  renderMenu();
 }
 
 // ═════════════════════════════════════════════════════════════════

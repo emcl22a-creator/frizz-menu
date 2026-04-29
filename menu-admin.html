@@ -77,13 +77,6 @@
     animation: auroraDrift 24s ease-in-out infinite alternate;
     mix-blend-mode: screen;
   }
-  body::after {
-    content: '';
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
-    opacity: 0.04;
-    mix-blend-mode: overlay;
-  }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
     50%  { transform: translate(3%, 2%) scale(1.06); }
@@ -91,40 +84,26 @@
   }
   .section, .app, main { background: transparent !important; }
 
-  .app {
-    min-height: 100vh;
-    padding-bottom: 100px;
-    position: relative;
-    z-index: 1;
-  }
+  .app { min-height: 100vh; padding-bottom: 100px; position: relative; z-index: 1; }
 
   @media (min-width: 768px) {
-    .app { max-width: 720px; margin: 0 auto; padding-left: 0; padding-right: 0; padding-bottom: 120px; }
-    .topbar { max-width: 720px; margin: 0 auto; border-radius: 0 0 16px 16px; border-left: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); }
+    .app { max-width: 720px; margin: 0 auto; padding-bottom: 120px; }
+    .topbar { max-width: 720px; margin: 0 auto; border-radius: 0 0 16px 16px; }
     .floating-tabbar { left: 50% !important; right: auto !important; transform: translateX(-50%) !important; max-width: 420px; width: calc(100% - 40px); }
-    .section { padding-left: 0; padding-right: 0; }
     .ed-hero { padding: 36px 32px 28px !important; }
     .ed-hero-title { font-size: 56px !important; }
     .ed-cmd-card { padding: 28px 28px !important; }
-    #ed-plats-list, #ed-tables-list { margin-left: 22px !important; margin-right: 22px !important; }
-    .ed-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .modal-content { max-width: 560px !important; }
-  }
-
-  @media (min-width: 1200px) {
-    .app { box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 30px 100px -30px rgba(0,0,0,0.5); }
   }
 
   .topbar {
     position: sticky; top: 0; z-index: 50;
-    padding: 14px 22px;
-    padding-top: calc(14px + env(safe-area-inset-top));
+    padding: 14px 22px; padding-top: calc(14px + env(safe-area-inset-top));
     display: flex; align-items: center; justify-content: space-between;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: saturate(180%) blur(28px);
     -webkit-backdrop-filter: saturate(180%) blur(28px);
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    box-shadow: none;
   }
   .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
   .logo-link:hover { transform: scale(1.04); }
@@ -146,87 +125,40 @@
 
   .topbar-right { display: flex; align-items: center; gap: 8px; }
 
-  .resto-pill {
+  .resto-pill, .status-pill {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 12px; background: rgba(255,255,255,0.08);
+    padding: 6px 12px;
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong); border-radius: var(--r-pill);
-    font-size: 11.5px; font-weight: 800; color: var(--text);
+    border-radius: var(--r-pill);
+    font-size: 11.5px; font-weight: 800;
     letter-spacing: -0.012em; cursor: pointer;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 12px -4px rgba(0,0,0,0.3);
-    font-family: inherit; border: 0; transition: all 0.15s ease;
+    font-family: inherit; border: 0;
+    transition: all 0.15s ease;
   }
+  .resto-pill { background: rgba(255,255,255,0.08); border: 1px solid var(--border-strong); color: var(--text); box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 12px -4px rgba(0,0,0,0.3); }
   .resto-pill:hover { background: rgba(255,255,255,0.12); }
   .resto-pill svg { width: 11px; height: 11px; opacity: 0.6; }
 
-  .status-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 11px; background: rgba(48,209,88,0.14);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(48,209,88,0.30); border-radius: var(--r-pill);
-    font-size: 11.5px; font-weight: 800; color: var(--green);
-    letter-spacing: -0.012em; cursor: pointer; font-family: inherit;
-    transition: all 0.15s ease;
-  }
-
-  .quick-access-btn {
-    flex-direction: column !important;
-    padding: 14px 8px !important; gap: 6px !important;
-    font-size: 12px !important; border-radius: var(--r) !important;
-  }
-  .quick-access-btn svg { width: 22px !important; height: 22px !important; stroke-width: 1.8 !important; }
+  .status-pill { background: rgba(48,209,88,0.14); border: 1px solid rgba(48,209,88,0.30); color: var(--green); padding: 6px 11px; }
   .status-pill:hover { background: rgba(48,209,88,0.20); }
-  .status-pill .status-dot {
-    width: 7px; height: 7px; border-radius: 100px;
-    background: var(--green); box-shadow: 0 0 8px rgba(48,209,88,0.7);
-  }
-  .status-pill.closed {
-    background: rgba(255,107,92,0.14); border-color: rgba(255,107,92,0.30); color: var(--red);
-  }
+  .status-pill .status-dot { width: 7px; height: 7px; border-radius: 100px; background: var(--green); box-shadow: 0 0 8px rgba(48,209,88,0.7); }
+  .status-pill.closed { background: rgba(255,107,92,0.14); border-color: rgba(255,107,92,0.30); color: var(--red); }
   .status-pill.closed:hover { background: rgba(255,107,92,0.20); }
-  .status-pill.closed .status-dot {
-    background: var(--red); box-shadow: 0 0 8px rgba(255,107,92,0.7);
-  }
+  .status-pill.closed .status-dot { background: var(--red); box-shadow: 0 0 8px rgba(255,107,92,0.7); }
 
-  .icon-btn {
-    width: 34px; height: 34px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border); border-radius: var(--r-sm);
-    color: var(--text); cursor: pointer; transition: all 0.15s ease;
-  }
-  .icon-btn:hover { background: rgba(255,255,255,0.10); border-color: var(--border-strong); }
-  .icon-btn svg { width: 16px; height: 16px; stroke-width: 2; }
+  .quick-access-btn { flex-direction: column !important; padding: 14px 8px !important; gap: 6px !important; font-size: 12px !important; border-radius: var(--r) !important; }
+  .quick-access-btn svg { width: 22px !important; height: 22px !important; stroke-width: 1.8 !important; }
 
   .section { display: none; }
   .section.active { display: block; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
   .ed-hero { padding: 28px 22px 22px; }
-  .ed-section-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 14px; color: var(--blue); margin-bottom: 8px; letter-spacing: -0.005em;
-  }
-  .ed-hero-title {
-    font-size: 32px; font-weight: 900; letter-spacing: -0.034em; line-height: 1.05;
-    color: var(--text); font-family: 'Inter Tight', sans-serif;
-  }
-  .ed-hero-title em {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    color: var(--blue); letter-spacing: -0.014em;
-  }
-  .ed-hero-sub {
-    font-size: 14px; font-weight: 700; color: var(--text-2);
-    letter-spacing: -0.012em; margin-top: 12px; line-height: 1.5;
-  }
-  .ed-hero-sub em {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    color: var(--text); font-size: 15.5px;
-  }
+  .ed-section-num { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 14px; color: var(--blue); margin-bottom: 8px; letter-spacing: -0.005em; }
+  .ed-hero-title { font-size: 32px; font-weight: 900; letter-spacing: -0.034em; line-height: 1.05; color: var(--text); }
+  .ed-hero-title em { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; color: var(--blue); letter-spacing: -0.014em; }
+  .ed-hero-sub { font-size: 14px; font-weight: 700; color: var(--text-2); letter-spacing: -0.012em; margin-top: 12px; line-height: 1.5; }
+  .ed-hero-sub em { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; color: var(--text); font-size: 15.5px; }
 
   .ed-stat-card {
     margin: 14px 22px 0; padding: 22px 20px 20px;
@@ -234,196 +166,84 @@
     backdrop-filter: saturate(180%) blur(24px);
     -webkit-backdrop-filter: saturate(180%) blur(24px);
     border: 1px solid var(--border-strong); border-radius: var(--r-lg);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.2), 0 12px 40px -12px rgba(0,0,0,0.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 40px -12px rgba(0,0,0,0.5);
     position: relative; overflow: hidden;
   }
-  .ed-stat-card::before {
-    content: ''; position: absolute; top: -50%; right: -30%; width: 70%; height: 200%;
-    background: radial-gradient(ellipse, rgba(10,132,255,0.20), transparent 60%);
-    pointer-events: none;
-  }
-  .ed-stat-eyebrow {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 14px; color: var(--blue); margin-bottom: 12px;
-    letter-spacing: -0.005em; position: relative;
-  }
-  .ed-stat-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-size: 60px; font-weight: 700;
-    letter-spacing: -0.030em; line-height: 0.95; color: var(--text);
-    font-variant-numeric: tabular-nums; position: relative;
-  }
-  .ed-stat-num .cur {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 600;
-    font-size: 32px; color: var(--text-2); margin-left: 4px;
-  }
-  .ed-stat-delta {
-    margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--text-2);
-    letter-spacing: -0.012em; position: relative;
-  }
+  .ed-stat-card::before { content: ''; position: absolute; top: -50%; right: -30%; width: 70%; height: 200%; background: radial-gradient(ellipse, rgba(10,132,255,0.20), transparent 60%); pointer-events: none; }
+  .ed-stat-eyebrow { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 14px; color: var(--blue); margin-bottom: 12px; letter-spacing: -0.005em; position: relative; }
+  .ed-stat-num { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 60px; font-weight: 700; letter-spacing: -0.030em; line-height: 0.95; color: var(--text); font-variant-numeric: tabular-nums; position: relative; }
+  .ed-stat-num .cur { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 600; font-size: 32px; color: var(--text-2); margin-left: 4px; }
+  .ed-stat-delta { margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--text-2); letter-spacing: -0.012em; position: relative; }
   .ed-stat-delta strong { color: var(--green); font-weight: 900; }
   .ed-stat-delta.down strong { color: var(--red); }
 
-  .ed-duo {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 22px 0;
-  }
-  .ed-duo-cell {
-    padding: 16px 14px; background: var(--surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: var(--r);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 14px -6px rgba(0,0,0,0.3);
-  }
-  .ed-duo-label {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 12px; color: var(--text-2); margin-bottom: 8px; letter-spacing: -0.005em;
-  }
-  .ed-duo-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-size: 28px; font-weight: 700;
-    letter-spacing: -0.022em; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums;
-  }
+  .ed-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 22px 0; }
+  .ed-duo-cell { padding: 16px 14px; background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--r); }
+  .ed-duo-label { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12px; color: var(--text-2); margin-bottom: 8px; }
+  .ed-duo-num { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 28px; font-weight: 700; letter-spacing: -0.022em; line-height: 1; color: var(--text); }
   .ed-duo-num .suffix { font-size: 18px; color: var(--text-3); font-weight: 600; }
 
   .ed-cmd-card {
     margin: 14px 22px 0; padding: 18px 18px 8px;
     background: var(--surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--border); border-radius: var(--r-md);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px -8px rgba(0,0,0,0.4);
   }
-  .ed-cmd-head {
-    font-size: 17px; font-weight: 900; letter-spacing: -0.022em;
-    margin-bottom: 14px; color: var(--text); font-family: 'Inter Tight', sans-serif;
-  }
+  .ed-cmd-head { font-size: 17px; font-weight: 900; letter-spacing: -0.022em; margin-bottom: 14px; color: var(--text); }
   .ed-cmd-head em { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; color: var(--blue); }
-  .ed-cmd-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
+  .ed-cmd-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .ed-cmd-row:last-child { border-bottom: 0; }
   .ed-cmd-info { flex: 1; min-width: 0; }
   .ed-cmd-table { font-size: 13.5px; font-weight: 900; color: var(--text); letter-spacing: -0.014em; }
-  .ed-cmd-time { font-size: 11px; font-weight: 700; color: var(--text-3); margin-top: 2px; letter-spacing: -0.005em; }
-  .ed-cmd-amt {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-size: 17px; font-weight: 700;
-    color: var(--text); margin-right: 12px; font-variant-numeric: tabular-nums; letter-spacing: -0.014em;
-  }
+  .ed-cmd-time { font-size: 11px; font-weight: 700; color: var(--text-3); margin-top: 2px; }
+  .ed-cmd-amt { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 17px; font-weight: 700; color: var(--text); margin-right: 12px; font-variant-numeric: tabular-nums; }
 
-  .ed-status {
-    font-size: 9.5px; font-weight: 900; letter-spacing: 0.10em;
-    text-transform: uppercase; padding: 4px 10px; border-radius: var(--r-pill);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); white-space: nowrap; flex-shrink: 0;
-  }
+  .ed-status { font-size: 9.5px; font-weight: 900; letter-spacing: 0.10em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--r-pill); white-space: nowrap; flex-shrink: 0; }
   .ed-status.wait { color: var(--orange); background: var(--orange-soft); border: 1px solid rgba(255,180,84,0.30); }
   .ed-status.ok { color: var(--green); background: var(--green-soft); border: 1px solid rgba(74,222,128,0.30); }
   .ed-status.paid { color: var(--text-2); background: rgba(255,255,255,0.06); border: 1px solid var(--border-strong); }
 
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    gap: 6px; padding: 10px 14px; border-radius: var(--r);
-    font-size: 13px; font-weight: 800; line-height: 1; cursor: pointer;
-    border: 0; font-family: inherit; letter-spacing: -0.014em;
-    transition: all 0.15s ease; white-space: nowrap;
-  }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; border-radius: var(--r); font-size: 13px; font-weight: 800; line-height: 1; cursor: pointer; border: 0; font-family: inherit; letter-spacing: -0.014em; transition: all 0.15s ease; white-space: nowrap; }
   .btn svg { width: 14px; height: 14px; stroke-width: 2.4; }
-  .btn-primary {
-    background: var(--blue); color: #fff;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 14px -4px var(--blue-glow);
-  }
-  .btn-primary:hover {
-    background: var(--blue-bright); transform: translateY(-1px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 8px 22px -4px var(--blue-glow);
-  }
-  .btn-secondary {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-strong); color: var(--text);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-  }
+  .btn-primary { background: var(--blue); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 14px -4px var(--blue-glow); }
+  .btn-primary:hover { background: var(--blue-bright); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-secondary { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid var(--border-strong); color: var(--text); }
   .btn-secondary:hover { background: rgba(255,255,255,0.10); border-color: var(--border-bright); }
-  .btn-ghost { background: transparent; color: var(--text-2); }
-  .btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-  .btn-danger {
-    background: var(--red-soft); color: var(--red);
-    border: 1px solid rgba(255,107,92,0.30);
-  }
+  .btn-danger { background: var(--red-soft); color: var(--red); border: 1px solid rgba(255,107,92,0.30); }
   .btn-danger:hover { background: rgba(255,107,92,0.22); }
-  .btn-blue-soft {
-    background: var(--blue-soft); color: var(--blue);
-    border: 1px solid rgba(10,132,255,0.30);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border-radius: var(--r-pill);
-  }
+  .btn-blue-soft { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(10,132,255,0.30); border-radius: var(--r-pill); }
   .btn-blue-soft:hover { background: rgba(10,132,255,0.22); }
 
-  input[type="text"], input[type="email"], input[type="url"],
-  input[type="tel"], input[type="number"], input[type="password"],
-  input[type="date"], textarea, select {
+  input[type="text"], input[type="email"], input[type="url"], input[type="tel"], input[type="number"], input[type="password"], input[type="date"], textarea, select {
     width: 100%; background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--border); color: var(--text);
     padding: 11px 14px; border-radius: var(--r);
     font-size: 14px; font-weight: 700; font-family: 'Inter Tight', inherit;
     letter-spacing: -0.012em; transition: all 0.15s ease; outline: none;
   }
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,0.20);
-  }
+  input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,0.20); }
   input::placeholder, textarea::placeholder { color: var(--text-3); font-weight: 600; }
   textarea { resize: vertical; min-height: 80px; }
-  select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px;
-  }
-  .field-label {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 13px; color: var(--text-2); margin-bottom: 6px;
-    display: block; letter-spacing: -0.005em;
-  }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; }
+  .field-label { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 13px; color: var(--text-2); margin-bottom: 6px; display: block; }
 
   .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; }
   #ed-cat-filter { flex-wrap: nowrap !important; }
   #ed-cat-filter::-webkit-scrollbar { display: none; }
-  .chip {
-    padding: 7px 13px; background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border); border-radius: var(--r-pill);
-    font-size: 12.5px; font-weight: 800; color: var(--text-2);
-    cursor: pointer; transition: all 0.12s ease; white-space: nowrap;
-    font-family: inherit; letter-spacing: -0.012em;
-  }
+  .chip { padding: 7px 13px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: var(--r-pill); font-size: 12.5px; font-weight: 800; color: var(--text-2); cursor: pointer; transition: all 0.12s ease; white-space: nowrap; font-family: inherit; }
   .chip:hover { background: rgba(255,255,255,0.06); color: var(--text); }
   .chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    display: none; align-items: center; justify-content: center; padding: 20px;
-  }
+  .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
-  .modal-content {
-    background: rgba(28, 28, 32, 0.85);
-    backdrop-filter: saturate(180%) blur(40px);
-    -webkit-backdrop-filter: saturate(180%) blur(40px);
-    border: 1px solid var(--border-strong); border-radius: var(--r-xl);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 30px 80px -20px rgba(0,0,0,0.7);
-    width: 100%; max-width: 520px; max-height: 90vh;
-    overflow-y: auto; position: relative;
-  }
-  .modal-header {
-    padding: 22px 24px 14px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
+  .modal-content { background: rgba(28, 28, 32, 0.85); backdrop-filter: saturate(180%) blur(40px); border: 1px solid var(--border-strong); border-radius: var(--r-xl); box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 30px 80px -20px rgba(0,0,0,0.7); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-header { padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
   .modal-title { font-size: 20px; font-weight: 900; letter-spacing: -0.026em; color: var(--text); }
   .modal-title em { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; color: var(--blue); }
-  .modal-close {
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.06); border: 0; border-radius: 50%;
-    color: var(--text-2); cursor: pointer; transition: all 0.15s ease; font-family: inherit;
-  }
+  .modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); border: 0; border-radius: 50%; color: var(--text-2); cursor: pointer; font-family: inherit; }
   .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
   .modal-body { padding: 18px 24px 22px; }
   .modal-footer { padding: 14px 24px 22px; display: flex; gap: 10px; justify-content: flex-end; }
@@ -431,20 +251,8 @@
   .field-group { margin-bottom: 16px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
-  .toast-wrap {
-    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-    z-index: 300; pointer-events: none;
-  }
-  .toast {
-    background: rgba(28, 28, 32, 0.85);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
-    border: 1px solid var(--border-strong); border-radius: var(--r);
-    padding: 12px 18px; font-size: 13.5px; font-weight: 800; color: var(--text);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 16px 40px -8px rgba(0,0,0,0.5);
-    opacity: 0; transform: translateY(10px);
-    transition: all 0.25s ease; pointer-events: auto; margin-top: 8px;
-  }
+  .toast-wrap { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 300; pointer-events: none; }
+  .toast { background: rgba(28, 28, 32, 0.85); backdrop-filter: saturate(180%) blur(28px); border: 1px solid var(--border-strong); border-radius: var(--r); padding: 12px 18px; font-size: 13.5px; font-weight: 800; color: var(--text); opacity: 0; transform: translateY(10px); transition: all 0.25s ease; pointer-events: auto; margin-top: 8px; }
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.success { border-color: rgba(74,222,128,0.30); color: var(--green); }
   .toast.error { border-color: rgba(255,107,92,0.30); color: var(--red); }
@@ -455,238 +263,91 @@
     width: calc(100% - 32px); max-width: 380px;
     background: var(--surface-glass);
     backdrop-filter: saturate(200%) blur(40px);
-    -webkit-backdrop-filter: saturate(200%) blur(40px);
     border: 1px solid var(--border-strong); border-radius: 100px; padding: 6px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.18),
-      inset 0 0 0 1px rgba(255,255,255,0.04),
-      0 1px 0 rgba(0,0,0,0.2),
-      0 16px 50px -12px rgba(0,0,0,0.5),
-      0 24px 80px -20px rgba(0,0,0,0.6);
-  }
-  .floating-tabbar::before {
-    content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent);
-    pointer-events: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 16px 50px -12px rgba(0,0,0,0.5);
   }
   .ftb-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-  .ftb-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 3px; padding: 9px 4px 7px;
-    background: transparent; border: 0; cursor: pointer;
-    color: rgba(255,255,255,0.45); border-radius: 100px;
-    transition: all 0.18s ease; font-family: inherit;
-  }
+  .ftb-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 9px 4px 7px; background: transparent; border: 0; cursor: pointer; color: rgba(255,255,255,0.45); border-radius: 100px; transition: all 0.18s ease; font-family: inherit; }
   .ftb-btn svg { width: 19px; height: 19px; stroke-width: 2.4; }
-  .ftb-btn span { font-size: 10px; font-weight: 800; letter-spacing: -0.005em; }
-  .ftb-btn.active {
-    color: #fff; background: rgba(10,132,255,0.85); border-radius: 100px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 12px -2px rgba(10,132,255,0.45);
-  }
-  .ftb-btn.active svg { stroke-width: 2.6; }
+  .ftb-btn span { font-size: 10px; font-weight: 800; }
+  .ftb-btn.active { color: #fff; background: rgba(10,132,255,0.85); box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 12px -2px rgba(10,132,255,0.45); }
   .ftb-btn:hover:not(.active) { color: var(--text-2); background: rgba(255,255,255,0.04); }
 
-  .empty-state {
-    text-align: center; padding: 60px 24px;
-    background: rgba(255,255,255,0.02); border: 1px dashed var(--border);
-    border-radius: var(--r-md); margin: 22px;
-  }
+  .empty-state { text-align: center; padding: 60px 24px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: var(--r-md); margin: 22px; }
   .empty-state svg { width: 40px; height: 40px; opacity: 0.3; margin-bottom: 14px; color: var(--text-3); }
-  .empty-state h3 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.018em; }
+  .empty-state h3 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
   .empty-state p { font-size: 13.5px; font-weight: 600; color: var(--text-3); margin-bottom: 18px; }
-  .empty-state .btn { padding: 8px 14px; font-size: 12.5px; }
-  .empty-state .btn svg { width: 12px; height: 12px; }
 
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.18); border-top-color: var(--text);
-    border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block;
-  }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.18); border-top-color: var(--text); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .ed-plat-card {
-    display: flex; align-items: center; gap: 14px;
-    padding: 12px; margin-bottom: 10px;
-    background: var(--surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: var(--r);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 14px -6px rgba(0,0,0,0.3);
-    transition: all 0.15s ease;
-  }
+  .ed-plat-card { display: flex; align-items: center; gap: 14px; padding: 12px; margin-bottom: 10px; background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--r); transition: all 0.15s ease; }
   .ed-plat-card:hover { background: rgba(255,255,255,0.06); border-color: var(--border-strong); transform: translateY(-1px); }
-  .ed-plat-img {
-    width: 60px; height: 60px; border-radius: var(--r-sm);
-    background: rgba(255,255,255,0.04); flex-shrink: 0;
-    object-fit: cover; border: 1px solid var(--border);
-  }
-  .ed-plat-img-placeholder {
-    width: 60px; height: 60px; border-radius: var(--r-sm);
-    background: rgba(10,132,255,0.10); border: 1px dashed rgba(10,132,255,0.30);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; color: var(--blue);
-  }
+  .ed-plat-img { width: 60px; height: 60px; border-radius: var(--r-sm); flex-shrink: 0; object-fit: cover; border: 1px solid var(--border); }
+  .ed-plat-img-placeholder { width: 60px; height: 60px; border-radius: var(--r-sm); background: rgba(10,132,255,0.10); border: 1px dashed rgba(10,132,255,0.30); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--blue); }
   .ed-plat-img-placeholder svg { width: 22px; height: 22px; opacity: 0.7; }
   .ed-plat-info { flex: 1; min-width: 0; }
-  .ed-plat-name {
-    font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 14.5px;
-    color: var(--text); letter-spacing: -0.018em; margin-bottom: 2px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .ed-plat-cat {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 11.5px; color: var(--text-3); letter-spacing: -0.005em;
-  }
-  .ed-plat-price {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 19px; color: var(--text); letter-spacing: -0.014em;
-    font-variant-numeric: tabular-nums; margin-right: 4px;
-  }
+  .ed-plat-name { font-weight: 800; font-size: 14.5px; color: var(--text); letter-spacing: -0.018em; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ed-plat-cat { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); }
+  .ed-plat-price { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 19px; color: var(--text); margin-right: 4px; }
   .ed-plat-actions { display: flex; gap: 4px; flex-shrink: 0; }
-  .ed-plat-action {
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: var(--r-sm); color: var(--text-2);
-    cursor: pointer; transition: all 0.15s ease; font-family: inherit;
-  }
+  .ed-plat-action { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-2); cursor: pointer; transition: all 0.15s ease; font-family: inherit; }
   .ed-plat-action:hover { background: rgba(255,255,255,0.08); color: var(--text); }
   .ed-plat-action.delete:hover { background: var(--red-soft); color: var(--red); border-color: rgba(255,107,92,0.30); }
   .ed-plat-action.avail-on { background: rgba(48,209,88,0.14); border-color: rgba(48,209,88,0.30); color: var(--green); }
-  .ed-plat-action.avail-on:hover { background: rgba(48,209,88,0.22); }
   .ed-plat-action.avail-off { background: rgba(255,107,92,0.14); border-color: rgba(255,107,92,0.30); color: var(--red); }
-  .ed-plat-action.avail-off:hover { background: rgba(255,107,92,0.22); }
   .ed-plat-card.unavailable { opacity: 0.55; }
-  .ed-plat-card.unavailable .ed-plat-name {
-    text-decoration: line-through; text-decoration-color: rgba(255,107,92,0.6); text-decoration-thickness: 2px;
-  }
+  .ed-plat-card.unavailable .ed-plat-name { text-decoration: line-through; text-decoration-color: rgba(255,107,92,0.6); }
   .ed-plat-action svg { width: 14px; height: 14px; stroke-width: 2.2; }
 
-  .marge-card {
-    margin-top: 14px; padding: 14px 16px;
-    background: linear-gradient(135deg, rgba(48,209,88,0.06), rgba(10,132,255,0.04));
-    border: 1px solid rgba(48,209,88,0.18); border-radius: var(--r);
-  }
-  .marge-label {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 12px; color: var(--green); letter-spacing: 0.02em;
-    text-transform: uppercase; margin-bottom: 8px;
-  }
-  .marge-row { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 14px; align-items: center; }
-  .marge-stat { text-align: center; }
-  .marge-stat-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 26px; letter-spacing: -0.024em; color: var(--text);
-    line-height: 1; margin-bottom: 3px;
-  }
-  .marge-stat-lbl { font-size: 10.5px; font-weight: 700; color: var(--text-3); letter-spacing: 0.005em; }
-  .marge-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.08); }
-  .marge-card.low {
-    background: linear-gradient(135deg, rgba(255,159,10,0.06), rgba(255,159,10,0.03));
-    border-color: rgba(255,159,10,0.25);
-  }
-  .marge-card.low .marge-label { color: #FF9F0A; }
-  .marge-card.bad {
-    background: linear-gradient(135deg, rgba(255,107,92,0.08), rgba(255,107,92,0.04));
-    border-color: rgba(255,107,92,0.25);
-  }
-  .marge-card.bad .marge-label { color: var(--red); }
-  .marge-card.bad .marge-stat-num { color: var(--red); }
-
-  .ed-cat-header {
-    margin: 18px 0 8px;
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 13px; color: var(--blue); letter-spacing: -0.005em; text-transform: none;
-  }
+  .ed-cat-header { margin: 18px 0 8px; font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 13px; color: var(--blue); }
   .ed-cat-header:first-child { margin-top: 0; }
 
-  .ed-img-upload {
-    width: 100%; height: 140px; border-radius: var(--r);
-    background: rgba(255,255,255,0.03); border: 1.5px dashed var(--border-strong);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; cursor: pointer; transition: all 0.15s ease;
-    color: var(--text-3); overflow: hidden; position: relative;
-  }
+  .marge-card { margin-top: 14px; padding: 14px 16px; background: linear-gradient(135deg, rgba(48,209,88,0.06), rgba(10,132,255,0.04)); border: 1px solid rgba(48,209,88,0.18); border-radius: var(--r); }
+  .marge-label { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12px; color: var(--green); letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 8px; }
+  .marge-row { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 14px; align-items: center; }
+  .marge-stat { text-align: center; }
+  .marge-stat-num { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 26px; color: var(--text); line-height: 1; margin-bottom: 3px; }
+  .marge-stat-lbl { font-size: 10.5px; font-weight: 700; color: var(--text-3); }
+  .marge-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.08); }
+  .marge-card.low { background: linear-gradient(135deg, rgba(255,159,10,0.06), rgba(255,159,10,0.03)); border-color: rgba(255,159,10,0.25); }
+  .marge-card.low .marge-label { color: #FF9F0A; }
+  .marge-card.bad { background: linear-gradient(135deg, rgba(255,107,92,0.08), rgba(255,107,92,0.04)); border-color: rgba(255,107,92,0.25); }
+  .marge-card.bad .marge-label, .marge-card.bad .marge-stat-num { color: var(--red); }
+
+  .ed-img-upload { width: 100%; height: 140px; border-radius: var(--r); background: rgba(255,255,255,0.03); border: 1.5px dashed var(--border-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.15s ease; color: var(--text-3); overflow: hidden; position: relative; }
   .ed-img-upload:hover { background: rgba(10,132,255,0.06); border-color: var(--blue); color: var(--blue); }
   .ed-img-upload svg { width: 24px; height: 24px; }
   .ed-img-upload p { font-size: 12px; font-weight: 700; }
   .ed-img-upload.has-image { border-style: solid; padding: 0; }
   .ed-img-upload.has-image img { width: 100%; height: 100%; object-fit: cover; }
-  .ed-img-upload.has-image .img-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 50%);
-    display: flex; align-items: flex-end; justify-content: flex-end;
-    padding: 10px; opacity: 0; transition: opacity 0.2s ease;
-  }
+  .ed-img-upload.has-image .img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 50%); display: flex; align-items: flex-end; justify-content: flex-end; padding: 10px; opacity: 0; transition: opacity 0.2s ease; }
   .ed-img-upload.has-image:hover .img-overlay { opacity: 1; }
 
   .ed-tables-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .ed-table-card {
-    padding: 16px 14px; background: var(--surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: var(--r);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 14px -6px rgba(0,0,0,0.3);
-    transition: all 0.15s ease; position: relative; overflow: hidden;
-  }
+  .ed-table-card { padding: 16px 14px; background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--r); transition: all 0.15s ease; position: relative; overflow: hidden; }
   .ed-table-card:hover { background: rgba(255,255,255,0.06); border-color: var(--border-strong); transform: translateY(-1px); }
-  .ed-table-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 32px; letter-spacing: -0.024em; line-height: 1;
-    color: var(--text); margin-bottom: 4px;
-  }
-  .ed-table-label {
-    font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 12.5px;
-    color: var(--text-2); letter-spacing: -0.012em; margin-bottom: 12px;
-  }
-  .ed-table-meta {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 11.5px; color: var(--text-3); letter-spacing: -0.005em; margin-bottom: 10px;
-  }
+  .ed-table-num { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; line-height: 1; color: var(--text); margin-bottom: 4px; }
+  .ed-table-label { font-weight: 800; font-size: 12.5px; color: var(--text-2); margin-bottom: 12px; }
+  .ed-table-meta { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-bottom: 10px; }
   .ed-table-actions { display: flex; gap: 4px; }
-  .ed-table-btn {
-    flex: 1; padding: 8px 6px;
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: var(--r-sm); color: var(--text-2);
-    cursor: pointer; font-family: inherit; font-size: 10.5px; font-weight: 800;
-    letter-spacing: -0.005em; transition: all 0.15s ease;
-    display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  }
+  .ed-table-btn { flex: 1; padding: 8px 6px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-2); cursor: pointer; font-family: inherit; font-size: 10.5px; font-weight: 800; transition: all 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
   .ed-table-btn svg { width: 13px; height: 13px; stroke-width: 2.2; }
   .ed-table-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
   .ed-table-btn.qr-btn:hover { background: var(--blue-soft); color: var(--blue); border-color: rgba(10,132,255,0.30); }
   .ed-table-btn.delete:hover { background: var(--red-soft); color: var(--red); border-color: rgba(255,107,92,0.30); }
 
-  .ed-chart-card {
-    margin: 14px 22px 0; padding: 20px 20px 16px;
-    background: var(--surface);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: var(--r-md);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px -8px rgba(0,0,0,0.4);
-  }
-  .ed-chart-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
-  }
-  .ed-chart-title { font-size: 16px; font-weight: 900; letter-spacing: -0.020em; color: var(--text); font-family: 'Inter Tight', sans-serif; }
+  .ed-chart-card { margin: 14px 22px 0; padding: 20px 20px 16px; background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .ed-chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .ed-chart-title { font-size: 16px; font-weight: 900; color: var(--text); }
   .ed-chart-title em { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; color: var(--blue); }
-  .ed-chart-meta { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12.5px; color: var(--text-2); letter-spacing: -0.005em; }
-
+  .ed-chart-meta { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 12.5px; color: var(--text-2); }
   .ed-bars-wrap { width: 100%; }
   .ed-bars { display: flex; align-items: flex-end; gap: 4px; height: 90px; }
-  .ed-bar {
-    flex: 1; background: linear-gradient(180deg, var(--blue), rgba(10,132,255,0.3));
-    border-radius: 3px 3px 0 0; min-height: 3px;
-    transition: all 0.3s ease; position: relative;
-  }
-  .ed-bar.peak {
-    background: linear-gradient(180deg, var(--blue-bright), var(--blue));
-    box-shadow: 0 0 12px rgba(10,132,255,0.4);
-  }
+  .ed-bar { flex: 1; background: linear-gradient(180deg, var(--blue), rgba(10,132,255,0.3)); border-radius: 3px 3px 0 0; min-height: 3px; transition: all 0.3s ease; }
+  .ed-bar.peak { background: linear-gradient(180deg, var(--blue-bright), var(--blue)); box-shadow: 0 0 12px rgba(10,132,255,0.4); }
   .ed-bar.empty { background: rgba(255,255,255,0.04); }
-  .ed-bars-axis {
-    display: flex; margin-top: 6px;
-    font-size: 9.5px; font-weight: 700; color: var(--text-3);
-    letter-spacing: -0.005em; gap: 4px;
-  }
+  .ed-bars-axis { display: flex; margin-top: 6px; font-size: 9.5px; font-weight: 700; color: var(--text-3); gap: 4px; }
   .ed-bars-axis span { flex: 1; text-align: center; }
 
   ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -694,30 +355,15 @@
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 100px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
 
-  .ai-summary-card {
-    background: linear-gradient(135deg, rgba(167,139,250,0.05), rgba(10,132,255,0.04)) !important;
-    border: 1px solid rgba(167,139,250,0.18) !important;
-  }
-  .ai-summary-text { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.55; letter-spacing: -0.012em; }
+  .ai-summary-card { background: linear-gradient(135deg, rgba(167,139,250,0.05), rgba(10,132,255,0.04)) !important; border: 1px solid rgba(167,139,250,0.18) !important; }
+  .ai-summary-text { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.55; }
   .ai-summary-text strong { color: #A78BFA; font-weight: 900; }
-  .ai-recommendation {
-    margin-top: 14px; padding: 12px 14px;
-    background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20);
-    border-radius: var(--r); display: flex; gap: 10px; align-items: flex-start;
-  }
-  .ai-recommendation-icon {
-    flex-shrink: 0; width: 28px; height: 28px;
-    background: rgba(167,139,250,0.18); border-radius: 100px;
-    display: flex; align-items: center; justify-content: center; color: #A78BFA;
-  }
+  .ai-recommendation { margin-top: 14px; padding: 12px 14px; background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); border-radius: var(--r); display: flex; gap: 10px; align-items: flex-start; }
+  .ai-recommendation-icon { flex-shrink: 0; width: 28px; height: 28px; background: rgba(167,139,250,0.18); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: #A78BFA; }
   .ai-recommendation-icon svg { width: 14px; height: 14px; stroke-width: 2; }
-  .ai-recommendation-text { font-size: 13px; font-weight: 700; color: var(--text-2); line-height: 1.5; flex: 1; letter-spacing: -0.010em; }
+  .ai-recommendation-text { font-size: 13px; font-weight: 700; color: var(--text-2); line-height: 1.5; flex: 1; }
   .ai-recommendation-text strong { color: var(--text); font-weight: 900; }
-  .ai-shimmer {
-    height: 12px; margin: 6px 0; border-radius: 6px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%);
-    background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite;
-  }
+  .ai-shimmer { height: 12px; margin: 6px 0; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 </head>
@@ -819,7 +465,7 @@
       </div>
       <div id="ai-summary-content">
         <p style="text-align: center; padding: 12px 0 4px; color: var(--text-3); font-size: 12.5px; font-weight: 600; line-height: 1.5;">
-          Cliquez sur <strong style="color: var(--text-2);">Générer</strong> pour obtenir une analyse intelligente de vos performances et une recommandation personnalisée.
+          Cliquez sur <strong style="color: var(--text-2);">Générer</strong> pour obtenir une analyse intelligente.
         </p>
       </div>
     </div>
@@ -827,39 +473,33 @@
   </section>
 
   <section class="section" id="section-plats" data-tab="plats">
-
     <div class="ed-hero">
       <div class="ed-section-num">— 02 · La carte</div>
       <h1 class="ed-hero-title">Vos <em>plats</em>.</h1>
       <p class="ed-hero-sub" id="ed-plats-sub">Gérez votre carte. Ajoutez, modifiez, retirez des plats.</p>
-
       <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
         <button class="btn btn-primary" id="add-plat-btn" style="flex-shrink: 0;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Ajouter
         </button>
-        <div class="filter-bar" id="ed-cat-filter" style="flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
+        <div class="filter-bar" id="ed-cat-filter" style="flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none;">
           <button class="chip active" data-cat="all">Tout</button>
         </div>
       </div>
     </div>
-
     <div id="ed-plats-list" style="margin: 14px 22px 0;">
       <div style="text-align: center; padding: 40px 0; color: var(--text-3); font-size: 13px;">
         <div class="spinner"></div>
         <p style="margin-top: 12px;">Chargement de la carte…</p>
       </div>
     </div>
-
   </section>
 
   <section class="section" id="section-tables" data-tab="tables">
-
     <div class="ed-hero">
       <div class="ed-section-num">— 03 · La salle</div>
       <h1 class="ed-hero-title">Vos <em>tables</em>.</h1>
-      <p class="ed-hero-sub" id="ed-tables-sub">Configurez vos tables et imprimez les QR codes pour le service.</p>
-
+      <p class="ed-hero-sub" id="ed-tables-sub">Configurez vos tables et imprimez les QR codes.</p>
       <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px;">
         <button class="btn btn-secondary" id="print-all-qr-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -871,14 +511,12 @@
         </button>
       </div>
     </div>
-
     <div id="ed-tables-list" style="margin: 14px 22px 0;">
       <div style="text-align: center; padding: 40px 0; color: var(--text-3); font-size: 13px;">
         <div class="spinner"></div>
         <p style="margin-top: 12px;">Chargement de la salle…</p>
       </div>
     </div>
-
   </section>
 
   <section class="section" id="section-config" data-tab="config">
@@ -891,9 +529,7 @@
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Accès <em>rapides</em></h2>
-      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
-        Aperçu de l'expérience client et accès direct aux interfaces service / cuisine. Conçus pour rester ouverts sur tablette pendant le service.
-      </p>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">Aperçu de l'expérience client et accès direct aux interfaces service / cuisine.</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
         <button class="btn btn-secondary quick-access-btn" id="open-menu-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
@@ -912,33 +548,26 @@
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Le <em>restaurant</em></h2>
-
       <div class="field-group">
         <label class="field-label">Nom du restaurant</label>
         <input type="text" id="cfg-resto-nom" placeholder="Chez Nico">
       </div>
-
       <div class="field-group">
         <label class="field-label">Email</label>
         <input type="email" id="cfg-resto-email" placeholder="contact@…">
       </div>
-
       <div class="field-group">
         <label class="field-label">Lien client (à mettre dans les QR)</label>
         <input type="text" id="cfg-resto-url" readonly style="font-size: 11px; color: var(--text-3);">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Généré automatiquement</p>
       </div>
-
       <div class="field-group">
         <label class="field-label">Lien Google Reviews</label>
         <input type="url" id="cfg-resto-google" placeholder="https://g.page/…/review">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px;">Affiché aux clients après paiement pour collecter des avis</p>
       </div>
     </div>
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">La <em>fiscalité</em></h2>
-
       <div class="field-row">
         <div>
           <label class="field-label">Pays fiscal</label>
@@ -952,7 +581,6 @@
           <input type="text" id="cfg-tva-number" placeholder="CHE-123.456.789">
         </div>
       </div>
-
       <div class="field-group">
         <label class="field-label">Devise</label>
         <select id="cfg-currency">
@@ -960,37 +588,29 @@
           <option value="EUR">EUR (Euro)</option>
         </select>
       </div>
-
       <div class="field-group">
         <label class="field-label">Email du comptable</label>
         <input type="email" id="cfg-accountant-email" placeholder="comptable@…">
-        <p style="font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4;">
-          Recevra automatiquement un export CSV chaque fin de mois.
-        </p>
       </div>
     </div>
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Paiement <em>en ligne</em></h2>
-
       <div id="cfg-stripe-status" style="margin-bottom: 14px;">
         <div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;">
           <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           NON CONFIGURÉ
         </div>
       </div>
-
       <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
         Activez le paiement en ligne pour que vos clients règlent depuis leur téléphone. <strong style="color: var(--text);">Frizz prend 0%</strong> — vous payez uniquement les frais Stripe (~1,4%).
       </p>
-
-      <div class="field-group" id="cfg-stripe-toggle-wrap" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border);">
+      <div class="field-group" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border);">
         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
           <input type="checkbox" id="cfg-payment-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
-          <span style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; font-style: normal; color: var(--text);">Activer le paiement en ligne</span>
+          <span style="font-weight: 800; font-size: 13.5px; color: var(--text);">Activer le paiement en ligne</span>
         </label>
       </div>
-
       <div style="margin-top: 14px;">
         <button class="btn btn-secondary" id="cfg-stripe-connect-btn" style="width: 100%;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -1001,21 +621,20 @@
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Le <em>pourboire</em></h2>
-
       <div class="field-group" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--r); border: 1px solid var(--border);">
         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; margin: 0;">
           <input type="checkbox" id="cfg-tip-enabled" style="width: 18px; height: 18px; accent-color: var(--blue);">
-          <span style="font-family: 'Inter Tight'; font-weight: 800; font-size: 13.5px; font-style: normal; color: var(--text);">Proposer un pourboire au paiement</span>
+          <span style="font-weight: 800; font-size: 13.5px; color: var(--text);">Proposer un pourboire au paiement</span>
         </label>
       </div>
-
-      <p style="font-size: 12px; color: var(--text-3); margin-top: 8px; line-height: 1.5;">
-        Le client verra des suggestions (10% / 15% / 20%) ou pourra choisir un montant libre.
-      </p>
     </div>
 
+    <!-- ═══════ CARD ABONNEMENT (avec badge essai dynamique) ═══════ -->
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Votre <em>abonnement</em></h2>
+
+      <!-- Badge de statut dynamique (rempli par fillConfigForm) -->
+      <div id="cfg-trial-status" style="margin-bottom: 14px;"></div>
 
       <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;">
         <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 36px; letter-spacing: -0.024em; color: var(--text);">24,90</span>
@@ -1024,7 +643,7 @@
 
       <p style="font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 14px;">
         Plan <strong style="color: var(--text);">Frizz Pro</strong> · Tout inclus, sans engagement.<br>
-        <span style="color: var(--text-3); font-size: 12px;">14 jours d'essai gratuit · facturation mensuelle</span>
+        <span style="color: var(--text-3); font-size: 12px;">14 jours d'essai gratuit · résiliable à tout moment</span>
       </p>
 
       <button class="btn btn-secondary" id="cfg-billing-portal-btn" style="width: 100%;">
@@ -1044,12 +663,10 @@
 
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Votre <em>compte</em></h2>
-
       <div class="field-group">
         <label class="field-label">Email du compte</label>
         <input type="email" id="cfg-user-email" readonly>
       </div>
-
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
         <button class="btn btn-secondary" id="cfg-save-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1062,7 +679,7 @@
       </div>
     </div>
 
-    <div style="text-align: center; margin: 24px 22px 0; font-size: 11px; color: var(--text-3); font-weight: 700; letter-spacing: -0.005em;">
+    <div style="text-align: center; margin: 24px 22px 0; font-size: 11px; color: var(--text-3); font-weight: 700;">
       Frizz<span style="color: var(--blue);">✦</span> · Version 1.0
     </div>
 
@@ -1169,8 +786,7 @@ function switchTab(tabName) {
 document.querySelectorAll('.ftb-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', e => {
     e.preventDefault();
-    const tab = btn.getAttribute('data-tab');
-    switchTab(tab);
+    switchTab(btn.getAttribute('data-tab'));
   });
 });
 
@@ -1192,17 +808,11 @@ async function loadUserRestaurants() {
     const { data: r1b } = await supa.from('restaurants').select('*').eq('owner_id', state.user.id);
     if (r1b && r1b.length > 0) r1 = r1b;
   }
-  if (r1 && r1.length > 0) {
-    state.restos = r1;
-    return r1;
-  }
+  if (r1 && r1.length > 0) { state.restos = r1; return r1; }
   const slug = new URLSearchParams(location.search).get('resto');
   if (slug) {
     const { data: r2 } = await supa.from('restaurants').select('*').eq('slug', slug).maybeSingle();
-    if (r2) {
-      state.restos = [r2];
-      return [r2];
-    }
+    if (r2) { state.restos = [r2]; return [r2]; }
   }
   return [];
 }
@@ -1210,12 +820,7 @@ async function loadUserRestaurants() {
 async function selectRestaurant(resto) {
   state.resto = resto;
   if (!resto.slug && resto.nom) {
-    const generatedSlug = resto.nom
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim().replace(/\s+/g, '-').replace(/-+/g, '-')
-      .substring(0, 60) || `resto-${resto.id.substring(0, 8)}`;
+    const generatedSlug = resto.nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 60) || `resto-${resto.id.substring(0, 8)}`;
     let finalSlug = generatedSlug;
     let counter = 1;
     while (true) {
@@ -1227,29 +832,23 @@ async function selectRestaurant(resto) {
     }
     try {
       const { error } = await supa.from('restaurants').update({ slug: finalSlug }).eq('id', resto.id);
-      if (!error) {
-        resto.slug = finalSlug;
-        state.resto.slug = finalSlug;
-      }
+      if (!error) { resto.slug = finalSlug; state.resto.slug = finalSlug; }
     } catch (e) { console.warn('Slug auto-gen failed:', e); }
   }
   document.getElementById('resto-name').textContent = resto.nom || 'Restaurant';
   document.getElementById('ed-resto-display').textContent = getShortName(resto.nom);
   updateOpenPill(resto.ouvert !== false);
   switchTab(state.activeTab);
+  // Check trial blocking après chaque sélection de resto
+  if (typeof checkTrialBlocking === 'function') checkTrialBlocking();
 }
 
 function updateOpenPill(isOpen) {
   const pill = document.getElementById('status-pill');
   const label = document.getElementById('status-label');
   if (!pill || !label) return;
-  if (isOpen) {
-    pill.classList.remove('closed');
-    label.textContent = 'Ouvert';
-  } else {
-    pill.classList.add('closed');
-    label.textContent = 'Fermé';
-  }
+  if (isOpen) { pill.classList.remove('closed'); label.textContent = 'Ouvert'; }
+  else { pill.classList.add('closed'); label.textContent = 'Fermé'; }
 }
 
 async function toggleOpen() {
@@ -1263,7 +862,6 @@ async function toggleOpen() {
     state.resto.ouvert = next;
     showToast(next ? 'Restaurant ouvert' : 'Restaurant fermé', 'success');
   } catch (err) {
-    console.error('toggleOpen:', err);
     updateOpenPill(current);
     showToast('Erreur : ' + (err.message || 'changement impossible'), 'error');
   }
@@ -1277,26 +875,19 @@ document.getElementById('logo-link').addEventListener('click', e => {
 
 document.getElementById('open-menu-btn').addEventListener('click', () => {
   if (!state.resto || !state.resto.slug) { showToast('Restaurant non chargé', 'error'); return; }
-  const url = location.pathname.replace(/menu-admin\.html$/, 'menu.html')
-    + '?resto=' + encodeURIComponent(state.resto.slug) + '&mode=preview';
+  const url = location.pathname.replace(/menu-admin\.html$/, 'menu.html') + '?resto=' + encodeURIComponent(state.resto.slug) + '&mode=preview';
   window.open(url, '_blank');
 });
-
 document.getElementById('open-serveur-btn').addEventListener('click', () => {
   if (!state.resto || !state.resto.slug) { showToast('Restaurant non chargé', 'error'); return; }
-  const url = location.pathname.replace(/menu-admin\.html$/, 'serveur.html') + '?resto=' + encodeURIComponent(state.resto.slug);
-  window.open(url, '_blank');
+  window.open(location.pathname.replace(/menu-admin\.html$/, 'serveur.html') + '?resto=' + encodeURIComponent(state.resto.slug), '_blank');
 });
-
 document.getElementById('open-cuisine-btn').addEventListener('click', () => {
   if (!state.resto || !state.resto.slug) { showToast('Restaurant non chargé', 'error'); return; }
-  const url = location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(state.resto.slug);
-  window.open(url, '_blank');
+  window.open(location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(state.resto.slug), '_blank');
 });
 
-document.getElementById('resto-selector').addEventListener('click', () => {
-  openRestoSwitcher();
-});
+document.getElementById('resto-selector').addEventListener('click', () => openRestoSwitcher());
 
 function openRestoSwitcher() {
   let overlay = document.getElementById('modal-resto-switcher');
@@ -1314,10 +905,10 @@ function openRestoSwitcher() {
         ${state.restos.map(r => `
           <button class="ed-table-card" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; width: 100%; text-align: left; font-family: inherit;" onclick="switchResto('${r.id}'); document.getElementById('modal-resto-switcher').remove();">
             <div>
-              <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 14.5px; color: var(--text); letter-spacing: -0.018em;">${escapeHtml(r.nom)}</div>
+              <div style="font-weight: 800; font-size: 14.5px; color: var(--text);">${escapeHtml(r.nom)}</div>
               <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
             </div>
-            ${r.id === state.resto.id ? '<span class="ed-status ok" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>ACTIF</span>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-3);"><polyline points="9 18 15 12 9 6"/></svg>'}
+            ${r.id === state.resto.id ? '<span class="ed-status ok">ACTIF</span>' : ''}
           </button>
         `).join('')}
         <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="document.getElementById('modal-resto-switcher').remove(); openAddRestoModal();">
@@ -1348,7 +939,6 @@ window.doLogout = doLogout;
     const restos = await loadUserRestaurants();
     if (restos.length === 0) {
       document.querySelector('#section-stats .ed-hero-sub').textContent = 'Aucun restaurant trouvé sur ce compte.';
-      showToast('Aucun restaurant lié à votre compte', 'error');
       return;
     }
     await selectRestaurant(restos[0]);
@@ -1366,122 +956,67 @@ async function loadStats() {
     const periode = state.activePeriode;
     const now = new Date();
     const since = new Date(now);
-    if (periode === 'jour')    since.setHours(0, 0, 0, 0);
+    if (periode === 'jour') since.setHours(0, 0, 0, 0);
     if (periode === 'semaine') since.setDate(now.getDate() - 7);
-    if (periode === 'mois')    since.setMonth(now.getMonth() - 1);
-
-    const { data: cmds, error } = await supa
-      .from('commandes').select('*')
-      .eq('restaurant_id', state.resto.id)
-      .gte('heure', since.toISOString())
-      .order('heure', { ascending: false });
-
+    if (periode === 'mois') since.setMonth(now.getMonth() - 1);
+    const { data: cmds, error } = await supa.from('commandes').select('*').eq('restaurant_id', state.resto.id).gte('heure', since.toISOString()).order('heure', { ascending: false });
     if (error) { console.error('loadStats error:', error); return; }
     state.commandes = cmds || [];
-
-    const FAKE_PREFILTER = ['presence', 'service_request', 'paiement_partiel', 'partial_payment'];
-    const realForStats = state.commandes.filter(c => {
-      const s = (c.statut || '').toLowerCase();
-      return !FAKE_PREFILTER.includes(s);
-    });
-
-    const ca = realForStats.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
-    const nb = realForStats.length;
+    const FAKE = ['presence', 'service_request', 'paiement_partiel', 'partial_payment', 'annulee', 'cancelled'];
+    const real = state.commandes.filter(c => !FAKE.includes((c.statut || '').toLowerCase()) && (Array.isArray(c.items) ? c.items.length > 0 : true));
+    const realStats = state.commandes.filter(c => !['presence', 'service_request', 'paiement_partiel', 'partial_payment'].includes((c.statut || '').toLowerCase()));
+    const ca = realStats.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = realStats.length;
     const panier = nb ? ca / nb : 0;
-
-    const FAKE_STATUSES = ['presence', 'service_request', 'paiement_partiel', 'partial_payment', 'annulee', 'cancelled'];
-    const realCommandes = state.commandes.filter(c => {
-      const s = (c.statut || '').toLowerCase();
-      return !FAKE_STATUSES.includes(s) && (Array.isArray(c.items) ? c.items.length > 0 : true);
-    });
-
-    const enCours = realCommandes.filter(c => {
-      const s = (c.statut || '').toLowerCase();
-      return s !== 'payee' && s !== 'paid' && s !== 'cloturee' && s !== 'servie' && s !== 'served';
-    });
-    const encaissees = realCommandes.filter(c => {
-      const s = (c.statut || '').toLowerCase();
-      return s === 'payee' || s === 'paid' || s === 'cloturee';
-    });
-
+    const enCours = real.filter(c => { const s = (c.statut || '').toLowerCase(); return s !== 'payee' && s !== 'paid' && s !== 'cloturee' && s !== 'servie' && s !== 'served'; });
+    const encaissees = real.filter(c => { const s = (c.statut || '').toLowerCase(); return s === 'payee' || s === 'paid' || s === 'cloturee'; });
     updateHeroSub(encaissees.length, enCours.length, periode);
-    document.getElementById('ed-stat-ca').innerHTML =
-      Math.round(ca).toLocaleString('fr-CH').replace(/\u00A0/g, ' ') + '<span class="cur">€</span>';
+    document.getElementById('ed-stat-ca').innerHTML = Math.round(ca).toLocaleString('fr-CH').replace(/\u00A0/g, ' ') + '<span class="cur">€</span>';
     await updateDelta(periode, since, ca);
     document.getElementById('ed-stat-commandes').textContent = nb;
-    document.getElementById('ed-stat-panier').innerHTML =
-      Math.round(panier) + '<span class="suffix">€</span>';
+    document.getElementById('ed-stat-panier').innerHTML = Math.round(panier) + '<span class="suffix">€</span>';
     renderCommandesEnCours(enCours.slice(0, 5));
-    renderTopPlats(realForStats);
-    renderHoursChart(realForStats);
-  } catch (err) {
-    console.error('loadStats:', err);
-    showToast('Erreur de chargement des stats', 'error');
-  }
+    renderTopPlats(realStats);
+    renderHoursChart(realStats);
+  } catch (err) { console.error('loadStats:', err); }
 }
 
 function updateHeroSub(nbEnc, nbCours, periode) {
   const heure = new Date().toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
-  let txt;
   const totalNb = nbEnc + nbCours;
-  if (totalNb === 0) {
-    txt = 'Service prêt. Aucune commande pour le moment.';
-  } else if (periode === 'jour') {
-    if (nbCours > 0) {
-      txt = `Service en cours. <em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''}, <em>${nbCours}</em> en cours, et il est ${heure}.`;
-    } else {
-      txt = `<em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''} aujourd'hui.`;
-    }
-  } else if (periode === 'semaine') {
-    txt = `Sur les sept derniers jours : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''} au total.`;
-  } else {
-    txt = `Sur le mois écoulé : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''} au total.`;
-  }
+  let txt;
+  if (totalNb === 0) txt = 'Service prêt. Aucune commande pour le moment.';
+  else if (periode === 'jour') {
+    if (nbCours > 0) txt = `Service en cours. <em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''}, <em>${nbCours}</em> en cours, et il est ${heure}.`;
+    else txt = `<em>${nbEnc}</em> commande${nbEnc > 1 ? 's' : ''} encaissée${nbEnc > 1 ? 's' : ''} aujourd'hui.`;
+  } else if (periode === 'semaine') txt = `Sur les sept derniers jours : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''}.`;
+  else txt = `Sur le mois écoulé : <em>${totalNb}</em> commande${totalNb > 1 ? 's' : ''}.`;
   document.getElementById('ed-hero-sub').innerHTML = txt;
 }
 
 async function updateDelta(periode, since, ca) {
   const duration = Date.now() - since.getTime();
   const prevSince = new Date(since.getTime() - duration);
-  const prevUntil = new Date(since);
   try {
-    const { data: prevCmds } = await supa
-      .from('commandes').select('total')
-      .eq('restaurant_id', state.resto.id)
-      .gte('heure', prevSince.toISOString())
-      .lt('heure', prevUntil.toISOString());
+    const { data: prevCmds } = await supa.from('commandes').select('total').eq('restaurant_id', state.resto.id).gte('heure', prevSince.toISOString()).lt('heure', since.toISOString());
     const prevCA = (prevCmds || []).reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
     const el = document.getElementById('ed-stat-delta');
     if (prevCA === 0) {
-      if (ca > 0) {
-        el.innerHTML = '<strong>Premier service</strong> de la période';
-      } else {
-        el.innerHTML = 'Pas encore de comparaison disponible';
-      }
+      el.innerHTML = ca > 0 ? '<strong>Premier service</strong> de la période' : 'Pas encore de comparaison';
       el.classList.remove('down');
       return;
     }
     const pct = Math.round(((ca - prevCA) / prevCA) * 100);
     const compareLabel = periode === 'jour' ? 'vs hier' : (periode === 'semaine' ? 'vs semaine dernière' : 'vs mois dernier');
-    if (pct > 0) {
-      el.innerHTML = `↑ <strong>+${pct}%</strong> ${compareLabel}`;
-      el.classList.remove('down');
-    } else if (pct < 0) {
-      el.innerHTML = `↓ <strong>${pct}%</strong> ${compareLabel}`;
-      el.classList.add('down');
-    } else {
-      el.innerHTML = `<strong>Stable</strong> ${compareLabel}`;
-      el.classList.remove('down');
-    }
+    if (pct > 0) { el.innerHTML = `↑ <strong>+${pct}%</strong> ${compareLabel}`; el.classList.remove('down'); }
+    else if (pct < 0) { el.innerHTML = `↓ <strong>${pct}%</strong> ${compareLabel}`; el.classList.add('down'); }
+    else { el.innerHTML = `<strong>Stable</strong> ${compareLabel}`; el.classList.remove('down'); }
   } catch (err) { console.warn('updateDelta:', err); }
 }
 
 function renderCommandesEnCours(cmds) {
   const list = document.getElementById('ed-cmd-list');
-  if (!cmds || cmds.length === 0) {
-    list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune commande en cours.</p>';
-    return;
-  }
+  if (!cmds || cmds.length === 0) { list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune commande en cours.</p>'; return; }
   list.innerHTML = cmds.map(c => {
     let tableLabel = '?';
     if (c.table_numero) tableLabel = c.table_numero;
@@ -1490,29 +1025,24 @@ function renderCommandesEnCours(cmds) {
       const t = state.tables.find(x => x.id === c.table_id);
       if (t) tableLabel = t.numero || t.nom || t.label || '?';
     }
-    const isTakeaway = (c.type_commande === 'a_emporter') || (String(tableLabel).toLowerCase().includes('emporter'));
-    const tableDisplay = isTakeaway ? 'À emporter' : `Table ${tableLabel}`;
+    const isTakeaway = (c.type_commande === 'a_emporter') || String(tableLabel).toLowerCase().includes('emporter');
     const items = Array.isArray(c.items) ? c.items : [];
     const nbItems = items.reduce((s, it) => s + (parseInt(it.qte || it.quantity) || 1), 0);
-    const total = formatPriceInt(c.total || 0);
     const statut = (c.statut || 'en_attente').toLowerCase();
-    let statusLabel = 'En attente';
-    let statusClass = 'wait';
-    if (statut === 'en_attente') { statusLabel = 'Reçue'; statusClass = 'wait'; }
-    else if (statut === 'en_cours') { statusLabel = 'En cuisine'; statusClass = 'wait'; }
-    else if (statut === 'prete' || statut === 'pret' || statut === 'ready') { statusLabel = 'Prête'; statusClass = 'ok'; }
-    else if (statut === 'envoyee' || statut === 'sent') { statusLabel = 'Envoyée'; statusClass = 'ok'; }
-    else if (statut === 'en_validation') { statusLabel = 'En validation'; statusClass = 'wait'; }
+    let statusLabel = 'En attente', statusClass = 'wait';
+    if (statut === 'en_attente') { statusLabel = 'Reçue'; }
+    else if (statut === 'en_cours') { statusLabel = 'En cuisine'; }
+    else if (['prete','pret','ready'].includes(statut)) { statusLabel = 'Prête'; statusClass = 'ok'; }
+    else if (['envoyee','sent'].includes(statut)) { statusLabel = 'Envoyée'; statusClass = 'ok'; }
     return `
       <div class="ed-cmd-row">
         <div class="ed-cmd-info">
-          <div class="ed-cmd-table">${escapeHtml(tableDisplay)}</div>
+          <div class="ed-cmd-table">${escapeHtml(isTakeaway ? 'À emporter' : `Table ${tableLabel}`)}</div>
           <div class="ed-cmd-time">${escapeHtml(timeAgo(c.heure))} · ${nbItems} plat${nbItems > 1 ? 's' : ''}</div>
         </div>
-        <div class="ed-cmd-amt">${total}</div>
+        <div class="ed-cmd-amt">${formatPriceInt(c.total || 0)}</div>
         <div class="ed-status ${statusClass}">${statusLabel}</div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
@@ -1525,12 +1055,8 @@ function renderTopPlats(cmds) {
       platCount[nom] = (platCount[nom] || 0) + (parseInt(it.qte || it.quantity) || 1);
     });
   });
-  const top = Object.entries(platCount).map(([nom, qte]) => ({ nom, qte }))
-    .sort((a, b) => b.qte - a.qte).slice(0, 5);
-  if (top.length === 0) {
-    list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune donnée pour le moment.</p>';
-    return;
-  }
+  const top = Object.entries(platCount).map(([nom, qte]) => ({ nom, qte })).sort((a, b) => b.qte - a.qte).slice(0, 5);
+  if (top.length === 0) { list.innerHTML = '<p style="text-align: center; padding: 18px 0; color: var(--text-3); font-size: 13px; font-weight: 700;">Aucune donnée pour le moment.</p>'; return; }
   list.innerHTML = top.map((p, i) => `
     <div class="ed-cmd-row">
       <div class="ed-cmd-info">
@@ -1540,8 +1066,7 @@ function renderTopPlats(cmds) {
         </div>
       </div>
       <div class="ed-cmd-amt">×${p.qte}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function renderHoursChart(commandes) {
@@ -1549,8 +1074,7 @@ function renderHoursChart(commandes) {
   const axis = document.getElementById('ed-bars-axis');
   const meta = document.getElementById('ed-peak-meta');
   if (!wrap || !axis) return;
-  const startHour = 8;
-  const endHour = 23;
+  const startHour = 8, endHour = 23;
   const nbBars = endHour - startHour + 1;
   const buckets = new Array(nbBars).fill(0);
   commandes.forEach(c => {
@@ -1558,17 +1082,11 @@ function renderHoursChart(commandes) {
     if (h >= startHour && h <= endHour) buckets[h - startHour] += 1;
   });
   const maxVal = Math.max(...buckets, 1);
-  const peakIdx = buckets.indexOf(maxVal);
-  const peakHour = peakIdx + startHour;
-  if (meta) {
-    if (commandes.length === 0) meta.textContent = 'Aucune donnée';
-    else meta.textContent = `Pic à ${peakHour}h–${peakHour + 1}h`;
-  }
+  const peakHour = buckets.indexOf(maxVal) + startHour;
+  if (meta) meta.textContent = commandes.length === 0 ? 'Aucune donnée' : `Pic à ${peakHour}h–${peakHour + 1}h`;
   wrap.innerHTML = buckets.map((v, i) => {
     const pct = (v / maxVal) * 100;
-    const isPeak = v === maxVal && v > 0;
-    const isEmpty = v === 0;
-    return `<div class="ed-bar ${isPeak ? 'peak' : ''} ${isEmpty ? 'empty' : ''}" style="height: ${Math.max(3, pct)}%;" title="${i + startHour}h : ${v} commande${v > 1 ? 's' : ''}"></div>`;
+    return `<div class="ed-bar ${v === maxVal && v > 0 ? 'peak' : ''} ${v === 0 ? 'empty' : ''}" style="height: ${Math.max(3, pct)}%;"></div>`;
   }).join('');
   const axisLabels = [];
   for (let i = 0; i < nbBars; i++) {
@@ -1587,15 +1105,7 @@ document.addEventListener('click', e => {
   loadStats();
 });
 
-function startStatsRefresh() {
-  stopStatsRefresh();
-  statsRefreshInterval = setInterval(() => {
-    if (state.activeTab === 'stats') loadStats();
-  }, 15000);
-}
-function stopStatsRefresh() {
-  if (statsRefreshInterval) { clearInterval(statsRefreshInterval); statsRefreshInterval = null; }
-}
+setInterval(() => { if (state.activeTab === 'stats') loadStats(); }, 15000);
 
 document.getElementById('export-csv-btn').addEventListener('click', () => openExportModal());
 
@@ -1603,7 +1113,6 @@ function openExportModal() {
   const overlay = document.getElementById('modal-export') || createExportModal();
   overlay.classList.add('show');
 }
-
 function createExportModal() {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -1621,13 +1130,8 @@ function createExportModal() {
             <option value="jour">Aujourd'hui</option>
             <option value="semaine">7 derniers jours</option>
             <option value="mois" selected>30 derniers jours</option>
-            <option value="trimestre">3 derniers mois</option>
-            <option value="annee">12 derniers mois</option>
           </select>
         </div>
-        <p style="font-size: 12.5px; color: var(--text-3); font-weight: 600; line-height: 1.5;">
-          Le fichier sera téléchargé avec le détail des commandes : nom, qté, prix HT/TTC, ventilation TVA, pourboire, mode de paiement.
-        </p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-close>Annuler</button>
@@ -1636,8 +1140,7 @@ function createExportModal() {
           Télécharger
         </button>
       </div>
-    </div>
-  `;
+    </div>`;
   document.body.appendChild(overlay);
   overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.classList.remove('show')));
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
@@ -1650,86 +1153,29 @@ function createExportModal() {
 }
 
 async function exportSalesCSV(periode = 'mois') {
-  if (!state.resto) { showToast('Aucun restaurant sélectionné', 'error'); return; }
+  if (!state.resto) return;
   try {
     showToast('Génération de l\'export…');
     const now = new Date();
     const since = new Date(now);
-    if (periode === 'jour')      since.setHours(0,0,0,0);
-    if (periode === 'semaine')   since.setDate(now.getDate() - 7);
-    if (periode === 'mois')      since.setMonth(now.getMonth() - 1);
-    if (periode === 'trimestre') since.setMonth(now.getMonth() - 3);
-    if (periode === 'annee')     since.setFullYear(now.getFullYear() - 1);
-
-    const { data: cmds, error } = await supa
-      .from('commandes').select('*')
-      .eq('restaurant_id', state.resto.id)
-      .gte('heure', since.toISOString())
-      .order('heure', { ascending: false });
-    if (error) throw error;
-
-    const fiscalCountry = state.resto.fiscal_country || 'CH';
-    const restoNom = state.resto.nom || 'Restaurant';
-    const currency = state.resto.currency || (fiscalCountry === 'FR' ? 'EUR' : 'CHF');
-
-    const csvCell = (val) => {
-      if (val === null || val === undefined) return '';
-      const s = String(val);
-      if (/[;,"\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-      return s;
-    };
-    const csvNum = (n) => {
-      if (n === null || n === undefined || n === '') return '';
-      const v = parseFloat(n);
-      if (isNaN(v)) return '';
-      return v.toFixed(2).replace('.', ',');
-    };
-
-    let csv = '';
-    csv += `Restaurant;${csvCell(restoNom)}\n`;
-    csv += `Pays fiscal;${csvCell(fiscalCountry)}\n`;
-    csv += `Devise;${csvCell(currency)}\n`;
-    csv += `Période;${csvCell(since.toLocaleDateString('fr-CH') + ' → ' + now.toLocaleDateString('fr-CH'))}\n`;
-    csv += `Nombre commandes;${(cmds || []).length}\n`;
-    csv += `\n`;
-    csv += ['Date','Heure','Table','Plat','Quantité','Prix HT','Prix TTC','TVA %','Total HT','Total TTC','Pourboire','Statut'].join(';') + '\n';
-
-    let totalHT = 0, totalTTC = 0, totalTip = 0;
-    const tvaBreakdown = {};
+    if (periode === 'jour') since.setHours(0,0,0,0);
+    if (periode === 'semaine') since.setDate(now.getDate() - 7);
+    if (periode === 'mois') since.setMonth(now.getMonth() - 1);
+    const { data: cmds } = await supa.from('commandes').select('*').eq('restaurant_id', state.resto.id).gte('heure', since.toISOString()).order('heure', { ascending: false });
+    let csv = `Restaurant;${state.resto.nom}\nPériode;${since.toLocaleDateString('fr-CH')} → ${now.toLocaleDateString('fr-CH')}\n\nDate;Heure;Plat;Quantité;Prix TTC;Total;Statut\n`;
+    let totalTTC = 0;
     (cmds || []).forEach(c => {
       const date = new Date(c.heure);
-      const dateStr = date.toLocaleDateString('fr-CH');
-      const heureStr = date.toLocaleTimeString('fr-CH', { hour: '2-digit', minute: '2-digit' });
-      const items = Array.isArray(c.items) ? c.items : [];
-      const tip = parseFloat(c.amount_tip || 0) || 0;
-      let tableLabel = '';
-      if (c.table_label) tableLabel = c.table_label;
-      else if (c.table_numero) tableLabel = 'Table ' + c.table_numero;
-      items.forEach(it => {
-        const nom = it.nom || it.name || '';
+      (Array.isArray(c.items) ? c.items : []).forEach(it => {
         const qte = parseInt(it.qte || it.quantity) || 1;
-        const prixTTC = parseFloat(it.prix || it.price) || 0;
-        const tvaRate = parseFloat(it.tva_rate || 0) || (fiscalCountry === 'FR' ? 10 : 8.1);
-        const prixHT = prixTTC / (1 + tvaRate / 100);
-        const ligneTTC = prixTTC * qte;
-        const ligneHT = prixHT * qte;
-        const tva = ligneTTC - ligneHT;
-        totalHT += ligneHT; totalTTC += ligneTTC;
-        tvaBreakdown[tvaRate] = (tvaBreakdown[tvaRate] || 0) + tva;
-        csv += [dateStr, heureStr, csvCell(tableLabel), csvCell(nom), qte, csvNum(prixHT), csvNum(prixTTC), csvNum(tvaRate), csvNum(ligneHT), csvNum(ligneTTC), tip > 0 ? csvNum(tip) : '', csvCell(c.statut || '')].join(';') + '\n';
+        const prix = parseFloat(it.prix || it.price) || 0;
+        const ligne = prix * qte;
+        totalTTC += ligne;
+        csv += `${date.toLocaleDateString('fr-CH')};${date.toLocaleTimeString('fr-CH', {hour:'2-digit',minute:'2-digit'})};${(it.nom||it.name||'')};${qte};${prix.toFixed(2).replace('.',',')};${ligne.toFixed(2).replace('.',',')};${c.statut||''}\n`;
       });
-      totalTip += tip;
     });
-
-    csv += `\nRÉCAPITULATIF\n`;
-    csv += `Total HT;;;;;;;;${csvNum(totalHT)}\n`;
-    csv += `Total TVA;;;;;;;;${csvNum(totalTTC - totalHT)}\n`;
-    csv += `Total TTC;;;;;;;;${csvNum(totalTTC)}\n`;
-    csv += `Pourboires;;;;;;;;${csvNum(totalTip)}\n`;
-    csv += `Total encaissé;;;;;;;;${csvNum(totalTTC + totalTip)}\n`;
-
-    const finalCsv = 'sep=;\n' + csv;
-    const blob = new Blob(['\uFEFF' + finalCsv], { type: 'text/csv;charset=utf-8;' });
+    csv += `\nTotal TTC;;;;;;${totalTTC.toFixed(2).replace('.',',')}\n`;
+    const blob = new Blob(['\uFEFF' + 'sep=;\n' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -1737,33 +1183,20 @@ async function exportSalesCSV(periode = 'mois') {
     a.click();
     URL.revokeObjectURL(url);
     showToast('Export téléchargé', 'success');
-  } catch (err) {
-    console.error('exportSalesCSV:', err);
-    showToast('Erreur d\'export', 'error');
-  }
+  } catch (err) { showToast('Erreur d\'export', 'error'); }
 }
-
-window.addEventListener('load', () => { startStatsRefresh(); });
-window.addEventListener('beforeunload', stopStatsRefresh);
 
 let activeCatFilter = 'all';
 
 async function loadMenu() {
   if (!state.resto) return;
   try {
-    const { data, error } = await supa.from('menu').select('*')
-      .eq('restaurant_id', state.resto.id)
-      .order('categorie', { ascending: true })
-      .order('ordre', { ascending: true, nullsFirst: false })
-      .order('nom', { ascending: true });
+    const { data, error } = await supa.from('menu').select('*').eq('restaurant_id', state.resto.id).order('categorie').order('nom');
     if (error) throw error;
     state.menu = data || [];
     renderCatFilter();
     renderPlatsList();
-  } catch (err) {
-    console.error('loadMenu:', err);
-    showToast('Erreur de chargement', 'error');
-  }
+  } catch (err) { showToast('Erreur de chargement', 'error'); }
 }
 
 function renderCatFilter() {
@@ -1771,9 +1204,7 @@ function renderCatFilter() {
   if (!wrap) return;
   const cats = [...new Set(state.menu.map(p => p.categorie).filter(Boolean))].sort();
   let html = '<button class="chip' + (activeCatFilter === 'all' ? ' active' : '') + '" data-cat="all">Tout</button>';
-  cats.forEach(c => {
-    html += `<button class="chip${activeCatFilter === c ? ' active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`;
-  });
+  cats.forEach(c => { html += `<button class="chip${activeCatFilter === c ? ' active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`; });
   wrap.innerHTML = html;
 }
 
@@ -1783,34 +1214,16 @@ function renderPlatsList() {
   let plats = state.menu;
   if (activeCatFilter !== 'all') plats = plats.filter(p => p.categorie === activeCatFilter);
   if (plats.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
-        <h3>Aucun plat ${activeCatFilter !== 'all' ? 'dans cette catégorie' : ''}</h3>
-        <p>Commencez par ajouter votre premier plat à la carte.</p>
-        <button class="btn btn-primary" onclick="openPlatModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter un plat
-        </button>
-      </div>`;
+    list.innerHTML = `<div class="empty-state"><h3>Aucun plat</h3><p>Commencez par ajouter votre premier plat.</p><button class="btn btn-primary" onclick="openPlatModal()">Ajouter</button></div>`;
     return;
   }
   if (activeCatFilter === 'all') {
     const groups = {};
-    plats.forEach(p => {
-      const cat = p.categorie || 'Sans catégorie';
-      if (!groups[cat]) groups[cat] = [];
-      groups[cat].push(p);
-    });
+    plats.forEach(p => { const cat = p.categorie || 'Sans catégorie'; if (!groups[cat]) groups[cat] = []; groups[cat].push(p); });
     let html = '';
-    Object.keys(groups).sort().forEach(cat => {
-      html += `<div class="ed-cat-header">— ${escapeHtml(cat)}</div>`;
-      html += groups[cat].map(p => renderPlatCard(p)).join('');
-    });
+    Object.keys(groups).sort().forEach(cat => { html += `<div class="ed-cat-header">— ${escapeHtml(cat)}</div>`; html += groups[cat].map(p => renderPlatCard(p)).join(''); });
     list.innerHTML = html;
-  } else {
-    list.innerHTML = plats.map(p => renderPlatCard(p)).join('');
-  }
+  } else list.innerHTML = plats.map(p => renderPlatCard(p)).join('');
 }
 
 function renderPlatCard(p) {
@@ -1819,18 +1232,16 @@ function renderPlatCard(p) {
     : `<div class="ed-plat-img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
   const isAvailable = p.disponible !== false;
   return `
-    <div class="ed-plat-card ${isAvailable ? '' : 'unavailable'}" data-id="${p.id}">
+    <div class="ed-plat-card ${isAvailable ? '' : 'unavailable'}">
       ${img}
       <div class="ed-plat-info">
         <div class="ed-plat-name">${escapeHtml(p.nom)}</div>
-        <div class="ed-plat-cat">${escapeHtml(p.categorie || 'Sans catégorie')}${p.description ? ' · ' + escapeHtml(p.description.slice(0, 40)) + (p.description.length > 40 ? '…' : '') : ''}</div>
+        <div class="ed-plat-cat">${escapeHtml(p.categorie || 'Sans catégorie')}</div>
       </div>
       <div class="ed-plat-price">${formatPrice(p.prix)}</div>
       <div class="ed-plat-actions">
-        <button class="ed-plat-action ${isAvailable ? 'avail-on' : 'avail-off'}" onclick="toggleDispoPlat('${p.id}', ${!isAvailable})" title="${isAvailable ? 'Marquer comme épuisé' : 'Remettre disponible'}">
-          ${isAvailable
-            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>`
-            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`}
+        <button class="ed-plat-action ${isAvailable ? 'avail-on' : 'avail-off'}" onclick="toggleDispoPlat('${p.id}', ${!isAvailable})" title="${isAvailable ? 'Marquer épuisé' : 'Remettre dispo'}">
+          ${isAvailable ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`}
         </button>
         <button class="ed-plat-action" onclick="openPlatModal('${p.id}')" title="Modifier">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -1843,7 +1254,6 @@ function renderPlatCard(p) {
 }
 
 async function toggleDispoPlat(platId, newVal) {
-  if (!state.resto) return;
   try {
     const { error } = await supa.from('menu').update({ disponible: newVal }).eq('id', platId);
     if (error) throw error;
@@ -1851,10 +1261,7 @@ async function toggleDispoPlat(platId, newVal) {
     if (plat) plat.disponible = newVal;
     renderPlatsList();
     showToast(newVal ? 'Plat disponible' : 'Plat épuisé', 'success');
-  } catch (err) {
-    console.error('toggleDispoPlat:', err);
-    showToast('Erreur', 'error');
-  }
+  } catch (err) { showToast('Erreur', 'error'); }
 }
 window.toggleDispoPlat = toggleDispoPlat;
 
@@ -1893,7 +1300,7 @@ function openPlatModal(platId = null) {
           <label class="field-label">Photo</label>
           <input type="file" id="plat-img-input" accept="image/*" style="display: none;">
           <div class="ed-img-upload ${currentPlatImageDataUrl ? 'has-image' : ''}" id="plat-img-zone">
-            ${currentPlatImageDataUrl ? `<img src="${escapeHtml(currentPlatImageDataUrl)}" alt=""><div class="img-overlay"><button class="btn btn-secondary" type="button" style="padding: 6px 10px; font-size: 11px;">Changer</button></div>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Cliquez pour ajouter une photo</p>`}
+            ${currentPlatImageDataUrl ? `<img src="${escapeHtml(currentPlatImageDataUrl)}" alt="">` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Cliquez pour ajouter une photo</p>`}
           </div>
         </div>
         <div class="field-group">
@@ -1911,42 +1318,14 @@ function openPlatModal(platId = null) {
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label">Description (facultatif)</label>
-          <textarea id="plat-desc" placeholder="Ingrédients, allergènes…">${escapeHtml(plat?.description || '')}</textarea>
-        </div>
-        <div class="field-row">
-          <div>
-            <label class="field-label">Coût matières (facultatif)</label>
-            <input type="number" id="plat-cout" step="0.01" min="0" placeholder="ex. 4.20" value="${plat?.cout || ''}">
-          </div>
-          <div>
-            <label class="field-label">TVA (%)</label>
-            <select id="plat-tva">
-              <option value="">— Auto selon pays —</option>
-              <option value="2.6" ${plat?.tva_rate == 2.6 ? 'selected' : ''}>2.6% (CH réduit)</option>
-              <option value="5.5" ${plat?.tva_rate == 5.5 ? 'selected' : ''}>5.5% (FR alimentaire)</option>
-              <option value="8.1" ${plat?.tva_rate == 8.1 ? 'selected' : ''}>8.1% (CH normal)</option>
-              <option value="10" ${plat?.tva_rate == 10 ? 'selected' : ''}>10% (FR resto)</option>
-              <option value="20" ${plat?.tva_rate == 20 ? 'selected' : ''}>20% (FR normal)</option>
-            </select>
-          </div>
-        </div>
-        <div class="marge-card" id="marge-card" style="display: none;">
-          <div class="marge-label">Marge en direct</div>
-          <div class="marge-row">
-            <div class="marge-stat"><div class="marge-stat-num" id="marge-eur">—</div><div class="marge-stat-lbl">Marge brute</div></div>
-            <div class="marge-divider"></div>
-            <div class="marge-stat"><div class="marge-stat-num" id="marge-pct">—</div><div class="marge-stat-lbl">% du prix</div></div>
-          </div>
+          <label class="field-label">Description</label>
+          <textarea id="plat-desc">${escapeHtml(plat?.description || '')}</textarea>
         </div>
       </div>
       <div class="modal-footer">
-        ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-plat" style="margin-right: auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Supprimer</button>` : ''}
+        ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-plat" style="margin-right: auto;">Supprimer</button>` : ''}
         <button class="btn btn-secondary" data-close>Annuler</button>
-        <button class="btn btn-primary" id="save-plat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ${isEdit ? 'Enregistrer' : 'Ajouter'}
-        </button>
+        <button class="btn btn-primary" id="save-plat">${isEdit ? 'Enregistrer' : 'Ajouter'}</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -1958,62 +1337,24 @@ function openPlatModal(platId = null) {
   imgInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('Image trop lourde (max 5 Mo)', 'error'); return; }
     currentPlatImageFile = file;
     const reader = new FileReader();
     reader.onload = ev => {
       currentPlatImageDataUrl = ev.target.result;
       imgZone.classList.add('has-image');
-      imgZone.innerHTML = `<img src="${currentPlatImageDataUrl}" alt=""><div class="img-overlay"><button class="btn btn-secondary" type="button" style="padding: 6px 10px; font-size: 11px;">Changer</button></div>`;
+      imgZone.innerHTML = `<img src="${currentPlatImageDataUrl}" alt="">`;
     };
     reader.readAsDataURL(file);
   });
   overlay.querySelector('#save-plat').addEventListener('click', async () => {
     const btn = overlay.querySelector('#save-plat');
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Enregistrement…';
-    try {
-      await savePlat(platId);
-      overlay.remove();
-    } catch (err) {
-      console.error(err);
-      showToast(err.message || 'Erreur', 'error');
-      btn.disabled = false;
-      btn.innerHTML = (isEdit ? 'Enregistrer' : 'Ajouter');
-    }
+    btn.innerHTML = '<div class="spinner"></div>';
+    try { await savePlat(platId); overlay.remove(); }
+    catch (err) { showToast(err.message || 'Erreur', 'error'); btn.disabled = false; btn.innerHTML = isEdit ? 'Enregistrer' : 'Ajouter'; }
   });
-  if (isEdit) {
-    overlay.querySelector('#confirm-delete-plat').addEventListener('click', async () => {
-      if (!confirm('Supprimer ce plat ?')) return;
-      await deletePlat(platId);
-      overlay.remove();
-    });
-  }
-  const prixInput = overlay.querySelector('#plat-prix');
-  const coutInput = overlay.querySelector('#plat-cout');
-  const updateMarge = () => updateMargeLive(overlay);
-  if (prixInput) prixInput.addEventListener('input', updateMarge);
-  if (coutInput) coutInput.addEventListener('input', updateMarge);
-  setTimeout(updateMarge, 50);
+  if (isEdit) overlay.querySelector('#confirm-delete-plat').addEventListener('click', async () => { if (!confirm('Supprimer ce plat ?')) return; await deletePlat(platId); overlay.remove(); });
   overlay.classList.add('show');
-}
-
-function updateMargeLive(overlay) {
-  const prix = parseFloat(overlay.querySelector('#plat-prix')?.value) || 0;
-  const cout = parseFloat(overlay.querySelector('#plat-cout')?.value) || 0;
-  const card = overlay.querySelector('#marge-card');
-  if (!card) return;
-  if (prix <= 0 || cout <= 0) { card.style.display = 'none'; return; }
-  const marge = prix - cout;
-  const pct = prix > 0 ? Math.round((marge / prix) * 100) : 0;
-  const eurEl = overlay.querySelector('#marge-eur');
-  const pctEl = overlay.querySelector('#marge-pct');
-  if (eurEl) eurEl.textContent = (marge >= 0 ? '+' : '') + marge.toFixed(2) + '€';
-  if (pctEl) pctEl.textContent = (marge >= 0 ? '' : '-') + Math.abs(pct) + '%';
-  card.classList.remove('low', 'bad');
-  if (marge < 0) card.classList.add('bad');
-  else if (pct < 60) card.classList.add('low');
-  card.style.display = '';
 }
 
 function compressImageToBase64(file, maxWidth = 800, quality = 0.75) {
@@ -2026,14 +1367,13 @@ function compressImageToBase64(file, maxWidth = 800, quality = 0.75) {
         if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
         const canvas = document.createElement('canvas');
         canvas.width = width; canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.onerror = () => reject(new Error('Image invalide'));
       img.src = e.target.result;
     };
-    reader.onerror = () => reject(new Error('Lecture fichier échouée'));
+    reader.onerror = () => reject(new Error('Lecture échouée'));
     reader.readAsDataURL(file);
   });
 }
@@ -2044,86 +1384,49 @@ async function savePlat(platId = null) {
   const cat = overlay.querySelector('#plat-cat').value.trim();
   const prix = parseFloat(overlay.querySelector('#plat-prix').value);
   const desc = overlay.querySelector('#plat-desc').value.trim();
-  const cout = parseFloat(overlay.querySelector('#plat-cout').value) || null;
-  const tvaVal = overlay.querySelector('#plat-tva').value;
-  const tva = tvaVal ? parseFloat(tvaVal) : null;
   if (!nom) throw new Error('Le nom est obligatoire');
   if (isNaN(prix) || prix < 0) throw new Error('Prix invalide');
   let imageUrl = currentPlatImageDataUrl;
-  if (currentPlatImageFile) {
-    try { imageUrl = await compressImageToBase64(currentPlatImageFile, 800, 0.75); }
-    catch (e) { console.warn('Compression échouée:', e); }
-  }
-  const fullPayload = {
-    restaurant_id: state.resto.id, nom,
-    categorie: cat || null, prix,
-    description: desc || null, cout, tva_rate: tva, image_url: imageUrl
-  };
-  const optionalCols = ['cout', 'tva_rate', 'image_url', 'description'];
-  let lastError = null;
+  if (currentPlatImageFile) { try { imageUrl = await compressImageToBase64(currentPlatImageFile); } catch (e) {} }
+  const fullPayload = { restaurant_id: state.resto.id, nom, categorie: cat || null, prix, description: desc || null, image_url: imageUrl };
   let payload = { ...fullPayload };
-  for (let attempt = 0; attempt < 5; attempt++) {
+  let lastError = null;
+  for (let i = 0; i < 5; i++) {
     let error;
     if (platId) ({ error } = await supa.from('menu').update(payload).eq('id', platId));
     else ({ error } = await supa.from('menu').insert(payload));
-    if (!error) {
-      showToast(platId ? 'Plat modifié' : 'Plat ajouté', 'success');
-      await loadMenu();
-      return;
-    }
+    if (!error) { showToast(platId ? 'Plat modifié' : 'Plat ajouté', 'success'); await loadMenu(); return; }
     lastError = error;
     const errMsg = (error.message || '').toLowerCase();
     const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
-    if (!colToRemove) colToRemove = optionalCols.find(c => payload[c] !== undefined && payload[c] !== null);
-    if (colToRemove && payload[colToRemove] !== undefined) { delete payload[colToRemove]; continue; }
+    let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
+    if (!col) col = ['image_url', 'description'].find(c => payload[c] !== undefined && payload[c] !== null);
+    if (col && payload[col] !== undefined) { delete payload[col]; continue; }
     break;
   }
-  throw new Error(lastError?.message || 'Impossible d\'enregistrer ce plat');
+  throw new Error(lastError?.message || 'Erreur');
 }
 
 async function deletePlat(platId) {
   if (!confirm('Supprimer ce plat ?')) return;
-  try {
-    const { error } = await supa.from('menu').delete().eq('id', platId);
-    if (error) throw error;
-    showToast('Plat supprimé', 'success');
-    await loadMenu();
-  } catch (err) {
-    console.error('deletePlat:', err);
-    showToast('Erreur de suppression', 'error');
-  }
+  try { const { error } = await supa.from('menu').delete().eq('id', platId); if (error) throw error; showToast('Plat supprimé', 'success'); await loadMenu(); }
+  catch (err) { showToast('Erreur', 'error'); }
 }
  async function loadTables() {
   if (!state.resto) return;
   try {
-    const { data, error } = await supa.from('tables').select('*')
-      .eq('restaurant_id', state.resto.id)
-      .order('numero', { ascending: true });
-    if (error) { state.tables = []; }
+    const { data, error } = await supa.from('tables').select('*').eq('restaurant_id', state.resto.id).order('numero');
+    if (error) state.tables = [];
     else state.tables = data || [];
     renderTablesList();
-  } catch (err) {
-    console.error('loadTables:', err);
-    state.tables = [];
-    renderTablesList();
-  }
+  } catch (err) { state.tables = []; renderTablesList(); }
 }
 
 function renderTablesList() {
   const list = document.getElementById('ed-tables-list');
   if (!list) return;
   if (state.tables.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        <h3>Aucune table</h3>
-        <p>Commencez par ajouter vos tables. Chaque table a son propre QR code.</p>
-        <button class="btn btn-primary" onclick="openTableModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter une table
-        </button>
-      </div>`;
+    list.innerHTML = `<div class="empty-state"><h3>Aucune table</h3><p>Commencez par ajouter vos tables.</p><button class="btn btn-primary" onclick="openTableModal()">Ajouter</button></div>`;
     return;
   }
   list.innerHTML = `<div class="ed-tables-grid">${state.tables.map(t => renderTableCard(t)).join('')}</div>`;
@@ -2139,19 +1442,11 @@ function renderTableCard(t) {
       ${isTakeaway ? `<div style="position: absolute; top: 12px; right: 12px; padding: 3px 9px; background: rgba(10,132,255,0.18); border: 1px solid rgba(10,132,255,0.35); color: var(--blue); border-radius: 100px; font-size: 9.5px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase;">À emporter</div>` : ''}
       <div class="ed-table-num">${escapeHtml(numero)}</div>
       <div class="ed-table-label">${escapeHtml(label)}</div>
-      <div class="ed-table-meta">${isTakeaway ? '— QR commande à emporter' : (places ? `— ${places} place${places > 1 ? 's' : ''}` : '— Capacité libre')}</div>
+      <div class="ed-table-meta">${isTakeaway ? '— QR à emporter' : (places ? `— ${places} place${places > 1 ? 's' : ''}` : '— Capacité libre')}</div>
       <div class="ed-table-actions">
-        <button class="ed-table-btn qr-btn" onclick="showTableQR('${t.id}')" title="Voir le QR code">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/></svg>
-          QR
-        </button>
-        <button class="ed-table-btn" onclick="openTableModal('${t.id}')" title="Modifier">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Modif
-        </button>
-        <button class="ed-table-btn delete" onclick="deleteTable('${t.id}')" title="Supprimer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-        </button>
+        <button class="ed-table-btn qr-btn" onclick="showTableQR('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/></svg>QR</button>
+        <button class="ed-table-btn" onclick="openTableModal('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Modif</button>
+        <button class="ed-table-btn delete" onclick="deleteTable('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
       </div>
     </div>`;
 }
@@ -2163,7 +1458,6 @@ function openTableModal(tableId = null) {
   const isEdit = !!tableId;
   const table = isEdit ? state.tables.find(t => t.id === tableId) : null;
   const maxNum = state.tables.reduce((m, t) => Math.max(m, parseInt(t.numero) || 0), 0);
-  const suggestedNum = maxNum + 1;
   let overlay = document.getElementById('modal-table');
   if (overlay) overlay.remove();
   overlay = document.createElement('div');
@@ -2177,46 +1471,31 @@ function openTableModal(tableId = null) {
       </div>
       <div class="modal-body">
         <div class="field-row">
-          <div>
-            <label class="field-label">Numéro</label>
-            <input type="text" id="table-numero" placeholder="ex. 1" value="${escapeHtml(table?.numero || suggestedNum)}">
-          </div>
-          <div>
-            <label class="field-label">Places (facultatif)</label>
-            <input type="number" id="table-places" min="1" max="20" placeholder="ex. 4" value="${table?.places || table?.capacite || ''}">
-          </div>
+          <div><label class="field-label">Numéro</label><input type="text" id="table-numero" value="${escapeHtml(table?.numero || (maxNum + 1))}"></div>
+          <div><label class="field-label">Places</label><input type="number" id="table-places" min="1" max="20" value="${table?.places || ''}"></div>
         </div>
         <div class="field-group">
-          <label class="field-label">Nom personnalisé (facultatif)</label>
-          <input type="text" id="table-label" placeholder="ex. Terrasse 1, Salon..." value="${escapeHtml(table?.label || '')}">
+          <label class="field-label">Nom personnalisé</label>
+          <input type="text" id="table-label" value="${escapeHtml(table?.label || '')}">
         </div>
         <div class="field-group">
           <label class="field-label">Type</label>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <label style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); cursor: pointer;">
               <input type="radio" name="table-type" value="sur_place" ${(!table || table?.type !== 'a_emporter') ? 'checked' : ''} style="accent-color: var(--blue);">
-              <div>
-                <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 12.5px; color: var(--text);">Sur place</div>
-                <div style="font-size: 10.5px; color: var(--text-3); margin-top: 1px;">Table classique</div>
-              </div>
+              <div><div style="font-weight: 800; font-size: 12.5px; color: var(--text);">Sur place</div></div>
             </label>
             <label style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); cursor: pointer;">
               <input type="radio" name="table-type" value="a_emporter" ${table?.type === 'a_emporter' ? 'checked' : ''} style="accent-color: var(--blue);">
-              <div>
-                <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 12.5px; color: var(--text);">À emporter</div>
-                <div style="font-size: 10.5px; color: var(--text-3); margin-top: 1px;">QR pour commande</div>
-              </div>
+              <div><div style="font-weight: 800; font-size: 12.5px; color: var(--text);">À emporter</div></div>
             </label>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-table" style="margin-right: auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Supprimer</button>` : ''}
+        ${isEdit ? `<button class="btn btn-danger" id="confirm-delete-table" style="margin-right: auto;">Supprimer</button>` : ''}
         <button class="btn btn-secondary" data-close>Annuler</button>
-        <button class="btn btn-primary" id="save-table">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ${isEdit ? 'Enregistrer' : 'Ajouter'}
-        </button>
+        <button class="btn btn-primary" id="save-table">${isEdit ? 'Enregistrer' : 'Ajouter'}</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -2225,23 +1504,12 @@ function openTableModal(tableId = null) {
   overlay.querySelector('#save-table').addEventListener('click', async () => {
     const btn = overlay.querySelector('#save-table');
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Enregistrement…';
+    btn.innerHTML = '<div class="spinner"></div>';
     try { await saveTable(tableId); overlay.remove(); }
-    catch (err) {
-      showToast(err.message || 'Erreur', 'error');
-      btn.disabled = false;
-      btn.innerHTML = (isEdit ? 'Enregistrer' : 'Ajouter');
-    }
+    catch (err) { showToast(err.message || 'Erreur', 'error'); btn.disabled = false; btn.innerHTML = isEdit ? 'Enregistrer' : 'Ajouter'; }
   });
-  if (isEdit) {
-    overlay.querySelector('#confirm-delete-table').addEventListener('click', async () => {
-      if (!confirm('Supprimer cette table ?')) return;
-      await deleteTable(tableId);
-      overlay.remove();
-    });
-  }
+  if (isEdit) overlay.querySelector('#confirm-delete-table').addEventListener('click', async () => { if (!confirm('Supprimer ?')) return; await deleteTable(tableId); overlay.remove(); });
   overlay.classList.add('show');
-  setTimeout(() => overlay.querySelector('#table-numero').focus(), 100);
 }
 
 async function saveTable(tableId = null) {
@@ -2250,62 +1518,39 @@ async function saveTable(tableId = null) {
   const places = parseInt(overlay.querySelector('#table-places').value) || null;
   const label = overlay.querySelector('#table-label').value.trim();
   const type = overlay.querySelector('input[name="table-type"]:checked')?.value || 'sur_place';
-  if (!numero) throw new Error('Le numéro est obligatoire');
-  const fullPayload = { restaurant_id: state.resto.id, numero, label: label || null, places, type };
-  const optionalCols = ['places', 'label', 'type'];
-  let payload = { ...fullPayload };
+  if (!numero) throw new Error('Numéro obligatoire');
+  let payload = { restaurant_id: state.resto.id, numero, label: label || null, places, type };
   let lastError = null;
-  for (let attempt = 0; attempt < 5; attempt++) {
+  for (let i = 0; i < 5; i++) {
     let error;
     if (tableId) ({ error } = await supa.from('tables').update(payload).eq('id', tableId));
     else ({ error } = await supa.from('tables').insert(payload));
-    if (!error) {
-      showToast(tableId ? 'Table modifiée' : 'Table ajoutée', 'success');
-      await loadTables();
-      return;
-    }
+    if (!error) { showToast(tableId ? 'Table modifiée' : 'Table ajoutée', 'success'); await loadTables(); return; }
     lastError = error;
     const errMsg = (error.message || '').toLowerCase();
-    const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
-    if (!colToRemove && payload.places !== undefined) {
-      payload.capacite = payload.places;
-      delete payload.places;
-      continue;
-    }
-    if (!colToRemove) colToRemove = optionalCols.find(c => payload[c] !== undefined && payload[c] !== null);
-    if (colToRemove && payload[colToRemove] !== undefined) { delete payload[colToRemove]; continue; }
+    if (!errMsg.includes('places') && payload.places !== undefined) { payload.capacite = payload.places; delete payload.places; continue; }
+    const col = ['places', 'label', 'type', 'capacite'].find(c => payload[c] !== undefined);
+    if (col) { delete payload[col]; continue; }
     break;
   }
-  throw new Error(lastError?.message || 'Impossible d\'enregistrer la table');
+  throw new Error(lastError?.message || 'Erreur');
 }
 
 async function deleteTable(tableId) {
-  if (!confirm('Supprimer cette table ?')) return;
-  try {
-    const { error } = await supa.from('tables').delete().eq('id', tableId);
-    if (error) throw error;
-    showToast('Table supprimée', 'success');
-    await loadTables();
-  } catch (err) {
-    console.error('deleteTable:', err);
-    showToast('Erreur de suppression', 'error');
-  }
+  if (!confirm('Supprimer ?')) return;
+  try { const { error } = await supa.from('tables').delete().eq('id', tableId); if (error) throw error; showToast('Table supprimée', 'success'); await loadTables(); }
+  catch (err) { showToast('Erreur', 'error'); }
 }
 
 function getTableQRUrl(table) {
   const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
-  if (table.type === 'a_emporter') {
-    return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&mode=takeaway&label=${encodeURIComponent(table.label || table.numero)}`;
-  }
+  if (table.type === 'a_emporter') return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&mode=takeaway&label=${encodeURIComponent(table.label || table.numero)}`;
   return `${baseUrl}menu.html?resto=${encodeURIComponent(state.resto.slug || state.resto.id)}&table=${encodeURIComponent(table.numero)}`;
 }
 
 async function showTableQR(tableId) {
   const table = state.tables.find(t => t.id === tableId);
   if (!table) return;
-  if (!state.resto.slug && state.resto.nom) await selectRestaurant(state.resto);
-  if (!state.resto.slug) { showToast('Restaurant sans nom', 'error'); return; }
   const url = getTableQRUrl(table);
   let overlay = document.getElementById('modal-qr');
   if (overlay) overlay.remove();
@@ -2313,39 +1558,25 @@ async function showTableQR(tableId) {
   overlay.className = 'modal-overlay';
   overlay.id = 'modal-qr';
   overlay.innerHTML = `
-    <div class="modal-content" style="max-width: 340px; padding: 0;">
-      <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px; z-index: 2; background: rgba(255,255,255,0.10); width: 32px; height: 32px; border-radius: 100px; border: 0; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
-      <div style="padding: 32px 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
-        <div style="background: #fff; border-radius: 20px; padding: 16px; display: inline-block;">
-          <canvas id="qr-canvas" style="display: block;"></canvas>
-        </div>
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
-          <button class="btn btn-primary" id="download-qr-frizz" style="width: 100%;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Télécharger PDF
-          </button>
-        </div>
+    <div class="modal-content" style="max-width: 340px;">
+      <button class="modal-close" data-close style="position: absolute; top: 14px; right: 14px;">×</button>
+      <div style="padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        <div style="background: #fff; border-radius: 20px; padding: 16px;"><canvas id="qr-canvas"></canvas></div>
+        <button class="btn btn-primary" id="download-qr" style="width: 100%;">Télécharger PDF</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => overlay.remove()));
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
   const canvas = overlay.querySelector('#qr-canvas');
-  try {
-    if (typeof QRCode === 'undefined') throw new Error('Lib QR non chargée');
-    await QRCode.toCanvas(canvas, url, {
-      width: 240, margin: 1,
-      color: { dark: '#0A0A0B', light: '#FFFFFF' },
-      errorCorrectionLevel: 'H'
-    });
-  } catch (err) {
-    const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&ecc=H&margin=1`;
+  try { await QRCode.toCanvas(canvas, url, { width: 240, margin: 1, errorCorrectionLevel: 'H' }); }
+  catch (err) {
     const img = document.createElement('img');
-    img.src = fallbackUrl;
-    img.style.width = '240px'; img.style.height = '240px';
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&ecc=H`;
+    img.style.width = '240px';
     canvas.parentNode.replaceChild(img, canvas);
   }
-  overlay.querySelector('#download-qr-frizz').addEventListener('click', () => printSingleTableQR(table));
+  overlay.querySelector('#download-qr').addEventListener('click', () => printSingleTableQR(table));
   overlay.classList.add('show');
 }
 
@@ -2353,19 +1584,14 @@ async function generateQRDataUrl(url, size = 800) {
   if (typeof QRCode !== 'undefined') {
     try {
       const tmp = document.createElement('canvas');
-      await QRCode.toCanvas(tmp, url, {
-        width: size, margin: 1,
-        color: { dark: '#000000', light: '#FFFFFF' },
-        errorCorrectionLevel: 'H'
-      });
+      await QRCode.toCanvas(tmp, url, { width: size, margin: 1, errorCorrectionLevel: 'H' });
       return tmp.toDataURL('image/png');
-    } catch (err) { console.warn('QR lib failed:', err); }
+    } catch (err) {}
   }
-  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&ecc=H&margin=1`;
+  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&ecc=H`;
   const res = await fetch(apiUrl);
-  if (!res.ok) throw new Error('QR API error');
   const blob = await res.blob();
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
@@ -2376,63 +1602,37 @@ async function generateQRDataUrl(url, size = 800) {
 async function printSingleTableQR(table) {
   try {
     showToast('Génération du PDF…');
-    if (!window.jspdf) throw new Error('Lib PDF non chargée');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const url = getTableQRUrl(table);
     const dataUrl = await generateQRDataUrl(url, 1200);
     const pageW = 210, pageH = 297;
-    const isTakeaway = table.type === 'a_emporter';
-    const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
-    const restoNom = state.resto.nom || '';
-
+    const titleText = table.type === 'a_emporter' ? 'À emporter' : `Table ${table.numero}`;
     doc.setDrawColor(20, 20, 20);
-    doc.setLineWidth(0.4);
     doc.rect(12, 12, pageW - 24, pageH - 24);
-
-    doc.setFont('times', 'italic');
-    doc.setFontSize(18);
-    doc.setTextColor(20, 20, 20);
+    doc.setFont('times', 'italic'); doc.setFontSize(18);
     doc.text('Frizz', pageW / 2 - 6, 35, { align: 'center' });
     doc.setTextColor(10, 132, 255);
-    doc.setFontSize(16);
-    doc.text('✦', pageW / 2 + 8, 35, { align: 'center' });
-
-    doc.setFont('times', 'italic');
-    doc.setFontSize(64);
+    doc.setFontSize(16); doc.text('✦', pageW / 2 + 8, 35, { align: 'center' });
     doc.setTextColor(20, 20, 20);
-    doc.text(titleText, pageW / 2, 78, { align: 'center' });
-
-    if (restoNom) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(11);
-      doc.setTextColor(110, 110, 110);
-      doc.text(restoNom.toUpperCase(), pageW / 2, 90, { align: 'center' });
+    doc.setFontSize(64); doc.text(titleText, pageW / 2, 78, { align: 'center' });
+    if (state.resto.nom) {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(110, 110, 110);
+      doc.text(state.resto.nom.toUpperCase(), pageW / 2, 90, { align: 'center' });
     }
-
-    const qrSize = 95;
-    const qrX = (pageW - qrSize) / 2;
-    const qrY = 110;
+    const qrSize = 95, qrX = (pageW - qrSize) / 2, qrY = 110;
     doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-
-    doc.setFont('times', 'italic');
-    doc.setFontSize(11);
-    doc.setTextColor(80, 80, 80);
+    doc.setFont('times', 'italic'); doc.setFontSize(11); doc.setTextColor(80, 80, 80);
     doc.text('Sans application · Sans inscription', pageW / 2, pageH - 30, { align: 'center' });
-
-    doc.save(`qr-${isTakeaway ? 'a-emporter' : 'table-' + table.numero}-${state.resto.slug || 'resto'}.pdf`);
+    doc.save(`qr-${table.type === 'a_emporter' ? 'a-emporter' : 'table-' + table.numero}-${state.resto.slug || 'resto'}.pdf`);
     showToast('PDF téléchargé', 'success');
-  } catch (err) {
-    console.error('printSingleTableQR:', err);
-    showToast('Erreur PDF', 'error');
-  }
+  } catch (err) { showToast('Erreur PDF', 'error'); }
 }
 
 async function printAllQR() {
   if (state.tables.length === 0) { showToast('Aucune table', 'error'); return; }
   try {
     showToast('Génération du PDF…');
-    if (!window.jspdf) throw new Error('Lib PDF non chargée');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     for (let i = 0; i < state.tables.length; i++) {
@@ -2441,29 +1641,18 @@ async function printAllQR() {
       if (slotIdx === 0 && i > 0) doc.addPage();
       const url = getTableQRUrl(t);
       const dataUrl = await generateQRDataUrl(url, 600);
-      const pageW = 210, pageH = 297;
-      const slotW = pageW / 2, slotH = pageH / 2;
-      const col = slotIdx % 2;
-      const row = Math.floor(slotIdx / 2);
-      const slotX = col * slotW;
-      const slotY = row * slotH;
-      const qrSize = 75;
-      const qrX = slotX + (slotW - qrSize) / 2;
-      const qrY = slotY + 30;
-      const isTakeaway = t.type === 'a_emporter';
-      const titleText = isTakeaway ? 'À emporter' : `Table ${t.numero}`;
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(22);
-      doc.setFont('helvetica', 'bold');
+      const slotW = 105, slotH = 148.5;
+      const col = slotIdx % 2, row = Math.floor(slotIdx / 2);
+      const slotX = col * slotW, slotY = row * slotH;
+      const qrSize = 75, qrX = slotX + (slotW - qrSize) / 2, qrY = slotY + 30;
+      const titleText = t.type === 'a_emporter' ? 'À emporter' : `Table ${t.numero}`;
+      doc.setTextColor(0, 0, 0); doc.setFontSize(22); doc.setFont('helvetica', 'bold');
       doc.text(titleText, slotX + slotW / 2, slotY + 22, { align: 'center' });
       doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
     }
     doc.save(`qr-tables-${state.resto.slug || 'resto'}.pdf`);
     showToast('PDF téléchargé', 'success');
-  } catch (err) {
-    console.error('printAllQR:', err);
-    showToast('Erreur PDF', 'error');
-  }
+  } catch (err) { showToast('Erreur PDF', 'error'); }
 }
 
 async function generateAISummary() {
@@ -2471,84 +1660,40 @@ async function generateAISummary() {
   const content = document.getElementById('ai-summary-content');
   if (!btn || !content || !state.resto) return;
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Analyse…';
-  content.innerHTML = `<div class="ai-shimmer" style="width:100%;"></div><div class="ai-shimmer" style="width:90%;"></div><div class="ai-shimmer" style="width:75%;"></div>`;
+  btn.innerHTML = '<div class="spinner"></div>';
+  content.innerHTML = `<div class="ai-shimmer"></div><div class="ai-shimmer" style="width:90%;"></div>`;
   try {
-    const periode = state.activePeriode || 'jour';
-    const now = new Date();
-    const since = new Date(now);
-    if (periode === 'jour') since.setHours(0, 0, 0, 0);
-    if (periode === 'semaine') since.setDate(now.getDate() - 7);
-    if (periode === 'mois') since.setMonth(now.getMonth() - 1);
-    const { data: cmds } = await supa.from('commandes').select('*')
-      .eq('restaurant_id', state.resto.id).gte('heure', since.toISOString());
+    const since = new Date(); since.setHours(0, 0, 0, 0);
+    const { data: cmds } = await supa.from('commandes').select('*').eq('restaurant_id', state.resto.id).gte('heure', since.toISOString());
     const commandes = cmds || [];
     const ca = commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
     const nb = commandes.length;
     const panier = nb ? ca / nb : 0;
-    const platCount = {};
-    commandes.forEach(c => {
-      (Array.isArray(c.items) ? c.items : []).forEach(it => {
-        const nom = it.nom || it.name || 'Inconnu';
-        platCount[nom] = (platCount[nom] || 0) + (parseInt(it.qte || it.quantity) || 1);
-      });
-    });
-    const top = Object.entries(platCount).map(([nom, qte]) => ({ nom, qte })).sort((a, b) => b.qte - a.qte);
-    await new Promise(r => setTimeout(r, 700));
-    const periodeLabel = periode === 'jour' ? "aujourd'hui" : (periode === 'semaine' ? 'cette semaine' : 'ce mois-ci');
+    await new Promise(r => setTimeout(r, 600));
     let summary = '', recommendation = '';
-    if (nb === 0) {
-      summary = `<strong>Pas de commandes ${periodeLabel}.</strong>`;
-      recommendation = `Vérifiez que les QR codes sont visibles sur les tables.`;
-    } else {
-      const caStr = Math.round(ca) + '€';
-      summary = `${periodeLabel.charAt(0).toUpperCase() + periodeLabel.slice(1)} : <strong>${caStr}</strong> sur <strong>${nb} commande${nb > 1 ? 's' : ''}</strong>, panier moyen <strong>${panier.toFixed(2)}€</strong>.`;
-      if (top.length > 0) summary += ` Plat phare : <strong>${escapeHtml(top[0].nom)}</strong> (${top[0].qte}×).`;
-      if (panier < 12 && nb >= 3) recommendation = `Panier bas. Proposez les desserts en fin de commande.`;
-      else if (top.length > 0 && top[0].qte >= 5) recommendation = `<strong>${escapeHtml(top[0].nom)}</strong> performe. Mettez-le en avant dans le menu.`;
-      else recommendation = `Continuez le service. Plus de données = analyse plus précise.`;
-    }
-    content.innerHTML = `
-      <div class="ai-summary-text">${summary}</div>
-      <div class="ai-recommendation">
-        <div class="ai-recommendation-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7h10c0-2 2-4 2-7a7 7 0 0 0-7-7z"/></svg></div>
-        <div class="ai-recommendation-text">${recommendation}</div>
-      </div>`;
-  } catch (err) {
-    content.innerHTML = `<p style="color: var(--red);">Erreur</p>`;
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px; height:13px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg> Régénérer';
-  }
+    if (nb === 0) { summary = `<strong>Pas de commandes aujourd'hui.</strong>`; recommendation = `Vérifiez que les QR codes sont visibles.`; }
+    else { summary = `Aujourd'hui : <strong>${Math.round(ca)}€</strong> sur <strong>${nb} commande${nb > 1 ? 's' : ''}</strong>, panier moyen <strong>${panier.toFixed(2)}€</strong>.`; recommendation = `Continuez le service.`; }
+    content.innerHTML = `<div class="ai-summary-text">${summary}</div><div class="ai-recommendation"><div class="ai-recommendation-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7h10c0-2 2-4 2-7a7 7 0 0 0-7-7z"/></svg></div><div class="ai-recommendation-text">${recommendation}</div></div>`;
+  } catch (err) { content.innerHTML = `<p style="color: var(--red);">Erreur</p>`; }
+  finally { btn.disabled = false; btn.innerHTML = 'Régénérer'; }
 }
 window.generateAISummary = generateAISummary;
-document.addEventListener('click', e => {
-  if (e.target.closest('#ai-generate-btn')) { e.preventDefault(); generateAISummary(); }
-});
+document.addEventListener('click', e => { if (e.target.closest('#ai-generate-btn')) { e.preventDefault(); generateAISummary(); } });
 
 async function loadConfig() {
   if (!state.resto) return;
   try {
     const { data: resto } = await supa.from('restaurants').select('*').eq('id', state.resto.id).maybeSingle();
-    if (resto) { state.resto = resto; state.config = { ...resto }; }
+    if (resto) state.resto = resto;
     fillConfigForm();
-    if (state.user) {
-      const emailEl = document.getElementById('cfg-user-email');
-      if (emailEl) emailEl.value = state.user.email || '';
-    }
+    if (state.user) { const e = document.getElementById('cfg-user-email'); if (e) e.value = state.user.email || ''; }
     if (state.restos && state.restos.length > 0) {
       const list = document.getElementById('cfg-restos-list');
-      if (list) {
-        list.innerHTML = state.restos.map(r => `
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
-            <div>
-              <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div>
-              <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
-            </div>
-            ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
-          </div>
-        `).join('');
-      }
+      if (list) list.innerHTML = state.restos.map(r => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
+          <div><div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div></div>
+          ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
+        </div>`).join('');
     }
   } catch (err) { console.error('loadConfig:', err); }
 }
@@ -2558,35 +1703,28 @@ function fillConfigForm() {
   setVal('cfg-resto-nom', r.nom);
   setVal('cfg-resto-email', r.email);
   setVal('cfg-resto-google', r.google_review_url);
-  const fiscal = document.getElementById('cfg-fiscal-country');
-  if (fiscal) fiscal.value = r.fiscal_country || 'CH';
-  const cur = document.getElementById('cfg-currency');
-  if (cur) cur.value = r.currency || 'CHF';
+  const fiscal = document.getElementById('cfg-fiscal-country'); if (fiscal) fiscal.value = r.fiscal_country || 'CH';
+  const cur = document.getElementById('cfg-currency'); if (cur) cur.value = r.currency || 'CHF';
   setVal('cfg-tva-number', r.tva_number);
   setVal('cfg-accountant-email', r.accountant_email);
-  const payToggle = document.getElementById('cfg-payment-enabled');
-  if (payToggle) payToggle.checked = !!r.payment_enabled;
-  const tipToggle = document.getElementById('cfg-tip-enabled');
-  if (tipToggle) tipToggle.checked = r.tip_enabled !== false;
+  const payToggle = document.getElementById('cfg-payment-enabled'); if (payToggle) payToggle.checked = !!r.payment_enabled;
+  const tipToggle = document.getElementById('cfg-tip-enabled'); if (tipToggle) tipToggle.checked = r.tip_enabled !== false;
   const urlEl = document.getElementById('cfg-resto-url');
-  if (urlEl) {
-    const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, '');
-    urlEl.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}`;
-  }
+  if (urlEl) { const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, ''); urlEl.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}`; }
   const stripeStatus = document.getElementById('cfg-stripe-status');
   if (stripeStatus) {
-    if (r.stripe_account_id && r.stripe_charges_enabled) {
-      stripeStatus.innerHTML = `<div class="ed-status ok" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>ACTIVÉ</div>`;
-    } else if (r.stripe_account_id) {
-      stripeStatus.innerHTML = `<div class="ed-status wait" style="display: inline-flex; align-items: center; gap: 6px;">EN ATTENTE</div>`;
-    } else {
-      stripeStatus.innerHTML = `<div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>NON CONFIGURÉ</div>`;
-    }
+    if (r.stripe_account_id && r.stripe_charges_enabled) stripeStatus.innerHTML = `<div class="ed-status ok">ACTIVÉ</div>`;
+    else if (r.stripe_account_id) stripeStatus.innerHTML = `<div class="ed-status wait">EN ATTENTE</div>`;
+    else stripeStatus.innerHTML = `<div class="ed-status paid">NON CONFIGURÉ</div>`;
   }
-  // Label dynamique du bouton abonnement selon le statut
+
+  // ════════ BADGE D'ESSAI / ABONNEMENT ════════
+  const trialStatusEl = document.getElementById('cfg-trial-status');
   const billingBtnEl = document.getElementById('cfg-billing-portal-btn');
+  const trialInfo = computeTrialState(r);
+  if (trialStatusEl) trialStatusEl.innerHTML = renderTrialBadge(trialInfo);
   if (billingBtnEl) {
-    if (r.subscription_active) {
+    if (trialInfo.state === 'subscribed') {
       billingBtnEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gérer mon abonnement';
     } else {
       billingBtnEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> S\'abonner à Frizz Pro';
@@ -2594,10 +1732,7 @@ function fillConfigForm() {
   }
 }
 
-function setVal(id, v) {
-  const el = document.getElementById(id);
-  if (el) el.value = v || '';
-}
+function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v || ''; }
 
 async function saveAllConfig() {
   if (!state.resto) return;
@@ -2613,29 +1748,26 @@ async function saveAllConfig() {
     tip_enabled: document.getElementById('cfg-tip-enabled').checked
   };
   if (!fullPayload.nom) { showToast('Nom obligatoire', 'error'); return; }
-  const optionalCols = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'email'];
   let payload = { ...fullPayload };
   let lastError = null;
-  for (let attempt = 0; attempt < 12; attempt++) {
+  for (let i = 0; i < 12; i++) {
     const { error } = await supa.from('restaurants').update(payload).eq('id', state.resto.id);
     if (!error) {
       showToast('Configuration enregistrée', 'success');
       Object.assign(state.resto, payload);
-      const nomEl = document.getElementById('resto-name');
-      if (nomEl) nomEl.textContent = payload.nom;
-      const heroEl = document.getElementById('ed-resto-display');
-      if (heroEl) heroEl.textContent = getShortName(payload.nom);
+      const nomEl = document.getElementById('resto-name'); if (nomEl) nomEl.textContent = payload.nom;
+      const heroEl = document.getElementById('ed-resto-display'); if (heroEl) heroEl.textContent = getShortName(payload.nom);
       return;
     }
     lastError = error;
     const errMsg = (error.message || '').toLowerCase();
     const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
-    if (!colToRemove) colToRemove = optionalCols.find(c => payload[c] !== undefined);
-    if (colToRemove && payload[colToRemove] !== undefined) { delete payload[colToRemove]; continue; }
+    let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
+    if (!col) col = ['google_review_url', 'fiscal_country', 'tva_number', 'currency', 'accountant_email', 'payment_enabled', 'tip_enabled', 'email'].find(c => payload[c] !== undefined);
+    if (col && payload[col] !== undefined) { delete payload[col]; continue; }
     break;
   }
-  showToast(lastError?.message || 'Erreur d\'enregistrement', 'error');
+  showToast(lastError?.message || 'Erreur', 'error');
 }
 
 async function switchResto(restoId) {
@@ -2653,7 +1785,7 @@ function wireConfigButtons() {
     saveBtn.addEventListener('click', async () => {
       saveBtn.disabled = true;
       const old = saveBtn.innerHTML;
-      saveBtn.innerHTML = '<div class="spinner"></div> Enregistrement…';
+      saveBtn.innerHTML = '<div class="spinner"></div>';
       await saveAllConfig();
       saveBtn.disabled = false;
       saveBtn.innerHTML = old;
@@ -2667,23 +1799,15 @@ function wireConfigButtons() {
   const stripeBtn = document.getElementById('cfg-stripe-connect-btn');
   if (stripeBtn && !stripeBtn.dataset.wired) {
     stripeBtn.dataset.wired = '1';
-    stripeBtn.addEventListener('click', () => {
-      showToast('Configuration Stripe disponible prochainement', '');
-    });
+    stripeBtn.addEventListener('click', () => showToast('Bientôt disponible', ''));
   }
-  // ═══════ BOUTON STRIPE CHECKOUT — ABONNEMENT FRIZZ PRO ═══════
+  // ════════ BOUTON STRIPE CHECKOUT ════════
   const billingBtn = document.getElementById('cfg-billing-portal-btn');
   if (billingBtn && !billingBtn.dataset.wired) {
     billingBtn.dataset.wired = '1';
     billingBtn.addEventListener('click', async () => {
-      if (!state.resto || !state.user) {
-        showToast('Restaurant non chargé', 'error');
-        return;
-      }
-      if (state.resto.subscription_active) {
-        showToast('Vous êtes déjà abonné à Frizz Pro.', 'success');
-        return;
-      }
+      if (!state.resto || !state.user) { showToast('Restaurant non chargé', 'error'); return; }
+      if (state.resto.subscription_active) { showToast('Vous êtes déjà abonné à Frizz Pro.', 'success'); return; }
       const oldHtml = billingBtn.innerHTML;
       billingBtn.disabled = true;
       billingBtn.innerHTML = '<div class="spinner"></div> Préparation du paiement…';
@@ -2691,12 +1815,9 @@ function wireConfigButtons() {
         const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
           body: { restaurant_id: state.resto.id, email: state.user.email }
         });
-        if (error || !data?.url) {
-          throw new Error(error?.message || data?.error || 'Erreur de création du paiement');
-        }
+        if (error || !data?.url) throw new Error(error?.message || data?.error || 'Erreur');
         location.href = data.url;
       } catch (err) {
-        console.error('Stripe checkout:', err);
         showToast('Erreur : ' + (err.message || 'paiement indisponible'), 'error');
         billingBtn.disabled = false;
         billingBtn.innerHTML = oldHtml;
@@ -2723,37 +1844,12 @@ function openAddRestoModal() {
         <button class="modal-close" data-close>×</button>
       </div>
       <div class="modal-body">
-        <div class="field-group">
-          <label class="field-label">Nom du restaurant</label>
-          <input type="text" id="new-resto-nom" placeholder="ex. Chez Marc">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Identifiant (slug)</label>
-          <input type="text" id="new-resto-slug" placeholder="ex. chez-marc">
-        </div>
-        <div class="field-row">
-          <div>
-            <label class="field-label">Pays fiscal</label>
-            <select id="new-resto-country">
-              <option value="CH">Suisse 🇨🇭</option>
-              <option value="FR">France 🇫🇷</option>
-            </select>
-          </div>
-          <div>
-            <label class="field-label">Devise</label>
-            <select id="new-resto-currency">
-              <option value="CHF">CHF</option>
-              <option value="EUR">EUR</option>
-            </select>
-          </div>
-        </div>
+        <div class="field-group"><label class="field-label">Nom</label><input type="text" id="new-resto-nom" placeholder="ex. Chez Marc"></div>
+        <div class="field-group"><label class="field-label">Identifiant (slug)</label><input type="text" id="new-resto-slug" placeholder="ex. chez-marc"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-close>Annuler</button>
-        <button class="btn btn-primary" id="confirm-add-resto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Créer
-        </button>
+        <button class="btn btn-primary" id="confirm-add-resto">Créer</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -2764,28 +1860,17 @@ function openAddRestoModal() {
   let slugManuallyEdited = false;
   nomInput.addEventListener('input', () => {
     if (slugManuallyEdited) return;
-    slugInput.value = nomInput.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+    slugInput.value = nomInput.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
   });
   slugInput.addEventListener('input', () => { slugManuallyEdited = true; });
-  const countrySel = overlay.querySelector('#new-resto-country');
-  const curSel = overlay.querySelector('#new-resto-currency');
-  countrySel.addEventListener('change', () => {
-    curSel.value = countrySel.value === 'FR' ? 'EUR' : 'CHF';
-  });
   overlay.querySelector('#confirm-add-resto').addEventListener('click', async () => {
     const btn = overlay.querySelector('#confirm-add-resto');
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Création…';
+    btn.innerHTML = '<div class="spinner"></div>';
     try { await createNewResto(); overlay.remove(); }
-    catch (err) {
-      showToast(err.message || 'Erreur', 'error');
-      btn.disabled = false;
-      btn.innerHTML = 'Créer';
-    }
+    catch (err) { showToast(err.message || 'Erreur', 'error'); btn.disabled = false; btn.innerHTML = 'Créer'; }
   });
   overlay.classList.add('show');
-  setTimeout(() => nomInput.focus(), 100);
 }
 window.openAddRestoModal = openAddRestoModal;
 
@@ -2793,58 +1878,29 @@ async function createNewResto() {
   const overlay = document.getElementById('modal-add-resto');
   const nom = overlay.querySelector('#new-resto-nom').value.trim();
   const slug = overlay.querySelector('#new-resto-slug').value.trim();
-  const country = overlay.querySelector('#new-resto-country').value;
-  const currency = overlay.querySelector('#new-resto-currency').value;
-  if (!nom) throw new Error('Le nom est obligatoire');
-  if (!slug) throw new Error('L\'identifiant est obligatoire');
-  if (!/^[a-z0-9-]+$/.test(slug)) throw new Error('Identifiant invalide (a-z, 0-9, tirets)');
+  if (!nom) throw new Error('Nom obligatoire');
+  if (!slug) throw new Error('Slug obligatoire');
   const { data: existing } = await supa.from('restaurants').select('id').eq('slug', slug).maybeSingle();
-  if (existing) throw new Error('Cet identifiant est déjà utilisé');
-  const generateUUID = () => {
-    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-  };
-  const newId = generateUUID();
-  const fullPayload = {
-    id: newId, nom, slug,
-    user_id: state.user.id,
-    email: state.user.email || `${slug}@frizz-menu.com`,
-    fiscal_country: country, currency
-  };
-  const optionalCols = ['fiscal_country', 'currency', 'user_id', 'owner_id'];
-  let payload = { ...fullPayload };
-  let lastError = null;
-  let createdResto = null;
-  for (let attempt = 0; attempt < 10; attempt++) {
+  if (existing) throw new Error('Slug déjà utilisé');
+  const newId = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); });
+  let payload = { id: newId, nom, slug, user_id: state.user.id, email: state.user.email, trial_started_at: new Date().toISOString() };
+  let lastError = null, createdResto = null;
+  for (let i = 0; i < 8; i++) {
     if (!payload.id) payload.id = newId;
-    if (!payload.email) payload.email = state.user.email || `${slug}@frizz-menu.com`;
+    if (!payload.email) payload.email = state.user.email;
     const { data, error } = await supa.from('restaurants').insert(payload).select().single();
     if (!error) { createdResto = data; break; }
     lastError = error;
     const errMsg = (error.message || '').toLowerCase();
-    if (errMsg.includes('user_id') && payload.user_id !== undefined) {
-      payload.owner_id = payload.user_id;
-      delete payload.user_id;
-      continue;
-    }
-    if (errMsg.includes('owner_id') && payload.owner_id !== undefined) {
-      delete payload.owner_id;
-      continue;
-    }
+    if (errMsg.includes('user_id') && payload.user_id !== undefined) { payload.owner_id = payload.user_id; delete payload.user_id; continue; }
+    if (errMsg.includes('owner_id') && payload.owner_id !== undefined) { delete payload.owner_id; continue; }
     const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-    let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
-    if (!colToRemove) colToRemove = optionalCols.find(c => payload[c] !== undefined);
-    const protectedCols = ['id', 'nom', 'slug', 'email'];
-    if (colToRemove && payload[colToRemove] !== undefined && !protectedCols.includes(colToRemove)) {
-      delete payload[colToRemove];
-      continue;
-    }
+    let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
+    if (!col) col = ['trial_started_at', 'user_id', 'owner_id'].find(c => payload[c] !== undefined);
+    if (col && !['id', 'nom', 'slug', 'email'].includes(col) && payload[col] !== undefined) { delete payload[col]; continue; }
     break;
   }
-  if (!createdResto) throw new Error(lastError?.message || 'Création impossible');
+  if (!createdResto) throw new Error(lastError?.message || 'Erreur');
   showToast(`${nom} créé`, 'success');
   await loadUserRestaurants();
   await selectRestaurant(createdResto);
@@ -2852,6 +1908,158 @@ async function createNewResto() {
 }
 
 window.addEventListener('load', wireConfigButtons);
+
+// ════════════════════════════════════════════════════════════════
+// LOGIQUE D'ESSAI : compute + badge + écran de blocage + debug
+// ════════════════════════════════════════════════════════════════
+
+const TRIAL_DURATION_DAYS = 14;
+
+function computeTrialState(resto) {
+  if (!resto) return { state: 'unknown', daysLeft: 0 };
+  // Mode debug
+  const debugMode = localStorage.getItem('frizz_debug_trial');
+  if (debugMode !== null && debugMode !== 'normal') {
+    if (debugMode === 'expired') return { state: 'expired', daysLeft: 0 };
+    if (debugMode === 'subscribed') return { state: 'subscribed', daysLeft: 0 };
+    const fakeDays = parseInt(debugMode);
+    if (!isNaN(fakeDays)) {
+      if (fakeDays === 0) return { state: 'expired', daysLeft: 0 };
+      if (fakeDays < 3) return { state: 'critical', daysLeft: fakeDays };
+      if (fakeDays <= 7) return { state: 'warning', daysLeft: fakeDays };
+      return { state: 'active', daysLeft: fakeDays };
+    }
+  }
+  // Logique réelle
+  if (resto.subscription_active) return { state: 'subscribed', daysLeft: 0 };
+  if (!resto.trial_started_at) return { state: 'active', daysLeft: TRIAL_DURATION_DAYS };
+  const startedAt = new Date(resto.trial_started_at).getTime();
+  const elapsedDays = Math.floor((Date.now() - startedAt) / (1000 * 60 * 60 * 24));
+  const daysLeft = TRIAL_DURATION_DAYS - elapsedDays;
+  if (daysLeft <= 0) return { state: 'expired', daysLeft: 0 };
+  if (daysLeft < 3) return { state: 'critical', daysLeft };
+  if (daysLeft <= 7) return { state: 'warning', daysLeft };
+  return { state: 'active', daysLeft };
+}
+
+function renderTrialBadge(info) {
+  const style = 'display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 100px; font-size: 12px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase;';
+  const iClock = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  const iCheck = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const iAlert = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  const iLock = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  if (info.state === 'subscribed') return `<div style="${style} background: rgba(74,222,128,0.14); border: 1px solid rgba(74,222,128,0.30); color: var(--green);">${iCheck} Abonnement actif · Frizz Pro</div>`;
+  if (info.state === 'active') return `<div style="${style} background: rgba(74,222,128,0.14); border: 1px solid rgba(74,222,128,0.30); color: var(--green);">${iClock} Essai gratuit · ${info.daysLeft} jours restants</div>`;
+  if (info.state === 'warning') return `<div style="${style} background: rgba(255,180,84,0.14); border: 1px solid rgba(255,180,84,0.30); color: var(--orange);">${iClock} Essai bientôt terminé · ${info.daysLeft} jours restants</div>`;
+  if (info.state === 'critical') return `<div style="${style} background: rgba(255,107,92,0.14); border: 1px solid rgba(255,107,92,0.30); color: var(--red);">${iAlert} Essai expire dans ${info.daysLeft} jour${info.daysLeft > 1 ? 's' : ''}</div>`;
+  if (info.state === 'expired') return `<div style="${style} background: rgba(255,107,92,0.14); border: 1px solid rgba(255,107,92,0.30); color: var(--red);">${iLock} Essai terminé</div>`;
+  return '';
+}
+
+function checkTrialBlocking() {
+  if (!state.resto) return;
+  const info = computeTrialState(state.resto);
+  if (info.state === 'expired') showTrialBlocker();
+  else hideTrialBlocker();
+}
+
+function showTrialBlocker() {
+  let overlay = document.getElementById('trial-blocker');
+  if (overlay) { overlay.style.display = 'flex'; return; }
+  overlay = document.createElement('div');
+  overlay.id = 'trial-blocker';
+  overlay.style.cssText = `position: fixed; inset: 0; z-index: 9999; background: rgba(5, 5, 6, 0.92); backdrop-filter: saturate(180%) blur(40px); -webkit-backdrop-filter: saturate(180%) blur(40px); display: flex; align-items: center; justify-content: center; padding: 24px; animation: fadeIn 0.4s ease;`;
+  overlay.innerHTML = `
+    <div style="max-width: 480px; width: 100%; padding: 40px 32px; background: rgba(20, 20, 26, 0.85); border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 30px 80px -20px rgba(0,0,0,0.7); text-align: center;">
+      <div style="display: inline-flex; align-items: center; gap: 4px; margin-bottom: 28px;">
+        <span style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 38px; color: var(--text); letter-spacing: -0.020em;">Frizz</span>
+        <span style="font-family: 'Source Serif 4', serif; font-style: italic; color: var(--blue); font-weight: 700; font-size: 32px; text-shadow: 0 0 12px rgba(10,132,255,0.5);">✦</span>
+      </div>
+      <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(255,107,92,0.14); border: 1px solid rgba(255,107,92,0.30); border-radius: 100px; font-size: 11px; font-weight: 800; color: var(--red); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 18px;">
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Essai terminé
+      </div>
+      <h1 style="font-size: 28px; font-weight: 900; letter-spacing: -0.030em; line-height: 1.15; color: var(--text); margin-bottom: 14px;">Ton essai gratuit est<br>terminé.</h1>
+      <p style="font-size: 14px; font-weight: 700; color: var(--text-2); line-height: 1.55; margin-bottom: 28px;">
+        Pour continuer à utiliser Frizz, abonne-toi à <strong style="color: var(--text);">Frizz Pro</strong>.<br>
+        <span style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 17px; color: var(--text);">24,90€/mois · sans engagement · résiliable à tout moment</span>
+      </p>
+      <button id="trial-blocker-subscribe" class="btn btn-primary" style="width: 100%; padding: 15px 18px; font-size: 15px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        S'abonner à Frizz Pro
+      </button>
+      <button id="trial-blocker-logout" style="margin-top: 18px; background: transparent; border: 0; color: var(--text-3); font-family: inherit; font-weight: 700; font-size: 12.5px; cursor: pointer; padding: 6px 10px;">Se déconnecter</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('trial-blocker-subscribe').addEventListener('click', async () => {
+    const btn = document.getElementById('trial-blocker-subscribe');
+    const oldHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Préparation du paiement…';
+    try {
+      const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
+        body: { restaurant_id: state.resto.id, email: state.user.email }
+      });
+      if (error || !data?.url) throw new Error(error?.message || 'Erreur');
+      location.href = data.url;
+    } catch (err) {
+      showToast('Erreur : ' + (err.message || 'paiement indisponible'), 'error');
+      btn.disabled = false;
+      btn.innerHTML = oldHtml;
+    }
+  });
+  document.getElementById('trial-blocker-logout').addEventListener('click', async () => {
+    if (!confirm('Se déconnecter ?')) return;
+    await supa.auth.signOut();
+    location.href = 'login.html';
+  });
+}
+
+function hideTrialBlocker() {
+  const overlay = document.getElementById('trial-blocker');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// ════════ MODE DEBUG (Cmd/Ctrl + Shift + D) ════════
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+    e.preventDefault();
+    toggleDebugPanel();
+  }
+});
+
+function toggleDebugPanel() {
+  let panel = document.getElementById('frizz-debug-panel');
+  if (panel) { panel.remove(); return; }
+  const currentMode = localStorage.getItem('frizz_debug_trial') || 'normal';
+  panel = document.createElement('div');
+  panel.id = 'frizz-debug-panel';
+  panel.style.cssText = `position: fixed; bottom: 20px; right: 20px; z-index: 10000; background: rgba(20, 20, 26, 0.95); backdrop-filter: saturate(180%) blur(28px); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; padding: 18px; min-width: 240px; box-shadow: 0 20px 60px -10px rgba(0,0,0,0.7); font-family: 'Inter Tight', sans-serif;`;
+  const btnStyle = 'display: block; width: 100%; padding: 8px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; text-align: left;';
+  const activeBtnStyle = btnStyle + ' background: rgba(10,132,255,0.20); border-color: var(--blue); color: var(--blue);';
+  const modes = [
+    { val: 'normal',     label: '✓ Mode normal (réel)' },
+    { val: '12',         label: '12 jours restants (vert)' },
+    { val: '5',          label: '5 jours restants (orange)' },
+    { val: '1',          label: '1 jour restant (rouge)' },
+    { val: 'expired',    label: '🔒 Expiré (bloqué)' },
+    { val: 'subscribed', label: '✅ Abonné' },
+  ];
+  panel.innerHTML = `
+    <div style="font-size: 11px; font-weight: 800; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px;">🐛 Mode debug — Essai</div>
+    ${modes.map(m => `<button data-mode="${m.val}" style="${currentMode === m.val ? activeBtnStyle : btnStyle}">${m.label}</button>`).join('')}
+    <div style="font-size: 10.5px; color: var(--text-3); margin-top: 10px; font-weight: 600;">Cmd/Ctrl + Shift + D pour fermer</div>
+  `;
+  document.body.appendChild(panel);
+  panel.querySelectorAll('button[data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-mode');
+      if (mode === 'normal') localStorage.removeItem('frizz_debug_trial');
+      else localStorage.setItem('frizz_debug_trial', mode);
+      location.reload();
+    });
+  });
+}
 </script>
 </body>
 </html>

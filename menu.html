@@ -478,6 +478,28 @@
     padding: 22px 22px 0;
   }
 
+  /* Titre de section (catégorie) en mode "Tout" */
+  .cat-section-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.020em;
+    color: var(--text);
+    margin: 26px 0 4px;
+    padding: 0;
+  }
+  .cat-section-title:first-child {
+    margin-top: 0;
+  }
+  .cat-section-title::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: var(--border);
+    margin-top: 8px;
+  }
+
   /* ─────────── PLATS ─────────── */
   .plat-list {
     display: flex;
@@ -1492,7 +1514,7 @@
 <div class="mode-selector-overlay" id="mode-selector" style="display: none;">
   <div class="mode-selector-card">
     <div class="mode-selector-logo">Frizz<span class="spark">✦</span></div>
-    <h2 class="mode-selector-title">Bienvenue chez<br><em id="mode-resto-name">…</em></h2>
+    <h2 class="mode-selector-title">Bienvenue chez<br><em class="notranslate" translate="no" id="mode-resto-name">…</em></h2>
     <p class="mode-selector-sub">Comment souhaitez-vous commander ?</p>
 
     <div class="mode-options">
@@ -1583,7 +1605,7 @@
       <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español <span class="lang-check">✓</span></button>
     </div>
     <div class="header-inner">
-      <div class="resto-name" id="resto-name">—</div>
+      <div class="resto-name notranslate" translate="no" id="resto-name">—</div>
       <div class="resto-table" id="resto-table">—</div>
     </div>
   </header>
@@ -2737,7 +2759,35 @@ function renderMenu() {
     return;
   }
 
-  container.innerHTML = plats.map(p => renderPlatRow(p)).join('');
+  // Si on est sur "Tout" : grouper et trier par catégorie (ordre logique du repas)
+  if (activeCat === 'all') {
+    // Grouper par catégorie
+    const byCat = new Map();
+    plats.forEach(p => {
+      const cat = (p.categorie || p.category || '').trim() || 'Autres';
+      if (!byCat.has(cat)) byCat.set(cat, []);
+      byCat.get(cat).push(p);
+    });
+
+    // Trier les catégories selon l'ordre logique
+    const sortedCats = sortCategories([...byCat.keys()]);
+
+    let html = '';
+    sortedCats.forEach(cat => {
+      const platsCat = byCat.get(cat);
+      // Titre de section (sauf si une seule catégorie)
+      if (sortedCats.length > 1) {
+        html += `<div class="cat-section-title">${escapeHtml(cat)}</div>`;
+      }
+      platsCat.forEach(p => {
+        html += renderPlatRow(p);
+      });
+    });
+    container.innerHTML = html;
+  } else {
+    // Une seule catégorie sélectionnée : juste les plats
+    container.innerHTML = plats.map(p => renderPlatRow(p)).join('');
+  }
 }
 
 function renderPlatRow(p) {
@@ -3014,7 +3064,10 @@ document.getElementById('modal-cart').addEventListener('click', e => {
 // ENVOYER LA COMMANDE
 // ═════════════════════════════════════════════════════════════════
 async function submitOrder() {
-  if (state.cart.length === 0) return;
+  if (state.cart.length === 0) {
+    showToast('Votre panier est vide');
+    return;
+  }
 
   if (state.previewMode) {
     showToast('Mode aperçu : commande non envoyée', 'success');
@@ -3024,7 +3077,7 @@ async function submitOrder() {
     return;
   }
 
-  if (!state.resto) {
+  if (!state.resto || !state.resto.id) {
     showToast('Erreur : restaurant non chargé', 'error');
     return;
   }
@@ -3034,22 +3087,16 @@ async function submitOrder() {
   btn.textContent = 'Validation…';
 
   try {
-    const total = state.cart.reduce((s, it) => s + (it.prix * (it.qte || 1)), 0);
+    // Calcul du total (sécurisé pour parser les prix)
+    const total = state.cart.reduce((s, it) => {
+      const prix = parseFloat(it.prix) || 0;
+      const qte = parseInt(it.qte) || 1;
+      return s + (prix * qte);
+    }, 0);
 
-    // ══════════════════════════════════════════════════
-    // VALIDATION COLLECTIVE
-    // - Si on est seul (personne d'autre dans le salon) → envoi direct comme avant
-    // - Si on est plusieurs → la commande part avec statut 'en_validation'
-    //   et une table appelée "validations" trace qui a validé.
-    //   Quand tout le monde a validé, le statut passe à 'en_attente'
-    //   (en cuisine).
-    // ══════════════════════════════════════════════════
-
-    // Détecter si on est dans un groupe (plus d'1 personne au salon)
-    const groupSize = Math.max(state.salon?.length || 1, 1);
-    const isGroup = groupSize > 1;
-    const initialStatut = isGroup ? 'en_validation' : 'en_attente';
-
+    // Données de base (champs essentiels + optionnels)
+    // L'envoi se fait toujours en 'en_attente' pour aller direct en cuisine.
+    // La validation collective ne sera activée qu'avec une future migration SQL.
     const orderData = {
       restaurant_id: state.resto.id,
       table_id: state.table?.id || null,
@@ -3060,82 +3107,77 @@ async function submitOrder() {
       items: state.cart.map(it => ({
         plat_id: it.id,
         nom: it.nom,
-        prix: it.prix,
-        qte: it.qte || 1,
+        prix: parseFloat(it.prix) || 0,
+        qte: parseInt(it.qte) || 1,
         note: it.note || null
       })),
-      total: total,
-      statut: initialStatut,
+      total: parseFloat(total.toFixed(2)),
+      statut: 'en_attente',
       heure: new Date().toISOString(),
       type_commande: URL_MODE === 'takeaway' ? 'a_emporter' : 'sur_place'
     };
 
-    // Insertion avec retry intelligent
+    console.log('[submitOrder] Payload initial:', JSON.stringify(orderData));
+
+    // Insertion avec retry intelligent : si une colonne n'existe pas, on la retire et on retente
     const optionalCols = ['table_id', 'table_numero', 'type_commande', 'session_id', 'personne_id', 'personne_nom'];
     let payload = { ...orderData };
     let inserted = false;
     let lastError = null;
-    let statutFallback = false;
 
-    for (let attempt = 0; attempt < 8; attempt++) {
+    for (let attempt = 0; attempt < 10; attempt++) {
       const { error } = await supa.from('commandes').insert(payload);
       if (!error) {
         inserted = true;
         break;
       }
       lastError = error;
-      console.error('Submit tentative ' + (attempt + 1) + ':', error, 'payload:', payload);
+      console.warn('[submitOrder] Tentative ' + (attempt + 1) + ' échouée:', error.message, 'code:', error.code);
 
       const errMsg = (error.message || '').toLowerCase();
 
-      // Si la base rejette le statut 'en_validation' (contrainte CHECK), on retombe en 'en_attente'
-      if (!statutFallback && payload.statut === 'en_validation' &&
-          (errMsg.includes('check') || errMsg.includes('statut') || errMsg.includes('invalid input value') || errMsg.includes('constraint'))) {
-        payload.statut = 'en_attente';
-        statutFallback = true;
+      // Détecter quelle colonne pose problème
+      let colToRemove = null;
+      const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find ['"]?(\w+)['"]?\s+column/i);
+      if (colMatch) colToRemove = colMatch[1] || colMatch[2];
+
+      // Sinon, retirer la première colonne optionnelle restante
+      if (!colToRemove) {
+        colToRemove = optionalCols.find(c => payload[c] !== undefined && payload[c] !== null);
+      }
+
+      // Champs critiques qu'on ne peut JAMAIS retirer
+      const protectedCols = ['restaurant_id', 'items', 'total', 'statut'];
+
+      if (colToRemove && payload[colToRemove] !== undefined && !protectedCols.includes(colToRemove)) {
+        console.log('[submitOrder] Retrait de la colonne:', colToRemove);
+        delete payload[colToRemove];
         continue;
       }
 
-      // Retire la colonne mentionnée dans l'erreur
-      const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find ['"]?(\w+)['"]?/i);
-      let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
-      if (!col) col = optionalCols.find(c => payload[c] !== undefined);
-      if (col && payload[col] !== undefined && col !== 'restaurant_id' && col !== 'items' && col !== 'total' && col !== 'statut') {
-        delete payload[col];
-        continue;
-      }
+      // Si on tombe ici, on ne peut plus rien tenter
       break;
     }
 
     if (!inserted) {
-      const msg = lastError?.message || 'envoi impossible';
-      throw new Error(msg);
+      const errCode = lastError?.code ? ' (code ' + lastError.code + ')' : '';
+      const errDetail = lastError?.details ? ' — ' + lastError.details : '';
+      throw new Error((lastError?.message || 'envoi impossible') + errCode + errDetail);
     }
-
-    // Si le statut a dû être basculé à 'en_attente' (la base ne supporte pas en_validation),
-    // alors la commande est partie direct en cuisine, pas de validation collective
-    const reallyValidating = !statutFallback && payload.statut === 'en_validation';
 
     state.cart = [];
     saveCart();
     updateCartBar();
     closeCartModal();
-
-    if (reallyValidating) {
-      showToast('Vous avez validé · en attente du groupe', 'success');
-      // Vérifie si tout le monde a validé pour passer en cuisine
-      await checkGroupValidation();
-    } else {
-      showToast('Commande envoyée en cuisine !', 'success');
-    }
+    showToast('Commande envoyée en cuisine !', 'success');
 
     // Recharger les commandes
     await loadOrders();
 
-    // Modal avis Google (1.5s après) — uniquement si la commande est vraiment partie en cuisine
-    if (!reallyValidating) showGoogleReviewModal();
+    // Modal avis Google (1.5s après)
+    showGoogleReviewModal();
   } catch (err) {
-    console.error('submitOrder:', err);
+    console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
   } finally {
     btn.disabled = false;

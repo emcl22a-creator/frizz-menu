@@ -4448,13 +4448,47 @@ function wireConfigButtons() {
     });
   }
 
-  const addRestoBtn = document.getElementById('cfg-add-resto-btn');
-  if (addRestoBtn && !addRestoBtn.dataset.wired) {
-    addRestoBtn.dataset.wired = '1';
-    addRestoBtn.addEventListener('click', openAddRestoModal);
-  }
-}
+const billingBtn = document.getElementById('cfg-billing-portal-btn');
+  if (billingBtn && !billingBtn.dataset.wired) {
+    billingBtn.dataset.wired = '1';
+    billingBtn.addEventListener('click', async () => {
+      if (!state.resto || !state.user) {
+        showToast('Restaurant non chargé', 'error');
+        return;
+      }
 
+      // Si déjà abonné, on affiche un message (Billing Portal à venir)
+      if (state.resto.subscription_active) {
+        showToast('Vous êtes déjà abonné à Frizz Pro.', 'success');
+        return;
+      }
+
+      // Sinon, lancer Stripe Checkout
+      const oldHtml = billingBtn.innerHTML;
+      billingBtn.disabled = true;
+      billingBtn.innerHTML = '<div class="spinner"></div> Préparation du paiement…';
+
+      try {
+        const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
+          body: {
+            restaurant_id: state.resto.id,
+            email: state.user.email
+          }
+        });
+
+        if (error || !data?.url) {
+          throw new Error(error?.message || data?.error || 'Erreur de création du paiement');
+        }
+
+        location.href = data.url;
+      } catch (err) {
+        console.error('Stripe checkout:', err);
+        showToast('Erreur : ' + (err.message || 'paiement indisponible'), 'error');
+        billingBtn.disabled = false;
+        billingBtn.innerHTML = oldHtml;
+      }
+    });
+  }
 // ═══════════════════════════════════════════════════════════════
 // MULTI-RESTAURANTS — Modale ajout d'un restaurant
 // ═══════════════════════════════════════════════════════════════

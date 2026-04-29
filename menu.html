@@ -44,7 +44,7 @@
 
   /* Aurora bleue subtile sur fond noir — STABLE (ne change jamais) */
   html, body {
-    background: #050506;
+    background: #050506 !important;
   }
   body::before {
     content: '';
@@ -61,6 +61,10 @@
       radial-gradient(ellipse 70% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
       radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
       radial-gradient(ellipse 45% 40% at 95% 50%, rgba(46,157,255,0.18), transparent 50%);
+  }
+  /* Forcer le main / app à rester transparent pour ne pas cacher l'aurora */
+  main, #app, .content, .header, .header-inner {
+    background: transparent !important;
   }
 
   /* ─────────── LOADING SCREEN ─────────── */
@@ -1563,6 +1567,21 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="table-badge-count" id="table-badge-count" style="display:none;">1</span>
     </button>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <span id="lang-current">FR</span>
+    </button>
+    <div class="lang-menu" id="lang-menu">
+      <button class="lang-option active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="en" onclick="setLang('en')">🇬🇧 English <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="de" onclick="setLang('de')">🇩🇪 Deutsch <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="it" onclick="setLang('it')">🇮🇹 Italiano <span class="lang-check">✓</span></button>
+      <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español <span class="lang-check">✓</span></button>
+    </div>
     <div class="header-inner">
       <div class="resto-name" id="resto-name">—</div>
       <div class="resto-table" id="resto-table">—</div>
@@ -2520,6 +2539,78 @@ document.getElementById('modal-salon').addEventListener('click', e => {
 });
 
 // ═════════════════════════════════════════════════════════════════
+// LANGUES (Google Translate via cookie googtrans)
+// ═════════════════════════════════════════════════════════════════
+function toggleLangMenu(event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.toggle('show');
+}
+function setLang(lang) {
+  const menu = document.getElementById('lang-menu');
+  if (menu) menu.classList.remove('show');
+
+  const currentBtn = document.getElementById('lang-current');
+  if (currentBtn) currentBtn.textContent = lang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+
+  try { localStorage.setItem('frizz_client_lang', lang); } catch(e) {}
+
+  if (lang === 'fr') {
+    // Réinitialiser : supprimer les cookies googtrans pour revenir au français
+    const hostname = location.hostname;
+    document.cookie = 'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=.' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  } else {
+    // Définir le cookie pour traduire de fr vers la langue choisie
+    const path = '/fr/' + lang;
+    const hostname = location.hostname;
+    document.cookie = 'googtrans=' + path + ';path=/;max-age=31536000';
+    document.cookie = 'googtrans=' + path + ';path=/;domain=' + hostname + ';max-age=31536000';
+    document.cookie = 'googtrans=' + path + ';path=/;domain=.' + hostname + ';max-age=31536000';
+  }
+
+  // Petit délai pour que les cookies soient écrits avant le reload
+  setTimeout(() => location.reload(), 150);
+}
+function googleTranslateElementInit() {
+  try {
+    new google.translate.TranslateElement({
+      pageLanguage: 'fr',
+      includedLanguages: 'en,de,it,es',
+      autoDisplay: false,
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  } catch(e) {
+    console.warn('Google Translate init failed:', e);
+  }
+}
+window.googleTranslateElementInit = googleTranslateElementInit;
+
+// Restaurer la langue au chargement
+(function initLang() {
+  let savedLang = 'fr';
+  try { savedLang = localStorage.getItem('frizz_client_lang') || 'fr'; } catch(e) {}
+  const btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = savedLang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === savedLang);
+  });
+})();
+
+// Fermer le menu langue si on clique ailleurs
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('lang-menu');
+  const btn = document.getElementById('lang-btn');
+  if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !(btn && btn.contains(e.target))) {
+    menu.classList.remove('show');
+  }
+});
+
+// ═════════════════════════════════════════════════════════════════
 // FILTRES RÉGIME (vegan / végé / sans gluten…)
 // ═════════════════════════════════════════════════════════════════
 const REGIME_LABELS = {
@@ -3045,5 +3136,8 @@ window.addEventListener('beforeunload', () => {
 });
 </script>
 
+<!-- Google Translate widget (caché, piloté via cookie googtrans) -->
+<div id="google_translate_element"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

@@ -1567,15 +1567,15 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="table-badge-count" id="table-badge-count" style="display:none;">1</span>
     </button>
-    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
+    <button class="lang-btn notranslate" translate="no" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20"/>
         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>
-      <span id="lang-current">FR</span>
+      <span class="notranslate" translate="no" id="lang-current">FR</span>
     </button>
-    <div class="lang-menu" id="lang-menu">
+    <div class="lang-menu notranslate" translate="no" id="lang-menu">
       <button class="lang-option active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français <span class="lang-check">✓</span></button>
       <button class="lang-option" data-lang="en" onclick="setLang('en')">🇬🇧 English <span class="lang-check">✓</span></button>
       <button class="lang-option" data-lang="de" onclick="setLang('de')">🇩🇪 Deutsch <span class="lang-check">✓</span></button>
@@ -2634,8 +2634,66 @@ function applyRegimeFilters(plats) {
 // ═════════════════════════════════════════════════════════════════
 let activeCat = 'all';
 
+// Ordre logique des catégories d'un repas (de l'apéro au pousse-café)
+// Les catégories non listées apparaissent à la fin par ordre alphabétique
+const CAT_ORDER = [
+  // Démarrer
+  'aperitif', 'aperitifs', 'apéritif', 'apéritifs',
+  'amuse-bouche', 'amuse-bouches', 'amuses-bouches', 'mises en bouche',
+  // Entrées
+  'entree', 'entrees', 'entrée', 'entrées',
+  'salade', 'salades',
+  'soupe', 'soupes', 'velouté', 'veloutes',
+  // Plats
+  'plat', 'plats', 'plat principal', 'plats principaux', 'plat du jour', 'plats du jour',
+  'viande', 'viandes',
+  'poisson', 'poissons',
+  'pates', 'pâtes', 'risotto', 'risottos',
+  'pizza', 'pizzas',
+  'burger', 'burgers',
+  'sandwich', 'sandwichs', 'sandwiches',
+  'tartine', 'tartines',
+  'vegetarien', 'vegetariens', 'végétarien', 'végétariens', 'vegan',
+  // Accompagnements
+  'accompagnement', 'accompagnements', 'side', 'sides',
+  // Fromages
+  'fromage', 'fromages',
+  // Desserts
+  'dessert', 'desserts', 'gateau', 'gâteau', 'gateaux', 'gâteaux',
+  'glace', 'glaces', 'sorbet', 'sorbets',
+  // Boissons
+  'boisson', 'boissons',
+  'soft', 'softs', 'soft drinks',
+  'jus', 'jus de fruits',
+  'eau', 'eaux',
+  'cafe', 'cafés', 'café', 'cafes', 'the', 'thé', 'thes', 'thés',
+  'biere', 'bieres', 'bière', 'bières',
+  'vin', 'vins', 'vin rouge', 'vin blanc', 'vin rose', 'vin rosé',
+  'cocktail', 'cocktails',
+  'spiritueux', 'digestif', 'digestifs',
+  // Menus / formules
+  'menu', 'menus', 'formule', 'formules'
+];
+
+function getCatOrder(cat) {
+  if (!cat) return 9999;
+  const normalized = cat.toLowerCase().trim();
+  const idx = CAT_ORDER.indexOf(normalized);
+  return idx === -1 ? 9999 : idx;
+}
+
+function sortCategories(cats) {
+  return [...cats].sort((a, b) => {
+    const oa = getCatOrder(a);
+    const ob = getCatOrder(b);
+    if (oa !== ob) return oa - ob;
+    // Même ordre (ou pas dans la liste) → tri alphabétique
+    return a.localeCompare(b, 'fr');
+  });
+}
+
 function renderCatBar() {
-  const cats = [...new Set(state.menu.map(p => p.categorie || p.category).filter(Boolean))];
+  const cats = sortCategories([...new Set(state.menu.map(p => p.categorie || p.category).filter(Boolean))]);
   const bar = document.getElementById('cat-bar');
   if (!bar) return;
 
@@ -3016,20 +3074,33 @@ async function submitOrder() {
     const optionalCols = ['table_id', 'table_numero', 'type_commande', 'session_id', 'personne_id', 'personne_nom'];
     let payload = { ...orderData };
     let inserted = false;
+    let lastError = null;
+    let statutFallback = false;
 
-    for (let attempt = 0; attempt < 6; attempt++) {
+    for (let attempt = 0; attempt < 8; attempt++) {
       const { error } = await supa.from('commandes').insert(payload);
       if (!error) {
         inserted = true;
         break;
       }
-      console.error('Submit tentative ' + (attempt + 1) + ':', error);
+      lastError = error;
+      console.error('Submit tentative ' + (attempt + 1) + ':', error, 'payload:', payload);
 
       const errMsg = (error.message || '').toLowerCase();
+
+      // Si la base rejette le statut 'en_validation' (contrainte CHECK), on retombe en 'en_attente'
+      if (!statutFallback && payload.statut === 'en_validation' &&
+          (errMsg.includes('check') || errMsg.includes('statut') || errMsg.includes('invalid input value') || errMsg.includes('constraint'))) {
+        payload.statut = 'en_attente';
+        statutFallback = true;
+        continue;
+      }
+
+      // Retire la colonne mentionnée dans l'erreur
       const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find ['"]?(\w+)['"]?/i);
       let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
       if (!col) col = optionalCols.find(c => payload[c] !== undefined);
-      if (col && payload[col] !== undefined && col !== 'restaurant_id' && col !== 'items' && col !== 'total') {
+      if (col && payload[col] !== undefined && col !== 'restaurant_id' && col !== 'items' && col !== 'total' && col !== 'statut') {
         delete payload[col];
         continue;
       }
@@ -3037,15 +3108,20 @@ async function submitOrder() {
     }
 
     if (!inserted) {
-      throw new Error('Impossible de valider la commande');
+      const msg = lastError?.message || 'envoi impossible';
+      throw new Error(msg);
     }
+
+    // Si le statut a dû être basculé à 'en_attente' (la base ne supporte pas en_validation),
+    // alors la commande est partie direct en cuisine, pas de validation collective
+    const reallyValidating = !statutFallback && payload.statut === 'en_validation';
 
     state.cart = [];
     saveCart();
     updateCartBar();
     closeCartModal();
 
-    if (isGroup) {
+    if (reallyValidating) {
       showToast('Vous avez validé · en attente du groupe', 'success');
       // Vérifie si tout le monde a validé pour passer en cuisine
       await checkGroupValidation();
@@ -3056,8 +3132,8 @@ async function submitOrder() {
     // Recharger les commandes
     await loadOrders();
 
-    // Modal avis Google (1.5s après) — uniquement si pas en attente du groupe
-    if (!isGroup) showGoogleReviewModal();
+    // Modal avis Google (1.5s après) — uniquement si la commande est vraiment partie en cuisine
+    if (!reallyValidating) showGoogleReviewModal();
   } catch (err) {
     console.error('submitOrder:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');

@@ -192,7 +192,7 @@
   }
 
 
-  /* Badge salon en haut à droite (icône uniquement) */
+  /* Badge salon en haut à droite (icône + compteur si plusieurs personnes) */
   .table-badge {
     position: absolute;
     top: 16px;
@@ -211,14 +211,34 @@
     z-index: 51;
     cursor: pointer;
     transition: all 0.18s ease;
+    font-family: inherit;
   }
   .table-badge:hover {
     background: rgba(48,209,88,0.16);
+    transform: scale(1.05);
   }
   .table-badge svg {
     width: 18px;
     height: 18px;
     color: var(--green);
+  }
+  .table-badge-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 100px;
+    background: var(--blue);
+    color: #fff;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 2px var(--bg);
   }
 
   /* Bouton langue (en haut à gauche) */
@@ -461,7 +481,7 @@
   }
   .plat-row {
     display: grid;
-    grid-template-columns: 1fr 88px 44px;
+    grid-template-columns: 1fr 44px 88px;
     gap: 14px;
     padding: 20px 0;
     align-items: center;
@@ -1539,24 +1559,10 @@
 
   <!-- Header : "Chez Nico" + "TABLE 7 · BIENVENUE" + badge "À VOTRE TABLE" en haut à droite -->
   <header class="header">
-    <div class="table-badge" id="table-badge">
+    <button class="table-badge" id="table-badge" onclick="openSalon()" aria-label="Voir le salon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    </div>
-    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M2 12h20"/>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-      </svg>
-      <span id="lang-current">FR</span>
+      <span class="table-badge-count" id="table-badge-count" style="display:none;">1</span>
     </button>
-    <div class="lang-menu" id="lang-menu">
-      <button class="lang-option active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français <span class="lang-check">✓</span></button>
-      <button class="lang-option" data-lang="en" onclick="setLang('en')">🇬🇧 English <span class="lang-check">✓</span></button>
-      <button class="lang-option" data-lang="de" onclick="setLang('de')">🇩🇪 Deutsch <span class="lang-check">✓</span></button>
-      <button class="lang-option" data-lang="it" onclick="setLang('it')">🇮🇹 Italiano <span class="lang-check">✓</span></button>
-      <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español <span class="lang-check">✓</span></button>
-    </div>
     <div class="header-inner">
       <div class="resto-name" id="resto-name">—</div>
       <div class="resto-table" id="resto-table">—</div>
@@ -1738,16 +1744,6 @@
         <div class="help-option-text">
           <div class="help-option-title">De l'eau s'il vous plaît</div>
           <div class="help-option-desc">Carafe ou bouteille</div>
-        </div>
-      </button>
-
-      <button class="help-option" onclick="callServer('appel', 'Demande d\'assistance')">
-        <div class="help-option-icon orange">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 11h-6"/><path d="M20 8v6"/></svg>
-        </div>
-        <div class="help-option-text">
-          <div class="help-option-title">Appeler le serveur</div>
-          <div class="help-option-desc">Pour autre chose</div>
         </div>
       </button>
     </div>
@@ -2373,33 +2369,121 @@ function updateMyName() {
   showToast('Nom mis à jour', 'success');
   renderSalon();
 }
-function renderSalon() {
+async function renderSalon() {
   const list = document.getElementById('salon-list');
   const countSpan = document.getElementById('salon-list-count');
   if (!list) return;
 
-  const persons = state.salon.length > 0 ? state.salon : [{id: state.personneId, nom: state.personneNom, isMe: true}];
+  // Charger toutes les commandes de la table (passées + en cours)
+  let ordersByPerson = {};
+  try {
+    if (state.resto && state.table) {
+      const since = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+      const { data: cmds } = await supa.from('commandes').select('*')
+        .eq('restaurant_id', state.resto.id)
+        .eq('table_id', state.table.id)
+        .gte('heure', since)
+        .order('heure', { ascending: true });
 
-  if (countSpan) countSpan.textContent = persons.length;
+      (cmds || []).forEach(c => {
+        const pid = c.personne_id || 'anon';
+        const pname = c.personne_nom || 'Quelqu\'un';
+        if (!ordersByPerson[pid]) {
+          ordersByPerson[pid] = { id: pid, nom: pname, items: [], total: 0 };
+        }
+        const items = Array.isArray(c.items) ? c.items : [];
+        items.forEach(it => {
+          ordersByPerson[pid].items.push(it);
+          ordersByPerson[pid].total += parseFloat(it.prix || 0) * (it.qte || 1);
+        });
+      });
+    }
+  } catch (e) {
+    console.warn('renderSalon orders:', e);
+  }
 
-  list.innerHTML = persons.map(p => `
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px;">
-      <div style="width: 36px; height: 36px; border-radius: 100px; background: ${p.id === state.personneId ? 'var(--blue)' : 'rgba(255,255,255,0.10)'}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; flex-shrink: 0;">
-        ${escapeHtml((p.nom || '?').charAt(0).toUpperCase())}
+  // Personnes connectées (même celles qui n'ont rien commandé)
+  const persons = state.salon.length > 0
+    ? state.salon
+    : [{id: state.personneId, nom: state.personneNom, isMe: true}];
+
+  // Fusion : ajouter chaque personne du salon
+  persons.forEach(p => {
+    if (!ordersByPerson[p.id]) {
+      ordersByPerson[p.id] = { id: p.id, nom: p.nom, items: [], total: 0 };
+    }
+  });
+
+  // Ajout du panier en cours de l'utilisateur (pas encore envoyé)
+  if (state.cart.length > 0 && state.personneId) {
+    if (!ordersByPerson[state.personneId]) {
+      ordersByPerson[state.personneId] = { id: state.personneId, nom: state.personneNom || 'Vous', items: [], total: 0 };
+    }
+    state.cart.forEach(it => {
+      ordersByPerson[state.personneId].items.push({...it, _pending: true});
+      ordersByPerson[state.personneId].total += parseFloat(it.prix || 0) * (it.qte || 1);
+    });
+  }
+
+  const personList = Object.values(ordersByPerson);
+  if (countSpan) countSpan.textContent = personList.length;
+
+  if (personList.length === 0) {
+    list.innerHTML = `<div style="text-align: center; padding: 24px 0; color: var(--text-3); font-style: italic; font-family: 'Source Serif 4'; font-weight: 600; font-size: 14px;">Aucune personne pour le moment</div>`;
+    return;
+  }
+
+  list.innerHTML = personList.map(p => {
+    const isMe = p.id === state.personneId;
+    const initiale = (p.nom || '?').charAt(0).toUpperCase();
+
+    let itemsHtml = '';
+    if (p.items.length === 0) {
+      itemsHtml = `<div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 12.5px; color: var(--text-3); padding-left: 48px; margin-top: 4px;">— Pas encore commandé</div>`;
+    } else {
+      itemsHtml = `<div style="padding-left: 48px; margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+        ${p.items.map(it => `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px;">
+            <span style="font-weight: 700; color: var(--text-2); ${it._pending ? 'opacity: 0.7;' : ''}">
+              ${it.qte && it.qte > 1 ? '×' + it.qte + ' · ' : ''}${escapeHtml(it.nom || '')}
+              ${it._pending ? '<span style="font-family: Source Serif 4; font-style: italic; font-weight: 700; font-size: 10px; color: var(--orange); margin-left: 4px;">en cours</span>' : ''}
+            </span>
+            <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; color: var(--blue); font-size: 12.5px; flex-shrink: 0;">
+              ${formatPrice(parseFloat(it.prix || 0) * (it.qte || 1))} ${getCurrencySymbol()}
+            </span>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    return `
+      <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 18px; padding: 14px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 100px; background: ${isMe ? 'var(--blue)' : 'rgba(255,255,255,0.10)'}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; flex-shrink: 0;">
+            ${escapeHtml(initiale)}
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -0.012em;">
+              ${escapeHtml(p.nom || 'Inconnu')}${isMe ? ' <span style="color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 0.04em;">· VOUS</span>' : ''}
+            </div>
+            ${p.total > 0 ? `<div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 13px; color: var(--blue); margin-top: 2px;">${formatPrice(p.total)} ${getCurrencySymbol()}</div>` : ''}
+          </div>
+        </div>
+        ${itemsHtml}
       </div>
-      <div style="flex: 1;">
-        <div style="font-weight: 800; font-size: 14px; color: var(--text);">${escapeHtml(p.nom || 'Inconnu')}${p.id === state.personneId ? ' <span style="color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 0.04em;">· VOUS</span>' : ''}</div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 function updateSalonBadge() {
-  const badge = document.getElementById('salon-badge');
-  const count = document.getElementById('salon-count');
-  if (!badge || !count) return;
+  const count = document.getElementById('table-badge-count');
+  if (!count) return;
   const n = Math.max(state.salon.length, 1);
-  count.textContent = n;
-  badge.style.display = state.sessionId ? 'flex' : 'none';
+  if (n > 1) {
+    count.textContent = n;
+    count.style.display = 'flex';
+  } else {
+    count.style.display = 'none';
+  }
 }
 async function loadSalon() {
   if (!state.sessionId) return;
@@ -2433,65 +2517,6 @@ async function loadSalon() {
 // Ferme la modale Salon en cliquant en dehors
 document.getElementById('modal-salon').addEventListener('click', e => {
   if (e.target.id === 'modal-salon') closeSalon();
-});
-
-// ═════════════════════════════════════════════════════════════════
-// LANGUES (Google Translate via cookie googtrans)
-// ═════════════════════════════════════════════════════════════════
-function toggleLangMenu(event) {
-  event.stopPropagation();
-  const menu = document.getElementById('lang-menu');
-  if (menu) menu.classList.toggle('show');
-}
-function setLang(lang) {
-  const menu = document.getElementById('lang-menu');
-  if (menu) menu.classList.remove('show');
-
-  document.getElementById('lang-current').textContent = lang.toUpperCase();
-  document.querySelectorAll('.lang-option').forEach(opt => {
-    opt.classList.toggle('active', opt.dataset.lang === lang);
-  });
-
-  try { localStorage.setItem('frizz_client_lang', lang); } catch(e) {}
-
-  const path = (lang === 'fr') ? '/fr/fr' : '/fr/' + lang;
-  const hostname = location.hostname;
-  document.cookie = 'googtrans=' + path + ';path=/;max-age=31536000';
-  document.cookie = 'googtrans=' + path + ';path=/;domain=.' + hostname + ';max-age=31536000';
-
-  if (lang === 'fr') {
-    document.cookie = 'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    document.cookie = 'googtrans=;path=/;domain=.' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
-  }
-  setTimeout(() => location.reload(), 200);
-}
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'fr',
-    includedLanguages: 'en,de,it,es',
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-window.googleTranslateElementInit = googleTranslateElementInit;
-
-// Restaurer la langue au chargement
-(function initLang() {
-  let savedLang = 'fr';
-  try { savedLang = localStorage.getItem('frizz_client_lang') || 'fr'; } catch(e) {}
-  const btn = document.getElementById('lang-current');
-  if (btn) btn.textContent = savedLang.toUpperCase();
-  document.querySelectorAll('.lang-option').forEach(opt => {
-    opt.classList.toggle('active', opt.dataset.lang === savedLang);
-  });
-})();
-
-// Fermer le menu langue si on clique ailleurs
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('lang-menu');
-  const btn = document.getElementById('lang-btn');
-  if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !(btn && btn.contains(e.target))) {
-    menu.classList.remove('show');
-  }
 });
 
 // ═════════════════════════════════════════════════════════════════
@@ -2645,8 +2670,8 @@ function renderPlatRow(p) {
         ${p.description ? `<div class="plat-desc">${escapeHtml(p.description)}</div>` : ''}
         <div class="plat-price">${formatPrice(p.prix)} ${getCurrencySymbol()}</div>
       </div>
-      ${img}
       ${action}
+      ${img}
     </div>
   `;
 }
@@ -3020,8 +3045,5 @@ window.addEventListener('beforeunload', () => {
 });
 </script>
 
-<!-- Google Translate widget (caché, piloté via cookie googtrans) -->
-<div id="google_translate_element"></div>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

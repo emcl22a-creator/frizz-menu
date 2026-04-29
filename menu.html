@@ -159,37 +159,70 @@
   .header-inner {
     padding: 56px 22px 18px;
     text-align: center;
+    position: relative;
+  }
+  /* Badge "À votre table" en haut à droite */
+  .table-badge {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: rgba(10,132,255,0.14);
+    border: 1px solid rgba(10,132,255,0.30);
+    color: var(--blue);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 7px 13px;
+    border-radius: 100px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .table-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 100px;
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(48,209,88,0.7);
   }
 
 
-  /* Badge Salon (à gauche de la cloche serveur) */
-  .salon-badge {
+  /* Badge "À VOTRE TABLE" en haut à droite */
+  .table-badge {
     position: absolute;
     top: 16px;
-    right: 68px;
-    height: 44px;
-    padding: 0 12px;
+    right: 16px;
+    height: 38px;
+    padding: 0 14px;
     border-radius: 100px;
-    background: rgba(48,209,88,0.10);
-    border: 1px solid rgba(48,209,88,0.28);
-    color: var(--green);
-    cursor: pointer;
+    background: rgba(10,132,255,0.14);
+    border: 1px solid rgba(10,132,255,0.30);
+    color: var(--blue);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 51;
     font-family: 'Inter Tight', sans-serif;
     font-weight: 800;
-    font-size: 12px;
-    transition: all 0.18s ease;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .salon-badge:hover {
-    background: rgba(48,209,88,0.16);
+  .table-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 100px;
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(48,209,88,0.7);
+    flex-shrink: 0;
   }
-  .salon-badge svg { width: 16px; height: 16px; }
-  .salon-badge span { color: var(--green); }
 
   /* Bouton langue (en haut à gauche) */
   .lang-btn {
@@ -592,14 +625,16 @@
     align-items: center;
     gap: 10px;
   }
-  .cart-count {
-    background: rgba(255,255,255,0.25);
-    padding: 4px 11px;
+  .cart-icon {
+    width: 36px;
+    height: 36px;
     border-radius: 100px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 800;
-    font-size: 13.5px;
+    background: rgba(255,255,255,0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
+    flex-shrink: 0;
   }
   .cart-label {
     font-family: 'Inter Tight', sans-serif;
@@ -1066,9 +1101,282 @@
       bottom: max(18px, env(safe-area-inset-bottom));
     }
   }
+  /* ─────────── MODE SELECTOR (sur place / à emporter) ─────────── */
+  .mode-selector-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: saturate(180%) blur(40px);
+    -webkit-backdrop-filter: saturate(180%) blur(40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .mode-selector-card {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    color: #fff;
+  }
+  .mode-selector-logo {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 38px;
+    letter-spacing: -0.020em;
+    margin-bottom: 28px;
+    color: var(--text);
+  }
+  .mode-selector-logo .spark { color: var(--blue); text-shadow: 0 0 12px rgba(10,132,255,0.5); }
+  .mode-selector-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.020em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .mode-selector-title em {
+    color: var(--blue);
+    font-style: italic;
+  }
+  .mode-selector-sub {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .mode-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 22px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    color: #fff;
+    font-family: inherit;
+    text-align: left;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .mode-option:hover {
+    background: rgba(10,132,255,0.12);
+    border-color: rgba(10,132,255,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(10,132,255,0.4);
+  }
+  .mode-option-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(10,132,255,0.18);
+    border: 1px solid rgba(10,132,255,0.30);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+  }
+  .mode-option-icon svg { width: 22px; height: 22px; }
+  .mode-option-text { flex: 1; }
+  .mode-option-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.018em;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .mode-option-desc {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: -0.005em;
+  }
+  .mode-footer-note {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: -0.005em;
+  }
+
+  /* ─────────── MODAL AVIS GOOGLE ─────────── */
+  .google-review-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: saturate(180%) blur(40px);
+    -webkit-backdrop-filter: saturate(180%) blur(40px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .google-review-overlay.show { display: flex; }
+  .google-review-card {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    background: rgba(20, 20, 26, 0.92);
+    border: 1px solid var(--border-strong);
+    border-radius: 28px;
+    padding: 32px 24px;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7);
+  }
+  .google-review-emoji {
+    font-size: 56px;
+    margin-bottom: 14px;
+  }
+  .google-review-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.020em;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .google-review-sub {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .google-review-stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .google-review-star {
+    width: 38px;
+    height: 38px;
+    color: #FFB800;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .google-review-star:hover { transform: scale(1.15); }
+  .google-review-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 100px;
+    background: #fff;
+    color: #1F1F1F;
+    border: 0;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 14.5px;
+    letter-spacing: -0.012em;
+    cursor: pointer;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 18px -4px rgba(255,255,255,0.20);
+    transition: all 0.18s ease;
+  }
+  .google-review-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -4px rgba(255,255,255,0.25);
+  }
+  .google-review-btn img { width: 20px; height: 20px; }
+  .google-review-skip {
+    background: transparent;
+    border: 0;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px;
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,0.2);
+  }
+  .google-review-skip:hover { color: rgba(255,255,255,0.8); }
 </style>
 </head>
 <body>
+
+<!-- Mode selector (sur place / à emporter) — apparaît si pas de table OU si l'utilisateur doit choisir -->
+<div class="mode-selector-overlay" id="mode-selector" style="display: none;">
+  <div class="mode-selector-card">
+    <div class="mode-selector-logo">Frizz<span class="spark">✦</span></div>
+    <h2 class="mode-selector-title">Bienvenue chez<br><em id="mode-resto-name">…</em></h2>
+    <p class="mode-selector-sub">Comment souhaitez-vous commander ?</p>
+
+    <div class="mode-options">
+      <button class="mode-option" onclick="selectMode('sur_place')">
+        <div class="mode-option-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="mode-option-text">
+          <div class="mode-option-title">Sur place</div>
+          <div class="mode-option-desc">Servi à votre table</div>
+        </div>
+      </button>
+
+      <button class="mode-option" onclick="selectMode('a_emporter')">
+        <div class="mode-option-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3-3h12l3 3M3 7v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7M3 7h18"/><path d="M9 11v4M15 11v4"/></svg>
+        </div>
+        <div class="mode-option-text">
+          <div class="mode-option-title">À emporter</div>
+          <div class="mode-option-desc">Récupérer au comptoir</div>
+        </div>
+      </button>
+    </div>
+
+    <p class="mode-footer-note">Sans commission, sans intermédiaire</p>
+  </div>
+</div>
+
+<!-- Modal Avis Google (après commande validée) -->
+<div class="google-review-overlay" id="google-review-modal">
+  <div class="google-review-card">
+    <div class="google-review-emoji">🙏</div>
+    <h2 class="google-review-title">Merci pour<br>votre <em style="font-family:'Source Serif 4'; font-style:italic; color:var(--blue);">visite</em>.</h2>
+    <p class="google-review-sub">Si tout s'est bien passé,<br>laissez-nous une étoile sur Google ?</p>
+
+    <div class="google-review-stars">
+      <svg class="google-review-star" onclick="openGoogleReview()" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      <svg class="google-review-star" onclick="openGoogleReview()" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      <svg class="google-review-star" onclick="openGoogleReview()" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      <svg class="google-review-star" onclick="openGoogleReview()" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      <svg class="google-review-star" onclick="openGoogleReview()" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+    </div>
+
+    <button class="google-review-btn" onclick="openGoogleReview()">
+      <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Donner un avis Google
+    </button>
+    <button class="google-review-skip" onclick="closeGoogleReview()">Plus tard</button>
+  </div>
+</div>
 
 <!-- Loading -->
 <div class="loading" id="loading">
@@ -1087,12 +1395,12 @@
 <!-- App principale -->
 <div id="app">
 
-  <!-- Header centré : "Chez Nico" + "TABLE 7" -->
+  <!-- Header : "Chez Nico" + "TABLE 7 · BIENVENUE" + badge "À VOTRE TABLE" en haut à droite -->
   <header class="header">
-    <button class="salon-badge" id="salon-badge" onclick="openSalon()" aria-label="Voir le salon" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span id="salon-count">1</span>
-    </button>
+    <div class="table-badge" id="table-badge">
+      <span class="dot"></span>
+      <span id="table-badge-text">À VOTRE TABLE</span>
+    </div>
     <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" aria-label="Changer de langue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -1147,8 +1455,15 @@
 <!-- Cart bar flottante -->
 <button class="cart-bar" id="cart-bar" onclick="openCartModal()">
   <div class="cart-bar-left">
-    <span class="cart-count" id="cart-count">0</span>
-    <span class="cart-label">Voir le panier</span>
+    <span class="cart-icon" id="cart-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2v20"/>
+        <path d="M18 2v7a3 3 0 0 1-3 3v0"/>
+        <path d="M5 2v6a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3V2"/>
+        <path d="M8 11v11"/>
+      </svg>
+    </span>
+    <span class="cart-label">Voir la commande</span>
   </div>
   <span class="cart-total" id="cart-total">0.00</span>
 </button>
@@ -1216,24 +1531,6 @@
 
       <div class="modal-note-label" style="margin-bottom: 10px;">Personnes connectées (<span id="salon-list-count">1</span>)</div>
       <div id="salon-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal avis Google -->
-<div class="modal-overlay" id="modal-google">
-  <div class="modal" style="text-align: center; padding: 0 22px 24px;">
-    <button class="modal-close" onclick="closeGoogleModal()">×</button>
-    <div style="padding: 38px 22px 6px;">
-      <div style="font-size: 48px; margin-bottom: 14px;">⭐</div>
-      <div class="cart-modal-title" style="margin-bottom: 8px;">Merci pour votre commande !</div>
-      <p style="color: var(--text-2); font-size: 14px; font-weight: 600; line-height: 1.5; margin-bottom: 22px;">
-        Si vous avez apprécié votre repas, un avis Google nous aiderait beaucoup. Cela ne prend que 30 secondes.
-      </p>
-      <a class="checkout-btn" id="google-btn" href="#" target="_blank" rel="noopener" onclick="trackGoogleClick()" style="text-decoration: none; display: block; margin-bottom: 10px;">
-        Laisser un avis sur Google
-      </a>
-      <button class="qty-btn" onclick="closeGoogleModal()" style="background: transparent; color: var(--text-3); font-size: 13px; font-weight: 700; padding: 10px; width: auto; height: auto; border-radius: 0; margin: 0 auto;">Plus tard</button>
     </div>
   </div>
 </div>
@@ -1458,13 +1755,23 @@ async function init() {
     state.resto = resto;
 
     // 2) Détecter le mode (preview / sur place / à emporter)
+    state.orderMode = null; // 'sur_place' | 'a_emporter' | 'preview'
+    const savedMode = localStorage.getItem('frizz_mode_' + RESTO_SLUG);
+
     if (URL_MODE === 'preview') {
       state.previewMode = true;
+      state.orderMode = 'preview';
     } else if (URL_MODE === 'takeaway') {
-      // mode "à emporter" — pas de table requise
-    } else if (!TABLE_NUM) {
-      showError('Table introuvable', 'Cette page doit être ouverte en scannant un QR code de table.');
-      return;
+      state.orderMode = 'a_emporter';
+    } else if (TABLE_NUM) {
+      // Si on a une table dans l'URL, on est par défaut "sur place"
+      state.orderMode = 'sur_place';
+    } else if (savedMode === 'a_emporter' || savedMode === 'sur_place') {
+      // Mode déjà choisi pendant cette session → on continue avec
+      state.orderMode = savedMode;
+    } else {
+      // Pas de table + pas de mode → afficher le mode selector
+      // On affiche le selector après avoir chargé le resto pour avoir le nom
     }
 
     // 3) Vérifier que le restaurant est actif (skip en preview)
@@ -1519,10 +1826,73 @@ async function init() {
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
 
+    // 10) Si aucun mode n'a été déterminé, afficher le mode selector
+    if (!state.orderMode) {
+      const modeRestoName = document.getElementById('mode-resto-name');
+      if (modeRestoName) modeRestoName.textContent = state.resto.nom || 'nous';
+      document.getElementById('mode-selector').style.display = 'flex';
+    }
+
   } catch (err) {
     console.error('Init error:', err);
     showError('Erreur de chargement', err.message || 'Une erreur est survenue.');
   }
+}
+
+// ═════════════════════════════════════════════════════════════════
+// MODE SELECTOR — Sur place / À emporter
+// ═════════════════════════════════════════════════════════════════
+function selectMode(mode) {
+  state.orderMode = mode;
+  localStorage.setItem('frizz_mode_' + RESTO_SLUG, mode);
+  document.getElementById('mode-selector').style.display = 'none';
+  showToast(mode === 'sur_place' ? 'Sur place' : 'À emporter', 'success');
+  // Re-render header pour mettre à jour le sous-titre
+  renderHeader();
+}
+
+// ═════════════════════════════════════════════════════════════════
+// MODAL AVIS GOOGLE — apparaît après commande validée
+// ═════════════════════════════════════════════════════════════════
+function showGoogleReviewModal() {
+  // Ne pas afficher si déjà donné un avis aujourd'hui (anti-spam)
+  const lastShown = localStorage.getItem('frizz_review_shown_' + RESTO_SLUG);
+  const now = Date.now();
+  if (lastShown && (now - parseInt(lastShown)) < 24 * 60 * 60 * 1000) {
+    return; // Déjà montré dans les dernières 24h
+  }
+  // Délai de 1.5s après la commande pour laisser respirer
+  setTimeout(() => {
+    const modal = document.getElementById('google-review-modal');
+    if (modal) {
+      modal.classList.add('show');
+      localStorage.setItem('frizz_review_shown_' + RESTO_SLUG, now.toString());
+    }
+  }, 1500);
+}
+
+function openGoogleReview() {
+  // Construit l'URL Google Reviews à partir des infos resto
+  let url = state.resto?.google_review_url || state.resto?.google_link || '';
+
+  if (!url && state.resto?.google_place_id) {
+    url = 'https://search.google.com/local/writereview?placeid=' + state.resto.google_place_id;
+  }
+
+  if (!url) {
+    // Fallback : recherche Google Maps avec le nom + ville si dispo
+    const nom = state.resto?.nom || '';
+    const ville = state.resto?.ville || state.resto?.city || '';
+    const query = encodeURIComponent(nom + (ville ? ' ' + ville : ''));
+    url = 'https://www.google.com/search?q=' + query;
+  }
+
+  window.open(url, '_blank');
+  closeGoogleReview();
+}
+
+function closeGoogleReview() {
+  document.getElementById('google-review-modal').classList.remove('show');
 }
 
 // ═════════════════════════════════════════════════════════════════
@@ -2135,7 +2505,6 @@ function updateCartBar() {
   const count = state.cart.reduce((s, it) => s + (it.qte || 1), 0);
   const total = state.cart.reduce((s, it) => s + (it.prix * (it.qte || 1)), 0);
 
-  document.getElementById('cart-count').textContent = count;
   document.getElementById('cart-total').textContent =
     formatPrice(total) + ' ' + (getCurrencySymbol());
 
@@ -2167,10 +2536,7 @@ function renderCartModal() {
         <div class="cart-item-name">${escapeHtml(it.nom)}</div>
         <div class="cart-item-meta">×${it.qte || 1}${it.note ? ' · ' + escapeHtml(it.note) : ''}</div>
       </div>
-      <div style="display: flex; align-items: center;">
-        <span class="cart-item-price">${formatPrice(it.prix * (it.qte || 1))}</span>
-        <button class="cart-item-remove" onclick="removeFromCart(${i})">×</button>
-      </div>
+      <span class="cart-item-price">${formatPrice(it.prix * (it.qte || 1))} ${getCurrencySymbol()}</span>
     </div>
   `).join('');
 
@@ -2279,8 +2645,8 @@ async function submitOrder() {
     // Recharger les commandes
     await loadOrders();
 
-    // Si lien Google configuré, proposer un avis 2 secondes après
-    setTimeout(openGoogleModal, 2200);
+    // Modal avis Google (1.5s après la commande)
+    showGoogleReviewModal();
   } catch (err) {
     console.error('submitOrder:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2346,33 +2712,6 @@ function updateOrdersBanner() {
 }
 
 // ═════════════════════════════════════════════════════════════════
-// MODAL AVIS GOOGLE (s'ouvre après commande envoyée)
-// ═════════════════════════════════════════════════════════════════
-function openGoogleModal() {
-  if (state.previewMode) return;
-  const link = (state.resto?.google_review_url || state.resto?.google_link || '').trim();
-  if (!link) return; // Pas de lien configuré
-  // Ne montrer qu'une fois par session
-  const key = 'frizz_google_shown_' + RESTO_SLUG + '_' + (TABLE_NUM || 'anon');
-  try { if (sessionStorage.getItem(key) === '1') return; } catch(_) {}
-
-  const btn = document.getElementById('google-btn');
-  if (btn) btn.href = link;
-  try { sessionStorage.setItem(key, '1'); } catch(_) {}
-  document.getElementById('modal-google').classList.add('show');
-}
-function closeGoogleModal() {
-  document.getElementById('modal-google').classList.remove('show');
-}
-function trackGoogleClick() {
-  setTimeout(closeGoogleModal, 300);
-}
-
-// Ferme la modale Google en cliquant en dehors
-document.getElementById('modal-google').addEventListener('click', e => {
-  if (e.target.id === 'modal-google') closeGoogleModal();
-});
-
 // ═════════════════════════════════════════════════════════════════
 // LANCEMENT
 // ═════════════════════════════════════════════════════════════════

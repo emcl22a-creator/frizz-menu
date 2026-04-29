@@ -507,7 +507,7 @@
   }
   .plat-row {
     display: grid;
-    grid-template-columns: 1fr 44px 88px;
+    grid-template-columns: 1fr 88px;
     gap: 14px;
     padding: 20px 0;
     align-items: center;
@@ -525,8 +525,8 @@
 
   /* Bouton + rapide pour ajouter directement à la commande */
   .plat-quick-add {
-    width: 38px;
-    height: 38px;
+    width: 30px;
+    height: 30px;
     border-radius: 100px;
     background: var(--blue);
     color: #fff;
@@ -548,8 +548,8 @@
     transform: scale(0.95);
   }
   .plat-quick-add svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
   }
 
   .plat-info {
@@ -582,6 +582,17 @@
     font-size: 16.5px;
     color: var(--blue);
     letter-spacing: -0.005em;
+  }
+  /* Ligne prix + bouton + (sur la même ligne) */
+  .plat-price-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .plat-price-row .plat-quick-add,
+  .plat-price-row .plat-qty-stepper {
+    flex-shrink: 0;
   }
   .plat-img {
     width: 88px;
@@ -2817,9 +2828,11 @@ function renderPlatRow(p) {
       <div class="plat-info">
         <div class="plat-name">${escapeHtml(p.nom)}</div>
         ${p.description ? `<div class="plat-desc">${escapeHtml(p.description)}</div>` : ''}
-        <div class="plat-price">${formatPrice(p.prix)} ${getCurrencySymbol()}</div>
+        <div class="plat-price-row">
+          <span class="plat-price">${formatPrice(p.prix)} ${getCurrencySymbol()}</span>
+          ${action}
+        </div>
       </div>
-      ${action}
       ${img}
     </div>
   `;
@@ -3064,6 +3077,14 @@ document.getElementById('modal-cart').addEventListener('click', e => {
 // ENVOYER LA COMMANDE
 // ═════════════════════════════════════════════════════════════════
 async function submitOrder() {
+  console.log('=== [submitOrder] DÉBUT ===');
+  console.log('[submitOrder] state.cart:', JSON.stringify(state.cart));
+  console.log('[submitOrder] state.resto:', state.resto ? {id: state.resto.id, nom: state.resto.nom, slug: state.resto.slug} : null);
+  console.log('[submitOrder] state.table:', state.table ? {id: state.table.id, numero: state.table.numero} : null);
+  console.log('[submitOrder] state.previewMode:', state.previewMode);
+  console.log('[submitOrder] state.sessionId:', state.sessionId);
+  console.log('[submitOrder] state.personneId:', state.personneId);
+
   if (state.cart.length === 0) {
     showToast('Votre panier est vide');
     return;
@@ -3137,9 +3158,26 @@ async function submitOrder() {
       const errMsg = (error.message || '').toLowerCase();
 
       // Détecter quelle colonne pose problème
+      // Patterns gérés :
+      // - "Could not find the 'X' column of 'commandes'"  (format PGRST204)
+      // - "column \"X\" of relation ..."
+      // - "violates not-null constraint" sur la colonne X
       let colToRemove = null;
-      const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find ['"]?(\w+)['"]?\s+column/i);
-      if (colMatch) colToRemove = colMatch[1] || colMatch[2];
+      const patterns = [
+        /could not find the ['"]?(\w+)['"]? column/i,
+        /could not find ['"]?(\w+)['"]?\s+column/i,
+        /column ['"]?(\w+)['"]?\s+of relation/i,
+        /column ['"]?(\w+)['"]?\s+does not exist/i,
+        /['"]?(\w+)['"]? column .* not.*found/i,
+        /null value in column ['"]?(\w+)['"]?/i,
+      ];
+      for (const re of patterns) {
+        const m = errMsg.match(re);
+        if (m && m[1]) {
+          colToRemove = m[1];
+          break;
+        }
+      }
 
       // Sinon, retirer la première colonne optionnelle restante
       if (!colToRemove) {

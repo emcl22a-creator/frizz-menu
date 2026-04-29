@@ -548,32 +548,8 @@ form.addEventListener('submit', async (e) => {
       return;
     }
 
-    // 3) Appel Edge Function stripe-create-checkout pour démarrer l'abonnement Frizz Pro
-    showMsg('Compte créé ! Préparation de l\'abonnement…', 'success');
-
-    try {
-      const { data: checkoutData, error: checkoutError } = await supa.functions.invoke('stripe-create-checkout', {
-        body: {
-          restaurant_id: payload.id,
-          email
-        }
-      });
-
-      if (checkoutError || !checkoutData?.url) {
-        // Fallback : si le checkout échoue, on continue vers admin (le resto pourra s'abonner depuis là plus tard)
-        console.error('Erreur checkout:', checkoutError, checkoutData);
-        showMsg('Compte créé ! Redirection…', 'success');
-        setTimeout(() => location.href = 'menu-admin.html', 1500);
-        return;
-      }
-
-      // Redirection vers Stripe Checkout (page de paiement hostée Stripe)
-      setTimeout(() => location.href = checkoutData.url, 1200);
-    } catch (checkoutErr) {
-      console.error('Erreur invoke checkout:', checkoutErr);
-      showMsg('Compte créé ! Redirection…', 'success');
-      setTimeout(() => location.href = 'menu-admin.html', 1500);
-    }
+    showMsg('Compte créé ! Redirection…', 'success');
+    setTimeout(() => location.href = 'menu-admin.html', 1500);
   } catch (err) {
     console.error(err);
     showMsg('Erreur de création. Réessayez.', 'error');

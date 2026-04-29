@@ -548,8 +548,32 @@ form.addEventListener('submit', async (e) => {
       return;
     }
 
-    showMsg('Compte créé ! Redirection…', 'success');
-    setTimeout(() => location.href = 'menu-admin.html', 1500);
+showMsg('Compte créé ! Préparation de l\'abonnement…', 'success');
+
+    // Appel Edge Function stripe-create-checkout
+    try {
+      const { data: checkoutData, error: checkoutError } = await supa.functions.invoke('stripe-create-checkout', {
+        body: {
+          restaurant_id: payload.id,
+          email
+        }
+      });
+
+      if (checkoutError || !checkoutData?.url) {
+        // Fallback : si checkout échoue, on continue vers admin (le resto pourra s'abonner depuis là)
+        console.error('Erreur checkout:', checkoutError, checkoutData);
+        showMsg('Compte créé ! Redirection…', 'success');
+        setTimeout(() => location.href = 'menu-admin.html', 1500);
+        return;
+      }
+
+      // Redirection vers Stripe Checkout
+      setTimeout(() => location.href = checkoutData.url, 1200);
+    } catch (checkoutErr) {
+      console.error('Erreur invoke checkout:', checkoutErr);
+      showMsg('Compte créé ! Redirection…', 'success');
+      setTimeout(() => location.href = 'menu-admin.html', 1500);
+    }
   } catch (err) {
     console.error(err);
     showMsg('Erreur de création. Réessayez.', 'error');

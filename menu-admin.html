@@ -637,6 +637,39 @@
       inset 0 1px 0 rgba(255,255,255,0.20),
       0 4px 14px -4px var(--blue-glow);
   }
+  /* Bouton compact rond pour ajouter (Plat / Table) */
+  .ed-add-icon-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      0 4px 14px -4px var(--blue-glow);
+    transition: all 0.15s ease;
+  }
+  .ed-add-icon-btn:hover {
+    background: var(--blue-bright);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.28),
+      0 6px 18px -4px var(--blue-glow);
+  }
+  .ed-add-icon-btn:active {
+    transform: scale(0.95);
+  }
+  .ed-add-icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
   .btn-primary:hover {
     background: var(--blue-bright);
     transform: translateY(-1px);
@@ -1636,9 +1669,8 @@
       <p class="ed-hero-sub" id="ed-plats-sub">Gérez votre carte. Ajoutez, modifiez, retirez des plats.</p>
 
       <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
-        <button class="btn btn-primary" id="add-plat-btn" style="flex-shrink: 0;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter
+        <button class="ed-add-icon-btn" id="add-plat-btn" title="Ajouter un plat" aria-label="Ajouter un plat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
         <div class="filter-bar" id="ed-cat-filter" style="flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
           <button class="chip active" data-cat="all">Tout</button>
@@ -1671,9 +1703,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimer tous les QR
         </button>
-        <button class="btn btn-primary" id="add-table-btn" style="margin-left: auto;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter
+        <button class="ed-add-icon-btn" id="add-table-btn" style="margin-left: auto;" title="Ajouter une table" aria-label="Ajouter une table">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
     </div>
@@ -2286,17 +2317,34 @@ async function loadStats() {
 
     state.commandes = cmds || [];
 
-    // Calculs
-    const ca = state.commandes.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
-    const nb = state.commandes.length;
+    // Filtrer les "fausses" commandes (presence, demandes serveur, etc.)
+    // pour les calculs de CA et compteurs
+    const FAKE_PREFILTER = ['presence', 'service_request', 'paiement_partiel', 'partial_payment'];
+    const realForStats = state.commandes.filter(c => {
+      const s = (c.statut || '').toLowerCase();
+      return !FAKE_PREFILTER.includes(s);
+    });
+
+    // Calculs (uniquement sur les vraies commandes)
+    const ca = realForStats.reduce((s, c) => s + (parseFloat(c.total) || 0), 0);
+    const nb = realForStats.length;
     const panier = nb ? ca / nb : 0;
 
-    // Encaissées vs en cours
-    const enCours = state.commandes.filter(c => {
+    // Encaissées vs en cours — exclure les "fausses" commandes (presence, service_request, etc.)
+    // qui ne sont pas de vraies commandes mais des artefacts du système (heartbeat salon, demandes au serveur)
+    const FAKE_STATUSES = ['presence', 'service_request', 'paiement_partiel', 'partial_payment', 'annulee', 'cancelled'];
+    const realCommandes = state.commandes.filter(c => {
       const s = (c.statut || '').toLowerCase();
-      return s !== 'payee' && s !== 'paid' && s !== 'cloturee' && s !== 'annulee';
+      return !FAKE_STATUSES.includes(s) && (Array.isArray(c.items) ? c.items.length > 0 : true);
     });
-    const encaissees = state.commandes.filter(c => {
+
+    // En cours : commandes pas encore terminées (pas payée, pas servie, pas annulée)
+    const enCours = realCommandes.filter(c => {
+      const s = (c.statut || '').toLowerCase();
+      return s !== 'payee' && s !== 'paid' && s !== 'cloturee' && s !== 'servie' && s !== 'served';
+    });
+    // Encaissées : payées
+    const encaissees = realCommandes.filter(c => {
       const s = (c.statut || '').toLowerCase();
       return s === 'payee' || s === 'paid' || s === 'cloturee';
     });
@@ -2320,11 +2368,11 @@ async function loadStats() {
     // ═══════ Liste commandes en cours ═══════
     renderCommandesEnCours(enCours.slice(0, 5));
 
-    // ═══════ Top plats ═══════
-    renderTopPlats(state.commandes);
+    // ═══════ Top plats ═══════ (uniquement sur les vraies commandes)
+    renderTopPlats(realForStats);
 
     // ═══════ Charts ═══════
-    renderHoursChart(state.commandes);
+    renderHoursChart(realForStats);
 
   } catch (err) {
     console.error('loadStats:', err);
@@ -2406,24 +2454,53 @@ function renderCommandesEnCours(cmds) {
     return;
   }
   list.innerHTML = cmds.map(c => {
-    const tableNum = c.table_id || c.table || c.numero_table || '?';
+    // Récupérer le vrai numéro/label de table
+    let tableLabel = '?';
+    if (c.table_numero) {
+      tableLabel = c.table_numero;
+    } else if (c.numero_table) {
+      tableLabel = c.numero_table;
+    } else if (c.table_id && state.tables) {
+      // Lookup l'ID dans la liste des tables
+      const t = state.tables.find(x => x.id === c.table_id);
+      if (t) tableLabel = t.numero || t.nom || t.label || '?';
+    }
+    // Si c'est une commande à emporter
+    const isTakeaway = (c.type_commande === 'a_emporter') || (String(tableLabel).toLowerCase().includes('emporter'));
+    const tableDisplay = isTakeaway ? 'À emporter' : `Table ${tableLabel}`;
+
+    // Indicateur du nombre de plats
+    const items = Array.isArray(c.items) ? c.items : [];
+    const nbItems = items.reduce((s, it) => s + (parseInt(it.qte || it.quantity) || 1), 0);
+
     const total = formatPriceInt(c.total || 0);
-    const statut = (c.statut || 'en_cours').toLowerCase();
-    let statusLabel = 'En cours';
+    const statut = (c.statut || 'en_attente').toLowerCase();
+
+    // Mapping clair des statuts
+    let statusLabel = 'En attente';
     let statusClass = 'wait';
-    if (statut === 'prete' || statut === 'pret' || statut === 'ready') {
+    if (statut === 'en_attente') {
+      statusLabel = 'Reçue';
+      statusClass = 'wait';
+    } else if (statut === 'en_cours') {
+      statusLabel = 'En cuisine';
+      statusClass = 'wait';
+    } else if (statut === 'prete' || statut === 'pret' || statut === 'ready') {
       statusLabel = 'Prête';
       statusClass = 'ok';
-    }
-    if (statut === 'envoyee' || statut === 'sent') {
+    } else if (statut === 'envoyee' || statut === 'sent') {
       statusLabel = 'Envoyée';
       statusClass = 'ok';
+    } else if (statut === 'en_validation') {
+      statusLabel = 'En validation';
+      statusClass = 'wait';
     }
+
     return `
       <div class="ed-cmd-row">
         <div class="ed-cmd-info">
-          <div class="ed-cmd-table">Table ${escapeHtml(tableNum)}</div>
-          <div class="ed-cmd-time">${escapeHtml(timeAgo(c.heure))}</div>
+          <div class="ed-cmd-table">${escapeHtml(tableDisplay)}</div>
+          <div class="ed-cmd-time">${escapeHtml(timeAgo(c.heure))} · ${nbItems} plat${nbItems > 1 ? 's' : ''}</div>
         </div>
         <div class="ed-cmd-amt">${total}</div>
         <div class="ed-status ${statusClass}">${statusLabel}</div>
@@ -3787,50 +3864,152 @@ async function generateQRDataUrl(url, size = 800) {
 // PRÉSENTATION FRIZZ : page A4 noir & blanc, minimaliste
 async function drawQRPageFrizz(doc, table) {
   const url = getTableQRUrl(table);
-  const dataUrl = await generateQRDataUrl(url, 1000);
+  const dataUrl = await generateQRDataUrl(url, 1200);
 
   const pageW = 210;
   const pageH = 297;
   const isTakeaway = table.type === 'a_emporter';
   const titleText = isTakeaway ? 'À emporter' : `Table ${table.numero}`;
+  const restoNom = state.resto.nom || '';
 
   // ═══════════════════════════════════════════════════
-  // TITRE PRINCIPAL (très grand, italique serif)
+  // BORDURES ÉLÉGANTES (cadre fin double ligne)
   // ═══════════════════════════════════════════════════
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(60);
+  doc.setDrawColor(20, 20, 20);
+  doc.setLineWidth(0.4);
+  doc.rect(12, 12, pageW - 24, pageH - 24); // cadre extérieur
+  doc.setLineWidth(0.15);
+  doc.rect(15, 15, pageW - 30, pageH - 30); // cadre intérieur fin
+
+  // ═══════════════════════════════════════════════════
+  // LOGO FRIZZ (en haut, petit et discret)
+  // ═══════════════════════════════════════════════════
   doc.setFont('times', 'italic');
-  doc.text(titleText, pageW / 2, 60, { align: 'center' });
+  doc.setFontSize(18);
+  doc.setTextColor(20, 20, 20);
+  doc.text('Frizz', pageW / 2 - 6, 35, { align: 'center' });
+  // L'étoile ✦ en bleu Apple
+  doc.setTextColor(10, 132, 255);
+  doc.setFontSize(16);
+  doc.text('✦', pageW / 2 + 8, 35, { align: 'center' });
 
-  // Nom du resto sous le titre
-  doc.setFontSize(14);
+  // ═══════════════════════════════════════════════════
+  // SÉPARATEUR ORNEMENTAL (3 traits fins centrés)
+  // ═══════════════════════════════════════════════════
+  doc.setDrawColor(180, 180, 180);
+  doc.setLineWidth(0.15);
+  doc.line(pageW / 2 - 30, 44, pageW / 2 - 6, 44);
+  doc.line(pageW / 2 - 1, 44, pageW / 2 + 1, 44);
+  doc.line(pageW / 2 + 6, 44, pageW / 2 + 30, 44);
+
+  // ═══════════════════════════════════════════════════
+  // PETIT TEXTE INTRO (style menu)
+  // ═══════════════════════════════════════════════════
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(120, 120, 120);
+  doc.setCharSpace(2);
+  doc.text('— BIENVENUE —', pageW / 2, 52, { align: 'center' });
+  doc.setCharSpace(0);
+
+  // ═══════════════════════════════════════════════════
+  // TITRE PRINCIPAL "Table 7" — très grand, italique serif
+  // ═══════════════════════════════════════════════════
   doc.setFont('times', 'italic');
-  doc.setTextColor(100, 100, 100);
-  doc.text(state.resto.nom || '', pageW / 2, 72, { align: 'center' });
+  doc.setFontSize(64);
+  doc.setTextColor(20, 20, 20);
+  doc.text(titleText, pageW / 2, 78, { align: 'center' });
 
   // ═══════════════════════════════════════════════════
-  // QR CODE (centré, grand, sans cadre)
+  // NOM DU RESTAURANT (sous le titre, élégant)
   // ═══════════════════════════════════════════════════
-  const qrSize = 120;
+  if (restoNom) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(110, 110, 110);
+    doc.setCharSpace(1.5);
+    doc.text(restoNom.toUpperCase(), pageW / 2, 90, { align: 'center' });
+    doc.setCharSpace(0);
+  }
+
+  // ═══════════════════════════════════════════════════
+  // QR CODE avec cadre arrondi blanc cassé
+  // ═══════════════════════════════════════════════════
+  const qrSize = 95;
   const qrX = (pageW - qrSize) / 2;
-  const qrY = 100;
+  const qrY = 110;
+
+  // Cadre arrondi sous le QR (effet carte blanche)
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(220, 220, 220);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 4, 4, 'FD');
+
+  // Le QR
   doc.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
   // ═══════════════════════════════════════════════════
-  // INSTRUCTION (sous le QR, simple)
+  // INSTRUCTIONS EN 3 ÉTAPES (sous le QR)
   // ═══════════════════════════════════════════════════
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Scannez avec votre téléphone', pageW / 2, qrY + qrSize + 18, { align: 'center' });
+  const stepsY = qrY + qrSize + 22;
+  const stepW = 50;
+  const totalStepsW = stepW * 3;
+  const stepsX = (pageW - totalStepsW) / 2;
 
-  doc.setFontSize(12);
+  const steps = [
+    { num: '1', label: isTakeaway ? 'Scannez' : 'Scannez', sub: 'le QR code' },
+    { num: '2', label: 'Composez', sub: isTakeaway ? 'votre commande' : 'votre repas' },
+    { num: '3', label: isTakeaway ? 'Récupérez' : 'Profitez', sub: isTakeaway ? 'au comptoir' : 'à votre table' }
+  ];
+
+  steps.forEach((step, i) => {
+    const cx = stepsX + (stepW * i) + (stepW / 2);
+
+    // Cercle numéroté bleu
+    doc.setFillColor(10, 132, 255);
+    doc.circle(cx, stepsY, 4.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(step.num, cx, stepsY + 1.2, { align: 'center' });
+
+    // Label étape
+    doc.setTextColor(20, 20, 20);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(13);
+    doc.text(step.label, cx, stepsY + 14, { align: 'center' });
+
+    // Sous-texte
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text(step.sub, cx, stepsY + 19.5, { align: 'center' });
+  });
+
+  // ═══════════════════════════════════════════════════
+  // SÉPARATEUR ORNEMENTAL (en bas)
+  // ═══════════════════════════════════════════════════
+  doc.setDrawColor(180, 180, 180);
+  doc.setLineWidth(0.15);
+  doc.line(pageW / 2 - 30, pageH - 38, pageW / 2 - 6, pageH - 38);
+  doc.line(pageW / 2 - 1, pageH - 38, pageW / 2 + 1, pageH - 38);
+  doc.line(pageW / 2 + 6, pageH - 38, pageW / 2 + 30, pageH - 38);
+
+  // ═══════════════════════════════════════════════════
+  // FOOTER : "Sans application · Sans inscription"
+  // ═══════════════════════════════════════════════════
+  doc.setFont('times', 'italic');
+  doc.setFontSize(11);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Sans application · Sans inscription', pageW / 2, pageH - 30, { align: 'center' });
+
+  // Mention Frizz minuscule en bas
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100, 100, 100);
-  doc.text(
-    isTakeaway ? 'Commandez et venez chercher.' : 'Commandez depuis votre table.',
-    pageW / 2, qrY + qrSize + 27, { align: 'center' }
-  );
+  doc.setFontSize(6.5);
+  doc.setTextColor(160, 160, 160);
+  doc.setCharSpace(1.5);
+  doc.text('PROPULSÉ PAR FRIZZ ✦ FRIZZ-INSTANT.COM', pageW / 2, pageH - 22, { align: 'center' });
+  doc.setCharSpace(0);
 }
 
 // PRÉSENTATION SIMPLE : QR code seul en haut à gauche
@@ -4148,9 +4327,46 @@ async function saveAllConfig() {
     if (!error) {
       showToast('Configuration enregistrée', 'success');
       Object.assign(state.resto, payload);
-      // Mettre à jour le nom dans la top bar
-      document.getElementById('resto-name').textContent = payload.nom;
-      document.getElementById('ed-resto-display').textContent = getShortName(payload.nom);
+
+      // Mettre à jour le state.restos (la liste de tous les restos)
+      if (state.restos && Array.isArray(state.restos)) {
+        const idx = state.restos.findIndex(r => r.id === state.resto.id);
+        if (idx !== -1) {
+          Object.assign(state.restos[idx], payload);
+        }
+      }
+
+      // Re-render TOUS les endroits qui affichent le nom du resto
+      const nomEl = document.getElementById('resto-name');
+      if (nomEl) nomEl.textContent = payload.nom;
+
+      const heroEl = document.getElementById('ed-resto-display');
+      if (heroEl) heroEl.textContent = getShortName(payload.nom);
+
+      // Mise à jour du titre de la page (favicon / onglet)
+      document.title = `${payload.nom} · Frizz Admin`;
+
+      // Re-render la card "Vos restaurants" dans Config (liste avec tous les restos)
+      const restosList = document.getElementById('cfg-restos-list');
+      if (restosList) {
+        // Réutilise la fonction de rendu existante via loadConfig (sans rafraîchir tous les autres champs)
+        try {
+          if (typeof renderRestosList === 'function') {
+            renderRestosList();
+          } else {
+            // Fallback : re-render manuel de la liste
+            restosList.innerHTML = state.restos.map(r => `
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
+                <div>
+                  <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div>
+                  <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
+                </div>
+                ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
+              </div>
+            `).join('');
+          }
+        } catch(e) { console.warn('Re-render restos list:', e); }
+      }
       return;
     }
 

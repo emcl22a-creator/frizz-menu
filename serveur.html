@@ -1589,6 +1589,40 @@ function openTable(tableId) {
   showScreen('table-detail');
 }
 
+// Marque toutes les commandes "prete" de la table comme "servie"
+async function markTableServed(tableId) {
+  const t = state.tables.find(x => x.id === tableId);
+  if (!t) return;
+
+  const readyOrders = state.orders.filter(o => o.table_id === tableId && o.statut === 'prete');
+  if (readyOrders.length === 0) {
+    showToast('Aucune commande prête à servir', 'error');
+    return;
+  }
+
+  try {
+    const ids = readyOrders.map(o => o.id);
+    const { error } = await supa.from('commandes')
+      .update({ statut: 'servie' })
+      .in('id', ids);
+    if (error) throw error;
+
+    // Mise à jour locale immédiate (avant le polling)
+    readyOrders.forEach(o => { o.statut = 'servie'; });
+
+    showToast(`${readyOrders.length} commande${readyOrders.length > 1 ? 's marquées' : ' marquée'} servie${readyOrders.length > 1 ? 's' : ''}`, 'success');
+
+    // Re-render le détail pour cacher le bouton et mettre à jour les statuts
+    renderTableDetail();
+    // Recharge depuis la base pour synchro
+    await loadOrders();
+  } catch (err) {
+    console.error('markTableServed:', err);
+    showToast('Erreur : ' + (err.message || 'impossible'), 'error');
+  }
+}
+window.markTableServed = markTableServed;
+
 // ============================================================================
 // VIEW : DÉTAIL TABLE
 // ============================================================================
@@ -1630,7 +1664,17 @@ function renderTableDetail() {
 
   const statutLabels = { en_attente: 'En attente', en_cours: 'En cuisine', prete: 'Prête', servie: 'Servie' };
 
+  // Trouver les commandes "prete" qu'on peut marquer comme servies
+  const readyOrders = activeOrders.filter(o => o.statut === 'prete');
+  const hasReady = readyOrders.length > 0;
+
   ordersBox.innerHTML = `
+    ${hasReady ? `
+      <button class="action-btn action-btn-success" style="width: 100%; margin-bottom: 14px;" onclick="markTableServed('${escapeHtml(t.id)}')">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Marquer servie · ${readyOrders.length} commande${readyOrders.length > 1 ? 's' : ''}</span>
+      </button>
+    ` : ''}
     <div class="table-orders-title">Commandes (${activeOrders.length})</div>
     ${allItems.map(it => `
       <div class="order-line">

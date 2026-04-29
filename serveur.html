@@ -3,920 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0A0A0B">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="dark">
-<title>Service — Frizz</title>
+<title>Frizz · Inscription</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --bg: #0a0a0a;
-    --bg-elev: #141416;
-    --label: #F5F5F7;
-    --label-2: rgba(245,245,247,0.62);
-    --label-3: rgba(245,245,247,0.42);
-    --fill-1: rgba(255,255,255,0.06);
-    --fill-2: rgba(255,255,255,0.04);
-    --sep: rgba(255,255,255,0.08);
-    --sep-strong: rgba(255,255,255,0.14);
-    --sep-opaque: #232325;
+    --bg: #050506;
+    --surface: rgba(255,255,255,0.03);
+    --text: #F2F2F4;
+    --text-2: rgba(255,255,255,0.65);
+    --text-3: rgba(255,255,255,0.45);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.12);
     --blue: #0A84FF;
-    --blue-soft: rgba(10,132,255,0.16);
-    --green: #30D158;
-    --green-soft: rgba(48,209,88,0.16);
-    --orange: #FF9F0A;
-    --red: #FF453A;
-    --pill: 100px;
-    --r-sm: 12px;
-    --r-md: 16px;
+    --blue-bright: #2E9DFF;
+    --blue-glow: rgba(10,132,255,0.5);
+    --green: #4ADE80;
+    --red: #FF6B5C;
+    --red-soft: rgba(255,107,92,0.14);
+    --r: 14px;
+    --r-md: 18px;
     --r-lg: 22px;
-    --r-xl: 28px;
-    --ease: cubic-bezier(0.23, 1, 0.32, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --r-pill: 100px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  *::selection { background: var(--blue); color: #fff; }
+
   html, body {
-    background: var(--bg);
-    color: var(--label);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 500;
-    letter-spacing: -0.011em;
+    color: var(--text);
+    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.014em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    min-height: 100dvh;
     overflow-x: hidden;
   }
-  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0; }
-  input, textarea {
-    font-family: inherit;
-    font-size: 16px;
-    background: var(--fill-2);
-    color: var(--label);
-    border: 1px solid var(--sep-opaque);
-    border-radius: var(--r-sm);
-    padding: 14px 16px;
-    width: 100%;
-    transition: all 0.2s var(--ease);
-  }
-  input:focus { outline: none; border-color: var(--blue); }
 
-  /* ========== HEADER ========== */
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    background: rgba(10,10,10,0.92);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border-bottom: 1px solid var(--sep);
-  }
-  .header-inner {
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
-  }
-  .brand-logo {
-    font-weight: 900;
-    font-size: 22px;
-    letter-spacing: -0.045em;
-    color: var(--blue);
-    text-shadow: 0 0 16px rgba(10,132,255,0.5);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .brand-logo .spark {
-    font-size: 22px;
-    filter: drop-shadow(0 0 10px rgba(10,132,255,0.95));
-  }
-  .brand-info { line-height: 1.2; }
-  .brand-name { font-size: 14px; font-weight: 700; color: var(--label); }
-  .brand-sub {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .brand-sub::before {
-    content: '';
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.85); }
-  }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .clock {
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    border-radius: var(--pill);
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--label);
-    font-variant-numeric: tabular-nums;
-  }
-  .icon-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    color: var(--label-2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.15s var(--ease);
-  }
-  .icon-btn:hover { background: var(--fill-1); color: var(--label); }
-  .icon-btn svg { width: 18px; height: 18px; }
-
-  /* ========== MAIN LAYOUT ========== */
-  main { padding: 20px 18px 100px; max-width: 720px; margin: 0 auto; }
-  .header-inner { max-width: 720px; margin: 0 auto; }
-  @media (min-width: 768px) {
-    main { padding: 24px 22px 120px; }
-  }
-
-  /* ========== SCREENS ========== */
-  .screen { display: none; animation: screen-in 0.35s var(--ease); }
-  .screen.active { display: block; }
-  @keyframes screen-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ========== RÉSERVATIONS ========== */
-  .resa-filter-pill {
-    flex-shrink: 0;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.10);
-    color: var(--label-2);
-    padding: 8px 14px;
-    border-radius: 100px;
-    font-size: 12.5px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    letter-spacing: -0.01em;
-  }
-  .resa-filter-pill:hover {
-    background: rgba(255,255,255,0.08);
-  }
-  .resa-filter-pill.active {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: #fff;
-  }
-  .resa-day-header {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--label-2);
-    margin: 24px 0 12px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .resa-day-header.today { color: var(--blue); }
-  .resa-card {
-    background: var(--card-bg, rgba(255,255,255,0.04));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    transition: all 0.2s;
-  }
-  .resa-card.pending {
-    border-color: rgba(10,132,255,0.4);
-    background: rgba(10,132,255,0.06);
-    box-shadow: 0 4px 18px rgba(10,132,255,0.10);
-  }
-  .resa-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-  .resa-card-left {
-    display: flex;
-    gap: 14px;
-    align-items: baseline;
-    flex: 1;
-    min-width: 0;
-  }
-  .resa-time {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    color: var(--label);
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-  }
-  .resa-info { flex: 1; min-width: 0; }
-  .resa-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--label);
-    letter-spacing: -0.015em;
-    word-break: break-word;
-    margin-bottom: 2px;
-  }
-  .resa-meta {
-    font-size: 13px;
-    color: var(--label-2);
-  }
-  .resa-meta a {
-    color: var(--blue);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .resa-status-badge {
-    padding: 4px 10px;
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-    flex-shrink: 0;
-    letter-spacing: -0.005em;
-  }
-  .resa-status-badge.en_attente { background: rgba(255,159,10,0.18); color: #FF9F0A; }
-  .resa-status-badge.confirmee  { background: rgba(48,209,88,0.18); color: #30D158; }
-  .resa-status-badge.annulee    { background: rgba(255,69,58,0.18); color: #FF453A; }
-  .resa-status-badge.passee     { background: rgba(134,134,139,0.18); color: #999; }
-  .resa-status-badge.no_show    { background: rgba(255,69,58,0.18); color: #FF453A; }
-  .resa-card-email {
-    font-size: 12.5px;
-    color: var(--label-2);
-    margin-bottom: 8px;
-  }
-  .resa-card-message {
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: var(--label-2);
-    margin-bottom: 10px;
-    line-height: 1.4;
-    font-style: italic;
-  }
-  .resa-card-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
-  .resa-btn {
-    background: rgba(255,255,255,0.08);
-    border: 0;
-    color: var(--label);
-    padding: 8px 14px;
-    border-radius: 100px;
-    font-size: 12.5px;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    letter-spacing: -0.01em;
-    transition: all 0.15s;
-  }
-  .resa-btn:hover { background: rgba(255,255,255,0.12); }
-  .resa-btn.primary {
-    background: var(--blue);
-    color: #fff;
-  }
-  .resa-btn.primary:hover { background: #0066CC; }
-  .resa-btn.danger {
-    background: rgba(255,69,58,0.15);
-    color: #FF453A;
-  }
-  .resa-btn.danger:hover { background: rgba(255,69,58,0.25); }
-
-  /* ========== HERO BANNER ========== */
-  .hero {
-    margin-bottom: 24px;
-  }
-  .hero h1 {
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 4px;
-  }
-  .hero p {
-    font-size: 14.5px;
-    color: var(--label-2);
-    line-height: 1.4;
-  }
-
-  /* ========== TABLES GRID ========== */
-  .tables-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-  }
-  .table-card {
-    background: var(--bg-elev);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-md);
-    padding: 16px 14px;
-    cursor: pointer;
-    transition: all 0.2s var(--ease);
-    position: relative;
-    overflow: hidden;
-    text-align: left;
-    min-height: 110px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .table-card:hover {
-    border-color: var(--sep-strong);
-    transform: translateY(-2px);
-  }
-  .table-card.has-orders {
-    background: linear-gradient(135deg, rgba(255,159,10,0.12) 0%, rgba(255,159,10,0.04) 100%);
-    border-color: rgba(255,159,10,0.4);
-  }
-  .table-card.has-ready {
-    background: linear-gradient(135deg, rgba(48,209,88,0.14) 0%, rgba(48,209,88,0.04) 100%);
-    border-color: rgba(48,209,88,0.5);
-    box-shadow: 0 0 24px rgba(48,209,88,0.18);
-  }
-  .table-card-num {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    color: var(--label);
-    line-height: 1;
-  }
-  .table-card-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--label-3);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 4px;
-  }
-  .table-card-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--label-2);
-  }
-  .table-card.has-orders .table-card-status { color: var(--orange); }
-  .table-card.has-ready .table-card-status { color: var(--green); }
-  .table-card-status .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 6px currentColor;
-  }
-  .table-card.has-orders .dot,
-  .table-card.has-ready .dot {
-    animation: pulse 2s ease-in-out infinite;
-  }
-  .table-card-amount {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--label);
-    font-variant-numeric: tabular-nums;
-    margin-top: 2px;
-  }
-
-  /* ========== TABLE DETAIL VIEW ========== */
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 14px 9px 11px;
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    border-radius: var(--pill);
-    color: var(--label);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s var(--ease);
-    margin-bottom: 18px;
-  }
-  .back-btn:hover { background: var(--fill-1); }
-  .back-btn svg { width: 14px; height: 14px; }
-
-  .table-header-card {
-    background: var(--bg-elev);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-lg);
-    padding: 22px;
-    margin-bottom: 22px;
-    position: relative;
-    overflow: hidden;
-  }
-  .table-header-card::before {
-    content: '';
-    position: absolute;
-    top: -40%; right: -10%;
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(10,132,255,0.18) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .table-title {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    margin-bottom: 4px;
-  }
-  .table-meta {
-    font-size: 13px;
-    color: var(--label-2);
-    font-weight: 600;
-  }
-
-  .table-orders {
-    margin-top: 18px;
-  }
-  .table-orders-title {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--label-3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-  }
-  .order-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 13.5px;
-    font-weight: 600;
-    border-bottom: 1px solid var(--sep);
-  }
-  .order-line:last-child { border-bottom: 0; }
-  .order-line-info { flex: 1; min-width: 0; }
-  .order-line-name { color: var(--label); }
-  .order-line-meta {
-    font-size: 11.5px;
-    color: var(--label-3);
-    font-weight: 500;
-    margin-top: 1px;
-  }
-  .order-line-statut {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px;
-    border-radius: var(--pill);
-    font-size: 10.5px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    flex-shrink: 0;
-  }
-  .order-line-statut.en_attente { background: rgba(255,69,58,0.16); color: var(--red); }
-  .order-line-statut.en_cours { background: rgba(255,159,10,0.16); color: var(--orange); }
-  .order-line-statut.prete { background: var(--green-soft); color: var(--green); }
-
-  .table-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0 4px;
-    font-size: 17px;
-    font-weight: 800;
-    color: var(--label);
-    border-top: 2px solid var(--sep);
-    margin-top: 8px;
-  }
-  .table-total-row .total-amount {
-    font-size: 22px;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.03em;
-  }
-
-  /* Action buttons row */
-  .table-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-  }
-  .action-btn {
-    padding: 14px 16px;
-    border-radius: var(--r-md);
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s var(--ease);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    letter-spacing: -0.015em;
-    border: 0;
-  }
-  .action-btn-primary {
-    background: var(--blue);
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(10,132,255,0.4);
-  }
-  .action-btn-primary:hover { transform: translateY(-1px); }
-  .action-btn-success {
-    background: var(--green);
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(48,209,88,0.4);
-  }
-  .action-btn-success:hover { transform: translateY(-1px); }
-  .action-btn-secondary {
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    color: var(--label);
-  }
-  .action-btn-secondary:hover { background: var(--fill-1); border-color: var(--sep-strong); }
-  .action-btn svg { width: 16px; height: 16px; }
-  .action-btn.full { grid-column: 1 / -1; }
-
-  /* ========== MENU ORDER VIEW (ajout plats) ========== */
-  .cat-bar {
-    display: flex;
-    gap: 7px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    margin-bottom: 18px;
-    scrollbar-width: none;
-  }
-  .cat-bar::-webkit-scrollbar { display: none; }
-  .cat-chip {
-    padding: 9px 16px;
-    background: var(--fill-2);
-    border: 1px solid var(--sep);
-    border-radius: var(--pill);
-    color: var(--label-2);
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.15s var(--ease);
-  }
-  .cat-chip.active {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-  }
-  .plats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
-  }
-  .plat-card {
-    background: var(--bg-elev);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    transition: all 0.2s var(--ease);
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .plat-card:hover {
-    border-color: var(--sep-strong);
-    transform: translateY(-2px);
-  }
-  .plat-card:active {
-    transform: scale(0.98);
-  }
-  .plat-card.indispo { opacity: 0.4; pointer-events: none; }
-
-  .plat-card-photo {
-    width: 100%;
-    aspect-ratio: 16 / 11;
-    background-color: var(--fill-1);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    flex-shrink: 0;
-  }
-  /* Placeholder quand pas de photo */
-  .plat-card-photo.no-photo {
-    background:
-      linear-gradient(135deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.02) 100%),
-      var(--fill-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--label-3);
-  }
-  .plat-card-photo.no-photo svg { width: 32px; height: 32px; opacity: 0.5; }
-  /* Overlay subtil pour lisibilité du bouton + */
-  .plat-card-photo::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 60px; height: 60px;
-    background: radial-gradient(circle at top right, rgba(0,0,0,0.4) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .plat-card-body {
-    padding: 12px 14px 14px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .plat-card-name {
-    font-size: 14.5px;
-    font-weight: 800;
-    color: var(--label);
-    line-height: 1.2;
-    letter-spacing: -0.018em;
-    /* Tronquer si trop long (2 lignes max) */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .plat-card-cat {
-    font-size: 10px;
-    color: var(--label-3);
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .plat-card-price {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--label);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.025em;
-    margin-top: auto;
-    padding-top: 6px;
-  }
-  .plat-card-add {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 32px; height: 32px;
-    background: var(--blue);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 800;
-    line-height: 1;
-    box-shadow: 0 4px 14px rgba(10,132,255,0.55), 0 0 0 2px rgba(0,0,0,0.2);
-    z-index: 2;
-  }
-  .plat-card:hover .plat-card-add {
-    transform: scale(1.08);
-    box-shadow: 0 6px 18px rgba(10,132,255,0.7), 0 0 0 2px rgba(0,0,0,0.2);
-  }
-  .plat-card-add svg {
-    width: 18px;
-    height: 18px;
-    stroke-width: 3;
-  }
-
-  /* ========== ORDER CART (panier en bas) ========== */
-  .order-cart {
-    position: fixed;
-    bottom: calc(20px + env(safe-area-inset-bottom));
-    left: 16px;
-    right: 16px;
-    max-width: 720px;
-    margin: 0 auto;
-    background: linear-gradient(135deg, var(--blue) 0%, #0071e3 100%);
-    color: #fff;
-    border-radius: 18px;
-    padding: 14px 18px;
-    z-index: 50;
-    display: none;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 16px 48px -12px rgba(10,132,255,0.6), 0 0 28px rgba(10,132,255,0.4);
-    animation: cart-in 0.45s var(--ease-spring) both;
-  }
-  @keyframes cart-in {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .order-cart.show { display: flex; }
-  .order-cart-icon {
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .order-cart-icon svg { width: 18px; height: 18px; }
-  .order-cart-info { flex: 1; min-width: 0; }
-  .order-cart-label { font-size: 11.5px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.06em; }
-  .order-cart-total { font-size: 17px; font-weight: 900; letter-spacing: -0.022em; font-variant-numeric: tabular-nums; }
-  .order-cart-btn {
-    background: #fff;
-    color: var(--blue);
-    border-radius: var(--pill);
-    padding: 10px 18px;
-    font-size: 13.5px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: transform 0.15s var(--ease);
-  }
-  .order-cart-btn:hover { transform: scale(1.03); }
-
-  /* ========== PAYMENT MODAL (mockup) ========== */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    backdrop-filter: blur(20px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    padding: 18px;
-    overflow-y: auto;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    width: 100%;
-    max-width: 460px;
-    background: var(--bg-elev);
-    border: 1px solid var(--sep);
-    border-radius: var(--r-xl);
-    padding: 26px 24px 22px;
-    margin: auto;
-    animation: modal-in 0.4s var(--ease-spring) both;
-  }
-  @keyframes modal-in {
-    from { opacity: 0; transform: scale(0.94) translateY(16px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  .modal-title {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    text-align: center;
-    margin-bottom: 6px;
-  }
-  .modal-sub {
-    font-size: 14px;
-    color: var(--label-2);
-    text-align: center;
-    margin-bottom: 22px;
-  }
-
-  /* ========== TOAST ========== */
-  .toast {
-    position: fixed;
-    bottom: calc(38px + env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%) translateY(140px);
-    background: rgba(22,22,24,0.95);
-    backdrop-filter: blur(28px);
-    border: 1px solid var(--sep);
-    border-radius: var(--pill);
-    padding: 12px 22px;
-    font-size: 13.5px;
-    font-weight: 700;
-    z-index: 250;
-    transition: transform 0.4s var(--ease-spring);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-  }
-  body.has-cart .toast { bottom: calc(110px + env(safe-area-inset-bottom)); }
-
-  /* ========== EMPTY STATES ========== */
-  .empty {
-    text-align: center;
-    padding: 50px 20px;
-    color: var(--label-3);
-  }
-  .empty-icon {
-    width: 64px; height: 64px;
-    background: var(--fill-2);
-    border-radius: 18px;
-    margin: 0 auto 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--label-3);
-  }
-  .empty-icon svg { width: 28px; height: 28px; }
-  .empty-title {
-    font-size: 17px;
-    font-weight: 800;
-    color: var(--label);
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
-  }
-  .empty p { font-size: 13.5px; line-height: 1.5; max-width: 320px; margin: 0 auto; }
-
-  /* ========== LOADING ========== */
-  .center-screen {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    z-index: 1000;
-    transition: opacity 0.3s;
-  }
-  .center-screen.hidden { opacity: 0; pointer-events: none; }
-  .loading-logo {
-    font-weight: 900;
-    font-size: 42px;
-    color: var(--blue);
-    text-shadow: 0 0 30px rgba(10,132,255,0.6);
-    letter-spacing: -0.045em;
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-
-  /* Section title */
-  .section-title {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--label-3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 12px;
-  }
-
-  @media (max-width: 480px) {
-    .hero h1 { font-size: 26px; }
-    .tables-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .plats-grid { grid-template-columns: repeat(2, 1fr); }
-    .clock { display: none; }
-  }
-
-  /* ════════════ OVERRIDE FINAL — Design Frizz unifié (aurora + glass + Source Serif italique) ════════════ */
-
-  /* Police de base : Inter Tight */
-  body, input, select, textarea, button {
-    font-family: 'Inter Tight', 'Inter', -apple-system, sans-serif !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.014em !important;
-  }
-
-  /* Aurora bleue subtile sur le fond (noir dominant) */
   html {
     background:
       radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
@@ -927,16 +55,13 @@
   }
   body { background: transparent !important; }
   body::before {
-    content: '' !important;
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: -1 !important;
-    pointer-events: none !important;
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background:
       radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%) !important;
-    animation: auroraDrift 24s ease-in-out infinite alternate !important;
-    mix-blend-mode: screen !important;
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
+    animation: auroraDrift 24s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
   }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
@@ -944,1434 +69,479 @@
     100% { transform: translate(-2%, 3%) scale(1.04); }
   }
 
-  /* Logo Frizz✦ — Source Serif 4 italique 700 */
-  .brand-logo {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.020em !important;
-    font-size: 26px !important;
-    color: #F2F2F4 !important;
-    text-shadow: none !important;
-  }
-  .brand-logo .spark {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    color: #0A84FF !important;
-    font-weight: 700 !important;
-    text-shadow: 0 0 12px rgba(10,132,255,0.5) !important;
-    filter: none !important;
+  .page {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 22px;
+    position: relative;
+    z-index: 1;
   }
 
-  /* Loading screen logo */
-  .loading-logo {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    font-weight: 700 !important;
-    font-size: 42px !important;
-    letter-spacing: -0.020em !important;
-    color: #F2F2F4 !important;
-    text-shadow: none !important;
+  .logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: transform 0.2s ease;
   }
-  .loading-logo .spark {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    color: #0A84FF !important;
-    font-size: 36px !important;
-    text-shadow: 0 0 12px rgba(10,132,255,0.6) !important;
-    filter: none !important;
+  .logo-link:hover { transform: scale(1.04); }
+  .logo {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.020em;
+    font-size: 32px;
+    color: var(--text);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    line-height: 1;
+  }
+  .logo .spark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 26px;
+    margin-left: 1px;
+    animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
+    text-shadow: 0 0 12px rgba(10,132,255,0.5);
+  }
+  @keyframes sparkPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.08); }
   }
 
-  /* Header glass top bar */
-  .topbar, .header, header {
-    background: rgba(0, 0, 0, 0.85) !important;
-    backdrop-filter: saturate(180%) blur(28px) !important;
-    -webkit-backdrop-filter: saturate(180%) blur(28px) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
-    box-shadow: none !important;
-  }
-
-  /* Cartes glass + arrondi 22px partout */
-  .card, .table-card, .plat-card, .order-card, .panel {
-    border-radius: 22px !important;
-    background: rgba(255,255,255,0.04) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
+  .form-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 32px 28px;
+    background: rgba(20, 20, 26, 0.45);
+    backdrop-filter: saturate(180%) blur(40px);
+    -webkit-backdrop-filter: saturate(180%) blur(40px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 4px 14px -6px rgba(0,0,0,0.3) !important;
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 30px 80px -20px rgba(0,0,0,0.7);
   }
 
-  /* Source Serif 4 italique 700 sur chiffres et accents */
-  .stat-value, .total, .price, .amount, .clock,
-  .accent-italic, .number-big, [data-accent] {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.018em !important;
-    font-variant-numeric: tabular-nums;
+  .form-section-num {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--blue);
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+  .form-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.030em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .form-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.014em;
+  }
+  .form-sub {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: -0.010em;
+    line-height: 1.5;
+    margin-bottom: 24px;
   }
 
-  /* Boutons — pill 100px + bleu Apple */
-  .btn, button.primary, .btn-primary, .action-btn {
-    border-radius: 100px !important;
-    font-weight: 800 !important;
+  .field-group { margin-bottom: 14px; }
+  .field-label {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    display: block;
+    letter-spacing: -0.005em;
   }
-  .btn.primary, .btn-primary, button.primary {
-    background: #0A84FF !important;
-    color: #fff !important;
-    border: 0 !important;
+
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: var(--r);
+    font-size: 14.5px;
+    font-weight: 700;
+    font-family: 'Inter Tight', inherit;
+    letter-spacing: -0.012em;
+    transition: all 0.15s ease;
+    outline: none;
+  }
+  input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.20);
+  }
+  input::placeholder { color: var(--text-3); font-weight: 600; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 18px;
+    border-radius: var(--r);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    border: 0;
+    font-family: inherit;
+    letter-spacing: -0.012em;
+    transition: all 0.15s ease;
+    width: 100%;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,0.20),
-      0 6px 18px -4px rgba(10,132,255,0.5) !important;
+      0 4px 14px -4px var(--blue-glow);
   }
+  .btn-primary:hover {
+    background: var(--blue-bright);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.24),
+      0 8px 22px -4px var(--blue-glow);
+  }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn svg { width: 14px; height: 14px; stroke-width: 2.4; }
 
-  /* Pills / badges / chips — pill 100px + glass */
-  .badge, .pill, .chip, .status-badge, .brand-sub {
-    border-radius: 100px !important;
+  .form-footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-3);
   }
+  .form-footer a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 800;
+  }
+  .form-footer a:hover { text-decoration: underline; }
 
-  /* Inputs glass */
-  input, textarea, select {
-    border-radius: 14px !important;
-    background: rgba(255,255,255,0.05) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
+  .trial-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.30);
+    border-radius: var(--r-pill);
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.005em;
+    margin-bottom: 14px;
   }
+  .trial-badge svg { width: 11px; height: 11px; stroke-width: 2.4; }
 
-  /* Modales glass épais + arrondi 24px */
-  .modal, .modal-content {
-    border-radius: 24px !important;
-    background: rgba(28, 28, 32, 0.85) !important;
-    backdrop-filter: saturate(180%) blur(40px) !important;
-    -webkit-backdrop-filter: saturate(180%) blur(40px) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
+  .error-msg {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--red-soft);
+    border: 1px solid rgba(255,107,92,0.30);
+    border-radius: var(--r);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: -0.005em;
+    display: none;
   }
+  .error-msg.show { display: block; }
 
-  /* Hero title : "Service" en italique */
-  .hero h1, .page-title h1 {
-    font-family: 'Inter Tight', sans-serif !important;
-    font-weight: 900 !important;
-    letter-spacing: -0.030em !important;
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.30);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
   }
-  .hero h1 em, .page-title em {
-    font-family: 'Source Serif 4', serif !important;
-    font-style: italic !important;
-    font-weight: 700 !important;
-    color: #0A84FF !important;
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div class="center-screen" id="loading">
-  <div class="loading-logo">Frizz<span class="spark">✦</span></div>
+<div class="page">
+
+  <a href="index.html" class="logo-link">
+    <span class="logo">Frizz<span class="spark">✦</span></span>
+  </a>
+
+  <div class="form-card">
+
+    <div class="trial-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      14 jours d'essai · Sans carte bancaire
+    </div>
+
+    <div class="form-section-num">— Créer un compte</div>
+    <h1 class="form-title">Bienvenue chez <em>Frizz</em>.</h1>
+    <p class="form-sub">Créez votre compte et configurez votre premier restaurant en moins de 2 minutes.</p>
+
+    <form id="signup-form" autocomplete="on">
+
+      <div class="field-group">
+        <label class="field-label" for="signup-resto-nom">Nom du restaurant</label>
+        <input type="text" id="signup-resto-nom" name="resto-nom" placeholder="ex. Chez Nico" required autocomplete="organization">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="signup-email">Votre email</label>
+        <input type="email" id="signup-email" name="email" placeholder="vous@restaurant.com" required autocomplete="email">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="signup-password">Mot de passe</label>
+        <input type="password" id="signup-password" name="password" placeholder="Minimum 8 caractères" required minlength="8" autocomplete="new-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submit-btn" style="margin-top: 18px;">
+        Créer mon compte
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+
+      <div class="error-msg" id="error-msg"></div>
+
+    </form>
+
+    <div class="form-footer">
+      Déjà un compte ? <a href="login.html">Se connecter</a>
+    </div>
+
+  </div>
+
 </div>
-
-<!-- App -->
-<div id="app" style="display:none;">
-
-  <!-- Header -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand">
-        <div class="brand-logo">Frizz<span class="spark">✦</span></div>
-      </div>
-      <div class="header-actions">
-        <button id="resa-btn" onclick="showScreen('resa')" title="Voir les réservations" style="background: rgba(255,255,255,0.06); color: var(--label, #fff); border: 1px solid rgba(255,255,255,0.12); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s; position: relative;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <span>Résa</span>
-          <span id="resa-pending-badge" style="display:none; background: var(--blue, #0A84FF); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 100px; min-width: 18px; text-align: center;">0</span>
-        </button>
-        <button id="tables-btn" onclick="showScreen('tables')" title="Retour aux tables" style="background: var(--blue-soft, rgba(10,132,255,0.14)); color: var(--blue, #0A84FF); border: 1px solid rgba(10,132,255,0.28); border-radius: 100px; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; letter-spacing: -0.012em; transition: all 0.2s; font-family: inherit;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
-            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-          </svg>
-          <span>Tables</span>
-        </button>
-        <div class="clock" id="clock">--:--</div>
-      </div>
-    </div>
-  </header>
-
-  <main>
-
-    <!-- ========= ÉCRAN 1 : Liste des tables ========= -->
-    <section class="screen active" id="screen-tables">
-      <div class="hero">
-        <h1>Tes tables</h1>
-        <p>Sélectionne une table pour voir ses commandes ou prendre une nouvelle commande.</p>
-      </div>
-      <div class="tables-grid" id="tables-grid"></div>
-    </section>
-
-    <!-- ========= ÉCRAN RÉSERVATIONS ========= -->
-    <section class="screen" id="screen-resa">
-      <button class="back-btn" onclick="showScreen('tables')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Retour aux tables
-      </button>
-
-      <div class="hero">
-        <h1>Réservations</h1>
-        <p>Saisis une nouvelle réservation en 30 secondes ou consulte celles existantes.</p>
-      </div>
-
-      <!-- Bouton géant : nouvelle résa -->
-      <button onclick="openResaForm()" style="width:100%; background: var(--blue, #0A84FF); color: #fff; border: 0; padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 24px rgba(10,132,255,0.30); margin-bottom: 24px; letter-spacing: -0.01em; transition: all 0.2s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nouvelle réservation
-      </button>
-
-      <!-- Filtres -->
-      <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;">
-        <button class="resa-filter-pill active" data-resa-filter="all" onclick="setResaFilter('all')">Toutes</button>
-        <button class="resa-filter-pill" data-resa-filter="confirmee" onclick="setResaFilter('confirmee')">✓ Confirmées</button>
-        <button class="resa-filter-pill" data-resa-filter="annulee" onclick="setResaFilter('annulee')">Annulées</button>
-        <button class="resa-filter-pill" data-resa-filter="passee" onclick="setResaFilter('passee')">Passées</button>
-      </div>
-
-      <div id="resa-list"></div>
-      <div id="resa-empty" style="display:none; text-align: center; padding: 60px 20px; color: var(--label-2);">
-        <div style="font-size: 48px; margin-bottom: 12px;">📅</div>
-        <div style="font-size: 17px; font-weight: 700; color: var(--label); margin-bottom: 6px;">Aucune réservation</div>
-        <p style="font-size: 13.5px; max-width: 280px; margin: 0 auto;">Clique sur "Nouvelle réservation" pour commencer.</p>
-      </div>
-    </section>
-
-    <!-- ========= ÉCRAN 2 : Détail d'une table ========= -->
-    <section class="screen" id="screen-table-detail">
-      <button class="back-btn" onclick="showScreen('tables')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Retour aux tables
-      </button>
-
-      <div class="table-header-card">
-        <div class="table-title" id="td-table-name">Table —</div>
-        <div class="table-meta" id="td-table-meta">—</div>
-
-        <div class="table-orders" id="td-orders">
-          <!-- rempli dynamiquement -->
-        </div>
-
-        <div class="table-actions">
-          <button class="action-btn action-btn-secondary full" onclick="showScreen('order')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            Ajouter des plats
-          </button>
-          <button class="action-btn action-btn-success full" id="td-pay-btn" onclick="togglePaiementTable()" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="td-pay-icon"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="td-pay-label">Marquer payée</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========= ÉCRAN 3 : Prise de commande (sélection plats) ========= -->
-    <section class="screen" id="screen-order">
-      <button class="back-btn" onclick="showScreen('table-detail')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Retour à la table
-      </button>
-
-      <div class="hero">
-        <h1 id="order-title">Nouvelle commande</h1>
-        <p id="order-sub">Touche un plat pour l'ajouter au panier.</p>
-      </div>
-
-      <div class="cat-bar" id="cat-bar"></div>
-      <div class="plats-grid" id="plats-grid"></div>
-    </section>
-
-  </main>
-
-  <!-- ========= MODAL : NOUVELLE RÉSA (saisie rapide) ========= -->
-  <div id="resa-form-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; animation: notif-fade-in 0.25s ease;">
-    <div style="background: var(--card-bg, #1c1c1e); border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 28px 24px; max-width: 440px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.5); animation: notif-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; max-height: 90vh; overflow-y: auto;">
-
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; letter-spacing: -0.025em; color: var(--label, #fff);">Nouvelle réservation</h2>
-        <button onclick="closeResaForm()" style="background: rgba(255,255,255,0.08); border: 0; color: var(--label, #fff); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:14px; height:14px;"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <!-- Champ Nom -->
-      <div style="margin-bottom: 16px;">
-        <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Nom du client</label>
-        <input type="text" id="resa-form-nom" placeholder="Jean Dupont" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 16px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none; transition: border-color 0.15s;" autocomplete="off" autofocus>
-      </div>
-
-      <!-- Heure -->
-      <div style="margin-bottom: 16px;">
-        <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Heure</label>
-        <input type="time" id="resa-form-heure" step="900" value="19:30" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 16px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none;">
-      </div>
-
-      <!-- Personnes (pills) -->
-      <div style="margin-bottom: 20px;">
-        <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Personnes</label>
-        <div id="resa-form-couverts-pills" style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" class="resa-couv-pill" data-n="1" onclick="setResaFormCouverts(1)" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: var(--label, #fff); cursor: pointer; transition: all 0.15s;">1</button>
-          <button type="button" class="resa-couv-pill" data-n="2" onclick="setResaFormCouverts(2)" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: var(--label, #fff); cursor: pointer; transition: all 0.15s;">2</button>
-          <button type="button" class="resa-couv-pill active" data-n="3" onclick="setResaFormCouverts(3)" style="flex:1; min-width:50px; background: var(--blue, #0A84FF); border: 1px solid var(--blue, #0A84FF); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.15s;">3</button>
-          <button type="button" class="resa-couv-pill" data-n="4" onclick="setResaFormCouverts(4)" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: var(--label, #fff); cursor: pointer; transition: all 0.15s;">4</button>
-          <button type="button" class="resa-couv-pill" data-n="5" onclick="setResaFormCouverts(5)" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: var(--label, #fff); cursor: pointer; transition: all 0.15s;">5</button>
-          <button type="button" class="resa-couv-pill" data-n="6" onclick="setResaFormCouverts(6)" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 16px; font-weight: 700; color: var(--label, #fff); cursor: pointer; transition: all 0.15s;">6</button>
-          <button type="button" class="resa-couv-pill" data-n="more" onclick="setResaFormCouverts('more')" style="flex:1; min-width:50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 8px; font-size: 14px; font-weight: 700; color: var(--label-2, rgba(255,255,255,0.6)); cursor: pointer; transition: all 0.15s;">7+</button>
-        </div>
-        <div id="resa-form-couv-input-zone" style="display: none; margin-top: 10px;">
-          <input type="number" id="resa-form-couv-input" min="7" max="50" placeholder="Combien ?" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 16px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none;">
-        </div>
-      </div>
-
-      <!-- Toggle "Plus de détails" pour téléphone optionnel -->
-      <details id="resa-form-details" style="margin-bottom: 20px;">
-        <summary style="cursor: pointer; font-size: 13px; color: var(--label-2, rgba(255,255,255,0.6)); padding: 8px 0; user-select: none; outline: none;">
-          + Ajouter téléphone, date, note
-        </summary>
-        <div style="margin-top: 12px;">
-          <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Téléphone (optionnel)</label>
-          <input type="tel" id="resa-form-tel" placeholder="+41 ou +33…" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 16px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none; margin-bottom: 14px;">
-
-          <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Date</label>
-          <input type="date" id="resa-form-date" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 16px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none; margin-bottom: 14px;">
-
-          <label style="display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--label-2, rgba(255,255,255,0.6)); margin-bottom: 8px;">Note (allergies, occasion…)</label>
-          <textarea id="resa-form-note" rows="2" placeholder="Anniversaire, allergie aux noix…" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--label, #fff); font-family: inherit; -webkit-appearance: none; appearance: none; outline: none; resize: vertical;"></textarea>
-        </div>
-      </details>
-
-      <button id="resa-form-submit" onclick="submitResaForm()" style="width: 100%; background: var(--blue, #0A84FF); color: #fff; border: 0; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; letter-spacing: -0.01em; box-shadow: 0 8px 24px rgba(10,132,255,0.30);">
-        ✓ Enregistrer la réservation
-      </button>
-    </div>
-  </div>
-
-  <!-- ========= MODAL NOTIFICATION : PLAT PRÊT ========= -->
-  <div id="ready-notif-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; animation: notif-fade-in 0.3s ease;">
-    <div id="ready-notif-card" style="background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%); border: 2px solid #0A84FF; border-radius: 28px; padding: 36px 32px; max-width: 480px; width: 100%; box-shadow: 0 30px 80px rgba(10,132,255,0.4), 0 0 0 8px rgba(10,132,255,0.15); position: relative; animation: notif-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;">
-
-      <!-- Pastille pulsante en haut -->
-      <div style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #0A84FF; color: #fff; padding: 8px 18px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; box-shadow: 0 6px 20px rgba(10,132,255,0.5); display: flex; align-items: center; gap: 8px;">
-        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #30D158; box-shadow: 0 0 12px #30D158; animation: pulse-dot 1.4s ease-in-out infinite;"></span>
-        Plat prêt
-      </div>
-
-      <!-- Numéro de table en grand -->
-      <div style="text-align: center; margin-top: 16px; margin-bottom: 22px;">
-        <div style="font-size: 13px; color: #6E6E73; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Servir maintenant</div>
-        <div id="ready-notif-table" style="font-size: 72px; font-weight: 800; color: #0A84FF; letter-spacing: -0.04em; line-height: 1; font-feature-settings: 'tnum';">Table —</div>
-      </div>
-
-      <!-- Liste des plats -->
-      <div style="background: rgba(10,132,255,0.06); border: 1px solid rgba(10,132,255,0.18); border-radius: 16px; padding: 16px 18px; margin-bottom: 24px; max-height: 240px; overflow-y: auto;">
-        <div style="font-size: 11px; color: #6E6E73; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;">À servir</div>
-        <div id="ready-notif-items" style="display: flex; flex-direction: column; gap: 8px; font-family: -apple-system, sans-serif;"></div>
-      </div>
-
-      <!-- Personne qui a commandé -->
-      <div id="ready-notif-personne" style="font-size: 13px; color: #6E6E73; text-align: center; margin-bottom: 22px; font-weight: 500;"></div>
-
-      <!-- Bouton confirmation -->
-      <button onclick="confirmReadyNotification()" style="width: 100%; background: #0A84FF; color: #fff; border: 0; padding: 18px; border-radius: 100px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(10,132,255,0.4); transition: all 0.2s; letter-spacing: -0.01em;">
-        ✓ Servi à la table
-      </button>
-
-      <!-- Compteur si plusieurs notifs en attente -->
-      <div id="ready-notif-queue" style="display: none; text-align: center; margin-top: 14px; font-size: 12.5px; color: #6E6E73; font-weight: 600;"></div>
-    </div>
-  </div>
-
-  <!-- Audio pour notification sonore (généré via Web Audio API, voir JS) -->
-
-  <style>
-  @keyframes notif-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes notif-pop {
-    0% { opacity: 0; transform: scale(0.8); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.7); }
-  }
-  </style>
-
-  <!-- Order cart (en bas, visible en mode commande) -->
-  <div class="order-cart" id="order-cart" onclick="sendCart()">
-    <div class="order-cart-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-    </div>
-    <div class="order-cart-info">
-      <div class="order-cart-label"><span id="cart-count">0</span> plats</div>
-      <div class="order-cart-total" id="cart-total">0.00€</div>
-    </div>
-    <button class="order-cart-btn">Envoyer en cuisine →</button>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <span class="dot"></span>
-    <span id="toast-text"></span>
-  </div>
-
-  </div>
-
 <script>
-// ============================================================================
-// SUPABASE
-// ============================================================================
 const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true }
-});
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ============================================================================
-// STATE
-// ============================================================================
-const state = {
-  user: null,
-  resto: null,
-  tables: [],
-  orders: [],          // toutes les commandes actives (en_attente / en_cours / prete / servie non payees)
-  plats: [],
-  menus: [],
-  // Vue actuelle
-  selectedTableId: null,
-  // Panier de prise de commande
-  cart: [],            // [{id, nom, prix, qte}]
-  activeCat: null,
-  // Pourboire
-  tipPct: 0,
-  // Polling
-  pollInterval: null,
-  // Notifications "plat prêt"
-  notifiedOrderIds: new Set(),  // IDs déjà notifiés (pour éviter de re-notifier après confirmation)
-  pendingNotifications: [],     // queue des commandes prêtes à montrer
-  currentNotification: null,    // notif actuellement affichée dans la modal
-  soundEnabled: true,           // toggle son
-  // Réservations
-  resas: [],
-  resaFilter: 'all'
-};
-
-const params = new URLSearchParams(location.search);
-const RESTO_SLUG_PARAM = params.get('resto') || '';
-
-// ============================================================================
-// UTILS
-// ============================================================================
-function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function fmtMoney(v) { return (parseFloat(v)||0).toFixed(2) + '€'; }
-let toastTimer = null;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-text').textContent = msg;
-  t.classList.add('show');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-function tickClock() {
-  const d = new Date();
-  document.getElementById('clock').textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-}
-setInterval(tickClock, 30000);
-
-// ============================================================================
-// AUTH + INIT
-// ============================================================================
-async function init() {
-  try {
-    // 1) Auth
-    const { data: { session } } = await supa.auth.getSession();
-    if (!session) {
-      // Pas connecté → redirige vers login
-      location.href = 'login.html?redirect=serveur.html' + (RESTO_SLUG_PARAM ? '?resto=' + RESTO_SLUG_PARAM : '');
-      return;
-    }
-    state.user = session.user;
-
-    // 2) Charger le restaurant lié à ce compte
-    let restoQuery = supa.from('restaurants').select('*');
-    if (RESTO_SLUG_PARAM) {
-      restoQuery = restoQuery.eq('slug', RESTO_SLUG_PARAM);
-    } else {
-      restoQuery = restoQuery.eq('user_id', session.user.id);
-    }
-    const { data: restos, error: restoErr } = await restoQuery.limit(1);
-    if (restoErr) throw restoErr;
-    if (!restos || restos.length === 0) {
-      throw new Error('Aucun restaurant trouvé pour ce compte. Connecte-toi avec le compte propriétaire du restaurant.');
-    }
-    state.resto = restos[0];
-    document.title = 'Service — Frizz';
-
-    // 3) Charger tables, plats, menus en parallèle
-    const [tablesRes, platsRes, menusRes] = await Promise.all([
-      supa.from('tables').select('*').eq('restaurant_id', state.resto.id).order('nom', { ascending: true }),
-      supa.from('menu').select('*').eq('restaurant_id', state.resto.id).order('categorie').order('nom'),
-      supa.from('menus').select('*').eq('restaurant_id', state.resto.id).order('ordre')
-    ]);
-    if (tablesRes.error) throw tablesRes.error;
-    if (platsRes.error) throw platsRes.error;
-    state.tables = tablesRes.data || [];
-    state.plats = platsRes.data || [];
-    state.menus = menusRes.data || [];
-
-    // 4) Charger commandes actives
-    await loadOrders();
-
-    // 5) Affichage
-    tickClock();
-    renderTables();
-
-    // Restaurer la préférence "son ON/OFF" depuis localStorage
-    try {
-      const stored = localStorage.getItem('frizz_serveur_sound');
-      if (stored === '0') {
-        // L'utilisateur avait désactivé → on désactive (sans rejouer le ding)
-        state.soundEnabled = true;  // pour que toggleSound() bascule à false
-        toggleSound();
-      }
-    } catch(e) {}
-
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('app').style.display = 'block';
-
-    // 6) Polling commandes toutes les 5s
-    state.pollInterval = setInterval(loadOrders, 5000);
-
-    // 7) Charger les réservations en arrière-plan (pour le badge "en attente")
-    loadResas().catch(() => {});
-    // Polling léger des réservations toutes les 30s
-    setInterval(() => loadResas().catch(() => {}), 30000);
-
-  } catch (err) {
-    console.error('init:', err);
-    document.getElementById('loading').innerHTML = `<div style="text-align:center; padding:30px;"><div style="font-size:18px; font-weight:800; margin-bottom:8px;">Erreur</div><div style="font-size:13px; color:var(--label-2); max-width:300px; margin:0 auto;">${escapeHtml(err.message || 'Impossible de charger la page')}</div><a href="login.html" style="display:inline-block; margin-top:18px; padding:10px 18px; background:var(--blue); color:#fff; border-radius:100px; font-weight:700; text-decoration:none;">Se reconnecter</a></div>`;
-  }
+// Helper : génère un slug à partir du nom du restaurant
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // accents
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .substring(0, 60);
 }
 
-async function loadOrders() {
-  if (!state.resto) return;
-  // On charge les commandes des dernières 24h (toutes statuts sauf annulee)
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { data, error } = await supa.from('commandes')
-    .select('*')
-    .eq('restaurant_id', state.resto.id)
-    .in('statut', ['en_attente','en_cours','prete','servie'])
-    .gte('heure', yesterday)
-    .order('heure', { ascending: true });
-  if (!error) {
-    const oldOrders = state.orders;
-    state.orders = data || [];
-
-    // ⚠ Détection des nouvelles commandes en statut "prete"
-    // Une commande est notifiée si :
-    //   - Elle est maintenant en statut 'prete'
-    //   - Elle n'a pas déjà été notifiée (notifiedOrderIds)
-    // Lors du tout premier chargement (oldOrders.length === 0), on ne notifie pas
-    // (pour éviter de spammer le serveur qui ouvre l'app au milieu d'un service)
-    if (oldOrders.length > 0) {
-      const newReady = state.orders.filter(o =>
-        o.statut === 'prete' && !state.notifiedOrderIds.has(o.id)
-      );
-      if (newReady.length > 0) {
-        newReady.forEach(o => {
-          state.notifiedOrderIds.add(o.id);
-          state.pendingNotifications.push(o);
-        });
-        showNextNotification();
-      }
-    } else {
-      // Premier chargement : on marque toutes les commandes prêtes comme déjà notifiées
-      // pour ne notifier QUE les nouvelles à partir de maintenant
-      state.orders.filter(o => o.statut === 'prete').forEach(o => {
-        state.notifiedOrderIds.add(o.id);
-      });
-    }
-
-    // Refresh la vue active
-    if (document.getElementById('screen-tables').classList.contains('active')) {
-      renderTables();
-    } else if (document.getElementById('screen-table-detail').classList.contains('active')) {
-      renderTableDetail();
-    }
-  }
-}
-
-async function logout() {
-  if (!confirm('Se déconnecter du mode serveur ?')) return;
-  await supa.auth.signOut();
-  location.href = 'login.html';
-}
-
-// ============================================================================
-// SCREENS
-// ============================================================================
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  if (name === 'tables') {
-    state.selectedTableId = null;
-    renderTables();
-  } else if (name === 'table-detail') {
-    renderTableDetail();
-  } else if (name === 'order') {
-    renderOrderScreen();
-  } else if (name === 'resa') {
-    loadResas();
-    renderResas();
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ============================================================================
-// VIEW : LISTE DES TABLES
-// ============================================================================
-function renderTables() {
-  const wrap = document.getElementById('tables-grid');
-  if (!wrap) return;
-  if (state.tables.length === 0) {
-    wrap.innerHTML = `<div class="empty" style="grid-column:1/-1;">
-      <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-      <div class="empty-title">Aucune table</div>
-      <p>Va dans le dashboard admin pour créer tes tables.</p>
-    </div>`;
-    return;
-  }
-
-  wrap.innerHTML = state.tables.map(t => {
-    // ⚠ Important : on ne compte QUE les commandes ACTIVES (non payées)
-    // pour déterminer si la table est occupée ou libre
-    const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
-    const total = activeOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
-    const hasReady = activeOrders.some(o => o.statut === 'prete');
-    const hasOrders = activeOrders.length > 0;
-    const cls = hasReady ? 'has-ready' : (hasOrders ? 'has-orders' : '');
-    const status = hasReady ? '🛎 Prête à servir' :
-                   hasOrders ? `${activeOrders.length} commande${activeOrders.length>1?'s':''}` :
-                   'Libre';
-    return `
-      <button class="table-card ${cls}" onclick="openTable('${escapeHtml(t.id)}')">
-        <div>
-          <div class="table-card-num">${escapeHtml(t.nom || '?')}</div>
-          <div class="table-card-label">Table</div>
-        </div>
-        <div>
-          <div class="table-card-status">
-            <span class="dot"></span>
-            <span>${status}</span>
-          </div>
-          ${hasOrders ? `<div class="table-card-amount">${fmtMoney(total)}</div>` : ''}
-        </div>
-      </button>`;
-  }).join('');
-}
-
-function openTable(tableId) {
-  state.selectedTableId = tableId;
-  showScreen('table-detail');
-}
-
-// Marque toutes les commandes "prete" de la table comme "servie"
-async function markTableServed(tableId) {
-  const t = state.tables.find(x => x.id === tableId);
-  if (!t) return;
-
-  const readyOrders = state.orders.filter(o => o.table_id === tableId && o.statut === 'prete');
-  if (readyOrders.length === 0) {
-    showToast('Aucune commande prête à servir', 'error');
-    return;
-  }
-
-  try {
-    const ids = readyOrders.map(o => o.id);
-    const { error } = await supa.from('commandes')
-      .update({ statut: 'servie' })
-      .in('id', ids);
-    if (error) throw error;
-
-    // Mise à jour locale immédiate (avant le polling)
-    readyOrders.forEach(o => { o.statut = 'servie'; });
-
-    showToast(`${readyOrders.length} commande${readyOrders.length > 1 ? 's marquées' : ' marquée'} servie${readyOrders.length > 1 ? 's' : ''}`, 'success');
-
-    // Re-render le détail pour cacher le bouton et mettre à jour les statuts
-    renderTableDetail();
-    // Recharge depuis la base pour synchro
-    await loadOrders();
-  } catch (err) {
-    console.error('markTableServed:', err);
-    showToast('Erreur : ' + (err.message || 'impossible'), 'error');
-  }
-}
-window.markTableServed = markTableServed;
-
-// ============================================================================
-// VIEW : DÉTAIL TABLE
-// ============================================================================
-function renderTableDetail() {
-  const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) { showScreen('tables'); return; }
-  document.getElementById('td-table-name').textContent = 'Table ' + (t.nom || '?');
-
-  // ⚠ On ne montre QUE les commandes actives (non payées) de CETTE table
-  const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
-
-  const meta = activeOrders.length === 0 ?
-    'Aucune commande en cours' :
-    `${activeOrders.length} commande${activeOrders.length>1?'s':''}`;
-  document.getElementById('td-table-meta').textContent = meta;
-
-  const ordersBox = document.getElementById('td-orders');
-  if (activeOrders.length === 0) {
-    ordersBox.innerHTML = `<div style="padding: 20px 0; text-align:center; color: var(--label-3); font-size: 13.5px; font-weight: 600;">Table libre · Aucune commande en cours</div>`;
-    document.getElementById('td-pay-btn').style.display = 'none';
-    return;
-  }
-
-  // Aplatir les items des commandes
-  const allItems = [];
-  let total = 0;
-  activeOrders.forEach(o => {
-    const items = Array.isArray(o.items) ? o.items : [];
-    items.forEach(it => {
-      allItems.push({
-        ...it,
-        statut: o.statut,
-        order_id: o.id,
-        personne_nom: o.personne_nom
-      });
-    });
-    total += parseFloat(o.total) || 0;
+// Helper : génère un UUID v4 côté client
+function generateUUID() {
+  if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
   });
-
-  const statutLabels = { en_attente: 'En attente', en_cours: 'En cuisine', prete: 'Prête', servie: 'Servie' };
-
-  // Trouver les commandes "prete" qu'on peut marquer comme servies
-  const readyOrders = activeOrders.filter(o => o.statut === 'prete');
-  const hasReady = readyOrders.length > 0;
-
-  ordersBox.innerHTML = `
-    ${hasReady ? `
-      <button class="action-btn action-btn-success" style="width: 100%; margin-bottom: 14px;" onclick="markTableServed('${escapeHtml(t.id)}')">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>Marquer servie · ${readyOrders.length} commande${readyOrders.length > 1 ? 's' : ''}</span>
-      </button>
-    ` : ''}
-    <div class="table-orders-title">Commandes (${activeOrders.length})</div>
-    ${allItems.map(it => `
-      <div class="order-line">
-        <div class="order-line-info">
-          <div class="order-line-name">${escapeHtml(it.qte || 1)}× ${escapeHtml(it.nom || '?')}</div>
-          <div class="order-line-meta">${escapeHtml(it.personne_nom || '')} · ${fmtMoney(it.prix * (it.qte || 1))}</div>
-        </div>
-        <span class="order-line-statut ${it.statut}">${statutLabels[it.statut] || it.statut}</span>
-      </div>
-    `).join('')}
-    <div class="table-total-row">
-      <span>Total addition</span>
-      <span class="total-amount">${fmtMoney(total)}</span>
-    </div>
-  `;
-
-  // Bouton "Marquer payée · X€" toujours visible quand il y a des commandes actives
-  const btn = document.getElementById('td-pay-btn');
-  const label = document.getElementById('td-pay-label');
-  btn.style.display = 'inline-flex';
-  btn.classList.remove('action-btn-secondary');
-  btn.classList.add('action-btn-success');
-  label.textContent = `Marquer payée · ${fmtMoney(total)}`;
 }
 
-// ============================================================================
-// VIEW : PRISE DE COMMANDE
-// ============================================================================
-function renderOrderScreen() {
-  const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) { showScreen('tables'); return; }
-  document.getElementById('order-title').textContent = 'Table ' + (t.nom || '?');
-  document.getElementById('order-sub').textContent = 'Touche un plat pour l\'ajouter à la commande.';
+// Helper : affiche une erreur dans la zone error-msg
+function showError(message) {
+  const el = document.getElementById('error-msg');
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('show');
+}
+function hideError() {
+  const el = document.getElementById('error-msg');
+  if (!el) return;
+  el.classList.remove('show');
+}
 
-  // Filtrer plats : ceux du menu actif uniquement
-  const activeMenu = state.menus.find(m => m.actif);
-  let plats = state.plats.filter(p => p.disponible !== false);
-  if (activeMenu) {
-    plats = plats.filter(p => Array.isArray(p.menu_ids) && p.menu_ids.includes(activeMenu.id));
+// Trouve un slug unique en ajoutant -2, -3, etc. si nécessaire
+async function findUniqueSlug(baseSlug) {
+  let slug = baseSlug;
+  let counter = 1;
+  while (true) {
+    const { data: existing } = await supa.from('restaurants')
+      .select('id').eq('slug', slug).maybeSingle();
+    if (!existing) return slug;
+    counter++;
+    slug = `${baseSlug}-${counter}`;
+    if (counter > 50) return `${baseSlug}-${Date.now()}`;
   }
-
-  // Catégories ordonnées
-  const ORDER = ['entrée','entrées','entree','entrees','plat','plats','dessert','desserts','boisson','boissons'];
-  const cats = [...new Set(plats.map(p => p.categorie || 'Autres'))];
-  cats.sort((a, b) => {
-    const ia = ORDER.findIndex(o => (a||'').toLowerCase().startsWith(o));
-    const ib = ORDER.findIndex(o => (b||'').toLowerCase().startsWith(o));
-    if (ia === -1 && ib === -1) return a.localeCompare(b);
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
-  });
-  if (!state.activeCat || !cats.includes(state.activeCat)) state.activeCat = cats[0] || null;
-
-  // Render cat-bar
-  const catBar = document.getElementById('cat-bar');
-  catBar.innerHTML = ['Tous', ...cats].map(c => `
-    <button class="cat-chip ${(state.activeCat === c || (c === 'Tous' && state.activeCat === null)) ? 'active' : ''}" onclick="setOrderCat('${c === 'Tous' ? '' : escapeHtml(c)}')">${escapeHtml(c)}</button>
-  `).join('');
-
-  // Render plats
-  const wrap = document.getElementById('plats-grid');
-  const filtered = state.activeCat ? plats.filter(p => p.categorie === state.activeCat) : plats;
-  if (filtered.length === 0) {
-    wrap.innerHTML = `<div class="empty" style="grid-column:1/-1;">
-      <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
-      <div class="empty-title">Aucun plat dans cette catégorie</div>
-    </div>`;
-    return;
-  }
-
-  wrap.innerHTML = filtered.map(p => {
-    const hasPhoto = p.photo_url && p.photo_url.trim();
-    const photoStyle = hasPhoto ? `style="background-image: url('${escapeHtml(p.photo_url).replace(/'/g, "\\'")}')"` : '';
-    return `
-    <button class="plat-card" onclick="addToCart('${escapeHtml(p.id)}')">
-      <div class="plat-card-photo ${hasPhoto ? '' : 'no-photo'}" ${photoStyle}>
-        ${hasPhoto ? '' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>'}
-      </div>
-      <div class="plat-card-add">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      </div>
-      <div class="plat-card-body">
-        <div class="plat-card-cat">${escapeHtml(p.categorie || '')}</div>
-        <div class="plat-card-name">${escapeHtml(p.nom)}</div>
-        <div class="plat-card-price">${fmtMoney(p.prix)}</div>
-      </div>
-    </button>`;
-  }).join('');
 }
 
-function setOrderCat(cat) {
-  state.activeCat = cat || null;
-  renderOrderScreen();
-}
+// ════════════════════════════════════════════════════════════════
+// SUBMIT FORM — Création compte + restaurant
+// ════════════════════════════════════════════════════════════════
 
-function addToCart(platId) {
-  const p = state.plats.find(x => x.id === platId);
-  if (!p) return;
-  const existing = state.cart.find(c => c.id === platId);
-  if (existing) existing.qte += 1;
-  else state.cart.push({ id: p.id, nom: p.nom, prix: p.prix, qte: 1 });
-  renderCart();
-  showToast(p.nom + ' ajouté');
-}
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideError();
 
-function renderCart() {
-  const total = state.cart.reduce((s, c) => s + c.prix * c.qte, 0);
-  const count = state.cart.reduce((s, c) => s + c.qte, 0);
-  document.getElementById('cart-count').textContent = count;
-  document.getElementById('cart-total').textContent = fmtMoney(total);
-  const cartEl = document.getElementById('order-cart');
-  cartEl.classList.toggle('show', count > 0);
-  document.body.classList.toggle('has-cart', count > 0);
-}
+  const nomResto = document.getElementById('signup-resto-nom').value.trim();
+  const email = document.getElementById('signup-email').value.trim().toLowerCase();
+  const password = document.getElementById('signup-password').value;
 
-async function sendCart() {
-  if (state.cart.length === 0) return;
-  const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) return;
-  const total = state.cart.reduce((s, c) => s + c.prix * c.qte, 0);
+  if (!nomResto) { showError('Le nom du restaurant est obligatoire'); return; }
+  if (!email) { showError('L\'email est obligatoire'); return; }
+  if (!password || password.length < 8) { showError('Le mot de passe doit faire au moins 8 caractères'); return; }
+
+  const submitBtn = document.getElementById('submit-btn');
+  const oldHtml = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<div class="spinner"></div> Création du compte…';
 
   try {
-    const orderId = 'cmd_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-    const { error } = await supa.from('commandes').insert({
-      id: orderId,
-      restaurant_id: state.resto.id,
-      table_id: t.id,
-      session_id: 'serveur_' + state.user.id.substring(0,8),
-      personne_id: 'serveur',
-      personne_nom: 'Serveur',
-      items: state.cart.map(c => ({ id: c.id, nom: c.nom, prix: c.prix, qte: c.qte })),
-      total: total,
-      statut: 'en_attente',
-      heure: new Date().toISOString()
-    });
-    if (error) throw error;
-    showToast('Commande envoyée en cuisine ✓');
-    state.cart = [];
-    renderCart();
-    await loadOrders();
-    showScreen('table-detail');
-  } catch (err) {
-    showToast('Erreur : ' + err.message);
-    console.error(err);
-  }
-}
-
-// ============================================================================
-// MARQUAGE PAYÉ / NON PAYÉ
-// ============================================================================
-// ============================================================================
-// NOTIFICATIONS "PLAT PRÊT" (modal bloquante + son)
-// ============================================================================
-
-// Génère un son d'alerte court via Web Audio API (pas besoin de fichier audio externe)
-let _audioCtx = null;
-function playNotificationSound() {
-  if (!state.soundEnabled) return;
-  try {
-    if (!_audioCtx) {
-      _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    const ctx = _audioCtx;
-    // Si le contexte est suspendu (autoplay policy), on tente de le reprendre
-    if (ctx.state === 'suspended') {
-      ctx.resume();
-    }
-    const now = ctx.currentTime;
-    // Joue 2 notes courtes (do-mi) pour faire un "ding" agréable
-    [
-      { freq: 880, start: 0, duration: 0.18 },     // La5
-      { freq: 1175, start: 0.12, duration: 0.22 }  // Ré6
-    ].forEach(note => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = note.freq;
-      gain.gain.setValueAtTime(0, now + note.start);
-      gain.gain.linearRampToValueAtTime(0.32, now + note.start + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + note.start + note.duration);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now + note.start);
-      osc.stop(now + note.start + note.duration);
-    });
-  } catch (err) {
-    console.warn('Audio non disponible:', err);
-  }
-}
-
-// Toggle on/off le son
-function toggleSound() {
-  state.soundEnabled = !state.soundEnabled;
-  const iconOn = document.getElementById('sound-icon-on');
-  const iconOff = document.getElementById('sound-icon-off');
-  const label = document.getElementById('sound-label');
-  const btn = document.getElementById('sound-toggle');
-  if (state.soundEnabled) {
-    if (iconOn) iconOn.style.display = '';
-    if (iconOff) iconOff.style.display = 'none';
-    if (label) label.textContent = 'Son ON';
-    if (btn) {
-      btn.style.background = 'rgba(10,132,255,0.14)';
-      btn.style.color = '#0A84FF';
-      btn.style.borderColor = 'rgba(10,132,255,0.28)';
-    }
-    // Initialise le contexte audio (geste utilisateur requis pour autoplay)
-    try {
-      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (_audioCtx.state === 'suspended') _audioCtx.resume();
-      playNotificationSound();  // petit "ding" de confirmation
-    } catch(e) {}
-  } else {
-    if (iconOn) iconOn.style.display = 'none';
-    if (iconOff) iconOff.style.display = '';
-    if (label) label.textContent = 'Son OFF';
-    if (btn) {
-      btn.style.background = 'rgba(0,0,0,0.06)';
-      btn.style.color = '#6E6E73';
-      btn.style.borderColor = 'rgba(0,0,0,0.10)';
-    }
-  }
-  // Persiste le choix en localStorage pour la prochaine session
-  try { localStorage.setItem('frizz_serveur_sound', state.soundEnabled ? '1' : '0'); } catch(e) {}
-}
-
-// Affiche la prochaine notification dans la queue (s'il y en a)
-function showNextNotification() {
-  // Si une modal est déjà affichée, on ne fait rien (l'user doit confirmer d'abord)
-  if (state.currentNotification) return;
-  if (state.pendingNotifications.length === 0) return;
-
-  const order = state.pendingNotifications.shift();
-  state.currentNotification = order;
-
-  // Trouver le nom de la table
-  const table = state.tables.find(t => t.id === order.table_id);
-  const tableName = table ? (table.nom || '?') : '?';
-
-  // Remplir la modal
-  document.getElementById('ready-notif-table').textContent = 'Table ' + tableName;
-
-  // Liste des plats
-  const items = Array.isArray(order.items) ? order.items : [];
-  const itemsHtml = items.map(it => {
-    const qte = it.qte || 1;
-    const nom = it.nom || '?';
-    const note = it.note ? `<div style="font-size:12px; color:#6E6E73; font-style:italic; margin-top:2px;">↳ ${escapeHtml(it.note)}</div>` : '';
-    return `<div style="display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid rgba(10,132,255,0.10);">
-      <span style="font-weight:800; color:#0A84FF; min-width:24px; font-feature-settings:'tnum';">${qte}×</span>
-      <div style="flex:1; min-width:0;">
-        <div style="font-weight:700; color:#1D1D1F; letter-spacing:-0.01em;">${escapeHtml(nom)}</div>
-        ${note}
-      </div>
-    </div>`;
-  }).join('');
-  document.getElementById('ready-notif-items').innerHTML = itemsHtml;
-
-  // Personne (si présente)
-  const personne = order.personne_nom ? `Commandé par ${escapeHtml(order.personne_nom)}` : '';
-  document.getElementById('ready-notif-personne').textContent = personne;
-
-  // Compteur queue
-  const queueEl = document.getElementById('ready-notif-queue');
-  if (state.pendingNotifications.length > 0) {
-    queueEl.style.display = 'block';
-    queueEl.textContent = `+ ${state.pendingNotifications.length} autre${state.pendingNotifications.length > 1 ? 's' : ''} en attente`;
-  } else {
-    queueEl.style.display = 'none';
-  }
-
-  // Afficher la modal
-  document.getElementById('ready-notif-overlay').style.display = 'flex';
-
-  // Jouer le son
-  playNotificationSound();
-
-  // Vibration mobile (bonus)
-  if (navigator.vibrate) {
-    navigator.vibrate([200, 100, 200]);
-  }
-}
-
-// Le serveur confirme avoir servi le plat → passe la commande en statut "servie"
-async function confirmReadyNotification() {
-  const order = state.currentNotification;
-  if (!order) return;
-
-  // Optimistic UI : on ferme tout de suite pour pas bloquer le serveur
-  document.getElementById('ready-notif-overlay').style.display = 'none';
-  state.currentNotification = null;
-
-  try {
-    const { error } = await supa.from('commandes')
-      .update({ statut: 'servie' })
-      .eq('id', order.id);
-    if (error) throw error;
-    showToast('Servi à la table ✓');
-    await loadOrders();
-  } catch (err) {
-    console.error('confirm notif error:', err);
-    showToast('Erreur : ' + (err.message || 'mise à jour impossible'));
-  }
-
-  // Afficher la prochaine notif après 400ms (laisse respirer)
-  setTimeout(() => showNextNotification(), 400);
-}
-
-// ============================================================================
-// RÉSERVATIONS — gestion côté serveur
-// ============================================================================
-
-async function loadResas() {
-  if (!state.resto) return;
-  try {
-    const { data, error } = await supa.from('reservations')
-      .select('*')
-      .eq('restaurant_id', state.resto.id)
-      .order('date_resa', { ascending: false })
-      .order('heure_resa', { ascending: false })
-      .limit(200);
-    if (error) throw error;
-
-    // Auto-passage en "passee" pour les confirmées dont la date est passée
-    const today = new Date().toISOString().split('T')[0];
-    state.resas = (data || []).map(r => {
-      if (r.statut === 'confirmee' && r.date_resa < today) {
-        return { ...r, statut: 'passee', _autoPassed: true };
+    // 1️⃣  CRÉER L'UTILISATEUR via Supabase Auth
+    const { data: authData, error: authError } = await supa.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { resto_nom: nomResto }
       }
-      return r;
     });
 
-    // Mise à jour du badge "en attente"
-    const pendingCount = state.resas.filter(r => r.statut === 'en_attente').length;
-    const badge = document.getElementById('resa-pending-badge');
-    if (badge) {
-      if (pendingCount > 0) {
-        badge.style.display = 'inline-block';
-        badge.textContent = pendingCount;
-      } else {
-        badge.style.display = 'none';
+    if (authError) {
+      // Erreurs courantes : email déjà pris, mot de passe trop faible
+      if (authError.message && authError.message.toLowerCase().includes('already')) {
+        throw new Error('Cet email est déjà utilisé. Connectez-vous plutôt.');
       }
+      throw authError;
     }
 
-    // Refresh la vue si on est sur l'écran résa
-    const resaScreen = document.getElementById('screen-resa');
-    if (resaScreen && resaScreen.classList.contains('active')) {
-      renderResas();
+    if (!authData.user) {
+      throw new Error('Erreur lors de la création du compte');
     }
-  } catch (err) {
-    console.error('loadResas:', err);
-  }
-}
 
-function setResaFilter(filter) {
-  state.resaFilter = filter;
-  document.querySelectorAll('.resa-filter-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.resaFilter === filter);
-  });
-  renderResas();
-}
+    // 2️⃣  GÉNÉRER UN SLUG UNIQUE
+    const baseSlug = slugify(nomResto) || `resto-${Date.now()}`;
+    const slug = await findUniqueSlug(baseSlug);
 
-function renderResas() {
-  const list = document.getElementById('resa-list');
-  const empty = document.getElementById('resa-empty');
-  if (!list) return;
-
-  let filtered = state.resas;
-  if (state.resaFilter !== 'all') {
-    filtered = state.resas.filter(r => r.statut === state.resaFilter);
-  }
-
-  if (filtered.length === 0) {
-    list.innerHTML = '';
-    if (empty) empty.style.display = 'block';
-    return;
-  }
-  if (empty) empty.style.display = 'none';
-
-  // Grouper par date
-  const byDate = {};
-  filtered.forEach(r => {
-    if (!byDate[r.date_resa]) byDate[r.date_resa] = [];
-    byDate[r.date_resa].push(r);
-  });
-
-  const sortedDates = Object.keys(byDate).sort().reverse();
-  const today = new Date().toISOString().split('T')[0];
-
-  list.innerHTML = sortedDates.map(date => {
-    const resas = byDate[date].sort((a, b) => a.heure_resa.localeCompare(b.heure_resa));
-    const dateObj = new Date(date + 'T12:00:00');
-    const dateStr = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-    const isToday = date === today;
-    return `
-      <div>
-        <div class="resa-day-header ${isToday ? 'today' : ''}">
-          ${isToday ? '● ' : ''}${escapeHtml(dateStr)}${isToday ? " · aujourd'hui" : ''}
-        </div>
-        ${resas.map(r => renderResaCard(r)).join('')}
-      </div>
-    `;
-  }).join('');
-}
-
-function renderResaCard(r) {
-  const statutLabels = {
-    'en_attente':  '⏳ En attente',
-    'confirmee':   '✓ Confirmée',
-    'annulee':     '✗ Annulée',
-    'passee':      '✓ Passée',
-    'no_show':     '⚠ No-show'
-  };
-  const isPending = r.statut === 'en_attente';
-  const isConfirmed = r.statut === 'confirmee';
-  const heure = r.heure_resa.substring(0, 5);
-
-  return `
-    <div class="resa-card ${isPending ? 'pending' : ''}">
-      <div class="resa-card-top">
-        <div class="resa-card-left">
-          <div class="resa-time">${heure}</div>
-          <div class="resa-info">
-            <div class="resa-name">${escapeHtml(r.client_nom)}</div>
-            <div class="resa-meta">
-              ${r.nb_personnes} pers. · <a href="tel:${escapeHtml(r.client_tel)}">${escapeHtml(r.client_tel)}</a>
-            </div>
-          </div>
-        </div>
-        <div class="resa-status-badge ${r.statut}">${statutLabels[r.statut] || r.statut}</div>
-      </div>
-
-      ${r.client_email ? `<div class="resa-card-email">📧 ${escapeHtml(r.client_email)}</div>` : ''}
-      ${r.message ? `<div class="resa-card-message">"${escapeHtml(r.message)}"</div>` : ''}
-
-      <div class="resa-card-actions">
-        ${isPending ? `
-          <button class="resa-btn primary" onclick="updateResaStatus('${r.id}', 'confirmee')">✓ Confirmer</button>
-          <button class="resa-btn danger" onclick="updateResaStatus('${r.id}', 'annulee')">Refuser</button>
-        ` : ''}
-        ${isConfirmed ? `
-          <button class="resa-btn danger" onclick="updateResaStatus('${r.id}', 'annulee')">Annuler</button>
-          <button class="resa-btn" onclick="updateResaStatus('${r.id}', 'no_show')">No-show</button>
-        ` : ''}
-        <a class="resa-btn" href="tel:${escapeHtml(r.client_tel)}">📞 Appeler</a>
-        ${!isPending ? `<button class="resa-btn" onclick="deleteResa('${r.id}')">Supprimer</button>` : ''}
-      </div>
-    </div>
-  `;
-}
-
-async function updateResaStatus(resaId, newStatus) {
-  try {
-    const { error } = await supa.from('reservations')
-      .update({ statut: newStatus })
-      .eq('id', resaId);
-    if (error) throw error;
-    const labels = {
-      'confirmee': 'Réservation confirmée ✓',
-      'annulee': 'Réservation refusée',
-      'no_show': 'Marquée no-show'
+    // 3️⃣  CRÉER LE RESTAURANT (avec essai 14 jours auto-démarré)
+    const newRestoId = generateUUID();
+    const fullPayload = {
+      id: newRestoId,
+      nom: nomResto,
+      slug,
+      email,
+      user_id: authData.user.id,
+      trial_started_at: new Date().toISOString(),  // ← démarre l'essai MAINTENANT
+      fiscal_country: 'CH',
+      currency: 'CHF',
+      ouvert: true
     };
-    showToast(labels[newStatus] || 'Statut mis à jour');
-    await loadResas();
-  } catch (err) {
-    console.error('updateResaStatus:', err);
-    showToast('Erreur : ' + (err.message || 'mise à jour impossible'));
-  }
-}
 
-async function deleteResa(resaId) {
-  if (!confirm('Supprimer cette réservation définitivement ?')) return;
-  try {
-    const { error } = await supa.from('reservations').delete().eq('id', resaId);
-    if (error) throw error;
-    showToast('Réservation supprimée');
-    await loadResas();
-  } catch (err) {
-    console.error('deleteResa:', err);
-    showToast('Erreur lors de la suppression');
-  }
-}
+    // Champs optionnels qu'on retire si la base les refuse
+    const optionalCols = ['fiscal_country', 'currency', 'ouvert', 'user_id', 'owner_id', 'trial_started_at'];
+    let payload = { ...fullPayload };
+    let lastError = null;
+    let createdResto = null;
 
-// ============================================================================
-// FORMULAIRE RAPIDE : Nouvelle réservation (saisie 30s par le serveur)
-// ============================================================================
+    for (let attempt = 0; attempt < 12; attempt++) {
+      // Garantir que les champs requis restent là
+      if (!payload.id) payload.id = newRestoId;
+      if (!payload.email) payload.email = email;
 
-let resaFormCouverts = 3; // valeur par défaut
+      const { data, error } = await supa.from('restaurants').insert(payload).select().single();
 
-function openResaForm() {
-  // Reset les valeurs
-  document.getElementById('resa-form-nom').value = '';
-  document.getElementById('resa-form-heure').value = '19:30';
+      if (!error) {
+        createdResto = data;
+        break;
+      }
 
-  // Date par défaut = aujourd'hui (le serveur fait surtout des résa pour le jour même)
-  const today = new Date().toISOString().split('T')[0];
-  const dateInput = document.getElementById('resa-form-date');
-  if (dateInput) {
-    dateInput.value = today;
-    dateInput.min = today;
-  }
+      lastError = error;
+      console.error(`createResto tentative ${attempt + 1}:`, error);
 
-  // Reset les champs optionnels
-  document.getElementById('resa-form-tel').value = '';
-  document.getElementById('resa-form-note').value = '';
+      const errMsg = (error.message || '').toLowerCase();
+      const errCode = error.code || '';
 
-  // Reset des couverts à 3
-  resaFormCouverts = 3;
-  document.querySelectorAll('.resa-couv-pill').forEach(p => {
-    const isActive = p.dataset.n === '3';
-    p.classList.toggle('active', isActive);
-    if (isActive) {
-      p.style.background = 'var(--blue, #0A84FF)';
-      p.style.borderColor = 'var(--blue, #0A84FF)';
-      p.style.color = '#fff';
-    } else {
-      p.style.background = 'rgba(255,255,255,0.06)';
-      p.style.borderColor = 'rgba(255,255,255,0.10)';
-      p.style.color = p.dataset.n === 'more' ? 'var(--label-2, rgba(255,255,255,0.6))' : 'var(--label, #fff)';
+      // RLS bloque la création
+      if (errMsg.includes('row-level security') || errCode === '42501') {
+        throw new Error('Permissions insuffisantes (RLS). Contactez le support.');
+      }
+
+      // user_id rejeté → tente owner_id
+      if (errMsg.includes('user_id') && payload.user_id !== undefined) {
+        payload.owner_id = payload.user_id;
+        delete payload.user_id;
+        continue;
+      }
+      if (errMsg.includes('owner_id') && payload.owner_id !== undefined) {
+        delete payload.owner_id;
+        continue;
+      }
+
+      // Colonne mentionnée dans l'erreur → on la retire
+      const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
+      let colToRemove = colMatch ? (colMatch[1] || colMatch[2]) : null;
+      if (!colToRemove) colToRemove = optionalCols.find(c => payload[c] !== undefined);
+
+      // Ne JAMAIS retirer id, nom, slug, email
+      const protectedCols = ['id', 'nom', 'slug', 'email'];
+      if (colToRemove && payload[colToRemove] !== undefined && !protectedCols.includes(colToRemove)) {
+        console.warn(`Retrait colonne "${colToRemove}"`);
+        delete payload[colToRemove];
+        continue;
+      }
+
+      break;
     }
-  });
-  document.getElementById('resa-form-couv-input-zone').style.display = 'none';
-  document.getElementById('resa-form-couv-input').value = '';
 
-  // Fermer le bloc "détails" optionnels
-  const details = document.getElementById('resa-form-details');
-  if (details) details.open = false;
-
-  // Reset bouton submit
-  const btn = document.getElementById('resa-form-submit');
-  btn.disabled = false;
-  btn.textContent = '✓ Enregistrer la réservation';
-
-  // Afficher la modal et focus sur le champ nom
-  document.getElementById('resa-form-overlay').style.display = 'flex';
-  setTimeout(() => {
-    document.getElementById('resa-form-nom').focus();
-  }, 100);
-}
-
-function closeResaForm() {
-  document.getElementById('resa-form-overlay').style.display = 'none';
-}
-
-function setResaFormCouverts(n) {
-  document.querySelectorAll('.resa-couv-pill').forEach(p => {
-    const isActive = String(p.dataset.n) === String(n);
-    p.classList.toggle('active', isActive);
-    if (isActive) {
-      p.style.background = 'var(--blue, #0A84FF)';
-      p.style.borderColor = 'var(--blue, #0A84FF)';
-      p.style.color = '#fff';
-    } else {
-      p.style.background = 'rgba(255,255,255,0.06)';
-      p.style.borderColor = 'rgba(255,255,255,0.10)';
-      p.style.color = p.dataset.n === 'more' ? 'var(--label-2, rgba(255,255,255,0.6))' : 'var(--label, #fff)';
+    if (!createdResto) {
+      throw new Error(lastError?.message || 'Impossible de créer le restaurant');
     }
-  });
 
-  if (n === 'more') {
-    document.getElementById('resa-form-couv-input-zone').style.display = 'block';
-    const inp = document.getElementById('resa-form-couv-input');
-    if (!inp.value) inp.value = '7';
-    resaFormCouverts = parseInt(inp.value) || 7;
-    setTimeout(() => inp.focus(), 100);
-  } else {
-    document.getElementById('resa-form-couv-input-zone').style.display = 'none';
-    resaFormCouverts = parseInt(n) || 1;
-  }
-}
+    // 4️⃣  REDIRECTION VERS L'ADMIN
+    submitBtn.innerHTML = '<div class="spinner"></div> Redirection…';
+    setTimeout(() => {
+      window.location.href = 'menu-admin.html';
+    }, 600);
 
-// Suivre les changements dans le champ "7+"
-document.addEventListener('input', (e) => {
-  if (e.target.id === 'resa-form-couv-input') {
-    const v = parseInt(e.target.value);
-    if (v >= 7 && v <= 50) resaFormCouverts = v;
+  } catch (err) {
+    console.error('Signup error:', err);
+    showError(err.message || 'Une erreur est survenue');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = oldHtml;
   }
 });
 
-async function submitResaForm() {
-  const nom = document.getElementById('resa-form-nom').value.trim();
-  const heure = document.getElementById('resa-form-heure').value;
-
-  // Validations strictes minimales
-  if (!nom) {
-    showToast('Saisis le nom du client');
-    document.getElementById('resa-form-nom').focus();
-    return;
-  }
-  if (!heure) {
-    showToast('Saisis une heure');
-    return;
-  }
-  if (resaFormCouverts < 1 || resaFormCouverts > 50) {
-    showToast('Nombre de personnes invalide');
-    return;
-  }
-
-  // Champs optionnels
-  const tel = document.getElementById('resa-form-tel').value.trim() || '—';
-  const note = document.getElementById('resa-form-note').value.trim();
-  let date = document.getElementById('resa-form-date').value;
-  if (!date) {
-    date = new Date().toISOString().split('T')[0]; // par défaut : aujourd'hui
-  }
-
-  const btn = document.getElementById('resa-form-submit');
-  btn.disabled = true;
-  btn.textContent = 'Enregistrement…';
-
+// Si déjà connecté, redirige vers admin
+(async function checkAlreadyLogged() {
   try {
-    const { error } = await supa.from('reservations').insert({
-      restaurant_id: state.resto.id,
-      client_nom: nom,
-      client_tel: tel,
-      client_email: null,
-      date_resa: date,
-      heure_resa: heure,
-      nb_personnes: resaFormCouverts,
-      message: note || null,
-      statut: 'confirmee'   // Le serveur saisit, donc c'est confirmé directement
-    });
-    if (error) throw error;
-
-    closeResaForm();
-    showToast('✓ Résa de ' + nom + ' enregistrée (' + resaFormCouverts + ' pers. à ' + heure.substring(0,5) + ')');
-    await loadResas();
-
-  } catch (err) {
-    console.error('submitResaForm:', err);
-    showToast('Erreur : ' + (err.message || 'enregistrement impossible'));
-    btn.disabled = false;
-    btn.textContent = '✓ Enregistrer la réservation';
-  }
-}
-
-async function togglePaiementTable() {
-  const t = state.tables.find(x => x.id === state.selectedTableId);
-  if (!t) {
-    showToast('Aucune table sélectionnée');
-    return;
-  }
-  // ⚠ On ne prend QUE les commandes actives (non payées) de cette table précise
-  const activeOrders = state.orders.filter(o => o.table_id === t.id && o.statut !== 'payee');
-
-  if (activeOrders.length === 0) {
-    showToast('Aucune commande à régler sur cette table');
-    return;
-  }
-
-  console.log(`[Paiement] Table ${t.nom} (id=${t.id}) → ${activeOrders.length} commandes actives à marquer payées`);
-
-  try {
-    // 1) Marquer toutes les commandes actives de CETTE table comme payées
-    const ids = activeOrders.map(o => o.id);
-    const { error: errCmd } = await supa.from('commandes')
-      .update({ statut: 'payee' })
-      .in('id', ids);
-    if (errCmd) throw errCmd;
-
-    // 2) Libérer la session de la table : la table redevient "libre"
-    // (le prochain client qui scanne le QR aura une nouvelle session)
-    const { error: errTable } = await supa.from('tables')
-      .update({ session_id: null })
-      .eq('id', t.id);
-    if (errTable) {
-      // Pas critique : on log mais on continue
-      console.warn('Impossible de libérer la session de la table :', errTable);
+    const { data: { session } } = await supa.auth.getSession();
+    if (session) {
+      window.location.href = 'menu-admin.html';
     }
-
-    await loadOrders();
-    showToast(`✓ Table ${t.nom} libérée`);
-    // Retour automatique à la liste des tables
-    setTimeout(() => showScreen('tables'), 500);
-  } catch (err) {
-    console.error('togglePaiementTable error:', err);
-    showToast('Erreur : ' + (err.message || 'paiement impossible'));
+  } catch (e) {
+    // Pas connecté, c'est normal sur cette page
   }
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('show');
-}
-
-// Fermer en cliquant en dehors
-document.addEventListener('click', e => {
-  document.querySelectorAll('.modal-overlay.show').forEach(o => {
-    if (e.target === o) o.classList.remove('show');
-  });
-});
-
-// ============================================================================
-// LANCER
-// ============================================================================
-init();
+})();
 </script>
+
 </body>
 </html>

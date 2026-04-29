@@ -1722,49 +1722,12 @@
         <span>Diviser l'addition (<span id="split-count">2</span>)</span>
       </button>
       <button class="checkout-btn" id="checkout-btn" onclick="submitOrder()">
-        Envoyer la commande
+        Valider la commande
       </button>
-    </div>
-  </div>
-</div>
-
-<!-- FAB Appeler le serveur -->
-<button class="fab-help" id="fab-help" onclick="openHelpModal()" aria-label="Appeler le serveur" title="Appeler le serveur">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-  </svg>
-</button>
-
-<!-- Modal Appeler le serveur -->
-<div class="modal-overlay" id="modal-help">
-  <div class="modal">
-    <div class="cart-modal-header">
-      <div class="cart-modal-title">Appeler le <em style="color:var(--blue);">serveur</em></div>
-      <button class="modal-close" onclick="closeHelpModal()" style="position:relative; top:auto; right:auto;">×</button>
-    </div>
-    <p style="padding: 0 22px 14px; font-size: 13px; font-weight: 700; color: var(--text-3); line-height: 1.4;">
-      Le serveur sera prévenu instantanément.
-    </p>
-    <div class="help-options">
-      <button class="help-option" onclick="callServer('addition', 'Demande l\'addition')">
-        <div class="help-option-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-        </div>
-        <div class="help-option-text">
-          <div class="help-option-title">Demander l'addition</div>
-          <div class="help-option-desc">Le serveur apporte la note</div>
-        </div>
-      </button>
-
-      <button class="help-option" onclick="callServer('eau', 'Demande de l\'eau')">
-        <div class="help-option-icon green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-        </div>
-        <div class="help-option-text">
-          <div class="help-option-title">De l'eau s'il vous plaît</div>
-          <div class="help-option-desc">Carafe ou bouteille</div>
-        </div>
-      </button>
+      <p id="validation-info" style="text-align: center; font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 12px; color: var(--text-3); margin-top: 10px; line-height: 1.4; display: none;">
+        Tout le groupe doit valider pour envoyer en cuisine.<br>
+        <span id="validation-count" style="color: var(--blue); font-weight: 700;">0 / 1</span> personnes ont validé.
+      </p>
     </div>
   </div>
 </div>
@@ -2047,75 +2010,6 @@ async function init() {
 }
 
 // ═════════════════════════════════════════════════════════════════
-// APPELER LE SERVEUR (FAB + modal)
-// ═════════════════════════════════════════════════════════════════
-function openHelpModal() {
-  if (state.previewMode) {
-    showToast('Mode aperçu : appel non envoyé', 'success');
-    return;
-  }
-  document.getElementById('modal-help').classList.add('show');
-}
-
-function closeHelpModal() {
-  document.getElementById('modal-help').classList.remove('show');
-}
-
-async function callServer(type, message) {
-  closeHelpModal();
-  if (state.previewMode || !state.resto || !state.table) {
-    showToast('Mode aperçu : appel non envoyé', 'success');
-    return;
-  }
-
-  // Animation succès sur le FAB
-  const fab = document.getElementById('fab-help');
-  fab.classList.add('success');
-  setTimeout(() => fab.classList.remove('success'), 1500);
-
-  showToast('Serveur prévenu · ' + message, 'success');
-
-  try {
-    // Tentative d'insertion dans une table appels_serveur (si elle existe)
-    // On ignore silencieusement si la table n'existe pas (mode best-effort)
-    const payload = {
-      restaurant_id: state.resto.id,
-      table_id: state.table.id,
-      table_numero: state.table.numero,
-      type: type,
-      message: message,
-      statut: 'en_attente',
-      heure: new Date().toISOString()
-    };
-
-    // On essaie plusieurs noms de table (selon la base)
-    const tables = ['appels_serveur', 'serveur_calls', 'help_calls', 'notifications'];
-    for (const t of tables) {
-      const { error } = await supa.from(t).insert(payload);
-      if (!error) {
-        return;
-      }
-    }
-  } catch (err) {
-    // Silent fail — l'utilisateur a déjà vu le toast de confirmation
-    console.warn('callServer:', err);
-  }
-}
-
-// Ferme la modale help en cliquant en dehors
-document.getElementById('modal-help').addEventListener('click', e => {
-  if (e.target.id === 'modal-help') closeHelpModal();
-});
-
-// Toggle de la classe body 'has-cart' quand la cart-bar est visible
-// (pour faire monter le FAB au-dessus)
-const cartBarObserver = new MutationObserver(() => {
-  const isVisible = document.getElementById('cart-bar')?.classList.contains('visible');
-  document.body.classList.toggle('has-cart', !!isVisible);
-});
-cartBarObserver.observe(document.getElementById('cart-bar'), { attributes: true, attributeFilter: ['class'] });
-
-// ═════════════════════════════════════════════════════════════════
 // MODE SELECTOR — Sur place / À emporter
 // ═════════════════════════════════════════════════════════════════
 function selectMode(mode) {
@@ -2364,19 +2258,28 @@ document.getElementById('modal-split').addEventListener('click', e => {
 // ═════════════════════════════════════════════════════════════════
 // SALON (qui est à la table)
 // ═════════════════════════════════════════════════════════════════
-function openSalon() {
+async function openSalon() {
   if (state.previewMode) {
     showToast('Mode aperçu : salon désactivé');
     return;
   }
+  if (!state.table) {
+    showToast('Pas de table : salon indisponible');
+    return;
+  }
+
+  // Force le rechargement des données salon avant d'afficher
+  await loadSalon();
   document.getElementById('salon-my-name').value = state.personneNom || '';
-  renderSalon();
+  await renderSalon();
   document.getElementById('modal-salon').classList.add('show');
 }
+
 function closeSalon() {
   document.getElementById('modal-salon').classList.remove('show');
 }
-function updateMyName() {
+
+async function updateMyName() {
   const input = document.getElementById('salon-my-name');
   const newName = input.value.trim();
   if (!newName) { showToast('Le nom ne peut pas être vide', 'error'); return; }
@@ -2384,95 +2287,130 @@ function updateMyName() {
   try {
     localStorage.setItem(personneKey(), JSON.stringify({id: state.personneId, nom: newName}));
   } catch(_) {}
-  announcePresence();
+  // Met à jour les anciennes commandes/presences avec le nouveau nom
+  try {
+    if (state.resto && state.personneId) {
+      await supa.from('commandes')
+        .update({ personne_nom: newName })
+        .eq('restaurant_id', state.resto.id)
+        .eq('personne_id', state.personneId);
+    }
+  } catch(e) { console.warn('updateMyName:', e); }
+  await announcePresence();
   showToast('Nom mis à jour', 'success');
-  renderSalon();
+  await renderSalon();
 }
+
 async function renderSalon() {
   const list = document.getElementById('salon-list');
   const countSpan = document.getElementById('salon-list-count');
   if (!list) return;
 
-  // Charger toutes les commandes de la table (passées + en cours)
-  let ordersByPerson = {};
+  // Charger toutes les commandes de la table sur les 4 dernières heures
+  let allOrders = [];
   try {
     if (state.resto && state.table) {
       const since = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
-      const { data: cmds } = await supa.from('commandes').select('*')
+      const { data } = await supa.from('commandes').select('*')
         .eq('restaurant_id', state.resto.id)
         .eq('table_id', state.table.id)
         .gte('heure', since)
         .order('heure', { ascending: true });
-
-      (cmds || []).forEach(c => {
-        const pid = c.personne_id || 'anon';
-        const pname = c.personne_nom || 'Quelqu\'un';
-        if (!ordersByPerson[pid]) {
-          ordersByPerson[pid] = { id: pid, nom: pname, items: [], total: 0 };
-        }
-        const items = Array.isArray(c.items) ? c.items : [];
-        items.forEach(it => {
-          ordersByPerson[pid].items.push(it);
-          ordersByPerson[pid].total += parseFloat(it.prix || 0) * (it.qte || 1);
-        });
-      });
+      allOrders = data || [];
     }
-  } catch (e) {
-    console.warn('renderSalon orders:', e);
-  }
+  } catch (e) { console.warn('renderSalon orders:', e); }
 
-  // Personnes connectées (même celles qui n'ont rien commandé)
-  const persons = state.salon.length > 0
-    ? state.salon
-    : [{id: state.personneId, nom: state.personneNom, isMe: true}];
+  // Construit la map des personnes : id → { nom, items[], total }
+  const personnesMap = new Map();
 
-  // Fusion : ajouter chaque personne du salon
-  persons.forEach(p => {
-    if (!ordersByPerson[p.id]) {
-      ordersByPerson[p.id] = { id: p.id, nom: p.nom, items: [], total: 0 };
+  // 1) Inclure toutes les personnes du salon (même celles qui n'ont rien commandé)
+  (state.salon || []).forEach(p => {
+    if (p.id) {
+      personnesMap.set(p.id, { id: p.id, nom: p.nom || 'Quelqu\'un', items: [], total: 0 });
     }
   });
 
-  // Ajout du panier en cours de l'utilisateur (pas encore envoyé)
-  if (state.cart.length > 0 && state.personneId) {
-    if (!ordersByPerson[state.personneId]) {
-      ordersByPerson[state.personneId] = { id: state.personneId, nom: state.personneNom || 'Vous', items: [], total: 0 };
-    }
-    state.cart.forEach(it => {
-      ordersByPerson[state.personneId].items.push({...it, _pending: true});
-      ordersByPerson[state.personneId].total += parseFloat(it.prix || 0) * (it.qte || 1);
+  // 2) S'assurer que MOI suis dedans
+  if (state.personneId && !personnesMap.has(state.personneId)) {
+    personnesMap.set(state.personneId, {
+      id: state.personneId,
+      nom: state.personneNom || 'Vous',
+      items: [],
+      total: 0
     });
   }
 
-  const personList = Object.values(ordersByPerson);
+  // 3) Parcourir les commandes pour ajouter les plats à chaque personne
+  allOrders.forEach(c => {
+    if (c.statut === 'presence' || c.statut === 'service_request' || c.statut === 'annulee' || c.statut === 'servie') return;
+    const pid = c.personne_id;
+    const pname = c.personne_nom || 'Quelqu\'un';
+    if (!pid) return;
+
+    if (!personnesMap.has(pid)) {
+      personnesMap.set(pid, { id: pid, nom: pname, items: [], total: 0 });
+    }
+    const person = personnesMap.get(pid);
+    // Toujours mettre à jour le nom au cas où il a changé
+    if (pname && pname !== 'Quelqu\'un') person.nom = pname;
+
+    const items = Array.isArray(c.items) ? c.items : [];
+    items.forEach(it => {
+      person.items.push({ ...it, _statut: c.statut });
+      person.total += parseFloat(it.prix || 0) * (it.qte || 1);
+    });
+  });
+
+  // 4) Ajouter le panier en cours de l'utilisateur (pas encore validé)
+  if (state.cart.length > 0 && state.personneId) {
+    const me = personnesMap.get(state.personneId);
+    if (me) {
+      state.cart.forEach(it => {
+        me.items.push({ ...it, _statut: 'panier' });
+        me.total += parseFloat(it.prix || 0) * (it.qte || 1);
+      });
+    }
+  }
+
+  const personList = [...personnesMap.values()];
   if (countSpan) countSpan.textContent = personList.length;
 
   if (personList.length === 0) {
-    list.innerHTML = `<div style="text-align: center; padding: 24px 0; color: var(--text-3); font-style: italic; font-family: 'Source Serif 4'; font-weight: 600; font-size: 14px;">Aucune personne pour le moment</div>`;
+    list.innerHTML = `<div style="text-align: center; padding: 24px 0; color: var(--text-3); font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 14px;">Aucune personne pour le moment</div>`;
     return;
   }
 
+  // Render chaque personne
   list.innerHTML = personList.map(p => {
     const isMe = p.id === state.personneId;
     const initiale = (p.nom || '?').charAt(0).toUpperCase();
 
     let itemsHtml = '';
     if (p.items.length === 0) {
-      itemsHtml = `<div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 12.5px; color: var(--text-3); padding-left: 48px; margin-top: 4px;">— Pas encore commandé</div>`;
+      itemsHtml = `
+        <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 12px; color: var(--text-3); padding-left: 48px; margin-top: 6px;">
+          Pas encore commandé
+        </div>`;
     } else {
-      itemsHtml = `<div style="padding-left: 48px; margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
-        ${p.items.map(it => `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px;">
-            <span style="font-weight: 700; color: var(--text-2); ${it._pending ? 'opacity: 0.7;' : ''}">
-              ${it.qte && it.qte > 1 ? '×' + it.qte + ' · ' : ''}${escapeHtml(it.nom || '')}
-              ${it._pending ? '<span style="font-family: Source Serif 4; font-style: italic; font-weight: 700; font-size: 10px; color: var(--orange); margin-left: 4px;">en cours</span>' : ''}
-            </span>
-            <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; color: var(--blue); font-size: 12.5px; flex-shrink: 0;">
-              ${formatPrice(parseFloat(it.prix || 0) * (it.qte || 1))} ${getCurrencySymbol()}
-            </span>
-          </div>
-        `).join('')}
-      </div>`;
+      itemsHtml = `
+        <div style="padding-left: 48px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px;">
+          ${p.items.map(it => {
+            const qte = it.qte || 1;
+            const ligne = (qte > 1 ? '×' + qte + ' · ' : '') + escapeHtml(it.nom || 'Plat');
+            const ligneTotal = formatPrice(parseFloat(it.prix || 0) * qte);
+            const statutBadge = getStatutBadge(it._statut);
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px;">
+                <span style="font-weight: 700; color: var(--text-2); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;">
+                  ${ligne}${statutBadge}
+                </span>
+                <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; color: var(--blue); font-size: 12.5px; flex-shrink: 0;">
+                  ${ligneTotal} ${getCurrencySymbol()}
+                </span>
+              </div>
+            `;
+          }).join('')}
+        </div>`;
     }
 
     return `
@@ -2482,8 +2420,8 @@ async function renderSalon() {
             ${escapeHtml(initiale)}
           </div>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -0.012em;">
-              ${escapeHtml(p.nom || 'Inconnu')}${isMe ? ' <span style="color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 0.04em;">· VOUS</span>' : ''}
+            <div style="font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -0.012em; line-height: 1.2;">
+              ${escapeHtml(p.nom || 'Inconnu')}${isMe ? ' <span style="color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 0.04em; margin-left: 4px;">VOUS</span>' : ''}
             </div>
             ${p.total > 0 ? `<div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 13px; color: var(--blue); margin-top: 2px;">${formatPrice(p.total)} ${getCurrencySymbol()}</div>` : ''}
           </div>
@@ -2493,6 +2431,17 @@ async function renderSalon() {
     `;
   }).join('');
 }
+
+// Petit badge selon le statut de la commande (panier en cours, en validation, etc.)
+function getStatutBadge(statut) {
+  if (statut === 'panier') return ' <span style="font-family: \'Source Serif 4\'; font-style: italic; font-weight: 700; font-size: 9.5px; color: var(--orange); margin-left: 4px;">en cours</span>';
+  if (statut === 'en_validation') return ' <span style="font-family: \'Source Serif 4\'; font-style: italic; font-weight: 700; font-size: 9.5px; color: var(--orange); margin-left: 4px;">à valider</span>';
+  if (statut === 'en_attente') return ' <span style="font-family: \'Source Serif 4\'; font-style: italic; font-weight: 700; font-size: 9.5px; color: var(--blue); margin-left: 4px;">commandé</span>';
+  if (statut === 'en_cours') return ' <span style="font-family: \'Source Serif 4\'; font-style: italic; font-weight: 700; font-size: 9.5px; color: var(--blue); margin-left: 4px;">en cuisine</span>';
+  if (statut === 'prete') return ' <span style="font-family: \'Source Serif 4\'; font-style: italic; font-weight: 700; font-size: 9.5px; color: var(--green); margin-left: 4px;">prêt</span>';
+  return '';
+}
+
 function updateSalonBadge() {
   const count = document.getElementById('table-badge-count');
   if (!count) return;
@@ -2744,18 +2693,19 @@ function renderPlatRow(p) {
     .reduce((s, it) => s + (it.qte || 1), 0);
 
   // Si déjà dans le panier → afficher stepper +/-, sinon afficher bouton +
+  // Note : les boutons utilisent data-action + data-id, captés par event delegation
   const action = inCartQty > 0
-    ? `<div class="plat-qty-stepper" onclick="event.stopPropagation()">
-         <button class="plat-qty-btn" onclick="decrementPlat('${p.id}')" aria-label="Retirer">−</button>
+    ? `<div class="plat-qty-stepper">
+         <button type="button" class="plat-qty-btn" data-action="dec" data-id="${escapeHtml(p.id)}" aria-label="Retirer">−</button>
          <span class="plat-qty-num">${inCartQty}</span>
-         <button class="plat-qty-btn" onclick="quickAdd('${p.id}')" aria-label="Ajouter">+</button>
+         <button type="button" class="plat-qty-btn" data-action="inc" data-id="${escapeHtml(p.id)}" aria-label="Ajouter">+</button>
        </div>`
-    : `<button class="plat-quick-add" onclick="event.stopPropagation(); quickAdd('${p.id}')" aria-label="Ajouter">
+    : `<button type="button" class="plat-quick-add" data-action="add" data-id="${escapeHtml(p.id)}" aria-label="Ajouter">
          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
        </button>`;
 
   return `
-    <div class="plat-row" onclick="openPlatModal('${p.id}')">
+    <div class="plat-row" data-plat-id="${escapeHtml(p.id)}">
       <div class="plat-info">
         <div class="plat-name">${escapeHtml(p.nom)}</div>
         ${p.description ? `<div class="plat-desc">${escapeHtml(p.description)}</div>` : ''}
@@ -2766,6 +2716,34 @@ function renderPlatRow(p) {
     </div>
   `;
 }
+
+// Event delegation : un seul listener pour toute la liste de plats
+// Cela évite les soucis d'apostrophes dans les onclick inline
+document.addEventListener('DOMContentLoaded', () => {
+  const list = document.getElementById('plat-list');
+  if (!list) return;
+  list.addEventListener('click', (e) => {
+    // Bouton + ou stepper
+    const btn = e.target.closest('[data-action]');
+    if (btn) {
+      e.stopPropagation();
+      e.preventDefault();
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if (action === 'add' || action === 'inc') {
+        quickAdd(id);
+      } else if (action === 'dec') {
+        decrementPlat(id);
+      }
+      return;
+    }
+    // Sinon : clic sur la ligne → ouvre la modale
+    const row = e.target.closest('.plat-row');
+    if (row && row.dataset.platId) {
+      openPlatModal(row.dataset.platId);
+    }
+  });
+});
 
 // Ajout rapide depuis la liste (sans ouvrir la modale détaillée)
 function quickAdd(platId) {
@@ -2995,10 +2973,24 @@ async function submitOrder() {
 
   const btn = document.getElementById('checkout-btn');
   btn.disabled = true;
-  btn.textContent = 'Envoi…';
+  btn.textContent = 'Validation…';
 
   try {
     const total = state.cart.reduce((s, it) => s + (it.prix * (it.qte || 1)), 0);
+
+    // ══════════════════════════════════════════════════
+    // VALIDATION COLLECTIVE
+    // - Si on est seul (personne d'autre dans le salon) → envoi direct comme avant
+    // - Si on est plusieurs → la commande part avec statut 'en_validation'
+    //   et une table appelée "validations" trace qui a validé.
+    //   Quand tout le monde a validé, le statut passe à 'en_attente'
+    //   (en cuisine).
+    // ══════════════════════════════════════════════════
+
+    // Détecter si on est dans un groupe (plus d'1 personne au salon)
+    const groupSize = Math.max(state.salon?.length || 1, 1);
+    const isGroup = groupSize > 1;
+    const initialStatut = isGroup ? 'en_validation' : 'en_attente';
 
     const orderData = {
       restaurant_id: state.resto.id,
@@ -3015,12 +3007,12 @@ async function submitOrder() {
         note: it.note || null
       })),
       total: total,
-      statut: 'en_attente',
+      statut: initialStatut,
       heure: new Date().toISOString(),
       type_commande: URL_MODE === 'takeaway' ? 'a_emporter' : 'sur_place'
     };
 
-    // Insertion avec retry intelligent (on retire les colonnes qui n'existent pas)
+    // Insertion avec retry intelligent
     const optionalCols = ['table_id', 'table_numero', 'type_commande', 'session_id', 'personne_id', 'personne_nom'];
     let payload = { ...orderData };
     let inserted = false;
@@ -3033,7 +3025,6 @@ async function submitOrder() {
       }
       console.error('Submit tentative ' + (attempt + 1) + ':', error);
 
-      // Retire la colonne mentionnée dans l'erreur
       const errMsg = (error.message || '').toLowerCase();
       const colMatch = errMsg.match(/column ['"]?(\w+)['"]?|could not find ['"]?(\w+)['"]?/i);
       let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
@@ -3046,26 +3037,99 @@ async function submitOrder() {
     }
 
     if (!inserted) {
-      throw new Error('Impossible d\'envoyer la commande');
+      throw new Error('Impossible de valider la commande');
     }
 
     state.cart = [];
     saveCart();
     updateCartBar();
     closeCartModal();
-    showToast('Commande envoyée !', 'success');
+
+    if (isGroup) {
+      showToast('Vous avez validé · en attente du groupe', 'success');
+      // Vérifie si tout le monde a validé pour passer en cuisine
+      await checkGroupValidation();
+    } else {
+      showToast('Commande envoyée en cuisine !', 'success');
+    }
 
     // Recharger les commandes
     await loadOrders();
 
-    // Modal avis Google (1.5s après la commande)
-    showGoogleReviewModal();
+    // Modal avis Google (1.5s après) — uniquement si pas en attente du groupe
+    if (!isGroup) showGoogleReviewModal();
   } catch (err) {
     console.error('submitOrder:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Envoyer la commande';
+    btn.textContent = 'Valider la commande';
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════
+// VALIDATION COLLECTIVE
+// Vérifie si toutes les personnes du salon ont validé leur commande.
+// Si oui, on passe toutes les commandes 'en_validation' à 'en_attente'
+// (= envoi en cuisine).
+// ═════════════════════════════════════════════════════════════════
+async function checkGroupValidation() {
+  if (!state.resto || !state.table || !state.salon || state.salon.length < 2) return;
+
+  try {
+    // Charger toutes les commandes en validation pour cette table
+    const since = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+    const { data: cmds } = await supa.from('commandes').select('*')
+      .eq('restaurant_id', state.resto.id)
+      .eq('table_id', state.table.id)
+      .eq('statut', 'en_validation')
+      .gte('heure', since);
+
+    if (!cmds || cmds.length === 0) return;
+
+    // Quelles personnes du salon ont validé ?
+    const validatedPersons = new Set(cmds.map(c => c.personne_id).filter(Boolean));
+    const allPersons = new Set(state.salon.map(p => p.id));
+
+    // Toutes les personnes du salon ont-elles validé ?
+    let allValidated = true;
+    for (const pid of allPersons) {
+      if (!validatedPersons.has(pid)) {
+        allValidated = false;
+        break;
+      }
+    }
+
+    if (allValidated) {
+      // Tout le monde a validé → envoi en cuisine
+      const orderIds = cmds.map(c => c.id);
+      const { error } = await supa.from('commandes')
+        .update({ statut: 'en_attente' })
+        .in('id', orderIds);
+
+      if (!error) {
+        showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
+        showGoogleReviewModal();
+      }
+    } else {
+      // Mise à jour de la barre de progression
+      updateValidationInfo(validatedPersons.size, allPersons.size);
+    }
+  } catch (err) {
+    console.warn('checkGroupValidation:', err);
+  }
+}
+
+// Affiche le compteur "X / Y personnes ont validé"
+function updateValidationInfo(validated, total) {
+  const info = document.getElementById('validation-info');
+  const count = document.getElementById('validation-count');
+  if (!info || !count) return;
+  if (total > 1) {
+    count.textContent = validated + ' / ' + total;
+    info.style.display = 'block';
+  } else {
+    info.style.display = 'none';
   }
 }
 
@@ -3094,6 +3158,8 @@ async function loadOrders() {
     updateOrdersBanner();
     // Aussi recharger le salon
     await loadSalon();
+    // Vérifier régulièrement la validation du groupe (au cas où d'autres ont validé)
+    await checkGroupValidation();
   } catch (e) {
     console.warn('loadOrders:', e);
   }
@@ -3107,6 +3173,7 @@ function updateOrdersBanner() {
     return;
   }
 
+  const en_validation = state.orders.filter(o => o.statut === 'en_validation').length;
   const en_attente = state.orders.filter(o => o.statut === 'en_attente').length;
   const en_cours = state.orders.filter(o => o.statut === 'en_cours').length;
   const prete = state.orders.filter(o => o.statut === 'prete').length;
@@ -3118,6 +3185,8 @@ function updateOrdersBanner() {
     msg = `<strong>En préparation</strong> · le chef cuisine.`;
   } else if (en_attente > 0) {
     msg = `<strong>Commande reçue</strong> · vous serez prévenu.`;
+  } else if (en_validation > 0) {
+    msg = `<strong>En attente du groupe</strong> · tout le monde doit valider.`;
   }
 
   text.innerHTML = msg;

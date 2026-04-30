@@ -614,7 +614,7 @@
       <div style="margin-top: 14px;">
         <button class="btn btn-secondary" id="cfg-stripe-connect-btn" style="width: 100%;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-          Configurer Stripe (à venir)
+          Configurer Stripe Connect
         </button>
       </div>
     </div>
@@ -628,7 +628,8 @@
         </label>
       </div>
     </div>
-<!-- ═══════ CARD ABONNEMENT (essai intégré dans le texte) ═══════ -->
+
+    <!-- ═══════ CARD ABONNEMENT ═══════ -->
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Votre <em>abonnement</em></h2>
 
@@ -641,11 +642,13 @@
         Plan <strong style="color: var(--text);">Frizz Pro</strong> · Tout inclus, sans engagement.<br>
         <span id="cfg-trial-status" style="font-size: 12px; font-weight: 700;">14 jours d'essai gratuit · résiliable à tout moment</span>
       </p>
+
       <button class="btn btn-secondary" id="cfg-billing-portal-btn" style="width: 100%;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
         Gérer mon abonnement
       </button>
     </div>
+
     <div class="ed-cmd-card" id="cfg-multi-resto">
       <h2 class="ed-cmd-head">Vos <em>restaurants</em></h2>
       <div id="cfg-restos-list" style="margin-bottom: 14px;"></div>
@@ -833,8 +836,30 @@ async function selectRestaurant(resto) {
   document.getElementById('ed-resto-display').textContent = getShortName(resto.nom);
   updateOpenPill(resto.ouvert !== false);
   switchTab(state.activeTab);
-  // Check trial blocking après chaque sélection de resto
   if (typeof checkTrialBlocking === 'function') checkTrialBlocking();
+  // Toast de retour Stripe Connect
+  handleStripeReturnParams();
+}
+
+function handleStripeReturnParams() {
+  const params = new URLSearchParams(location.search);
+  const stripeStatus = params.get('stripe');
+  if (stripeStatus === 'ok') {
+    showToast('Stripe Connect en cours d\'activation. Vérification en quelques secondes…', 'success');
+    setTimeout(() => loadConfig(), 3000);
+    history.replaceState({}, '', location.pathname);
+  } else if (stripeStatus === 'retry') {
+    showToast('Lien expiré, veuillez recommencer la configuration Stripe.', 'error');
+    history.replaceState({}, '', location.pathname);
+  }
+  const sub = params.get('subscription');
+  if (sub === 'ok') {
+    showToast('Bienvenue dans Frizz Pro ! Votre abonnement est actif.', 'success');
+    history.replaceState({}, '', location.pathname);
+  } else if (sub === 'cancel') {
+    showToast('Paiement annulé. Vous pouvez réessayer quand vous voulez.', '');
+    history.replaceState({}, '', location.pathname);
+  }
 }
 
 function updateOpenPill(isOpen) {
@@ -941,8 +966,6 @@ window.doLogout = doLogout;
     showToast('Erreur de chargement', 'error');
   }
 })();
-
-let statsRefreshInterval = null;
 
 async function loadStats() {
   if (!state.resto) return;
@@ -1406,7 +1429,9 @@ async function deletePlat(platId) {
   try { const { error } = await supa.from('menu').delete().eq('id', platId); if (error) throw error; showToast('Plat supprimé', 'success'); await loadMenu(); }
   catch (err) { showToast('Erreur', 'error'); }
 }
- async function loadTables() {
+</script>
+<script>
+async function loadTables() {
   if (!state.resto) return;
   try {
     const { data, error } = await supa.from('tables').select('*').eq('restaurant_id', state.resto.id).order('numero');
@@ -1705,124 +1730,86 @@ function fillConfigForm() {
   const tipToggle = document.getElementById('cfg-tip-enabled'); if (tipToggle) tipToggle.checked = r.tip_enabled !== false;
   const urlEl = document.getElementById('cfg-resto-url');
   if (urlEl) { const baseUrl = location.origin + location.pathname.replace(/menu-admin\.html.*$/, ''); urlEl.value = `${baseUrl}menu.html?resto=${encodeURIComponent(r.slug || '')}`; }
+
+  // Statut Stripe Connect (paiement client)
   const stripeStatus = document.getElementById('cfg-stripe-status');
+  const stripeConnectBtn = document.getElementById('cfg-stripe-connect-btn');
   if (stripeStatus) {
-    if (r.stripe_account_id && r.stripe_charges_enabled) stripeStatus.innerHTML = `<div class="ed-status ok">ACTIVÉ</div>`;
-    else if (r.stripe_account_id) stripeStatus.innerHTML = `<div class="ed-status wait">EN ATTENTE</div>`;
-    else stripeStatus.innerHTML = `<div class="ed-status paid">NON CONFIGURÉ</div>`;
+    if (r.stripe_account_id && r.stripe_charges_enabled) {
+      stripeStatus.innerHTML = `<div class="ed-status ok" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>ACTIVÉ</div>`;
+      if (stripeConnectBtn) stripeConnectBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Gérer mon compte Stripe';
+    } else if (r.stripe_account_id) {
+      stripeStatus.innerHTML = `<div class="ed-status wait" style="display: inline-flex; align-items: center; gap: 6px;">EN ATTENTE</div>`;
+      if (stripeConnectBtn) stripeConnectBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Terminer la configuration';
+    } else {
+      stripeStatus.innerHTML = `<div class="ed-status paid" style="display: inline-flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>NON CONFIGURÉ</div>`;
+      if (stripeConnectBtn) stripeConnectBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Configurer Stripe Connect';
+    }
   }
 
-// ════════ STATUT ABONNEMENT / ESSAI ════════
+  // Statut abonnement / essai
   const trialStatusEl = document.getElementById('cfg-trial-status');
   const billingBtnEl = document.getElementById('cfg-billing-portal-btn');
   const trialInfo = computeTrialState(r);
-
-  // Cas 1 : ABONNÉ → on remplace toute la card par un design premium
   if (trialInfo.state === 'subscribed') {
     renderProSubscriptionCard(r);
-    return; // on sort, pas besoin de remplir les autres éléments
+    return;
   }
-
-  // Cas 2 : ESSAI EN COURS → badge dynamique normal
   if (trialStatusEl) trialStatusEl.innerHTML = renderTrialBadge(trialInfo);
   if (billingBtnEl) {
     billingBtnEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> S\'abonner à Frizz Pro';
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// CARD PREMIUM "FRIZZ PRO" pour les abonnés
-// ════════════════════════════════════════════════════════════════
-
 async function renderProSubscriptionCard(resto) {
   const card = document.querySelector('#section-config .ed-cmd-card:has(#cfg-trial-status)');
   if (!card) return;
-
-  // Récupérer les infos d'abonnement depuis Stripe (via l'edge function)
-  let nextBillingDate = null;
-  let cardLast4 = null;
-  let priceLabel = '24,90 €';
-
-  try {
-    const { data, error } = await supa.functions.invoke('stripe-billing-portal', {
-      body: { restaurant_id: resto.id, info_only: true }
-    });
-    // (info_only n'est pas implémenté côté backend, on ignore l'erreur silencieusement)
-  } catch (e) { /* fallback : pas grave */ }
-
-  // Calcule la prochaine facture à partir de la date d'inscription si pas d'info Stripe
-  if (!nextBillingDate && resto.trial_started_at) {
-    // approximation : 1 mois après aujourd'hui (sera remplacé par la vraie date plus tard)
-    const next = new Date();
-    next.setMonth(next.getMonth() + 1);
-    nextBillingDate = next.toLocaleDateString('fr-CH', { day: 'numeric', month: 'long', year: 'numeric' });
-  }
-
+  const next = new Date();
+  next.setMonth(next.getMonth() + 1);
+  const nextBillingDate = next.toLocaleDateString('fr-CH', { day: 'numeric', month: 'long', year: 'numeric' });
   card.innerHTML = `
     <div style="position: relative; padding: 4px 0;">
-
-      <!-- Header : badge Frizz Pro + statut -->
-<div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 10px;">
+        <div>
           <div style="display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;">
             <span style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 28px; letter-spacing: -0.020em; color: var(--text);">Frizz</span>
             <span style="font-family: 'Source Serif 4', serif; font-style: italic; color: var(--blue); font-weight: 700; font-size: 24px; margin-left: 1px; text-shadow: 0 0 12px rgba(10,132,255,0.5);">✦</span>
-<span style="font-family: 'Source Serif 4', serif; font-style: italic; color: var(--blue); font-weight: 700; font-size: 28px; letter-spacing: -0.020em; margin-left: 4px;">Pro</span>
+            <span style="font-family: 'Source Serif 4', serif; font-style: italic; color: var(--blue); font-weight: 700; font-size: 28px; letter-spacing: -0.020em; margin-left: 4px;">Pro</span>
           </div>
           <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 12px; color: var(--text-3); margin-top: 6px;">Abonnement actif</div>
         </div>
       </div>
-
-      <!-- Bloc info : prochaine facture -->
       <div style="padding: 14px 16px; background: linear-gradient(135deg, rgba(10,132,255,0.06), rgba(46,157,255,0.04)); border: 1px solid rgba(10,132,255,0.18); border-radius: var(--r); margin-bottom: 18px;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
           <div>
             <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--blue); letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 4px;">Prochaine facture</div>
-            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -0.014em;">${nextBillingDate || 'À déterminer'}</div>
+            <div style="font-family: 'Inter Tight'; font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -0.014em;">${nextBillingDate}</div>
           </div>
           <div style="text-align: right;">
-            <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 22px; color: var(--text); line-height: 1;">${priceLabel}</div>
+            <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 22px; color: var(--text); line-height: 1;">24,90 €</div>
             <div style="font-size: 10.5px; font-weight: 700; color: var(--text-3); margin-top: 3px;">/mois</div>
           </div>
         </div>
       </div>
-
-      <!-- Avantages inclus -->
       <div style="margin-bottom: 18px;">
         <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 12px; color: var(--text-3); letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 10px;">— Tout inclus</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;">
-          ${[
-            'Menu QR illimité',
-            'Tables illimitées',
-            'Stats temps réel',
-            'Support prioritaire',
-            '0% de commission',
-            'Mises à jour incluses'
-          ].map(f => `
+          ${['Menu QR illimité','Tables illimitées','Stats temps réel','Support prioritaire','0% de commission','Mises à jour incluses'].map(f => `
             <div style="display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--text-2); letter-spacing: -0.010em;">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
               ${f}
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
       </div>
-
-      <!-- Bouton portail -->
       <button class="btn btn-secondary" id="cfg-billing-portal-btn" style="width: 100%;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Gérer mon abonnement
       </button>
-
       <p style="text-align: center; margin-top: 12px; font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: -0.005em;">
         Modifier la carte · Voir les factures · Annuler
       </p>
-
-    </div>
-  `;
-
-  // Re-câbler le bouton qu'on vient de recréer (avec le wireConfigButtons existant)
-  setTimeout(() => {
-    if (typeof wireConfigButtons === 'function') wireConfigButtons();
-  }, 50);
+    </div>`;
+  setTimeout(() => { if (typeof wireConfigButtons === 'function') wireConfigButtons(); }, 50);
 }
 
 function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v || ''; }
@@ -1889,21 +1876,46 @@ function wireConfigButtons() {
     logoutBtn.dataset.wired = '1';
     logoutBtn.addEventListener('click', doLogout);
   }
+
+  // ════════ BOUTON STRIPE CONNECT (paiement client à table) ════════
   const stripeBtn = document.getElementById('cfg-stripe-connect-btn');
   if (stripeBtn && !stripeBtn.dataset.wired) {
     stripeBtn.dataset.wired = '1';
-    stripeBtn.addEventListener('click', () => showToast('Bientôt disponible', ''));
+    stripeBtn.addEventListener('click', async () => {
+      if (!state.resto || !state.user) { showToast('Restaurant non chargé', 'error'); return; }
+      const oldHtml = stripeBtn.innerHTML;
+      stripeBtn.disabled = true;
+      stripeBtn.innerHTML = '<div class="spinner"></div> Préparation Stripe…';
+      try {
+        const country = state.resto.fiscal_country === 'CH' ? 'CH' : 'FR';
+        const { data, error } = await supa.functions.invoke('stripe-connect-onboard', {
+          body: {
+            restaurant_id: state.resto.id,
+            email: state.user.email,
+            country: country
+          }
+        });
+        if (error || !data?.url) throw new Error(error?.message || data?.error || 'Erreur');
+        location.href = data.url;
+      } catch (err) {
+        console.error('Stripe Connect:', err);
+        showToast('Erreur : ' + (err.message || 'configuration indisponible'), 'error');
+        stripeBtn.disabled = false;
+        stripeBtn.innerHTML = oldHtml;
+      }
+    });
   }
-  // ════════ BOUTON STRIPE CHECKOUT ════════
+
+  // ════════ BOUTON ABONNEMENT FRIZZ PRO (Checkout ou Portal) ════════
   const billingBtn = document.getElementById('cfg-billing-portal-btn');
-if (billingBtn && !billingBtn.dataset.wired) {
+  if (billingBtn && !billingBtn.dataset.wired) {
     billingBtn.dataset.wired = '1';
     billingBtn.addEventListener('click', async () => {
       if (!state.resto || !state.user) { showToast('Restaurant non chargé', 'error'); return; }
       const oldHtml = billingBtn.innerHTML;
       billingBtn.disabled = true;
 
-      // ═══════ CAS 1 : ABONNÉ → ouvrir Stripe Customer Portal ═══════
+      // Cas 1 : Abonné → Customer Portal
       if (state.resto.subscription_active) {
         billingBtn.innerHTML = '<div class="spinner"></div> Ouverture du portail…';
         try {
@@ -1920,7 +1932,7 @@ if (billingBtn && !billingBtn.dataset.wired) {
         return;
       }
 
-      // ═══════ CAS 2 : NON ABONNÉ → Stripe Checkout ═══════
+      // Cas 2 : Non abonné → Checkout
       billingBtn.innerHTML = '<div class="spinner"></div> Préparation du paiement…';
       try {
         const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
@@ -1935,6 +1947,7 @@ if (billingBtn && !billingBtn.dataset.wired) {
       }
     });
   }
+
   const addRestoBtn = document.getElementById('cfg-add-resto-btn');
   if (addRestoBtn && !addRestoBtn.dataset.wired) {
     addRestoBtn.dataset.wired = '1';
@@ -2021,14 +2034,13 @@ async function createNewResto() {
 window.addEventListener('load', wireConfigButtons);
 
 // ════════════════════════════════════════════════════════════════
-// LOGIQUE D'ESSAI : compute + badge + écran de blocage + debug
+// LOGIQUE D'ESSAI
 // ════════════════════════════════════════════════════════════════
 
 const TRIAL_DURATION_DAYS = 14;
 
 function computeTrialState(resto) {
   if (!resto) return { state: 'unknown', daysLeft: 0 };
-  // Mode debug
   const debugMode = localStorage.getItem('frizz_debug_trial');
   if (debugMode !== null && debugMode !== 'normal') {
     if (debugMode === 'expired') return { state: 'expired', daysLeft: 0 };
@@ -2041,7 +2053,6 @@ function computeTrialState(resto) {
       return { state: 'active', daysLeft: fakeDays };
     }
   }
-  // Logique réelle
   if (resto.subscription_active) return { state: 'subscribed', daysLeft: 0 };
   if (!resto.trial_started_at) return { state: 'active', daysLeft: TRIAL_DURATION_DAYS };
   const startedAt = new Date(resto.trial_started_at).getTime();
@@ -2156,9 +2167,9 @@ function toggleDebugPanel() {
   const activeBtnStyle = btnStyle + ' background: rgba(10,132,255,0.20); border-color: var(--blue); color: var(--blue);';
   const modes = [
     { val: 'normal',     label: '✓ Mode normal (réel)' },
-    { val: '12',         label: '12 jours restants (vert)' },
-    { val: '5',          label: '5 jours restants (orange)' },
-    { val: '1',          label: '1 jour restant (rouge)' },
+    { val: '12',         label: '12 jours restants' },
+    { val: '5',          label: '5 jours restants' },
+    { val: '1',          label: '1 jour restant' },
     { val: 'expired',    label: '🔒 Expiré (bloqué)' },
     { val: 'subscribed', label: '✅ Abonné' },
   ];

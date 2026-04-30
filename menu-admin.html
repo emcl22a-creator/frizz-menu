@@ -1803,13 +1803,31 @@ function wireConfigButtons() {
   }
   // ════════ BOUTON STRIPE CHECKOUT ════════
   const billingBtn = document.getElementById('cfg-billing-portal-btn');
-  if (billingBtn && !billingBtn.dataset.wired) {
+if (billingBtn && !billingBtn.dataset.wired) {
     billingBtn.dataset.wired = '1';
     billingBtn.addEventListener('click', async () => {
       if (!state.resto || !state.user) { showToast('Restaurant non chargé', 'error'); return; }
-      if (state.resto.subscription_active) { showToast('Vous êtes déjà abonné à Frizz Pro.', 'success'); return; }
       const oldHtml = billingBtn.innerHTML;
       billingBtn.disabled = true;
+
+      // ═══════ CAS 1 : ABONNÉ → ouvrir Stripe Customer Portal ═══════
+      if (state.resto.subscription_active) {
+        billingBtn.innerHTML = '<div class="spinner"></div> Ouverture du portail…';
+        try {
+          const { data, error } = await supa.functions.invoke('stripe-billing-portal', {
+            body: { restaurant_id: state.resto.id }
+          });
+          if (error || !data?.url) throw new Error(error?.message || data?.error || 'Erreur');
+          location.href = data.url;
+        } catch (err) {
+          showToast('Erreur : ' + (err.message || 'portail indisponible'), 'error');
+          billingBtn.disabled = false;
+          billingBtn.innerHTML = oldHtml;
+        }
+        return;
+      }
+
+      // ═══════ CAS 2 : NON ABONNÉ → Stripe Checkout ═══════
       billingBtn.innerHTML = '<div class="spinner"></div> Préparation du paiement…';
       try {
         const { data, error } = await supa.functions.invoke('stripe-create-checkout', {

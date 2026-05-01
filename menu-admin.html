@@ -276,6 +276,85 @@
   .resto-pill:hover { background: rgba(255,255,255,0.12); }
   .resto-pill svg { width: 11px; height: 11px; opacity: 0.6; }
 
+  /* CONFIG PILL — Bouton engrenage en haut à droite */
+  .config-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 4px 12px -4px rgba(0,0,0,0.3);
+    padding: 0;
+  }
+  .config-pill:hover {
+    background: rgba(255,255,255,0.14);
+    transform: rotate(45deg);
+  }
+  .config-pill:active {
+    transform: rotate(45deg) scale(0.95);
+  }
+  .config-pill svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* RESTO SELECTOR BUTTON dans Config */
+  .resto-selector-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .resto-selector-btn:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: var(--border-bright);
+  }
+  .resto-selector-btn:active {
+    transform: scale(0.99);
+  }
+  .resto-selector-info {
+    flex: 1;
+    text-align: left;
+    min-width: 0;
+  }
+  .resto-selector-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .resto-selector-name {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.018em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
   /* STATUS PILL — Ouvert/Fermé */
   .status-pill {
     display: inline-flex;
@@ -1715,9 +1794,11 @@
         <span class="status-dot"></span>
         <span id="status-label">—</span>
       </button>
-      <button class="resto-pill" id="resto-selector">
-        <span id="resto-name">—</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <button class="config-pill" id="config-pill-btn" title="Configuration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
       </button>
     </div>
   </header>
@@ -1907,6 +1988,24 @@
           Cuisine
         </button>
       </div>
+    </div>
+
+    <!-- Card: Mes restaurants (sélecteur) -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Mes <em>restaurants</em></h2>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
+        Changez de restaurant ou ajoutez-en un nouveau.
+      </p>
+
+      <button class="resto-selector-btn" id="open-resto-switcher-btn" type="button">
+        <div class="resto-selector-info">
+          <div class="resto-selector-label">Restaurant actuel</div>
+          <div class="resto-selector-name" id="cfg-resto-current">—</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--text-3);">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
     </div>
 
     <!-- Card: Restaurant -->
@@ -2252,6 +2351,92 @@
       </div>
     </div>
 
+    <!-- Card: Analyse IA -->
+    <div class="ed-cmd-card" style="position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -40%; right: -20%; width: 60%; height: 180%; background: radial-gradient(ellipse, rgba(167, 139, 250, 0.18), transparent 60%); pointer-events: none;"></div>
+
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; position: relative;">
+        <h2 class="ed-cmd-head" style="margin-bottom: 0;">Analyse <em>IA</em></h2>
+        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(167, 139, 250, 0.15); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 100px; font-size: 10px; font-weight: 800; color: #A78BFA; letter-spacing: 0.04em; text-transform: uppercase;">
+          <svg style="width:10px; height:10px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
+          </svg>
+          Claude
+        </span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; position: relative;">
+        Notre IA lit tous vos avis et identifie ce qui marche bien, ce qui fâche, et ce que vous pourriez améliorer en priorité.
+      </p>
+
+      <button type="button" class="btn btn-primary" id="run-ai-analysis-btn" style="width: 100%; position: relative; background: linear-gradient(135deg, #A78BFA, #818CF8); border-color: rgba(167, 139, 250, 0.6); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px -8px rgba(167, 139, 250, 0.5);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
+        </svg>
+        <span id="run-ai-analysis-text">Analyser mes avis</span>
+      </button>
+
+      <!-- Résultats IA -->
+      <div id="ai-analysis-results" style="display: none; margin-top: 18px; position: relative;">
+
+        <!-- Résumé global -->
+        <div id="ai-summary" style="padding: 14px 16px; background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.2); border-radius: var(--r); margin-bottom: 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); font-weight: 500; font-style: italic;">
+          <!-- rempli par JS -->
+        </div>
+
+        <!-- 3 colonnes : qualités, défauts, améliorations -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+
+          <!-- Qualités -->
+          <div style="padding: 14px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--green);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--green); letter-spacing: 0.04em; text-transform: uppercase;">Vos qualités</span>
+            </div>
+            <ul id="ai-qualities" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+          <!-- Défauts -->
+          <div style="padding: 14px; background: rgba(255, 107, 92, 0.06); border: 1px solid rgba(255, 107, 92, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--red); letter-spacing: 0.04em; text-transform: uppercase;">Points de friction</span>
+            </div>
+            <ul id="ai-defauts" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+          <!-- Améliorations -->
+          <div style="padding: 14px; background: rgba(10, 132, 255, 0.06); border: 1px solid rgba(10, 132, 255, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2 1 3.5 2.5 5L9 16h6l1.5-2c1.5-1.5 2.5-3 2.5-5a7 7 0 0 0-7-7z"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 0.04em; text-transform: uppercase;">À améliorer</span>
+            </div>
+            <ul id="ai-ameliorations" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Date de la dernière analyse -->
+        <div id="ai-analysis-meta" style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-3); font-weight: 600; letter-spacing: -0.005em;">
+          <!-- rempli par JS -->
+        </div>
+      </div>
+
+      <!-- Empty state (pas assez d'avis) -->
+      <div id="ai-empty-state" style="display: none; padding: 20px 16px; text-align: center; margin-top: 14px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-strong); border-radius: var(--r);">
+        <div style="font-size: 13px; color: var(--text-2); font-weight: 600; line-height: 1.5;">
+          Pas encore assez d'avis pour générer une analyse.<br>
+          <span style="color: var(--text-3); font-weight: 500; font-size: 12px;">Il vous faut au moins 3 avis avec un commentaire.</span>
+        </div>
+      </div>
+
+    </div>
+
     <!-- Card: Derniers avis -->
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Derniers <em>avis</em></h2>
@@ -2284,10 +2469,6 @@
     <button class="ftb-btn" data-tab="avis">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span>Avis</span>
-    </button>
-    <button class="ftb-btn" data-tab="config">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Config</span>
     </button>
   </div>
 </nav>
@@ -2478,7 +2659,12 @@ async function selectRestaurant(resto) {
     }
   }
 
-  document.getElementById('resto-name').textContent = resto.nom || 'Restaurant';
+  // Le span resto-name a été retiré de la topbar (remplacé par bouton config)
+  // On met à jour la card "Mes restaurants" dans Config à la place
+  const cfgRestoCurrent = document.getElementById('cfg-resto-current');
+  if (cfgRestoCurrent) {
+    cfgRestoCurrent.textContent = resto.nom || 'Restaurant';
+  }
   document.getElementById('ed-resto-display').textContent = getShortName(resto.nom);
   // Met à jour le pill ouvert/fermé
   updateOpenPill(resto.ouvert !== false);
@@ -2530,13 +2716,28 @@ document.getElementById('logo-link').addEventListener('click', e => {
 });
 
 // Quick action buttons : Menu + Service + Cuisine ─────────────────────
+// Helper : construit l'URL d'une page sœur (menu, serveur, cuisine) en gérant tous les cas
+function buildSiblingUrl(pageName) {
+  // On part du pathname courant (ex: "/menu-admin.html", "/admin", "/", ...)
+  let path = location.pathname || '/';
+  // On enlève "menu-admin.html" si présent, sinon on prend le dossier parent
+  if (/menu-admin\.html?$/i.test(path)) {
+    path = path.replace(/menu-admin\.html?$/i, pageName);
+  } else if (path.endsWith('/')) {
+    path = path + pageName;
+  } else {
+    // Sinon on prend le dossier parent (en supprimant le dernier segment) puis on rajoute la page
+    path = path.replace(/[^/]+$/, '') + pageName;
+  }
+  return path;
+}
+
 document.getElementById('open-menu-btn').addEventListener('click', () => {
   if (!state.resto || !state.resto.slug) {
     showToast('Restaurant non chargé', 'error');
     return;
   }
-  // Toujours mode preview : le restaurateur veut juste voir l'aperçu, pas commander
-  const url = location.pathname.replace(/menu-admin\.html$/, 'menu.html')
+  const url = buildSiblingUrl('menu.html')
     + '?resto=' + encodeURIComponent(state.resto.slug)
     + '&mode=preview';
   window.open(url, '_blank');
@@ -2547,7 +2748,7 @@ document.getElementById('open-serveur-btn').addEventListener('click', () => {
     showToast('Restaurant non chargé', 'error');
     return;
   }
-  const url = location.pathname.replace(/menu-admin\.html$/, 'serveur.html') + '?resto=' + encodeURIComponent(state.resto.slug);
+  const url = buildSiblingUrl('serveur.html') + '?resto=' + encodeURIComponent(state.resto.slug);
   window.open(url, '_blank');
 });
 
@@ -2556,14 +2757,21 @@ document.getElementById('open-cuisine-btn').addEventListener('click', () => {
     showToast('Restaurant non chargé', 'error');
     return;
   }
-  const url = location.pathname.replace(/menu-admin\.html$/, 'cuisine.html') + '?resto=' + encodeURIComponent(state.resto.slug);
+  const url = buildSiblingUrl('cuisine.html') + '?resto=' + encodeURIComponent(state.resto.slug);
   window.open(url, '_blank');
 });
 
-document.getElementById('resto-selector').addEventListener('click', () => {
-  // Toujours ouvrir la modale de sélection (avec option d'ajouter un nouveau resto)
-  openRestoSwitcher();
+document.getElementById('config-pill-btn').addEventListener('click', () => {
+  switchTab('config');
 });
+
+// Bouton "Mes restaurants" dans la section Config
+const openRestoSwitcherBtn = document.getElementById('open-resto-switcher-btn');
+if (openRestoSwitcherBtn) {
+  openRestoSwitcherBtn.addEventListener('click', () => {
+    openRestoSwitcher();
+  });
+}
 
 function openRestoSwitcher() {
   let overlay = document.getElementById('modal-resto-switcher');
@@ -5398,6 +5606,151 @@ function renderAvisList(list) {
   }).join('');
 }
 
+// ═══════════════════ ANALYSE IA ═══════════════════
+// Appelle l'edge function Supabase qui interroge Claude pour analyser les avis
+
+async function runAIAnalysis() {
+  if (!state || !state.resto || !state.resto.id) {
+    if (typeof showToast === 'function') showToast('Restaurant non défini', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('run-ai-analysis-btn');
+  const txt = document.getElementById('run-ai-analysis-text');
+  const results = document.getElementById('ai-analysis-results');
+  const empty = document.getElementById('ai-empty-state');
+
+  // Récupérer les avis avec commentaire
+  const { data: avis, error: errAvis } = await sb
+    .from('avis')
+    .select('notes, commentaire, note_moyenne, created_at')
+    .eq('restaurant_id', state.resto.id)
+    .not('commentaire', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (errAvis) {
+    if (typeof showToast === 'function') showToast('Erreur : ' + errAvis.message, 'error');
+    return;
+  }
+
+  // Filtrer ceux qui ont un vrai commentaire
+  const avisWithComments = (avis || []).filter(a => a.commentaire && a.commentaire.trim().length > 5);
+
+  if (avisWithComments.length < 3) {
+    results.style.display = 'none';
+    empty.style.display = 'block';
+    if (typeof showToast === 'function') showToast('Il faut au moins 3 avis avec commentaire', 'error');
+    return;
+  }
+
+  // UI : loading
+  btn.disabled = true;
+  txt.textContent = 'Analyse en cours…';
+  empty.style.display = 'none';
+
+  try {
+    // Préparer les données à envoyer à l'IA
+    const avisText = avisWithComments.map((a, i) => {
+      const note = parseFloat(a.note_moyenne || 0).toFixed(1);
+      return `Avis ${i+1} (${note}/5) : "${a.commentaire.trim()}"`;
+    }).join('\n');
+
+    // Appel à l'edge function Supabase
+    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/analyse-avis`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sb.supabaseKey || sb.auth.session()?.access_token || ''}`,
+      },
+      body: JSON.stringify({
+        avis: avisText,
+        nb_avis: avisWithComments.length,
+        resto_name: state.resto.name || 'le restaurant'
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error('Erreur API : ' + errText);
+    }
+
+    const data = await response.json();
+
+    if (!data || !data.qualites || !data.defauts || !data.ameliorations) {
+      throw new Error('Réponse IA invalide');
+    }
+
+    // Afficher les résultats
+    renderAIAnalysis(data, avisWithComments.length);
+
+  } catch (err) {
+    console.error('Erreur runAIAnalysis:', err);
+    if (typeof showToast === 'function') {
+      showToast('Erreur : ' + (err.message || 'analyse impossible'), 'error');
+    }
+  } finally {
+    btn.disabled = false;
+    txt.textContent = 'Relancer l\'analyse';
+  }
+}
+
+function renderAIAnalysis(data, nbAvis) {
+  const results = document.getElementById('ai-analysis-results');
+
+  // Résumé
+  const summary = document.getElementById('ai-summary');
+  if (summary) {
+    summary.textContent = data.resume || `Analyse basée sur ${nbAvis} avis avec commentaires.`;
+  }
+
+  // Qualités
+  const qualEl = document.getElementById('ai-qualities');
+  if (qualEl && Array.isArray(data.qualites)) {
+    qualEl.innerHTML = data.qualites.map(q => `
+      <li style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+        <span style="color: var(--green); font-weight: 800; flex-shrink: 0;">✓</span>
+        <span>${escapeHtml(q)}</span>
+      </li>
+    `).join('');
+  }
+
+  // Défauts
+  const defEl = document.getElementById('ai-defauts');
+  if (defEl && Array.isArray(data.defauts)) {
+    defEl.innerHTML = data.defauts.map(d => `
+      <li style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+        <span style="color: var(--red); font-weight: 800; flex-shrink: 0;">!</span>
+        <span>${escapeHtml(d)}</span>
+      </li>
+    `).join('');
+  }
+
+  // Améliorations
+  const ameEl = document.getElementById('ai-ameliorations');
+  if (ameEl && Array.isArray(data.ameliorations)) {
+    ameEl.innerHTML = data.ameliorations.map(a => `
+      <li style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+        <span style="color: var(--blue); font-weight: 800; flex-shrink: 0;">→</span>
+        <span>${escapeHtml(a)}</span>
+      </li>
+    `).join('');
+  }
+
+  // Meta
+  const meta = document.getElementById('ai-analysis-meta');
+  if (meta) {
+    const now = new Date().toLocaleString('fr-FR', {
+      day: 'numeric', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+    meta.textContent = `Analyse de ${nbAvis} avis · Générée le ${now}`;
+  }
+
+  results.style.display = 'block';
+}
+
 // ═══════════════════ WIRE UP ═══════════════════
 function wireAvisModule() {
   const addBtn = document.getElementById('add-avis-question-btn');
@@ -5410,6 +5763,12 @@ function wireAvisModule() {
   if (saveBtn && !saveBtn._wired) {
     saveBtn.addEventListener('click', saveAvisConfig);
     saveBtn._wired = true;
+  }
+
+  const aiBtn = document.getElementById('run-ai-analysis-btn');
+  if (aiBtn && !aiBtn._wired) {
+    aiBtn.addEventListener('click', runAIAnalysis);
+    aiBtn._wired = true;
   }
 }
 

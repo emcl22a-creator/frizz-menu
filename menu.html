@@ -2387,12 +2387,26 @@ async function submitOrder() {
     let inserted = false;
     let lastError = null;
     let createdOrderId = null;
+    const orderHeure = payload.heure;
 
     for (let attempt = 0; attempt < 10; attempt++) {
-      const { data: insertedRow, error } = await supa.from('commandes').insert(payload).select('id').single();
+      const { error } = await supa.from('commandes').insert(payload);
       if (!error) {
         inserted = true;
-        createdOrderId = insertedRow?.id || null;
+        // Récupérer l'ID via une requête SELECT séparée (compatible RLS basique)
+        try {
+          const { data: lastRow } = await supa
+            .from('commandes')
+            .select('id')
+            .eq('restaurant_id', payload.restaurant_id)
+            .eq('heure', orderHeure)
+            .order('heure', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          createdOrderId = lastRow?.id || null;
+        } catch (e) {
+          console.warn('Récupération ID commande échouée :', e);
+        }
         break;
       }
       lastError = error;

@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -1990,6 +1989,24 @@
       </div>
     </div>
 
+    <!-- Card: Mes restaurants (sélecteur) -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Mes <em>restaurants</em></h2>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;">
+        Changez de restaurant ou ajoutez-en un nouveau.
+      </p>
+
+      <button class="resto-selector-btn" id="open-resto-switcher-btn" type="button">
+        <div class="resto-selector-info">
+          <div class="resto-selector-label">Restaurant actuel</div>
+          <div class="resto-selector-name" id="cfg-resto-current">—</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--text-3);">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+
     <!-- Card: Restaurant -->
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Le <em>restaurant</em></h2>
@@ -2166,127 +2183,7 @@
       <p class="ed-hero-sub">Récoltez des avis automatiquement et fidélisez vos clients.</p>
     </div>
 
-    <!-- Card: Statistiques avis -->
-    <div class="ed-cmd-card">
-      <h2 class="ed-cmd-head">Vos <em>statistiques</em></h2>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
-          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Avis reçus</div>
-          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-count">0</div>
-        </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
-          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Note moyenne</div>
-          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-avg">—</div>
-        </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
-          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Codes générés</div>
-          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-codes">0</div>
-        </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
-          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Codes utilisés</div>
-          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-used">0</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: Analyse IA -->
-    <div class="ed-cmd-card" style="position: relative; overflow: hidden;">
-      <div style="position: absolute; top: -40%; right: -20%; width: 60%; height: 180%; background: radial-gradient(ellipse, rgba(167, 139, 250, 0.18), transparent 60%); pointer-events: none;"></div>
-
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; position: relative;">
-        <h2 class="ed-cmd-head" style="margin-bottom: 0;">Analyse <em>IA</em></h2>
-        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(167, 139, 250, 0.15); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 100px; font-size: 10px; font-weight: 800; color: #A78BFA; letter-spacing: 0.04em; text-transform: uppercase;">
-          <svg style="width:10px; height:10px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
-          </svg>
-          Claude
-        </span>
-      </div>
-      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; position: relative;">
-        Notre IA lit tous vos avis et identifie ce qui marche bien, ce qui fâche, et ce que vous pourriez améliorer en priorité.
-      </p>
-
-      <button type="button" class="btn btn-primary" id="run-ai-analysis-btn" style="width: 100%; position: relative; background: linear-gradient(135deg, #A78BFA, #818CF8); border-color: rgba(167, 139, 250, 0.6); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px -8px rgba(167, 139, 250, 0.5);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
-        </svg>
-        <span id="run-ai-analysis-text">Analyser mes avis</span>
-      </button>
-
-      <!-- Résultats IA -->
-      <div id="ai-analysis-results" style="display: none; margin-top: 18px; position: relative;">
-
-        <!-- Résumé global -->
-        <div id="ai-summary" style="padding: 14px 16px; background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.2); border-radius: var(--r); margin-bottom: 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); font-weight: 500; font-style: italic;">
-          <!-- rempli par JS -->
-        </div>
-
-        <!-- 3 colonnes : qualités, défauts, améliorations -->
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-
-          <!-- Qualités -->
-          <div style="padding: 14px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.18); border-radius: var(--r);">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
-              <svg style="width:16px; height:16px; color: var(--green);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              <span style="font-size: 12px; font-weight: 800; color: var(--green); letter-spacing: 0.04em; text-transform: uppercase;">Vos qualités</span>
-            </div>
-            <ul id="ai-qualities" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
-              <!-- rempli par JS -->
-            </ul>
-          </div>
-
-          <!-- Défauts -->
-          <div style="padding: 14px; background: rgba(255, 107, 92, 0.06); border: 1px solid rgba(255, 107, 92, 0.18); border-radius: var(--r);">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
-              <svg style="width:16px; height:16px; color: var(--red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span style="font-size: 12px; font-weight: 800; color: var(--red); letter-spacing: 0.04em; text-transform: uppercase;">Points de friction</span>
-            </div>
-            <ul id="ai-defauts" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
-              <!-- rempli par JS -->
-            </ul>
-          </div>
-
-          <!-- Améliorations -->
-          <div style="padding: 14px; background: rgba(10, 132, 255, 0.06); border: 1px solid rgba(10, 132, 255, 0.18); border-radius: var(--r);">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
-              <svg style="width:16px; height:16px; color: var(--blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2 1 3.5 2.5 5L9 16h6l1.5-2c1.5-1.5 2.5-3 2.5-5a7 7 0 0 0-7-7z"/></svg>
-              <span style="font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 0.04em; text-transform: uppercase;">À améliorer</span>
-            </div>
-            <ul id="ai-ameliorations" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
-              <!-- rempli par JS -->
-            </ul>
-          </div>
-
-        </div>
-
-        <!-- Date de la dernière analyse -->
-        <div id="ai-analysis-meta" style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-3); font-weight: 600; letter-spacing: -0.005em;">
-          <!-- rempli par JS -->
-        </div>
-      </div>
-
-      <!-- Empty state (pas assez d'avis) -->
-      <div id="ai-empty-state" style="display: none; padding: 20px 16px; text-align: center; margin-top: 14px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-strong); border-radius: var(--r);">
-        <div style="font-size: 13px; color: var(--text-2); font-weight: 600; line-height: 1.5;">
-          Pas encore assez d'avis pour générer une analyse.<br>
-          <span style="color: var(--text-3); font-weight: 500; font-size: 12px;">Il vous faut au moins 3 avis avec un commentaire.</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Card: Derniers avis -->
-    <div class="ed-cmd-card">
-      <h2 class="ed-cmd-head">Derniers <em>avis</em></h2>
-      <div id="avis-list" style="margin-top: 8px;">
-        <div style="padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 13px;">
-          Aucun avis pour le moment.
-        </div>
-      </div>
-    </div>
-
-  <!-- Card: Activation du module -->
+    <!-- Card: Activation du module -->
     <div class="ed-cmd-card">
       <h2 class="ed-cmd-head">Le <em>module avis</em></h2>
       <p style="font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5;">
@@ -2422,7 +2319,6 @@
     </div>
 
     <!-- Bouton sauvegarder -->
-    <!-- Auto-save activé : bouton caché, indicateur discret à la place -->
     <div style="margin: 16px 22px 24px; text-align: center;">
       <button type="button" class="btn btn-primary" id="save-avis-config-btn" style="display: none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -2433,7 +2329,127 @@
       </div>
     </div>
 
-    </section>
+    <!-- Card: Statistiques avis -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Vos <em>statistiques</em></h2>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Avis reçus</div>
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-count">0</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Note moyenne</div>
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-avg">—</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Codes générés</div>
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-codes">0</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px;">Codes utilisés</div>
+          <div style="font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700; font-size: 32px; letter-spacing: -0.024em; line-height: 1;" id="avis-stat-used">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Analyse IA -->
+    <div class="ed-cmd-card" style="position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -40%; right: -20%; width: 60%; height: 180%; background: radial-gradient(ellipse, rgba(167, 139, 250, 0.18), transparent 60%); pointer-events: none;"></div>
+
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; position: relative;">
+        <h2 class="ed-cmd-head" style="margin-bottom: 0;">Analyse <em>IA</em></h2>
+        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(167, 139, 250, 0.15); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 100px; font-size: 10px; font-weight: 800; color: #A78BFA; letter-spacing: 0.04em; text-transform: uppercase;">
+          <svg style="width:10px; height:10px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
+          </svg>
+          Claude
+        </span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; position: relative;">
+        Notre IA lit tous vos avis et identifie ce qui marche bien, ce qui fâche, et ce que vous pourriez améliorer en priorité.
+      </p>
+
+      <button type="button" class="btn btn-primary" id="run-ai-analysis-btn" style="width: 100%; position: relative; background: linear-gradient(135deg, #A78BFA, #818CF8); border-color: rgba(167, 139, 250, 0.6); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px -8px rgba(167, 139, 250, 0.5);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L9 9l-7 1 5 5-1 7 6-4 6 4-1-7 5-5-7-1z"/>
+        </svg>
+        <span id="run-ai-analysis-text">Analyser mes avis</span>
+      </button>
+
+      <!-- Résultats IA -->
+      <div id="ai-analysis-results" style="display: none; margin-top: 18px; position: relative;">
+
+        <!-- Résumé global -->
+        <div id="ai-summary" style="padding: 14px 16px; background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.2); border-radius: var(--r); margin-bottom: 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); font-weight: 500; font-style: italic;">
+          <!-- rempli par JS -->
+        </div>
+
+        <!-- 3 colonnes : qualités, défauts, améliorations -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+
+          <!-- Qualités -->
+          <div style="padding: 14px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--green);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--green); letter-spacing: 0.04em; text-transform: uppercase;">Vos qualités</span>
+            </div>
+            <ul id="ai-qualities" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+          <!-- Défauts -->
+          <div style="padding: 14px; background: rgba(255, 107, 92, 0.06); border: 1px solid rgba(255, 107, 92, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--red); letter-spacing: 0.04em; text-transform: uppercase;">Points de friction</span>
+            </div>
+            <ul id="ai-defauts" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+          <!-- Améliorations -->
+          <div style="padding: 14px; background: rgba(10, 132, 255, 0.06); border: 1px solid rgba(10, 132, 255, 0.18); border-radius: var(--r);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+              <svg style="width:16px; height:16px; color: var(--blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2 1 3.5 2.5 5L9 16h6l1.5-2c1.5-1.5 2.5-3 2.5-5a7 7 0 0 0-7-7z"/></svg>
+              <span style="font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 0.04em; text-transform: uppercase;">À améliorer</span>
+            </div>
+            <ul id="ai-ameliorations" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 500;">
+              <!-- rempli par JS -->
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Date de la dernière analyse -->
+        <div id="ai-analysis-meta" style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-3); font-weight: 600; letter-spacing: -0.005em;">
+          <!-- rempli par JS -->
+        </div>
+      </div>
+
+      <!-- Empty state (pas assez d'avis) -->
+      <div id="ai-empty-state" style="display: none; padding: 20px 16px; text-align: center; margin-top: 14px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-strong); border-radius: var(--r);">
+        <div style="font-size: 13px; color: var(--text-2); font-weight: 600; line-height: 1.5;">
+          Pas encore assez d'avis pour générer une analyse.<br>
+          <span style="color: var(--text-3); font-weight: 500; font-size: 12px;">Il vous faut au moins 3 avis avec un commentaire.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Card: Derniers avis -->
+    <div class="ed-cmd-card">
+      <h2 class="ed-cmd-head">Derniers <em>avis</em></h2>
+      <div id="avis-list" style="margin-top: 8px;">
+        <div style="padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 13px;">
+          Aucun avis pour le moment.
+        </div>
+      </div>
+    </div>
+
+  </section>
 
 </div>
 
@@ -4782,17 +4798,12 @@ async function loadConfig() {
       const list = document.getElementById('cfg-restos-list');
       if (list) {
         list.innerHTML = state.restos.map(r => `
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
-            <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
+            <div>
               <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div>
               <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
             </div>
-            <div style="display: flex; gap: 6px; flex-shrink: 0;">
-              ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
-              <button class="btn btn-danger" style="padding: 6px 10px; font-size: 11px;" onclick="confirmDeleteResto('${r.id}')" title="Supprimer ce restaurant">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-              </button>
-            </div>
+            ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
           </div>
         `).join('');
       }
@@ -4906,17 +4917,12 @@ async function saveAllConfig() {
           } else {
             // Fallback : re-render manuel de la liste
             restosList.innerHTML = state.restos.map(r => `
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
-                <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border-radius: var(--r-sm); border: 1px solid var(--border);">
+                <div>
                   <div style="font-weight: 800; font-size: 13.5px; color: var(--text);">${escapeHtml(r.nom)}${r.id === state.resto.id ? ' <span style=\"color: var(--blue); font-size: 10px;\">· actif</span>' : ''}</div>
                   <div style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 11.5px; color: var(--text-3); margin-top: 2px;">${escapeHtml(r.slug || '')}</div>
                 </div>
-                <div style="display: flex; gap: 6px; flex-shrink: 0;">
-                  ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
-                  <button class="btn btn-danger" style="padding: 6px 10px; font-size: 11px;" onclick="confirmDeleteResto('${r.id}')" title="Supprimer ce restaurant">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                  </button>
-                </div>
+                ${r.id !== state.resto.id ? `<button class="btn btn-secondary" style="padding: 6px 10px; font-size: 11px;" onclick="switchResto('${r.id}')">Activer</button>` : ''}
               </div>
             `).join('');
           }
@@ -4956,59 +4962,6 @@ async function switchResto(restoId) {
   showToast(`Restaurant ${getShortName(resto.nom)} actif`, 'success');
 }
 window.switchResto = switchResto;
-
-// ═══════════════════════════════════════════════════════════════
-// SUPPRIMER UN RESTAURANT (avec confirmation)
-// ═══════════════════════════════════════════════════════════════
-
-async function confirmDeleteResto(restoId) {
-  if (!restoId) return;
-  const resto = state.restos.find(r => r.id === restoId);
-  if (!resto) return;
-
-  // Empêcher la suppression du dernier restaurant
-  if (state.restos.length <= 1) {
-    showToast('Impossible : vous devez avoir au moins un restaurant', 'error');
-    return;
-  }
-
-  const msg = `⚠️ Supprimer définitivement "${resto.nom}" ?\n\nCette action est IRRÉVERSIBLE.\nTous les plats, tables, commandes et avis seront supprimés à jamais.\n\nCliquez OK pour confirmer.`;
-  if (!confirm(msg)) return;
-
-  try {
-    showToast('Suppression en cours…');
-
-    // Si on supprime le restaurant actif, on bascule sur un autre AVANT
-    if (restoId === state.resto.id) {
-      const next = state.restos.find(r => r.id !== restoId);
-      if (next) await selectRestaurant(next);
-    }
-
-    // Supprimer les données liées (ordre important pour éviter contraintes FK)
-    await supa.from('avis').delete().eq('restaurant_id', restoId);
-    await supa.from('code_promo').delete().eq('restaurant_id', restoId);
-    await supa.from('avis_config').delete().eq('restaurant_id', restoId);
-    await supa.from('commandes').delete().eq('restaurant_id', restoId);
-    await supa.from('menu').delete().eq('restaurant_id', restoId);
-    await supa.from('tables').delete().eq('restaurant_id', restoId);
-
-    // Supprimer le restaurant lui-même
-    const { error } = await supa.from('restaurants').delete().eq('id', restoId);
-    if (error) throw error;
-
-    // Mettre à jour la liste locale
-    state.restos = state.restos.filter(r => r.id !== restoId);
-
-    showToast(`"${resto.nom}" supprimé`, 'success');
-
-    // Re-render Config pour mettre à jour la liste
-    if (typeof loadConfig === 'function') await loadConfig();
-  } catch (err) {
-    console.error('confirmDeleteResto:', err);
-    showToast('Erreur : ' + (err.message || 'suppression impossible'), 'error');
-  }
-}
-window.confirmDeleteResto = confirmDeleteResto;
 
 // Email comptable : envoyer un test
 // Wire up Config buttons (en attendant DOMContentLoaded)
@@ -5395,6 +5348,11 @@ window.applyAvisTemplate = function() {
   if (typeof showToast === 'function') {
     showToast('Modèle appliqué ✓');
   }
+
+  // Déclencher l'auto-save pour persister les questions choisies
+  if (typeof window.__autoSaveTrigger === 'function') {
+    window.__autoSaveTrigger();
+  }
 };
 
 // ═══════════════════ RENDER QUESTIONS LIST ═══════════════════
@@ -5524,23 +5482,21 @@ async function loadAvisConfig() {
 // ═══════════════════ SAVE CONFIG ═══════════════════
 async function saveAvisConfig() {
   if (!state || !state.resto || !state.resto.id) {
-    return; // pas de resto = on ne sauvegarde pas (silencieusement)
+    return;
   }
 
-  // Validation : au moins 1 question avec un label
   const validQuestions = avisQuestions.filter(q => q.label && q.label.trim().length > 0);
   if (validQuestions.length === 0) {
-    return; // pas de question valide = on ne sauvegarde pas
+    return;
   }
 
   const isSilent = (typeof window.__autoSaveSilent === 'function') ? window.__autoSaveSilent() : false;
   const btn = document.getElementById('save-avis-config-btn');
   const originalText = btn ? btn.innerHTML : '';
-  if (btn) {
+  if (btn && btn.style.display !== 'none') {
     btn.disabled = true;
     btn.innerHTML = '<span style="opacity:0.6;">Enregistrement…</span>';
   }
-  // Indicateur discret en haut de la section pour montrer qu'on sauvegarde
   const indicator = document.getElementById('avis-autosave-indicator');
   if (indicator) {
     indicator.textContent = '💾 Enregistrement…';
@@ -5583,8 +5539,6 @@ async function saveAvisConfig() {
     console.error('Erreur saveAvisConfig:', err);
     if (typeof showToast === 'function') {
       showToast('Erreur : ' + (err.message || 'impossible d\'enregistrer'));
-    } else {
-      alert('Erreur : ' + (err.message || 'impossible d\'enregistrer'));
     }
     if (indicator) {
       indicator.textContent = '✗ Erreur';
@@ -5841,7 +5795,7 @@ function wireAvisModule() {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // AUTO-SAVE : sauvegarde automatique avec debounce (800ms)
+  // AUTO-SAVE : sauvegarde automatique 800ms après chaque modification
   // ═══════════════════════════════════════════════════════════════
   const avisSection = document.getElementById('section-avis');
   if (avisSection && !avisSection._autoSaveWired) {
@@ -5857,6 +5811,7 @@ function wireAvisModule() {
       }, 800);
     }
     window.__autoSaveSilent = () => window.__autoSaveSilentFlag === true;
+    window.__autoSaveTrigger = autoSaveDebounced;
 
     avisSection.addEventListener('change', (e) => {
       const tag = e.target.tagName;

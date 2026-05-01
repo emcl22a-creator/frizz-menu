@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0A0A0B">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="dark">
+<title>Frizz · Merci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  /* ═══════════════════════════════════════════════════════════════
+     FRIZZ AVIS — Design system éditorial glass (cohérent admin)
+     ═══════════════════════════════════════════════════════════════ */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #050506;
+    --surface: rgba(255,255,255,0.03);
+    --surface-strong: rgba(255,255,255,0.05);
+    --surface-glass: rgba(20, 20, 26, 0.35);
+
+    --text: #F2F2F4;
+    --text-2: rgba(255,255,255,0.65);
+    --text-3: rgba(255,255,255,0.45);
+    --text-4: rgba(255,255,255,0.25);
+
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.12);
+    --border-bright: rgba(255,255,255,0.18);
+
+    --blue: #0A84FF;
+    --blue-bright: #2E9DFF;
+    --blue-glow: rgba(10,132,255,0.5);
+    --blue-soft: rgba(10,132,255,0.14);
+
+    --green: #4ADE80;
+    --green-soft: rgba(74,222,128,0.14);
+    --orange: #FFB454;
+    --orange-soft: rgba(255,180,84,0.14);
+    --red: #FF6B5C;
+    --red-soft: rgba(255,107,92,0.14);
+    --gold: #FFD60A;
+    --gold-soft: rgba(255,214,10,0.14);
+
+    --r-sm: 10px;
+    --r: 14px;
+    --r-md: 18px;
+    --r-lg: 22px;
+    --r-xl: 24px;
+    --r-pill: 100px;
+  }
+
+  html, body {
+    color: var(--text);
+    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.014em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ════════════ AURORA BACKGROUND ════════════ */
+  html {
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
+      radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
+      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
+      #050506 !important;
+    background-attachment: fixed !important;
+  }
+  body { background: transparent !important; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
+    animation: auroraDrift 24s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+  @keyframes auroraDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 2%) scale(1.06); }
+    100% { transform: translate(-2%, 3%) scale(1.04); }
+  }
+
+  /* ════════════ APP SHELL ════════════ */
+  .app {
+    min-height: 100vh;
+    padding-bottom: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sur PC : centrer dans une colonne lisible */
+  @media (min-width: 768px) {
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+  }
+
+  /* ════════════ TOPBAR FRIZZ ════════════ */
+  /* Mobile + tablette uniquement (caché sur desktop ≥ 1024px) */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 14px 22px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  @media (min-width: 1024px) {
+    .topbar {
+      display: none;
+    }
+  }
+  .logo {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.020em;
+    font-size: 26px;
+    color: var(--text);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    line-height: 1;
+  }
+  .logo .spark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 22px;
+    margin-left: 1px;
+    animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
+    text-shadow: 0 0 12px rgba(10,132,255,0.5);
+  }
+  @keyframes sparkPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.08); }
+  }
+
+  /* ════════════ CONTENT ════════════ */
+  .content {
+    padding: 0 22px;
+  }
+
+  /* ════════════ HERO REMERCIEMENT ════════════ */
+  .hero-merci {
+    text-align: center;
+    padding: 40px 0 28px;
+  }
+  .icon-success {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--green-soft);
+    border: 1.5px solid rgba(74, 222, 128, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 12px 40px -12px rgba(74, 222, 128, 0.4);
+    animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes pop {
+    0% { transform: scale(0.4); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .icon-success svg {
+    width: 38px;
+    height: 38px;
+    color: var(--green);
+  }
+  .hero-eyebrow {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue);
+    margin-bottom: 10px;
+    letter-spacing: -0.005em;
+  }
+  .hero-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 42px;
+    letter-spacing: -0.028em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .hero-subtitle {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.5;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .hero-subtitle strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* ════════════ GLASS CARD ════════════ */
+  .ed-card {
+    margin-top: 16px;
+    padding: 22px 20px 20px;
+    background: var(--surface);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 12px 40px -12px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .ed-card-eyebrow {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--blue);
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  .ed-card-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .ed-card-subtitle {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--text-2);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  /* ════════════ QUESTIONS ════════════ */
+  .question-block {
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+  }
+  .question-block:first-of-type {
+    border-top: 0;
+    padding-top: 4px;
+  }
+  .question-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.4;
+    letter-spacing: -0.011em;
+  }
+  .stars-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+  .star-btn {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.12s ease;
+    font-family: inherit;
+  }
+  .star-btn:active { transform: scale(0.85); }
+  .star-btn svg {
+    width: 36px;
+    height: 36px;
+    color: var(--border-bright);
+    fill: transparent;
+    transition: all 0.2s ease;
+    stroke-width: 1.5;
+  }
+  .star-btn.active svg {
+    color: var(--gold);
+    fill: var(--gold);
+    filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.45));
+  }
+
+  .stars-feedback {
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-3);
+    min-height: 18px;
+    transition: color 0.2s ease;
+  }
+  .stars-feedback.visible {
+    color: var(--gold);
+  }
+
+  /* ════════════ COMMENTAIRE ════════════ */
+  .commentaire-wrap {
+    margin-top: 6px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  textarea.commentaire {
+    width: 100%;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 500;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    letter-spacing: -0.01em;
+  }
+  textarea.commentaire:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  textarea.commentaire::placeholder {
+    color: var(--text-4);
+    font-style: italic;
+  }
+
+  /* ════════════ BOUTON PRIMARY ════════════ */
+  .btn-primary {
+    width: 100%;
+    margin-top: 18px;
+    padding: 16px;
+    background: var(--blue);
+    color: white;
+    border: 1px solid var(--blue-bright);
+    border-radius: var(--r);
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 800;
+    letter-spacing: -0.014em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 8px 24px -8px var(--blue-glow);
+  }
+  .btn-primary:hover {
+    background: var(--blue-bright);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      0 12px 28px -8px var(--blue-glow);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ════════════ CARD CODE PROMO (gold) ════════════ */
+  .promo-card {
+    margin-top: 16px;
+    padding: 28px 22px 24px;
+    background: var(--surface);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border: 1px solid rgba(255,214,10,0.25);
+    border-radius: var(--r-lg);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 12px 40px -12px rgba(255,214,10,0.18);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .promo-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 70%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(255,214,10,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .promo-emoji {
+    font-size: 44px;
+    margin-bottom: 14px;
+    display: inline-block;
+    animation: giftBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+  @keyframes giftBounce {
+    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .promo-eyebrow {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+    position: relative;
+  }
+  .promo-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.024em;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .promo-subtitle {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--text-2);
+    margin-bottom: 22px;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .code-display {
+    position: relative;
+    background: rgba(0,0,0,0.4);
+    border: 1.5px dashed rgba(255,214,10,0.4);
+    border-radius: var(--r);
+    padding: 18px 14px;
+    font-family: 'Inter Tight', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    user-select: all;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .code-display:hover {
+    background: rgba(0,0,0,0.55);
+    border-color: rgba(255,214,10,0.6);
+  }
+  .code-display:active { transform: scale(0.98); }
+
+  .code-meta {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+    position: relative;
+  }
+  .copy-feedback {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-weight: 700;
+  }
+  .copy-feedback.show { opacity: 1; }
+
+  /* ════════════ PLATEFORMES AVIS ════════════ */
+  .platforms-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .platform-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    color: var(--text);
+    text-decoration: none;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .platform-btn:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+  }
+  .platform-btn:active { transform: scale(0.98); }
+
+  .platform-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 4px 12px -4px rgba(0,0,0,0.4);
+  }
+  .platform-icon.google {
+    background: linear-gradient(135deg, #EA4335 0%, #FBBC05 50%, #34A853 100%);
+    color: white;
+  }
+  .platform-icon.tripadvisor {
+    background: #34E0A1;
+    color: #000;
+  }
+  .platform-icon.facebook {
+    background: #1877F2;
+    color: white;
+  }
+
+  .platform-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .platform-name {
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: -0.011em;
+  }
+  .platform-desc {
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .platform-arrow {
+    color: var(--text-3);
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ════════════ FOOTER ════════════ */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 11.5px;
+    color: var(--text-3);
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  .footer-brand {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1px;
+  }
+  .footer-brand .spark {
+    color: var(--blue);
+    font-size: 16px;
+    text-shadow: 0 0 8px rgba(10,132,255,0.5);
+  }
+
+  /* ════════════ LOADER ════════════ */
+  .loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 6, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .loader-overlay.show { display: flex; }
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ════════════ EMPTY STATE / ERREUR ════════════ */
+  .empty-state {
+    text-align: center;
+    padding: 80px 22px;
+  }
+  .empty-icon {
+    font-size: 56px;
+    margin-bottom: 18px;
+    opacity: 0.7;
+  }
+  .empty-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.022em;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .empty-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.5;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  /* ════════════ STEPS ════════════ */
+  .step { display: none; }
+  .step.active {
+    display: block;
+    animation: slideIn 0.35s cubic-bezier(0.34, 1.06, 0.64, 1);
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ════════════ INFO MESSAGE (déjà donné, etc.) ════════════ */
+  .info-banner {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--blue-soft);
+    border: 1px solid rgba(10,132,255,0.25);
+    border-radius: var(--r);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: -0.011em;
+  }
+
+  /* Mobile fine-tune */
+  @media (max-width: 380px) {
+    .hero-title { font-size: 36px; }
+    .promo-title { font-size: 28px; }
+    .star-btn svg { width: 32px; height: 32px; }
+    .code-display { font-size: 18px; padding: 16px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">Frizz<span class="spark">✦</span></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════ ÉTAPE 1 : QUESTIONS ═══════════════ -->
+    <div class="step active" id="step-questions">
+
+      <div class="hero-merci">
+        <div class="icon-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="hero-eyebrow">Commande confirmée</div>
+        <h1 class="hero-title">Merci !</h1>
+        <p class="hero-subtitle">
+          Votre commande chez <strong id="resto-name">…</strong> est confirmée.<br>
+          Comment était votre expérience ?
+        </p>
+      </div>
+
+      <div class="ed-card">
+        <div class="ed-card-eyebrow">Votre avis</div>
+        <h2 class="ed-card-title">On vous écoute</h2>
+        <p class="ed-card-subtitle">
+          Quelques étoiles pour nous aider à nous améliorer. C'est rapide.
+        </p>
+
+        <div id="questions-container">
+          <!-- rempli dynamiquement -->
+        </div>
+
+        <div class="commentaire-wrap">
+          <textarea
+            class="commentaire"
+            id="commentaire"
+            placeholder="Un commentaire à partager ? (facultatif)"
+            rows="3"></textarea>
+        </div>
+
+        <button class="btn-primary" id="btn-submit-avis" disabled>
+          <span id="btn-submit-text">Sélectionnez au moins 1 étoile</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════ ÉTAPE 2 : CODE PROMO + PLATEFORMES ═══════════════ -->
+    <div class="step" id="step-promo">
+
+      <div class="hero-merci">
+        <div class="icon-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="hero-eyebrow">Avis enregistré</div>
+        <h1 class="hero-title">Avec plaisir.</h1>
+        <p class="hero-subtitle">
+          Merci d'avoir pris le temps. Voici un cadeau pour votre prochaine visite.
+        </p>
+      </div>
+
+      <div class="promo-card" id="promo-card">
+        <div class="promo-emoji">🎁</div>
+        <div class="promo-eyebrow">Code de fidélité</div>
+        <h2 class="promo-title" id="promo-title">−10 % offerts</h2>
+        <p class="promo-subtitle" id="promo-description">
+          Profitez de votre réduction lors de votre prochaine visite.
+        </p>
+
+        <div class="code-display" id="code-display" onclick="copyCode()">
+          FRIZZ-XXXXXX
+        </div>
+
+        <div class="code-meta" id="code-meta">
+          Valable 30 jours
+        </div>
+
+        <div class="copy-feedback" id="copy-feedback">✓ Copié dans le presse-papier</div>
+      </div>
+
+      <!-- Plateformes -->
+      <div class="ed-card" id="platforms-card" style="display:none;">
+        <div class="ed-card-eyebrow">Partagez votre avis</div>
+        <h3 class="ed-card-title">Aidez d'autres clients</h3>
+        <p class="ed-card-subtitle">
+          Votre avis sur ces plateformes aide d'autres personnes à choisir leur restaurant.
+        </p>
+
+        <div class="platforms-row" id="platforms-row">
+          <!-- rempli dynamiquement -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════ ÉTAT D'ERREUR ═══════════════ -->
+    <div class="step" id="step-error">
+      <div class="empty-state">
+        <div class="empty-icon">😕</div>
+        <div class="empty-title" id="error-title">Oups…</div>
+        <div class="empty-text" id="error-text">
+          Cette page n'est plus disponible.
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-text">Propulsé par</div>
+      <div class="footer-brand">Frizz<span class="spark">✦</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Loader overlay -->
+<div class="loader-overlay" id="loader">
+  <div class="spinner"></div>
+</div>
+
+<script>
+// ═══════════════════ CONFIG ═══════════════════
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTAxMjEsImV4cCI6MjA3NzA2NjEyMX0.aDjyl1z-DPg_3lcl8-TzcNbBHa-DypFaaP1LPdLrxCM0';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ═══════════════════ STATE ═══════════════════
+const state = {
+  commandeId: null,
+  resto: null,
+  config: null,
+  questions: [],
+  notes: {},
+  commentaire: '',
+  codePromo: null
+};
+
+// ═══════════════════ HELPERS ═══════════════════
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showStep(stepId) {
+  $$('.step').forEach(s => s.classList.remove('active'));
+  $('#' + stepId).classList.add('active');
+}
+
+function showLoader(show = true) {
+  $('#loader').classList.toggle('show', show);
+}
+
+function showError(title, text) {
+  $('#error-title').textContent = title || 'Oups…';
+  $('#error-text').textContent = text || "Cette page n'est plus disponible.";
+  showStep('step-error');
+}
+
+function getQueryParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+// ═══════════════════ INIT ═══════════════════
+async function init() {
+  const commandeId = getQueryParam('commande');
+
+  if (!commandeId) {
+    showError('Lien invalide', 'Aucune commande spécifiée.');
+    return;
+  }
+
+  state.commandeId = commandeId;
+  showLoader(true);
+
+  try {
+    // 1. Récupérer la commande
+    const { data: commande, error: errCmd } = await sb
+      .from('commandes')
+      .select('id, restaurant_id, status, total')
+      .eq('id', commandeId)
+      .single();
+
+    if (errCmd || !commande) {
+      throw new Error('Commande introuvable');
+    }
+
+    // 2. Récupérer le restaurant
+    const { data: resto, error: errResto } = await sb
+      .from('restaurants')
+      .select('id, name, slug')
+      .eq('id', commande.restaurant_id)
+      .single();
+
+    if (errResto || !resto) {
+      throw new Error('Restaurant introuvable');
+    }
+
+    state.resto = resto;
+    $('#resto-name').textContent = resto.name || 'votre restaurant';
+
+    // 3. Vérifier si un avis a déjà été donné
+    const { data: avisExistant } = await sb
+      .from('avis')
+      .select('id, code_promo')
+      .eq('commande_id', commandeId)
+      .maybeSingle();
+
+    if (avisExistant) {
+      state.codePromo = avisExistant.code_promo;
+      await loadConfig();
+      showLoader(false);
+
+      if (state.codePromo) {
+        await showPromoStep(state.codePromo);
+      } else {
+        showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
+      }
+      return;
+    }
+
+    // 4. Charger config
+    await loadConfig();
+
+    if (!state.config || !state.config.module_actif) {
+      showError('Module non activé', "Le restaurant n'a pas encore activé le module d'avis.");
+      return;
+    }
+
+    // 5. Render
+    renderQuestions();
+    showLoader(false);
+
+  } catch (err) {
+    console.error('Erreur init:', err);
+    showLoader(false);
+    showError('Erreur', err.message || 'Impossible de charger les informations.');
+  }
+}
+
+async function loadConfig() {
+  const { data: config, error } = await sb
+    .from('avis_config')
+    .select('*')
+    .eq('restaurant_id', state.resto.id)
+    .maybeSingle();
+
+  if (error) {
+    console.warn('avis_config non trouvée, valeurs par défaut');
+  }
+
+  state.config = config || {
+    questions: [
+      {id: 'q1', label: 'Comment était la cuisine ?', type: 'rating'},
+      {id: 'q2', label: 'Comment était le service ?', type: 'rating'},
+      {id: 'q3', label: 'Recommanderiez-vous notre établissement ?', type: 'rating'}
+    ],
+    promo_actif: true,
+    promo_pourcentage: 10,
+    promo_validite_jours: 30,
+    promo_type: 'frizz_only',
+    google_review_url: null,
+    tripadvisor_url: null,
+    facebook_url: null,
+    module_actif: true
+  };
+
+  state.questions = Array.isArray(state.config.questions) ? state.config.questions : [];
+}
+
+// ═══════════════════ RENDER QUESTIONS ═══════════════════
+function renderQuestions() {
+  const container = $('#questions-container');
+  container.innerHTML = '';
+
+  state.questions.forEach((q) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.innerHTML = `
+      <div class="question-label">${q.label}</div>
+      <div class="stars-row" data-question="${q.id}">
+        ${[1,2,3,4,5].map(n => `
+          <button class="star-btn" data-value="${n}" type="button" aria-label="${n} étoile${n>1?'s':''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </button>
+        `).join('')}
+      </div>
+      <div class="stars-feedback" data-fb="${q.id}"></div>
+    `;
+    container.appendChild(block);
+  });
+
+  $$('.star-btn').forEach(btn => {
+    btn.addEventListener('click', handleStarClick);
+  });
+}
+
+function handleStarClick(e) {
+  const btn = e.currentTarget;
+  const row = btn.closest('.stars-row');
+  const questionId = row.dataset.question;
+  const value = parseInt(btn.dataset.value);
+
+  state.notes[questionId] = value;
+
+  row.querySelectorAll('.star-btn').forEach(b => {
+    const v = parseInt(b.dataset.value);
+    b.classList.toggle('active', v <= value);
+  });
+
+  // Feedback texte
+  const fb = document.querySelector(`[data-fb="${questionId}"]`);
+  if (fb) {
+    const labels = ['', 'Pas du tout', 'Mitigé', 'Bien', 'Très bien', 'Parfait'];
+    fb.textContent = labels[value] || '';
+    fb.classList.toggle('visible', value > 0);
+  }
+
+  updateSubmitButton();
+}
+
+function updateSubmitButton() {
+  const btn = $('#btn-submit-avis');
+  const txt = $('#btn-submit-text');
+
+  const totalQ = state.questions.length;
+  const answered = Object.keys(state.notes).length;
+
+  if (answered === 0) {
+    btn.disabled = true;
+    txt.textContent = 'Sélectionnez au moins 1 étoile';
+  } else if (answered < totalQ) {
+    btn.disabled = false;
+    txt.textContent = `Envoyer mon avis (${answered}/${totalQ})`;
+  } else {
+    btn.disabled = false;
+    txt.textContent = 'Envoyer mon avis';
+  }
+}
+
+// ═══════════════════ SUBMIT ═══════════════════
+$('#btn-submit-avis').addEventListener('click', submitAvis);
+
+async function submitAvis() {
+  const btn = $('#btn-submit-avis');
+  btn.disabled = true;
+  $('#btn-submit-text').textContent = 'Envoi en cours…';
+
+  try {
+    state.commentaire = $('#commentaire').value.trim();
+
+    const values = Object.values(state.notes);
+    const moyenne = values.length > 0
+      ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2)
+      : null;
+
+    // 1. Insérer l'avis
+    const { data: avis, error: errAvis } = await sb
+      .from('avis')
+      .insert({
+        restaurant_id: state.resto.id,
+        commande_id: state.commandeId,
+        notes: state.notes,
+        commentaire: state.commentaire || null,
+        note_moyenne: moyenne,
+        source: 'page_remerciement'
+      })
+      .select()
+      .single();
+
+    if (errAvis) {
+      throw new Error("Impossible d'enregistrer votre avis : " + errAvis.message);
+    }
+
+    // 2. Code promo
+    let codePromo = null;
+
+    if (state.config.promo_actif) {
+      codePromo = await genererCodePromo(avis.id);
+
+      if (codePromo) {
+        await sb
+          .from('avis')
+          .update({ code_promo: codePromo })
+          .eq('id', avis.id);
+      }
+    }
+
+    // 3. Étape suivante
+    await showPromoStep(codePromo);
+
+  } catch (err) {
+    console.error('Erreur submit:', err);
+    btn.disabled = false;
+    $('#btn-submit-text').textContent = 'Réessayer';
+    alert('Erreur : ' + err.message);
+  }
+}
+
+async function genererCodePromo(avisId) {
+  try {
+    const code = 'FRIZZ-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const validiteJours = state.config.promo_validite_jours || 30;
+    const validUntil = new Date();
+    validUntil.setDate(validUntil.getDate() + validiteJours);
+
+    const { error } = await sb
+      .from('code_promo')
+      .insert({
+        code: code,
+        restaurant_id: state.resto.id,
+        avis_id: avisId,
+        pourcentage: state.config.promo_pourcentage || 10,
+        type: state.config.promo_type || 'frizz_only',
+        valable_jusqu_au: validUntil.toISOString()
+      });
+
+    if (error) {
+      console.warn('Pas pu créer le code promo:', error);
+      return null;
+    }
+    return code;
+  } catch (err) {
+    console.error('Erreur génération code:', err);
+    return null;
+  }
+}
+
+async function showPromoStep(codePromo) {
+  showStep('step-promo');
+
+  if (codePromo) {
+    state.codePromo = codePromo;
+    $('#code-display').textContent = codePromo;
+
+    const pct = state.config.promo_pourcentage || 10;
+    const validiteJours = state.config.promo_validite_jours || 30;
+    const validUntil = new Date();
+    validUntil.setDate(validUntil.getDate() + validiteJours);
+
+    $('#promo-title').textContent = `−${pct} % offerts`;
+    $('#promo-description').textContent =
+      `Profitez de votre réduction lors de votre prochaine visite chez ${state.resto.name}.`;
+
+    const dateStr = validUntil.toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    const typeText = state.config.promo_type === 'show_serveur'
+      ? 'À montrer au serveur'
+      : 'Utilisable sur Frizz';
+
+    $('#code-meta').textContent = `${typeText} · Valable jusqu'au ${dateStr}`;
+  } else {
+    $('#promo-card').style.display = 'none';
+  }
+
+  renderPlatforms();
+}
+
+function renderPlatforms() {
+  const platforms = [];
+
+  if (state.config.google_review_url) {
+    platforms.push({
+      name: 'Google',
+      desc: 'Laisser un avis sur Google',
+      icon: 'G',
+      iconClass: 'google',
+      url: state.config.google_review_url
+    });
+  }
+
+  if (state.config.tripadvisor_url) {
+    platforms.push({
+      name: 'Tripadvisor',
+      desc: 'Laisser un avis sur Tripadvisor',
+      icon: 'T',
+      iconClass: 'tripadvisor',
+      url: state.config.tripadvisor_url
+    });
+  }
+
+  if (state.config.facebook_url) {
+    platforms.push({
+      name: 'Facebook',
+      desc: 'Laisser un avis sur Facebook',
+      icon: 'f',
+      iconClass: 'facebook',
+      url: state.config.facebook_url
+    });
+  }
+
+  if (platforms.length === 0) return;
+
+  $('#platforms-card').style.display = 'block';
+  const row = $('#platforms-row');
+  row.innerHTML = '';
+
+  platforms.forEach(p => {
+    const btn = document.createElement('a');
+    btn.className = 'platform-btn';
+    btn.href = p.url;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+    btn.innerHTML = `
+      <div class="platform-icon ${p.iconClass}">${p.icon}</div>
+      <div class="platform-text">
+        <div class="platform-name">${p.name}</div>
+        <div class="platform-desc">${p.desc}</div>
+      </div>
+      <svg class="platform-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    `;
+
+    btn.addEventListener('click', () => trackPlatformClick(p.name.toLowerCase()));
+    row.appendChild(btn);
+  });
+}
+
+async function trackPlatformClick(platform) {
+  if (state.codePromo) {
+    try {
+      await sb
+        .from('avis')
+        .update({ publie_sur: platform })
+        .eq('code_promo', state.codePromo);
+    } catch (err) {
+      console.warn('Tracking failed:', err);
+    }
+  }
+}
+
+// ═══════════════════ COPY ═══════════════════
+window.copyCode = async function() {
+  if (!state.codePromo) return;
+
+  try {
+    await navigator.clipboard.writeText(state.codePromo);
+    const fb = $('#copy-feedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2000);
+  } catch (err) {
+    console.warn('Copy failed:', err);
+  }
+};
+
+// ═══════════════════ START ═══════════════════
+init();
+</script>
+
+</body>
+</html>

@@ -2386,27 +2386,11 @@ async function submitOrder() {
     let payload = { ...orderData };
     let inserted = false;
     let lastError = null;
-    let createdOrderId = null;
-    const orderHeure = payload.heure;
 
     for (let attempt = 0; attempt < 10; attempt++) {
       const { error } = await supa.from('commandes').insert(payload);
       if (!error) {
         inserted = true;
-        // Récupérer l'ID via une requête SELECT séparée (compatible RLS basique)
-        try {
-          const { data: lastRow } = await supa
-            .from('commandes')
-            .select('id')
-            .eq('restaurant_id', payload.restaurant_id)
-            .eq('heure', orderHeure)
-            .order('heure', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-          createdOrderId = lastRow?.id || null;
-        } catch (e) {
-          console.warn('Récupération ID commande échouée :', e);
-        }
         break;
       }
       lastError = error;
@@ -2459,7 +2443,7 @@ async function submitOrder() {
 
     await loadOrders();
 
-    redirectToAvisOrFallback(createdOrderId);
+    showGoogleReviewModal();
   } catch (err) {
     console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2501,7 +2485,7 @@ async function checkGroupValidation() {
 
       if (!error) {
         showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
-        redirectToAvisOrFallback(orderIds[0] || null);
+        showGoogleReviewModal();
       }
     } else {
       updateValidationInfo(validatedPersons.size, allPersons.size);

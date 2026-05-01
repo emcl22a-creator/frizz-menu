@@ -5620,70 +5620,69 @@ async function runAIAnalysis() {
   const results = document.getElementById('ai-analysis-results');
   const empty = document.getElementById('ai-empty-state');
 
-  // Récupérer les avis avec commentaire
-  const { data: avis, error: errAvis } = await sb
-    .from('avis')
-    .select('notes, commentaire, note_moyenne, created_at')
-    .eq('restaurant_id', state.resto.id)
-    .not('commentaire', 'is', null)
-    .order('created_at', { ascending: false })
-    .limit(50);
-
-  if (errAvis) {
-    if (typeof showToast === 'function') showToast('Erreur : ' + errAvis.message, 'error');
-    return;
-  }
-
-  // Filtrer ceux qui ont un vrai commentaire
-  const avisWithComments = (avis || []).filter(a => a.commentaire && a.commentaire.trim().length > 5);
-
-  if (avisWithComments.length < 3) {
-    results.style.display = 'none';
-    empty.style.display = 'block';
-    if (typeof showToast === 'function') showToast('Il faut au moins 3 avis avec commentaire', 'error');
-    return;
-  }
-
   // UI : loading
   btn.disabled = true;
   txt.textContent = 'Analyse en cours…';
-  empty.style.display = 'none';
+  if (empty) empty.style.display = 'none';
+  if (results) results.style.display = 'none';
 
   try {
-    // Préparer les données à envoyer à l'IA
-    const avisText = avisWithComments.map((a, i) => {
-      const note = parseFloat(a.note_moyenne || 0).toFixed(1);
-      return `Avis ${i+1} (${note}/5) : "${a.commentaire.trim()}"`;
-    }).join('\n');
+    // Récupérer le JWT de la session connectée (Verify JWT activé)
+    let authToken = SUPABASE_KEY; // fallback : anon key
+    try {
+      const { data: { session } } = await supa.auth.getSession();
+      if (session && session.access_token) {
+        authToken = session.access_token;
+      }
+    } catch (e) {
+      console.warn('Pas de session, utilisation de la clé anon', e);
+    }
 
-    // Appel à l'edge function Supabase
-    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/analyse-avis`, {
+    // Appel à l'edge function : elle lit elle-même les avis depuis la DB
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/analyze-reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sb.supabaseKey || sb.auth.session()?.access_token || ''}`,
+        'Authorization': `Bearer ${authToken}`,
+        'apikey': SUPABASE_KEY
       },
       body: JSON.stringify({
-        avis: avisText,
-        nb_avis: avisWithComments.length,
-        resto_name: state.resto.name || 'le restaurant'
+        restaurant_id: state.resto.id
       })
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error('Erreur API : ' + errText);
+      throw new Error('HTTP ' + response.status + ' : ' + errText);
     }
 
     const data = await response.json();
 
-    if (!data || !data.qualites || !data.defauts || !data.ameliorations) {
+    // Cas : pas assez d'avis avec commentaire (renvoyé par l'edge function)
+    if (data && data.error === 'not_enough_data') {
+      if (results) results.style.display = 'none';
+      if (empty) {
+        empty.style.display = 'block';
+        const count = data.analyzed_count || 0;
+        empty.innerHTML = `
+          <div style="font-size: 13px; color: var(--text-2); font-weight: 600; line-height: 1.5;">
+            Pas encore assez d'avis pour générer une analyse.<br>
+            <span style="color: var(--text-3); font-weight: 500; font-size: 12px;">
+              Vous avez ${count} avis avec commentaire. Il en faut au moins 3.
+            </span>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    // Validation du format de la réponse
+    if (!data || !Array.isArray(data.qualities) || !Array.isArray(data.defauts) || !Array.isArray(data.ameliorations)) {
       throw new Error('Réponse IA invalide');
     }
 
     // Afficher les résultats
-    renderAIAnalysis(data, avisWithComments.length);
+    renderAIAnalysis(data);
 
   } catch (err) {
     console.error('Erreur runAIAnalysis:', err);
@@ -5696,19 +5695,22 @@ async function runAIAnalysis() {
   }
 }
 
-function renderAIAnalysis(data, nbAvis) {
+function renderAIAnalysis(data) {
   const results = document.getElementById('ai-analysis-results');
+  if (!results) return;
+
+  const nbAvis = data.analyzed_count || 0;
 
   // Résumé
   const summary = document.getElementById('ai-summary');
   if (summary) {
-    summary.textContent = data.resume || `Analyse basée sur ${nbAvis} avis avec commentaires.`;
+    summary.textContent = data.summary || `Analyse basée sur ${nbAvis} avis avec commentaires.`;
   }
 
-  // Qualités
+  // Qualités (clé "qualities" en anglais côté edge function)
   const qualEl = document.getElementById('ai-qualities');
-  if (qualEl && Array.isArray(data.qualites)) {
-    qualEl.innerHTML = data.qualites.map(q => `
+  if (qualEl && Array.isArray(data.qualities)) {
+    qualEl.innerHTML = data.qualities.map(q => `
       <li style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
         <span style="color: var(--green); font-weight: 800; flex-shrink: 0;">✓</span>
         <span>${escapeHtml(q)}</span>
@@ -5738,14 +5740,15 @@ function renderAIAnalysis(data, nbAvis) {
     `).join('');
   }
 
-  // Meta
+  // Meta : date de l'analyse + nombre d'avis
   const meta = document.getElementById('ai-analysis-meta');
   if (meta) {
-    const now = new Date().toLocaleString('fr-FR', {
+    const generatedDate = data.generated_at ? new Date(data.generated_at) : new Date();
+    const formatted = generatedDate.toLocaleString('fr-FR', {
       day: 'numeric', month: 'short', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
-    meta.textContent = `Analyse de ${nbAvis} avis · Générée le ${now}`;
+    meta.textContent = `Analyse de ${nbAvis} avis · Générée le ${formatted}`;
   }
 
   results.style.display = 'block';

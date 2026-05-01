@@ -5480,7 +5480,7 @@ async function loadAvisConfig() {
   if (!state || !state.resto || !state.resto.id) return;
 
   try {
-    const { data: config, error } = await sb
+    const { data: config, error } = await supa
       .from('avis_config')
       .select('*')
       .eq('restaurant_id', state.resto.id)
@@ -5604,7 +5604,7 @@ async function loadAvisStats() {
 
   try {
     // Avis du resto
-    const { data: avisList, error: errAvis } = await sb
+    const { data: avisList, error: errAvis } = await supa
       .from('avis')
       .select('id, notes, commentaire, note_moyenne, code_promo, created_at')
       .eq('restaurant_id', state.resto.id)
@@ -5622,7 +5622,7 @@ async function loadAvisStats() {
     document.getElementById('avis-stat-avg').textContent = moyenne ? moyenne : '—';
 
     // Codes promo
-    const { data: codes } = await sb
+    const { data: codes } = await supa
       .from('code_promo')
       .select('id, utilise')
       .eq('restaurant_id', state.resto.id);

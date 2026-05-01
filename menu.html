@@ -801,7 +801,7 @@
 
 <div class="mode-selector-overlay" id="mode-selector" style="display: none;">
   <div class="mode-selector-card">
-    <div class="mode-selector-logo notranslate" translate="no">Frizz<span class="spark">✦</span></div>
+    <div class="mode-selector-logo">Frizz<span class="spark">✦</span></div>
     <h2 class="mode-selector-title">Bienvenue chez<br><em class="notranslate" translate="no" id="mode-resto-name">…</em></h2>
     <p class="mode-selector-sub">Comment souhaitez-vous commander ?</p>
 
@@ -854,7 +854,7 @@
 </div>
 
 <div class="loading" id="loading">
-  <div class="loading-logo notranslate" translate="no">Frizz<span class="spark">✦</span></div>
+  <div class="loading-logo">Frizz<span class="spark">✦</span></div>
 </div>
 
 <div class="error-screen" id="error" style="display:none;">
@@ -1649,45 +1649,20 @@ function setLang(lang) {
 
   try { localStorage.setItem('frizz_client_lang', lang); } catch(e) {}
 
-  // Effacer tous les cookies googtrans existants (sur tous domaines/chemins)
-  const hostname = location.hostname;
-  const domains = [hostname, '.' + hostname, ''];
-  const paths = ['/', ''];
-
-  // 1. Nettoyer d'abord
-  domains.forEach(d => {
-    paths.forEach(p => {
-      let c = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-      if (p) c += ';path=' + p;
-      if (d) c += ';domain=' + d;
-      document.cookie = c;
-    });
-  });
-
-  // 2. Si une langue autre que FR, poser le cookie sur tous les domaines/chemins possibles
-  if (lang !== 'fr') {
-    const value = '/auto/' + lang;
-    domains.forEach(d => {
-      let c = 'googtrans=' + value + ';path=/;max-age=31536000';
-      if (d) c += ';domain=' + d;
-      document.cookie = c;
-    });
-    // Aussi format /fr/xx (anciennes versions de Google Translate)
-    const valueFr = '/fr/' + lang;
-    domains.forEach(d => {
-      let c = 'googtrans=' + valueFr + ';path=/;max-age=31536000';
-      if (d) c += ';domain=' + d;
-      document.cookie = c;
-    });
+  if (lang === 'fr') {
+    const hostname = location.hostname;
+    document.cookie = 'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'googtrans=;path=/;domain=.' + hostname + ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  } else {
+    const path = '/fr/' + lang;
+    const hostname = location.hostname;
+    document.cookie = 'googtrans=' + path + ';path=/;max-age=31536000';
+    document.cookie = 'googtrans=' + path + ';path=/;domain=' + hostname + ';max-age=31536000';
+    document.cookie = 'googtrans=' + path + ';path=/;domain=.' + hostname + ';max-age=31536000';
   }
 
-  // 3. Délai plus long pour laisser le cookie se poser, puis reload avec cache-bust
-  setTimeout(() => {
-    const url = new URL(location.href);
-    url.searchParams.set('_lang', lang);
-    url.searchParams.set('_t', Date.now());
-    location.href = url.toString();
-  }, 400);
+  setTimeout(() => location.reload(), 150);
 }
 function googleTranslateElementInit() {
   try {
@@ -1695,16 +1670,8 @@ function googleTranslateElementInit() {
       pageLanguage: 'fr',
       includedLanguages: 'en,de,it,es',
       autoDisplay: false,
-      multilanguagePage: true,
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE
     }, 'google_translate_element');
-    console.log('[Frizz] Google Translate initialisé');
-
-    // Si un cookie googtrans est présent, forcer la traduction
-    const match = document.cookie.match(/googtrans=([^;]+)/);
-    if (match) {
-      console.log('[Frizz] Cookie googtrans détecté :', match[1]);
-    }
   } catch(e) {
     console.warn('Google Translate init failed:', e);
   }
@@ -2347,7 +2314,11 @@ async function submitOrder() {
     const tipAmount = subtotal * (state.tipPercent / 100);
     const total = subtotal + tipAmount;
 
+    // Générer un ID unique pour la commande (la table 'commandes' a un id text NON-NULL)
+    const generatedOrderId = 'cmd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
     const orderData = {
+      id: generatedOrderId,
       restaurant_id: state.resto.id,
       table_id: state.table?.id || null,
       table_numero: state.table?.numero || TABLE_NUM || null,
@@ -2386,6 +2357,7 @@ async function submitOrder() {
     let payload = { ...orderData };
     let inserted = false;
     let lastError = null;
+    let createdOrderId = generatedOrderId;
 
     for (let attempt = 0; attempt < 10; attempt++) {
       const { error } = await supa.from('commandes').insert(payload);
@@ -2443,7 +2415,7 @@ async function submitOrder() {
 
     await loadOrders();
 
-    showGoogleReviewModal();
+    redirectToAvisOrFallback(createdOrderId);
   } catch (err) {
     console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2485,7 +2457,7 @@ async function checkGroupValidation() {
 
       if (!error) {
         showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
-        showGoogleReviewModal();
+        redirectToAvisOrFallback(orderIds[0] || null);
       }
     } else {
       updateValidationInfo(validatedPersons.size, allPersons.size);

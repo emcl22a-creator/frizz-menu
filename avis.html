@@ -901,9 +901,9 @@ async function init() {
 
   try {
     // 1. Récupérer la commande
-    const { data: commande, error: errCmd } = await sb
+    const { data: commande, error: errCmd } = await supa
       .from('commandes')
-      .select('id, restaurant_id, status, total')
+      .select('*')
       .eq('id', commandeId)
       .single();
 
@@ -912,9 +912,9 @@ async function init() {
     }
 
     // 2. Récupérer le restaurant
-    const { data: resto, error: errResto } = await sb
+    const { data: resto, error: errResto } = await supa
       .from('restaurants')
-      .select('id, name, slug')
+      .select('*')
       .eq('id', commande.restaurant_id)
       .single();
 
@@ -923,10 +923,10 @@ async function init() {
     }
 
     state.resto = resto;
-    $('#resto-name').textContent = resto.name || 'votre restaurant';
+    $('#resto-name').textContent = resto.nom || resto.name || 'votre restaurant';
 
     // 3. Vérifier si un avis a déjà été donné
-    const { data: avisExistant } = await sb
+    const { data: avisExistant } = await supa
       .from('avis')
       .select('id, code_promo')
       .eq('commande_id', commandeId)
@@ -965,7 +965,7 @@ async function init() {
 }
 
 async function loadConfig() {
-  const { data: config, error } = await sb
+  const { data: config, error } = await supa
     .from('avis_config')
     .select('*')
     .eq('restaurant_id', state.resto.id)
@@ -1083,7 +1083,7 @@ async function submitAvis() {
       : null;
 
     // 1. Insérer l'avis
-    const { data: avis, error: errAvis } = await sb
+    const { data: avis, error: errAvis } = await supa
       .from('avis')
       .insert({
         restaurant_id: state.resto.id,
@@ -1107,7 +1107,7 @@ async function submitAvis() {
       codePromo = await genererCodePromo(avis.id);
 
       if (codePromo) {
-        await sb
+        await supa
           .from('avis')
           .update({ code_promo: codePromo })
           .eq('id', avis.id);
@@ -1132,7 +1132,7 @@ async function genererCodePromo(avisId) {
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + validiteJours);
 
-    const { error } = await sb
+    const { error } = await supa
       .from('code_promo')
       .insert({
         code: code,
@@ -1168,7 +1168,7 @@ async function showPromoStep(codePromo) {
 
     $('#promo-title').textContent = `−${pct} % offerts`;
     $('#promo-description').textContent =
-      `Profitez de votre réduction lors de votre prochaine visite chez ${state.resto.name}.`;
+      `Profitez de votre réduction lors de votre prochaine visite chez ${state.resto.nom || state.resto.name || 'votre restaurant'}.`;
 
     const dateStr = validUntil.toLocaleDateString('fr-FR', {
       day: 'numeric', month: 'long', year: 'numeric'
@@ -1250,7 +1250,7 @@ function renderPlatforms() {
 async function trackPlatformClick(platform) {
   if (state.codePromo) {
     try {
-      await sb
+      await supa
         .from('avis')
         .update({ publie_sur: platform })
         .eq('code_promo', state.codePromo);

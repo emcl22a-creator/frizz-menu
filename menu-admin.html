@@ -2103,8 +2103,8 @@
       <h2 class="ed-cmd-head">Votre <em>abonnement</em></h2>
 
       <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;">
-        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 36px; letter-spacing: -0.024em; color: var(--text);">24,90&nbsp;€</span>
-        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 20px; color: var(--text-3);">/mois</span>
+        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 700; font-size: 36px; letter-spacing: -0.024em; color: var(--text);">49</span>
+        <span style="font-family: 'Source Serif 4'; font-style: italic; font-weight: 600; font-size: 20px; color: var(--text-3);">CHF/mois</span>
       </div>
 
       <p style="font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 14px;">
@@ -2422,11 +2422,15 @@
     </div>
 
     <!-- Bouton sauvegarder -->
-    <div style="margin: 16px 22px 24px;">
-      <button type="button" class="btn btn-primary" id="save-avis-config-btn" style="width: 100%;">
+    <!-- Auto-save activé : bouton caché, indicateur discret à la place -->
+    <div style="margin: 16px 22px 24px; text-align: center;">
+      <button type="button" class="btn btn-primary" id="save-avis-config-btn" style="display: none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         Enregistrer la configuration
       </button>
+      <div id="avis-autosave-indicator" style="font-size: 12px; color: var(--text-3); font-weight: 700; opacity: 0; transition: opacity 0.3s ease; min-height: 18px;">
+        ✓ Enregistré
+      </div>
     </div>
 
     </section>
@@ -5520,21 +5524,28 @@ async function loadAvisConfig() {
 // ═══════════════════ SAVE CONFIG ═══════════════════
 async function saveAvisConfig() {
   if (!state || !state.resto || !state.resto.id) {
-    if (typeof showToast === 'function') showToast('Restaurant non défini');
-    return;
+    return; // pas de resto = on ne sauvegarde pas (silencieusement)
   }
 
   // Validation : au moins 1 question avec un label
   const validQuestions = avisQuestions.filter(q => q.label && q.label.trim().length > 0);
   if (validQuestions.length === 0) {
-    if (typeof showToast === 'function') showToast('Ajoutez au moins une question');
-    return;
+    return; // pas de question valide = on ne sauvegarde pas
   }
 
+  const isSilent = (typeof window.__autoSaveSilent === 'function') ? window.__autoSaveSilent() : false;
   const btn = document.getElementById('save-avis-config-btn');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span style="opacity:0.6;">Enregistrement…</span>';
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span style="opacity:0.6;">Enregistrement…</span>';
+  }
+  // Indicateur discret en haut de la section pour montrer qu'on sauvegarde
+  const indicator = document.getElementById('avis-autosave-indicator');
+  if (indicator) {
+    indicator.textContent = '💾 Enregistrement…';
+    indicator.style.opacity = '1';
+  }
 
   try {
     const payload = {
@@ -5552,7 +5563,7 @@ async function saveAvisConfig() {
     };
 
     // Upsert : si la ligne existe → update, sinon → insert
-    const { error } = await sb
+    const { error } = await supa
       .from('avis_config')
       .upsert(payload, { onConflict: 'restaurant_id' });
 
@@ -5560,8 +5571,12 @@ async function saveAvisConfig() {
       throw error;
     }
 
-    if (typeof showToast === 'function') {
+    if (!isSilent && typeof showToast === 'function') {
       showToast('Configuration enregistrée ✓');
+    }
+    if (indicator) {
+      indicator.textContent = '✓ Enregistré';
+      setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 1500);
     }
 
   } catch (err) {
@@ -5571,9 +5586,15 @@ async function saveAvisConfig() {
     } else {
       alert('Erreur : ' + (err.message || 'impossible d\'enregistrer'));
     }
+    if (indicator) {
+      indicator.textContent = '✗ Erreur';
+      setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2500);
+    }
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
   }
 }
 
@@ -5817,6 +5838,39 @@ function wireAvisModule() {
   if (aiBtn && !aiBtn._wired) {
     aiBtn.addEventListener('click', runAIAnalysis);
     aiBtn._wired = true;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // AUTO-SAVE : sauvegarde automatique avec debounce (800ms)
+  // ═══════════════════════════════════════════════════════════════
+  const avisSection = document.getElementById('section-avis');
+  if (avisSection && !avisSection._autoSaveWired) {
+    let autoSaveTimer = null;
+
+    function autoSaveDebounced() {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        window.__autoSaveSilentFlag = true;
+        Promise.resolve(saveAvisConfig()).finally(() => {
+          window.__autoSaveSilentFlag = false;
+        });
+      }, 800);
+    }
+    window.__autoSaveSilent = () => window.__autoSaveSilentFlag === true;
+
+    avisSection.addEventListener('change', (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') {
+        autoSaveDebounced();
+      }
+    });
+    avisSection.addEventListener('input', (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') {
+        autoSaveDebounced();
+      }
+    });
+    avisSection._autoSaveWired = true;
   }
 }
 

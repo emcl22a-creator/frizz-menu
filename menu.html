@@ -1288,6 +1288,65 @@ function showGoogleReviewModal() {
   }, 1500);
 }
 
+// ═════════════════════════════════════════════════════════════════
+// REDIRECTION VERS PAGE AVIS (après envoi de commande)
+// Si le module avis est activé pour ce resto, on redirige vers avis.html
+// pour que le client donne son avis et reçoive un code promo.
+// Sinon, fallback sur le modal Google Review classique.
+// ═════════════════════════════════════════════════════════════════
+async function redirectToAvisOrFallback(orderId) {
+  // Anti-spam : ne pas rediriger 2 fois dans les 24h
+  const lastRedirect = localStorage.getItem('frizz_avis_redirect_' + RESTO_SLUG);
+  const now = Date.now();
+  if (lastRedirect && (now - parseInt(lastRedirect)) < 24 * 60 * 60 * 1000) {
+    return;
+  }
+
+  // Vérifier que le module avis est activé pour ce resto
+  let avisActive = false;
+  try {
+    const { data: cfg } = await supa
+      .from('avis_config')
+      .select('module_actif')
+      .eq('restaurant_id', state.resto.id)
+      .maybeSingle();
+    avisActive = cfg && cfg.module_actif === true;
+  } catch (e) {
+    console.warn('Vérification module avis échouée :', e);
+  }
+
+  // Fallback : si module avis désactivé, on garde l'ancien comportement
+  if (!avisActive) {
+    showGoogleReviewModal();
+    return;
+  }
+
+  // Module avis activé → rediriger vers avis.html
+  localStorage.setItem('frizz_avis_redirect_' + RESTO_SLUG, now.toString());
+
+  // Construire l'URL d'avis.html en gérant tous les chemins possibles
+  let path = location.pathname || '/';
+  if (/menu\.html?$/i.test(path)) {
+    path = path.replace(/menu\.html?$/i, 'avis.html');
+  } else if (path.endsWith('/')) {
+    path = path + 'avis.html';
+  } else {
+    path = path.replace(/[^/]+$/, '') + 'avis.html';
+  }
+
+  const params = new URLSearchParams();
+  params.set('resto', RESTO_SLUG);
+  if (orderId) params.set('commande', orderId);
+  if (state.table?.numero) params.set('table', state.table.numero);
+
+  const url = path + '?' + params.toString();
+
+  // Petit délai pour que le client voie le toast "Commande envoyée en cuisine"
+  setTimeout(() => {
+    window.location.href = url;
+  }, 1800);
+}
+
 function openGoogleReview() {
   let url = state.resto?.google_review_url || state.resto?.google_link || '';
   if (!url && state.resto?.google_place_id) {
@@ -2303,11 +2362,13 @@ async function submitOrder() {
     let payload = { ...orderData };
     let inserted = false;
     let lastError = null;
+    let createdOrderId = null;
 
     for (let attempt = 0; attempt < 10; attempt++) {
-      const { error } = await supa.from('commandes').insert(payload);
+      const { data: insertedRow, error } = await supa.from('commandes').insert(payload).select('id').single();
       if (!error) {
         inserted = true;
+        createdOrderId = insertedRow?.id || null;
         break;
       }
       lastError = error;
@@ -2360,7 +2421,7 @@ async function submitOrder() {
 
     await loadOrders();
 
-    showGoogleReviewModal();
+    redirectToAvisOrFallback(createdOrderId);
   } catch (err) {
     console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2402,7 +2463,7 @@ async function checkGroupValidation() {
 
       if (!error) {
         showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
-        showGoogleReviewModal();
+        redirectToAvisOrFallback(orderIds[0] || null);
       }
     } else {
       updateValidationInfo(validatedPersons.size, allPersons.size);

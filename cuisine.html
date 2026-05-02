@@ -233,13 +233,30 @@
   .col-body {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 18px;
+    padding-bottom: 80px; /* espace en bas pour confort de scroll */
     display: flex;
     flex-direction: column;
     gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+    /* Forcer le scroll même si le contenu est plus court (utile sur PC) */
+    scroll-behavior: smooth;
   }
-  .col-body::-webkit-scrollbar { width: 8px; }
-  .col-body::-webkit-scrollbar-thumb { background: var(--sep); border-radius: 4px; }
+  .col-body::-webkit-scrollbar { width: 10px; }
+  .col-body::-webkit-scrollbar-track { background: transparent; }
+  .col-body::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.18);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  .col-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.30);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
 
   /* ========== ORDER CARD ========== */
   .order {

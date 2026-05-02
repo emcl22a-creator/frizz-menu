@@ -1288,34 +1288,9 @@ function showGoogleReviewModal() {
   }, 1500);
 }
 
-// ═════════════════════════════════════════════════════════════════
-// REDIRECTION VERS PAGE AVIS (après envoi de commande)
-// ═════════════════════════════════════════════════════════════════
-async function redirectToAvisOrFallback(orderId) {
-  const lastRedirect = localStorage.getItem('frizz_avis_redirect_' + RESTO_SLUG);
-  const now = Date.now();
-  if (lastRedirect && (now - parseInt(lastRedirect)) < 24 * 60 * 60 * 1000) {
-    return;
-  }
-
-  let avisActive = false;
-  try {
-    const { data: cfg } = await supa
-      .from('avis_config')
-      .select('module_actif')
-      .eq('restaurant_id', state.resto.id)
-      .maybeSingle();
-    avisActive = cfg && cfg.module_actif === true;
-  } catch (e) {
-    console.warn('Vérification module avis échouée :', e);
-  }
-
-  if (!avisActive) {
-    showGoogleReviewModal();
-    return;
-  }
-
-  localStorage.setItem('frizz_avis_redirect_' + RESTO_SLUG, now.toString());
+// Redirection simple vers avis.html (sans condition)
+function redirectToAvis(orderId) {
+  console.log('[Frizz] Redirection vers avis.html avec orderId:', orderId);
 
   let path = location.pathname || '/';
   if (/menu\.html?$/i.test(path)) {
@@ -1332,10 +1307,11 @@ async function redirectToAvisOrFallback(orderId) {
   if (state.table?.numero) params.set('table', state.table.numero);
 
   const url = path + '?' + params.toString();
+  console.log('[Frizz] URL cible :', url);
 
   setTimeout(() => {
     window.location.href = url;
-  }, 1800);
+  }, 1500);
 }
 
 function openGoogleReview() {
@@ -2314,7 +2290,7 @@ async function submitOrder() {
     const tipAmount = subtotal * (state.tipPercent / 100);
     const total = subtotal + tipAmount;
 
-    // Générer un ID unique pour la commande (la table 'commandes' a un id text NON-NULL)
+    // Générer un ID unique pour la commande
     const generatedOrderId = 'cmd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 
     const orderData = {
@@ -2415,7 +2391,7 @@ async function submitOrder() {
 
     await loadOrders();
 
-    redirectToAvisOrFallback(createdOrderId);
+    redirectToAvis(createdOrderId);
   } catch (err) {
     console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2457,7 +2433,7 @@ async function checkGroupValidation() {
 
       if (!error) {
         showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
-        redirectToAvisOrFallback(orderIds[0] || null);
+        redirectToAvis(orderIds[0] || null);
       }
     } else {
       updateValidationInfo(validatedPersons.size, allPersons.size);

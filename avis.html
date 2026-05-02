@@ -853,7 +853,7 @@
 <script>
 // ═══════════════════ CONFIG ═══════════════════
 const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTAxMjEsImV4cCI6MjA3NzA2NjEyMX0.aDjyl1z-DPg_3lcl8-TzcNbBHa-DypFaaP1LPdLrxCM0';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -893,63 +893,57 @@ function getQueryParam(name) {
 
 // ═══════════════════ INIT ═══════════════════
 async function init() {
-  const commandeId = getQueryParam('commande');
-
-  if (!commandeId) {
-    showError('Lien invalide', 'Aucune commande spécifiée.');
-    return;
-  }
+  const params = new URLSearchParams(location.search);
+  const restoSlug = params.get('resto');
+  const commandeId = params.get('commande');
 
   state.commandeId = commandeId;
+
   showLoader(true);
 
   try {
-    // 1. Récupérer la commande
-    const { data: commande, error: errCmd } = await sb
-      .from('commandes')
-      .select('id, restaurant_id, status, total')
-      .eq('id', commandeId)
-      .single();
-
-    if (errCmd || !commande) {
-      throw new Error('Commande introuvable');
+    if (!restoSlug) {
+      throw new Error('Aucun restaurant spécifié dans le lien.');
     }
 
-    // 2. Récupérer le restaurant
     const { data: resto, error: errResto } = await sb
       .from('restaurants')
-      .select('id, name, slug')
-      .eq('id', commande.restaurant_id)
-      .single();
+      .select('*')
+      .eq('slug', restoSlug)
+      .maybeSingle();
 
     if (errResto || !resto) {
-      throw new Error('Restaurant introuvable');
+      throw new Error('Restaurant introuvable.');
     }
 
     state.resto = resto;
-    $('#resto-name').textContent = resto.name || 'votre restaurant';
+    $('#resto-name').textContent = resto.nom || resto.name || 'votre restaurant';
 
-    // 3. Vérifier si un avis a déjà été donné
-    const { data: avisExistant } = await sb
-      .from('avis')
-      .select('id, code_promo')
-      .eq('commande_id', commandeId)
-      .maybeSingle();
+    if (commandeId) {
+      try {
+        const { data: avisExistant } = await sb
+          .from('avis')
+          .select('id, code_promo')
+          .eq('commande_id', commandeId)
+          .maybeSingle();
 
-    if (avisExistant) {
-      state.codePromo = avisExistant.code_promo;
-      await loadConfig();
-      showLoader(false);
+        if (avisExistant) {
+          state.codePromo = avisExistant.code_promo;
+          await loadConfig();
+          showLoader(false);
 
-      if (state.codePromo) {
-        await showPromoStep(state.codePromo);
-      } else {
-        showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
+          if (state.codePromo) {
+            await showPromoStep(state.codePromo);
+          } else {
+            showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
+          }
+          return;
+        }
+      } catch (e) {
+        console.warn('Vérification avis existant échouée :', e);
       }
-      return;
     }
 
-    // 4. Charger config
     await loadConfig();
 
     if (!state.config || !state.config.module_actif) {
@@ -957,7 +951,6 @@ async function init() {
       return;
     }
 
-    // 5. Render
     renderQuestions();
     showLoader(false);
 

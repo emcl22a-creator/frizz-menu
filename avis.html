@@ -903,9 +903,9 @@ async function init() {
     // 1. Récupérer la commande
     const { data: commande, error: errCmd } = await sb
       .from('commandes')
-      .select('id, restaurant_id, status, total')
+      .select('*')
       .eq('id', commandeId)
-      .single();
+      .maybeSingle();
 
     if (errCmd || !commande) {
       throw new Error('Commande introuvable');

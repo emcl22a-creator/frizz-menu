@@ -889,63 +889,63 @@ function getQueryParam(name) {
 
 // ═══════════════════ INIT ═══════════════════
 async function init() {
-  const commandeId = getQueryParam('commande');
+  // Récupérer les paramètres URL
+  const params = new URLSearchParams(location.search);
+  const restoSlug = params.get('resto');
+  const commandeId = params.get('commande');
 
-  if (!commandeId) {
-    showError('Lien invalide', 'Aucune commande spécifiée.');
-    return;
-  }
-
+  // Stocker l'id de commande (peut être null si l'utilisateur arrive sans)
   state.commandeId = commandeId;
+
   showLoader(true);
 
   try {
-    // 1. Récupérer la commande
-    const { data: commande, error: errCmd } = await sb
-      .from('commandes')
-      .select('id, restaurant_id, status, total')
-      .eq('id', commandeId)
-      .single();
-
-    if (errCmd || !commande) {
-      throw new Error('Commande introuvable');
+    // 1. Récupérer le restaurant via son slug (PAS via la commande)
+    if (!restoSlug) {
+      throw new Error('Aucun restaurant spécifié dans le lien.');
     }
 
-    // 2. Récupérer le restaurant
     const { data: resto, error: errResto } = await sb
       .from('restaurants')
-      .select('id, name, slug')
-      .eq('id', commande.restaurant_id)
-      .single();
+      .select('*')
+      .eq('slug', restoSlug)
+      .maybeSingle();
 
     if (errResto || !resto) {
-      throw new Error('Restaurant introuvable');
+      throw new Error('Restaurant introuvable.');
     }
 
     state.resto = resto;
-    $('#resto-name').textContent = resto.name || 'votre restaurant';
+    $('#resto-name').textContent = resto.nom || resto.name || 'votre restaurant';
 
-    // 3. Vérifier si un avis a déjà été donné
-    const { data: avisExistant } = await sb
-      .from('avis')
-      .select('id, code_promo')
-      .eq('commande_id', commandeId)
-      .maybeSingle();
+    // 2. Vérifier si un avis a déjà été donné pour cette commande (si on a une commande)
+    if (commandeId) {
+      try {
+        const { data: avisExistant } = await sb
+          .from('avis')
+          .select('id, code_promo')
+          .eq('commande_id', commandeId)
+          .maybeSingle();
 
-    if (avisExistant) {
-      state.codePromo = avisExistant.code_promo;
-      await loadConfig();
-      showLoader(false);
+        if (avisExistant) {
+          state.codePromo = avisExistant.code_promo;
+          await loadConfig();
+          showLoader(false);
 
-      if (state.codePromo) {
-        await showPromoStep(state.codePromo);
-      } else {
-        showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
+          if (state.codePromo) {
+            await showPromoStep(state.codePromo);
+          } else {
+            showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
+          }
+          return;
+        }
+      } catch (e) {
+        // Pas grave si on ne peut pas vérifier, on continue
+        console.warn('Vérification avis existant échouée :', e);
       }
-      return;
     }
 
-    // 4. Charger config
+    // 3. Charger la config (questions, code promo, etc.)
     await loadConfig();
 
     if (!state.config || !state.config.module_actif) {
@@ -953,7 +953,7 @@ async function init() {
       return;
     }
 
-    // 5. Render
+    // 4. Afficher les questions
     renderQuestions();
     showLoader(false);
 

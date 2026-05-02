@@ -108,15 +108,15 @@
   .table-badge {
     position: absolute; top: 16px; right: 16px;
     width: 44px; height: 44px; border-radius: 100px;
-    background: rgba(48,209,88,0.10); border: 1px solid rgba(48,209,88,0.28);
-    color: var(--green);
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+    color: var(--text);
     display: flex; align-items: center; justify-content: center;
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     z-index: 51; cursor: pointer; transition: all 0.18s ease;
     font-family: inherit;
   }
-  .table-badge:hover { background: rgba(48,209,88,0.16); transform: scale(1.05); }
-  .table-badge svg { width: 18px; height: 18px; color: var(--green); }
+  .table-badge:hover { background: rgba(255,255,255,0.10); transform: scale(1.05); }
+  .table-badge svg { width: 18px; height: 18px; color: var(--text); }
   .table-badge-count {
     position: absolute; top: -4px; right: -4px;
     min-width: 20px; height: 20px; padding: 0 6px;
@@ -1288,32 +1288,6 @@ function showGoogleReviewModal() {
   }, 1500);
 }
 
-// Redirection simple vers avis.html (sans condition)
-function redirectToAvis(orderId) {
-  console.log('[Frizz] Redirection vers avis.html avec orderId:', orderId);
-
-  let path = location.pathname || '/';
-  if (/menu\.html?$/i.test(path)) {
-    path = path.replace(/menu\.html?$/i, 'avis.html');
-  } else if (path.endsWith('/')) {
-    path = path + 'avis.html';
-  } else {
-    path = path.replace(/[^/]+$/, '') + 'avis.html';
-  }
-
-  const params = new URLSearchParams();
-  params.set('resto', RESTO_SLUG);
-  if (orderId) params.set('commande', orderId);
-  if (state.table?.numero) params.set('table', state.table.numero);
-
-  const url = path + '?' + params.toString();
-  console.log('[Frizz] URL cible :', url);
-
-  setTimeout(() => {
-    window.location.href = url;
-  }, 1500);
-}
-
 function openGoogleReview() {
   let url = state.resto?.google_review_url || state.resto?.google_link || '';
   if (!url && state.resto?.google_place_id) {
@@ -2290,11 +2264,7 @@ async function submitOrder() {
     const tipAmount = subtotal * (state.tipPercent / 100);
     const total = subtotal + tipAmount;
 
-    // Générer un ID unique pour la commande
-    const generatedOrderId = 'cmd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-
     const orderData = {
-      id: generatedOrderId,
       restaurant_id: state.resto.id,
       table_id: state.table?.id || null,
       table_numero: state.table?.numero || TABLE_NUM || null,
@@ -2333,7 +2303,6 @@ async function submitOrder() {
     let payload = { ...orderData };
     let inserted = false;
     let lastError = null;
-    let createdOrderId = generatedOrderId;
 
     for (let attempt = 0; attempt < 10; attempt++) {
       const { error } = await supa.from('commandes').insert(payload);
@@ -2391,7 +2360,7 @@ async function submitOrder() {
 
     await loadOrders();
 
-    redirectToAvis(createdOrderId);
+    showGoogleReviewModal();
   } catch (err) {
     console.error('[submitOrder] Erreur finale:', err);
     showToast('Erreur : ' + (err.message || 'envoi impossible'), 'error');
@@ -2433,7 +2402,7 @@ async function checkGroupValidation() {
 
       if (!error) {
         showToast('Le groupe a validé ! Envoi en cuisine 🍳', 'success');
-        redirectToAvis(orderIds[0] || null);
+        showGoogleReviewModal();
       }
     } else {
       updateValidationInfo(validatedPersons.size, allPersons.size);

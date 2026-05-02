@@ -561,16 +561,20 @@
       0 4px 12px -4px rgba(0,0,0,0.4);
   }
   .platform-icon.google {
-    background: linear-gradient(135deg, #EA4335 0%, #FBBC05 50%, #34A853 100%);
-    color: white;
+    background: #fff;
+    padding: 4px;
+  }
+  .platform-icon.google svg {
+    width: 100%;
+    height: 100%;
   }
   .platform-icon.tripadvisor {
-    background: #34E0A1;
-    color: #000;
+    background: #fff;
+    padding: 2px;
   }
-  .platform-icon.facebook {
-    background: #1877F2;
-    color: white;
+  .platform-icon.tripadvisor svg {
+    width: 100%;
+    height: 100%;
   }
 
   .platform-text {
@@ -849,7 +853,7 @@
 <script>
 // ═══════════════════ CONFIG ═══════════════════
 const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTAxMjEsImV4cCI6MjA3NzA2NjEyMX0.aDjyl1z-DPg_3lcl8-TzcNbBHa-DypFaaP1LPdLrxCM0';
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -889,63 +893,63 @@ function getQueryParam(name) {
 
 // ═══════════════════ INIT ═══════════════════
 async function init() {
-  // Récupérer les paramètres URL
-  const params = new URLSearchParams(location.search);
-  const restoSlug = params.get('resto');
-  const commandeId = params.get('commande');
+  const commandeId = getQueryParam('commande');
 
-  // Stocker l'id de commande (peut être null si l'utilisateur arrive sans)
+  if (!commandeId) {
+    showError('Lien invalide', 'Aucune commande spécifiée.');
+    return;
+  }
+
   state.commandeId = commandeId;
-
   showLoader(true);
 
   try {
-    // 1. Récupérer le restaurant via son slug (PAS via la commande)
-    if (!restoSlug) {
-      throw new Error('Aucun restaurant spécifié dans le lien.');
+    // 1. Récupérer la commande
+    const { data: commande, error: errCmd } = await sb
+      .from('commandes')
+      .select('id, restaurant_id, status, total')
+      .eq('id', commandeId)
+      .single();
+
+    if (errCmd || !commande) {
+      throw new Error('Commande introuvable');
     }
 
+    // 2. Récupérer le restaurant
     const { data: resto, error: errResto } = await sb
       .from('restaurants')
-      .select('*')
-      .eq('slug', restoSlug)
-      .maybeSingle();
+      .select('id, name, slug')
+      .eq('id', commande.restaurant_id)
+      .single();
 
     if (errResto || !resto) {
-      throw new Error('Restaurant introuvable.');
+      throw new Error('Restaurant introuvable');
     }
 
     state.resto = resto;
-    $('#resto-name').textContent = resto.nom || resto.name || 'votre restaurant';
+    $('#resto-name').textContent = resto.name || 'votre restaurant';
 
-    // 2. Vérifier si un avis a déjà été donné pour cette commande (si on a une commande)
-    if (commandeId) {
-      try {
-        const { data: avisExistant } = await sb
-          .from('avis')
-          .select('id, code_promo')
-          .eq('commande_id', commandeId)
-          .maybeSingle();
+    // 3. Vérifier si un avis a déjà été donné
+    const { data: avisExistant } = await sb
+      .from('avis')
+      .select('id, code_promo')
+      .eq('commande_id', commandeId)
+      .maybeSingle();
 
-        if (avisExistant) {
-          state.codePromo = avisExistant.code_promo;
-          await loadConfig();
-          showLoader(false);
+    if (avisExistant) {
+      state.codePromo = avisExistant.code_promo;
+      await loadConfig();
+      showLoader(false);
 
-          if (state.codePromo) {
-            await showPromoStep(state.codePromo);
-          } else {
-            showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
-          }
-          return;
-        }
-      } catch (e) {
-        // Pas grave si on ne peut pas vérifier, on continue
-        console.warn('Vérification avis existant échouée :', e);
+      if (state.codePromo) {
+        await showPromoStep(state.codePromo);
+      } else {
+        showError('Avis déjà envoyé', "Vous avez déjà partagé votre avis pour cette commande. Merci !");
       }
+      return;
     }
 
-    // 3. Charger la config (questions, code promo, etc.)
+    // 4. Charger config
     await loadConfig();
 
     if (!state.config || !state.config.module_actif) {
@@ -953,7 +957,7 @@ async function init() {
       return;
     }
 
-    // 4. Afficher les questions
+    // 5. Render
     renderQuestions();
     showLoader(false);
 
@@ -987,7 +991,6 @@ async function loadConfig() {
     promo_type: 'frizz_only',
     google_review_url: null,
     tripadvisor_url: null,
-    facebook_url: null,
     module_actif: true
   };
 
@@ -1193,7 +1196,7 @@ function renderPlatforms() {
     platforms.push({
       name: 'Google',
       desc: 'Laisser un avis sur Google',
-      icon: 'G',
+      icon: `<svg viewBox="0 0 48 48" style="width: 24px; height: 24px;"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>`,
       iconClass: 'google',
       url: state.config.google_review_url
     });
@@ -1203,19 +1206,9 @@ function renderPlatforms() {
     platforms.push({
       name: 'Tripadvisor',
       desc: 'Laisser un avis sur Tripadvisor',
-      icon: 'T',
+      icon: `<svg viewBox="0 0 48 48" style="width: 26px; height: 26px;"><path fill="#34E0A1" d="M24,4C12.953,4,4,12.953,4,24s8.953,20,20,20s20-8.953,20-20S35.047,4,24,4z"/><circle fill="#000" cx="17" cy="24" r="6"/><circle fill="#000" cx="31" cy="24" r="6"/><circle fill="#fff" cx="17" cy="24" r="2"/><circle fill="#fff" cx="31" cy="24" r="2"/></svg>`,
       iconClass: 'tripadvisor',
       url: state.config.tripadvisor_url
-    });
-  }
-
-  if (state.config.facebook_url) {
-    platforms.push({
-      name: 'Facebook',
-      desc: 'Laisser un avis sur Facebook',
-      icon: 'f',
-      iconClass: 'facebook',
-      url: state.config.facebook_url
     });
   }
 

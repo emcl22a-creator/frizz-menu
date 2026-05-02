@@ -108,15 +108,15 @@
   .table-badge {
     position: absolute; top: 16px; right: 16px;
     width: 44px; height: 44px; border-radius: 100px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
-    color: var(--text);
+    background: rgba(48,209,88,0.10); border: 1px solid rgba(48,209,88,0.28);
+    color: var(--green);
     display: flex; align-items: center; justify-content: center;
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     z-index: 51; cursor: pointer; transition: all 0.18s ease;
     font-family: inherit;
   }
-  .table-badge:hover { background: rgba(255,255,255,0.10); transform: scale(1.05); }
-  .table-badge svg { width: 18px; height: 18px; color: var(--text); }
+  .table-badge:hover { background: rgba(48,209,88,0.16); transform: scale(1.05); }
+  .table-badge svg { width: 18px; height: 18px; color: var(--green); }
   .table-badge-count {
     position: absolute; top: -4px; right: -4px;
     min-width: 20px; height: 20px; padding: 0 6px;
@@ -2462,6 +2462,11 @@ function updateOrdersBanner() {
   const en_attente = state.orders.filter(o => o.statut === 'en_attente').length;
   const en_cours = state.orders.filter(o => o.statut === 'en_cours').length;
   const prete = state.orders.filter(o => o.statut === 'prete').length;
+  const payable = state.orders.filter(o =>
+    !o.stripe_payment_intent_id &&
+    o.statut !== 'en_validation' &&
+    o.statut !== 'annulee'
+  );
 
   let msg = '';
   if (prete > 0) {
@@ -2472,6 +2477,24 @@ function updateOrdersBanner() {
     msg = `<strong>Commande reçue</strong> · vous serez prévenu.`;
   } else if (en_validation > 0) {
     msg = `<strong>En attente du groupe</strong> · tout le monde doit valider.`;
+  }
+
+  // Calculer le total à payer
+  let totalDu = 0;
+  payable.forEach(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    items.forEach(it => {
+      totalDu += (parseFloat(it.prix) || 0) * (parseInt(it.qte) || 1);
+    });
+  });
+
+  // Vérifier que le resto a Stripe Connect activé
+  const stripeReady = state.resto && state.resto.stripe_account_id;
+  const showPaymentBtn = stripeReady && payable.length > 0 && totalDu > 0;
+
+  if (showPaymentBtn) {
+    const totalStr = totalDu.toFixed(2);
+    msg = `${msg ? msg + '<br>' : ''}<button class="btn-pay-bill" onclick="openBillModal()" style="margin-top: 10px; width: 100%; padding: 14px 18px; background: linear-gradient(135deg, var(--blue), var(--blue-bright)); color: #fff; border: 0; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 22px -4px rgba(10,132,255,0.45); letter-spacing: -0.01em;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Demander l'addition · ${totalStr} €</button>`;
   }
 
   text.innerHTML = msg;
@@ -2487,5 +2510,201 @@ window.addEventListener('beforeunload', () => {
 
 <div id="google_translate_element"></div>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL : Récap + paiement Stripe
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="bill-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="max-width: 480px; padding: 0;">
+    <div style="padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border);">
+      <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.026em;">L'<em style="font-family: 'Source Serif 4'; font-style: italic; color: var(--blue);">addition</em></div>
+      <button onclick="closeBillModal()" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); border: 0; border-radius: 50%; color: var(--text-2); cursor: pointer; font-family: inherit; font-size: 18px;">×</button>
+    </div>
+    <div id="bill-modal-body" style="padding: 18px 24px; max-height: 60vh; overflow-y: auto;">
+      <div style="text-align:center; color: var(--text-3); font-size: 13px; padding: 30px 0;">Chargement…</div>
+    </div>
+    <div id="bill-modal-footer" style="padding: 14px 24px 22px; border-top: 1px solid var(--border);">
+      <button id="bill-pay-btn" onclick="payBill()" style="width: 100%; padding: 16px; background: linear-gradient(135deg, var(--blue), var(--blue-bright)); color: #fff; border: 0; border-radius: 14px; font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 22px -4px rgba(10,132,255,0.45); letter-spacing: -0.01em;">
+        Payer
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #bill-modal.show { display: flex !important; }
+  #bill-modal .bill-line { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+  #bill-modal .bill-line:last-child { border-bottom: 0; }
+  #bill-modal .bill-line-name { color: var(--text); font-weight: 700; }
+  #bill-modal .bill-line-qty { color: var(--text-3); font-size: 12px; margin-left: 4px; font-weight: 600; }
+  #bill-modal .bill-line-price { color: var(--text); font-weight: 800; font-variant-numeric: tabular-nums; font-family: 'Source Serif 4', serif; font-style: italic; }
+  #bill-modal .bill-totals { margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--border-strong); }
+  #bill-modal .bill-total-line { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+  #bill-modal .bill-total-line.grand { font-size: 18px; font-weight: 900; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px; }
+  #bill-modal .tip-section { margin: 16px 0; padding: 14px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border); }
+  #bill-modal .tip-label { font-size: 12px; font-weight: 800; color: var(--text-2); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px; }
+  #bill-modal .tip-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  #bill-modal .tip-btn { padding: 10px 4px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; color: var(--text-2); font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.15s; }
+  #bill-modal .tip-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  #bill-modal .tip-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+</style>
+
+<script>
+window.openBillModal = function() {
+  const modal = document.getElementById('bill-modal');
+  modal.classList.add('show');
+  renderBill();
+};
+
+window.closeBillModal = function() {
+  const modal = document.getElementById('bill-modal');
+  modal.classList.remove('show');
+};
+
+window.__billState = {
+  tipPercent: 0,
+  payable: [],
+  subtotal: 0,
+  tip: 0,
+  total: 0,
+};
+
+function renderBill() {
+  const body = document.getElementById('bill-modal-body');
+  const payBtn = document.getElementById('bill-pay-btn');
+
+  // Filtrer les commandes payables (pas encore payées, pas annulées)
+  const payable = state.orders.filter(o =>
+    !o.stripe_payment_intent_id &&
+    o.statut !== 'en_validation' &&
+    o.statut !== 'annulee'
+  );
+
+  if (payable.length === 0) {
+    body.innerHTML = '<div style="text-align:center; color:var(--text-3); padding:30px 0;">Aucune commande à payer.</div>';
+    payBtn.disabled = true;
+    payBtn.style.opacity = '0.5';
+    return;
+  }
+
+  // Agréger les items
+  let subtotal = 0;
+  let linesHtml = '';
+  payable.forEach(order => {
+    const items = Array.isArray(order.items) ? order.items : [];
+    items.forEach(it => {
+      const prix = parseFloat(it.prix) || 0;
+      const qte = parseInt(it.qte) || 1;
+      const total = prix * qte;
+      subtotal += total;
+      linesHtml += `
+        <div class="bill-line">
+          <div>
+            <span class="bill-line-name">${escapeHtml(it.nom || 'Article')}</span>
+            ${qte > 1 ? `<span class="bill-line-qty">× ${qte}</span>` : ''}
+          </div>
+          <div class="bill-line-price">${total.toFixed(2)} €</div>
+        </div>`;
+    });
+  });
+
+  const tipPercent = window.__billState.tipPercent || 0;
+  const tip = subtotal * (tipPercent / 100);
+  const total = subtotal + tip;
+
+  window.__billState.payable = payable;
+  window.__billState.subtotal = subtotal;
+  window.__billState.tip = tip;
+  window.__billState.total = total;
+
+  body.innerHTML = `
+    <div>${linesHtml}</div>
+    <div class="tip-section">
+      <div class="tip-label">Pourboire</div>
+      <div class="tip-options">
+        <button class="tip-btn ${tipPercent === 0 ? 'active' : ''}" onclick="setTip(0)">Sans</button>
+        <button class="tip-btn ${tipPercent === 5 ? 'active' : ''}" onclick="setTip(5)">+5 %</button>
+        <button class="tip-btn ${tipPercent === 10 ? 'active' : ''}" onclick="setTip(10)">+10 %</button>
+        <button class="tip-btn ${tipPercent === 15 ? 'active' : ''}" onclick="setTip(15)">+15 %</button>
+      </div>
+    </div>
+    <div class="bill-totals">
+      <div class="bill-total-line"><span style="color:var(--text-2); font-weight:700;">Sous-total</span><span class="bill-line-price">${subtotal.toFixed(2)} €</span></div>
+      ${tip > 0 ? `<div class="bill-total-line"><span style="color:var(--text-2); font-weight:700;">Pourboire</span><span class="bill-line-price">${tip.toFixed(2)} €</span></div>` : ''}
+      <div class="bill-total-line grand"><span>Total</span><span class="bill-line-price" style="color: var(--blue);">${total.toFixed(2)} €</span></div>
+    </div>
+  `;
+
+  payBtn.innerHTML = `Payer ${total.toFixed(2)} €`;
+  payBtn.disabled = false;
+  payBtn.style.opacity = '1';
+}
+
+window.setTip = function(percent) {
+  window.__billState.tipPercent = percent;
+  renderBill();
+};
+
+window.payBill = async function() {
+  const payBtn = document.getElementById('bill-pay-btn');
+  const { payable, total, tip } = window.__billState;
+
+  if (!payable || payable.length === 0 || total <= 0) {
+    showToast('Rien à payer');
+    return;
+  }
+
+  payBtn.disabled = true;
+  payBtn.innerHTML = 'Connexion à Stripe…';
+
+  try {
+    // Récupérer le JWT
+    let authToken = SUPABASE_KEY;
+    try {
+      const { data: { session } } = await supa.auth.getSession();
+      if (session && session.access_token) authToken = session.access_token;
+    } catch (e) {}
+
+    // Pour simplifier : on paie la dernière commande
+    // (en V2 on pourra grouper plusieurs commandes en une session)
+    const cmd = payable[payable.length - 1];
+
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/create-payment-session`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        commande_id: cmd.id,
+        restaurant_id: state.resto.id,
+        tip_amount: tip
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error('Erreur paiement : ' + errText);
+    }
+
+    const data = await response.json();
+
+    if (!data.url) {
+      throw new Error('URL de paiement manquante');
+    }
+
+    // Redirection vers Stripe Checkout
+    window.location.href = data.url;
+
+  } catch (err) {
+    console.error('payBill:', err);
+    showToast('Erreur : ' + (err.message || 'paiement impossible'));
+    payBtn.disabled = false;
+    payBtn.innerHTML = 'Réessayer';
+  }
+};
+</script>
+
 </body>
 </html>

@@ -769,11 +769,16 @@
     letter-spacing: -0.005em;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   }
   .live-counter strong {
     color: var(--text);
     font-weight: 900;
     margin-right: 2px;
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+    transition: color 0.3s ease;
   }
   .live-dot {
     width: 7px;
@@ -786,6 +791,50 @@
   @keyframes liveDot {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* Floating "+1" spark on bump */
+  .counter-spark {
+    position: absolute;
+    top: -4px;
+    right: 8px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--green);
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+    text-shadow: 0 0 12px rgba(74,222,128,0.6);
+  }
+
+  /* Bump animation when a new user subscribes */
+  .live-counter.counter-bump {
+    animation: counterBump 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .live-counter.counter-bump strong {
+    animation: numberFlash 0.9s ease;
+  }
+  .live-counter.counter-bump .counter-spark {
+    animation: sparkFloat 1.1s ease-out;
+  }
+  @keyframes counterBump {
+    0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(74,222,128,0.0); background: var(--green-soft); }
+    25%  { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(74,222,128,0.20); background: rgba(74,222,128,0.25); }
+    60%  { transform: scale(1.04); box-shadow: 0 0 0 20px rgba(74,222,128,0); background: rgba(74,222,128,0.18); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74,222,128,0); background: var(--green-soft); }
+  }
+  @keyframes numberFlash {
+    0%   { color: var(--text); transform: translateY(0); }
+    20%  { color: var(--green); transform: translateY(-3px); }
+    60%  { color: var(--green); transform: translateY(0); }
+    100% { color: var(--text); transform: translateY(0); }
+  }
+  @keyframes sparkFloat {
+    0%   { opacity: 0; transform: translateY(0) scale(0.7); }
+    20%  { opacity: 1; transform: translateY(-4px) scale(1); }
+    100% { opacity: 0; transform: translateY(-22px) scale(1.1); }
   }
 
   /* ════════════ NEWSLETTER PREVIEW ════════════ */
@@ -1267,10 +1316,11 @@
 
       <!-- FORM (HERO) -->
       <div class="form-wrap">
-        <!-- Compteur live d'inscrits -->
-        <div class="live-counter" id="live-counter">
+        <!-- Compteur live d'inscrits (honnête, vrai chiffre Supabase) -->
+        <div class="live-counter" id="live-counter" style="display:none;">
           <span class="live-dot"></span>
-          <span><strong id="counter-num">·</strong> frontaliers déjà inscrits</span>
+          <span class="counter-text"><strong id="counter-num">0</strong> <span class="counter-label">frontaliers inscrits</span></span>
+          <span class="counter-spark">+1</span>
         </div>
 
         <form class="form" id="form-hero" onsubmit="return submitForm(event, 'hero')">
@@ -1650,38 +1700,79 @@
   }
 
   // ═══════════════════════════════════════════════
-  // Live counter — fetch nb d'inscrits depuis Supabase
+  // Live counter — fetch nb d'inscrits depuis Supabase (vrai chiffre)
   // ═══════════════════════════════════════════════
-  async function updateLiveCounter() {
+  async function updateLiveCounter(animateBump) {
+    const counterEl = document.getElementById('counter-num');
+    const wrapEl = document.getElementById('live-counter');
+    if (!counterEl || !wrapEl) return;
+
     try {
       const { count, error } = await sb
         .from(TABLE)
         .select('*', { count: 'exact', head: true });
 
       if (error) {
-        // Si SELECT bloqué, on affiche un nombre "minimum crédible"
-        document.getElementById('counter-num').textContent = '12';
+        wrapEl.style.display = 'none';
         return;
       }
 
-      // On affiche le vrai nombre, mais minimum 12 pour la crédibilité au démarrage
-      const displayCount = Math.max(count || 0, 12);
-      document.getElementById('counter-num').textContent = displayCount.toLocaleString('fr-FR');
+      const real = count || 0;
+
+      // Si 0 inscrit, on cache pour ne pas être ridicule
+      if (real < 1) {
+        wrapEl.style.display = 'none';
+        return;
+      }
+
+      // S'assurer que le compteur est visible
+      wrapEl.style.display = '';
+
+      const word = real > 1 ? 'frontaliers inscrits' : 'frontalier inscrit';
+      const oldNum = parseInt((counterEl.textContent || '0').replace(/\D/g, ''), 10) || 0;
+
+      // Update du label (singulier/pluriel)
+      const labelSpan = wrapEl.querySelector('.counter-label');
+      if (labelSpan) labelSpan.textContent = word;
+
+      // Si pas d'animation, juste set
+      if (!animateBump || oldNum === real) {
+        counterEl.textContent = real.toLocaleString('fr-FR');
+        return;
+      }
+
+      // Animation : rolling count + bump pulse
+      animateNumber(counterEl, oldNum, real, 800);
+      wrapEl.classList.remove('counter-bump');
+      void wrapEl.offsetWidth; // force reflow
+      wrapEl.classList.add('counter-bump');
+
     } catch (err) {
-      // Fallback silencieux
-      document.getElementById('counter-num').textContent = '12';
+      wrapEl.style.display = 'none';
     }
   }
 
-  // Lance le compteur au chargement
-  updateLiveCounter();
+  // Animation rolling number (de oldVal à newVal en duration ms)
+  function animateNumber(el, from, to, duration) {
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+      // easeOutCubic
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(from + (to - from) * eased);
+      el.textContent = current.toLocaleString('fr-FR');
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
 
-  // Refresh le compteur après une inscription réussie
+  // Lance le compteur au chargement (sans animation au premier load)
+  updateLiveCounter(false);
+
+  // Refresh + animation après une inscription réussie
   function bumpCounter() {
-    const el = document.getElementById('counter-num');
-    if (!el) return;
-    const current = parseInt((el.textContent || '0').replace(/\D/g, ''), 10) || 12;
-    el.textContent = (current + 1).toLocaleString('fr-FR');
+    updateLiveCounter(true);
   }
 
   // ═══════════════════════════════════════════════

@@ -13,9 +13,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Leaflet (sans integrity — fix bug chargement) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -50,7 +50,7 @@
     background: #050506;
   }
 
-  /* AURORA en LAYER absolu (DERRIÈRE la map) */
+  /* AURORA */
   .aurora-bg {
     position: fixed;
     inset: 0;
@@ -62,7 +62,7 @@
       radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%);
   }
 
-  /* MAP — z-index 1, AU-DESSUS de l'aurora */
+  /* MAP — transparent pour glass effect */
   #map {
     position: fixed;
     top: 0;
@@ -72,14 +72,14 @@
     width: 100%;
     height: 100vh;
     z-index: 1;
-    background: transparent !important; /* ← CRUCIAL pour le glass */
+    background: transparent !important;
   }
   .leaflet-container {
     background: #050506 !important;
     font-family: 'Inter Tight', sans-serif !important;
   }
 
-  /* TOPBAR - glass sur la map */
+  /* TOPBAR */
   .topbar {
     position: fixed;
     top: 0;
@@ -97,7 +97,6 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 
-  /* LOGO ORIGINAL — Source Serif italique comme menu-admin */
   .logo-link {
     display: inline-flex;
     align-items: center;
@@ -264,7 +263,7 @@
     stroke-width: 1.8;
   }
 
-  /* BOUTONS FLOTTANTS */
+  /* FAB */
   .floating-buttons {
     position: fixed;
     right: 16px;
@@ -336,6 +335,7 @@
     margin-bottom: 14px;
     gap: 12px;
   }
+  /* TITRE — espacement corrigé */
   .sheet-title {
     font-family: 'Inter Tight', sans-serif;
     font-size: 17px;
@@ -345,6 +345,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
   }
   .sheet-title-icon {
     width: 18px;
@@ -352,12 +353,15 @@
     color: var(--blue);
     flex-shrink: 0;
   }
-  .sheet-title em {
+  .sheet-title-text {
+    display: inline;
+  }
+  .sheet-title-text em {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
     font-weight: 600;
     color: var(--blue);
-    margin-left: 4px;
+    margin-left: 0.25em;
   }
   .sheet-count {
     font-family: 'Inter Tight', sans-serif;
@@ -539,7 +543,7 @@
     50% { box-shadow: 0 4px 28px rgba(10,132,255,0.9); }
   }
 
-  /* STATUS / DEBUG */
+  /* STATUS / ERROR */
   .status-overlay {
     position: fixed;
     top: 50%;
@@ -640,13 +644,10 @@
 </head>
 <body>
 
-  <!-- AURORA derrière la map -->
   <div class="aurora-bg"></div>
 
-  <!-- MAP -->
   <div id="map"></div>
 
-  <!-- TOPBAR -->
   <header class="topbar">
     <a href="#" class="logo-link" onclick="event.preventDefault();">
       <span class="logo">Frizz<span class="spark">✦</span></span>
@@ -657,7 +658,6 @@
     </div>
   </header>
 
-  <!-- SEARCH + FILTRES -->
   <div class="search-container">
     <div class="search-bar">
       <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
@@ -667,7 +667,6 @@
       <input type="text" class="search-input" id="search-input" placeholder="Rechercher une boutique, une ville..." />
     </div>
     <div class="filters-quick" id="filters-quick">
-      <!-- TOUT - icône grille 4 cases -->
       <button class="filter-chip active" data-filter="all">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <rect x="3" y="3" width="7" height="7" rx="1.5"/>
@@ -677,16 +676,12 @@
         </svg>
         Tout
       </button>
-
-      <!-- FRIPERIES - icône cintre (vrai cintre de penderie) -->
       <button class="filter-chip" data-filter="friperie">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M12 2a3 3 0 0 0-3 3c0 1.5 1.5 2.5 3 3v2L2 17h20l-10-7V8c1.5-.5 3-1.5 3-3a3 3 0 0 0-3-3z"/>
         </svg>
         Friperies
       </button>
-
-      <!-- VINTAGE - icône couronne / royale -->
       <button class="filter-chip" data-filter="vintage">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M2 8l4 6 6-9 6 9 4-6v12H2V8z"/>
@@ -696,8 +691,6 @@
         </svg>
         Vintage
       </button>
-
-      <!-- CONCEPT STORES - icône sac shopping -->
       <button class="filter-chip" data-filter="concept_store">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M5 7h14l-1 13H6L5 7z"/>
@@ -705,8 +698,6 @@
         </svg>
         Concept stores
       </button>
-
-      <!-- SNEAKERS - vraie sneaker -->
       <button class="filter-chip" data-filter="sneakers">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M2 16.5L3 11l5-1 3-3h3l3 5 4 1.5L22 17v3H2v-3.5z"/>
@@ -715,8 +706,6 @@
         </svg>
         Sneakers
       </button>
-
-      <!-- STREETWEAR - capuche / hoodie -->
       <button class="filter-chip" data-filter="streetwear">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M6 8c0-3 2.5-6 6-6s6 3 6 6v2l4 2-2 8H4l-2-8 4-2V8z"/>
@@ -724,8 +713,6 @@
         </svg>
         Streetwear
       </button>
-
-      <!-- CRÉATEURS - aiguille à coudre -->
       <button class="filter-chip" data-filter="createur">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M3 21l4-1 13-13a2 2 0 0 0-3-3L4 17l-1 4z"/>
@@ -737,16 +724,13 @@
     </div>
   </div>
 
-  <!-- LOADING -->
   <div class="status-overlay" id="status-overlay">
     <div class="loading-spinner"></div>
     <div>Chargement des boutiques...</div>
   </div>
 
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- BOUTONS FLOTTANTS -->
   <div class="floating-buttons">
     <button class="fab" title="Me localiser" id="fab-locate">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -767,7 +751,7 @@
     </button>
   </div>
 
-  <!-- BOTTOM SHEET -->
+  <!-- BOTTOM SHEET — titre corrigé -->
   <div class="bottom-sheet" id="bottom-sheet">
     <div class="sheet-handle" id="sheet-handle"></div>
     <div class="sheet-header">
@@ -775,7 +759,7 @@
         <svg class="sheet-title-icon" fill="currentColor" viewBox="0 0 24 24">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
         </svg>
-        Drops du <em>weekend</em>
+        <span class="sheet-title-text">Drops de la <em>semaine</em></span>
       </div>
       <div class="sheet-count" id="sheet-count">— boutiques</div>
     </div>
@@ -783,11 +767,9 @@
   </div>
 
   <script>
-    // ════════════ CONFIG ════════════
     const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 
-    // ════════════ TOAST ════════════
     function showToast(message) {
       const toast = document.getElementById('toast');
       if (!toast) return;
@@ -796,7 +778,6 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    // ════════════ STATUS ════════════
     function hideStatus() {
       const el = document.getElementById('status-overlay');
       if (el) el.classList.add('hidden');
@@ -809,19 +790,26 @@
       el.innerHTML = html;
     }
 
-    // ════════════ MAP INIT ════════════
     let map = null;
     let allMarkers = [];
 
+    function waitForLeaflet(callback, attempts) {
+      attempts = attempts || 0;
+      if (typeof L !== 'undefined') {
+        console.log('✅ [Frizz] Leaflet chargé après ' + attempts + ' tentatives');
+        callback();
+        return;
+      }
+      if (attempts > 50) {
+        console.error('❌ [Frizz] Leaflet jamais chargé après 5s');
+        showStatus('<div>⚠️ Leaflet non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
+        return;
+      }
+      setTimeout(() => waitForLeaflet(callback, attempts + 1), 100);
+    }
+
     function initMap() {
       console.log('🎯 [Frizz] initMap() appelé');
-      
-      if (typeof L === 'undefined') {
-        console.error('❌ Leaflet non chargé !');
-        showStatus('<div>⚠️ Leaflet non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
-        return false;
-      }
-
       try {
         map = L.map('map', {
           zoomControl: false,
@@ -829,7 +817,6 @@
           preferCanvas: true
         }).setView([46.5, 6.5], 9);
 
-        // Tile layer dark transparent (laisse passer l'aurora derrière)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
           maxZoom: 19,
           subdomains: 'abcd',
@@ -840,7 +827,7 @@
         return true;
       } catch (err) {
         console.error('❌ [Frizz] Erreur init map:', err);
-        showStatus('<div>⚠️ Impossible de charger la carte</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
+        showStatus('<div>⚠️ Erreur carte</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
         return false;
       }
     }
@@ -868,7 +855,6 @@
       return labels[type] || 'Boutique';
     }
 
-    // ════════════ LOAD BOUTIQUES ════════════
     async function loadBoutiques() {
       console.log('🎯 [Frizz] loadBoutiques() appelé');
 
@@ -880,7 +866,7 @@
 
       try {
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('📡 [Frizz] Connexion Supabase OK');
+        console.log('📡 [Frizz] Connexion Supabase...');
 
         const { data: boutiques, error } = await supabaseClient
           .from('frizz_boutiques')
@@ -896,7 +882,7 @@
 
         if (!boutiques || boutiques.length === 0) {
           console.warn('⚠️ Aucune boutique trouvée');
-          showStatus('<div>Aucune boutique active</div><div style="font-size:12px;opacity:0.7;">Vérifie tes données Supabase</div>', true);
+          showStatus('<div>Aucune boutique active</div>', true);
           return;
         }
 
@@ -905,31 +891,26 @@
         const icon = getFrizzIcon();
 
         boutiques.forEach(boutique => {
-          if (!boutique.latitude || !boutique.longitude) {
-            console.warn('⚠️ Boutique sans coordonnées:', boutique.nom);
-            return;
-          }
+          if (!boutique.latitude || !boutique.longitude) return;
 
           const marker = L.marker([boutique.latitude, boutique.longitude], {
             icon: icon,
             riseOnHover: true
           }).addTo(map);
 
-          const popupHTML = `
-            <div class="popup-card">
-              <div class="popup-type">${formatType(boutique.type_boutique)}</div>
-              <div class="popup-title">${boutique.nom}</div>
-              <div class="popup-loc">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                <span>${boutique.adresse}, ${boutique.code_postal} ${boutique.ville}</span>
-              </div>
-              ${boutique.description_courte_fr ? '<div class="popup-desc">"' + boutique.description_courte_fr + '"</div>' : ''}
-              <button class="popup-btn" onclick="showToast('Page boutique bientôt disponible')">Voir les drops →</button>
-            </div>
-          `;
+          const popupHTML = '<div class="popup-card">' +
+            '<div class="popup-type">' + formatType(boutique.type_boutique) + '</div>' +
+            '<div class="popup-title">' + boutique.nom + '</div>' +
+            '<div class="popup-loc">' +
+              '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">' +
+                '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
+                '<circle cx="12" cy="10" r="3"/>' +
+              '</svg>' +
+              '<span>' + boutique.adresse + ', ' + boutique.code_postal + ' ' + boutique.ville + '</span>' +
+            '</div>' +
+            (boutique.description_courte_fr ? '<div class="popup-desc">"' + boutique.description_courte_fr + '"</div>' : '') +
+            '<button class="popup-btn" onclick="showToast(\'Page boutique bientôt disponible\')">Voir les drops →</button>' +
+          '</div>';
 
           marker.bindPopup(popupHTML, {
             maxWidth: 320,
@@ -951,7 +932,7 @@
         }
 
         hideStatus();
-        renderDrops(boutiques);
+        renderDrops();
         updateCount(boutiques.length);
 
       } catch (err) {
@@ -988,9 +969,7 @@
       ).join('');
     }
 
-    // ════════════ EVENTS ════════════
     function bindEvents() {
-      // Filtres
       document.querySelectorAll('.filter-chip').forEach(chip => {
         chip.addEventListener('click', () => {
           document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -1012,7 +991,6 @@
         });
       });
 
-      // Recherche
       const searchInput = document.getElementById('search-input');
       if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -1038,7 +1016,6 @@
         });
       }
 
-      // FAB
       const zoomIn = document.getElementById('fab-zoom-in');
       const zoomOut = document.getElementById('fab-zoom-out');
       const locate = document.getElementById('fab-locate');
@@ -1064,7 +1041,6 @@
         });
       }
 
-      // Bottom sheet
       const handle = document.getElementById('sheet-handle');
       if (handle) {
         handle.addEventListener('click', () => {
@@ -1073,13 +1049,14 @@
       }
     }
 
-    // ════════════ INIT ════════════
     function start() {
       console.log('🎯 [Frizz] Démarrage');
-      if (initMap()) {
-        bindEvents();
-        loadBoutiques();
-      }
+      waitForLeaflet(() => {
+        if (initMap()) {
+          bindEvents();
+          loadBoutiques();
+        }
+      });
     }
 
     if (document.readyState === 'loading') {

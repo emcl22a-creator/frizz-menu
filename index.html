@@ -114,20 +114,12 @@
     z-index: 1;
   }
 
-  /* RESPONSIVE DESKTOP */
-  @media (min-width: 768px) {
-    .app {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-  }
-
   /* ════════════ TOP BAR — GLASS APPLE ════════════ */
   .topbar {
     position: sticky;
     top: 0;
     z-index: 50;
-    padding: 14px 22px;
+    padding: 14px 28px;
     padding-top: calc(14px + env(safe-area-inset-top));
     display: flex;
     align-items: center;
@@ -194,7 +186,7 @@
 
   /* ════════════ HERO ════════════ */
   .hero {
-    padding: 32px 22px 24px;
+    padding: 32px 28px 24px;
   }
   .hero-eyebrow {
     font-family: 'Source Serif 4', serif;
@@ -239,12 +231,11 @@
 
   @media (min-width: 768px) {
     .hero { padding: 48px 32px 32px; }
-    .hero-title { font-size: 56px; }
   }
 
   /* ════════════ MAP MOCKUP ════════════ */
   .map-wrap {
-    margin: 24px 22px;
+    margin: 24px 28px;
     height: 360px;
     background: var(--surface);
     backdrop-filter: blur(20px);
@@ -376,7 +367,7 @@
 
   /* ════════════ FORM ════════════ */
   .form-wrap {
-    margin: 0 22px;
+    margin: 0 28px;
   }
   .form {
     display: flex;
@@ -507,7 +498,7 @@
 
   /* ════════════ SECTION COMMONS ════════════ */
   .section {
-    padding: 40px 22px;
+    padding: 40px 28px;
   }
   .section-title {
     font-size: 28px;
@@ -523,13 +514,9 @@
     font-weight: 700;
     color: var(--blue);
   }
-  @media (min-width: 768px) {
-    .section { padding: 56px 32px; }
-    .section-title { font-size: 36px; }
-  }
 
   .divider {
-    margin: 0 22px;
+    margin: 0 28px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
   }
@@ -539,7 +526,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 0 22px;
+    margin: 0 28px;
   }
   .stat-card {
     padding: 22px 16px 20px;
@@ -685,7 +672,7 @@
 
   /* ════════════ FINAL CTA ════════════ */
   .final-cta {
-    padding: 56px 22px 40px;
+    padding: 56px 28px 40px;
     text-align: center;
   }
   .final-cta-spark {
@@ -727,7 +714,7 @@
 
   /* ════════════ FOOTER ════════════ */
   .footer {
-    padding: 32px 22px 40px;
+    padding: 32px 28px 40px;
     border-top: 1px solid var(--border);
     margin-top: 20px;
   }
@@ -766,6 +753,125 @@
     color: var(--text-3);
   }
 
+  /* ════════════════════════════════════════════════════════════
+     RESPONSIVE — 3 BREAKPOINTS PROGRESSIFS
+     ════════════════════════════════════════════════════════════ */
+
+  /* DEFAULT MOBILE : hero-and-map empilé verticalement */
+  .hero-and-map {
+    display: block;
+  }
+  .hero-content {
+    display: contents; /* permet aux enfants de garder leur layout normal sur mobile */
+  }
+
+  /* ── TABLET 768px+ : on aère un peu, garde mobile-style ── */
+  @media (min-width: 768px) {
+    .app { max-width: 760px; margin: 0 auto; }
+    .hero { padding: 56px 36px 32px; }
+    .hero-title { font-size: 56px; }
+    .hero-sub { font-size: 16px; max-width: 560px; }
+    .map-wrap { margin: 32px 36px; height: 420px; }
+    .form-wrap { margin: 0 36px; }
+    .section { padding: 64px 36px; }
+    .section-title { font-size: 38px; }
+    .stats-grid { margin: 0 36px; gap: 16px; }
+    .stat-num { font-size: 36px; }
+    .divider { margin: 0 36px; }
+    .features-grid { gap: 14px; }
+    .final-cta { padding: 80px 36px 56px; }
+    .final-cta-title { font-size: 38px; }
+    .footer { padding: 40px 36px 48px; }
+    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
+  }
+
+  /* ── DESKTOP 1024px+ : on élargit vraiment, hero split ── */
+  @media (min-width: 1024px) {
+    .app { max-width: 1100px; padding-bottom: 80px; }
+
+    .topbar { padding: 18px 56px; padding-top: calc(18px + env(safe-area-inset-top)); }
+    .topbar-cta { font-size: 12px; padding: 9px 18px; }
+
+    /* HERO SPLIT : hero-content à gauche, map à droite */
+    .hero-and-map {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 80px 56px 60px;
+    }
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .hero-and-map .hero { padding: 0; }
+    .hero-and-map .map-wrap { margin: 0; height: 480px; }
+    .hero-and-map .hero-title { font-size: 64px; }
+    .hero-and-map .hero-sub { font-size: 17px; max-width: none; }
+    .hero-and-map .form-wrap { margin: 28px 0 0; }
+
+    /* Form sous le hero textuel sur desktop */
+    .form { max-width: 100%; }
+    .form-trust { margin-top: 14px; font-size: 12px; gap: 18px; }
+
+    /* Stats en grand */
+    .stats-grid {
+      margin: 0 56px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .stat-card { padding: 32px 28px 28px; }
+    .stat-num { font-size: 46px; margin-bottom: 10px; }
+    .stat-label { font-size: 12px; }
+
+    /* Sections */
+    .section { padding: 100px 56px; }
+    .section-title { font-size: 48px; max-width: 800px; margin-bottom: 40px; }
+    .divider { margin: 0 56px; }
+
+    /* Pain points : 2 colonnes en desktop */
+    .pain-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .pain-item { padding: 22px 24px; }
+    .pain-text { font-size: 15px; }
+
+    /* Features : 3 colonnes en desktop */
+    .features-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .feature-card { padding: 28px 24px; }
+    .feature-emoji { font-size: 36px; margin-bottom: 16px; }
+    .feature-title { font-size: 17px; margin-bottom: 8px; }
+    .feature-desc { font-size: 13px; }
+
+    /* Final CTA grand */
+    .final-cta { padding: 120px 56px 80px; }
+    .final-cta-spark { font-size: 40px; margin-bottom: 24px; }
+    .final-cta-title { font-size: 56px; margin-bottom: 36px; }
+    .final-cta-form { max-width: 540px; }
+
+    /* Footer */
+    .footer { padding: 56px 56px 64px; }
+  }
+
+  /* ── DESKTOP XL 1280px+ : encore plus large pour grands écrans ── */
+  @media (min-width: 1280px) {
+    .app { max-width: 1240px; }
+    .hero-and-map { padding: 100px 80px 80px; gap: 64px; }
+    .hero-and-map .hero-title { font-size: 72px; }
+    .stats-grid { margin: 0 80px; }
+    .section { padding: 120px 80px; }
+    .divider { margin: 0 80px; }
+    .final-cta { padding: 140px 80px 100px; }
+    .footer { padding: 64px 80px 80px; }
+    .topbar { padding: 20px 80px; padding-top: calc(20px + env(safe-area-inset-top)); }
+  }
+
 </style>
 </head>
 <body>
@@ -780,44 +886,51 @@
     <a href="#cta-final" class="topbar-cta">S'inscrire</a>
   </header>
 
-  <!-- ════════════ HERO ════════════ -->
-  <section class="hero">
-    <div class="hero-eyebrow">— Frontière FR-CH · Trinational</div>
-    <h1 class="hero-title">Tous les <em>bons plans</em><br>autour de toi.</h1>
-    <p class="hero-sub">Frizz cartographie les <em>meilleurs commerçants</em>, les <em>deals exclusifs</em> et les <em>infos pratiques</em> des deux côtés de la frontière. Une app. Tout ce dont tu as besoin.</p>
-  </section>
+  <!-- ════════════ HERO + MAP (split sur desktop, stacked sur mobile) ════════════ -->
+  <div class="hero-and-map">
 
-  <!-- ════════════ MAP MOCKUP ════════════ -->
-  <div class="map-wrap">
-    <div class="map-grid"></div>
-    <div class="map-border"></div>
-    <div class="map-border-label">Frontière FR – CH</div>
+    <!-- LEFT : Hero + Form -->
+    <div class="hero-content">
+      <section class="hero">
+        <div class="hero-eyebrow">— Frontière FR-CH · Trinational</div>
+        <h1 class="hero-title">Tous les <em>bons plans</em><br>autour de toi.</h1>
+        <p class="hero-sub">Frizz cartographie les <em>meilleurs commerçants</em>, les <em>deals exclusifs</em> et les <em>infos pratiques</em> des deux côtés de la frontière. Une app. Tout ce dont tu as besoin.</p>
+      </section>
 
-    <div class="map-pin map-pin-1">5</div>
-    <div class="map-pin map-pin-2">3</div>
-    <div class="map-pin map-pin-3">7</div>
-    <div class="map-pin map-pin-4">2</div>
-    <div class="map-pin map-pin-5">4</div>
-
-    <div class="map-overlay">
-      <div class="map-overlay-text"><em>21 deals actifs</em><br>dans un rayon de 10 km</div>
-      <div class="map-overlay-badge">Bientôt</div>
+      <!-- FORM (HERO) -->
+      <div class="form-wrap">
+        <form class="form" id="form-hero" onsubmit="return submitForm(event, 'hero')">
+          <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-hero">
+          <button type="submit" class="btn btn-primary" id="btn-hero">Découvrir →</button>
+        </form>
+        <div class="form-trust">
+          <span>Gratuit</span>
+          <span>Sans spam</span>
+          <span>Activation immédiate</span>
+        </div>
+        <div class="form-success" id="success-hero">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
+        <div class="form-error" id="error-hero"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- ════════════ FORM (HERO) ════════════ -->
-  <div class="form-wrap">
-    <form class="form" id="form-hero" onsubmit="return submitForm(event, 'hero')">
-      <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-hero">
-      <button type="submit" class="btn btn-primary" id="btn-hero">Découvrir →</button>
-    </form>
-    <div class="form-trust">
-      <span>Gratuit</span>
-      <span>Sans spam</span>
-      <span>Activation immédiate</span>
+    <!-- RIGHT : Map mockup -->
+    <div class="map-wrap">
+      <div class="map-grid"></div>
+      <div class="map-border"></div>
+      <div class="map-border-label">Frontière FR – CH</div>
+
+      <div class="map-pin map-pin-1">5</div>
+      <div class="map-pin map-pin-2">3</div>
+      <div class="map-pin map-pin-3">7</div>
+      <div class="map-pin map-pin-4">2</div>
+      <div class="map-pin map-pin-5">4</div>
+
+      <div class="map-overlay">
+        <div class="map-overlay-text"><em>21 deals actifs</em><br>dans un rayon de 10 km</div>
+        <div class="map-overlay-badge">Bientôt</div>
+      </div>
     </div>
-    <div class="form-success" id="success-hero">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
-    <div class="form-error" id="error-hero"></div>
+
   </div>
 
   <div style="height: 60px;"></div>

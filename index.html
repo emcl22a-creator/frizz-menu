@@ -373,9 +373,11 @@
     display: flex;
     gap: 8px;
     max-width: 520px;
+    width: 100%;
   }
   .input {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 14px 18px;
     background: var(--surface-strong);
     backdrop-filter: blur(20px);
@@ -389,12 +391,28 @@
     letter-spacing: -0.014em;
     outline: none;
     transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
   .input::placeholder { color: var(--text-3); }
   .input:focus {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(10,132,255,0.18);
     background: rgba(255,255,255,0.07);
+  }
+
+  /* Mobile : bouton compact pour éviter le dépassement */
+  @media (max-width: 480px) {
+    .form { gap: 6px; }
+    .input { padding: 13px 14px; font-size: 13px; }
+    .form .btn { padding: 13px 14px; font-size: 13px; flex-shrink: 0; }
+  }
+
+  /* Hide-on-mobile utility */
+  .hide-on-mobile { display: none !important; }
+  @media (min-width: 768px) {
+    .hide-on-mobile { display: block !important; }
+    .hide-on-mobile.divider { display: block !important; }
   }
 
   .btn {
@@ -562,6 +580,7 @@
     margin-bottom: 6px;
     position: relative;
     z-index: 1;
+    white-space: nowrap;
   }
   .stat-label {
     font-size: 10px;
@@ -572,6 +591,24 @@
     line-height: 1.3;
     position: relative;
     z-index: 1;
+  }
+
+  /* Mobile compact (< 480px) : stats en row horizontale fine */
+  @media (max-width: 480px) {
+    .stats-grid {
+      margin: 0 20px;
+      gap: 8px;
+    }
+    .stat-card {
+      padding: 16px 10px 14px;
+      border-radius: var(--r-md);
+    }
+    .stat-num { font-size: 22px; margin-bottom: 4px; letter-spacing: -0.030em; }
+    .stat-label {
+      font-size: 8.5px;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+    }
   }
 
   /* ════════════ PAIN POINTS ════════════ */
@@ -839,8 +876,8 @@
 
   /* ════════════ NEWSLETTER PREVIEW ════════════ */
   .nl-preview {
-    margin: 0 28px;
-    padding: 24px 22px;
+    margin: 0 20px;
+    padding: 22px 18px;
     background: var(--surface);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
@@ -866,27 +903,33 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
+    gap: 14px;
     padding-bottom: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     position: relative;
     z-index: 1;
+  }
+  .nl-preview-head > div:first-child {
+    flex: 1;
+    min-width: 0;
   }
   .nl-preview-eyebrow {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
     font-weight: 700;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--blue);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     letter-spacing: -0.005em;
+    line-height: 1.4;
   }
   .nl-preview-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 900;
     color: var(--text);
-    letter-spacing: -0.024em;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
   }
   .nl-preview-saving {
     font-family: 'Source Serif 4', serif;
@@ -898,22 +941,22 @@
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.018em;
     line-height: 1;
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   .nl-deal {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 0;
+    padding: 14px 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     position: relative;
     z-index: 1;
   }
   .nl-deal:last-of-type { border-bottom: 0; }
   .nl-deal-emoji {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
     border-radius: var(--r);
     background: var(--surface-strong);
@@ -921,54 +964,60 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
   }
   .nl-deal-info {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
   }
   .nl-deal-name {
     font-size: 13px;
     font-weight: 900;
     color: var(--text);
-    letter-spacing: -0.014em;
-    margin-bottom: 2px;
-    line-height: 1.3;
+    letter-spacing: -0.012em;
+    margin-bottom: 4px;
+    line-height: 1.35;
   }
   .nl-deal-loc {
     font-size: 11px;
     font-weight: 700;
     color: var(--text-3);
     letter-spacing: -0.005em;
+    line-height: 1.4;
   }
   .nl-deal-amt {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 17px;
     color: var(--green);
-    margin-left: 8px;
+    margin-left: 6px;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.014em;
     flex-shrink: 0;
+    align-self: center;
   }
 
   .nl-preview-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 14px;
-    padding-top: 14px;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 16px;
     border-top: 1px solid rgba(255,255,255,0.10);
     position: relative;
     z-index: 1;
   }
   .nl-preview-foot-label {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
     color: var(--text-2);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    line-height: 1.3;
+    flex: 1;
   }
   .nl-preview-foot-amt {
     font-family: 'Source Serif 4', serif;
@@ -1378,10 +1427,10 @@
   </div>
 
   <div style="height: 60px;"></div>
-  <div class="divider"></div>
+  <div class="divider hide-on-mobile"></div>
 
-  <!-- ════════════ PAIN POINTS ════════════ -->
-  <section class="section">
+  <!-- ════════════ PAIN POINTS (caché sur mobile) ════════════ -->
+  <section class="section pain-section hide-on-mobile">
     <h2 class="section-title">Tu vis à la frontière ?<br>Tu connais le <em>drame</em>.</h2>
     <div class="pain-list">
       <div class="pain-item">
@@ -1451,7 +1500,7 @@
     <div class="nl-preview">
       <div class="nl-preview-head">
         <div>
-          <div class="nl-preview-eyebrow">Édition #1 · Vendredi 16 mai · 18:00</div>
+          <div class="nl-preview-eyebrow">Édition #1 · Vendredi 18h</div>
           <div class="nl-preview-title">5 bons plans pour ton weekend</div>
         </div>
         <div class="nl-preview-saving">−187€</div>

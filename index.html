@@ -3,106 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0A0A0B">
+<meta name="theme-color" content="#050506">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="dark">
-<title>Frizz · Réserve les meilleures pièces près de chez toi</title>
-<meta name="description" content="L'app gratuite pour réserver dans les boutiques mode près de chez toi.">
+<meta name="description" content="Frizz · Tous les bons plans autour de toi. L'app des frontaliers FR-CH.">
+<meta property="og:title" content="Frizz — Tous les bons plans autour de toi.">
+<meta property="og:description" content="L'app qui réunit les meilleurs commerces, deals et bons plans des deux côtés de la frontière FR-CH.">
+<meta property="og:type" content="website">
+<title>Frizz — Tous les bons plans autour de toi.</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 
-<!-- Leaflet (sans integrity — fix bug chargement) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+  /* ═══════════════════════════════════════════════════════════════
+     FRIZZ — Landing page (Map Hero)
+     Design system éditorial glass · même DNA que menu-admin
+     ═══════════════════════════════════════════════════════════════ */
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #050506;
-    --surface-glass: rgba(20, 20, 26, 0.55);
-    --surface-glass-strong: rgba(20, 20, 26, 0.75);
+    --surface: rgba(255,255,255,0.03);
+    --surface-strong: rgba(255,255,255,0.05);
+    --surface-glass: rgba(20, 20, 26, 0.35);
     --text: #F2F2F4;
     --text-2: rgba(255,255,255,0.65);
     --text-3: rgba(255,255,255,0.45);
+    --text-4: rgba(255,255,255,0.25);
     --border: rgba(255,255,255,0.08);
-    --border-strong: rgba(255,255,255,0.14);
+    --border-strong: rgba(255,255,255,0.12);
+    --border-bright: rgba(255,255,255,0.18);
     --blue: #0A84FF;
     --blue-bright: #2E9DFF;
-    --blue-soft: rgba(10,132,255,0.16);
+    --blue-glow: rgba(10,132,255,0.5);
+    --blue-soft: rgba(10,132,255,0.14);
+    --green: #4ADE80;
+    --green-soft: rgba(74,222,128,0.14);
+    --orange: #FFB454;
+    --orange-soft: rgba(255,180,84,0.14);
+    --red: #FF6B5C;
+    --red-soft: rgba(255,107,92,0.14);
+    --r-sm: 10px;
     --r: 14px;
     --r-md: 18px;
+    --r-lg: 22px;
+    --r-xl: 24px;
     --r-pill: 100px;
   }
 
   html, body {
     color: var(--text);
     font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.014em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    height: 100vh;
-    overflow: hidden;
-    background: #050506;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  /* AURORA */
-  .aurora-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
+  /* AURORA BACKGROUND — subtile, noir dominant */
+  html {
     background:
       radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
       radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
-      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%);
+      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
+      #050506 !important;
+    background-attachment: fixed !important;
+  }
+  body { background: transparent !important; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
+    animation: auroraDrift 24s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+  @keyframes auroraDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 2%) scale(1.06); }
+    100% { transform: translate(-2%, 3%) scale(1.04); }
   }
 
-  /* MAP — transparent pour glass effect */
-  #map {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100vh;
+  /* APP SHELL */
+  .app {
+    min-height: 100vh;
+    padding-bottom: 60px;
+    position: relative;
     z-index: 1;
-    background: transparent !important;
-  }
-  .leaflet-container {
-    background: #050506 !important;
-    font-family: 'Inter Tight', sans-serif !important;
   }
 
-  /* TOPBAR */
+  /* RESPONSIVE DESKTOP */
+  @media (min-width: 768px) {
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+  }
+
+  /* ════════════ TOP BAR — GLASS APPLE ════════════ */
   .topbar {
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 14px 24px;
+    z-index: 50;
+    padding: 14px 22px;
     padding-top: calc(14px + env(safe-area-inset-top));
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.5);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: saturate(180%) blur(28px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
-
   .logo-link {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    transition: transform 0.2s;
-    cursor: pointer;
+    transition: transform 0.2s ease;
   }
   .logo-link:hover { transform: scale(1.04); }
   .logo {
@@ -133,937 +172,872 @@
     50% { opacity: 0.7; transform: scale(1.08); }
   }
 
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn-pro {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    padding: 9px 18px;
-    border-radius: var(--r-pill);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    letter-spacing: -0.01em;
-  }
-  .btn-pro:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.2);
-  }
-  .btn-pro.primary {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: #fff;
-  }
-  .btn-pro.primary:hover { background: var(--blue-bright); }
-
-  /* SEARCH + FILTRES */
-  .search-container {
-    position: fixed;
-    top: calc(76px + env(safe-area-inset-top));
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    max-width: calc(100% - 32px);
-    z-index: 500;
-  }
-  .search-bar {
-    background: var(--surface-glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-pill);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    transition: all 0.2s;
-  }
-  .search-bar:focus-within {
-    border-color: rgba(10,132,255,0.5);
-    background: var(--surface-glass-strong);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 3px rgba(10,132,255,0.15);
-  }
-  .search-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--text-2);
-    flex-shrink: 0;
-  }
-  .search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    outline: none;
-    min-width: 0;
-  }
-  .search-input::placeholder {
-    color: var(--text-3);
-    font-weight: 500;
-  }
-
-  .filters-quick {
-    margin-top: 12px;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 2px;
-  }
-  .filters-quick::-webkit-scrollbar { display: none; }
-
-  .filter-chip {
-    background: var(--surface-glass);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    padding: 9px 16px;
-    border-radius: var(--r-pill);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-    letter-spacing: -0.01em;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-  .filter-chip:hover {
-    background: var(--surface-glass-strong);
-    border-color: rgba(255,255,255,0.22);
-  }
-  .filter-chip.active {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(10,132,255,0.5);
-  }
-  .filter-chip svg {
-    width: 16px;
-    height: 16px;
-    color: currentColor;
-    flex-shrink: 0;
-    stroke-width: 1.8;
-  }
-
-  /* FAB */
-  .floating-buttons {
-    position: fixed;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 400;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .fab {
-    width: 48px;
-    height: 48px;
-    background: var(--surface-glass);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--border-strong);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  }
-  .fab:hover {
-    background: var(--surface-glass-strong);
-    border-color: rgba(255,255,255,0.22);
-    transform: scale(1.05);
-  }
-  .fab:active { transform: scale(0.95); }
-  .fab svg { width: 20px; height: 20px; stroke-width: 2; }
-
-  /* BOTTOM SHEET */
-  .bottom-sheet {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 300;
-    background: var(--surface-glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border-top: 1px solid var(--border-strong);
-    border-radius: 24px 24px 0 0;
-    padding: 12px 20px 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
-    transform: translateY(0);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-    max-height: 70vh;
-  }
-  .bottom-sheet.collapsed {
-    transform: translateY(calc(100% - 88px));
-  }
-  .sheet-handle {
-    width: 36px;
-    height: 4px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 2px;
-    margin: 0 auto 14px;
-    cursor: pointer;
-  }
-  .sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-    gap: 12px;
-  }
-  /* TITRE — espacement corrigé */
-  .sheet-title {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-  }
-  .sheet-title-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--blue);
-    flex-shrink: 0;
-  }
-  .sheet-title-text {
-    display: inline;
-  }
-  .sheet-title-text em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 600;
-    color: var(--blue);
-    margin-left: 0.25em;
-  }
-  .sheet-count {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-3);
-    flex-shrink: 0;
-  }
-  .drops-row {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 4px 0 8px;
-    margin: 0 -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  .drops-row::-webkit-scrollbar { display: none; }
-
-  .drop-card {
-    min-width: 240px;
-    max-width: 240px;
-    flex-shrink: 0;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    padding: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .drop-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(10,132,255,0.3);
-    background: rgba(10, 132, 255, 0.05);
-  }
-  .drop-card-tag {
-    display: inline-block;
-    padding: 4px 10px;
-    background: var(--blue-soft);
-    border: 1px solid rgba(10,132,255,0.3);
-    color: var(--blue-bright);
-    border-radius: var(--r-pill);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin-bottom: 10px;
-  }
-  .drop-card-title {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .drop-card-meta {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-3);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .drop-card-meta svg { width: 12px; height: 12px; flex-shrink: 0; }
-
-  /* POPUP */
-  .leaflet-popup-content-wrapper {
-    background: rgba(20, 20, 26, 0.92) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    border: 1px solid var(--border-strong) !important;
-    border-radius: var(--r-md) !important;
-    color: var(--text) !important;
-    padding: 0 !important;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.6) !important;
-    overflow: hidden;
-  }
-  .leaflet-popup-content {
-    margin: 0 !important;
-    width: 280px !important;
-    line-height: 1.4 !important;
-  }
-  .leaflet-popup-tip {
-    background: rgba(20, 20, 26, 0.92) !important;
-  }
-  .leaflet-popup-close-button {
-    color: var(--text-2) !important;
-    font-size: 22px !important;
-    padding: 8px !important;
-    width: 30px !important;
-    height: 30px !important;
-  }
-  .popup-card { padding: 18px; }
-  .popup-type {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 6px;
-  }
-  .popup-title {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 18px;
+  .topbar-cta {
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+    color: var(--text-2);
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    padding: 7px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: -0.005em;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .topbar-cta:hover {
     color: var(--text);
-    margin-bottom: 6px;
+    border-color: var(--border-bright);
+    background: rgba(255,255,255,0.04);
   }
-  .popup-loc {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-3);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: flex-start;
-    gap: 5px;
+
+  /* ════════════ HERO ════════════ */
+  .hero {
+    padding: 32px 22px 24px;
   }
-  .popup-loc svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; }
-  .popup-desc {
+  .hero-eyebrow {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
-    font-weight: 500;
-    font-size: 13px;
-    color: var(--text-2);
-    line-height: 1.45;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue);
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+  .hero-title {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -0.034em;
+    line-height: 1.05;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
     margin-bottom: 14px;
   }
-  .popup-btn {
-    display: block;
-    width: 100%;
-    background: var(--blue);
-    color: #fff;
-    border: none;
-    padding: 11px;
-    border-radius: var(--r-pill);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
+  .hero-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
+    color: var(--blue);
+    letter-spacing: -0.014em;
   }
-  .popup-btn:hover { background: var(--blue-bright); }
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: -0.012em;
+    line-height: 1.5;
+    margin-bottom: 0;
+    max-width: 540px;
+  }
+  .hero-sub em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--text);
+  }
 
-  /* PIN */
-  .frizz-pin {
-    width: 38px;
-    height: 38px;
-    background: var(--blue);
-    border: 3px solid #fff;
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-    box-shadow: 0 4px 16px rgba(10,132,255,0.5);
-    animation: pinPulse 2.5s ease-in-out infinite;
-    position: relative;
+  @media (min-width: 768px) {
+    .hero { padding: 48px 32px 32px; }
+    .hero-title { font-size: 56px; }
   }
-  .frizz-pin::after {
-    content: '';
+
+  /* ════════════ MAP MOCKUP ════════════ */
+  .map-wrap {
+    margin: 24px 22px;
+    height: 360px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 12px 40px -12px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    background-image:
+      radial-gradient(circle at 30% 40%, rgba(10,132,255,0.15), transparent 30%),
+      radial-gradient(circle at 70% 60%, rgba(91,143,249,0.12), transparent 30%);
+  }
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .map-border {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--blue) 30%, var(--blue) 70%, transparent);
+    box-shadow: 0 0 20px var(--blue-glow);
+  }
+  .map-border-label {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-  }
-  @keyframes pinPulse {
-    0%, 100% { box-shadow: 0 4px 16px rgba(10,132,255,0.5); }
-    50% { box-shadow: 0 4px 28px rgba(10,132,255,0.9); }
-  }
-
-  /* STATUS / ERROR */
-  .status-overlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    color: var(--text-2);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    background: rgba(20, 20, 26, 0.85);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-md);
-    padding: 24px 32px;
-    text-align: center;
-    max-width: 90%;
-  }
-  .loading-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255,255,255,0.1);
-    border-top-color: var(--blue);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .status-overlay.error { color: #FF6B5C; border-color: rgba(255, 107, 92, 0.3); }
-  .status-overlay.hidden { display: none; }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    top: calc(100px + env(safe-area-inset-top));
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    z-index: 2000;
-    background: var(--surface-glass-strong);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--border-strong);
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--blue);
+    background: rgba(10,132,255,0.14);
+    padding: 5px 12px;
     border-radius: var(--r-pill);
-    padding: 12px 24px;
-    color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(10,132,255,0.30);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 2;
+    letter-spacing: -0.005em;
+    font-weight: 700;
     white-space: nowrap;
   }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+  .map-pin {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: var(--blue);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 6px rgba(10,132,255,0.20),
+      0 4px 14px var(--blue-glow);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #fff;
+    font-weight: 900;
+    z-index: 3;
+    animation: pinPulse 3s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .map-pin-1 { top: 28%; left: 22%; }
+  .map-pin-2 { top: 60%; left: 38%; animation-delay: 0.3s; }
+  .map-pin-3 { top: 30%; left: 70%; animation-delay: 0.6s; }
+  .map-pin-4 { top: 65%; left: 78%; animation-delay: 0.9s; }
+  .map-pin-5 { top: 45%; left: 30%; animation-delay: 1.2s; }
+  @keyframes pinPulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 6px rgba(10,132,255,0.20), 0 4px 14px var(--blue-glow);
+    }
+    50% {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 14px rgba(10,132,255,0.10), 0 4px 14px var(--blue-glow);
+    }
+  }
+  .map-overlay {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    padding: 12px 14px;
+    background: rgba(20,20,26,0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .map-overlay-text {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .map-overlay-text em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .map-overlay-badge {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--green);
+    background: var(--green-soft);
+    padding: 5px 10px;
+    border-radius: var(--r-pill);
+    border: 1px solid rgba(74,222,128,0.30);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    .topbar { padding: 12px 16px; }
-    .topbar-right .btn-pro:not(.primary) { display: none; }
-    .search-container {
-      top: calc(70px + env(safe-area-inset-top));
-      width: calc(100% - 24px);
-    }
-    .search-bar { padding: 12px 18px; }
-    .search-input { font-size: 14px; }
-    .floating-buttons {
-      right: 12px;
-      bottom: 200px;
-      top: auto;
-      transform: none;
-    }
-    .bottom-sheet { padding: 12px 16px 16px; }
-    .drops-row { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+  /* ════════════ FORM ════════════ */
+  .form-wrap {
+    margin: 0 22px;
+  }
+  .form {
+    display: flex;
+    gap: 8px;
+    max-width: 520px;
+  }
+  .input {
+    flex: 1;
+    padding: 14px 18px;
+    background: var(--surface-strong);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.014em;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .input::placeholder { color: var(--text-3); }
+  .input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.18);
+    background: rgba(255,255,255,0.07);
   }
 
-  @media (min-width: 1200px) {
-    .bottom-sheet {
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%);
-      width: 1000px;
-      border-radius: 24px;
-      bottom: 24px;
-    }
-    .bottom-sheet.collapsed {
-      transform: translateX(-50%) translateY(calc(100% - 56px));
-    }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 22px;
+    border-radius: var(--r);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    border: 0;
+    font-family: inherit;
+    letter-spacing: -0.014em;
+    transition: all 0.15s ease;
+    white-space: nowrap;
   }
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.20),
+      0 4px 14px -4px var(--blue-glow);
+  }
+  .btn-primary:hover {
+    background: var(--blue-bright);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.24),
+      0 8px 22px -4px var(--blue-glow);
+  }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+
+  .form-trust {
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .form-trust span::before {
+    content: '✓';
+    color: var(--green);
+    margin-right: 4px;
+    font-weight: 900;
+  }
+
+  /* Form success state */
+  .form-success {
+    display: none;
+    margin: 16px 0 0;
+    padding: 14px 16px;
+    background: var(--green-soft);
+    border: 1px solid rgba(74,222,128,0.30);
+    border-radius: var(--r);
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.012em;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .form-success.show {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-error {
+    display: none;
+    margin: 16px 0 0;
+    padding: 12px 14px;
+    background: var(--red-soft);
+    border: 1px solid rgba(255,107,92,0.30);
+    border-radius: var(--r);
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+  }
+  .form-error.show { display: block; }
+
+  /* ════════════ SECTION COMMONS ════════════ */
+  .section {
+    padding: 40px 22px;
+  }
+  .section-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.034em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .section-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  @media (min-width: 768px) {
+    .section { padding: 56px 32px; }
+    .section-title { font-size: 36px; }
+  }
+
+  .divider {
+    margin: 0 22px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  }
+
+  /* ════════════ STATS GRID ════════════ */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0 22px;
+  }
+  .stat-card {
+    padding: 22px 16px 20px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 8px 24px -8px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 70%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(10,132,255,0.20), transparent 60%);
+    pointer-events: none;
+  }
+  .stat-num {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 30px;
+    color: var(--text);
+    letter-spacing: -0.024em;
+    line-height: 1;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .stat-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ════════════ PAIN POINTS ════════════ */
+  .pain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pain-item {
+    padding: 16px 18px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: all 0.2s ease;
+  }
+  .pain-item:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-strong);
+  }
+  .pain-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: var(--r-pill);
+    background: var(--red-soft);
+    color: var(--red);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    border: 1px solid rgba(255,107,92,0.30);
+  }
+  .pain-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.012em;
+    line-height: 1.5;
+    padding-top: 4px;
+  }
+  .pain-text em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  /* ════════════ FEATURES ════════════ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .feature-card {
+    padding: 22px 18px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .feature-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 12px 40px -12px var(--blue-glow);
+    background: var(--surface-strong);
+  }
+  .feature-emoji {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: inline-block;
+    line-height: 1;
+  }
+  .feature-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.022em;
+    margin-bottom: 6px;
+  }
+  .feature-desc {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-2);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+  }
+
+  /* ════════════ FINAL CTA ════════════ */
+  .final-cta {
+    padding: 56px 22px 40px;
+    text-align: center;
+  }
+  .final-cta-spark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 32px;
+    text-shadow: 0 0 16px rgba(10,132,255,0.6);
+    animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  .final-cta-title {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.034em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .final-cta-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .final-cta-form {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .final-cta-trust {
+    margin-top: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+  }
+
+  /* ════════════ FOOTER ════════════ */
+  .footer {
+    padding: 32px 22px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    letter-spacing: -0.005em;
+  }
+  .footer-links a:hover { color: var(--text); }
+  .footer-meta {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-4);
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+  }
+  .footer-meta em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: var(--text-3);
+  }
+
 </style>
 </head>
 <body>
 
-  <div class="aurora-bg"></div>
+<div class="app">
 
-  <div id="map"></div>
-
+  <!-- ════════════ TOP BAR ════════════ -->
   <header class="topbar">
-    <a href="#" class="logo-link" onclick="event.preventDefault();">
+    <a href="#" class="logo-link">
       <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
-    <div class="topbar-right">
-      <button class="btn-pro" onclick="showToast('Page Connexion bientôt disponible')">Connexion</button>
-      <button class="btn-pro primary" onclick="showToast('Inscription des boutiques bientôt disponible')">Inscrire ma boutique</button>
-    </div>
+    <a href="#cta-final" class="topbar-cta">S'inscrire</a>
   </header>
 
-  <div class="search-container">
-    <div class="search-bar">
-      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.3-4.3"/>
-      </svg>
-      <input type="text" class="search-input" id="search-input" placeholder="Rechercher une boutique, une ville..." />
-    </div>
-    <div class="filters-quick" id="filters-quick">
-      <button class="filter-chip active" data-filter="all">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-        </svg>
-        Tout
-      </button>
-      <button class="filter-chip" data-filter="friperie">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2a3 3 0 0 0-3 3c0 1.5 1.5 2.5 3 3v2L2 17h20l-10-7V8c1.5-.5 3-1.5 3-3a3 3 0 0 0-3-3z"/>
-        </svg>
-        Friperies
-      </button>
-      <button class="filter-chip" data-filter="vintage">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M2 8l4 6 6-9 6 9 4-6v12H2V8z"/>
-          <circle cx="6" cy="6" r="1.5" fill="currentColor"/>
-          <circle cx="12" cy="3" r="1.5" fill="currentColor"/>
-          <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
-        </svg>
-        Vintage
-      </button>
-      <button class="filter-chip" data-filter="concept_store">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M5 7h14l-1 13H6L5 7z"/>
-          <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
-        </svg>
-        Concept stores
-      </button>
-      <button class="filter-chip" data-filter="sneakers">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M2 16.5L3 11l5-1 3-3h3l3 5 4 1.5L22 17v3H2v-3.5z"/>
-          <line x1="11" y1="14" x2="14" y2="14"/>
-          <line x1="16" y1="14" x2="19" y2="14"/>
-        </svg>
-        Sneakers
-      </button>
-      <button class="filter-chip" data-filter="streetwear">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M6 8c0-3 2.5-6 6-6s6 3 6 6v2l4 2-2 8H4l-2-8 4-2V8z"/>
-          <path d="M9 14h6"/>
-        </svg>
-        Streetwear
-      </button>
-      <button class="filter-chip" data-filter="createur">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path d="M3 21l4-1 13-13a2 2 0 0 0-3-3L4 17l-1 4z"/>
-          <path d="M14 6l3 3"/>
-          <circle cx="19" cy="5" r="1.5" fill="currentColor"/>
-        </svg>
-        Créateurs
-      </button>
+  <!-- ════════════ HERO ════════════ -->
+  <section class="hero">
+    <div class="hero-eyebrow">— Frontière FR-CH · Trinational</div>
+    <h1 class="hero-title">Tous les <em>bons plans</em><br>autour de toi.</h1>
+    <p class="hero-sub">Frizz cartographie les <em>meilleurs commerçants</em>, les <em>deals exclusifs</em> et les <em>infos pratiques</em> des deux côtés de la frontière. Une app. Tout ce dont tu as besoin.</p>
+  </section>
+
+  <!-- ════════════ MAP MOCKUP ════════════ -->
+  <div class="map-wrap">
+    <div class="map-grid"></div>
+    <div class="map-border"></div>
+    <div class="map-border-label">Frontière FR – CH</div>
+
+    <div class="map-pin map-pin-1">5</div>
+    <div class="map-pin map-pin-2">3</div>
+    <div class="map-pin map-pin-3">7</div>
+    <div class="map-pin map-pin-4">2</div>
+    <div class="map-pin map-pin-5">4</div>
+
+    <div class="map-overlay">
+      <div class="map-overlay-text"><em>21 deals actifs</em><br>dans un rayon de 10 km</div>
+      <div class="map-overlay-badge">Bientôt</div>
     </div>
   </div>
 
-  <div class="status-overlay" id="status-overlay">
-    <div class="loading-spinner"></div>
-    <div>Chargement des boutiques...</div>
+  <!-- ════════════ FORM (HERO) ════════════ -->
+  <div class="form-wrap">
+    <form class="form" id="form-hero" onsubmit="return submitForm(event, 'hero')">
+      <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-hero">
+      <button type="submit" class="btn btn-primary" id="btn-hero">Découvrir →</button>
+    </form>
+    <div class="form-trust">
+      <span>Gratuit</span>
+      <span>Sans spam</span>
+      <span>Activation immédiate</span>
+    </div>
+    <div class="form-success" id="success-hero">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
+    <div class="form-error" id="error-hero"></div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div style="height: 60px;"></div>
+  <div class="divider"></div>
+  <div style="height: 40px;"></div>
 
-  <div class="floating-buttons">
-    <button class="fab" title="Me localiser" id="fab-locate">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/>
-        <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
-      </svg>
-    </button>
-    <button class="fab" title="Zoom +" id="fab-zoom-in">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-        <line x1="12" y1="5" x2="12" y2="19"/>
-        <line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-    </button>
-    <button class="fab" title="Zoom -" id="fab-zoom-out">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-        <line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-    </button>
+  <!-- ════════════ STATS ════════════ -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">410k</div>
+      <div class="stat-label">Frontaliers FR-CH</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">6 600</div>
+      <div class="stat-label">CHF dépensés/an</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">200€</div>
+      <div class="stat-label">Économisés/mois</div>
+    </div>
   </div>
 
-  <!-- BOTTOM SHEET — titre corrigé -->
-  <div class="bottom-sheet" id="bottom-sheet">
-    <div class="sheet-handle" id="sheet-handle"></div>
-    <div class="sheet-header">
-      <div class="sheet-title">
-        <svg class="sheet-title-icon" fill="currentColor" viewBox="0 0 24 24">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
-        <span class="sheet-title-text">Drops de la <em>semaine</em></span>
+  <div style="height: 60px;"></div>
+  <div class="divider"></div>
+
+  <!-- ════════════ PAIN POINTS ════════════ -->
+  <section class="section">
+    <h2 class="section-title">Tu vis à la frontière ?<br>Tu connais le <em>drame</em>.</h2>
+    <div class="pain-list">
+      <div class="pain-item">
+        <span class="pain-icon">×</span>
+        <p class="pain-text">Tu paies ta viande <em>2× plus cher</em> qu'à 5 km de chez toi.</p>
       </div>
-      <div class="sheet-count" id="sheet-count">— boutiques</div>
+      <div class="pain-item">
+        <span class="pain-icon">×</span>
+        <p class="pain-text">Tu galères à savoir où acheter, où sortir, où économiser.</p>
+      </div>
+      <div class="pain-item">
+        <span class="pain-icon">×</span>
+        <p class="pain-text">Tu perds <em>1h aux douanes</em> faute d'info en temps réel.</p>
+      </div>
+      <div class="pain-item">
+        <span class="pain-icon">×</span>
+        <p class="pain-text">Tu rates les promos des commerces à 10 min de chez toi.</p>
+      </div>
     </div>
-    <div class="drops-row" id="drops-row"></div>
-  </div>
+  </section>
 
-  <script>
-    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  <div class="divider"></div>
 
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      if (!toast) return;
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+  <!-- ════════════ FEATURES ════════════ -->
+  <section class="section">
+    <h2 class="section-title">Ce que <em>Frizz</em><br>fait pour toi.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-emoji">🎯</div>
+        <div class="feature-title">Deals weekend</div>
+        <div class="feature-desc">5 promos exclusives chaque vendredi 18h, poussées en notification.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">🛒</div>
+        <div class="feature-title">+500 commerces</div>
+        <div class="feature-desc">Carte interactive des meilleurs spots des deux côtés.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">🚗</div>
+        <div class="feature-title">Trafic live</div>
+        <div class="feature-desc">Douanes en temps réel + itinéraires alternatifs.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">💱</div>
+        <div class="feature-title">CHF ↔ EUR</div>
+        <div class="feature-desc">Convertisseur live + scan de prix en magasin.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">👥</div>
+        <div class="feature-title">Communauté</div>
+        <div class="feature-desc">Avis vérifiés et bons plans secrets entre frontaliers.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">🎁</div>
+        <div class="feature-title">Cashback</div>
+        <div class="feature-desc">2-5% remboursé en points sur chaque achat partenaire.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ════════════ FINAL CTA ════════════ -->
+  <section class="final-cta" id="cta-final">
+    <span class="final-cta-spark">✦</span>
+    <h2 class="final-cta-title">Prêt à <em>économiser</em><br>cette semaine ?</h2>
+    <div class="final-cta-form">
+      <form class="form" id="form-final" onsubmit="return submitForm(event, 'final')">
+        <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-final">
+        <button type="submit" class="btn btn-primary" id="btn-final">Rejoindre →</button>
+      </form>
+      <div class="final-cta-trust">Gratuit · Sans spam · Promesse</div>
+      <div class="form-success" id="success-final">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
+      <div class="form-error" id="error-final"></div>
+    </div>
+  </section>
+
+  <!-- ════════════ FOOTER ════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <a href="#" class="logo-link">
+        <span class="logo" style="font-size: 22px;">Frizz<span class="spark" style="font-size: 18px;">✦</span></span>
+      </a>
+      <div class="footer-links">
+        <a href="#">Concept</a>
+        <a href="#">Espace Pro</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-meta">
+      Frizz © 2026 — <em>Fait à Riehen</em> 🇨🇭🇫🇷<br>
+      Mentions légales · CGU · Politique de confidentialité
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════
+  // Supabase init
+  // ═══════════════════════════════════════════════
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  const TABLE = 'frizz_frontiere_subscribers';
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ═══════════════════════════════════════════════
+  // Form submission
+  // ═══════════════════════════════════════════════
+  async function submitForm(event, scope) {
+    event.preventDefault();
+
+    const input = document.getElementById('input-' + scope);
+    const btn = document.getElementById('btn-' + scope);
+    const success = document.getElementById('success-' + scope);
+    const error = document.getElementById('error-' + scope);
+
+    const email = (input.value || '').trim().toLowerCase();
+
+    // Validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError(error, 'Adresse email invalide');
+      return false;
     }
 
-    function hideStatus() {
-      const el = document.getElementById('status-overlay');
-      if (el) el.classList.add('hidden');
-    }
-    function showStatus(html, isError) {
-      const el = document.getElementById('status-overlay');
-      if (!el) return;
-      el.classList.remove('hidden');
-      el.classList.toggle('error', !!isError);
-      el.innerHTML = html;
-    }
+    // Loading state
+    btn.disabled = true;
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = 'Inscription...';
+    error.classList.remove('show');
+    success.classList.remove('show');
 
-    let map = null;
-    let allMarkers = [];
+    try {
+      const { data, error: dbError } = await sb
+        .from(TABLE)
+        .insert([{
+          email: email,
+          source: scope,
+          user_agent: navigator.userAgent,
+          language: navigator.language || 'fr'
+        }])
+        .select();
 
-    function waitForLeaflet(callback, attempts) {
-      attempts = attempts || 0;
-      if (typeof L !== 'undefined') {
-        console.log('✅ [Frizz] Leaflet chargé après ' + attempts + ' tentatives');
-        callback();
-        return;
-      }
-      if (attempts > 50) {
-        console.error('❌ [Frizz] Leaflet jamais chargé après 5s');
-        showStatus('<div>⚠️ Leaflet non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
-        return;
-      }
-      setTimeout(() => waitForLeaflet(callback, attempts + 1), 100);
-    }
-
-    function initMap() {
-      console.log('🎯 [Frizz] initMap() appelé');
-      try {
-        map = L.map('map', {
-          zoomControl: false,
-          attributionControl: false,
-          preferCanvas: true
-        }).setView([46.5, 6.5], 9);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          maxZoom: 19,
-          subdomains: 'abcd',
-          attribution: ''
-        }).addTo(map);
-
-        console.log('✅ [Frizz] Map initialisée');
-        return true;
-      } catch (err) {
-        console.error('❌ [Frizz] Erreur init map:', err);
-        showStatus('<div>⚠️ Erreur carte</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
-        return false;
-      }
-    }
-
-    function getFrizzIcon() {
-      return L.divIcon({
-        className: 'frizz-pin-wrapper',
-        html: '<div class="frizz-pin"></div>',
-        iconSize: [38, 38],
-        iconAnchor: [19, 38],
-        popupAnchor: [0, -38]
-      });
-    }
-
-    function formatType(type) {
-      const labels = {
-        'friperie': 'Friperie',
-        'vintage': 'Boutique vintage',
-        'concept_store': 'Concept store',
-        'sneakers': 'Sneakers store',
-        'streetwear': 'Streetwear shop',
-        'createur': 'Créateur',
-        'autre': 'Boutique mode'
-      };
-      return labels[type] || 'Boutique';
-    }
-
-    async function loadBoutiques() {
-      console.log('🎯 [Frizz] loadBoutiques() appelé');
-
-      if (!window.supabase) {
-        console.error('❌ Supabase non chargé !');
-        showStatus('<div>⚠️ Supabase non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
-        return;
-      }
-
-      try {
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('📡 [Frizz] Connexion Supabase...');
-
-        const { data: boutiques, error } = await supabaseClient
-          .from('frizz_boutiques')
-          .select('*')
-          .eq('statut', 'active')
-          .is('deleted_at', null);
-
-        if (error) {
-          console.error('❌ [Frizz] Erreur Supabase:', error);
-          showStatus('<div>⚠️ Erreur de chargement</div><div style="font-size:12px;opacity:0.7;max-width:300px;">' + error.message + '</div>', true);
-          return;
+      if (dbError) {
+        // Email déjà inscrit
+        if (dbError.code === '23505') {
+          // Cas duplicate : on traite comme succès silencieux
+          success.innerHTML = '✓ Tu es déjà inscrit. Le prochain deal arrive vendredi.';
+          success.classList.add('show');
+          input.value = '';
+        } else {
+          throw dbError;
         }
-
-        if (!boutiques || boutiques.length === 0) {
-          console.warn('⚠️ Aucune boutique trouvée');
-          showStatus('<div>Aucune boutique active</div>', true);
-          return;
+      } else {
+        // Succès
+        success.classList.add('show');
+        input.value = '';
+        // Tracker conversion (Google Analytics si configuré)
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'subscribe', { method: scope });
         }
-
-        console.log('✅ [Frizz] ' + boutiques.length + ' boutiques chargées', boutiques);
-
-        const icon = getFrizzIcon();
-
-        boutiques.forEach(boutique => {
-          if (!boutique.latitude || !boutique.longitude) return;
-
-          const marker = L.marker([boutique.latitude, boutique.longitude], {
-            icon: icon,
-            riseOnHover: true
-          }).addTo(map);
-
-          const popupHTML = '<div class="popup-card">' +
-            '<div class="popup-type">' + formatType(boutique.type_boutique) + '</div>' +
-            '<div class="popup-title">' + boutique.nom + '</div>' +
-            '<div class="popup-loc">' +
-              '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">' +
-                '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
-                '<circle cx="12" cy="10" r="3"/>' +
-              '</svg>' +
-              '<span>' + boutique.adresse + ', ' + boutique.code_postal + ' ' + boutique.ville + '</span>' +
-            '</div>' +
-            (boutique.description_courte_fr ? '<div class="popup-desc">"' + boutique.description_courte_fr + '"</div>' : '') +
-            '<button class="popup-btn" onclick="showToast(\'Page boutique bientôt disponible\')">Voir les drops →</button>' +
-          '</div>';
-
-          marker.bindPopup(popupHTML, {
-            maxWidth: 320,
-            minWidth: 280,
-            closeButton: true,
-            autoClose: false
-          });
-
-          allMarkers.push({
-            marker: marker,
-            type: boutique.type_boutique,
-            boutique: boutique
-          });
-        });
-
-        if (allMarkers.length > 0) {
-          const group = L.featureGroup(allMarkers.map(m => m.marker));
-          map.fitBounds(group.getBounds().pad(0.2));
-        }
-
-        hideStatus();
-        renderDrops();
-        updateCount(boutiques.length);
-
-      } catch (err) {
-        console.error('❌ [Frizz] Exception:', err);
-        showStatus('<div>⚠️ Erreur</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
       }
+    } catch (err) {
+      console.error('Subscribe error:', err);
+      showError(error, 'Une erreur est survenue. Réessaie dans un instant.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalBtnText;
     }
 
-    function updateCount(n) {
-      const el = document.getElementById('sheet-count');
-      if (el) el.textContent = n + ' boutique' + (n > 1 ? 's' : '');
-    }
+    return false;
+  }
 
-    function renderDrops() {
-      const container = document.getElementById('drops-row');
-      if (!container) return;
+  function showError(el, msg) {
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => { el.classList.remove('show'); }, 5000);
+  }
 
-      const dropsData = [
-        { boutique: 'Wood Friperie', city: 'Genève', tag: 'SAM 11H · -20%' },
-        { boutique: 'Boutique Lucky', city: 'Genève', tag: 'VEN 18H · DROP' },
-        { boutique: 'Les Patronnes', city: 'Lausanne', tag: 'SAM 14H · NOUVEAU' },
-        { boutique: 'Chabada Vintage', city: 'Lausanne', tag: 'DIM 11H · -15%' },
-        { boutique: "LaFrip'aMax", city: 'Genève', tag: 'SAM 10H · DROP' }
-      ];
-
-      const pinIcon = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-
-      container.innerHTML = dropsData.map(drop =>
-        '<div class="drop-card" onclick="showToast(\'Page drop bientôt disponible\')">' +
-        '<div class="drop-card-tag">' + drop.tag + '</div>' +
-        '<div class="drop-card-title">' + drop.boutique + '</div>' +
-        '<div class="drop-card-meta">' + pinIcon + '<span>' + drop.city + '</span></div>' +
-        '</div>'
-      ).join('');
-    }
-
-    function bindEvents() {
-      document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-
-          const filter = chip.dataset.filter;
-          let visible = 0;
-
-          allMarkers.forEach(item => {
-            if (filter === 'all' || item.type === filter) {
-              item.marker.addTo(map);
-              visible++;
-            } else {
-              map.removeLayer(item.marker);
-            }
-          });
-
-          updateCount(visible);
-        });
-      });
-
-      const searchInput = document.getElementById('search-input');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const query = e.target.value.toLowerCase().trim();
-          let visible = 0;
-
-          allMarkers.forEach(item => {
-            const b = item.boutique;
-            const match = !query ||
-              b.nom.toLowerCase().includes(query) ||
-              b.ville.toLowerCase().includes(query) ||
-              (b.description_courte_fr && b.description_courte_fr.toLowerCase().includes(query));
-
-            if (match) {
-              item.marker.addTo(map);
-              visible++;
-            } else {
-              map.removeLayer(item.marker);
-            }
-          });
-
-          updateCount(visible);
-        });
+  // ═══════════════════════════════════════════════
+  // Smooth scroll on topbar CTA
+  // ═══════════════════════════════════════════════
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+    });
+  });
+</script>
 
-      const zoomIn = document.getElementById('fab-zoom-in');
-      const zoomOut = document.getElementById('fab-zoom-out');
-      const locate = document.getElementById('fab-locate');
-
-      if (zoomIn) zoomIn.addEventListener('click', () => { if (map) map.zoomIn(); });
-      if (zoomOut) zoomOut.addEventListener('click', () => { if (map) map.zoomOut(); });
-      if (locate) {
-        locate.addEventListener('click', () => {
-          if (!navigator.geolocation) {
-            showToast('Géolocalisation non supportée');
-            return;
-          }
-          showToast('Localisation en cours...');
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              if (map) {
-                map.setView([pos.coords.latitude, pos.coords.longitude], 13);
-                showToast('Te voici !');
-              }
-            },
-            () => showToast('Impossible de te localiser')
-          );
-        });
-      }
-
-      const handle = document.getElementById('sheet-handle');
-      if (handle) {
-        handle.addEventListener('click', () => {
-          document.getElementById('bottom-sheet').classList.toggle('collapsed');
-        });
-      }
-    }
-
-    function start() {
-      console.log('🎯 [Frizz] Démarrage');
-      waitForLeaflet(() => {
-        if (initMap()) {
-          bindEvents();
-          loadBoutiques();
-        }
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', start);
-    } else {
-      start();
-    }
-  </script>
 </body>
 </html>

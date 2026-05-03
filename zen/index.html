@@ -6,75 +6,51 @@
 <meta name="theme-color" content="#0A0A0B">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="dark">
-<title>Frizz Zen · Praticiens bien-être en Suisse</title>
-<meta name="description" content="Trouvez et réservez votre praticien bien-être en Suisse. Sophrologues, naturopathes, hypnothérapeutes — réservation en ligne, paiement Twint.">
+<title>Frizz · Réserve les meilleures pièces près de chez toi</title>
+<meta name="description" content="L'app gratuite pour réserver dans les boutiques mode près de chez toi. Friperies, vintage, concept stores — sans queue, sans stress.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 
-<!-- Leaflet pour la carte -->
+<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Supabase -->
+<!-- Supabase Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-  /* ═══════════════════════════════════════════════════════════════
-     FRIZZ ZEN — Design system éditorial glass (identique menu-admin)
-     ═══════════════════════════════════════════════════════════════ */
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #050506;
     --surface: rgba(255,255,255,0.03);
     --surface-strong: rgba(255,255,255,0.05);
-    --surface-glass: rgba(20, 20, 26, 0.35);
-
+    --surface-glass: rgba(20, 20, 26, 0.55);
     --text: #F2F2F4;
     --text-2: rgba(255,255,255,0.65);
     --text-3: rgba(255,255,255,0.45);
-    --text-4: rgba(255,255,255,0.25);
-
     --border: rgba(255,255,255,0.08);
     --border-strong: rgba(255,255,255,0.12);
-    --border-bright: rgba(255,255,255,0.18);
-
     --blue: #0A84FF;
     --blue-bright: #2E9DFF;
-    --blue-glow: rgba(10,132,255,0.5);
     --blue-soft: rgba(10,132,255,0.14);
-
-    --green: #4ADE80;
-    --green-soft: rgba(74,222,128,0.14);
-    --orange: #FFB454;
-    --orange-soft: rgba(255,180,84,0.14);
-    --red: #FF6B5C;
-    --red-soft: rgba(255,107,92,0.14);
-    --violet: #A78BFA;
-
-    --r-sm: 10px;
     --r: 14px;
     --r-md: 18px;
-    --r-lg: 22px;
-    --r-xl: 24px;
     --r-pill: 100px;
   }
 
   html, body {
     color: var(--text);
-    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter Tight', -apple-system, sans-serif;
     font-weight: 700;
     letter-spacing: -0.014em;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden;
   }
 
-  /* ════════════ AURORA BACKGROUND ════════════ */
+  /* AURORA BACKGROUND */
   html {
     background:
       radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
@@ -83,71 +59,21 @@
       #050506 !important;
     background-attachment: fixed !important;
   }
-  body {
-    background: transparent !important;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
-    animation: auroraDrift 24s ease-in-out infinite alternate;
-    mix-blend-mode: screen;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
-    opacity: 0.04;
-    mix-blend-mode: overlay;
-  }
-  @keyframes auroraDrift {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(3%, 2%) scale(1.06); }
-    100% { transform: translate(-2%, 3%) scale(1.04); }
-  }
+  body { background: transparent !important; }
 
-  /* ════════════ APP SHELL ════════════ */
-  .app {
-    min-height: 100vh;
-    padding-bottom: 80px;
-    position: relative;
-    z-index: 1;
-  }
-
-  @media (min-width: 768px) {
-    .app {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding-bottom: 100px;
-    }
-    .topbar {
-      max-width: 1200px;
-      margin: 0 auto;
-      border-radius: 0 0 16px 16px;
-      border-left: 1px solid rgba(255,255,255,0.04);
-      border-right: 1px solid rgba(255,255,255,0.04);
-    }
-  }
-
-  /* ════════════ TOP BAR ════════════ */
+  /* TOPBAR */
   .topbar {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 50;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     padding: 14px 22px;
     padding-top: calc(14px + env(safe-area-inset-top));
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: saturate(180%) blur(28px);
     -webkit-backdrop-filter: saturate(180%) blur(28px);
     border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -156,7 +82,7 @@
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s;
   }
   .logo-link:hover { transform: scale(1.04); }
   .logo {
@@ -168,1194 +94,737 @@
     color: var(--text);
     display: inline-flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 2px;
     line-height: 1;
   }
   .logo .spark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
     color: var(--blue);
     font-weight: 700;
     font-size: 22px;
+    margin-left: 1px;
     animation: sparkPulse 3.5s ease-in-out infinite;
+    display: inline-block;
     text-shadow: 0 0 12px rgba(10,132,255,0.5);
-  }
-  .logo .zen-suffix {
-    font-size: 22px;
-    color: var(--text-2);
-    font-weight: 600;
   }
   @keyframes sparkPulse {
     0%,100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.08); }
   }
-
   .topbar-right {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-
-  /* LANG SELECTOR */
-  .lang-selector {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-pill);
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.012em;
-    cursor: pointer;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 4px 12px -4px rgba(0,0,0,0.3);
-    font-family: inherit;
-    transition: all 0.15s ease;
-  }
-  .lang-selector:hover { background: rgba(255,255,255,0.12); }
-  .lang-selector .flag { font-size: 14px; }
-  .lang-selector .chevron { width: 10px; height: 10px; opacity: 0.6; }
-
-  /* PRO BUTTON */
-  .pro-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 7px 12px;
-    background: rgba(10,132,255,0.12);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(10,132,255,0.30);
-    border-radius: var(--r-pill);
-    font-size: 11.5px;
-    font-weight: 800;
-    color: var(--blue);
-    letter-spacing: -0.012em;
-    cursor: pointer;
-    font-family: inherit;
-    text-decoration: none;
-    transition: all 0.15s ease;
-  }
-  .pro-btn:hover {
-    background: rgba(10,132,255,0.22);
-    border-color: var(--blue);
-  }
-
-  /* ════════════ HERO ÉDITORIAL ════════════ */
-  .ed-hero {
-    padding: 32px 22px 24px;
-  }
-  .ed-section-num {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--blue);
-    margin-bottom: 8px;
-    letter-spacing: -0.005em;
-  }
-  .ed-hero-title {
-    font-size: 38px;
-    font-weight: 900;
-    letter-spacing: -0.034em;
-    line-height: 1.05;
-    color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
-  }
-  .ed-hero-title em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--blue);
-    letter-spacing: -0.014em;
-  }
-  .ed-hero-sub {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-2);
-    letter-spacing: -0.012em;
-    margin-top: 14px;
-    line-height: 1.5;
-    max-width: 520px;
-  }
-  .ed-hero-sub em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  @media (min-width: 768px) {
-    .ed-hero { padding: 56px 32px 32px; }
-    .ed-hero-title { font-size: 64px; }
-    .ed-hero-sub { font-size: 17px; }
-  }
-
-  /* ════════════ SEARCH BAR ════════════ */
-  .search-wrap {
-    margin: 18px 22px 0;
-    position: relative;
-  }
-  @media (min-width: 768px) {
-    .search-wrap { margin: 24px 32px 0; max-width: 720px; }
-  }
-  .search-input {
-    width: 100%;
+  .btn-pro {
     background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong);
+    border: 1px solid rgba(255,255,255,0.1);
     color: var(--text);
-    padding: 16px 20px 16px 50px;
-    border-radius: var(--r-md);
-    font-size: 15px;
-    font-weight: 700;
-    font-family: 'Inter Tight', inherit;
-    letter-spacing: -0.012em;
-    transition: all 0.15s ease;
-    outline: none;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 8px 24px -8px rgba(0,0,0,0.4);
-  }
-  .search-input:focus {
-    border-color: var(--blue);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 8px 24px -8px rgba(0,0,0,0.4),
-      0 0 0 3px rgba(10,132,255,0.20);
-  }
-  .search-input::placeholder { color: var(--text-3); font-weight: 600; }
-  .search-icon {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-3);
-    pointer-events: none;
-  }
-
-  /* ════════════ FILTER BAR ════════════ */
-  .filter-bar {
-    margin: 18px 22px 0;
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-  .filter-bar::-webkit-scrollbar { display: none; }
-  @media (min-width: 768px) {
-    .filter-bar { margin: 18px 32px 0; flex-wrap: wrap; }
-  }
-  .chip {
-    padding: 8px 14px;
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    padding: 8px 16px;
     border-radius: var(--r-pill);
-    font-size: 12.5px;
-    font-weight: 800;
-    color: var(--text-2);
-    cursor: pointer;
-    transition: all 0.12s ease;
-    white-space: nowrap;
-    font-family: inherit;
-    letter-spacing: -0.012em;
-    flex-shrink: 0;
-  }
-  .chip:hover { background: rgba(255,255,255,0.06); color: var(--text); }
-  .chip.active {
-    background: var(--text);
-    color: var(--bg);
-    border-color: var(--text);
-  }
-
-  /* ════════════ VIEW TOGGLE (Liste / Carte) ════════════ */
-  .view-toggle {
-    margin: 22px 22px 0;
-    display: flex;
-    gap: 4px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 4px;
-    width: fit-content;
-  }
-  @media (min-width: 768px) {
-    .view-toggle { margin: 24px 32px 0; }
-  }
-  .view-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    background: transparent;
-    border: 0;
-    border-radius: 10px;
-    font-size: 12.5px;
-    font-weight: 800;
-    color: var(--text-3);
-    cursor: pointer;
-    font-family: inherit;
-    letter-spacing: -0.012em;
-    transition: all 0.15s ease;
-  }
-  .view-toggle-btn:hover { color: var(--text-2); }
-  .view-toggle-btn.active {
-    background: var(--text);
-    color: var(--bg);
-    box-shadow: 0 2px 8px -2px rgba(0,0,0,0.3);
-  }
-  .view-toggle-btn svg { width: 14px; height: 14px; stroke-width: 2.4; }
-
-  /* ════════════ RESULTS COUNT ════════════ */
-  .results-count {
-    margin: 18px 22px 6px;
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--blue);
-    letter-spacing: -0.005em;
-  }
-  @media (min-width: 768px) {
-    .results-count { margin: 18px 32px 6px; font-size: 16px; }
-  }
-
-  /* ════════════ PRACT GRID ════════════ */
-  .pract-grid {
-    margin: 14px 22px 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  @media (min-width: 768px) {
-    .pract-grid {
-      margin: 14px 32px 0;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-    }
-  }
-
-  /* ════════════ PRACT CARD — GLASS ════════════ */
-  .pract-card {
-    padding: 18px;
-    background: var(--surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 8px 24px -8px rgba(0,0,0,0.4);
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-  .pract-card:hover {
-    transform: translateY(-2px);
-    background: var(--surface-strong);
-    border-color: var(--border-bright);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 12px 32px -8px rgba(10,132,255,0.25);
-  }
-  .pract-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-  .pract-avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue), var(--violet));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 20px;
-    color: white;
-    flex-shrink: 0;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.20),
-      0 4px 14px -4px rgba(10,132,255,0.4);
-  }
-  .pract-avatar.green { background: linear-gradient(135deg, var(--green), var(--blue)); }
-  .pract-avatar.orange { background: linear-gradient(135deg, var(--orange), var(--red)); }
-  .pract-avatar.violet { background: linear-gradient(135deg, var(--violet), #FF6482); }
-  .pract-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .pract-name {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 17px;
-    letter-spacing: -0.018em;
-    color: var(--text);
-    line-height: 1.1;
-  }
-  .pract-metier {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--blue);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-  .pract-verified {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    background: var(--blue);
-    border-radius: 50%;
-    margin-left: 4px;
-    flex-shrink: 0;
-  }
-  .pract-verified svg { width: 10px; height: 10px; color: white; }
-
-  .pract-bio {
+    font-family: 'Inter Tight', sans-serif;
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-2);
-    letter-spacing: -0.010em;
-    line-height: 1.45;
-    margin-bottom: 14px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    letter-spacing: -0.01em;
   }
+  .btn-pro:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.16);
+  }
+  .btn-pro.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .btn-pro.primary:hover { background: var(--blue-bright); }
 
-  .pract-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
+  /* MAP PLEIN ÉCRAN */
+  #map {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    background: #0a0a0b;
   }
-  .pract-stars {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.010em;
-  }
-  .pract-stars-icon { color: var(--orange); font-size: 13px; }
-  .pract-stars-count { color: var(--text-3); font-weight: 700; }
-  .pract-location {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-3);
-    letter-spacing: -0.005em;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .pract-location svg { width: 11px; height: 11px; stroke-width: 2.2; }
-
-  .pract-langs {
-    display: inline-flex;
-    gap: 4px;
-    margin-top: 10px;
-  }
-  .pract-lang {
-    font-size: 9px;
-    font-weight: 800;
-    color: var(--text-2);
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    padding: 3px 7px;
-    border-radius: var(--r-pill);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  /* ════════════ MAP VIEW ════════════ */
-  .map-wrap {
-    margin: 14px 22px 0;
-    height: 540px;
-    border-radius: var(--r-md);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 8px 24px -8px rgba(0,0,0,0.4);
-    position: relative;
-  }
-  @media (min-width: 768px) {
-    .map-wrap { margin: 14px 32px 0; height: 640px; }
-  }
-  #map { width: 100%; height: 100%; }
-
-  /* Custom map style (dark) */
   .leaflet-container {
-    background: #1a1a1a !important;
+    background: #0a0a0b !important;
     font-family: 'Inter Tight', sans-serif !important;
   }
-  .leaflet-tile-pane {
-    filter: invert(1) hue-rotate(200deg) brightness(0.95) contrast(0.85) saturate(0.6);
+
+  /* SEARCH + FILTRES */
+  .search-container {
+    position: fixed;
+    top: calc(70px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    width: 540px;
+    max-width: calc(100% - 32px);
+    z-index: 500;
   }
-  .leaflet-control-attribution {
-    background: rgba(0,0,0,0.7) !important;
-    color: var(--text-3) !important;
-    font-size: 10px !important;
+  .search-bar {
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s;
   }
-  .leaflet-control-attribution a { color: var(--text-2) !important; }
-  .leaflet-control-zoom a {
-    background: rgba(0,0,0,0.85) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--border-strong) !important;
-    backdrop-filter: blur(20px);
+  .search-bar:hover, .search-bar:focus-within {
+    border-color: rgba(10,132,255,0.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 3px rgba(10,132,255,0.1);
   }
-  .leaflet-control-zoom a:hover {
-    background: rgba(20,20,20,0.95) !important;
+  .search-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    outline: none;
+    min-width: 0;
+  }
+  .search-input::placeholder {
+    color: var(--text-3);
+    font-weight: 500;
   }
 
-  /* Custom marker */
-  .map-pin {
-    background: var(--blue);
-    border: 3px solid #fff;
-    border-radius: 50%;
-    width: 28px !important;
-    height: 28px !important;
-    margin-left: -14px !important;
-    margin-top: -14px !important;
-    box-shadow:
-      0 0 0 4px rgba(10,132,255,0.25),
-      0 4px 12px rgba(10,132,255,0.4);
+  .filters-quick {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px;
+  }
+  .filters-quick::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    color: var(--text-2);
+    padding: 9px 16px;
+    border-radius: var(--r-pill);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .filter-chip:hover {
+    background: rgba(20, 20, 26, 0.7);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .filter-chip.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(10,132,255,0.4);
+  }
+
+  /* BOUTONS FLOTTANTS DROITE */
+  .floating-buttons {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 400;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fab {
+    width: 48px;
+    height: 48px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: 900;
-    font-size: 11px;
-    font-family: 'Inter Tight', sans-serif;
-    transition: transform 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
-  .map-pin:hover {
-    transform: scale(1.2);
+  .fab:hover {
+    background: rgba(20, 20, 26, 0.8);
+    border-color: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+  }
+  .fab svg { width: 20px; height: 20px; }
+
+  /* BOTTOM SHEET */
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    background: var(--surface-glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-top: 1px solid var(--border-strong);
+    border-radius: 24px 24px 0 0;
+    padding: 12px 20px 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 70vh;
+    overflow: hidden;
+  }
+  .bottom-sheet.collapsed {
+    transform: translateY(calc(100% - 80px));
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+    cursor: pointer;
+  }
+  .sheet-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .sheet-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .sheet-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  .sheet-count {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-3);
+  }
+  .drops-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 4px 0 8px;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .drops-row::-webkit-scrollbar { display: none; }
+
+  .drop-card {
+    min-width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .drop-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(10,132,255,0.3);
+    background: rgba(10, 132, 255, 0.05);
+  }
+  .drop-card-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--blue-soft);
+    border: 1px solid rgba(10,132,255,0.3);
+    color: var(--blue-bright);
+    border-radius: var(--r-pill);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  .drop-card-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .drop-card-meta {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
   }
 
-  /* Map popup */
+  /* POPUP MAP */
   .leaflet-popup-content-wrapper {
     background: rgba(20, 20, 26, 0.92) !important;
-    backdrop-filter: saturate(180%) blur(40px) !important;
-    -webkit-backdrop-filter: saturate(180%) blur(40px) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid var(--border-strong) !important;
     border-radius: var(--r-md) !important;
     color: var(--text) !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.14),
-      0 20px 60px -10px rgba(0,0,0,0.6) !important;
     padding: 0 !important;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.5) !important;
+    overflow: hidden;
   }
   .leaflet-popup-content {
     margin: 0 !important;
-    padding: 16px !important;
-    width: 240px !important;
-    font-family: 'Inter Tight', sans-serif !important;
+    width: 280px !important;
+    line-height: 1.4 !important;
   }
-  .leaflet-popup-tip { background: rgba(20, 20, 26, 0.92) !important; }
-  .leaflet-popup-close-button { color: var(--text-2) !important; padding: 8px !important; }
-
-  .popup-name {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--text);
-    letter-spacing: -0.018em;
-    line-height: 1.1;
-    margin-bottom: 4px;
+  .leaflet-popup-tip {
+    background: rgba(20, 20, 26, 0.92) !important;
   }
-  .popup-metier {
+  .leaflet-popup-close-button {
+    color: var(--text-2) !important;
+    font-size: 20px !important;
+    padding: 8px !important;
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .popup-card { padding: 16px; }
+  .popup-type {
+    font-family: 'Inter Tight', sans-serif;
     font-size: 10px;
-    font-weight: 800;
-    color: var(--blue);
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .popup-stars {
-    font-size: 11px;
-    color: var(--text-2);
-    margin-bottom: 10px;
-    font-weight: 700;
-  }
-  .popup-stars .star { color: var(--orange); }
-  .popup-cta {
-    display: block;
-    text-align: center;
-    background: var(--blue);
-    color: #fff;
-    padding: 9px;
-    border-radius: var(--r-sm);
-    font-size: 12px;
-    font-weight: 800;
-    text-decoration: none;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.20),
-      0 4px 14px -4px var(--blue-glow);
-    letter-spacing: -0.012em;
-  }
-  .popup-cta:hover { background: var(--blue-bright); }
-
-  /* ════════════ EMPTY STATE ════════════ */
-  .empty-state {
-    margin: 40px 22px;
-    padding: 40px 20px;
-    text-align: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-  }
-  .empty-state-icon {
-    font-size: 36px;
-    margin-bottom: 12px;
-    opacity: 0.5;
-  }
-  .empty-state-title {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 20px;
-    color: var(--text);
-    letter-spacing: -0.018em;
+    color: var(--blue);
     margin-bottom: 6px;
   }
-  .empty-state-sub {
+  .popup-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .popup-loc {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+  .popup-desc {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 500;
     font-size: 13px;
-    font-weight: 600;
     color: var(--text-2);
-    letter-spacing: -0.010em;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  .popup-btn {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 11px;
+    border-radius: var(--r-pill);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .popup-btn:hover {
+    background: var(--blue-bright);
+    transform: translateY(-1px);
   }
 
-  /* ════════════ LOADING STATE ════════════ */
-  .loading-state {
-    margin: 40px 22px;
-    text-align: center;
-    color: var(--text-3);
+  /* CUSTOM PIN */
+  .frizz-pin-wrapper { position: relative; }
+  .frizz-pin {
+    width: 38px;
+    height: 38px;
+    background: var(--blue);
+    border: 3px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 16px rgba(10,132,255,0.5);
+    animation: pinPulse 2.5s ease-in-out infinite;
+    position: relative;
+  }
+  .frizz-pin::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  @keyframes pinPulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(10,132,255,0.5); }
+    50% { box-shadow: 0 4px 28px rgba(10,132,255,0.9); }
+  }
+
+  /* LOADING */
+  .loading-pin {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: var(--text-2);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
   }
   .loading-spinner {
-    width: 28px;
-    height: 28px;
-    border: 2px solid rgba(255,255,255,0.1);
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255,255,255,0.1);
     border-top-color: var(--blue);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    margin: 0 auto 12px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ════════════ LANG MENU (popup) ════════════ */
-  .lang-menu {
-    position: absolute;
-    top: 100%;
-    right: 22px;
-    margin-top: 8px;
-    background: rgba(20, 20, 26, 0.92);
-    backdrop-filter: saturate(180%) blur(40px);
-    -webkit-backdrop-filter: saturate(180%) blur(40px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.14),
-      0 20px 60px -10px rgba(0,0,0,0.6);
-    padding: 6px;
-    display: none;
-    z-index: 100;
-    min-width: 160px;
-  }
-  .lang-menu.show { display: block; }
-  .lang-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: var(--r-sm);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-    cursor: pointer;
-    background: transparent;
-    border: 0;
-    width: 100%;
-    text-align: left;
-    font-family: inherit;
-    letter-spacing: -0.012em;
-    transition: all 0.12s ease;
-  }
-  .lang-option:hover { background: rgba(255,255,255,0.06); }
-  .lang-option.active { background: var(--blue-soft); color: var(--blue); }
-  .lang-option .flag { font-size: 16px; }
-
-  /* ════════════ FOOTER ════════════ */
-  .footer {
-    margin: 60px 22px 30px;
-    padding-top: 30px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-  }
-  @media (min-width: 768px) {
-    .footer { margin: 80px 32px 40px; }
-  }
-  .footer-text {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-3);
-    letter-spacing: -0.005em;
-  }
-  .footer-text em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--blue);
-  }
-
-  /* ════════════ SECTION TOGGLE (mobile) ════════════ */
-  .map-section, .list-section { display: none; }
-  .map-section.active, .list-section.active { display: block; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .topbar { padding: 12px 16px; }
+    .topbar-right .btn-pro:not(.primary) { display: none; }
+    .search-container {
+      top: calc(64px + env(safe-area-inset-top));
+      width: calc(100% - 24px);
+    }
+    .search-bar { padding: 12px 18px; }
+    .search-input { font-size: 14px; }
+    .floating-buttons {
+      right: 12px;
+      bottom: 200px;
+      top: auto;
+      transform: none;
+    }
+    .bottom-sheet { padding: 12px 16px 16px; }
+    .drops-row { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
   }
 </style>
 </head>
 <body>
 
-<div class="app">
-
-  <!-- ════════════ TOP BAR ════════════ -->
+  <!-- TOPBAR -->
   <header class="topbar">
-    <a href="/zen/" class="logo-link">
-      <span class="logo">
-        frizz<span class="spark">·</span><span class="zen-suffix">zen</span>
-      </span>
+    <a href="#" class="logo-link" id="logo-link">
+      <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
     <div class="topbar-right">
-      <div style="position: relative;">
-        <button class="lang-selector" id="lang-btn" onclick="toggleLangMenu()">
-          <span class="flag" id="lang-flag">🇫🇷</span>
-          <span id="lang-code">FR</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="lang-menu" id="lang-menu">
-          <button class="lang-option active" onclick="setLang('fr')"><span class="flag">🇫🇷</span> Français</button>
-          <button class="lang-option" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</button>
-          <button class="lang-option" onclick="setLang('it')"><span class="flag">🇮🇹</span> Italiano</button>
-          <button class="lang-option" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</button>
-        </div>
-      </div>
-      <a href="/zen/pro.html" class="pro-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="12" height="12"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        <span data-i18n="pro_btn">Espace pro</span>
-      </a>
+      <a href="#" class="btn-pro">Connexion</a>
+      <a href="#" class="btn-pro primary">Inscrire ma boutique</a>
     </div>
   </header>
 
-  <!-- ════════════ HERO ════════════ -->
-  <section class="ed-hero">
-    <div class="ed-section-num" data-i18n="hero_eyebrow">№ 01 — Bien-être en Suisse</div>
-    <h1 class="ed-hero-title">
-      <span data-i18n="hero_title_1">Trouvez le </span><em data-i18n="hero_title_em">bon praticien</em><span data-i18n="hero_title_2">.</span>
-    </h1>
-    <p class="ed-hero-sub" data-i18n="hero_sub">
-      Sophrologues, naturopathes, hypnothérapeutes — partout en Suisse. <em>Réservation directe, paiement Twint, 0 commission.</em>
-    </p>
-  </section>
-
-  <!-- ════════════ SEARCH ════════════ -->
-  <div class="search-wrap">
-    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-    </svg>
-    <input type="text" class="search-input" id="search-input"
-           data-i18n-placeholder="search_placeholder"
-           placeholder="Sophrologue Genève, naturopathe Lausanne..." />
+  <!-- SEARCH + FILTRES -->
+  <div class="search-container">
+    <div class="search-bar">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input type="text" class="search-input" id="search-input" placeholder="Rechercher une boutique, une ville..." />
+    </div>
+    <div class="filters-quick" id="filters-quick">
+      <button class="filter-chip active" data-filter="all">✦ Tout</button>
+      <button class="filter-chip" data-filter="friperie">👗 Friperies</button>
+      <button class="filter-chip" data-filter="vintage">✨ Vintage</button>
+      <button class="filter-chip" data-filter="concept_store">🛍️ Concept stores</button>
+      <button class="filter-chip" data-filter="sneakers">👟 Sneakers</button>
+      <button class="filter-chip" data-filter="streetwear">🧢 Streetwear</button>
+      <button class="filter-chip" data-filter="createur">🎨 Créateurs</button>
+    </div>
   </div>
 
-  <!-- ════════════ FILTERS — MÉTIER ════════════ -->
-  <div class="filter-bar" id="filter-metier">
-    <button class="chip active" data-metier="">∗ <span data-i18n="filter_all">Tous</span></button>
-    <button class="chip" data-metier="sophrologue" data-i18n="metier_sophrologue">Sophrologue</button>
-    <button class="chip" data-metier="naturopathe" data-i18n="metier_naturopathe">Naturopathe</button>
-    <button class="chip" data-metier="hypnotherapeute" data-i18n="metier_hypnotherapeute">Hypnothérapeute</button>
-    <button class="chip" data-metier="energeticien" data-i18n="metier_energeticien">Énergéticien</button>
-    <button class="chip" data-metier="kinesiologue" data-i18n="metier_kinesiologue">Kinésiologue</button>
-    <button class="chip" data-metier="reflexologue" data-i18n="metier_reflexologue">Réflexologue</button>
+  <!-- MAP PLEIN ÉCRAN -->
+  <div id="map"></div>
+
+  <!-- LOADING -->
+  <div class="loading-pin" id="loading-pin">
+    <div class="loading-spinner"></div>
+    <div>Chargement des boutiques...</div>
   </div>
 
-  <!-- ════════════ FILTERS — RÉGION ════════════ -->
-  <div class="filter-bar" id="filter-region" style="margin-top: 8px;">
-    <button class="chip active" data-region="" data-i18n="region_all">Toute la Suisse</button>
-    <button class="chip" data-region="romandie" data-i18n="region_romandie">Romandie</button>
-    <button class="chip" data-region="alemanique" data-i18n="region_alemanique">Suisse alémanique</button>
-    <button class="chip" data-region="tessin" data-i18n="region_tessin">Tessin</button>
-  </div>
-
-  <!-- ════════════ VIEW TOGGLE ════════════ -->
-  <div class="view-toggle">
-    <button class="view-toggle-btn active" id="view-list" onclick="setView('list')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      <span data-i18n="view_list">Liste</span>
+  <!-- BOUTONS FLOTTANTS -->
+  <div class="floating-buttons">
+    <button class="fab" title="Me localiser" id="fab-locate">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+      </svg>
     </button>
-    <button class="view-toggle-btn" id="view-map" onclick="setView('map')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-      <span data-i18n="view_map">Carte</span>
+    <button class="fab" title="Zoom +" id="fab-zoom-in">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+    <button class="fab" title="Zoom -" id="fab-zoom-out">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
     </button>
   </div>
 
-  <!-- ════════════ RESULTS COUNT ════════════ -->
-  <div class="results-count" id="results-count" data-i18n="loading">Chargement…</div>
-
-  <!-- ════════════ LIST SECTION ════════════ -->
-  <section class="list-section active" id="list-section">
-    <div class="pract-grid" id="pract-grid">
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
-        <div data-i18n="loading">Chargement…</div>
-      </div>
+  <!-- BOTTOM SHEET (DROPS) -->
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="sheet-handle" id="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">⚡ Drops du <em>weekend</em></div>
+      <div class="sheet-count" id="sheet-count">5 boutiques</div>
     </div>
-  </section>
+    <div class="drops-row" id="drops-row"></div>
+  </div>
 
-  <!-- ════════════ MAP SECTION ════════════ -->
-  <section class="map-section" id="map-section">
-    <div class="map-wrap">
-      <div id="map"></div>
-    </div>
-  </section>
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // CONFIG SUPABASE
+    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <!-- ════════════ FOOTER ════════════ -->
-  <footer class="footer">
-    <div class="footer-text">
-      <em>frizz · zen</em> — <span data-i18n="footer">Praticiens bien-être en Suisse · Réservation directe · 0 commission</span>
-    </div>
-  </footer>
+    // MAP INIT
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false,
+      preferCanvas: true
+    }).setView([46.5, 6.5], 9);
 
-</div>
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd'
+    }).addTo(map);
 
-<!-- ════════════ SCRIPTS ════════════ -->
-<script>
-// ════════════ SUPABASE ════════════
-const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ════════════ TRADUCTIONS ════════════
-const TRANSLATIONS = {
-  fr: {
-    pro_btn: 'Espace pro',
-    hero_eyebrow: '№ 01 — Bien-être en Suisse',
-    hero_title_1: 'Trouvez le ',
-    hero_title_em: 'bon praticien',
-    hero_title_2: '.',
-    hero_sub_1: 'Sophrologues, naturopathes, hypnothérapeutes — partout en Suisse. ',
-    hero_sub_em: 'Réservation directe, paiement Twint, 0 commission.',
-    search_placeholder: 'Sophrologue Genève, naturopathe Lausanne...',
-    filter_all: 'Tous',
-    metier_sophrologue: 'Sophrologue',
-    metier_naturopathe: 'Naturopathe',
-    metier_hypnotherapeute: 'Hypnothérapeute',
-    metier_energeticien: 'Énergéticien',
-    metier_kinesiologue: 'Kinésiologue',
-    metier_reflexologue: 'Réflexologue',
-    region_all: 'Toute la Suisse',
-    region_romandie: 'Romandie',
-    region_alemanique: 'Suisse alémanique',
-    region_tessin: 'Tessin',
-    view_list: 'Liste',
-    view_map: 'Carte',
-    loading: 'Chargement…',
-    results_count_one: '%d praticien trouvé',
-    results_count_plural: '%d praticiens trouvés',
-    no_results_title: 'Aucun praticien',
-    no_results_sub: 'Essayez d\'élargir vos filtres ou changez de région',
-    book_btn: 'Voir le profil',
-    reviews: 'avis',
-    footer: 'Praticiens bien-être en Suisse · Réservation directe · 0 commission',
-  },
-  de: {
-    pro_btn: 'Pro-Bereich',
-    hero_eyebrow: '№ 01 — Wellness in der Schweiz',
-    hero_title_1: 'Finden Sie den ',
-    hero_title_em: 'richtigen Therapeuten',
-    hero_title_2: '.',
-    hero_sub_1: 'Sophrologen, Naturheilpraktiker, Hypnotherapeuten — in der ganzen Schweiz. ',
-    hero_sub_em: 'Direkte Buchung, Twint-Zahlung, 0% Kommission.',
-    search_placeholder: 'Sophrologe Zürich, Naturheilpraktiker Bern...',
-    filter_all: 'Alle',
-    metier_sophrologue: 'Sophrologe',
-    metier_naturopathe: 'Naturheilpraktiker',
-    metier_hypnotherapeute: 'Hypnotherapeut',
-    metier_energeticien: 'Energetiker',
-    metier_kinesiologue: 'Kinesiologe',
-    metier_reflexologue: 'Reflexologe',
-    region_all: 'Ganze Schweiz',
-    region_romandie: 'Westschweiz',
-    region_alemanique: 'Deutschschweiz',
-    region_tessin: 'Tessin',
-    view_list: 'Liste',
-    view_map: 'Karte',
-    loading: 'Wird geladen…',
-    results_count_one: '%d Therapeut gefunden',
-    results_count_plural: '%d Therapeuten gefunden',
-    no_results_title: 'Keine Therapeuten',
-    no_results_sub: 'Versuchen Sie, Ihre Filter zu erweitern',
-    book_btn: 'Profil ansehen',
-    reviews: 'Bewertungen',
-    footer: 'Wellness-Therapeuten in der Schweiz · Direkte Buchung · 0% Kommission',
-  },
-  it: {
-    pro_btn: 'Area pro',
-    hero_eyebrow: '№ 01 — Benessere in Svizzera',
-    hero_title_1: 'Trova il ',
-    hero_title_em: 'professionista giusto',
-    hero_title_2: '.',
-    hero_sub_1: 'Sofrologi, naturopati, ipnoterapeuti — in tutta la Svizzera. ',
-    hero_sub_em: 'Prenotazione diretta, pagamento Twint, 0% commissione.',
-    search_placeholder: 'Sofrologo Lugano, naturopata Bellinzona...',
-    filter_all: 'Tutti',
-    metier_sophrologue: 'Sofrologo',
-    metier_naturopathe: 'Naturopata',
-    metier_hypnotherapeute: 'Ipnoterapeuta',
-    metier_energeticien: 'Energetista',
-    metier_kinesiologue: 'Kinesiologo',
-    metier_reflexologue: 'Riflessologo',
-    region_all: 'Tutta la Svizzera',
-    region_romandie: 'Svizzera romanda',
-    region_alemanique: 'Svizzera tedesca',
-    region_tessin: 'Ticino',
-    view_list: 'Lista',
-    view_map: 'Mappa',
-    loading: 'Caricamento…',
-    results_count_one: '%d professionista trovato',
-    results_count_plural: '%d professionisti trovati',
-    no_results_title: 'Nessun professionista',
-    no_results_sub: 'Prova ad ampliare i tuoi filtri',
-    book_btn: 'Vedi profilo',
-    reviews: 'recensioni',
-    footer: 'Professionisti del benessere in Svizzera · Prenotazione diretta · 0% commissione',
-  },
-  en: {
-    pro_btn: 'Pro area',
-    hero_eyebrow: '№ 01 — Wellness in Switzerland',
-    hero_title_1: 'Find the ',
-    hero_title_em: 'right therapist',
-    hero_title_2: '.',
-    hero_sub_1: 'Sophrologists, naturopaths, hypnotherapists — across Switzerland. ',
-    hero_sub_em: 'Direct booking, Twint payment, 0% commission.',
-    search_placeholder: 'Sophrologist Geneva, naturopath Zurich...',
-    filter_all: 'All',
-    metier_sophrologue: 'Sophrologist',
-    metier_naturopathe: 'Naturopath',
-    metier_hypnotherapeute: 'Hypnotherapist',
-    metier_energeticien: 'Energy healer',
-    metier_kinesiologue: 'Kinesiologist',
-    metier_reflexologue: 'Reflexologist',
-    region_all: 'All Switzerland',
-    region_romandie: 'French Switzerland',
-    region_alemanique: 'German Switzerland',
-    region_tessin: 'Ticino',
-    view_list: 'List',
-    view_map: 'Map',
-    loading: 'Loading…',
-    results_count_one: '%d practitioner found',
-    results_count_plural: '%d practitioners found',
-    no_results_title: 'No practitioners',
-    no_results_sub: 'Try expanding your filters',
-    book_btn: 'View profile',
-    reviews: 'reviews',
-    footer: 'Wellness practitioners in Switzerland · Direct booking · 0% commission',
-  }
-};
-
-const FLAGS = { fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', en: '🇬🇧' };
-const LANG_CODES = { fr: 'FR', de: 'DE', it: 'IT', en: 'EN' };
-
-// ════════════ STATE ════════════
-let currentLang = localStorage.getItem('zen_lang') || detectLang();
-let currentView = 'list';
-let allPraticiens = [];
-let filteredPraticiens = [];
-let searchQuery = '';
-let currentMetier = '';
-let currentRegion = '';
-let map = null;
-let mapMarkers = [];
-
-function detectLang() {
-  const browser = navigator.language.toLowerCase();
-  if (browser.startsWith('de')) return 'de';
-  if (browser.startsWith('it')) return 'it';
-  if (browser.startsWith('en')) return 'en';
-  return 'fr';
-}
-
-// ════════════ TRADUCTION ════════════
-function t(key) {
-  return TRANSLATIONS[currentLang][key] || TRANSLATIONS.fr[key] || key;
-}
-
-function applyTranslations() {
-  document.documentElement.lang = currentLang;
-  // Texts
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (TRANSLATIONS[currentLang][key]) {
-      el.textContent = TRANSLATIONS[currentLang][key];
-    }
-  });
-  // Placeholders
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (TRANSLATIONS[currentLang][key]) {
-      el.placeholder = TRANSLATIONS[currentLang][key];
-    }
-  });
-  // Lang button
-  document.getElementById('lang-flag').textContent = FLAGS[currentLang];
-  document.getElementById('lang-code').textContent = LANG_CODES[currentLang];
-  // Lang options
-  document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
-  document.querySelectorAll('.lang-option').forEach((o, i) => {
-    const langs = ['fr', 'de', 'it', 'en'];
-    if (langs[i] === currentLang) o.classList.add('active');
-  });
-}
-
-function setLang(lang) {
-  currentLang = lang;
-  localStorage.setItem('zen_lang', lang);
-  applyTranslations();
-  document.getElementById('lang-menu').classList.remove('show');
-  renderResults();
-}
-
-function toggleLangMenu() {
-  document.getElementById('lang-menu').classList.toggle('show');
-}
-
-// Close lang menu on outside click
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#lang-btn') && !e.target.closest('#lang-menu')) {
-    document.getElementById('lang-menu').classList.remove('show');
-  }
-});
-
-// ════════════ VIEW TOGGLE ════════════
-function setView(view) {
-  currentView = view;
-  document.getElementById('view-list').classList.toggle('active', view === 'list');
-  document.getElementById('view-map').classList.toggle('active', view === 'map');
-  document.getElementById('list-section').classList.toggle('active', view === 'list');
-  document.getElementById('map-section').classList.toggle('active', view === 'map');
-  if (view === 'map') {
-    setTimeout(() => {
-      if (!map) initMap();
-      else map.invalidateSize();
-      renderMap();
-    }, 100);
-  }
-}
-
-// ════════════ MAP ════════════
-function initMap() {
-  map = L.map('map', {
-    center: [46.8182, 8.2275], // Centre Suisse
-    zoom: 8,
-    zoomControl: true,
-    attributionControl: true
-  });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
-    maxZoom: 19
-  }).addTo(map);
-}
-
-function renderMap() {
-  if (!map) return;
-  // Clear old markers
-  mapMarkers.forEach(m => map.removeLayer(m));
-  mapMarkers = [];
-
-  filteredPraticiens.forEach(p => {
-    if (!p.latitude || !p.longitude) return;
-    const icon = L.divIcon({
-      className: '',
-      html: `<div class="map-pin">${(p.prenom[0] + p.nom[0]).toUpperCase()}</div>`,
-      iconSize: [28, 28]
+    const frizzIcon = L.divIcon({
+      className: 'frizz-pin-wrapper',
+      html: '<div class="frizz-pin"></div>',
+      iconSize: [38, 38],
+      iconAnchor: [19, 38],
+      popupAnchor: [0, -38]
     });
-    const marker = L.marker([p.latitude, p.longitude], { icon }).addTo(map);
-    const stars = '★'.repeat(Math.round(p.note_moyenne)) + '☆'.repeat(5 - Math.round(p.note_moyenne));
-    marker.bindPopup(`
-      <div class="popup-name">${p.prenom} ${p.nom}</div>
-      <div class="popup-metier">${t('metier_' + p.metier) || p.metier} · ${p.ville}</div>
-      <div class="popup-stars"><span class="star">${stars}</span> ${p.note_moyenne} (${p.nb_avis} ${t('reviews')})</div>
-      <a href="/zen/praticien.html?slug=${p.slug}" class="popup-cta">${t('book_btn')}</a>
-    `);
-    mapMarkers.push(marker);
-  });
-}
 
-// ════════════ FETCH PRATICIENS ════════════
-async function fetchPraticiens() {
-  try {
-    const { data, error } = await supa
-      .from('zen_praticiens')
-      .select('*')
-      .eq('publie', true)
-      .order('note_moyenne', { ascending: false });
-    if (error) throw error;
-    allPraticiens = data || [];
-    applyFilters();
-  } catch (err) {
-    console.error('Erreur chargement praticiens:', err);
-    document.getElementById('pract-grid').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">⚠️</div>
-        <div class="empty-state-title">Erreur</div>
-        <div class="empty-state-sub">${err.message}</div>
-      </div>`;
-  }
-}
+    let allMarkers = [];
+    let allBoutiques = [];
 
-// ════════════ FILTRES & RECHERCHE ════════════
-function applyFilters() {
-  filteredPraticiens = allPraticiens.filter(p => {
-    if (currentMetier && p.metier !== currentMetier) return false;
-    if (currentRegion && p.region !== currentRegion) return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      const haystack = [
-        p.prenom, p.nom, p.metier, p.ville, p.canton,
-        p.bio_courte_fr, p.bio_courte_de, p.bio_courte_it, p.bio_courte_en
-      ].filter(Boolean).join(' ').toLowerCase();
-      if (!haystack.includes(q)) return false;
+    function formatType(type) {
+      const labels = {
+        'friperie': 'Friperie',
+        'vintage': 'Boutique vintage',
+        'concept_store': 'Concept store',
+        'sneakers': 'Sneakers store',
+        'streetwear': 'Streetwear shop',
+        'createur': 'Créateur',
+        'autre': 'Boutique mode'
+      };
+      return labels[type] || 'Boutique';
     }
-    return true;
-  });
-  renderResults();
-}
 
-// ════════════ RENDER RESULTS ════════════
-function renderResults() {
-  const count = filteredPraticiens.length;
-  const countEl = document.getElementById('results-count');
-  if (count === 0) countEl.textContent = t('no_results_title');
-  else if (count === 1) countEl.textContent = t('results_count_one').replace('%d', count);
-  else countEl.textContent = t('results_count_plural').replace('%d', count);
+    async function loadBoutiques() {
+      try {
+        const { data: boutiques, error } = await supabase
+          .from('frizz_boutiques')
+          .select('*')
+          .eq('statut', 'active')
+          .is('deleted_at', null);
 
-  // List
-  const grid = document.getElementById('pract-grid');
-  if (count === 0) {
-    grid.innerHTML = `
-      <div class="empty-state" style="grid-column: 1 / -1;">
-        <div class="empty-state-icon">🌿</div>
-        <div class="empty-state-title">${t('no_results_title')}</div>
-        <div class="empty-state-sub">${t('no_results_sub')}</div>
-      </div>`;
-  } else {
-    grid.innerHTML = filteredPraticiens.map(renderCard).join('');
-  }
+        if (error) {
+          console.error('❌ Erreur Supabase:', error);
+          document.getElementById('loading-pin').innerHTML = '<div style="color:#FF6B5C">⚠️ Erreur de chargement</div>';
+          return;
+        }
 
-  // Map
-  if (map) renderMap();
-}
+        if (!boutiques || boutiques.length === 0) {
+          document.getElementById('loading-pin').innerHTML = '<div>Aucune boutique trouvée</div>';
+          return;
+        }
 
-function renderCard(p) {
-  const initials = (p.prenom[0] + p.nom[0]).toUpperCase();
-  const avatarColors = ['', 'green', 'orange', 'violet'];
-  const colorIdx = (p.prenom.charCodeAt(0) + p.nom.charCodeAt(0)) % avatarColors.length;
-  const avatarClass = avatarColors[colorIdx];
-  const stars = '★'.repeat(Math.round(p.note_moyenne || 0));
+        console.log('✅ ' + boutiques.length + ' boutiques chargées');
+        allBoutiques = boutiques;
+        document.getElementById('loading-pin').style.display = 'none';
 
-  // Bio dans la langue choisie, fallback français
-  const bioKey = `bio_courte_${currentLang}`;
-  const bio = p[bioKey] || p.bio_courte_fr || '';
+        boutiques.forEach(boutique => {
+          if (!boutique.latitude || !boutique.longitude) return;
 
-  // Métier traduit
-  const metierLabel = t('metier_' + p.metier) || p.metier;
+          const marker = L.marker([boutique.latitude, boutique.longitude], {
+            icon: frizzIcon,
+            riseOnHover: true
+          }).addTo(map);
 
-  // Langues parlées
-  const langs = (p.langues_parlees || []).map(l => l.toUpperCase()).join(' · ');
+          const popupHTML = `
+            <div class="popup-card">
+              <div class="popup-type">${formatType(boutique.type_boutique)}</div>
+              <div class="popup-title">${boutique.nom}</div>
+              <div class="popup-loc">📍 ${boutique.adresse}, ${boutique.code_postal} ${boutique.ville}</div>
+              ${boutique.description_courte_fr ? `<div class="popup-desc">"${boutique.description_courte_fr}"</div>` : ''}
+              <a href="/boutique/${boutique.slug}" class="popup-btn" onclick="alert('Page boutique bientôt disponible !'); return false;">Voir les drops →</a>
+            </div>
+          `;
 
-  return `
-    <a href="/zen/praticien.html?slug=${p.slug}" class="pract-card">
-      <div class="pract-head">
-        <div class="pract-avatar ${avatarClass}">${initials}</div>
-        <div class="pract-info">
-          <div class="pract-name">
-            ${p.prenom} ${p.nom}
-            ${p.verifie ? '<span class="pract-verified" title="Vérifié"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>' : ''}
-          </div>
-          <div class="pract-metier">${metierLabel}</div>
+          marker.bindPopup(popupHTML, {
+            maxWidth: 320,
+            minWidth: 280,
+            closeButton: true,
+            autoClose: false
+          });
+
+          allMarkers.push({
+            marker: marker,
+            type: boutique.type_boutique,
+            boutique: boutique
+          });
+        });
+
+        if (allMarkers.length > 0) {
+          const group = L.featureGroup(allMarkers.map(m => m.marker));
+          map.fitBounds(group.getBounds().pad(0.2));
+        }
+
+        renderDrops(boutiques);
+        document.getElementById('sheet-count').textContent = boutiques.length + ' boutique' + (boutiques.length > 1 ? 's' : '');
+
+      } catch (err) {
+        console.error('❌ Exception:', err);
+      }
+    }
+
+    function renderDrops(boutiques) {
+      const container = document.getElementById('drops-row');
+      const dropsData = [
+        { boutique: 'Wood Friperie', city: 'Genève', tag: 'SAM 11H · -20%' },
+        { boutique: 'Boutique Lucky', city: 'Genève', tag: 'VEN 18H · DROP' },
+        { boutique: 'Les Patronnes', city: 'Lausanne', tag: 'SAM 14H · NOUVEAU' },
+        { boutique: 'Chabada Vintage', city: 'Lausanne', tag: 'DIM 11H · -15%' },
+        { boutique: "LaFrip'aMax", city: 'Genève', tag: 'SAM 10H · DROP' }
+      ];
+
+      container.innerHTML = dropsData.map(drop => `
+        <div class="drop-card">
+          <div class="drop-card-tag">${drop.tag}</div>
+          <div class="drop-card-title">${drop.boutique}</div>
+          <div class="drop-card-meta">📍 ${drop.city}</div>
         </div>
-      </div>
-      ${bio ? `<div class="pract-bio">${bio}</div>` : ''}
-      <div class="pract-meta">
-        <div class="pract-stars">
-          <span class="pract-stars-icon">${stars || '☆'}</span>
-          <span>${(p.note_moyenne || 0).toFixed(1)}</span>
-          <span class="pract-stars-count">(${p.nb_avis || 0})</span>
-        </div>
-        <div class="pract-location">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          ${p.ville}
-        </div>
-      </div>
-      ${langs ? `<div class="pract-langs">${(p.langues_parlees || []).map(l => `<span class="pract-lang">${l}</span>`).join('')}</div>` : ''}
-    </a>
-  `;
-}
+      `).join('');
+    }
 
-// ════════════ EVENTS ════════════
-document.getElementById('search-input').addEventListener('input', (e) => {
-  searchQuery = e.target.value.trim();
-  applyFilters();
-});
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
 
-document.querySelectorAll('#filter-metier .chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#filter-metier .chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    currentMetier = chip.dataset.metier;
-    applyFilters();
-  });
-});
+        const filter = chip.dataset.filter;
+        let visible = 0;
 
-document.querySelectorAll('#filter-region .chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#filter-region .chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    currentRegion = chip.dataset.region;
-    applyFilters();
-  });
-});
+        allMarkers.forEach(item => {
+          if (filter === 'all' || item.type === filter) {
+            item.marker.addTo(map);
+            visible++;
+          } else {
+            map.removeLayer(item.marker);
+          }
+        });
 
-// ════════════ INIT ════════════
-applyTranslations();
-fetchPraticiens();
-</script>
+        document.getElementById('sheet-count').textContent = visible + ' boutique' + (visible > 1 ? 's' : '');
+      });
+    });
 
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      let visible = 0;
+
+      allMarkers.forEach(item => {
+        const b = item.boutique;
+        const match = !query ||
+          b.nom.toLowerCase().includes(query) ||
+          b.ville.toLowerCase().includes(query) ||
+          (b.description_courte_fr && b.description_courte_fr.toLowerCase().includes(query));
+
+        if (match) {
+          item.marker.addTo(map);
+          visible++;
+        } else {
+          map.removeLayer(item.marker);
+        }
+      });
+
+      document.getElementById('sheet-count').textContent = visible + ' boutique' + (visible > 1 ? 's' : '');
+    });
+
+    document.getElementById('fab-zoom-in').addEventListener('click', () => map.zoomIn());
+    document.getElementById('fab-zoom-out').addEventListener('click', () => map.zoomOut());
+    document.getElementById('fab-locate').addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        alert('Géolocalisation non supportée');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 13),
+        () => alert('Impossible de te localiser')
+      );
+    });
+
+    document.getElementById('sheet-handle').addEventListener('click', () => {
+      document.getElementById('bottom-sheet').classList.toggle('collapsed');
+    });
+
+    loadBoutiques();
+  </script>
 </body>
-</html>index.htmlindex.html
+</html>

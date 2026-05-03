@@ -7,16 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="dark">
 <title>Frizz · Réserve les meilleures pièces près de chez toi</title>
-<meta name="description" content="L'app gratuite pour réserver dans les boutiques mode près de chez toi. Friperies, vintage, concept stores — sans queue, sans stress.">
+<meta name="description" content="L'app gratuite pour réserver dans les boutiques mode près de chez toi.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-<!-- Supabase Client -->
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -24,17 +23,16 @@
 
   :root {
     --bg: #050506;
-    --surface: rgba(255,255,255,0.03);
-    --surface-strong: rgba(255,255,255,0.05);
     --surface-glass: rgba(20, 20, 26, 0.55);
+    --surface-glass-strong: rgba(20, 20, 26, 0.75);
     --text: #F2F2F4;
     --text-2: rgba(255,255,255,0.65);
     --text-3: rgba(255,255,255,0.45);
     --border: rgba(255,255,255,0.08);
-    --border-strong: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.14);
     --blue: #0A84FF;
     --blue-bright: #2E9DFF;
-    --blue-soft: rgba(10,132,255,0.14);
+    --blue-soft: rgba(10,132,255,0.16);
     --r: 14px;
     --r-md: 18px;
     --r-pill: 100px;
@@ -42,47 +40,70 @@
 
   html, body {
     color: var(--text);
-    font-family: 'Inter Tight', -apple-system, sans-serif;
-    font-weight: 700;
+    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
     letter-spacing: -0.014em;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     height: 100vh;
     overflow: hidden;
+    background: #050506;
   }
 
-  /* AURORA BACKGROUND */
-  html {
+  /* AURORA en LAYER absolu (DERRIÈRE la map) */
+  .aurora-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
     background:
       radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
       radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
-      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
-      #050506 !important;
-    background-attachment: fixed !important;
+      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%);
   }
-  body { background: transparent !important; }
 
-  /* TOPBAR */
+  /* MAP — z-index 1, AU-DESSUS de l'aurora */
+  #map {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    background: transparent !important; /* ← CRUCIAL pour le glass */
+  }
+  .leaflet-container {
+    background: #050506 !important;
+    font-family: 'Inter Tight', sans-serif !important;
+  }
+
+  /* TOPBAR - glass sur la map */
   .topbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 14px 22px;
+    padding: 14px 24px;
     padding-top: calc(14px + env(safe-area-inset-top));
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: saturate(180%) blur(28px);
+    background: rgba(0, 0, 0, 0.5);
     -webkit-backdrop-filter: saturate(180%) blur(28px);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
+
+  /* LOGO ORIGINAL — Source Serif italique comme menu-admin */
   .logo-link {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
     transition: transform 0.2s;
+    cursor: pointer;
   }
   .logo-link:hover { transform: scale(1.04); }
   .logo {
@@ -112,6 +133,7 @@
     0%,100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.08); }
   }
+
   .topbar-right {
     display: flex;
     align-items: center;
@@ -121,7 +143,7 @@
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--text);
-    padding: 8px 16px;
+    padding: 9px 18px;
     border-radius: var(--r-pill);
     font-family: 'Inter Tight', sans-serif;
     font-size: 13px;
@@ -133,7 +155,7 @@
   }
   .btn-pro:hover {
     background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.2);
   }
   .btn-pro.primary {
     background: var(--blue);
@@ -142,49 +164,33 @@
   }
   .btn-pro.primary:hover { background: var(--blue-bright); }
 
-  /* MAP PLEIN ÉCRAN */
-  #map {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 1;
-    background: #0a0a0b;
-  }
-  .leaflet-container {
-    background: #0a0a0b !important;
-    font-family: 'Inter Tight', sans-serif !important;
-  }
-
   /* SEARCH + FILTRES */
   .search-container {
     position: fixed;
-    top: calc(70px + env(safe-area-inset-top));
+    top: calc(76px + env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
-    width: 540px;
+    width: 600px;
     max-width: calc(100% - 32px);
     z-index: 500;
   }
   .search-bar {
     background: var(--surface-glass);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
     border: 1px solid var(--border-strong);
     border-radius: var(--r-pill);
     padding: 14px 22px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     transition: all 0.2s;
   }
-  .search-bar:hover, .search-bar:focus-within {
-    border-color: rgba(10,132,255,0.4);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 3px rgba(10,132,255,0.1);
+  .search-bar:focus-within {
+    border-color: rgba(10,132,255,0.5);
+    background: var(--surface-glass-strong);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 3px rgba(10,132,255,0.15);
   }
   .search-icon {
     width: 18px;
@@ -200,7 +206,6 @@
     font-family: 'Inter Tight', sans-serif;
     font-size: 15px;
     font-weight: 500;
-    letter-spacing: -0.01em;
     outline: none;
     min-width: 0;
   }
@@ -222,10 +227,10 @@
 
   .filter-chip {
     background: var(--surface-glass);
-    backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--border-strong);
-    color: var(--text-2);
+    color: var(--text);
     padding: 9px 16px;
     border-radius: var(--r-pill);
     font-family: 'Inter Tight', sans-serif;
@@ -236,24 +241,30 @@
     white-space: nowrap;
     flex-shrink: 0;
     letter-spacing: -0.01em;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    gap: 7px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
   .filter-chip:hover {
-    background: rgba(20, 20, 26, 0.7);
-    color: var(--text);
-    border-color: rgba(255,255,255,0.18);
+    background: var(--surface-glass-strong);
+    border-color: rgba(255,255,255,0.22);
   }
   .filter-chip.active {
     background: var(--blue);
     border-color: var(--blue);
     color: #fff;
-    box-shadow: 0 4px 16px rgba(10,132,255,0.4);
+    box-shadow: 0 4px 16px rgba(10,132,255,0.5);
+  }
+  .filter-chip svg {
+    width: 16px;
+    height: 16px;
+    color: currentColor;
+    flex-shrink: 0;
+    stroke-width: 1.8;
   }
 
-  /* BOUTONS FLOTTANTS DROITE */
+  /* BOUTONS FLOTTANTS */
   .floating-buttons {
     position: fixed;
     right: 16px;
@@ -268,8 +279,8 @@
     width: 48px;
     height: 48px;
     background: var(--surface-glass);
-    backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--border-strong);
     border-radius: 50%;
     display: flex;
@@ -281,11 +292,12 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
   .fab:hover {
-    background: rgba(20, 20, 26, 0.8);
-    border-color: rgba(255,255,255,0.2);
+    background: var(--surface-glass-strong);
+    border-color: rgba(255,255,255,0.22);
     transform: scale(1.05);
   }
-  .fab svg { width: 20px; height: 20px; }
+  .fab:active { transform: scale(0.95); }
+  .fab svg { width: 20px; height: 20px; stroke-width: 2; }
 
   /* BOTTOM SHEET */
   .bottom-sheet {
@@ -295,8 +307,8 @@
     right: 0;
     z-index: 300;
     background: var(--surface-glass);
-    backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
     border-top: 1px solid var(--border-strong);
     border-radius: 24px 24px 0 0;
     padding: 12px 20px 20px;
@@ -305,10 +317,9 @@
     transform: translateY(0);
     transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     max-height: 70vh;
-    overflow: hidden;
   }
   .bottom-sheet.collapsed {
-    transform: translateY(calc(100% - 80px));
+    transform: translateY(calc(100% - 88px));
   }
   .sheet-handle {
     width: 36px;
@@ -320,28 +331,40 @@
   }
   .sheet-header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 14px;
+    gap: 12px;
   }
   .sheet-title {
     font-family: 'Inter Tight', sans-serif;
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sheet-title-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--blue);
+    flex-shrink: 0;
   }
   .sheet-title em {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
     font-weight: 600;
     color: var(--blue);
+    margin-left: 4px;
   }
   .sheet-count {
     font-family: 'Inter Tight', sans-serif;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-3);
+    flex-shrink: 0;
   }
   .drops-row {
     display: flex;
@@ -398,18 +421,22 @@
     font-size: 12px;
     font-weight: 500;
     color: var(--text-3);
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
+  .drop-card-meta svg { width: 12px; height: 12px; flex-shrink: 0; }
 
-  /* POPUP MAP */
+  /* POPUP */
   .leaflet-popup-content-wrapper {
     background: rgba(20, 20, 26, 0.92) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid var(--border-strong) !important;
     border-radius: var(--r-md) !important;
     color: var(--text) !important;
     padding: 0 !important;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.6) !important;
     overflow: hidden;
   }
   .leaflet-popup-content {
@@ -422,17 +449,17 @@
   }
   .leaflet-popup-close-button {
     color: var(--text-2) !important;
-    font-size: 20px !important;
+    font-size: 22px !important;
     padding: 8px !important;
-    width: 28px !important;
-    height: 28px !important;
+    width: 30px !important;
+    height: 30px !important;
   }
-  .popup-card { padding: 16px; }
+  .popup-card { padding: 18px; }
   .popup-type {
     font-family: 'Inter Tight', sans-serif;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--blue);
     margin-bottom: 6px;
@@ -444,7 +471,7 @@
     letter-spacing: -0.02em;
     line-height: 1.15;
     color: var(--text);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .popup-loc {
     font-family: 'Inter Tight', sans-serif;
@@ -452,7 +479,11 @@
     font-weight: 500;
     color: var(--text-3);
     margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
   }
+  .popup-loc svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; }
   .popup-desc {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
@@ -476,16 +507,11 @@
     letter-spacing: -0.01em;
     cursor: pointer;
     text-align: center;
-    text-decoration: none;
     transition: all 0.2s;
   }
-  .popup-btn:hover {
-    background: var(--blue-bright);
-    transform: translateY(-1px);
-  }
+  .popup-btn:hover { background: var(--blue-bright); }
 
-  /* CUSTOM PIN */
-  .frizz-pin-wrapper { position: relative; }
+  /* PIN */
   .frizz-pin {
     width: 38px;
     height: 38px;
@@ -513,8 +539,8 @@
     50% { box-shadow: 0 4px 28px rgba(10,132,255,0.9); }
   }
 
-  /* LOADING */
-  .loading-pin {
+  /* STATUS / DEBUG */
+  .status-overlay {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -528,6 +554,14 @@
     font-family: 'Inter Tight', sans-serif;
     font-size: 14px;
     font-weight: 600;
+    background: rgba(20, 20, 26, 0.85);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    padding: 24px 32px;
+    text-align: center;
+    max-width: 90%;
   }
   .loading-spinner {
     width: 36px;
@@ -538,13 +572,43 @@
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .status-overlay.error { color: #FF6B5C; border-color: rgba(255, 107, 92, 0.3); }
+  .status-overlay.hidden { display: none; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    top: calc(100px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    z-index: 2000;
+    background: var(--surface-glass-strong);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    padding: 12px 24px;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .topbar { padding: 12px 16px; }
     .topbar-right .btn-pro:not(.primary) { display: none; }
     .search-container {
-      top: calc(64px + env(safe-area-inset-top));
+      top: calc(70px + env(safe-area-inset-top));
       width: calc(100% - 24px);
     }
     .search-bar { padding: 12px 18px; }
@@ -558,111 +622,238 @@
     .bottom-sheet { padding: 12px 16px 16px; }
     .drops-row { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
   }
+
+  @media (min-width: 1200px) {
+    .bottom-sheet {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: 1000px;
+      border-radius: 24px;
+      bottom: 24px;
+    }
+    .bottom-sheet.collapsed {
+      transform: translateX(-50%) translateY(calc(100% - 56px));
+    }
+  }
 </style>
 </head>
 <body>
 
+  <!-- AURORA derrière la map -->
+  <div class="aurora-bg"></div>
+
+  <!-- MAP -->
+  <div id="map"></div>
+
   <!-- TOPBAR -->
   <header class="topbar">
-    <a href="#" class="logo-link" id="logo-link">
+    <a href="#" class="logo-link" onclick="event.preventDefault();">
       <span class="logo">Frizz<span class="spark">✦</span></span>
     </a>
     <div class="topbar-right">
-      <a href="#" class="btn-pro">Connexion</a>
-      <a href="#" class="btn-pro primary">Inscrire ma boutique</a>
+      <button class="btn-pro" onclick="showToast('Page Connexion bientôt disponible')">Connexion</button>
+      <button class="btn-pro primary" onclick="showToast('Inscription des boutiques bientôt disponible')">Inscrire ma boutique</button>
     </div>
   </header>
 
   <!-- SEARCH + FILTRES -->
   <div class="search-container">
     <div class="search-bar">
-      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
         <circle cx="11" cy="11" r="8"/>
         <path d="m21 21-4.3-4.3"/>
       </svg>
       <input type="text" class="search-input" id="search-input" placeholder="Rechercher une boutique, une ville..." />
     </div>
     <div class="filters-quick" id="filters-quick">
-      <button class="filter-chip active" data-filter="all">✦ Tout</button>
-      <button class="filter-chip" data-filter="friperie">👗 Friperies</button>
-      <button class="filter-chip" data-filter="vintage">✨ Vintage</button>
-      <button class="filter-chip" data-filter="concept_store">🛍️ Concept stores</button>
-      <button class="filter-chip" data-filter="sneakers">👟 Sneakers</button>
-      <button class="filter-chip" data-filter="streetwear">🧢 Streetwear</button>
-      <button class="filter-chip" data-filter="createur">🎨 Créateurs</button>
+      <!-- TOUT - icône grille 4 cases -->
+      <button class="filter-chip active" data-filter="all">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        Tout
+      </button>
+
+      <!-- FRIPERIES - icône cintre (vrai cintre de penderie) -->
+      <button class="filter-chip" data-filter="friperie">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2a3 3 0 0 0-3 3c0 1.5 1.5 2.5 3 3v2L2 17h20l-10-7V8c1.5-.5 3-1.5 3-3a3 3 0 0 0-3-3z"/>
+        </svg>
+        Friperies
+      </button>
+
+      <!-- VINTAGE - icône couronne / royale -->
+      <button class="filter-chip" data-filter="vintage">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M2 8l4 6 6-9 6 9 4-6v12H2V8z"/>
+          <circle cx="6" cy="6" r="1.5" fill="currentColor"/>
+          <circle cx="12" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
+        </svg>
+        Vintage
+      </button>
+
+      <!-- CONCEPT STORES - icône sac shopping -->
+      <button class="filter-chip" data-filter="concept_store">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M5 7h14l-1 13H6L5 7z"/>
+          <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
+        </svg>
+        Concept stores
+      </button>
+
+      <!-- SNEAKERS - vraie sneaker -->
+      <button class="filter-chip" data-filter="sneakers">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M2 16.5L3 11l5-1 3-3h3l3 5 4 1.5L22 17v3H2v-3.5z"/>
+          <line x1="11" y1="14" x2="14" y2="14"/>
+          <line x1="16" y1="14" x2="19" y2="14"/>
+        </svg>
+        Sneakers
+      </button>
+
+      <!-- STREETWEAR - capuche / hoodie -->
+      <button class="filter-chip" data-filter="streetwear">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M6 8c0-3 2.5-6 6-6s6 3 6 6v2l4 2-2 8H4l-2-8 4-2V8z"/>
+          <path d="M9 14h6"/>
+        </svg>
+        Streetwear
+      </button>
+
+      <!-- CRÉATEURS - aiguille à coudre -->
+      <button class="filter-chip" data-filter="createur">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M3 21l4-1 13-13a2 2 0 0 0-3-3L4 17l-1 4z"/>
+          <path d="M14 6l3 3"/>
+          <circle cx="19" cy="5" r="1.5" fill="currentColor"/>
+        </svg>
+        Créateurs
+      </button>
     </div>
   </div>
 
-  <!-- MAP PLEIN ÉCRAN -->
-  <div id="map"></div>
-
   <!-- LOADING -->
-  <div class="loading-pin" id="loading-pin">
+  <div class="status-overlay" id="status-overlay">
     <div class="loading-spinner"></div>
     <div>Chargement des boutiques...</div>
   </div>
 
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
   <!-- BOUTONS FLOTTANTS -->
   <div class="floating-buttons">
     <button class="fab" title="Me localiser" id="fab-locate">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10"/>
-        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
       </svg>
     </button>
     <button class="fab" title="Zoom +" id="fab-zoom-in">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
         <line x1="12" y1="5" x2="12" y2="19"/>
         <line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
     </button>
     <button class="fab" title="Zoom -" id="fab-zoom-out">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
         <line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
     </button>
   </div>
 
-  <!-- BOTTOM SHEET (DROPS) -->
+  <!-- BOTTOM SHEET -->
   <div class="bottom-sheet" id="bottom-sheet">
     <div class="sheet-handle" id="sheet-handle"></div>
     <div class="sheet-header">
-      <div class="sheet-title">⚡ Drops du <em>weekend</em></div>
-      <div class="sheet-count" id="sheet-count">5 boutiques</div>
+      <div class="sheet-title">
+        <svg class="sheet-title-icon" fill="currentColor" viewBox="0 0 24 24">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Drops du <em>weekend</em>
+      </div>
+      <div class="sheet-count" id="sheet-count">— boutiques</div>
     </div>
     <div class="drops-row" id="drops-row"></div>
   </div>
 
-  <!-- SCRIPTS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // CONFIG SUPABASE
+    // ════════════ CONFIG ════════════
     const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // MAP INIT
-    const map = L.map('map', {
-      zoomControl: false,
-      attributionControl: false,
-      preferCanvas: true
-    }).setView([46.5, 6.5], 9);
+    // ════════════ TOAST ════════════
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      subdomains: 'abcd'
-    }).addTo(map);
+    // ════════════ STATUS ════════════
+    function hideStatus() {
+      const el = document.getElementById('status-overlay');
+      if (el) el.classList.add('hidden');
+    }
+    function showStatus(html, isError) {
+      const el = document.getElementById('status-overlay');
+      if (!el) return;
+      el.classList.remove('hidden');
+      el.classList.toggle('error', !!isError);
+      el.innerHTML = html;
+    }
 
-    const frizzIcon = L.divIcon({
-      className: 'frizz-pin-wrapper',
-      html: '<div class="frizz-pin"></div>',
-      iconSize: [38, 38],
-      iconAnchor: [19, 38],
-      popupAnchor: [0, -38]
-    });
-
+    // ════════════ MAP INIT ════════════
+    let map = null;
     let allMarkers = [];
-    let allBoutiques = [];
+
+    function initMap() {
+      console.log('🎯 [Frizz] initMap() appelé');
+      
+      if (typeof L === 'undefined') {
+        console.error('❌ Leaflet non chargé !');
+        showStatus('<div>⚠️ Leaflet non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
+        return false;
+      }
+
+      try {
+        map = L.map('map', {
+          zoomControl: false,
+          attributionControl: false,
+          preferCanvas: true
+        }).setView([46.5, 6.5], 9);
+
+        // Tile layer dark transparent (laisse passer l'aurora derrière)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19,
+          subdomains: 'abcd',
+          attribution: ''
+        }).addTo(map);
+
+        console.log('✅ [Frizz] Map initialisée');
+        return true;
+      } catch (err) {
+        console.error('❌ [Frizz] Erreur init map:', err);
+        showStatus('<div>⚠️ Impossible de charger la carte</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
+        return false;
+      }
+    }
+
+    function getFrizzIcon() {
+      return L.divIcon({
+        className: 'frizz-pin-wrapper',
+        html: '<div class="frizz-pin"></div>',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38]
+      });
+    }
 
     function formatType(type) {
       const labels = {
@@ -677,34 +868,50 @@
       return labels[type] || 'Boutique';
     }
 
+    // ════════════ LOAD BOUTIQUES ════════════
     async function loadBoutiques() {
+      console.log('🎯 [Frizz] loadBoutiques() appelé');
+
+      if (!window.supabase) {
+        console.error('❌ Supabase non chargé !');
+        showStatus('<div>⚠️ Supabase non chargé</div><div style="font-size:12px;opacity:0.7;">Vérifie ta connexion internet</div>', true);
+        return;
+      }
+
       try {
-        const { data: boutiques, error } = await supabase
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('📡 [Frizz] Connexion Supabase OK');
+
+        const { data: boutiques, error } = await supabaseClient
           .from('frizz_boutiques')
           .select('*')
           .eq('statut', 'active')
           .is('deleted_at', null);
 
         if (error) {
-          console.error('❌ Erreur Supabase:', error);
-          document.getElementById('loading-pin').innerHTML = '<div style="color:#FF6B5C">⚠️ Erreur de chargement</div>';
+          console.error('❌ [Frizz] Erreur Supabase:', error);
+          showStatus('<div>⚠️ Erreur de chargement</div><div style="font-size:12px;opacity:0.7;max-width:300px;">' + error.message + '</div>', true);
           return;
         }
 
         if (!boutiques || boutiques.length === 0) {
-          document.getElementById('loading-pin').innerHTML = '<div>Aucune boutique trouvée</div>';
+          console.warn('⚠️ Aucune boutique trouvée');
+          showStatus('<div>Aucune boutique active</div><div style="font-size:12px;opacity:0.7;">Vérifie tes données Supabase</div>', true);
           return;
         }
 
-        console.log('✅ ' + boutiques.length + ' boutiques chargées');
-        allBoutiques = boutiques;
-        document.getElementById('loading-pin').style.display = 'none';
+        console.log('✅ [Frizz] ' + boutiques.length + ' boutiques chargées', boutiques);
+
+        const icon = getFrizzIcon();
 
         boutiques.forEach(boutique => {
-          if (!boutique.latitude || !boutique.longitude) return;
+          if (!boutique.latitude || !boutique.longitude) {
+            console.warn('⚠️ Boutique sans coordonnées:', boutique.nom);
+            return;
+          }
 
           const marker = L.marker([boutique.latitude, boutique.longitude], {
-            icon: frizzIcon,
+            icon: icon,
             riseOnHover: true
           }).addTo(map);
 
@@ -712,9 +919,15 @@
             <div class="popup-card">
               <div class="popup-type">${formatType(boutique.type_boutique)}</div>
               <div class="popup-title">${boutique.nom}</div>
-              <div class="popup-loc">📍 ${boutique.adresse}, ${boutique.code_postal} ${boutique.ville}</div>
-              ${boutique.description_courte_fr ? `<div class="popup-desc">"${boutique.description_courte_fr}"</div>` : ''}
-              <a href="/boutique/${boutique.slug}" class="popup-btn" onclick="alert('Page boutique bientôt disponible !'); return false;">Voir les drops →</a>
+              <div class="popup-loc">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>${boutique.adresse}, ${boutique.code_postal} ${boutique.ville}</span>
+              </div>
+              ${boutique.description_courte_fr ? '<div class="popup-desc">"' + boutique.description_courte_fr + '"</div>' : ''}
+              <button class="popup-btn" onclick="showToast('Page boutique bientôt disponible')">Voir les drops →</button>
             </div>
           `;
 
@@ -737,16 +950,25 @@
           map.fitBounds(group.getBounds().pad(0.2));
         }
 
+        hideStatus();
         renderDrops(boutiques);
-        document.getElementById('sheet-count').textContent = boutiques.length + ' boutique' + (boutiques.length > 1 ? 's' : '');
+        updateCount(boutiques.length);
 
       } catch (err) {
-        console.error('❌ Exception:', err);
+        console.error('❌ [Frizz] Exception:', err);
+        showStatus('<div>⚠️ Erreur</div><div style="font-size:12px;opacity:0.7;">' + err.message + '</div>', true);
       }
     }
 
-    function renderDrops(boutiques) {
+    function updateCount(n) {
+      const el = document.getElementById('sheet-count');
+      if (el) el.textContent = n + ' boutique' + (n > 1 ? 's' : '');
+    }
+
+    function renderDrops() {
       const container = document.getElementById('drops-row');
+      if (!container) return;
+
       const dropsData = [
         { boutique: 'Wood Friperie', city: 'Genève', tag: 'SAM 11H · -20%' },
         { boutique: 'Boutique Lucky', city: 'Genève', tag: 'VEN 18H · DROP' },
@@ -755,76 +977,116 @@
         { boutique: "LaFrip'aMax", city: 'Genève', tag: 'SAM 10H · DROP' }
       ];
 
-      container.innerHTML = dropsData.map(drop => `
-        <div class="drop-card">
-          <div class="drop-card-tag">${drop.tag}</div>
-          <div class="drop-card-title">${drop.boutique}</div>
-          <div class="drop-card-meta">📍 ${drop.city}</div>
-        </div>
-      `).join('');
+      const pinIcon = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+      container.innerHTML = dropsData.map(drop =>
+        '<div class="drop-card" onclick="showToast(\'Page drop bientôt disponible\')">' +
+        '<div class="drop-card-tag">' + drop.tag + '</div>' +
+        '<div class="drop-card-title">' + drop.boutique + '</div>' +
+        '<div class="drop-card-meta">' + pinIcon + '<span>' + drop.city + '</span></div>' +
+        '</div>'
+      ).join('');
     }
 
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
+    // ════════════ EVENTS ════════════
+    function bindEvents() {
+      // Filtres
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
 
-        const filter = chip.dataset.filter;
-        let visible = 0;
+          const filter = chip.dataset.filter;
+          let visible = 0;
 
-        allMarkers.forEach(item => {
-          if (filter === 'all' || item.type === filter) {
-            item.marker.addTo(map);
-            visible++;
-          } else {
-            map.removeLayer(item.marker);
-          }
+          allMarkers.forEach(item => {
+            if (filter === 'all' || item.type === filter) {
+              item.marker.addTo(map);
+              visible++;
+            } else {
+              map.removeLayer(item.marker);
+            }
+          });
+
+          updateCount(visible);
         });
-
-        document.getElementById('sheet-count').textContent = visible + ' boutique' + (visible > 1 ? 's' : '');
-      });
-    });
-
-    document.getElementById('search-input').addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      let visible = 0;
-
-      allMarkers.forEach(item => {
-        const b = item.boutique;
-        const match = !query ||
-          b.nom.toLowerCase().includes(query) ||
-          b.ville.toLowerCase().includes(query) ||
-          (b.description_courte_fr && b.description_courte_fr.toLowerCase().includes(query));
-
-        if (match) {
-          item.marker.addTo(map);
-          visible++;
-        } else {
-          map.removeLayer(item.marker);
-        }
       });
 
-      document.getElementById('sheet-count').textContent = visible + ' boutique' + (visible > 1 ? 's' : '');
-    });
+      // Recherche
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          let visible = 0;
 
-    document.getElementById('fab-zoom-in').addEventListener('click', () => map.zoomIn());
-    document.getElementById('fab-zoom-out').addEventListener('click', () => map.zoomOut());
-    document.getElementById('fab-locate').addEventListener('click', () => {
-      if (!navigator.geolocation) {
-        alert('Géolocalisation non supportée');
-        return;
+          allMarkers.forEach(item => {
+            const b = item.boutique;
+            const match = !query ||
+              b.nom.toLowerCase().includes(query) ||
+              b.ville.toLowerCase().includes(query) ||
+              (b.description_courte_fr && b.description_courte_fr.toLowerCase().includes(query));
+
+            if (match) {
+              item.marker.addTo(map);
+              visible++;
+            } else {
+              map.removeLayer(item.marker);
+            }
+          });
+
+          updateCount(visible);
+        });
       }
-      navigator.geolocation.getCurrentPosition(
-        (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 13),
-        () => alert('Impossible de te localiser')
-      );
-    });
 
-    document.getElementById('sheet-handle').addEventListener('click', () => {
-      document.getElementById('bottom-sheet').classList.toggle('collapsed');
-    });
+      // FAB
+      const zoomIn = document.getElementById('fab-zoom-in');
+      const zoomOut = document.getElementById('fab-zoom-out');
+      const locate = document.getElementById('fab-locate');
 
-    loadBoutiques();
+      if (zoomIn) zoomIn.addEventListener('click', () => { if (map) map.zoomIn(); });
+      if (zoomOut) zoomOut.addEventListener('click', () => { if (map) map.zoomOut(); });
+      if (locate) {
+        locate.addEventListener('click', () => {
+          if (!navigator.geolocation) {
+            showToast('Géolocalisation non supportée');
+            return;
+          }
+          showToast('Localisation en cours...');
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              if (map) {
+                map.setView([pos.coords.latitude, pos.coords.longitude], 13);
+                showToast('Te voici !');
+              }
+            },
+            () => showToast('Impossible de te localiser')
+          );
+        });
+      }
+
+      // Bottom sheet
+      const handle = document.getElementById('sheet-handle');
+      if (handle) {
+        handle.addEventListener('click', () => {
+          document.getElementById('bottom-sheet').classList.toggle('collapsed');
+        });
+      }
+    }
+
+    // ════════════ INIT ════════════
+    function start() {
+      console.log('🎯 [Frizz] Démarrage');
+      if (initMap()) {
+        bindEvents();
+        loadBoutiques();
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
   </script>
 </body>
 </html>

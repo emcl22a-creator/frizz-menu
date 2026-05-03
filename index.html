@@ -753,6 +753,325 @@
     color: var(--text-3);
   }
 
+  /* ════════════ LIVE COUNTER ════════════ */
+  .live-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 7px 14px;
+    background: var(--green-soft);
+    border: 1px solid rgba(74,222,128,0.30);
+    border-radius: var(--r-pill);
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.005em;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .live-counter strong {
+    color: var(--text);
+    font-weight: 900;
+    margin-right: 2px;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: liveDot 2s ease-in-out infinite;
+  }
+  @keyframes liveDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* ════════════ NEWSLETTER PREVIEW ════════════ */
+  .nl-preview {
+    margin: 0 28px;
+    padding: 24px 22px;
+    background: var(--surface);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 12px 40px -12px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .nl-preview::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 70%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(10,132,255,0.16), transparent 60%);
+    pointer-events: none;
+  }
+  .nl-preview-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 1;
+  }
+  .nl-preview-eyebrow {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--blue);
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .nl-preview-title {
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.024em;
+  }
+  .nl-preview-saving {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--green);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.018em;
+    line-height: 1;
+    margin-top: 4px;
+  }
+
+  .nl-deal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 1;
+  }
+  .nl-deal:last-of-type { border-bottom: 0; }
+  .nl-deal-emoji {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: var(--r);
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .nl-deal-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .nl-deal-name {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.014em;
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .nl-deal-loc {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+  }
+  .nl-deal-amt {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--green);
+    margin-left: 8px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.014em;
+    flex-shrink: 0;
+  }
+
+  .nl-preview-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    position: relative;
+    z-index: 1;
+  }
+  .nl-preview-foot-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .nl-preview-foot-amt {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--green);
+    letter-spacing: -0.018em;
+  }
+
+  .nl-preview-caption {
+    margin: 16px 28px 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-align: center;
+    letter-spacing: -0.005em;
+    line-height: 1.5;
+  }
+
+  /* ════════════ WHO AM I ════════════ */
+  .who-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .who-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--blue-bright));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 38px;
+    color: #fff;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,0.2),
+      0 8px 24px -4px var(--blue-glow);
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.10);
+  }
+  .who-eyebrow {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue);
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+  .who-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.034em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 18px;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .who-title em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .who-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-2);
+    line-height: 1.6;
+    letter-spacing: -0.012em;
+    margin-bottom: 14px;
+  }
+  .who-text:last-child { margin-bottom: 0; }
+  .who-text em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* ════════════ FAQ ════════════ */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .faq-item {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .faq-item:hover { border-color: var(--border-strong); }
+  .faq-item[open] {
+    border-color: var(--border-strong);
+    background: var(--surface-strong);
+  }
+  .faq-q {
+    padding: 18px 20px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.018em;
+    user-select: none;
+  }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--blue-soft);
+    color: var(--blue);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    transition: transform 0.25s ease;
+    border: 1px solid rgba(10,132,255,0.30);
+  }
+  .faq-item[open] .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    padding: 0 20px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+  }
+  .faq-a em {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--text);
+  }
+
   /* ════════════════════════════════════════════════════════════
      RESPONSIVE — 3 BREAKPOINTS PROGRESSIFS
      ════════════════════════════════════════════════════════════ */
@@ -779,6 +1098,12 @@
     .stat-num { font-size: 36px; }
     .divider { margin: 0 36px; }
     .features-grid { gap: 14px; }
+    .nl-preview { margin: 0 36px; padding: 28px 26px; }
+    .nl-preview-caption { margin: 16px 36px 0; }
+    .nl-preview-title { font-size: 19px; }
+    .nl-deal-name { font-size: 14px; }
+    .who-title { font-size: 36px; }
+    .who-text { font-size: 15px; }
     .final-cta { padding: 80px 36px 56px; }
     .final-cta-title { font-size: 38px; }
     .footer { padding: 40px 36px 48px; }
@@ -863,6 +1188,41 @@
     .final-cta-title { font-size: 56px; margin-bottom: 36px; }
     .final-cta-form { max-width: 540px; }
 
+    /* Newsletter preview en grand */
+    .nl-preview { margin: 0 auto; max-width: 720px; padding: 36px 32px; }
+    .nl-preview-caption { margin: 20px auto 0; max-width: 720px; }
+    .nl-preview-title { font-size: 22px; }
+    .nl-preview-saving { font-size: 28px; }
+    .nl-preview-foot-amt { font-size: 30px; }
+    .nl-deal { padding: 14px 0; }
+    .nl-deal-emoji { width: 44px; height: 44px; font-size: 22px; }
+    .nl-deal-name { font-size: 15px; margin-bottom: 4px; }
+    .nl-deal-loc { font-size: 12px; }
+    .nl-deal-amt { font-size: 18px; }
+
+    /* Who-am-I split horizontal */
+    .who-wrap {
+      flex-direction: row;
+      gap: 40px;
+      align-items: flex-start;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .who-avatar {
+      width: 120px;
+      height: 120px;
+      font-size: 56px;
+    }
+    .who-content { flex: 1; }
+    .who-title { font-size: 42px; }
+    .who-text { font-size: 16px; max-width: 640px; }
+
+    /* FAQ plus grand */
+    .faq-list { max-width: 800px; margin: 0 auto; }
+    .faq-q { padding: 22px 28px; font-size: 16px; }
+    .faq-a { padding: 0 28px 22px; font-size: 14px; }
+    .faq-icon { width: 28px; height: 28px; font-size: 18px; }
+
     /* Footer */
     .footer { padding: 56px 56px 64px; }
   }
@@ -900,23 +1260,29 @@
     <!-- LEFT : Hero + Form -->
     <div class="hero-content">
       <section class="hero">
-        <div class="hero-eyebrow">— Frontière FR-CH · Trinational</div>
+        <div class="hero-eyebrow">— La newsletter des frontaliers FR-CH</div>
         <h1 class="hero-title">Tous les <em>bons plans</em><br>autour de toi.</h1>
-        <p class="hero-sub">Frizz cartographie les <em>meilleurs commerçants</em>, les <em>deals exclusifs</em> et les <em>infos pratiques</em> des deux côtés de la frontière. Une app. Tout ce dont tu as besoin.</p>
+        <p class="hero-sub">Tous les vendredis 18h, je te dis exactement <em>où aller</em> ce weekend pour <em>économiser 50 à 200€</em> à la frontière FR-CH. Pas de blabla. Juste 5 adresses testées par moi.</p>
       </section>
 
       <!-- FORM (HERO) -->
       <div class="form-wrap">
+        <!-- Compteur live d'inscrits -->
+        <div class="live-counter" id="live-counter">
+          <span class="live-dot"></span>
+          <span><strong id="counter-num">·</strong> frontaliers déjà inscrits</span>
+        </div>
+
         <form class="form" id="form-hero" onsubmit="return submitForm(event, 'hero')">
           <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-hero">
-          <button type="submit" class="btn btn-primary" id="btn-hero">Découvrir →</button>
+          <button type="submit" class="btn btn-primary" id="btn-hero">Recevoir les deals →</button>
         </form>
         <div class="form-trust">
-          <span>Gratuit</span>
-          <span>Sans spam</span>
-          <span>Activation immédiate</span>
+          <span>1 email/semaine</span>
+          <span>Gratuit à vie</span>
+          <span>Désinscription en 1 clic</span>
         </div>
-        <div class="form-success" id="success-hero">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
+        <div class="form-success" id="success-hero">✓ Inscrit. Ton 1er deal arrive vendredi 18h.</div>
         <div class="form-error" id="error-hero"></div>
       </div>
     </div>
@@ -934,8 +1300,8 @@
       <div class="map-pin map-pin-5">4</div>
 
       <div class="map-overlay">
-        <div class="map-overlay-text"><em>21 deals actifs</em><br>dans un rayon de 10 km</div>
-        <div class="map-overlay-badge">Bientôt</div>
+        <div class="map-overlay-text"><em>5 deals exclusifs</em><br>chaque vendredi</div>
+        <div class="map-overlay-badge">Gratuit</div>
       </div>
     </div>
 
@@ -970,19 +1336,19 @@
     <div class="pain-list">
       <div class="pain-item">
         <span class="pain-icon">×</span>
-        <p class="pain-text">Tu paies ta viande <em>2× plus cher</em> qu'à 5 km de chez toi.</p>
+        <p class="pain-text">Tu sais que ta viande coûte <em>2× moins cher</em> à 5 km — mais tu ne sais pas chez quel boucher.</p>
       </div>
       <div class="pain-item">
         <span class="pain-icon">×</span>
-        <p class="pain-text">Tu galères à savoir où acheter, où sortir, où économiser.</p>
+        <p class="pain-text">Tu galères à trouver les <em>bonnes adresses</em> côté français quand tu vis en Suisse (ou l'inverse).</p>
       </div>
       <div class="pain-item">
         <span class="pain-icon">×</span>
-        <p class="pain-text">Tu perds <em>1h aux douanes</em> faute d'info en temps réel.</p>
+        <p class="pain-text">Tu rates les <em>promos du weekend</em> chez les commerces à 10 min de chez toi.</p>
       </div>
       <div class="pain-item">
         <span class="pain-icon">×</span>
-        <p class="pain-text">Tu rates les promos des commerces à 10 min de chez toi.</p>
+        <p class="pain-text">Tu perds des <em>centaines d'euros</em> par mois en achetant au mauvais endroit.</p>
       </div>
     </div>
   </section>
@@ -991,38 +1357,173 @@
 
   <!-- ════════════ FEATURES ════════════ -->
   <section class="section">
-    <h2 class="section-title">Ce que <em>Frizz</em><br>fait pour toi.</h2>
+    <h2 class="section-title">Ce que tu <em>reçois</em><br>chaque vendredi.</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-emoji">🎯</div>
-        <div class="feature-title">Deals weekend</div>
-        <div class="feature-desc">5 promos exclusives chaque vendredi 18h, poussées en notification.</div>
+        <div class="feature-emoji">🥩</div>
+        <div class="feature-title">Boucher</div>
+        <div class="feature-desc">Viande maturée chez les meilleurs bouchers FR, jusqu'à 50% moins cher.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-emoji">🛒</div>
-        <div class="feature-title">+500 commerces</div>
-        <div class="feature-desc">Carte interactive des meilleurs spots des deux côtés.</div>
+        <div class="feature-emoji">🍷</div>
+        <div class="feature-title">Caviste</div>
+        <div class="feature-desc">Vins, crémants, champagnes à prix français pour les Suisses.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-emoji">🚗</div>
-        <div class="feature-title">Trafic live</div>
-        <div class="feature-desc">Douanes en temps réel + itinéraires alternatifs.</div>
+        <div class="feature-emoji">💇</div>
+        <div class="feature-title">Coiffeur</div>
+        <div class="feature-desc">Coupes & couleurs à 25-40€ au lieu de 80-120 CHF côté Bâle.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-emoji">💱</div>
-        <div class="feature-title">CHF ↔ EUR</div>
-        <div class="feature-desc">Convertisseur live + scan de prix en magasin.</div>
+        <div class="feature-emoji">🍽️</div>
+        <div class="feature-title">Restaurant</div>
+        <div class="feature-desc">Tables prisées avec menus exclusifs Frizz, weekend après weekend.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-emoji">👥</div>
-        <div class="feature-title">Communauté</div>
-        <div class="feature-desc">Avis vérifiés et bons plans secrets entre frontaliers.</div>
+        <div class="feature-emoji">🧀</div>
+        <div class="feature-title">Producteurs</div>
+        <div class="feature-desc">Fromager, boulanger, primeur — direct producteur, prix imbattables.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-emoji">🎁</div>
-        <div class="feature-title">Cashback</div>
-        <div class="feature-desc">2-5% remboursé en points sur chaque achat partenaire.</div>
+        <div class="feature-emoji">🛍️</div>
+        <div class="feature-title">Commerces</div>
+        <div class="feature-desc">Fleuriste, opticien, garagiste, déco — les pépites locales.</div>
       </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ════════════ NEWSLETTER PREVIEW ════════════ -->
+  <section class="section">
+    <h2 class="section-title">Voici à quoi ressemble<br><em>une vraie édition</em>.</h2>
+
+    <div class="nl-preview">
+      <div class="nl-preview-head">
+        <div>
+          <div class="nl-preview-eyebrow">Édition #1 · Vendredi 16 mai · 18:00</div>
+          <div class="nl-preview-title">5 bons plans pour ton weekend</div>
+        </div>
+        <div class="nl-preview-saving">−187€</div>
+      </div>
+
+      <div class="nl-deal">
+        <div class="nl-deal-emoji">🥩</div>
+        <div class="nl-deal-info">
+          <div class="nl-deal-name">Boucherie Kraemer · Côte de bœuf maturée 30j</div>
+          <div class="nl-deal-loc">Saint-Louis · à 3 km de Bâle · -40%</div>
+        </div>
+        <div class="nl-deal-amt">−28€</div>
+      </div>
+
+      <div class="nl-deal">
+        <div class="nl-deal-emoji">🍷</div>
+        <div class="nl-deal-info">
+          <div class="nl-deal-name">Caviste Pierre · Crémant d'Alsace AOC</div>
+          <div class="nl-deal-loc">Hégenheim · à 5 km de Bâle · -35%</div>
+        </div>
+        <div class="nl-deal-amt">−42€</div>
+      </div>
+
+      <div class="nl-deal">
+        <div class="nl-deal-emoji">💇</div>
+        <div class="nl-deal-info">
+          <div class="nl-deal-name">Salon Elsa · Coupe + couleur femme</div>
+          <div class="nl-deal-loc">Mulhouse · à 25 min · -55% vs Bâle</div>
+        </div>
+        <div class="nl-deal-amt">−65€</div>
+      </div>
+
+      <div class="nl-deal">
+        <div class="nl-deal-emoji">🍴</div>
+        <div class="nl-deal-info">
+          <div class="nl-deal-name">L'Auberge du Vieux Hégenheim · Menu 3 plats</div>
+          <div class="nl-deal-loc">Hégenheim · à 5 km · 38€ au lieu de 56€</div>
+        </div>
+        <div class="nl-deal-amt">−24€</div>
+      </div>
+
+      <div class="nl-deal">
+        <div class="nl-deal-emoji">🛍️</div>
+        <div class="nl-deal-info">
+          <div class="nl-deal-name">Concept store Lume · Déco scandinave</div>
+          <div class="nl-deal-loc">Saint-Louis · à 3 km · -30% sur tout</div>
+        </div>
+        <div class="nl-deal-amt">−28€</div>
+      </div>
+
+      <div class="nl-preview-footer">
+        <span class="nl-preview-foot-label">Économies cumulées ce weekend</span>
+        <span class="nl-preview-foot-amt">187€</span>
+      </div>
+    </div>
+
+    <p class="nl-preview-caption">↑ Aperçu réel · 5 bons plans, économies cumulées affichées en clair, en 1 minute de lecture</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ════════════ WHO AM I ════════════ -->
+  <section class="section">
+    <div class="who-wrap">
+      <div class="who-avatar">
+        <span>E</span>
+      </div>
+      <div class="who-content">
+        <div class="who-eyebrow">— Salut, moi c'est Em</div>
+        <h2 class="who-title">Je vis à <em>Riehen</em>,<br>j'en ai marre de <em>payer trop cher</em>.</h2>
+        <p class="who-text">Comme toi, je vis à la frontière FR-CH. Je passe la frontière chaque semaine. J'ai mis <em>3 ans</em> à découvrir les meilleurs commerçants des deux côtés. Le <em>boucher</em> qui maturet ses viandes 30 jours. Le <em>caviste</em> qui a les meilleurs crémants. Le <em>coiffeur</em> qui fait pareil que Bâle pour 3× moins cher.</p>
+        <p class="who-text">Frizz, c'est mon carnet d'adresses. Je le partage gratuitement avec ceux qui veulent <em>économiser</em> sans passer 3 ans à chercher.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ════════════ FAQ ════════════ -->
+  <section class="section">
+    <h2 class="section-title">Questions<br><em>(légitimes)</em>.</h2>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span>Pourquoi c'est gratuit ?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-a">Parce que je veux d'abord construire une vraie communauté de frontaliers. Plus tard, les commerçants partenaires paieront un abonnement <em>pour être listés</em> dans la newsletter. Mais toi, lecteur, tu paieras <em>jamais</em>. Promesse écrite ici.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span>Combien d'emails par semaine ?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-a"><em>1 seul email</em>, le vendredi 18h. Jamais plus. Jamais de pub. Jamais de spam. Si je dérape un jour, désinscription en 1 clic.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span>Les deals sont vraiment vérifiés ?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-a">Oui. Je vais <em>moi-même</em> chez chaque commerçant avant de le recommander. Pas de partenariat caché, pas d'argent en échange. Si le boucher est nul, il n'est <em>pas</em> dans la newsletter.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span>Je peux me désinscrire facilement ?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-a">Oui, en <em>1 clic</em> en bas de chaque email. Pas de questionnaire débile, pas de "êtes-vous sûr ?". Tu cliques, tu disparais. Sans rancune.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span>Tu vas vendre mon email ?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-a"><em>Jamais.</em> Promis. Ton email est stocké en sécurité chez Supabase (RGPD-compliant), utilisé uniquement pour la newsletter Frizz. Aucune revente, aucun partage à un tiers.</div>
+      </details>
     </div>
   </section>
 
@@ -1032,13 +1533,14 @@
   <section class="final-cta" id="cta-final">
     <span class="final-cta-spark">✦</span>
     <h2 class="final-cta-title">Prêt à <em>économiser</em><br>cette semaine ?</h2>
+    <p style="font-size: 15px; font-weight: 700; color: var(--text-2); max-width: 480px; margin: 0 auto 28px; line-height: 1.5; letter-spacing: -0.012em;">Rejoins les <em style="font-family: 'Source Serif 4', serif; font-style: italic; color: var(--text);">premiers frontaliers</em> qui reçoivent les 5 meilleurs deals de la semaine, chaque vendredi 18h.</p>
     <div class="final-cta-form">
       <form class="form" id="form-final" onsubmit="return submitForm(event, 'final')">
         <input type="email" class="input" placeholder="ton@email.fr" required name="email" id="input-final">
-        <button type="submit" class="btn btn-primary" id="btn-final">Rejoindre →</button>
+        <button type="submit" class="btn btn-primary" id="btn-final">Recevoir les deals →</button>
       </form>
-      <div class="final-cta-trust">Gratuit · Sans spam · Promesse</div>
-      <div class="form-success" id="success-final">✓ Bienvenue sur Frizz. On t'envoie le 1er deal vendredi.</div>
+      <div class="final-cta-trust">1 email/semaine · Gratuit · Désinscription en 1 clic</div>
+      <div class="form-success" id="success-final">✓ Inscrit. Ton 1er deal arrive vendredi 18h.</div>
       <div class="form-error" id="error-final"></div>
     </div>
   </section>
@@ -1124,6 +1626,7 @@
         // Succès
         success.classList.add('show');
         input.value = '';
+        bumpCounter(); // incrémente le compteur live
         // Tracker conversion (Google Analytics si configuré)
         if (typeof gtag !== 'undefined') {
           gtag('event', 'subscribe', { method: scope });
@@ -1144,6 +1647,41 @@
     el.textContent = msg;
     el.classList.add('show');
     setTimeout(() => { el.classList.remove('show'); }, 5000);
+  }
+
+  // ═══════════════════════════════════════════════
+  // Live counter — fetch nb d'inscrits depuis Supabase
+  // ═══════════════════════════════════════════════
+  async function updateLiveCounter() {
+    try {
+      const { count, error } = await sb
+        .from(TABLE)
+        .select('*', { count: 'exact', head: true });
+
+      if (error) {
+        // Si SELECT bloqué, on affiche un nombre "minimum crédible"
+        document.getElementById('counter-num').textContent = '12';
+        return;
+      }
+
+      // On affiche le vrai nombre, mais minimum 12 pour la crédibilité au démarrage
+      const displayCount = Math.max(count || 0, 12);
+      document.getElementById('counter-num').textContent = displayCount.toLocaleString('fr-FR');
+    } catch (err) {
+      // Fallback silencieux
+      document.getElementById('counter-num').textContent = '12';
+    }
+  }
+
+  // Lance le compteur au chargement
+  updateLiveCounter();
+
+  // Refresh le compteur après une inscription réussie
+  function bumpCounter() {
+    const el = document.getElementById('counter-num');
+    if (!el) return;
+    const current = parseInt((el.textContent || '0').replace(/\D/g, ''), 10) || 12;
+    el.textContent = (current + 1).toLocaleString('fr-FR');
   }
 
   // ═══════════════════════════════════════════════

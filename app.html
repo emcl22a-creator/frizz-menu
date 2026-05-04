@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#040810">
+<meta name="color-scheme" content="dark">
+<title>Mon espace — Frizz</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #040810;
+    --surface: rgba(255,255,255,0.03);
+    --surface-strong: rgba(255,255,255,0.05);
+    --text: #F2F4F8;
+    --text-2: rgba(255,255,255,0.65);
+    --text-3: rgba(255,255,255,0.45);
+    --text-4: rgba(255,255,255,0.25);
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.12);
+    --brand: #06B6D4;
+    --brand-bright: #22D3EE;
+    --brand-deep: #0891B2;
+    --brand-glow: rgba(6, 182, 212, 0.55);
+    --brand-soft: rgba(6, 182, 212, 0.14);
+    --green: #10B981;
+    --green-soft: rgba(16, 185, 129, 0.14);
+    --orange: #F59E0B;
+    --orange-soft: rgba(245, 158, 11, 0.14);
+    --red: #F43F5E;
+    --red-soft: rgba(244, 63, 94, 0.14);
+    --r: 14px;
+    --r-md: 18px;
+    --r-lg: 22px;
+    --r-xl: 28px;
+    --r-pill: 100px;
+  }
+
+  html, body {
+    color: var(--text);
+    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.014em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  html {
+    background:
+      radial-gradient(ellipse 70% 55% at 12% 8%, rgba(6, 182, 212, 0.32), transparent 50%),
+      radial-gradient(ellipse 55% 45% at 88% 12%, rgba(34, 211, 238, 0.22), transparent 55%),
+      radial-gradient(ellipse 50% 45% at 92% 65%, rgba(8, 145, 178, 0.20), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 8% 75%, rgba(16, 185, 129, 0.15), transparent 60%),
+      #040810 !important;
+    background-attachment: fixed !important;
+  }
+  body { background: transparent !important; }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(6, 182, 212, 0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(34, 211, 238, 0.08), transparent 50%);
+    animation: auroraDrift 26s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+  }
+  @keyframes auroraDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 2%) scale(1.06); }
+    100% { transform: translate(-2%, 3%) scale(1.04); }
+  }
+
+  /* TOPBAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    padding: 14px 28px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(4, 8, 16, 0.85);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
+  .logo-link:hover { transform: scale(1.04); }
+  .logo {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    letter-spacing: -0.022em; font-size: 26px; color: var(--text);
+    display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;
+  }
+  .logo .spark {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--brand-bright); font-weight: 700; font-size: 22px; margin-left: 1px;
+    animation: sparkPulse 3.5s ease-in-out infinite; display: inline-block;
+    text-shadow: 0 0 14px var(--brand-glow);
+  }
+  @keyframes sparkPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  .logout-btn {
+    font-size: 12px; font-weight: 800; color: var(--text-2);
+    background: var(--surface-strong); border: 1px solid var(--border-strong);
+    padding: 9px 14px; border-radius: var(--r-pill);
+    cursor: pointer; font-family: inherit; letter-spacing: -0.005em;
+    transition: all 0.2s ease;
+  }
+  .logout-btn:hover {
+    color: var(--red); border-color: rgba(244, 63, 94, 0.40);
+    background: var(--red-soft);
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 28px;
+  }
+
+  /* LOADING STATE */
+  .loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border-strong);
+    border-top-color: var(--brand-bright);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .loading-text {
+    font-size: 14px; font-weight: 700; color: var(--text-3);
+    letter-spacing: -0.012em;
+  }
+
+  /* HEADER */
+  .welcome-eyebrow {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 14px; color: var(--brand-bright);
+    margin-bottom: 8px; letter-spacing: -0.005em;
+  }
+  .welcome-title {
+    font-size: 36px; font-weight: 900; letter-spacing: -0.034em;
+    line-height: 1.05; color: var(--text); margin-bottom: 8px;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .welcome-title em {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    color: var(--brand-bright);
+  }
+  .welcome-sub {
+    font-size: 14px; font-weight: 700; color: var(--text-2);
+    letter-spacing: -0.012em; line-height: 1.5; margin-bottom: 32px;
+  }
+
+  /* INFO BANNER */
+  .info-banner {
+    padding: 16px 18px;
+    background: var(--brand-soft);
+    border: 1px solid rgba(34, 211, 238, 0.30);
+    border-radius: var(--r-md);
+    margin-bottom: 28px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .info-banner-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+  .info-banner-text {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    line-height: 1.5; letter-spacing: -0.005em;
+  }
+  .info-banner-text em {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--brand-bright); font-weight: 700;
+  }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    padding: 18px 12px 16px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 8px 24px -8px rgba(0,0,0,0.4);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 70%; height: 200%;
+    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.16), transparent 60%);
+    pointer-events: none;
+  }
+  .stat-num {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 26px; color: var(--text); letter-spacing: -0.024em;
+    line-height: 1; margin-bottom: 4px;
+    position: relative; z-index: 1;
+  }
+  .stat-label {
+    font-size: 9px; font-weight: 800; color: var(--text-3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+
+  /* ACTION CARDS */
+  .actions-title {
+    font-size: 13px; font-weight: 800; color: var(--text-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .action-card {
+    padding: 22px 18px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: left;
+    display: flex; flex-direction: column;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    position: relative; overflow: hidden;
+  }
+  .action-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--brand-bright);
+    box-shadow: 0 12px 40px -12px var(--brand-glow);
+    background: var(--surface-strong);
+  }
+  .action-icon {
+    width: 44px; height: 44px;
+    background: var(--brand-soft);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    border-radius: var(--r);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+  .action-title {
+    font-size: 16px; font-weight: 900; color: var(--text);
+    letter-spacing: -0.022em; margin-bottom: 4px;
+  }
+  .action-desc {
+    font-size: 12px; font-weight: 700; color: var(--text-3);
+    line-height: 1.4; letter-spacing: -0.005em;
+  }
+  .action-card .badge-soon {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 9px; font-weight: 900;
+    color: var(--orange);
+    background: var(--orange-soft);
+    padding: 4px 8px;
+    border-radius: var(--r-pill);
+    border: 1px solid rgba(245, 158, 11, 0.30);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* CLUB INFO CARD */
+  .club-info-card {
+    padding: 22px 20px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    margin-bottom: 24px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+    position: relative; overflow: hidden;
+  }
+  .club-info-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 70%; height: 200%;
+    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .club-info-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: relative; z-index: 1;
+  }
+  .club-info-row:last-child { border-bottom: 0; }
+  .club-info-label {
+    font-size: 11px; font-weight: 800; color: var(--text-3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    min-width: 100px; flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .club-info-value {
+    flex: 1;
+    font-size: 14px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.012em; line-height: 1.4;
+  }
+  .club-info-value.success {
+    color: var(--green);
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+  .club-info-value.warning {
+    color: var(--orange);
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+
+  @media (min-width: 768px) {
+    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
+    .content { padding: 60px 36px; }
+    .welcome-title { font-size: 42px; }
+    .stats-grid { gap: 14px; }
+    .stat-card { padding: 24px 16px 20px; }
+    .stat-num { font-size: 32px; }
+    .actions-grid { gap: 14px; }
+    .action-card { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="index.html" class="logo-link">
+    <span class="logo">Frizz<span class="spark">✦</span></span>
+  </a>
+  <button class="logout-btn" onclick="logout()">Déconnexion</button>
+</header>
+
+<!-- LOADING -->
+<div class="content" id="loading">
+  <div class="loading-screen">
+    <div class="spinner"></div>
+    <div class="loading-text">Chargement de ton espace...</div>
+  </div>
+</div>
+
+<!-- DASHBOARD JOUEUR -->
+<div class="content" id="dashboard-joueur" style="display:none;">
+  <div class="welcome-eyebrow">— Mon espace</div>
+  <h1 class="welcome-title">Salut <em><span id="prenom-joueur">Em</span></em> !</h1>
+  <p class="welcome-sub">Prêt à jouer ? Trouve un terrain, matche avec d'autres joueurs ou suis ta progression.</p>
+
+  <div class="info-banner">
+    <div class="info-banner-icon">⏳</div>
+    <div class="info-banner-text">
+      L'app est en <em>construction active</em>. La carte des clubs, le matchmaking et les réservations arrivent bientôt. Tu fais partie des <em>premiers utilisateurs</em>.
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="elo-joueur">1500</div>
+      <div class="stat-label">Niveau ELO</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="matchs-joues">0</div>
+      <div class="stat-label">Matchs joués</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="matchs-gagnes">0</div>
+      <div class="stat-label">Victoires</div>
+    </div>
+  </div>
+
+  <div class="actions-title">— Que veux-tu faire ?</div>
+  <div class="actions-grid">
+    <a href="clubs.html" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">🗺️</div>
+      <div class="action-title">Carte des clubs</div>
+      <div class="action-desc">Trouve un terrain près de toi, FR ou CH</div>
+    </a>
+    <a href="matchs.html" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">👥</div>
+      <div class="action-title">Trouver un match</div>
+      <div class="action-desc">3 partenaires de ton niveau ELO</div>
+    </a>
+    <a href="mes-resas.html" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">📅</div>
+      <div class="action-title">Mes réservations</div>
+      <div class="action-desc">Historique et matchs à venir</div>
+    </a>
+    <a href="profile.html" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">👤</div>
+      <div class="action-title">Mon profil</div>
+      <div class="action-desc">Stats, badges et préférences</div>
+    </a>
+  </div>
+</div>
+
+<!-- DASHBOARD CLUB -->
+<div class="content" id="dashboard-club" style="display:none;">
+  <div class="welcome-eyebrow">— Espace partenaire</div>
+  <h1 class="welcome-title">Bienvenue <em><span id="nom-club">Mon club</span></em></h1>
+  <p class="welcome-sub">Ton espace club Frizz. Bientôt : calendrier des résas, commissions et statistiques.</p>
+
+  <div class="info-banner">
+    <div class="info-banner-icon">🎉</div>
+    <div class="info-banner-text">
+      <em>Ton club est inscrit !</em> On revient vers toi très bientôt pour finaliser ton partenariat. En attendant, ton club est visible sur la carte Frizz dès qu'on lance.
+    </div>
+  </div>
+
+  <!-- INFOS DU CLUB -->
+  <div class="club-info-card">
+    <div class="club-info-row">
+      <div class="club-info-label">Nom</div>
+      <div class="club-info-value" id="club-nom">—</div>
+    </div>
+    <div class="club-info-row">
+      <div class="club-info-label">Adresse</div>
+      <div class="club-info-value" id="club-adresse">—</div>
+    </div>
+    <div class="club-info-row">
+      <div class="club-info-label">Ville</div>
+      <div class="club-info-value" id="club-ville">—</div>
+    </div>
+    <div class="club-info-row">
+      <div class="club-info-label">Pays</div>
+      <div class="club-info-value" id="club-pays">—</div>
+    </div>
+    <div class="club-info-row">
+      <div class="club-info-label">Position GPS</div>
+      <div class="club-info-value" id="club-gps">—</div>
+    </div>
+    <div class="club-info-row">
+      <div class="club-info-label">Email</div>
+      <div class="club-info-value" id="club-email">—</div>
+    </div>
+  </div>
+
+  <div class="actions-title">— Bientôt disponible</div>
+  <div class="actions-grid">
+    <a href="#" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">📅</div>
+      <div class="action-title">Calendrier</div>
+      <div class="action-desc">Gère tes créneaux Frizz</div>
+    </a>
+    <a href="#" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">💰</div>
+      <div class="action-title">Mes commissions</div>
+      <div class="action-desc">Suivi des paiements Frizz</div>
+    </a>
+    <a href="#" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">📊</div>
+      <div class="action-title">Statistiques</div>
+      <div class="action-desc">Réservations, CA, taux remplissage</div>
+    </a>
+    <a href="#" class="action-card">
+      <span class="badge-soon">Bientôt</span>
+      <div class="action-icon">⚙️</div>
+      <div class="action-title">Paramètres</div>
+      <div class="action-desc">Photos, prix, horaires, terrains</div>
+    </a>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ════════════ AU CHARGEMENT ════════════
+  (async () => {
+    // Vérifie que l'user est connecté
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (!session) {
+      // Pas connecté → redirection login
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const user = session.user;
+    const metadata = user.user_metadata || {};
+    const typeCompte = metadata.type_compte || 'joueur';
+
+    document.getElementById('loading').style.display = 'none';
+
+    if (typeCompte === 'club') {
+      await loadClubDashboard(user);
+    } else {
+      await loadJoueurDashboard(user);
+    }
+  })();
+
+  // ════════════ DASHBOARD JOUEUR ════════════
+  async function loadJoueurDashboard(user) {
+    document.getElementById('dashboard-joueur').style.display = 'block';
+
+    // Récupère le profile
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (profile) {
+      document.getElementById('prenom-joueur').textContent = profile.prenom || 'Joueur';
+      document.getElementById('elo-joueur').textContent = profile.niveau_elo || 1500;
+      document.getElementById('matchs-joues').textContent = profile.matchs_joues || 0;
+      document.getElementById('matchs-gagnes').textContent = profile.matchs_gagnes || 0;
+    }
+  }
+
+  // ════════════ DASHBOARD CLUB ════════════
+  async function loadClubDashboard(user) {
+    document.getElementById('dashboard-club').style.display = 'block';
+
+    // Récupère le club lié au user via clubs_admins
+    const { data: adminLink } = await sb
+      .from('clubs_admins')
+      .select('club_id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!adminLink) {
+      console.error('Pas de club lié à cet utilisateur');
+      return;
+    }
+
+    const { data: club } = await sb
+      .from('clubs')
+      .select('*')
+      .eq('id', adminLink.club_id)
+      .single();
+
+    if (club) {
+      document.getElementById('nom-club').textContent = club.nom || 'Mon club';
+      document.getElementById('club-nom').textContent = club.nom || '—';
+      document.getElementById('club-adresse').textContent = club.adresse || '—';
+      document.getElementById('club-ville').textContent =
+        (club.code_postal ? club.code_postal + ' ' : '') + (club.ville || '—');
+      document.getElementById('club-pays').textContent =
+        club.pays === 'CH' ? '🇨🇭 Suisse' : '🇫🇷 France';
+      document.getElementById('club-email').textContent = club.email || user.email;
+
+      const gpsEl = document.getElementById('club-gps');
+      if (club.latitude && club.longitude) {
+        gpsEl.textContent = '✓ Localisé : ' + parseFloat(club.latitude).toFixed(4) + ', ' + parseFloat(club.longitude).toFixed(4);
+        gpsEl.classList.add('success');
+      } else {
+        gpsEl.textContent = '⚠️ Pas de GPS — sera configuré manuellement';
+        gpsEl.classList.add('warning');
+      }
+    }
+  }
+
+  // ════════════ LOGOUT ════════════
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>

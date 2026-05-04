@@ -2,9 +2,11 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
-<title>Frizz✦ — Connexion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#040810">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Connexion Frizz · L'app de padel transfrontalière FR-CH">
+<title>Connexion — Frizz</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,23 +15,31 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #050506;
+    --bg: #040810;
     --surface: rgba(255,255,255,0.03);
-    --text: #F2F2F4;
+    --surface-strong: rgba(255,255,255,0.05);
+    --text: #F2F4F8;
     --text-2: rgba(255,255,255,0.65);
     --text-3: rgba(255,255,255,0.45);
     --text-4: rgba(255,255,255,0.25);
-    --border: rgba(255,255,255,0.08);
-    --border-strong: rgba(255,255,255,0.14);
-    --blue: #0A84FF;
-    --blue-soft: rgba(10,132,255,0.14);
-    --blue-strong: #2E9DFF;
-    --red: #FF6B5C;
-    --red-soft: rgba(255,107,92,0.14);
-    --green: #30D158;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.12);
+    --brand: #06B6D4;
+    --brand-bright: #22D3EE;
+    --brand-deep: #0891B2;
+    --brand-glow: rgba(6, 182, 212, 0.55);
+    --brand-soft: rgba(6, 182, 212, 0.14);
+    --green: #10B981;
+    --green-soft: rgba(16, 185, 129, 0.14);
+    --red: #F43F5E;
+    --red-soft: rgba(244, 63, 94, 0.14);
+    --r: 14px;
+    --r-md: 18px;
+    --r-xl: 28px;
+    --r-pill: 100px;
   }
 
   html, body {
@@ -43,27 +53,32 @@
     overflow-x: hidden;
   }
 
-  /* Aurora bleue subtile */
   html {
     background:
-      radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
-      radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
-      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
-      #050506 !important;
+      radial-gradient(ellipse 70% 55% at 12% 8%, rgba(6, 182, 212, 0.32), transparent 50%),
+      radial-gradient(ellipse 55% 45% at 88% 12%, rgba(34, 211, 238, 0.22), transparent 55%),
+      radial-gradient(ellipse 50% 45% at 92% 65%, rgba(8, 145, 178, 0.20), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 8% 75%, rgba(16, 185, 129, 0.15), transparent 60%),
+      #040810 !important;
     background-attachment: fixed !important;
   }
   body { background: transparent !important; }
+
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background:
-      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
-    animation: auroraDrift 24s ease-in-out infinite alternate;
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(6, 182, 212, 0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(34, 211, 238, 0.08), transparent 50%);
+    animation: auroraDrift 26s ease-in-out infinite alternate;
     mix-blend-mode: screen;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
   }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
@@ -71,349 +86,375 @@
     100% { transform: translate(-2%, 3%) scale(1.04); }
   }
 
-  .wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 22px;
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    padding: 14px 28px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(4, 8, 16, 0.85);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
-
-  .card {
-    width: 100%;
-    max-width: 420px;
-    background: rgba(20, 20, 26, 0.45);
-    backdrop-filter: saturate(180%) blur(40px);
-    -webkit-backdrop-filter: saturate(180%) blur(40px);
-    border: 1px solid var(--border-strong);
-    border-radius: 28px;
-    padding: 32px 28px 28px;
-    box-shadow:
-      inset 0 1.5px 0 rgba(255,255,255,0.16),
-      inset 0 0 0 1px rgba(255,255,255,0.04),
-      0 30px 80px -20px rgba(0,0,0,0.7);
-  }
-
+  .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
+  .logo-link:hover { transform: scale(1.04); }
   .logo {
-    text-align: center;
-    margin-bottom: 28px;
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    letter-spacing: -0.022em; font-size: 26px; color: var(--text);
+    display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;
   }
-  .logo-text {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 38px;
-    letter-spacing: -0.020em;
-    color: var(--text);
-    line-height: 1;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
-  }
-  .logo-text .spark {
-    color: var(--blue);
-    text-shadow: 0 0 12px rgba(10,132,255,0.5);
-    animation: sparkPulse 3.5s ease-in-out infinite;
-    font-size: 32px;
+  .logo .spark {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--brand-bright); font-weight: 700; font-size: 22px; margin-left: 1px;
+    animation: sparkPulse 3.5s ease-in-out infinite; display: inline-block;
+    text-shadow: 0 0 14px var(--brand-glow);
   }
   @keyframes sparkPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.08); }
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  .topbar-link {
+    font-size: 13px; font-weight: 800; color: var(--text-2);
+    text-decoration: none; padding: 8px 14px; border-radius: var(--r-pill);
+    transition: all 0.2s ease; letter-spacing: -0.005em;
+  }
+  .topbar-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+  .auth-wrap {
+    min-height: calc(100vh - 70px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 24px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 460px;
+    padding: 36px 28px;
+    background: var(--surface);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 24px 60px -20px rgba(0,0,0,0.6),
+      0 0 100px -20px rgba(6, 182, 212, 0.20);
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 70%; height: 200%;
+    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.12), transparent 60%);
+    pointer-events: none;
   }
 
-  .hero {
-    text-align: center;
-    margin-bottom: 26px;
+  .auth-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 12px; color: var(--brand-bright);
+    margin-bottom: 14px; letter-spacing: -0.005em;
+    padding: 5px 12px; background: var(--brand-soft);
+    border: 1px solid rgba(34, 211, 238, 0.30); border-radius: var(--r-pill);
+    position: relative; z-index: 1;
   }
-  .hero-num {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 12px;
-    color: var(--blue);
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-  .hero-title {
+
+  .auth-title {
+    font-size: 36px; font-weight: 900; letter-spacing: -0.034em;
+    line-height: 1.05; color: var(--text); margin-bottom: 10px;
     font-family: 'Inter Tight', sans-serif;
-    font-weight: 900;
-    font-size: 30px;
-    letter-spacing: -0.030em;
-    color: var(--text);
-    line-height: 1.05;
-    margin-bottom: 6px;
+    position: relative; z-index: 1;
   }
-  .hero-title em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--blue);
-  }
-  .hero-sub {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 600;
-    font-size: 14.5px;
-    color: var(--text-3);
-    letter-spacing: -0.005em;
+  .auth-title em {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    color: var(--brand-bright);
+    text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
   }
 
-  .field { margin-bottom: 14px; }
+  .auth-sub {
+    font-size: 14px; font-weight: 700; color: var(--text-2);
+    letter-spacing: -0.012em; line-height: 1.5;
+    margin-bottom: 26px;
+    position: relative; z-index: 1;
+  }
+
+  .field {
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
   .field-label {
     display: block;
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 12.5px;
-    color: var(--text-2);
-    margin-bottom: 6px;
-    padding-left: 4px;
+    font-size: 11px; font-weight: 800; color: var(--text-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 7px;
   }
-  input[type="email"],
-  input[type="password"],
-  input[type="text"] {
+  .input {
     width: 100%;
     padding: 14px 16px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--surface-strong);
     border: 1px solid var(--border-strong);
-    border-radius: 14px;
-    color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.012em;
-    transition: all 0.18s ease;
-    outline: none;
+    border-radius: var(--r);
+    color: var(--text); font-family: inherit;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: -0.014em; outline: none;
+    transition: all 0.2s ease;
+    -webkit-appearance: none; appearance: none;
   }
-  input::placeholder { color: var(--text-4); }
-  input:focus {
-    border-color: var(--blue);
-    background: rgba(10,132,255,0.06);
-    box-shadow: 0 0 0 3px rgba(10,132,255,0.15);
+  .input::placeholder { color: var(--text-3); }
+  .input:focus {
+    border-color: var(--brand-bright);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.20);
+    background: rgba(255,255,255,0.07);
   }
 
   .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 15px 24px; border-radius: var(--r);
+    font-size: 14px; font-weight: 800; line-height: 1; cursor: pointer; border: 0;
+    font-family: inherit; letter-spacing: -0.014em;
+    transition: all 0.15s ease; white-space: nowrap;
     width: 100%;
-    padding: 14px 20px;
-    border-radius: 100px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 800;
-    font-size: 14.5px;
-    letter-spacing: -0.012em;
-    cursor: pointer;
-    border: 0;
-    transition: all 0.18s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 8px;
   }
   .btn-primary {
-    background: var(--blue);
-    color: #fff;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.25),
-      0 6px 20px -4px rgba(10,132,255,0.5);
+    background: linear-gradient(180deg, var(--brand-bright), var(--brand));
+    color: var(--bg);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 16px -4px var(--brand-glow);
+    margin-top: 10px;
   }
   .btn-primary:hover {
-    background: var(--blue-strong);
+    background: linear-gradient(180deg, #fff, var(--brand-bright));
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.30),
-      0 10px 28px -4px rgba(10,132,255,0.6);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 8px 26px -4px var(--brand-glow);
   }
-  .btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: var(--surface-strong);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    margin-top: 0;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: var(--brand-bright);
   }
 
-  .footer-link {
+  .msg-success, .msg-error {
+    margin-top: 16px; padding: 12px 14px; border-radius: var(--r);
+    font-size: 13px; font-weight: 800; letter-spacing: -0.012em;
     text-align: center;
-    margin-top: 22px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 700;
-    font-size: 13.5px;
-    color: var(--text-3);
-  }
-  .footer-link a {
-    color: var(--blue);
-    text-decoration: none;
-    font-weight: 800;
-  }
-  .footer-link a:hover { text-decoration: underline; }
-
-  .forgot {
-    text-align: right;
-    margin-top: -6px;
-    margin-bottom: 6px;
-  }
-  .forgot a {
-    font-size: 12px;
-    color: var(--text-3);
-    text-decoration: none;
-    font-weight: 700;
-  }
-  .forgot a:hover { color: var(--blue); }
-
-  .msg {
-    padding: 11px 14px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 14px;
     display: none;
+    position: relative; z-index: 1;
   }
-  .msg.show { display: block; }
-  .msg.error {
-    background: var(--red-soft);
-    border: 1px solid rgba(255,107,92,0.30);
-    color: var(--red);
-  }
-  .msg.success {
-    background: rgba(48,209,88,0.14);
-    border: 1px solid rgba(48,209,88,0.30);
+  .msg-success {
+    background: var(--green-soft); border: 1px solid rgba(16, 185, 129, 0.30);
     color: var(--green);
   }
-
-  .spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  .msg-error {
+    background: var(--red-soft); border: 1px solid rgba(244, 63, 94, 0.30);
+    color: var(--red);
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .msg-success.show, .msg-error.show {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider-line {
+    margin: 20px 0;
+    display: flex; align-items: center; gap: 14px;
+    position: relative; z-index: 1;
+  }
+  .divider-line::before, .divider-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-strong);
+  }
+  .divider-line span {
+    font-size: 11px; font-weight: 800; color: var(--text-4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 13px; font-weight: 700; color: var(--text-3);
+    letter-spacing: -0.005em;
+    position: relative; z-index: 1;
+  }
+  .auth-footer a {
+    color: var(--brand-bright);
+    text-decoration: none;
+    font-weight: 800;
+    transition: opacity 0.2s ease;
+  }
+  .auth-footer a:hover { opacity: 0.8; }
+
+  @media (min-width: 768px) {
+    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
+    .auth-wrap { padding: 60px 24px; }
+    .auth-card { padding: 44px 36px; }
+    .auth-title { font-size: 42px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="card">
-    <div class="logo">
-      <div class="logo-text">Frizz<span class="spark">✦</span></div>
-    </div>
+<header class="topbar">
+  <a href="index.html" class="logo-link">
+    <span class="logo">Frizz<span class="spark">✦</span></span>
+  </a>
+  <a href="signup.html" class="topbar-link">Pas de compte ? Inscription</a>
+</header>
 
-    <div class="hero">
-      <div class="hero-num">— Connexion</div>
-      <h1 class="hero-title">Bienvenue<br><em>de retour</em>.</h1>
-      <p class="hero-sub">Connectez-vous à votre espace.</p>
-    </div>
+<main class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-eyebrow">✦ Connexion</div>
+    <h1 class="auth-title">Bon <em>retour</em>.</h1>
+    <p class="auth-sub">Connecte-toi pour réserver, matcher et économiser.</p>
 
-    <div class="msg" id="msg"></div>
-
-    <form id="login-form">
+    <form id="login-form" onsubmit="return submitLogin(event)">
       <div class="field">
-        <label class="field-label">Email</label>
-        <input type="email" id="email" placeholder="contact@…" autocomplete="email" required>
+        <label class="field-label" for="email">Email</label>
+        <input type="email" id="email" name="email" class="input" placeholder="ton@email.fr" required autofocus>
       </div>
 
       <div class="field">
-        <label class="field-label">Mot de passe</label>
-        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+        <label class="field-label" for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" class="input" placeholder="••••••••" required>
       </div>
 
-      <div class="forgot">
-        <a href="#" id="forgot-btn">Mot de passe oublié ?</a>
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="submit-btn">
-        Se connecter
+      <button type="submit" class="btn btn-primary" id="btn-submit">
+        Se connecter →
       </button>
+
+      <div class="msg-success" id="msg-success">✓ Connecté. Redirection...</div>
+      <div class="msg-error" id="msg-error"></div>
     </form>
 
-    <div class="footer-link">
-      Pas encore de compte ?
-      <a href="inscription.html">Créer un compte</a>
+    <div class="divider-line">
+      <span>OU</span>
+    </div>
+
+    <button type="button" class="btn btn-secondary" onclick="sendMagicLink()" id="btn-magic">
+      Recevoir un lien magique par email
+    </button>
+
+    <div class="auth-footer">
+      Pas encore inscrit ? <a href="signup.html">Créer un compte</a>
     </div>
   </div>
-</div>
+</main>
 
 <script>
-const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const form = document.getElementById('login-form');
-const msgEl = document.getElementById('msg');
-const submitBtn = document.getElementById('submit-btn');
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      window.location.href = 'app.html';
+    }
+  })();
 
-// Si déjà connecté, redirige vers admin
-(async function checkSession() {
-  const { data: { session } } = await supa.auth.getSession();
-  if (session) {
-    location.href = 'menu-admin.html';
-  }
-})();
+  async function submitLogin(event) {
+    event.preventDefault();
 
-function showMsg(text, type = 'error') {
-  msgEl.textContent = text;
-  msgEl.classList.remove('error', 'success');
-  msgEl.classList.add(type);
-  msgEl.classList.add('show');
-}
-function hideMsg() {
-  msgEl.classList.remove('show');
-}
+    const btn = document.getElementById('btn-submit');
+    const msgSuccess = document.getElementById('msg-success');
+    const msgError = document.getElementById('msg-error');
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  hideMsg();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  if (!email || !password) {
-    showMsg('Email et mot de passe requis', 'error');
-    return;
-  }
+    msgSuccess.classList.remove('show');
+    msgError.classList.remove('show');
 
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<div class="spinner"></div> Connexion…';
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
 
-  try {
-    const { error } = await supa.auth.signInWithPassword({ email, password });
-    if (error) {
-      if (error.message.toLowerCase().includes('invalid')) {
-        showMsg('Email ou mot de passe incorrect', 'error');
+    btn.disabled = true;
+    btn.innerHTML = 'Connexion...';
+
+    try {
+      const { data, error } = await sb.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        if (error.message.includes('Invalid login') || error.message.includes('Email not confirmed')) {
+          if (error.message.includes('not confirmed')) {
+            showError(msgError, 'Email non confirmé. Vérifie ta boîte mail.');
+          } else {
+            showError(msgError, 'Email ou mot de passe incorrect.');
+          }
+        } else {
+          showError(msgError, 'Erreur : ' + error.message);
+        }
       } else {
-        showMsg(error.message, 'error');
+        msgSuccess.classList.add('show');
+        setTimeout(() => {
+          window.location.href = 'app.html';
+        }, 800);
       }
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Se connecter';
+    } catch (err) {
+      console.error('Login error:', err);
+      showError(msgError, 'Une erreur est survenue. Réessaie.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Se connecter →';
+    }
+    return false;
+  }
+
+  async function sendMagicLink() {
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const btn = document.getElementById('btn-magic');
+    const msgSuccess = document.getElementById('msg-success');
+    const msgError = document.getElementById('msg-error');
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError(msgError, 'Saisis ton email d\'abord.');
       return;
     }
-    location.href = 'menu-admin.html';
-  } catch (err) {
-    console.error(err);
-    showMsg('Erreur de connexion. Réessayez.', 'error');
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Se connecter';
-  }
-});
 
-// Mot de passe oublié
-document.getElementById('forgot-btn').addEventListener('click', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value.trim();
-  if (!email) {
-    showMsg('Entrez votre email pour recevoir un lien de réinitialisation', 'error');
-    return;
+    btn.disabled = true;
+    btn.innerHTML = 'Envoi...';
+
+    try {
+      const { error } = await sb.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: window.location.origin + '/app.html'
+        }
+      });
+
+      if (error) {
+        showError(msgError, 'Erreur : ' + error.message);
+      } else {
+        msgSuccess.innerHTML = '✓ Lien magique envoyé ! Clique sur le lien dans ton email.';
+        msgSuccess.classList.add('show');
+      }
+    } catch (err) {
+      console.error('Magic link error:', err);
+      showError(msgError, 'Une erreur est survenue.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Recevoir un lien magique par email';
+    }
   }
-  try {
-    const { error } = await supa.auth.resetPasswordForEmail(email, {
-      redirectTo: location.origin + '/login.html'
-    });
-    if (error) throw error;
-    showMsg('Lien envoyé ! Consultez votre boîte mail.', 'success');
-  } catch (err) {
-    console.error(err);
-    showMsg('Erreur d\'envoi. Réessayez.', 'error');
+
+  function showError(el, msg) {
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => { el.classList.remove('show'); }, 6000);
   }
-});
 </script>
+
 </body>
 </html>

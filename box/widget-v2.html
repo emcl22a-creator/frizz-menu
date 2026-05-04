@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frizz · Réserver un box</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --black: #0A0A0A; --gray-700: #4B5563; --gray-500: #6B7280;
+    --gray-300: #D1D5DB; --gray-200: #E5E7EB; --gray-100: #F3F4F6;
+    --gray-50: #FAFAFA; --white: #FFFFFF;
+    --orange: #EA580C; --orange-soft: #F97316;
+    --orange-light: #FED7AA; --orange-bg: #FFF7ED;
+    --green: #10B981; --green-bg: #DCFCE7;
+    --red: #EF4444; --red-bg: #FEE2E2;
+  }
+  body {
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--black); background: var(--gray-50);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+    min-height: 100vh; padding: 32px 16px;
+    overflow-x: hidden; position: relative;
+  }
+
+  /* GLOW ORANGE EN ARRIERE-PLAN (comme la landing) */
+  body::before {
+    content: ''; position: fixed; top: -300px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(234,88,12,0.18) 0%, rgba(234,88,12,0.06) 40%, transparent 70%);
+    border-radius: 50%; z-index: 0; pointer-events: none;
+    animation: glowFloat 15s ease-in-out infinite;
+  }
+  body::after {
+    content: ''; position: fixed; bottom: -300px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(234,88,12,0.12) 0%, rgba(234,88,12,0.04) 40%, transparent 70%);
+    border-radius: 50%; z-index: 0; pointer-events: none;
+    animation: glowFloat 18s ease-in-out infinite reverse;
+  }
+  @keyframes glowFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, 30px) scale(1.1); }
+    66% { transform: translate(-30px, 50px) scale(0.95); }
+  }
+
+  .serif { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 400; }
+
+  .widget {
+    max-width: 580px; margin: 0 auto;
+    background: var(--white); border-radius: 24px;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.08), 0 12px 30px rgba(234,88,12,0.06);
+    overflow: hidden; position: relative; z-index: 1;
+  }
+
+  .widget-header {
+    padding: 24px 48px; border-bottom: 1px solid var(--gray-100); background: var(--white);
+  }
+  .widget-top {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+  }
+  .logo {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 22px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 2px; color: var(--black);
+  }
+  .logo .star {
+    color: var(--orange); font-style: normal;
+    font-family: 'Inter Tight', sans-serif; font-weight: 400;
+    animation: starSpin 8s linear infinite;
+  }
+  @keyframes starSpin {
+    0%, 90%, 100% { transform: rotate(0deg); }
+    95% { transform: rotate(360deg); }
+  }
+  .center-name { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+
+  .progress { display: flex; align-items: center; gap: 6px; }
+  .step-indicator {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    background: var(--gray-100); color: var(--gray-500);
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .step-indicator.active { background: var(--orange); color: var(--white); transform: scale(1.1); }
+  .step-indicator.done { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+  .step-indicator.done::before { content: '✓'; font-size: 15px; }
+  .step-indicator.done .num { display: none; }
+  .step-line {
+    flex: 1; height: 2px; background: var(--gray-200); border-radius: 2px;
+    overflow: hidden; position: relative;
+  }
+  .step-line::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 0; height: 100%; background: var(--orange);
+    transition: width 0.6s ease;
+  }
+  .step-line.filled::after { width: 100%; }
+
+  .view {
+    padding: 40px 48px; display: none; animation: fadeInUp 0.5s ease-out;
+  }
+  .view.active { display: block; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-size: 30px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.2; margin-bottom: 10px;
+  }
+  h1 .serif { color: var(--orange); }
+  .subtitle { color: var(--gray-700); font-size: 15px; margin-bottom: 32px; }
+  .subtitle .serif { color: var(--black); font-size: 16px; }
+
+  .ai-suggest {
+    background: var(--orange-bg); padding: 14px 18px; border-radius: 12px;
+    border-left: 3px solid var(--orange); margin-bottom: 24px;
+    font-size: 13px; color: var(--gray-700);
+    display: flex; align-items: flex-start; gap: 10px;
+    position: relative; overflow: hidden;
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
+  }
+  .ai-suggest::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%, 100% { left: -100%; } 50% { left: 200%; } }
+  .ai-suggest .ai-icon {
+    color: var(--orange); font-weight: 700; flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  .ai-suggest strong { color: var(--black); }
+  .ai-suggest em {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--orange); font-weight: 600;
+  }
+
+  .quick-question { margin-bottom: 24px; }
+  .question-label {
+    font-size: 12px; color: var(--gray-500); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;
+  }
+  .question-options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .qopt {
+    padding: 10px 16px; border: 1px solid var(--gray-200); border-radius: 100px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    background: var(--white); transition: all 0.2s; color: var(--gray-700);
+  }
+  .qopt:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-1px); }
+  .qopt.selected { background: var(--orange); color: var(--white); border-color: var(--orange); }
+
+  .box-types-label {
+    font-size: 12px; color: var(--gray-500); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;
+  }
+  .box-types { display: grid; gap: 12px; margin-bottom: 28px; }
+  .box-type {
+    padding: 18px; border: 2px solid var(--gray-100); border-radius: 14px;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--white); position: relative;
+  }
+  .box-type:hover { border-color: var(--gray-300); transform: translateX(4px); }
+  .box-type.selected {
+    border-color: var(--orange); background: var(--orange-bg);
+    box-shadow: 0 4px 12px rgba(234,88,12,0.12);
+  }
+  .box-type.recommended::before {
+    content: '✦ Recommandé'; position: absolute;
+    top: -10px; right: 16px; background: var(--orange); color: var(--white);
+    padding: 3px 10px; border-radius: 100px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  .box-type-row { display: flex; justify-content: space-between; align-items: center; }
+  .box-type-info { display: flex; align-items: center; gap: 14px; flex: 1; }
+  .box-type-icon {
+    width: 48px; height: 48px; background: var(--gray-50); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; border: 1px solid var(--gray-100); flex-shrink: 0;
+  }
+  .box-type.selected .box-type-icon { background: var(--white); border-color: var(--orange); }
+  .box-type-name { font-weight: 700; font-size: 16px; margin-bottom: 2px; }
+  .box-type-desc {
+    font-size: 12px; color: var(--gray-500);
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+  .box-type-price {
+    font-weight: 700; font-size: 19px; color: var(--orange); text-align: right;
+  }
+  .box-type-price small {
+    font-size: 11px; color: var(--gray-500); font-weight: 500; display: block;
+  }
+
+  .options { margin-bottom: 28px; }
+  .option-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border: 1px solid var(--gray-100); border-radius: 12px;
+    margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+  }
+  .option-row:hover { border-color: var(--gray-300); }
+  .option-row.selected { border-color: var(--orange); background: var(--orange-bg); }
+  .option-info { flex: 1; }
+  .option-name { font-weight: 600; font-size: 14px; }
+  .option-desc { font-size: 12px; color: var(--gray-500); }
+  .option-price { font-weight: 600; font-size: 14px; color: var(--orange); }
+  .checkbox {
+    width: 22px; height: 22px; border: 2px solid var(--gray-300); border-radius: 6px;
+    flex-shrink: 0; margin-right: 12px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .option-row.selected .checkbox { background: var(--orange); border-color: var(--orange); }
+  .option-row.selected .checkbox::after {
+    content: '✓'; color: var(--white); font-weight: 800; font-size: 13px;
+  }
+
+  .summary {
+    background: var(--gray-50); padding: 20px; border-radius: 14px; margin-bottom: 24px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between; font-size: 14px;
+    padding: 5px 0; color: var(--gray-700);
+  }
+  .summary-row.total {
+    border-top: 1px solid var(--gray-200); margin-top: 12px; padding-top: 14px;
+    font-weight: 700; color: var(--black); font-size: 16px;
+  }
+  .summary-row.total .price {
+    color: var(--orange); font-size: 24px;
+    font-family: 'Inter Tight', sans-serif; font-weight: 800;
+  }
+  .summary-detail {
+    font-size: 12px; color: var(--gray-500); margin-top: 8px;
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+
+  .form-grid { display: grid; gap: 14px; margin-bottom: 28px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-field { display: flex; flex-direction: column; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px;
+  }
+  .form-label .required { color: var(--orange); }
+  .form-field input {
+    padding: 13px 14px; border: 1px solid var(--gray-200); border-radius: 10px;
+    font-size: 14px; font-family: inherit; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-field input:focus {
+    border-color: var(--orange); box-shadow: 0 0 0 3px rgba(234,88,12,0.1);
+  }
+
+  .btn-primary {
+    width: 100%; background: var(--orange); color: var(--white);
+    padding: 18px; border-radius: 14px;
+    font-weight: 700; font-size: 16px; border: none; cursor: pointer;
+    font-family: inherit; transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px); box-shadow: 0 12px 30px rgba(234,88,12,0.35);
+  }
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-back {
+    background: none; border: none; color: var(--gray-700);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    padding: 8px 0; margin-bottom: 18px;
+    font-family: inherit; display: flex; align-items: center; gap: 4px;
+  }
+  .btn-back:hover { color: var(--orange); }
+
+  .loading { text-align: center; padding: 80px 20px; color: var(--gray-500); }
+  .loading-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--gray-100); border-top-color: var(--orange);
+    border-radius: 50%; margin: 0 auto 18px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box {
+    background: var(--red-bg); color: var(--red);
+    padding: 14px 16px; border-radius: 10px;
+    font-size: 14px; margin-bottom: 16px; border-left: 3px solid var(--red);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 16px 12px; }
+    .widget { border-radius: 18px; }
+    .widget-header { padding: 18px 24px; }
+    .view { padding: 28px 24px; }
+    h1 { font-size: 24px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .powered {
+    text-align: center; padding: 16px; font-size: 11px;
+    color: var(--gray-500); border-top: 1px solid var(--gray-100);
+  }
+  .powered .serif { color: var(--gray-700); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="widget">
+  <div class="widget-header">
+    <div class="widget-top">
+      <div class="logo"><span class="star">✦</span> Frizz</div>
+      <div class="center-name" id="centerName">Chargement...</div>
+    </div>
+    <div class="progress">
+      <div class="step-indicator active" data-step="1"><span class="num">1</span></div>
+      <div class="step-line" data-line="1-2"></div>
+      <div class="step-indicator" data-step="2"><span class="num">2</span></div>
+      <div class="step-line" data-line="2-3"></div>
+      <div class="step-indicator" data-step="3"><span class="num">3</span></div>
+    </div>
+  </div>
+
+  <div class="view active" id="view-loading">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div>Chargement du centre...</div>
+    </div>
+  </div>
+
+  <div class="view" id="view-1">
+    <h1>Choisissez votre <span class="serif">box.</span></h1>
+    <p class="subtitle">Notre IA peut vous aider à trouver la <span class="serif">bonne taille</span>.</p>
+
+    <div class="quick-question">
+      <div class="question-label">Que souhaitez-vous stocker ?</div>
+      <div class="question-options">
+        <div class="qopt" data-need="boxes">Cartons</div>
+        <div class="qopt" data-need="studio">Un studio</div>
+        <div class="qopt" data-need="apartment_t1">Un T1</div>
+        <div class="qopt" data-need="apartment_t2">Un T2/T3</div>
+        <div class="qopt" data-need="moving">Déménagement</div>
+      </div>
+    </div>
+
+    <div class="ai-suggest" id="aiSuggest" style="display:none;">
+      <span class="ai-icon">✦</span>
+      <span><strong>Notre suggestion :</strong> <span id="aiSuggestText"></span></span>
+    </div>
+
+    <div class="box-types-label">Tailles disponibles</div>
+    <div class="box-types" id="boxTypes"></div>
+
+    <div class="options" id="optionsSection" style="display:none;">
+      <div class="box-types-label">Options</div>
+      <div class="option-row" data-option="lock">
+        <div class="checkbox"></div>
+        <div class="option-info">
+          <div class="option-name">Cadenas sécurisé</div>
+          <div class="option-desc">Cadenas haute sécurité fourni</div>
+        </div>
+        <div class="option-price">+9 €</div>
+      </div>
+      <div class="option-row" data-option="insurance">
+        <div class="checkbox"></div>
+        <div class="option-info">
+          <div class="option-name">Assurance contenu</div>
+          <div class="option-desc">Couverture jusqu'à 5 000 €</div>
+        </div>
+        <div class="option-price">+12 €/mois</div>
+      </div>
+    </div>
+
+    <div class="summary" id="summary1" style="display:none;">
+      <div class="summary-row" id="sum-monthly"><span></span><span></span></div>
+      <div class="summary-row" id="sum-options"><span>Options</span><span>0,00 €</span></div>
+      <div class="summary-row" id="sum-deposit"><span></span><span></span></div>
+      <div class="summary-row total">
+        <span>Total à payer aujourd'hui</span>
+        <span class="price" id="sum-total">0,00 €</span>
+      </div>
+      <div class="summary-detail">Premier mois + caution remboursable.</div>
+    </div>
+
+    <button class="btn-primary" id="btnNext1" disabled>Continuer →</button>
+  </div>
+
+  <div class="view" id="view-2">
+    <button class="btn-back" onclick="goToStep(1)">← Retour</button>
+    <h1>Vos <span class="serif">informations.</span></h1>
+    <p class="subtitle">Contrat envoyé par email après paiement.</p>
+
+    <div class="error-box" id="errorBox" style="display:none;"></div>
+
+    <form class="form-grid" id="reservationForm" onsubmit="return submitReservation(event)">
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Prénom <span class="required">*</span></label>
+          <input type="text" name="firstName" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Nom <span class="required">*</span></label>
+          <input type="text" name="lastName" required>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email <span class="required">*</span></label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Téléphone <span class="required">*</span></label>
+        <input type="tel" name="phone" required placeholder="+41 79 ...">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Adresse <span class="required">*</span></label>
+        <input type="text" name="address" required>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Code postal <span class="required">*</span></label>
+          <input type="text" name="postalCode" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Ville <span class="required">*</span></label>
+          <input type="text" name="city" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Date de naissance <span class="required">*</span></label>
+          <input type="date" name="dateOfBirth" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Date d'entrée <span class="required">*</span></label>
+          <input type="date" name="startDate" required>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">N° pièce d'identité <span class="required">*</span></label>
+        <input type="text" name="idDocument" required placeholder="Carte d'identité ou passeport">
+      </div>
+
+      <div class="summary" id="summary2"></div>
+
+      <button type="submit" class="btn-primary" id="btnSubmit">
+        Payer <span id="btnAmount">0 €</span> et signer →
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="powered" style="position: relative; z-index: 1; margin-top: 24px; text-align: center; font-size: 11px; color: var(--gray-500);">
+  Propulsé par <span class="serif">Frizz</span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  const urlParams = new URLSearchParams(window.location.search);
+  const centerSlug = urlParams.get('c') || 'demo-bale';
+
+  let state = {
+    center: null, boxTypes: [], selectedNeed: null,
+    selectedBoxType: null, selectedOptions: { lock: false, insurance: false },
+    currentStep: 1
+  };
+
+  async function loadCenter() {
+    try {
+      const centerRes = await fetch(
+        SUPABASE_URL + '/rest/v1/frizz_box_centers?slug=eq.' + centerSlug + '&select=*',
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+      );
+      const centers = await centerRes.json();
+      if (!centers || centers.length === 0) throw new Error('Centre introuvable');
+      state.center = centers[0];
+
+      const typesRes = await fetch(
+        SUPABASE_URL + '/rest/v1/frizz_box_types?center_id=eq.' + state.center.id + '&order=display_order&select=*',
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+      );
+      state.boxTypes = await typesRes.json();
+
+      document.getElementById('centerName').textContent = state.center.name;
+      renderBoxTypes();
+      goToStep(1);
+    } catch (err) {
+      console.error('Load error:', err);
+      document.getElementById('view-loading').innerHTML =
+        '<div class="loading"><div style="color:var(--red);">Centre introuvable.</div><div style="margin-top:12px;font-size:13px;">Vérifiez le lien ou contactez le centre.</div></div>';
+    }
+  }
+
+  function renderBoxTypes() {
+    const container = document.getElementById('boxTypes');
+    container.innerHTML = state.boxTypes.map(t => `
+      <div class="box-type ${t.is_recommended ? 'recommended' : ''}" data-id="${t.id}">
+        <div class="box-type-row">
+          <div class="box-type-info">
+            <div class="box-type-icon">📦</div>
+            <div>
+              <div class="box-type-name">${t.name} · ${t.surface_m2} m²</div>
+              <div class="box-type-desc">${t.description || ''}</div>
+            </div>
+          </div>
+          <div class="box-type-price">
+            ${parseFloat(t.price_monthly).toFixed(0)} €<small>/mois</small>
+          </div>
+        </div>
+      </div>`).join('');
+    container.querySelectorAll('.box-type').forEach(el => {
+      el.addEventListener('click', () => selectBoxType(el.dataset.id));
+    });
+  }
+
+  document.querySelectorAll('.qopt').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.qopt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      state.selectedNeed = el.dataset.need;
+      runAISuggest();
+    });
+  });
+
+  function runAISuggest() {
+    const need = state.selectedNeed;
+    if (!need) return;
+    let suggested = state.boxTypes.find(t => t.ai_suggest_for && t.ai_suggest_for.includes(need));
+    if (!suggested) suggested = state.boxTypes.find(t => t.is_recommended);
+    if (!suggested) return;
+    document.getElementById('aiSuggest').style.display = 'flex';
+    document.getElementById('aiSuggestText').innerHTML =
+      `le box <em>${suggested.name}</em> (${suggested.surface_m2} m²) est idéal pour vous.`;
+    selectBoxType(suggested.id);
+  }
+
+  function selectBoxType(id) {
+    document.querySelectorAll('.box-type').forEach(el => el.classList.remove('selected'));
+    document.querySelector(`.box-type[data-id="${id}"]`).classList.add('selected');
+    state.selectedBoxType = state.boxTypes.find(t => t.id === id);
+    document.getElementById('optionsSection').style.display = 'block';
+    updateSummary();
+    document.getElementById('btnNext1').disabled = false;
+  }
+
+  document.querySelectorAll('.option-row').forEach(el => {
+    el.addEventListener('click', () => {
+      el.classList.toggle('selected');
+      state.selectedOptions[el.dataset.option] = el.classList.contains('selected');
+      updateSummary();
+    });
+  });
+
+  function updateSummary() {
+    if (!state.selectedBoxType) return;
+    const t = state.selectedBoxType;
+    const monthly = parseFloat(t.price_monthly);
+    const deposit = parseFloat(t.deposit) || 0;
+    const setupFee = parseFloat(t.setup_fee) || 0;
+    let optionsTotal = 0;
+    if (state.selectedOptions.lock) optionsTotal += 9;
+    if (state.selectedOptions.insurance) optionsTotal += 12;
+    const total = monthly + deposit + setupFee + optionsTotal;
+    document.getElementById('summary1').style.display = 'block';
+    document.getElementById('sum-monthly').innerHTML =
+      `<span>Box ${t.name} · ${t.surface_m2}m²</span><span>${monthly.toFixed(2)} €</span>`;
+    document.getElementById('sum-options').innerHTML =
+      `<span>Options</span><span>${optionsTotal.toFixed(2)} €</span>`;
+    document.getElementById('sum-deposit').innerHTML =
+      `<span>Caution (remboursable)</span><span>${deposit.toFixed(2)} €</span>`;
+    document.getElementById('sum-total').textContent = total.toFixed(2) + ' €';
+    document.getElementById('btnAmount').textContent = total.toFixed(2) + ' €';
+    document.getElementById('summary2').innerHTML = document.getElementById('summary1').innerHTML;
+  }
+
+  function goToStep(step) {
+    state.currentStep = step;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + step).classList.add('active');
+    document.querySelectorAll('.step-indicator').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      const stepNum = i + 1;
+      if (stepNum < step) el.classList.add('done');
+      else if (stepNum === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-line').forEach((el, i) => {
+      el.classList.remove('filled');
+      if (i + 1 < step) el.classList.add('filled');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('btnNext1').addEventListener('click', () => {
+    if (!state.selectedBoxType) return;
+    goToStep(2);
+  });
+
+  // ==========================================
+  // SUBMIT : APPELLE L'EDGE FUNCTION STRIPE
+  // ==========================================
+  async function submitReservation(event) {
+    event.preventDefault();
+    const form = document.getElementById('reservationForm');
+    const button = document.getElementById('btnSubmit');
+    const errorBox = document.getElementById('errorBox');
+    errorBox.style.display = 'none';
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    button.disabled = true;
+    button.textContent = 'Création de la session de paiement...';
+
+    try {
+      // 1. Créer le client dans Supabase
+      const clientRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_clients', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          email: data.email, phone: data.phone,
+          first_name: data.firstName, last_name: data.lastName,
+          address: data.address, city: data.city,
+          postal_code: data.postalCode, country: state.center.country,
+          date_of_birth: data.dateOfBirth, id_document_number: data.idDocument
+        })
+      });
+      const clientArr = await clientRes.json();
+      const client = Array.isArray(clientArr) ? clientArr[0] : clientArr;
+      if (!client || !client.id) throw new Error('Erreur création client');
+
+      const t = state.selectedBoxType;
+      const monthly = parseFloat(t.price_monthly);
+      const deposit = parseFloat(t.deposit) || 0;
+      let optionsTotal = 0;
+      if (state.selectedOptions.lock) optionsTotal += 9;
+      if (state.selectedOptions.insurance) optionsTotal += 12;
+      const total = monthly + deposit + optionsTotal;
+
+      const year = new Date().getFullYear();
+      const resNumber = 'FB-' + year + '-' + String(Date.now()).slice(-5);
+
+      // 2. Créer la réservation en status 'pending'
+      const resRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_reservations', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json', 'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          reservation_number: resNumber, center_id: state.center.id,
+          box_type_id: t.id, client_id: client.id,
+          start_date: data.startDate, monthly_price: monthly,
+          deposit: deposit, setup_fee: 0, total_paid_today: total,
+          options: state.selectedOptions, status: 'pending',
+          user_agent: navigator.userAgent
+        })
+      });
+      const resvArr = await resRes.json();
+      const reservation = Array.isArray(resvArr) ? resvArr[0] : resvArr;
+      if (!reservation || !reservation.id) throw new Error('Erreur création réservation');
+
+      // 3. Appeler l'edge function pour créer la session Stripe
+      const stripeRes = await fetch(SUPABASE_URL + '/functions/v1/stripe-create-checkout', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          reservation_id: reservation.id,
+          customer_email: data.email,
+          customer_name: data.firstName + ' ' + data.lastName,
+          line_items: [
+            {
+              name: 'Box ' + t.name + ' (' + t.surface_m2 + 'm²) - 1er mois',
+              amount: Math.round(monthly * 100),
+              quantity: 1
+            },
+            {
+              name: 'Caution (remboursable)',
+              amount: Math.round(deposit * 100),
+              quantity: 1
+            },
+            ...(state.selectedOptions.lock ? [{ name: 'Cadenas sécurisé', amount: 900, quantity: 1 }] : []),
+            ...(state.selectedOptions.insurance ? [{ name: 'Assurance (1er mois)', amount: 1200, quantity: 1 }] : [])
+          ],
+          success_url: window.location.origin + '/box/widget-success.html?res=' + resNumber,
+          cancel_url: window.location.href
+        })
+      });
+
+      if (!stripeRes.ok) {
+        const errText = await stripeRes.text();
+        throw new Error('Stripe error: ' + errText);
+      }
+
+      const stripeData = await stripeRes.json();
+      if (!stripeData.url) throw new Error('Pas d\'URL Stripe reçue');
+
+      // 4. Rediriger vers Stripe Checkout
+      window.location.href = stripeData.url;
+
+    } catch (err) {
+      console.error('Submit error:', err);
+      errorBox.textContent = 'Une erreur est survenue : ' + err.message + '. Vérifiez vos informations ou contactez ' + (state.center.email || 'le centre') + '.';
+      errorBox.style.display = 'block';
+      button.disabled = false;
+      button.innerHTML = 'Payer <span id="btnAmount">' + document.getElementById('btnAmount').textContent + '</span> et signer →';
+    }
+    return false;
+  }
+
+  loadCenter();
+</script>
+</body>
+</html>

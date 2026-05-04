@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Frizz · Mockup C v2</title>
+<title>Frizz · La réservation moderne pour votre garde-meubles</title>
+<meta name="description" content="Vos clients réservent leur box, paient et signent en 5 minutes. Ouverture par téléphone. Installé sur votre site en 7 jours. Beta gratuite 3 mois.">
+<meta property="og:title" content="Frizz · La réservation moderne pour votre garde-meubles">
+<meta property="og:description" content="Vos clients réservent leur box en 5 minutes et l'ouvrent avec leur téléphone. Beta privée — 20 places.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://frizz-instant.com/box/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
@@ -22,24 +27,98 @@
     --orange-soft: #F97316;
     --orange-light: #FED7AA;
     --orange-bg: #FFF7ED;
+    --green: #10B981;
+    --red: #EF4444;
   }
   
   body {
     font-family: 'Inter Tight', sans-serif;
     color: var(--black); background: var(--white);
     line-height: 1.6; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    position: relative;
   }
   
-  .serif {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 400;
+  /* Effet orange en arrière-plan animé */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -300px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(234,88,12,0.15) 0%, rgba(234,88,12,0.05) 40%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+    animation: glowFloat 15s ease-in-out infinite;
   }
-  .serif-bold {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 600;
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -300px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(234,88,12,0.10) 0%, rgba(234,88,12,0.04) 40%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+    animation: glowFloat 18s ease-in-out infinite reverse;
   }
+  @keyframes glowFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, 30px) scale(1.1); }
+    66% { transform: translate(-30px, 50px) scale(0.95); }
+  }
+  
+  /* Tous les contenus au-dessus du glow */
+  nav, .hero, .section, .section-access, .section-cta, footer {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* ANIMATIONS D'ENTREE */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 30px 80px rgba(234,88,12,0.08); }
+    50% { box-shadow: 0 40px 100px rgba(234,88,12,0.18); }
+  }
+  
+  /* Reveal au scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  
+  .serif { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 400; }
   
   /* NAV */
   nav {
@@ -52,18 +131,20 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .logo {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 26px;
-    letter-spacing: -0.01em;
-    display: flex; align-items: center; gap: 8px;
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 26px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 2px;
+    color: var(--black); text-decoration: none;
   }
   .logo .star {
-    color: var(--orange);
-    font-style: normal;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 400;
+    color: var(--orange); font-style: normal;
+    font-family: 'Inter Tight', sans-serif; font-weight: 400;
+    display: inline-block;
+    animation: starSpin 8s linear infinite;
+  }
+  @keyframes starSpin {
+    0%, 90%, 100% { transform: rotate(0deg); }
+    95% { transform: rotate(360deg); }
   }
   .nav-links { display: flex; gap: 32px; align-items: center; }
   .nav-links a {
@@ -71,14 +152,13 @@
   }
   .btn-cta {
     background: var(--orange); color: var(--white) !important;
-    padding: 10px 20px; border-radius: 8px;
-    font-weight: 600;
+    padding: 10px 20px; border-radius: 8px; font-weight: 600;
   }
   
-  /* HERO SPLIT */
+  /* HERO */
   .hero {
     max-width: 1200px; margin: 0 auto;
-    padding: 64px 24px 80px; display: grid;
+    padding: 120px 24px 80px; display: grid;
     grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center;
   }
   .hero-badge {
@@ -91,31 +171,45 @@
   h1 {
     font-size: 60px; font-weight: 700; line-height: 1.02;
     letter-spacing: -0.035em; margin-bottom: 24px;
+    animation: fadeInUp 0.8s ease-out;
   }
   h1 .accent { color: var(--orange); }
   
   .hero-sub {
     font-size: 20px; color: var(--gray-700); line-height: 1.55;
     max-width: 540px; margin-bottom: 36px;
+    animation: fadeInUp 0.8s ease-out 0.15s backwards;
   }
-  .hero-sub .serif {
-    color: var(--black);
-    font-size: 21px;
-  }
+  .hero-sub .serif { color: var(--black); font-size: 21px; }
   
-  .hero-ctas { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
+  .hero-ctas {
+    display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.3s backwards;
+  }
   .btn-primary {
     background: var(--black); color: var(--white);
     padding: 14px 28px; border-radius: 10px;
     font-weight: 600; font-size: 15px; text-decoration: none;
-    transition: transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer; border: none; font-family: inherit;
+    position: relative; overflow: hidden;
   }
-  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary::before {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(234,88,12,0.4), transparent);
+    transition: left 0.6s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(234,88,12,0.3);
+  }
+  .btn-primary:hover::before { left: 100%; }
   .btn-secondary {
     background: var(--white); color: var(--black);
     padding: 14px 28px; border-radius: 10px;
     font-weight: 600; font-size: 15px; text-decoration: none;
-    border: 1px solid var(--gray-300);
+    border: 1px solid var(--gray-300); cursor: pointer; font-family: inherit;
   }
   
   .hero-checks { color: var(--gray-700); font-size: 14px; }
@@ -124,20 +218,21 @@
   }
   .hero-checks .check { color: var(--orange); font-weight: 700; }
   
-  /* WIDGET RESERVATION CLIENT */
+  /* WIDGET */
   .widget-wrap {
     background: var(--gray-50); padding: 32px; border-radius: 24px;
     border: 1px solid var(--gray-100);
     box-shadow: 0 30px 80px rgba(234,88,12,0.08);
     position: relative;
+    animation: slideInRight 1s ease-out 0.4s backwards, glow 4s ease-in-out 1.5s infinite;
   }
   .widget-wrap::before {
     content: 'Vu par votre client'; position: absolute;
     top: -12px; left: 24px; background: var(--orange); color: var(--white);
     padding: 4px 12px; border-radius: 100px;
     font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    animation: bounce 3s ease-in-out infinite;
   }
-  
   .widget {
     background: var(--white); border-radius: 16px;
     border: 1px solid var(--gray-100); overflow: hidden;
@@ -152,23 +247,26 @@
     padding: 4px 10px; border-radius: 100px;
     font-size: 11px; font-weight: 700;
   }
-  
   .widget-body { padding: 24px; }
   .widget-q {
     font-size: 13px; color: var(--gray-500);
     margin-bottom: 12px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.05em;
   }
-  
   .box-options { display: grid; gap: 10px; margin-bottom: 24px; }
   .box-opt {
     padding: 16px; border: 2px solid var(--gray-100); border-radius: 12px;
-    cursor: pointer; transition: all 0.2s;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex; justify-content: space-between; align-items: center;
   }
-  .box-opt:hover { border-color: var(--gray-300); }
+  .box-opt:hover {
+    border-color: var(--gray-300);
+    transform: translateX(4px);
+  }
   .box-opt.selected {
-    border-color: var(--orange); background: var(--orange-bg);
+    border-color: var(--orange);
+    background: var(--orange-bg);
+    box-shadow: 0 4px 12px rgba(234,88,12,0.15);
   }
   .box-opt-info { display: flex; align-items: center; gap: 14px; }
   .box-opt-icon {
@@ -176,9 +274,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; border: 1px solid var(--gray-100);
   }
-  .box-opt.selected .box-opt-icon {
-    border-color: var(--orange); background: var(--white);
-  }
+  .box-opt.selected .box-opt-icon { border-color: var(--orange); background: var(--white); }
   .box-opt-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
   .box-opt-desc {
     font-size: 12px; color: var(--gray-500);
@@ -186,25 +282,35 @@
   }
   .box-opt-price { font-weight: 700; font-size: 18px; color: var(--orange); }
   .box-opt-price small { font-size: 11px; color: var(--gray-500); font-weight: 500; }
-  
   .ai-suggest {
     background: var(--orange-bg); padding: 12px 16px; border-radius: 10px;
     border-left: 3px solid var(--orange); margin-bottom: 20px;
     font-size: 13px; color: var(--gray-700);
     display: flex; align-items: flex-start; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .ai-suggest::after {
+    content: ''; position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { left: -100%; }
+    50% { left: 200%; }
   }
   .ai-suggest .ai-icon {
     color: var(--orange); font-weight: 700; flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
   }
   .ai-suggest strong { color: var(--black); }
   .ai-suggest em {
     font-family: 'Source Serif 4', serif; font-style: italic;
     color: var(--orange); font-weight: 600;
   }
-  
   .widget-summary {
-    background: var(--gray-50); padding: 16px; border-radius: 10px;
-    margin-bottom: 16px;
+    background: var(--gray-50); padding: 16px; border-radius: 10px; margin-bottom: 16px;
   }
   .summary-row {
     display: flex; justify-content: space-between; font-size: 14px;
@@ -215,7 +321,6 @@
     font-weight: 700; color: var(--black); font-size: 16px;
   }
   .summary-row.total .price { color: var(--orange); font-size: 20px; }
-  
   .widget-cta-btn {
     width: 100%; background: var(--orange); color: var(--white);
     padding: 14px; border-radius: 10px;
@@ -243,12 +348,17 @@
   .section-header-center { text-align: center; }
   
   .three-steps {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px;
-    position: relative;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; position: relative;
   }
   .step-card {
     padding: 32px; background: var(--white); border-radius: 16px;
     border: 1px solid var(--gray-100); position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .step-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(234,88,12,0.12);
+    border-color: var(--orange-light);
   }
   .step-num {
     position: absolute; top: -16px; left: 28px;
@@ -256,44 +366,36 @@
     width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 14px;
+    transition: transform 0.3s;
+  }
+  .step-card:hover .step-num {
+    transform: scale(1.15) rotate(-5deg);
   }
   .step-title {
     font-size: 22px; font-weight: 700; margin-bottom: 10px; margin-top: 12px;
     letter-spacing: -0.01em;
   }
-  .step-title .serif {
-    color: var(--orange);
-  }
+  .step-title .serif { color: var(--orange); }
   .step-desc { color: var(--gray-700); font-size: 15px; }
   .step-desc em {
     font-family: 'Source Serif 4', serif; font-style: italic;
     color: var(--black); font-weight: 600;
   }
   
-  /* ========================== */
-  /* SECTION OUVERTURE BOX (NEW) */
-  /* ========================== */
+  /* SECTION OUVERTURE */
   .section-access {
     background: var(--black); color: var(--white);
-    padding: 100px 24px;
-    position: relative; overflow: hidden;
+    padding: 100px 24px; position: relative; overflow: hidden;
   }
   .section-access::before {
     content: '✦'; position: absolute; top: 60px; right: 60px;
     font-size: 200px; color: var(--orange); opacity: 0.05;
     font-family: serif;
   }
-  
   .section-access .section-label { color: var(--orange-light); }
   .section-access h2 { color: var(--white); }
-  .section-access .section-sub {
-    color: var(--gray-300);
-  }
-  
-  .access-modes-wrap {
-    max-width: 1100px; margin: 0 auto; position: relative; z-index: 2;
-  }
-  
+  .section-access .section-sub { color: var(--gray-300); }
+  .access-modes-wrap { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
   .access-flow {
     display: flex; align-items: center; gap: 16px; margin-bottom: 56px;
     flex-wrap: wrap; justify-content: center;
@@ -304,65 +406,56 @@
     font-size: 14px; font-weight: 500; color: var(--gray-300);
   }
   .flow-step.highlight {
-    background: var(--orange); color: var(--white);
-    border-color: var(--orange);
-    font-weight: 700;
+    background: var(--orange); color: var(--white); border-color: var(--orange); font-weight: 700;
   }
   .flow-step .step-icon { margin-right: 8px; }
-  .flow-arrow {
-    color: var(--orange); font-size: 20px;
-  }
-  
-  .access-modes {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
-  }
+  .flow-arrow { color: var(--orange); font-size: 20px; }
+  .access-modes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
   .access-card {
     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
     padding: 36px; border-radius: 16px; position: relative; overflow: hidden;
-    transition: all 0.3s;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
   }
   .access-card:hover {
-    background: rgba(255,255,255,0.07); border-color: var(--orange);
+    background: rgba(255,255,255,0.08);
+    border-color: var(--orange);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(234,88,12,0.3);
   }
   .access-card::before {
     content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
     background: var(--orange); transform: scaleX(0); transform-origin: left;
-    transition: transform 0.3s;
+    transition: transform 0.4s;
   }
   .access-card:hover::before { transform: scaleX(1); }
-  
+  .access-card:hover .access-icon-wrap {
+    transform: rotate(-8deg) scale(1.1);
+  }
   .access-icon-wrap {
     width: 64px; height: 64px; border-radius: 14px;
     background: rgba(234,88,12,0.15); border: 1px solid var(--orange);
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 24px; font-size: 32px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
   .access-title {
-    font-size: 24px; font-weight: 700; margin-bottom: 4px;
-    letter-spacing: -0.01em;
+    font-size: 24px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em;
   }
   .access-subtitle {
     font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--orange); font-size: 15px; margin-bottom: 16px;
-    font-weight: 400;
+    color: var(--orange); font-size: 15px; margin-bottom: 16px; font-weight: 400;
   }
   .access-desc {
-    color: var(--gray-300); font-size: 14px; line-height: 1.65;
-    margin-bottom: 20px;
+    color: var(--gray-300); font-size: 14px; line-height: 1.65; margin-bottom: 20px;
   }
-  
   .access-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .access-tag {
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-    padding: 4px 10px; border-radius: 6px;
-    font-size: 11px; color: var(--gray-300);
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; color: var(--gray-300);
   }
-  
-  /* QR CODE PREVIEW */
   .qr-preview {
-    width: 56px; height: 56px;
-    background: var(--white);
+    width: 56px; height: 56px; background: var(--white);
     background-image:
       linear-gradient(45deg, var(--black) 25%, transparent 25%),
       linear-gradient(-45deg, var(--black) 25%, transparent 25%),
@@ -370,27 +463,18 @@
       linear-gradient(-45deg, transparent 75%, var(--black) 75%);
     background-size: 8px 8px;
     background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
-    border-radius: 6px;
-    margin: 0 auto;
+    border-radius: 6px; margin: 0 auto;
   }
-  
-  .pin-display {
-    display: flex; gap: 8px; justify-content: center;
-  }
+  .pin-display { display: flex; gap: 8px; justify-content: center; }
   .pin-digit {
-    width: 36px; height: 44px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--orange);
-    border-radius: 8px;
+    width: 36px; height: 44px; background: rgba(255,255,255,0.06);
+    border: 1px solid var(--orange); border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     font-size: 20px; font-weight: 700; color: var(--orange);
   }
-  
   .bluetooth-icon {
-    width: 56px; height: 56px;
-    background: var(--orange);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; background: var(--orange);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
     font-size: 26px; color: var(--white);
     animation: pulse-bt 2s infinite;
   }
@@ -398,16 +482,13 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(234,88,12,0.5); }
     50% { box-shadow: 0 0 0 12px rgba(234,88,12,0); }
   }
-  
   .access-bottom-note {
     margin-top: 56px; padding: 24px 32px;
     background: rgba(234,88,12,0.08); border: 1px solid rgba(234,88,12,0.2);
     border-radius: 12px; text-align: center;
   }
   .access-bottom-note .note-icon { color: var(--orange); font-size: 20px; margin-right: 8px; }
-  .access-bottom-note .serif {
-    color: var(--orange-light); font-size: 19px;
-  }
+  .access-bottom-note .serif { color: var(--orange-light); font-size: 19px; }
   
   /* CTA FINAL */
   .section-cta {
@@ -419,6 +500,7 @@
     max-width: 480px; margin: 0 auto; display: flex; gap: 8px;
     background: var(--gray-50); padding: 6px; border-radius: 12px;
     border: 1px solid var(--gray-100);
+    transition: all 0.3s;
   }
   .form-cta input {
     flex: 1; border: none; padding: 14px 16px; font-size: 15px;
@@ -428,9 +510,32 @@
     background: var(--orange); color: var(--white);
     border: none; padding: 14px 24px; border-radius: 8px;
     font-weight: 600; font-size: 14px; cursor: pointer;
-    font-family: inherit;
+    font-family: inherit; transition: all 0.3s;
+    min-width: 130px; position: relative; overflow: hidden;
   }
-  .cta-disclaimer { margin-top: 16px; font-size: 13px; color: var(--gray-500); }
+  .form-cta button::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
+  }
+  .form-cta button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(234,88,12,0.4);
+  }
+  .form-cta button:hover::after { left: 100%; }
+  .form-cta button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .form-cta.success { background: #DCFCE7; border-color: var(--green); }
+  .form-cta.error { background: #FEE2E2; border-color: var(--red); }
+  
+  .form-status {
+    margin-top: 16px; font-size: 14px; font-weight: 500;
+    min-height: 20px;
+  }
+  .form-status.success { color: var(--green); }
+  .form-status.error { color: var(--red); }
+  
+  .cta-disclaimer { margin-top: 8px; font-size: 13px; color: var(--gray-500); }
   
   footer {
     border-top: 1px solid var(--gray-100); padding: 32px 24px;
@@ -443,7 +548,7 @@
   .footer-inner .serif { color: var(--gray-700); }
   
   @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; padding: 40px 24px 60px; gap: 48px; }
+    .hero { grid-template-columns: 1fr; padding: 80px 24px 60px; gap: 48px; }
     h1 { font-size: 40px; }
     h2 { font-size: 30px; }
     .three-steps { grid-template-columns: 1fr; gap: 24px; }
@@ -460,12 +565,12 @@
 
 <nav>
   <div class="nav-inner">
-    <div class="logo"><span class="star">✦</span> Frizz</div>
+    <a href="/box/" class="logo"><span class="star">✦</span> Frizz</a>
     <div class="nav-links">
-      <a href="#">Fonctionnalités</a>
-      <a href="#">Tarifs</a>
-      <a href="#">Démo</a>
-      <a href="#" class="btn-cta">Essai gratuit</a>
+      <a href="#features">Fonctionnalités</a>
+      <a href="#access">Ouverture</a>
+      <a href="#beta">Beta</a>
+      <a href="#beta" class="btn-cta">Essai gratuit</a>
     </div>
   </div>
 </nav>
@@ -473,21 +578,18 @@
 <!-- HERO -->
 <section class="hero">
   <div>
-    <div class="hero-badge">✦ Beta 2026 — 20 places</div>
     <h1>Vos clients réservent leur box <span class="accent serif">en 5 minutes.</span></h1>
     <p class="hero-sub">Le widget Frizz s'installe sur votre site en 1 ligne de code. Choix de la taille, paiement, signature électronique. <span class="serif">Et ils ouvrent leur box avec leur téléphone.</span></p>
     <div class="hero-ctas">
-      <a href="#" class="btn-primary">Demander une démo →</a>
-      <a href="#" class="btn-secondary">Tester le widget</a>
+      <a href="#beta" class="btn-primary">Demander une démo →</a>
+      <a href="#features" class="btn-secondary">Tester le widget</a>
     </div>
     <div class="hero-checks">
-      <span><span class="check">✓</span> Sans coder</span>
       <span><span class="check">✓</span> Installé en 7 jours</span>
-      <span><span class="check">✓</span> 3 mois gratuits</span>
+      <span><span class="check">✓</span> 1 mois gratuit</span>
     </div>
   </div>
   
-  <!-- WIDGET CLIENT -->
   <div class="widget-wrap">
     <div class="widget">
       <div class="widget-header">
@@ -496,12 +598,10 @@
       </div>
       <div class="widget-body">
         <div class="widget-q">Quelle taille vous convient ?</div>
-        
         <div class="ai-suggest">
           <span class="ai-icon">✦</span>
           <span><strong>Notre suggestion :</strong> pour un studio meublé, un box de 6m² est <em>idéal</em>.</span>
         </div>
-        
         <div class="box-options">
           <div class="box-opt">
             <div class="box-opt-info">
@@ -513,7 +613,6 @@
             </div>
             <div class="box-opt-price">49€<small>/mois</small></div>
           </div>
-          
           <div class="box-opt selected">
             <div class="box-opt-info">
               <div class="box-opt-icon">📦</div>
@@ -524,7 +623,6 @@
             </div>
             <div class="box-opt-price">99€<small>/mois</small></div>
           </div>
-          
           <div class="box-opt">
             <div class="box-opt-info">
               <div class="box-opt-icon">📦</div>
@@ -536,47 +634,35 @@
             <div class="box-opt-price">169€<small>/mois</small></div>
           </div>
         </div>
-        
         <div class="widget-summary">
-          <div class="summary-row">
-            <span>Box moyen 6m²</span>
-            <span>99,00 €</span>
-          </div>
-          <div class="summary-row">
-            <span>Caution (remboursable)</span>
-            <span>200,00 €</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total à payer aujourd'hui</span>
-            <span class="price">299,00 €</span>
-          </div>
+          <div class="summary-row"><span>Box moyen 6m²</span><span>99,00 €</span></div>
+          <div class="summary-row"><span>Caution (remboursable)</span><span>200,00 €</span></div>
+          <div class="summary-row total"><span>Total à payer aujourd'hui</span><span class="price">299,00 €</span></div>
         </div>
-        
         <button class="widget-cta-btn">Continuer →</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SECTION 3 STEPS PAIEMENT -->
-<section class="section section-gray">
+<!-- 3 STEPS -->
+<section class="section section-gray" id="features">
   <div class="section-inner">
     <div class="section-label">Le parcours client</div>
     <h2>De la visite du site<br>au <span class="serif">contrat signé</span> — 5 minutes.</h2>
     <p class="section-sub">Vos clients vivent <em class="serif">l'expérience d'une grosse marque</em>. Vous, vous gérez votre centre tranquillement.</p>
-    
     <div class="three-steps">
-      <div class="step-card">
+      <div class="step-card reveal">
         <div class="step-num">1</div>
         <div class="step-title">Le client <span class="serif">choisit</span></div>
         <div class="step-desc">Il clique sur "Réserver un box" sur votre site. Notre <em>IA l'aide à choisir la bonne taille</em> selon son besoin (studio, déménagement, archives...).</div>
       </div>
-      <div class="step-card">
+      <div class="step-card reveal reveal-delay-1">
         <div class="step-num">2</div>
         <div class="step-title">Il <span class="serif">paie</span> en ligne</div>
         <div class="step-desc">Carte bancaire sécurisée Stripe. <em>Premier mois + caution prélevés instantanément</em>. Abonnement mensuel automatique ensuite.</div>
       </div>
-      <div class="step-card">
+      <div class="step-card reveal reveal-delay-2">
         <div class="step-num">3</div>
         <div class="step-title">Il <span class="serif">signe</span> le contrat</div>
         <div class="step-desc">Contrat PDF généré automatiquement. <em>Signature électronique simple</em>. Vous recevez tout sur votre dashboard, prêt à archiver.</div>
@@ -585,18 +671,14 @@
   </div>
 </section>
 
-<!-- ============================ -->
-<!-- NOUVELLE SECTION : OUVERTURE -->
-<!-- ============================ -->
-<section class="section-access">
+<!-- SECTION OUVERTURE -->
+<section class="section-access" id="access">
   <div class="access-modes-wrap">
     <div class="section-header-center">
       <div class="section-label">Et après le paiement ?</div>
       <h2>Vos clients ouvrent leur box<br><span class="serif">avec leur téléphone.</span></h2>
       <p class="section-sub center">Plus de remise de clé en personne. Plus d'attente à l'ouverture du centre. <em class="serif">Trois modes d'accès</em> au choix — selon votre installation.</p>
     </div>
-    
-    <!-- FLOW VISUEL -->
     <div class="access-flow">
       <div class="flow-step"><span class="step-icon">💳</span> Paiement reçu</div>
       <span class="flow-arrow">→</span>
@@ -604,13 +686,9 @@
       <span class="flow-arrow">→</span>
       <div class="flow-step highlight"><span class="step-icon">🔓</span> Accès débloqué</div>
     </div>
-    
-    <!-- 3 MODES D'OUVERTURE -->
     <div class="access-modes">
-      <div class="access-card">
-        <div class="access-icon-wrap">
-          <div class="qr-preview"></div>
-        </div>
+      <div class="access-card reveal">
+        <div class="access-icon-wrap"><div class="qr-preview"></div></div>
         <div class="access-title">Code QR</div>
         <div class="access-subtitle">Le plus rapide.</div>
         <div class="access-desc">Le client scanne un QR code unique sur son téléphone. La caméra à l'entrée valide en 1 seconde. Idéal pour les centres <em>déjà équipés</em> d'un système de lecture QR.</div>
@@ -620,14 +698,11 @@
           <span class="access-tag">Compatible Dahua</span>
         </div>
       </div>
-      
-      <div class="access-card">
+      <div class="access-card reveal reveal-delay-1">
         <div class="access-icon-wrap">
           <div class="pin-display">
-            <div class="pin-digit">7</div>
-            <div class="pin-digit">4</div>
-            <div class="pin-digit">9</div>
-            <div class="pin-digit">2</div>
+            <div class="pin-digit">7</div><div class="pin-digit">4</div>
+            <div class="pin-digit">9</div><div class="pin-digit">2</div>
           </div>
         </div>
         <div class="access-title">Code PIN</div>
@@ -638,11 +713,8 @@
           <span class="access-tag">100% des centres</span>
         </div>
       </div>
-      
-      <div class="access-card">
-        <div class="access-icon-wrap">
-          <div class="bluetooth-icon">📡</div>
-        </div>
+      <div class="access-card reveal reveal-delay-2">
+        <div class="access-icon-wrap"><div class="bluetooth-icon">📡</div></div>
         <div class="access-title">Bluetooth</div>
         <div class="access-subtitle">Sans contact.</div>
         <div class="access-desc">Le téléphone du client émet un signal Bluetooth quand il s'approche. La porte se déverrouille <em>automatiquement</em>. Premium, pour les centres avec serrures connectées modernes.</div>
@@ -653,8 +725,6 @@
         </div>
       </div>
     </div>
-    
-    <!-- BOTTOM NOTE -->
     <div class="access-bottom-note">
       <span class="note-icon">✦</span>
       <span class="serif">Vous choisissez le mode qui correspond à votre centre.</span>
@@ -664,23 +734,148 @@
 </section>
 
 <!-- CTA FINAL -->
-<section class="section-cta">
+<section class="section-cta" id="beta">
   <div class="section-label">Beta privée</div>
-  <h2>20 places. <span class="serif">3 mois gratuits.</span></h2>
+  <h2>20 places. <span class="serif">1 mois gratuit.</span></h2>
   <p class="section-sub center">Inscrivez-vous avant que la beta soit complète. <em class="serif">Aucune carte bancaire demandée.</em></p>
-  <form class="form-cta">
-    <input type="email" placeholder="votre@email.com" required>
-    <button type="submit">Réserver →</button>
+  
+  <form class="form-cta" id="leadForm" onsubmit="return submitLead(event)">
+    <input type="email" id="leadEmail" placeholder="votre@email.com" required autocomplete="email">
+    <button type="submit" id="leadButton">Réserver →</button>
   </form>
+  <div class="form-status" id="formStatus"></div>
   <p class="cta-disclaimer">Réponse sous 24h · Démo en 30 min · 100% gratuit</p>
 </section>
 
 <footer>
   <div class="footer-inner">
     <div>✦ Frizz · <span class="serif">Self-storage simplifié</span></div>
-    <div>contact@frizz-storage.com · Bâle 🇨🇭</div>
+    <div>contact@frizz-instant.com · Bâle 🇨🇭</div>
   </div>
 </footer>
+
+<script>
+  // Configuration Supabase
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  
+  function getUTMParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utm_source: params.get('utm_source') || null,
+      utm_medium: params.get('utm_medium') || null,
+      utm_campaign: params.get('utm_campaign') || null
+    };
+  }
+  
+  async function submitLead(event) {
+    event.preventDefault();
+    const form = document.getElementById('leadForm');
+    const emailInput = document.getElementById('leadEmail');
+    const button = document.getElementById('leadButton');
+    const status = document.getElementById('formStatus');
+    const email = emailInput.value.trim().toLowerCase();
+    
+    if (!email || !email.includes('@')) {
+      status.textContent = 'Email invalide';
+      status.className = 'form-status error';
+      return false;
+    }
+    
+    button.disabled = true;
+    button.textContent = 'Envoi...';
+    status.textContent = '';
+    status.className = 'form-status';
+    
+    const utm = getUTMParams();
+    const lead = {
+      email: email,
+      source: 'landing-frizz-box',
+      utm_source: utm.utm_source,
+      utm_medium: utm.utm_medium,
+      utm_campaign: utm.utm_campaign,
+      user_agent: navigator.userAgent
+    };
+    
+    try {
+      const response = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_leads', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(lead)
+      });
+      
+      if (response.ok || response.status === 201) {
+        form.classList.add('success');
+        status.textContent = '✓ Inscrit ! On vous contacte sous 24h.';
+        status.className = 'form-status success';
+        button.textContent = 'Inscrit ✓';
+        emailInput.disabled = true;
+      } else if (response.status === 409) {
+        status.textContent = 'Cet email est déjà inscrit. On revient vers vous bientôt !';
+        status.className = 'form-status success';
+        form.classList.add('success');
+        button.textContent = 'Déjà inscrit';
+      } else {
+        const errorData = await response.json();
+        if (errorData.code === '23505' || (errorData.message && errorData.message.includes('duplicate'))) {
+          status.textContent = 'Cet email est déjà inscrit. On revient vers vous bientôt !';
+          status.className = 'form-status success';
+          form.classList.add('success');
+          button.textContent = 'Déjà inscrit';
+        } else {
+          throw new Error('Submit failed');
+        }
+      }
+    } catch (err) {
+      console.error('Lead submit error:', err);
+      status.textContent = 'Erreur. Réessayez ou contactez-nous à contact@frizz-instant.com';
+      status.className = 'form-status error';
+      button.disabled = false;
+      button.textContent = 'Réserver →';
+    }
+    return false;
+  }
+  
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+  
+  // Animation au scroll avec IntersectionObserver
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  
+  document.querySelectorAll('.reveal').forEach(el => {
+    observer.observe(el);
+  });
+  
+  // Animation cliquable sur les box options du widget
+  document.querySelectorAll('.box-opt').forEach(opt => {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('.box-opt').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+    });
+  });
+</script>
 
 </body>
 </html>

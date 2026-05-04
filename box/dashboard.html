@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Frizz · Dashboard gérant</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -704,7 +705,7 @@
     .sidebar { display: none; } /* Cacher la sidebar sur mobile */
     .mobile-burger { display: flex; } /* Afficher le burger */
     .mobile-logo { display: inline-flex; } /* Afficher le logo */
-    .main { padding: 80px 18px 32px 18px; } /* Top padding pour le burger */
+    .main { padding: 100px 18px 32px 18px; } /* Plus de space pour le burger + logo */
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     .stat-card { padding: 18px; }
     .stat-value { font-size: 24px; }
@@ -804,22 +805,22 @@
       </div>
 
       <div class="stats-grid">
-        <div class="stat-card highlight">
+        <div class="stat-card highlight" onclick="openStatModal('revenue')" style="cursor:pointer;">
           <div class="stat-label">CA mensuel</div>
           <div class="stat-value" id="statRevenue">0 €</div>
           <div class="stat-detail" id="statRevenueDetail">Aucune résa ce mois</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openStatModal('reservations')" style="cursor:pointer;">
           <div class="stat-label">Réservations</div>
           <div class="stat-value" id="statReservations">0</div>
           <div class="stat-detail" id="statReservationsDetail">Toutes statuts confondus</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openStatModal('boxes')" style="cursor:pointer;">
           <div class="stat-label">Box loués</div>
           <div class="stat-value" id="statBoxes">0</div>
           <div class="stat-detail" id="statBoxesDetail">Taux d'occupation</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openStatModal('clients')" style="cursor:pointer;">
           <div class="stat-label">Clients actifs</div>
           <div class="stat-value" id="statClients">0</div>
           <div class="stat-detail">Total</div>
@@ -1019,6 +1020,23 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- MODAL : STAT CHART (graphique évolution mensuelle) -->
+<div class="modal-overlay" id="modalStat" onclick="closeModalOnOverlay(event, 'modalStat')">
+  <div class="modal" id="modalStatContent" style="max-width: 760px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="statModalTitle">Évolution</div>
+        <div class="modal-subtitle" id="statModalSubtitle">Comparaison mois par mois</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modalStat')">×</button>
+    </div>
+    <div style="background: rgba(243, 244, 246, 0.4); padding: 20px; border-radius: 14px; margin-bottom: 16px;">
+      <canvas id="statChart" style="max-height: 360px;"></canvas>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="statSummary"></div>
+  </div>
+</div>
 
 <script>
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
@@ -1577,6 +1595,165 @@
     a.click();
     URL.revokeObjectURL(url);
     showToast('✓ Export téléchargé', 'success');
+  }
+
+  // ============== STAT CHART MODAL ==============
+  let chartInstance = null;
+
+  function getMonthlyData(metric) {
+    // Calcule les 6 derniers mois
+    const months = [];
+    const now = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({
+        key: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'),
+        label: d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }),
+        start: d,
+        end: new Date(d.getFullYear(), d.getMonth() + 1, 1)
+      });
+    }
+
+    return months.map(m => {
+      const inMonth = allReservations.filter(r => {
+        const created = new Date(r.created_at);
+        return created >= m.start && created < m.end;
+      });
+
+      let value = 0;
+      if (metric === 'revenue') {
+        value = inMonth
+          .filter(r => r.status === 'paid' || r.status === 'active')
+          .reduce((sum, r) => sum + parseFloat(r.total_paid_today || 0), 0);
+      } else if (metric === 'reservations') {
+        value = inMonth.length;
+      } else if (metric === 'boxes') {
+        value = inMonth.filter(r => ['paid', 'active'].includes(r.status)).length;
+      } else if (metric === 'clients') {
+        const clientIds = new Set(inMonth.map(r => r.client_id).filter(Boolean));
+        value = clientIds.size;
+      }
+
+      return { ...m, value: Math.round(value * 100) / 100 };
+    });
+  }
+
+  function openStatModal(metric) {
+    const data = getMonthlyData(metric);
+
+    const titles = {
+      revenue: { title: 'Chiffre d\'affaires', subtitle: '6 derniers mois (€)', label: 'CA (€)', color: '#EA580C' },
+      reservations: { title: 'Réservations', subtitle: 'Nombre par mois', label: 'Réservations', color: '#3B82F6' },
+      boxes: { title: 'Box loués', subtitle: 'Box payés ou actifs par mois', label: 'Box loués', color: '#10B981' },
+      clients: { title: 'Clients actifs', subtitle: 'Clients uniques par mois', label: 'Clients', color: '#F59E0B' }
+    };
+    const config = titles[metric];
+
+    document.getElementById('statModalTitle').textContent = config.title;
+    document.getElementById('statModalSubtitle').textContent = config.subtitle;
+
+    // Destroy existing chart
+    if (chartInstance) chartInstance.destroy();
+
+    // Affichage du modal d'abord pour que le canvas soit visible
+    document.getElementById('modalStat').classList.add('active');
+
+    // Petit délai pour que le canvas soit rendu avant de dessiner
+    setTimeout(() => {
+      const ctx = document.getElementById('statChart').getContext('2d');
+      const labels = data.map(d => d.label);
+      const values = data.map(d => d.value);
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: config.label,
+            data: values,
+            backgroundColor: config.color + 'CC',
+            borderColor: config.color,
+            borderWidth: 2,
+            borderRadius: 10,
+            borderSkipped: false,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0A0A0A',
+              titleFont: { family: 'Inter Tight', weight: '700' },
+              bodyFont: { family: 'Inter Tight' },
+              padding: 12,
+              cornerRadius: 10,
+              callbacks: {
+                label: function(ctx) {
+                  if (metric === 'revenue') return ctx.parsed.y.toFixed(2) + ' €';
+                  return ctx.parsed.y + ' ' + (ctx.parsed.y > 1 ? config.label.toLowerCase() : config.label.toLowerCase().replace(/s$/, ''));
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                font: { family: 'Inter Tight', size: 12 },
+                color: '#6B7280',
+                callback: function(value) {
+                  if (metric === 'revenue') return value + ' €';
+                  return value;
+                }
+              },
+              grid: { color: 'rgba(229, 231, 235, 0.5)' }
+            },
+            x: {
+              ticks: {
+                font: { family: 'Inter Tight', size: 12, weight: '600' },
+                color: '#4B5563'
+              },
+              grid: { display: false }
+            }
+          },
+          animation: {
+            duration: 600,
+            easing: 'easeOutQuart'
+          }
+        }
+      });
+
+      // Render summary
+      const total = values.reduce((s, v) => s + v, 0);
+      const avg = values.length ? (total / values.length) : 0;
+      const lastMonth = values[values.length - 1] || 0;
+      const prevMonth = values[values.length - 2] || 0;
+      const variation = prevMonth > 0 ? ((lastMonth - prevMonth) / prevMonth * 100) : (lastMonth > 0 ? 100 : 0);
+
+      const formatVal = (v) => metric === 'revenue' ? v.toFixed(0) + ' €' : Math.round(v);
+      const variationColor = variation > 0 ? '#10B981' : (variation < 0 ? '#EF4444' : '#6B7280');
+      const variationIcon = variation > 0 ? '↑' : (variation < 0 ? '↓' : '→');
+
+      document.getElementById('statSummary').innerHTML = `
+        <div class="info-item">
+          <div class="info-item-label">Total 6 mois</div>
+          <div class="info-item-value">${formatVal(total)}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Moyenne mensuelle</div>
+          <div class="info-item-value">${formatVal(avg)}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Évolution mensuelle</div>
+          <div class="info-item-value" style="color: ${variationColor};">
+            ${variationIcon} ${Math.abs(variation).toFixed(0)}%
+          </div>
+        </div>
+      `;
+    }, 50);
   }
 
   // ============== HELPERS ==============

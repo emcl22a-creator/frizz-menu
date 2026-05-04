@@ -2,9 +2,11 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
-<title>Frizz✦ — Inscription</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#040810">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Inscription Frizz · Rejoins l'app de padel transfrontalière FR-CH">
+<title>Inscription — Frizz</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,23 +15,33 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #050506;
+    --bg: #040810;
     --surface: rgba(255,255,255,0.03);
-    --text: #F2F2F4;
+    --surface-strong: rgba(255,255,255,0.05);
+    --text: #F2F4F8;
     --text-2: rgba(255,255,255,0.65);
     --text-3: rgba(255,255,255,0.45);
     --text-4: rgba(255,255,255,0.25);
-    --border: rgba(255,255,255,0.08);
-    --border-strong: rgba(255,255,255,0.14);
-    --blue: #0A84FF;
-    --blue-soft: rgba(10,132,255,0.14);
-    --blue-strong: #2E9DFF;
-    --red: #FF6B5C;
-    --red-soft: rgba(255,107,92,0.14);
-    --green: #30D158;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.12);
+    --brand: #06B6D4;
+    --brand-bright: #22D3EE;
+    --brand-deep: #0891B2;
+    --brand-glow: rgba(6, 182, 212, 0.55);
+    --brand-soft: rgba(6, 182, 212, 0.14);
+    --green: #10B981;
+    --green-soft: rgba(16, 185, 129, 0.14);
+    --red: #F43F5E;
+    --red-soft: rgba(244, 63, 94, 0.14);
+    --orange: #F59E0B;
+    --orange-soft: rgba(245, 158, 11, 0.14);
+    --r: 14px;
+    --r-md: 18px;
+    --r-xl: 28px;
+    --r-pill: 100px;
   }
 
   html, body {
@@ -43,27 +55,32 @@
     overflow-x: hidden;
   }
 
-  /* Aurora bleue subtile */
   html {
     background:
-      radial-gradient(ellipse 60% 50% at 10% 5%, rgba(10,132,255,0.30), transparent 50%),
-      radial-gradient(ellipse 50% 40% at 90% 15%, rgba(91,143,249,0.20), transparent 50%),
-      radial-gradient(ellipse 45% 40% at 95% 60%, rgba(46,157,255,0.18), transparent 50%),
-      #050506 !important;
+      radial-gradient(ellipse 70% 55% at 12% 8%, rgba(6, 182, 212, 0.32), transparent 50%),
+      radial-gradient(ellipse 55% 45% at 88% 12%, rgba(34, 211, 238, 0.22), transparent 55%),
+      radial-gradient(ellipse 50% 45% at 92% 65%, rgba(8, 145, 178, 0.20), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 8% 75%, rgba(16, 185, 129, 0.15), transparent 60%),
+      #040810 !important;
     background-attachment: fixed !important;
   }
   body { background: transparent !important; }
+
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background:
-      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(10,132,255,0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(46,157,255,0.08), transparent 50%);
-    animation: auroraDrift 24s ease-in-out infinite alternate;
+      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(6, 182, 212, 0.10), transparent 50%),
+      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(34, 211, 238, 0.08), transparent 50%);
+    animation: auroraDrift 26s ease-in-out infinite alternate;
     mix-blend-mode: screen;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
   }
   @keyframes auroraDrift {
     0%   { transform: translate(0, 0) scale(1); }
@@ -71,492 +88,522 @@
     100% { transform: translate(-2%, 3%) scale(1.04); }
   }
 
-  .wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 22px;
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    padding: 14px 28px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(4, 8, 16, 0.85);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
-
-  .card {
-    width: 100%;
-    max-width: 460px;
-    background: rgba(20, 20, 26, 0.45);
-    backdrop-filter: saturate(180%) blur(40px);
-    -webkit-backdrop-filter: saturate(180%) blur(40px);
-    border: 1px solid var(--border-strong);
-    border-radius: 28px;
-    padding: 32px 28px 28px;
-    box-shadow:
-      inset 0 1.5px 0 rgba(255,255,255,0.16),
-      inset 0 0 0 1px rgba(255,255,255,0.04),
-      0 30px 80px -20px rgba(0,0,0,0.7);
-  }
-
+  .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
+  .logo-link:hover { transform: scale(1.04); }
   .logo {
-    text-align: center;
-    margin-bottom: 28px;
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    letter-spacing: -0.022em; font-size: 26px; color: var(--text);
+    display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;
   }
-  .logo-text {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 38px;
-    letter-spacing: -0.020em;
-    color: var(--text);
-    line-height: 1;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
-  }
-  .logo-text .spark {
-    color: var(--blue);
-    text-shadow: 0 0 12px rgba(10,132,255,0.5);
-    animation: sparkPulse 3.5s ease-in-out infinite;
-    font-size: 32px;
+  .logo .spark {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--brand-bright); font-weight: 700; font-size: 22px; margin-left: 1px;
+    animation: sparkPulse 3.5s ease-in-out infinite; display: inline-block;
+    text-shadow: 0 0 14px var(--brand-glow);
   }
   @keyframes sparkPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.08); }
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  .topbar-link {
+    font-size: 13px; font-weight: 800; color: var(--text-2);
+    text-decoration: none; padding: 8px 14px; border-radius: var(--r-pill);
+    transition: all 0.2s ease; letter-spacing: -0.005em;
+  }
+  .topbar-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+  .auth-wrap {
+    min-height: calc(100vh - 70px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 24px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 36px 28px;
+    background: var(--surface);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      0 24px 60px -20px rgba(0,0,0,0.6),
+      0 0 100px -20px rgba(6, 182, 212, 0.20);
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 70%; height: 200%;
+    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.12), transparent 60%);
+    pointer-events: none;
   }
 
-  .hero {
-    text-align: center;
-    margin-bottom: 26px;
+  .auth-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    font-size: 12px; color: var(--brand-bright);
+    margin-bottom: 14px; letter-spacing: -0.005em;
+    padding: 5px 12px; background: var(--brand-soft);
+    border: 1px solid rgba(34, 211, 238, 0.30); border-radius: var(--r-pill);
+    position: relative; z-index: 1;
   }
-  .hero-num {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 12px;
-    color: var(--blue);
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-  .hero-title {
+
+  .auth-title {
+    font-size: 36px; font-weight: 900; letter-spacing: -0.034em;
+    line-height: 1.05; color: var(--text); margin-bottom: 10px;
     font-family: 'Inter Tight', sans-serif;
-    font-weight: 900;
-    font-size: 30px;
-    letter-spacing: -0.030em;
-    color: var(--text);
-    line-height: 1.05;
-    margin-bottom: 6px;
+    position: relative; z-index: 1;
   }
-  .hero-title em {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--blue);
-  }
-  .hero-sub {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 600;
-    font-size: 14.5px;
-    color: var(--text-3);
-    letter-spacing: -0.005em;
+  .auth-title em {
+    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+    color: var(--brand-bright);
+    text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
   }
 
-  .field { margin-bottom: 14px; }
+  .auth-sub {
+    font-size: 14px; font-weight: 700; color: var(--text-2);
+    letter-spacing: -0.012em; line-height: 1.5;
+    margin-bottom: 26px;
+    position: relative; z-index: 1;
+  }
+
+  .audience-toggle {
+    display: flex;
+    background: var(--surface-strong);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    padding: 4px;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
+  .audience-btn {
+    flex: 1;
+    padding: 11px 16px;
+    font-size: 13px; font-weight: 800; color: var(--text-2);
+    background: transparent; border: 0;
+    border-radius: var(--r-pill);
+    cursor: pointer; font-family: inherit; letter-spacing: -0.008em;
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .audience-btn.active {
+    background: var(--brand-bright); color: var(--bg);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 2px 8px -2px var(--brand-glow);
+  }
+
+  .field {
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .field-label {
+    display: block;
+    font-size: 11px; font-weight: 800; color: var(--text-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 7px;
+  }
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-bottom: 14px;
   }
-  .field-label {
-    display: block;
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 12.5px;
-    color: var(--text-2);
-    margin-bottom: 6px;
-    padding-left: 4px;
-  }
-  input[type="email"],
-  input[type="password"],
-  input[type="text"],
-  select {
+  .input, .select {
     width: 100%;
     padding: 14px 16px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--surface-strong);
     border: 1px solid var(--border-strong);
-    border-radius: 14px;
-    color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.012em;
-    transition: all 0.18s ease;
-    outline: none;
+    border-radius: var(--r);
+    color: var(--text); font-family: inherit;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: -0.014em; outline: none;
+    transition: all 0.2s ease;
+    -webkit-appearance: none; appearance: none;
   }
-  input::placeholder { color: var(--text-4); }
-  input:focus, select:focus {
-    border-color: var(--blue);
-    background: rgba(10,132,255,0.06);
-    box-shadow: 0 0 0 3px rgba(10,132,255,0.15);
+  .select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2322D3EE' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
   }
+  .input::placeholder { color: var(--text-3); }
+  .input:focus, .select:focus {
+    border-color: var(--brand-bright);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.20);
+    background-color: rgba(255,255,255,0.07);
+  }
+
   .field-help {
-    font-size: 11px;
-    color: var(--text-3);
-    margin-top: 5px;
-    padding-left: 4px;
-    line-height: 1.4;
+    font-size: 11px; font-weight: 700; color: var(--text-3);
+    margin-top: 6px; letter-spacing: -0.005em; line-height: 1.4;
   }
+  .field-help.success { color: var(--green); }
+  .field-help.warning { color: var(--orange); }
 
   .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 15px 24px; border-radius: var(--r);
+    font-size: 14px; font-weight: 800; line-height: 1; cursor: pointer; border: 0;
+    font-family: inherit; letter-spacing: -0.014em;
+    transition: all 0.15s ease; white-space: nowrap;
     width: 100%;
-    padding: 14px 20px;
-    border-radius: 100px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 800;
-    font-size: 14.5px;
-    letter-spacing: -0.012em;
-    cursor: pointer;
-    border: 0;
-    transition: all 0.18s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 8px;
   }
   .btn-primary {
-    background: var(--blue);
-    color: #fff;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.25),
-      0 6px 20px -4px rgba(10,132,255,0.5);
+    background: linear-gradient(180deg, var(--brand-bright), var(--brand));
+    color: var(--bg);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 16px -4px var(--brand-glow);
+    margin-top: 10px;
   }
   .btn-primary:hover {
-    background: var(--blue-strong);
+    background: linear-gradient(180deg, #fff, var(--brand-bright));
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.30),
-      0 10px 28px -4px rgba(10,132,255,0.6);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 8px 26px -4px var(--brand-glow);
   }
-  .btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  .footer-link {
+  .msg-success, .msg-error, .msg-info {
+    margin-top: 16px; padding: 12px 14px; border-radius: var(--r);
+    font-size: 13px; font-weight: 800; letter-spacing: -0.012em;
     text-align: center;
-    margin-top: 22px;
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 700;
-    font-size: 13.5px;
-    color: var(--text-3);
-  }
-  .footer-link a {
-    color: var(--blue);
-    text-decoration: none;
-    font-weight: 800;
-  }
-  .footer-link a:hover { text-decoration: underline; }
-
-  .msg {
-    padding: 11px 14px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 14px;
     display: none;
-    line-height: 1.4;
+    position: relative; z-index: 1;
   }
-  .msg.show { display: block; }
-  .msg.error {
-    background: var(--red-soft);
-    border: 1px solid rgba(255,107,92,0.30);
-    color: var(--red);
-  }
-  .msg.success {
-    background: rgba(48,209,88,0.14);
-    border: 1px solid rgba(48,209,88,0.30);
+  .msg-success {
+    background: var(--green-soft); border: 1px solid rgba(16, 185, 129, 0.30);
     color: var(--green);
   }
-
-  .spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  .msg-error {
+    background: var(--red-soft); border: 1px solid rgba(244, 63, 94, 0.30);
+    color: var(--red);
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .msg-info {
+    background: var(--brand-soft); border: 1px solid rgba(34, 211, 238, 0.30);
+    color: var(--brand-bright);
+  }
+  .msg-success.show, .msg-error.show, .msg-info.show {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-  /* Mention essai gratuit */
-  .trial-banner {
-    background: linear-gradient(135deg, rgba(10,132,255,0.10), rgba(167,139,250,0.06));
-    border: 1px solid rgba(10,132,255,0.20);
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 22px;
+  .auth-footer {
+    margin-top: 24px;
     text-align: center;
-  }
-  .trial-banner-title {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--blue);
-    margin-bottom: 2px;
-  }
-  .trial-banner-sub {
-    font-family: 'Inter Tight', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    color: var(--text-3);
+    font-size: 13px; font-weight: 700; color: var(--text-3);
     letter-spacing: -0.005em;
+    position: relative; z-index: 1;
+  }
+  .auth-footer a {
+    color: var(--brand-bright);
+    text-decoration: none;
+    font-weight: 800;
+    transition: opacity 0.2s ease;
+  }
+  .auth-footer a:hover { opacity: 0.8; }
+
+  @media (min-width: 768px) {
+    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
+    .auth-wrap { padding: 60px 24px; }
+    .auth-card { padding: 44px 36px; }
+    .auth-title { font-size: 42px; }
   }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="card">
-    <div class="logo">
-      <div class="logo-text">Frizz<span class="spark">✦</span></div>
-    </div>
+<header class="topbar">
+  <a href="index.html" class="logo-link">
+    <span class="logo">Frizz<span class="spark">✦</span></span>
+  </a>
+  <a href="login.html" class="topbar-link">Déjà inscrit ? Connexion</a>
+</header>
 
-    <div class="hero">
-      <div class="hero-num">— Inscription</div>
-      <h1 class="hero-title">Créez votre<br><em>compte</em>.</h1>
-      <p class="hero-sub">Configurez votre restaurant en 2 minutes.</p>
-    </div>
+<main class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-eyebrow">✦ Pré-inscription</div>
+    <h1 class="auth-title">Rejoins <em>Frizz</em>.</h1>
+    <p class="auth-sub">Crée ton compte en 30 secondes et débloque l'app dès l'ouverture.</p>
 
-    <div class="trial-banner">
-      <div class="trial-banner-title">14 jours d'essai gratuit</div>
-      <div class="trial-banner-sub">Sans engagement · Annulable à tout moment</div>
-    </div>
-
-    <div class="msg" id="msg"></div>
-
-    <form id="signup-form">
-      <div class="field">
-        <label class="field-label">Nom du restaurant</label>
-        <input type="text" id="resto-nom" placeholder="ex. Chez Nico" required autocomplete="organization">
-      </div>
-
-      <div class="field">
-        <label class="field-label">Email</label>
-        <input type="email" id="email" placeholder="contact@…" required autocomplete="email">
-      </div>
-
-      <div class="field">
-        <label class="field-label">Mot de passe</label>
-        <input type="password" id="password" placeholder="••••••••" required minlength="6" autocomplete="new-password">
-        <p class="field-help">Minimum 6 caractères</p>
-      </div>
-
-      <div class="field-row">
-        <div>
-          <label class="field-label">Pays</label>
-          <select id="country">
-            <option value="CH">Suisse 🇨🇭</option>
-            <option value="FR">France 🇫🇷</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label">Devise</label>
-          <select id="currency">
-            <option value="CHF">CHF</option>
-            <option value="EUR">EUR</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="submit-btn">
-        Créer mon compte
+    <div class="audience-toggle">
+      <button type="button" class="audience-btn active" data-audience="joueur" id="btn-joueur">
+        <span>🎾</span> Joueur
       </button>
+      <button type="button" class="audience-btn" data-audience="club" id="btn-club">
+        <span>🏟️</span> Club
+      </button>
+    </div>
+
+    <form id="signup-form" onsubmit="return submitSignup(event)">
+
+      <!-- Champs JOUEUR -->
+      <div id="fields-joueur">
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" class="input" placeholder="Em" required>
+          </div>
+          <div class="field">
+            <label class="field-label" for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" class="input" placeholder="Dupont" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Champs CLUB -->
+      <div id="fields-club" style="display:none;">
+        <div class="field">
+          <label class="field-label" for="nom-club">Nom du club</label>
+          <input type="text" id="nom-club" name="nom-club" class="input" placeholder="Padel First Bâle">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rue">Adresse (rue + numéro)</label>
+          <input type="text" id="rue" name="rue" class="input" placeholder="Klybeckstrasse 141" autocomplete="street-address">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="code-postal">Code postal</label>
+            <input type="text" id="code-postal" name="code-postal" class="input" placeholder="4002" autocomplete="postal-code">
+          </div>
+          <div class="field">
+            <label class="field-label" for="ville-club">Ville</label>
+            <input type="text" id="ville-club" name="ville-club" class="input" placeholder="Bâle">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="pays-club">Pays</label>
+          <select id="pays-club" name="pays-club" class="select">
+            <option value="FR">🇫🇷 France</option>
+            <option value="CH" selected>🇨🇭 Suisse</option>
+          </select>
+        </div>
+
+        <div class="field-help" id="geo-status" style="display:none;"></div>
+      </div>
+
+      <!-- Champs communs -->
+      <div class="field">
+        <label class="field-label" for="email">Email</label>
+        <input type="email" id="email" name="email" class="input" placeholder="ton@email.fr" required>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" class="input" placeholder="Minimum 6 caractères" minlength="6" required>
+        <div class="field-help">6 caractères minimum</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btn-submit">
+        Créer mon compte →
+      </button>
+
+      <div class="msg-info" id="msg-info"></div>
+      <div class="msg-success" id="msg-success">✓ Compte créé. Vérifie ton email pour confirmer.</div>
+      <div class="msg-error" id="msg-error"></div>
     </form>
 
-    <div class="footer-link">
-      Déjà un compte ?
-      <a href="login.html">Se connecter</a>
+    <div class="auth-footer">
+      Déjà inscrit ? <a href="login.html">Se connecter</a>
     </div>
   </div>
-</div>
+</main>
 
 <script>
-const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const form = document.getElementById('signup-form');
-const msgEl = document.getElementById('msg');
-const submitBtn = document.getElementById('submit-btn');
+  let currentAudience = 'joueur';
+  const btnJoueur = document.getElementById('btn-joueur');
+  const btnClub = document.getElementById('btn-club');
+  const fieldsJoueur = document.getElementById('fields-joueur');
+  const fieldsClub = document.getElementById('fields-club');
+  const inputPrenom = document.getElementById('prenom');
+  const inputNom = document.getElementById('nom');
+  const inputNomClub = document.getElementById('nom-club');
+  const inputRue = document.getElementById('rue');
+  const inputCodePostal = document.getElementById('code-postal');
+  const inputVilleClub = document.getElementById('ville-club');
+  const selectPaysClub = document.getElementById('pays-club');
 
-// Si déjà connecté, redirige vers admin
-(async function checkSession() {
-  const { data: { session } } = await supa.auth.getSession();
-  if (session) {
-    location.href = 'menu-admin.html';
-  }
-})();
-
-// Auto-adapter devise selon pays
-document.getElementById('country').addEventListener('change', (e) => {
-  document.getElementById('currency').value = e.target.value === 'FR' ? 'EUR' : 'CHF';
-});
-
-function showMsg(text, type = 'error') {
-  msgEl.textContent = text;
-  msgEl.classList.remove('error', 'success');
-  msgEl.classList.add(type);
-  msgEl.classList.add('show');
-}
-function hideMsg() {
-  msgEl.classList.remove('show');
-}
-
-// Slug : transforme un nom en URL-friendly
-function slugify(s) {
-  return (s || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .substring(0, 60);
-}
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  hideMsg();
-
-  const restoNom = document.getElementById('resto-nom').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const country = document.getElementById('country').value;
-  const currency = document.getElementById('currency').value;
-
-  if (!restoNom || !email || !password) {
-    showMsg('Tous les champs sont requis', 'error');
-    return;
-  }
-  if (password.length < 6) {
-    showMsg('Le mot de passe doit contenir au moins 6 caractères', 'error');
-    return;
-  }
-
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<div class="spinner"></div> Création…';
-
-  try {
-    // 1) Créer le compte auth Supabase
-    const { data: authData, error: authError } = await supa.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { resto_nom: restoNom }
-      }
-    });
-
-    if (authError) {
-      if (authError.message.toLowerCase().includes('already')) {
-        showMsg('Un compte existe déjà avec cet email. Connectez-vous.', 'error');
-      } else {
-        showMsg(authError.message, 'error');
-      }
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Créer mon compte';
-      return;
+  function switchAudience(audience) {
+    currentAudience = audience;
+    if (audience === 'joueur') {
+      btnJoueur.classList.add('active');
+      btnClub.classList.remove('active');
+      fieldsJoueur.style.display = 'block';
+      fieldsClub.style.display = 'none';
+      inputPrenom.required = true;
+      inputNom.required = true;
+      inputNomClub.required = false;
+      inputRue.required = false;
+      inputCodePostal.required = false;
+      inputVilleClub.required = false;
+    } else {
+      btnClub.classList.add('active');
+      btnJoueur.classList.remove('active');
+      fieldsJoueur.style.display = 'none';
+      fieldsClub.style.display = 'block';
+      inputPrenom.required = false;
+      inputNom.required = false;
+      inputNomClub.required = true;
+      inputRue.required = true;
+      inputCodePostal.required = true;
+      inputVilleClub.required = true;
     }
+  }
+  btnJoueur.addEventListener('click', () => switchAudience('joueur'));
+  btnClub.addEventListener('click', () => switchAudience('club'));
 
-    if (!authData.user) {
-      showMsg('Vérifiez votre email pour confirmer votre compte avant de continuer.', 'success');
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Créer mon compte';
-      return;
-    }
+  // ════════════ GEOCODING NOMINATIM ════════════
+  async function geocodeAddress(rue, codePostal, ville, pays) {
+    const paysFull = pays === 'CH' ? 'Switzerland' : 'France';
+    const query = `${rue}, ${codePostal} ${ville}, ${paysFull}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
 
-    // 2) Créer le restaurant lié
-    let baseSlug = slugify(restoNom) || 'mon-resto';
-    let finalSlug = baseSlug;
-    let counter = 1;
-    while (counter < 50) {
-      const { data: existing } = await supa.from('restaurants').select('id').eq('slug', finalSlug).maybeSingle();
-      if (!existing) break;
-      finalSlug = `${baseSlug}-${counter}`;
-      counter++;
-    }
-
-    // Génère un UUID v4 côté client (au cas où la base n'a pas de default gen_random_uuid())
-    const generateUUID = () => {
-      if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+    try {
+      const response = await fetch(url, {
+        headers: { 'User-Agent': 'Frizz Padel App (frizz-instant.com)' }
       });
-    };
-
-    const restoPayload = {
-      id: generateUUID(),
-      nom: restoNom,
-      slug: finalSlug,
-      user_id: authData.user.id,
-      email,
-      fiscal_country: country,
-      currency,
-      statut: 'actif'
-    };
-
-    // Retry intelligent : si certaines colonnes n'existent pas, on les retire
-    const optionalCols = ['fiscal_country', 'currency', 'statut', 'email'];
-    let payload = { ...restoPayload };
-    let restoCreated = false;
-
-    for (let attempt = 0; attempt < 8; attempt++) {
-      const { error } = await supa.from('restaurants').insert(payload);
-      if (!error) {
-        restoCreated = true;
-        break;
+      const data = await response.json();
+      if (data && data.length > 0) {
+        return {
+          lat: parseFloat(data[0].lat),
+          lon: parseFloat(data[0].lon),
+          display: data[0].display_name
+        };
       }
-      console.error(`Tentative resto ${attempt + 1}:`, error);
-
-      const msg = (error.message || '').toLowerCase();
-      // Si user_id rejeté, retenter avec owner_id
-      if (msg.includes('user_id') && payload.user_id !== undefined) {
-        payload.owner_id = payload.user_id;
-        delete payload.user_id;
-        continue;
-      }
-      // Sinon retirer une colonne optionnelle
-      const colMatch = msg.match(/column ['"]?(\w+)['"]?|could not find the ['"]?(\w+)['"]? column/i);
-      let col = colMatch ? (colMatch[1] || colMatch[2]) : null;
-      if (!col) col = optionalCols.find(c => payload[c] !== undefined);
-      if (col && payload[col] !== undefined) {
-        delete payload[col];
-        continue;
-      }
-      break;
+    } catch (err) {
+      console.error('Geocoding error:', err);
     }
-
-    if (!restoCreated) {
-      showMsg('Compte créé mais erreur de configuration restaurant. Connectez-vous pour continuer.', 'success');
-      setTimeout(() => location.href = 'login.html', 2500);
-      return;
-    }
-
-    showMsg('Compte créé ! Redirection…', 'success');
-    setTimeout(() => location.href = 'menu-admin.html', 1500);
-  } catch (err) {
-    console.error(err);
-    showMsg('Erreur de création. Réessayez.', 'error');
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Créer mon compte';
+    return null;
   }
-});
+
+  // ════════════ SUBMIT ════════════
+  async function submitSignup(event) {
+    event.preventDefault();
+
+    const btn = document.getElementById('btn-submit');
+    const msgSuccess = document.getElementById('msg-success');
+    const msgError = document.getElementById('msg-error');
+    const msgInfo = document.getElementById('msg-info');
+    const geoStatus = document.getElementById('geo-status');
+
+    msgSuccess.classList.remove('show');
+    msgError.classList.remove('show');
+    msgInfo.classList.remove('show');
+
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+
+    let metadata = {};
+    if (currentAudience === 'joueur') {
+      metadata = {
+        prenom: inputPrenom.value.trim(),
+        nom: inputNom.value.trim(),
+        type_compte: 'joueur'
+      };
+    } else {
+      // Pour les clubs : geocode l'adresse d'abord
+      btn.disabled = true;
+      btn.innerHTML = 'Localisation du club...';
+      msgInfo.innerHTML = '🌍 Recherche de l\'adresse sur la carte...';
+      msgInfo.classList.add('show');
+
+      const rue = inputRue.value.trim();
+      const codePostal = inputCodePostal.value.trim();
+      const ville = inputVilleClub.value.trim();
+      const pays = selectPaysClub.value;
+
+      const geo = await geocodeAddress(rue, codePostal, ville, pays);
+
+      if (geo) {
+        msgInfo.innerHTML = '✓ Adresse trouvée : ' + geo.display.substring(0, 60) + '...';
+      } else {
+        msgInfo.innerHTML = '⚠️ Adresse non trouvée précisément. Le club sera créé, tu pourras corriger sa position plus tard.';
+      }
+
+      metadata = {
+        nom_club: inputNomClub.value.trim(),
+        rue: rue,
+        code_postal: codePostal,
+        ville: ville,
+        pays: pays,
+        type_compte: 'club',
+        latitude: geo ? geo.lat.toString() : '',
+        longitude: geo ? geo.lon.toString() : ''
+      };
+    }
+
+    btn.innerHTML = 'Création du compte...';
+
+    try {
+      const { data, error } = await sb.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: metadata,
+          emailRedirectTo: window.location.origin + '/login.html'
+        }
+      });
+
+      if (error) {
+        if (error.message.includes('already registered') || error.message.includes('User already')) {
+          showError(msgError, 'Cet email est déjà utilisé. Connecte-toi plutôt.');
+        } else if (error.message.includes('Password')) {
+          showError(msgError, 'Mot de passe trop court (6 caractères min).');
+        } else {
+          showError(msgError, 'Erreur : ' + error.message);
+        }
+      } else {
+        msgInfo.classList.remove('show');
+        if (data.user && !data.session) {
+          msgSuccess.innerHTML = '✓ Compte créé ! Vérifie ton email pour confirmer ton inscription.';
+        } else {
+          msgSuccess.innerHTML = '✓ Compte créé ! Redirection...';
+          setTimeout(() => {
+            window.location.href = 'app.html';
+          }, 1500);
+        }
+        msgSuccess.classList.add('show');
+        document.getElementById('signup-form').reset();
+        switchAudience('joueur');
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      showError(msgError, 'Une erreur est survenue. Réessaie dans un instant.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Créer mon compte →';
+    }
+    return false;
+  }
+
+  function showError(el, msg) {
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => { el.classList.remove('show'); }, 6000);
+  }
 </script>
+
 </body>
 </html>

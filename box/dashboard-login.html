@@ -363,6 +363,11 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => setLang(btn.dataset.lang));
     });
+    // Si ?signup=1 dans l'URL, basculer auto sur Inscription
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('signup') === '1') {
+      switchTab('signup');
+    }
   });
 
   // ============================================

@@ -387,6 +387,82 @@
   .page.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* RESERVATIONS TABLE - responsive */
+  .resa-table { width: 100%; border-collapse: collapse; }
+  .resa-table th, .resa-table td {
+    padding: 12px 10px; text-align: left;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+  }
+  .resa-table th {
+    font-size: 11px; font-weight: 700;
+    color: var(--gray-500); text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--gray-50);
+  }
+  .resa-table tr.clickable { cursor: pointer; transition: background 0.15s; }
+  .resa-table tr.clickable:hover { background: rgba(234,88,12,0.03); }
+
+  .resa-table .cell-client { max-width: 0; min-width: 180px; }
+  .resa-table .cell-name {
+    font-weight: 700; font-size: 13px; color: var(--black);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .resa-table .cell-meta {
+    display: flex; gap: 6px; align-items: center;
+    font-size: 11px; color: var(--gray-500);
+    margin-top: 2px;
+  }
+  .resa-table .cell-resa-num {
+    background: var(--gray-100); padding: 1px 6px;
+    border-radius: 4px; font-weight: 600;
+    font-size: 10px; color: var(--gray-700);
+    flex-shrink: 0;
+  }
+  .resa-table .cell-email {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0;
+  }
+  .resa-table .cell-box {
+    font-size: 12px; color: var(--gray-700);
+    white-space: nowrap;
+  }
+  .resa-table .cell-date {
+    font-size: 12px; color: var(--gray-700);
+    white-space: nowrap;
+  }
+  .resa-table .cell-total {
+    text-align: right; white-space: nowrap;
+    font-size: 13px;
+  }
+  .resa-table .cell-total strong { color: var(--orange); }
+  .resa-table .cell-status { white-space: nowrap; text-align: right; }
+  .resa-table .badge {
+    display: inline-block; padding: 4px 10px;
+    border-radius: 100px; font-size: 11px;
+    font-weight: 700; white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .resa-table .hide-mobile { display: none; }
+    .resa-table th, .resa-table td { padding: 10px 8px; }
+    .resa-table .cell-meta { display: none; }
+    .resa-table .show-mobile-only { display: table-cell; }
+  }
+  .resa-table .show-mobile-only { display: none; }
+  .resa-table .btn-see-detail {
+    background: var(--orange-bg); color: var(--orange);
+    border: 1px solid rgba(234,88,12,0.2);
+    padding: 6px 12px; border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .resa-table .btn-see-detail:hover {
+    background: var(--orange); color: var(--white);
+  }
+
   /* BOX TYPES GRID */
   .boxes-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -682,6 +758,48 @@
   .mobile-menu .nav-item {
     font-size: 15px; padding: 12px 14px;
     margin-bottom: 4px;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s;
+  }
+  /* Icônes monochromes (filtre noir gris) */
+  .mobile-menu .nav-item .icon {
+    font-size: 18px; width: 24px;
+    text-align: center;
+    filter: grayscale(100%) brightness(0.4);
+    opacity: 0.85;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+  }
+  .mobile-menu .nav-item.active .icon,
+  .mobile-menu .nav-item:active .icon {
+    filter: grayscale(0%) brightness(1);
+    opacity: 1;
+  }
+  /* Animation pulse au clic */
+  .mobile-menu .nav-item.clicked .icon {
+    animation: navIconPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes navIconPulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.4) rotate(-8deg); }
+    70%  { transform: scale(0.9) rotate(4deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  /* Effet ripple sur le clic */
+  .mobile-menu .nav-item {
+    position: relative; overflow: hidden;
+  }
+  .mobile-menu .nav-item.clicked::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+      rgba(234,88,12,0.25) 0%, transparent 60%);
+    animation: ripple 0.5s ease-out;
+    pointer-events: none;
+  }
+  @keyframes ripple {
+    0% { opacity: 1; transform: scale(0.3); }
+    100% { opacity: 0; transform: scale(2); }
   }
   .mobile-menu .user-info-mobile {
     margin-top: 14px; padding-top: 14px;
@@ -827,13 +945,13 @@
   <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="nav-section-label" data-i18n="nav_section_pilotage">Pilotage</div>
-    <div class="nav-item active" data-page="dashboard" onclick="goToPageMobile('dashboard')"><span class="icon">📊</span> <span data-i18n="nav_dashboard">Dashboard</span></div>
-    <div class="nav-item" data-page="reservations" onclick="goToPageMobile('reservations')"><span class="icon">📋</span> <span data-i18n="nav_reservations">Réservations</span> <span class="badge-count" id="navResaCountMobile" style="display:none;">0</span></div>
-    <div class="nav-item" data-page="clients" onclick="goToPageMobile('clients')"><span class="icon">👥</span> <span data-i18n="nav_clients">Clients</span></div>
+    <div class="nav-item active" data-page="dashboard" onclick="goToPageMobile('dashboard', event)"><span class="icon">📊</span> <span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="nav-item" data-page="reservations" onclick="goToPageMobile('reservations', event)"><span class="icon">📋</span> <span data-i18n="nav_reservations">Réservations</span> <span class="badge-count" id="navResaCountMobile" style="display:none;">0</span></div>
+    <div class="nav-item" data-page="clients" onclick="goToPageMobile('clients', event)"><span class="icon">👥</span> <span data-i18n="nav_clients">Clients</span></div>
 
     <div class="nav-section-label" data-i18n="nav_section_config">Configuration</div>
-    <div class="nav-item" data-page="boxes" onclick="goToPageMobile('boxes')"><span class="icon">📦</span> <span data-i18n="nav_boxes">Mes box</span></div>
-    <div class="nav-item" data-page="settings" onclick="goToPageMobile('settings')"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
+    <div class="nav-item" data-page="boxes" onclick="goToPageMobile('boxes', event)"><span class="icon">📦</span> <span data-i18n="nav_boxes">Mes box</span></div>
+    <div class="nav-item" data-page="settings" onclick="goToPageMobile('settings', event)"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
 
     <!-- Trial info (mobile) -->
     <div class="trial-card-mobile" id="trialCardMobile">
@@ -842,7 +960,7 @@
         <div class="trial-title" data-i18n="trial_title">Essai gratuit</div>
         <div class="trial-days"><span id="trialDaysMobile">30</span> <span data-i18n="trial_days_left">jours restants</span></div>
         <div class="trial-price-info">
-          <span data-i18n="trial_then">Puis</span> <strong>49€</strong><span data-i18n="trial_per_month">/mois</span>
+          <span data-i18n="trial_then">Puis</span> <strong>89€</strong><span data-i18n="trial_per_month">/mois</span>
         </div>
       </div>
     </div>
@@ -875,7 +993,7 @@
         <div class="trial-title" data-i18n="trial_title">Essai gratuit</div>
         <div class="trial-days"><span id="trialDaysDesktop">30</span> <span data-i18n="trial_days_left">jours restants</span></div>
         <div class="trial-price-info">
-          <span data-i18n="trial_then">Puis</span> <strong>49€</strong><span data-i18n="trial_per_month">/mois</span>
+          <span data-i18n="trial_then">Puis</span> <strong>89€</strong><span data-i18n="trial_per_month">/mois</span>
         </div>
       </div>
     </div>
@@ -1422,7 +1540,7 @@
       info_monthly_rent: 'Loyer mensuel', info_deposit: 'Caution',
       info_total_paid: 'Total payé', info_pin_not_generated: 'Non généré',
       modal_resa_change_status: 'Changer le statut',
-      btn_close: 'Fermer', btn_update: 'Mettre à jour',
+      btn_close: 'Fermer', btn_update: 'Mettre à jour', btn_see_details: 'Voir détails',
       // Stat modal labels
       info_monthly_avg: 'Moyenne mensuelle',
       total_6_months: 'Total période',
@@ -1569,7 +1687,7 @@
       info_monthly_rent: 'Monatsmiete', info_deposit: 'Kaution',
       info_total_paid: 'Bezahlt insgesamt', info_pin_not_generated: 'Nicht erstellt',
       modal_resa_change_status: 'Status ändern',
-      btn_close: 'Schließen', btn_update: 'Aktualisieren',
+      btn_close: 'Schließen', btn_update: 'Aktualisieren', btn_see_details: 'Details ansehen',
       info_monthly_avg: 'Monatsdurchschnitt',
       total_6_months: 'Gesamt Zeitraum',
       monthly_evolution: 'Monatliche Entwicklung',
@@ -1715,7 +1833,7 @@
       info_monthly_rent: 'Affitto mensile', info_deposit: 'Cauzione',
       info_total_paid: 'Totale pagato', info_pin_not_generated: 'Non generato',
       modal_resa_change_status: 'Cambia stato',
-      btn_close: 'Chiudi', btn_update: 'Aggiorna',
+      btn_close: 'Chiudi', btn_update: 'Aggiorna', btn_see_details: 'Vedi dettagli',
       info_monthly_avg: 'Media mensile',
       total_6_months: 'Totale periodo',
       monthly_evolution: 'Evoluzione mensile',
@@ -1861,7 +1979,7 @@
       info_monthly_rent: 'Monthly rent', info_deposit: 'Deposit',
       info_total_paid: 'Total paid', info_pin_not_generated: 'Not generated',
       modal_resa_change_status: 'Change status',
-      btn_close: 'Close', btn_update: 'Update',
+      btn_close: 'Close', btn_update: 'Update', btn_see_details: 'See details',
       info_monthly_avg: 'Monthly average',
       total_6_months: 'Total period',
       monthly_evolution: 'Monthly evolution',
@@ -1917,7 +2035,7 @@
 
   // Trial settings — durée gratuite et prix
   const TRIAL_DAYS = 30;
-  const TRIAL_PRICE = 49;
+  const TRIAL_PRICE = 89;
 
   function updateTrialInfo() {
     if (!session || !session.user || !session.user.created_at) return;
@@ -2132,21 +2250,29 @@
   // Tableau simplifié pour le dashboard (sans N° et Box)
   function renderRecentReservationTable(list) {
     const lang = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
-    return `<table>
+    return `<table class="resa-table">
       <thead><tr>
-        <th>${t('th_client')}</th><th>${t('th_date_entry')}</th><th>${t('th_total')}</th><th>${t('th_pin')}</th><th>${t('th_status')}</th>
+        <th>${t('th_client')}</th>
+        <th class="hide-mobile">${t('th_date_entry')}</th>
+        <th>${t('th_total')}</th>
+        <th>${t('th_status')}</th>
       </tr></thead>
       <tbody>
       ${list.map(r => {
         const c = r.frizz_box_clients || {};
         const badgeClass = 'badge-' + (r.status || 'pending');
         const badgeLabel = { paid: t('status_paid'), pending: t('status_pending'), pending_payment: t('status_pending_payment'), cancelled: t('status_cancelled'), active: t('status_active'), ended: t('status_ended') }[r.status] || r.status;
+        const startDate = r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-';
         return `<tr class="clickable" onclick="openReservationModal('${r.id}')">
-          <td>${(c.first_name || '') + ' ' + (c.last_name || '')}<br><small style="color:var(--gray-500);">${c.email || ''}</small></td>
-          <td>${r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-'}</td>
-          <td><strong>${parseFloat(r.total_paid_today || 0).toFixed(2)} €</strong></td>
-          <td><span class="pin-display ${!r.access_pin ? 'empty' : ''}">${r.access_pin || '----'}</span></td>
-          <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+          <td class="cell-client">
+            <div class="cell-name">${(c.first_name || '') + ' ' + (c.last_name || '')}</div>
+            <div class="cell-meta">
+              <span class="cell-email">${c.email || ''}</span>
+            </div>
+          </td>
+          <td class="hide-mobile cell-date">${startDate}</td>
+          <td class="cell-total"><strong>${parseFloat(r.total_paid_today || 0).toFixed(0)} €</strong></td>
+          <td class="cell-status"><span class="badge ${badgeClass}">${badgeLabel}</span></td>
         </tr>`;
       }).join('')}
       </tbody></table>`;
@@ -2181,9 +2307,14 @@
 
   function renderReservationTable(list) {
     const lang = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
-    return `<table>
+    return `<table class="resa-table resa-table-full">
       <thead><tr>
-        <th>${t('th_number')}</th><th>${t('th_client')}</th><th>${t('th_box')}</th><th>${t('th_date_entry')}</th><th>${t('th_total')}</th><th>${t('th_pin')}</th><th>${t('th_status')}</th>
+        <th>${t('th_client')}</th>
+        <th class="hide-mobile">${t('th_box')}</th>
+        <th class="hide-mobile">${t('th_date_entry')}</th>
+        <th>${t('th_total')}</th>
+        <th class="hide-mobile">${t('th_status')}</th>
+        <th class="show-mobile-only" style="text-align:right;">&nbsp;</th>
       </tr></thead>
       <tbody>
       ${list.map(r => {
@@ -2191,14 +2322,22 @@
         const b = r.frizz_box_types || {};
         const badgeClass = 'badge-' + (r.status || 'pending');
         const badgeLabel = { paid: t('status_paid'), pending: t('status_pending'), pending_payment: t('status_pending_payment'), cancelled: t('status_cancelled'), active: t('status_active'), ended: t('status_ended') }[r.status] || r.status;
+        const startDate = r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-';
         return `<tr class="clickable" onclick="openReservationModal('${r.id}')">
-          <td><strong>${r.reservation_number}</strong></td>
-          <td>${(c.first_name || '') + ' ' + (c.last_name || '')}<br><small style="color:var(--gray-500);">${c.email || ''}</small></td>
-          <td>${b.name || ''} · ${b.surface_m2 || ''}m²</td>
-          <td>${r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-'}</td>
-          <td><strong>${parseFloat(r.total_paid_today || 0).toFixed(2)} €</strong></td>
-          <td><span class="pin-display ${!r.access_pin ? 'empty' : ''}">${r.access_pin || '----'}</span></td>
-          <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+          <td class="cell-client">
+            <div class="cell-name">${(c.first_name || '') + ' ' + (c.last_name || '')}</div>
+            <div class="cell-meta">
+              <span class="cell-resa-num">#${r.reservation_number}</span>
+              <span class="cell-email">${c.email || ''}</span>
+            </div>
+          </td>
+          <td class="hide-mobile cell-box">${b.name || ''} · ${b.surface_m2 || ''}m²</td>
+          <td class="hide-mobile cell-date">${startDate}</td>
+          <td class="cell-total"><strong>${parseFloat(r.total_paid_today || 0).toFixed(0)} €</strong></td>
+          <td class="hide-mobile cell-status"><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+          <td class="show-mobile-only cell-detail-btn" style="text-align:right;">
+            <button class="btn-see-detail" onclick="event.stopPropagation(); openReservationModal('${r.id}')">${t('btn_see_details')} →</button>
+          </td>
         </tr>`;
       }).join('')}
       </tbody></table>`;
@@ -2797,29 +2936,55 @@
     });
   }
 
-  function openStatModal(metric) {
-    const data = getMonthlyData(metric);
+  // Exposer au global pour onclick
+  window.openStatModal = function(metric) {
+    console.log('[Frizz] openStatModal appelé:', metric);
+    try {
+      const data = getMonthlyData(metric);
+      console.log('[Frizz] data calculé:', data);
 
-    const titles = {
-      revenue: { title: t('stat_revenue_chart_title'), subtitle: t('stat_revenue_subtitle'), label: t('stat_revenue_label'), color: '#EA580C' },
-      reservations: { title: t('stat_reservations_chart_title'), subtitle: t('stat_reservations_subtitle'), label: t('stat_reservations_label'), color: '#3B82F6' },
-      boxes: { title: t('stat_boxes_chart_title'), subtitle: t('stat_boxes_subtitle'), label: t('stat_boxes_label'), color: '#10B981' },
-      clients: { title: t('stat_clients_chart_title'), subtitle: t('stat_clients_subtitle'), label: t('stat_clients_label'), color: '#F59E0B' }
-    };
-    const config = titles[metric];
+      const titles = {
+        revenue: { title: t('stat_revenue_chart_title'), subtitle: t('stat_revenue_subtitle'), label: t('stat_revenue_label'), color: '#EA580C' },
+        reservations: { title: t('stat_reservations_chart_title'), subtitle: t('stat_reservations_subtitle'), label: t('stat_reservations_label'), color: '#3B82F6' },
+        boxes: { title: t('stat_boxes_chart_title'), subtitle: t('stat_boxes_subtitle'), label: t('stat_boxes_label'), color: '#10B981' },
+        clients: { title: t('stat_clients_chart_title'), subtitle: t('stat_clients_subtitle'), label: t('stat_clients_label'), color: '#F59E0B' }
+      };
+      const config = titles[metric];
+      if (!config) { console.error('Metric inconnu:', metric); return; }
 
-    document.getElementById('statModalTitle').textContent = config.title;
-    document.getElementById('statModalSubtitle').textContent = config.subtitle;
+      document.getElementById('statModalTitle').textContent = config.title;
+      document.getElementById('statModalSubtitle').textContent = config.subtitle;
 
-    // Destroy existing chart
-    if (chartInstance) chartInstance.destroy();
+      // Destroy existing chart
+      if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
-    // Affichage du modal d'abord pour que le canvas soit visible
-    document.getElementById('modalStat').classList.add('active');
+      // Affichage du modal d'abord
+      document.getElementById('modalStat').classList.add('active');
 
-    // Petit délai pour que le canvas soit rendu avant de dessiner
-    setTimeout(() => {
-      const ctx = document.getElementById('statChart').getContext('2d');
+      setTimeout(() => {
+        try {
+          const canvas = document.getElementById('statChart');
+          if (!canvas) { console.error('Canvas statChart introuvable'); return; }
+          const ctx = canvas.getContext('2d');
+          if (typeof Chart === 'undefined') {
+            console.error('Chart.js non chargé');
+            document.getElementById('statSummary').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--gray-500);">Erreur de chargement du graphique. Rechargez la page.</div>';
+            return;
+          }
+          renderChart(ctx, data, config, metric);
+        } catch (err) {
+          console.error('Erreur rendu chart:', err);
+        }
+      }, 50);
+    } catch (err) {
+      console.error('Erreur openStatModal:', err);
+      alert('Erreur affichage statistique : ' + err.message);
+    }
+  };
+
+  function openStatModal(metric) { window.openStatModal(metric); }
+  
+  function renderChart(ctx, data, config, metric) {
       const labels = data.map(d => d.label);
       const values = data.map(d => d.value);
 
@@ -2912,7 +3077,6 @@
           </div>
         </div>
       `;
-    }, 50);
   }
 
   // ============== HELPERS ==============
@@ -2933,9 +3097,25 @@
     document.getElementById('page-' + page).classList.add('active');
   }
 
-  function goToPageMobile(page) {
-    goToPage(page);
-    closeMobileMenu();
+  function goToPageMobile(page, event) {
+    // Animation : ajouter classe "clicked" sur l'item
+    if (event && event.currentTarget) {
+      const item = event.currentTarget;
+      // Position du clic pour effet ripple
+      const rect = item.getBoundingClientRect();
+      const x = ((event.clientX || rect.left + rect.width/2) - rect.left) / rect.width * 100;
+      const y = ((event.clientY || rect.top + rect.height/2) - rect.top) / rect.height * 100;
+      item.style.setProperty('--ripple-x', x + '%');
+      item.style.setProperty('--ripple-y', y + '%');
+      item.classList.remove('clicked');
+      void item.offsetWidth; // reflow
+      item.classList.add('clicked');
+      setTimeout(() => item.classList.remove('clicked'), 500);
+    }
+    setTimeout(() => {
+      goToPage(page);
+      closeMobileMenu();
+    }, 180);
   }
 
   function toggleMobileMenu() {

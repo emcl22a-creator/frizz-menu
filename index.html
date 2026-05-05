@@ -696,6 +696,41 @@
   .form-status.error { color: var(--red); }
   
   .cta-disclaimer { margin-top: 8px; font-size: 13px; color: var(--gray-500); }
+
+  /* Pricing inline dans CTA */
+  .pricing-cta {
+    margin: 28px auto 8px;
+    background: linear-gradient(135deg, rgba(234,88,12,0.08), rgba(255,255,255,0.5));
+    border: 1px solid rgba(234,88,12,0.15);
+    padding: 16px 24px; border-radius: 14px;
+    display: inline-block;
+  }
+  .pricing-cta-line {
+    display: flex; align-items: baseline; gap: 12px; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .pricing-cta-strike {
+    color: var(--gray-500); text-decoration: line-through;
+    font-size: 18px; font-weight: 500;
+  }
+  .pricing-cta-price {
+    color: var(--orange); font-size: 36px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .pricing-cta-price small {
+    font-size: 16px; color: var(--gray-700); font-weight: 500;
+  }
+  .pricing-cta-tag {
+    background: var(--orange); color: var(--white);
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pricing-cta-after {
+    font-size: 12px; color: var(--gray-700); margin-top: 8px;
+    font-style: italic; font-family: 'Source Serif 4', serif;
+    text-align: center;
+  }
   
   footer {
     border-top: 1px solid var(--gray-100); padding: 32px 24px;
@@ -736,7 +771,7 @@
       <a href="#features">Fonctionnalités</a>
       <a href="#access">Ouverture</a>
       <a href="#cta">Tarifs</a>
-      <a href="#cta" class="btn-cta">Réserver une démo</a>
+      <a href="dashboard-login.html?signup=1" class="btn-cta">Inscrivez-vous gratuitement</a>
     </div>
   </div>
 </nav>
@@ -747,7 +782,7 @@
     <h1>Vos clients réservent leur box <span class="accent serif">en 5 minutes.</span></h1>
     <p class="hero-sub">Le widget Frizz s'installe sur votre site en 1 ligne de code. Choix de la taille, paiement, signature électronique. <span class="serif">Et ils ouvrent leur box avec leur téléphone.</span></p>
     <div class="hero-ctas">
-      <a href="#cta" class="btn-primary">Réserver une démo →</a>
+      <a href="dashboard-login.html?signup=1" class="btn-primary">Inscrivez-vous gratuitement →</a>
       <a href="https://frizz-instant.com/box/embed.html?c=demo" target="_blank" rel="noopener" class="btn-secondary">Voir un exemple ↗</a>
     </div>
     <div class="hero-checks">
@@ -893,16 +928,25 @@
 
 <!-- CTA FINAL -->
 <section class="section-cta" id="cta">
-  <div class="section-label">Démo gratuite</div>
+  <div class="section-label">Essai gratuit 30 jours</div>
   <h2>Prêt à transformer <span class="serif">votre centre ?</span></h2>
-  <p class="section-sub center">Réservez 30 minutes avec notre équipe. <em class="serif">Configuration et installation en 7 jours.</em></p>
-  
-  <form class="form-cta" id="leadForm" onsubmit="return submitLead(event)">
-    <input type="email" id="leadEmail" placeholder="votre@email.com" required autocomplete="email">
-    <button type="submit" id="leadButton">Réserver une démo →</button>
-  </form>
-  <div class="form-status" id="formStatus"></div>
-  <p class="cta-disclaimer">Réponse sous 24h · Démo personnalisée · Sans engagement</p>
+  <p class="section-sub center">Créez votre compte, configurez votre centre, recevez vos premières réservations. <em class="serif">Sans carte bancaire, sans engagement.</em></p>
+
+  <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin: 32px 0 18px;">
+    <a href="dashboard-login.html?signup=1" class="btn-primary" style="display:inline-block;">Inscrivez-vous gratuitement →</a>
+    <a href="https://frizz-instant.com/box/embed.html?c=demo" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block;">Voir un exemple ↗</a>
+  </div>
+
+  <div class="pricing-cta">
+    <div class="pricing-cta-line">
+      <span class="pricing-cta-strike">99€/mois</span>
+      <span class="pricing-cta-price">49€<small>/mois</small></span>
+      <span class="pricing-cta-tag">offre fondateurs</span>
+    </div>
+    <div class="pricing-cta-after">après les 30 jours d'essai</div>
+  </div>
+
+  <p class="cta-disclaimer">✓ Configuration en 7 jours · ✓ Sans carte bancaire · ✓ Annulable à tout moment</p>
 </section>
 
 <footer>
@@ -924,79 +968,6 @@
       utm_medium: params.get('utm_medium') || null,
       utm_campaign: params.get('utm_campaign') || null
     };
-  }
-  
-  async function submitLead(event) {
-    event.preventDefault();
-    const form = document.getElementById('leadForm');
-    const emailInput = document.getElementById('leadEmail');
-    const button = document.getElementById('leadButton');
-    const status = document.getElementById('formStatus');
-    const email = emailInput.value.trim().toLowerCase();
-    
-    if (!email || !email.includes('@')) {
-      status.textContent = 'Email invalide';
-      status.className = 'form-status error';
-      return false;
-    }
-    
-    button.disabled = true;
-    button.textContent = 'Envoi...';
-    status.textContent = '';
-    status.className = 'form-status';
-    
-    const utm = getUTMParams();
-    const lead = {
-      email: email,
-      source: 'landing-frizz-box',
-      utm_source: utm.utm_source,
-      utm_medium: utm.utm_medium,
-      utm_campaign: utm.utm_campaign,
-      user_agent: navigator.userAgent
-    };
-    
-    try {
-      const response = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_leads', {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(lead)
-      });
-      
-      if (response.ok || response.status === 201) {
-        form.classList.add('success');
-        status.textContent = '✓ Demande reçue ! On vous contacte sous 24h pour caler votre démo.';
-        status.className = 'form-status success';
-        button.textContent = 'Demande envoyée ✓';
-        emailInput.disabled = true;
-      } else if (response.status === 409) {
-        status.textContent = 'Cet email est déjà enregistré. On revient vers vous bientôt !';
-        status.className = 'form-status success';
-        form.classList.add('success');
-        button.textContent = 'Déjà enregistré';
-      } else {
-        const errorData = await response.json();
-        if (errorData.code === '23505' || (errorData.message && errorData.message.includes('duplicate'))) {
-          status.textContent = 'Cet email est déjà enregistré. On revient vers vous bientôt !';
-          status.className = 'form-status success';
-          form.classList.add('success');
-          button.textContent = 'Déjà enregistré';
-        } else {
-          throw new Error('Submit failed');
-        }
-      }
-    } catch (err) {
-      console.error('Lead submit error:', err);
-      status.textContent = 'Erreur. Réessayez ou contactez-nous à contact@frizz-instant.com';
-      status.className = 'form-status error';
-      button.disabled = false;
-      button.textContent = 'Réserver une démo →';
-    }
-    return false;
   }
   
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {

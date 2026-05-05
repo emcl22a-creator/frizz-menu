@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frizz · Embed Widget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --black: #0A0A0A; --gray-700: #4B5563; --gray-500: #6B7280;
+    --gray-300: #D1D5DB; --gray-200: #E5E7EB; --gray-100: #F3F4F6;
+    --gray-50: #FAFAFA; --white: #FFFFFF;
+    --orange: #EA580C; --orange-soft: #F97316;
+    --orange-light: #FED7AA; --orange-bg: #FFF7ED;
+    --green: #10B981; --red: #EF4444; --red-bg: #FEE2E2;
+  }
+  /* Reset pour iframe : transparent background pour s'intégrer */
+  body {
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--black); background: transparent;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+    padding: 16px;
+  }
+  .serif { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 400; }
+
+  /* Container : tout dans 1 box compact pour embed */
+  .frizz-embed {
+    max-width: 100%;
+    background: var(--white); border-radius: 16px;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06), 0 4px 12px rgba(234,88,12,0.04);
+    overflow: hidden; position: relative;
+  }
+
+  /* HEADER COMPACT */
+  .embed-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+  }
+  .embed-title {
+    font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; gap: 5px;
+    color: var(--black);
+  }
+  .embed-title .star {
+    color: var(--orange); font-size: 14px;
+    animation: starSpin 8s linear infinite;
+    display: inline-block;
+  }
+  @keyframes starSpin {
+    0%, 90%, 100% { transform: rotate(0deg); }
+    95% { transform: rotate(360deg); }
+  }
+  .lang-switcher {
+    display: flex; gap: 4px; background: var(--gray-100); padding: 3px;
+    border-radius: 8px;
+  }
+  .lang-btn {
+    padding: 4px 8px; border: none; cursor: pointer;
+    background: transparent; color: var(--gray-500);
+    font-size: 11px; font-weight: 600; border-radius: 6px;
+    font-family: inherit; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .lang-btn:hover { color: var(--orange); }
+  .lang-btn.active {
+    background: var(--white); color: var(--orange);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .embed-body { padding: 18px; }
+
+  /* PROGRESS COMPACT */
+  .progress {
+    display: flex; align-items: center; gap: 5px;
+    margin-bottom: 18px;
+  }
+  .step-indicator {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    background: var(--gray-100); color: var(--gray-500);
+    transition: all 0.3s;
+  }
+  .step-indicator.active { background: var(--orange); color: var(--white); transform: scale(1.1); }
+  .step-indicator.done { background: #DCFCE7; color: var(--green); }
+  .step-indicator.done::before { content: '✓'; font-size: 12px; }
+  .step-indicator.done .num { display: none; }
+  .step-line {
+    flex: 1; height: 2px; background: var(--gray-200); border-radius: 1px;
+    overflow: hidden; position: relative;
+  }
+  .step-line::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 0; height: 100%; background: var(--orange); transition: width 0.6s;
+  }
+  .step-line.filled::after { width: 100%; }
+
+  /* VIEWS */
+  .view { display: none; animation: fadeIn 0.3s; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 {
+    font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+    line-height: 1.2; margin-bottom: 4px;
+  }
+  h2 .serif { color: var(--orange); }
+  .subtitle { color: var(--gray-700); font-size: 12px; margin-bottom: 14px; }
+
+  /* AI SUGGEST */
+  .ai-suggest {
+    background: var(--orange-bg); padding: 9px 12px; border-radius: 8px;
+    border-left: 2px solid var(--orange); margin-bottom: 14px;
+    font-size: 12px; color: var(--gray-700);
+    display: flex; align-items: flex-start; gap: 6px;
+    position: relative; overflow: hidden;
+  }
+  .ai-suggest::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%, 100% { left: -100%; } 50% { left: 200%; } }
+  .ai-suggest strong { color: var(--black); }
+  .ai-suggest em {
+    font-family: 'Source Serif 4', serif; font-style: italic;
+    color: var(--orange); font-weight: 600;
+  }
+  .ai-icon { color: var(--orange); font-weight: 700; flex-shrink: 0; }
+
+  .question-label, .types-label {
+    font-size: 10px; color: var(--gray-500); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+  }
+  .quick-q { margin-bottom: 14px; }
+  .qopts { display: flex; gap: 5px; flex-wrap: wrap; }
+  .qopt {
+    padding: 5px 10px; border: 1px solid var(--gray-200); border-radius: 100px;
+    font-size: 11px; font-weight: 500; cursor: pointer;
+    background: var(--white); color: var(--gray-700);
+    transition: all 0.2s; font-family: inherit;
+  }
+  .qopt:hover { border-color: var(--orange); color: var(--orange); }
+  .qopt.selected { background: var(--orange); color: var(--white); border-color: var(--orange); }
+
+  .types-grid { display: grid; gap: 8px; margin-bottom: 16px; }
+  .type-card {
+    padding: 12px; border: 1.5px solid var(--gray-100); border-radius: 10px;
+    cursor: pointer; transition: all 0.25s; background: var(--white);
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative;
+  }
+  .type-card:hover { border-color: var(--gray-300); transform: translateX(2px); }
+  .type-card.selected { border-color: var(--orange); background: var(--orange-bg); }
+  .type-card.recommended::before {
+    content: '✦'; position: absolute;
+    top: -6px; right: 10px;
+    background: var(--orange); color: var(--white);
+    padding: 2px 6px; border-radius: 10px;
+    font-size: 9px; font-weight: 700;
+  }
+  .type-info { flex: 1; }
+  .type-name { font-weight: 700; font-size: 13px; margin-bottom: 1px; }
+  .type-desc {
+    font-size: 11px; color: var(--gray-500);
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+  .type-price {
+    text-align: right; font-weight: 700; font-size: 14px; color: var(--orange);
+    flex-shrink: 0; margin-left: 10px;
+  }
+  .type-price small { font-size: 9px; color: var(--gray-500); font-weight: 500; display: block; }
+  .type-price .original {
+    text-decoration: line-through; color: var(--gray-500); font-size: 10px;
+    font-weight: 500; display: inline-block; margin-right: 4px;
+  }
+  .type-price .ai-tag {
+    background: var(--orange); color: var(--white); padding: 1px 5px;
+    border-radius: 4px; font-size: 8px; font-weight: 700;
+    display: inline-block; margin-top: 2px; letter-spacing: 0.05em;
+  }
+
+  /* FORM COMPACT */
+  .form-grid { display: grid; gap: 8px; margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .form-field { display: flex; flex-direction: column; }
+  .form-label {
+    font-size: 10px; font-weight: 600; color: var(--gray-700); margin-bottom: 3px;
+  }
+  .form-label .required { color: var(--orange); }
+  .form-field input {
+    padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 8px;
+    font-size: 12px; font-family: inherit; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-field input:focus {
+    border-color: var(--orange); box-shadow: 0 0 0 2px rgba(234,88,12,0.1);
+  }
+
+  .summary {
+    background: var(--gray-50); padding: 11px 13px; border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .sum-row {
+    display: flex; justify-content: space-between; font-size: 12px;
+    padding: 2px 0; color: var(--gray-700);
+  }
+  .sum-row.total {
+    border-top: 1px solid var(--gray-200); margin-top: 6px; padding-top: 7px;
+    font-weight: 700; color: var(--black); font-size: 13px;
+  }
+  .sum-row.total .price {
+    color: var(--orange); font-size: 16px; font-weight: 800;
+  }
+
+  .btn-primary {
+    width: 100%; background: var(--orange); color: var(--white);
+    padding: 12px; border-radius: 10px;
+    font-weight: 700; font-size: 13px; border: none; cursor: pointer;
+    font-family: inherit; transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(234,88,12,0.3); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-back {
+    background: none; border: none; color: var(--gray-700);
+    font-size: 12px; cursor: pointer; padding: 4px 0; margin-bottom: 8px;
+    font-family: inherit; display: flex; align-items: center; gap: 3px;
+  }
+  .btn-back:hover { color: var(--orange); }
+
+  .loading {
+    text-align: center; padding: 40px 20px; color: var(--gray-500); font-size: 13px;
+  }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--gray-100); border-top-color: var(--orange);
+    border-radius: 50%; margin: 0 auto 10px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    background: var(--red-bg); color: var(--red); padding: 9px 12px;
+    border-radius: 8px; font-size: 12px; margin-bottom: 10px;
+    border-left: 2px solid var(--red);
+  }
+
+  .success-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #DCFCE7; border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; font-size: 28px; color: var(--green); font-weight: 800;
+  }
+  .pin-display {
+    background: var(--black); color: var(--orange-light);
+    padding: 14px; border-radius: 10px; text-align: center;
+    margin-bottom: 12px; position: relative; overflow: hidden;
+  }
+  .pin-display::before {
+    content: '✦'; position: absolute; top: -10px; right: -5px;
+    font-size: 60px; color: var(--orange); opacity: 0.1; font-family: serif;
+  }
+  .pin-label {
+    font-size: 9px; color: var(--orange-light); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+  .pin-digits {
+    display: flex; justify-content: center; gap: 5px;
+    position: relative; z-index: 2;
+  }
+  .pin-digit {
+    width: 28px; height: 36px; background: rgba(255,255,255,0.08);
+    border: 1.5px solid var(--orange); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: var(--orange);
+  }
+
+  .powered {
+    text-align: center; padding-top: 10px; font-size: 9px;
+    color: var(--gray-500); border-top: 1px solid var(--gray-100); margin-top: 14px;
+  }
+  .powered .serif { color: var(--gray-700); font-weight: 600; }
+  .powered a { color: var(--orange); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="frizz-embed" id="embedRoot">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div data-i18n="loading">Chargement...</div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // CONFIGURATION
+  // ==========================================
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const centerSlug = urlParams.get('c') || 'demo-bale';
+  const initialLang = urlParams.get('lang') || null;
+
+  // ==========================================
+  // I18N — TRADUCTIONS
+  // ==========================================
+  const I18N = {
+    fr: {
+      title_step1: 'Choisissez votre <span class="serif">box</span>',
+      sub_step1: 'Notre IA peut vous aider à trouver la bonne taille.',
+      title_step2: 'Vos <span class="serif">informations</span>',
+      sub_step2: 'Contrat envoyé par email après paiement.',
+      title_step3: 'Bienvenue chez <span class="serif">Frizz</span>',
+      sub_step3: 'Réservation confirmée.',
+      what_to_store: 'Que stockez-vous ?',
+      sizes: 'Tailles disponibles',
+      ai_suggestion: 'Notre suggestion :',
+      box_label_format: 'le box <em>{name}</em> ({surface} m²) est idéal.',
+      monthly: 'mois',
+      first_name: 'Prénom',
+      last_name: 'Nom',
+      email: 'Email',
+      phone: 'Téléphone',
+      address: 'Adresse',
+      postal: 'Code postal',
+      city: 'Ville',
+      birth: 'Date de naissance',
+      start: 'Date d\'entrée',
+      id_doc: 'N° pièce d\'identité',
+      monthly_price: 'Loyer mensuel',
+      deposit: 'Caution (remboursable)',
+      total_today: 'Total à payer aujourd\'hui',
+      continue: 'Continuer →',
+      pay: 'Payer {amount} →',
+      back: '← Retour',
+      pin_label: 'Votre code d\'accès',
+      reserve_again: 'Faire une autre réservation',
+      need_boxes: 'Cartons',
+      need_studio: 'Un studio',
+      need_t1: 'Un T1',
+      need_t2: 'Un T2/T3',
+      need_moving: 'Déménagement',
+      ai_pricing_active: '⚡ Prix dynamique IA',
+      loading: 'Chargement...',
+      error: 'Erreur. Vérifiez vos informations.',
+      not_found: 'Centre introuvable.',
+      processing: 'Traitement...',
+      powered_by: 'Propulsé par'
+    },
+    de: {
+      title_step1: 'Wählen Sie Ihre <span class="serif">Box</span>',
+      sub_step1: 'Unsere KI hilft Ihnen, die richtige Größe zu finden.',
+      title_step2: 'Ihre <span class="serif">Daten</span>',
+      sub_step2: 'Vertrag per E-Mail nach Zahlung.',
+      title_step3: 'Willkommen bei <span class="serif">Frizz</span>',
+      sub_step3: 'Buchung bestätigt.',
+      what_to_store: 'Was möchten Sie lagern?',
+      sizes: 'Verfügbare Größen',
+      ai_suggestion: 'Unsere Empfehlung:',
+      box_label_format: 'die Box <em>{name}</em> ({surface} m²) ist ideal.',
+      monthly: 'Monat',
+      first_name: 'Vorname',
+      last_name: 'Nachname',
+      email: 'E-Mail',
+      phone: 'Telefon',
+      address: 'Adresse',
+      postal: 'PLZ',
+      city: 'Stadt',
+      birth: 'Geburtsdatum',
+      start: 'Einzugsdatum',
+      id_doc: 'Ausweisnummer',
+      monthly_price: 'Monatsmiete',
+      deposit: 'Kaution (rückzahlbar)',
+      total_today: 'Heute zu zahlen',
+      continue: 'Weiter →',
+      pay: '{amount} zahlen →',
+      back: '← Zurück',
+      pin_label: 'Ihr Zugangscode',
+      reserve_again: 'Weitere Buchung',
+      need_boxes: 'Kartons',
+      need_studio: 'Studio',
+      need_t1: '1-Zimmer',
+      need_t2: '2-3 Zimmer',
+      need_moving: 'Umzug',
+      ai_pricing_active: '⚡ KI-Dynamikpreis',
+      loading: 'Lädt...',
+      error: 'Fehler. Bitte überprüfen Sie Ihre Daten.',
+      not_found: 'Zentrum nicht gefunden.',
+      processing: 'Verarbeitung...',
+      powered_by: 'Angetrieben von'
+    },
+    it: {
+      title_step1: 'Scegli il tuo <span class="serif">box</span>',
+      sub_step1: 'La nostra IA può aiutarti a trovare la giusta dimensione.',
+      title_step2: 'I tuoi <span class="serif">dati</span>',
+      sub_step2: 'Contratto inviato via email dopo il pagamento.',
+      title_step3: 'Benvenuto da <span class="serif">Frizz</span>',
+      sub_step3: 'Prenotazione confermata.',
+      what_to_store: 'Cosa vuoi stoccare?',
+      sizes: 'Misure disponibili',
+      ai_suggestion: 'Il nostro suggerimento:',
+      box_label_format: 'il box <em>{name}</em> ({surface} m²) è ideale.',
+      monthly: 'mese',
+      first_name: 'Nome',
+      last_name: 'Cognome',
+      email: 'Email',
+      phone: 'Telefono',
+      address: 'Indirizzo',
+      postal: 'CAP',
+      city: 'Città',
+      birth: 'Data di nascita',
+      start: 'Data di ingresso',
+      id_doc: 'N° documento identità',
+      monthly_price: 'Affitto mensile',
+      deposit: 'Cauzione (rimborsabile)',
+      total_today: 'Totale da pagare oggi',
+      continue: 'Continua →',
+      pay: 'Paga {amount} →',
+      back: '← Indietro',
+      pin_label: 'Il tuo codice di accesso',
+      reserve_again: 'Nuova prenotazione',
+      need_boxes: 'Scatoloni',
+      need_studio: 'Monolocale',
+      need_t1: 'T1',
+      need_t2: 'T2/T3',
+      need_moving: 'Trasloco',
+      ai_pricing_active: '⚡ Prezzo dinamico IA',
+      loading: 'Caricamento...',
+      error: 'Errore. Verifica i tuoi dati.',
+      not_found: 'Centro non trovato.',
+      processing: 'In elaborazione...',
+      powered_by: 'Powered by'
+    },
+    en: {
+      title_step1: 'Choose your <span class="serif">box</span>',
+      sub_step1: 'Our AI can help you find the right size.',
+      title_step2: 'Your <span class="serif">information</span>',
+      sub_step2: 'Contract sent by email after payment.',
+      title_step3: 'Welcome to <span class="serif">Frizz</span>',
+      sub_step3: 'Booking confirmed.',
+      what_to_store: 'What do you want to store?',
+      sizes: 'Available sizes',
+      ai_suggestion: 'Our suggestion:',
+      box_label_format: 'the <em>{name}</em> box ({surface} m²) is ideal.',
+      monthly: 'month',
+      first_name: 'First name',
+      last_name: 'Last name',
+      email: 'Email',
+      phone: 'Phone',
+      address: 'Address',
+      postal: 'Postal code',
+      city: 'City',
+      birth: 'Date of birth',
+      start: 'Move-in date',
+      id_doc: 'ID document number',
+      monthly_price: 'Monthly rent',
+      deposit: 'Deposit (refundable)',
+      total_today: 'Total due today',
+      continue: 'Continue →',
+      pay: 'Pay {amount} →',
+      back: '← Back',
+      pin_label: 'Your access code',
+      reserve_again: 'New reservation',
+      need_boxes: 'Boxes',
+      need_studio: 'Studio',
+      need_t1: '1-bedroom',
+      need_t2: '2-3 bedroom',
+      need_moving: 'Moving',
+      ai_pricing_active: '⚡ AI Dynamic pricing',
+      loading: 'Loading...',
+      error: 'Error. Please check your information.',
+      not_found: 'Center not found.',
+      processing: 'Processing...',
+      powered_by: 'Powered by'
+    }
+  };
+
+  // ==========================================
+  // STATE
+  // ==========================================
+  let state = {
+    center: null, boxTypes: [], selectedNeed: null,
+    selectedBoxType: null, currentStep: 1, currentLang: 'fr'
+  };
+
+  function t(key, replacements) {
+    let str = (I18N[state.currentLang] && I18N[state.currentLang][key]) || I18N.fr[key] || key;
+    if (replacements) {
+      Object.keys(replacements).forEach(k => {
+        str = str.replace('{' + k + '}', replacements[k]);
+      });
+    }
+    return str;
+  }
+
+  // ==========================================
+  // AI PRICING — Calcul du prix dynamique côté client
+  // ==========================================
+  function calculateDynamicPrice(type, center) {
+    if (!center.ai_pricing_enabled) return parseFloat(type.price_monthly);
+
+    const rules = center.ai_pricing_rules || {};
+    const basePrice = parseFloat(type.price_monthly);
+    let multiplier = 1.0;
+
+    // 1. Disponibilité (low stock = augmenter, high stock = baisser)
+    const availability = type.total_count > 0 ? type.available_count / type.total_count : 1;
+    if (availability < (rules.low_stock_threshold || 0.3)) {
+      multiplier *= (rules.low_stock_multiplier || 1.20);
+    } else if (availability > (rules.high_stock_threshold || 0.7)) {
+      multiplier *= (rules.high_stock_multiplier || 0.92);
+    }
+
+    // 2. Saisonnalité
+    const month = new Date().getMonth() + 1;
+    if ((rules.high_season_months || [6,7,8,9]).includes(month)) {
+      multiplier *= (rules.high_season_multiplier || 1.10);
+    } else if ((rules.low_season_months || [1,2,11]).includes(month)) {
+      multiplier *= (rules.low_season_multiplier || 0.95);
+    }
+
+    // 3. Capping
+    const maxIncrease = 1 + (rules.max_increase_pct || 25) / 100;
+    const maxDecrease = 1 - (rules.max_decrease_pct || 15) / 100;
+    multiplier = Math.max(maxDecrease, Math.min(maxIncrease, multiplier));
+
+    return Math.round(basePrice * multiplier * 100) / 100;
+  }
+
+  // ==========================================
+  // LOAD CENTER
+  // ==========================================
+  async function loadCenter() {
+    try {
+      const centerRes = await fetch(
+        SUPABASE_URL + '/rest/v1/frizz_box_centers?slug=eq.' + centerSlug + '&select=*',
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+      );
+      const centers = await centerRes.json();
+      if (!centers || centers.length === 0) throw new Error(t('not_found'));
+      state.center = centers[0];
+
+      // Définir la langue : URL > préférence centre > navigateur > FR
+      const supportedLangs = state.center.supported_languages || ['fr','de','it','en'];
+      const browserLang = (navigator.language || 'fr').substring(0, 2);
+      state.currentLang = initialLang || state.center.default_language ||
+        (supportedLangs.includes(browserLang) ? browserLang : 'fr');
+
+      const typesRes = await fetch(
+        SUPABASE_URL + '/rest/v1/frizz_box_types?center_id=eq.' + state.center.id + '&order=display_order&select=*',
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+      );
+      state.boxTypes = await typesRes.json();
+
+      renderWidget();
+    } catch (err) {
+      console.error('Load error:', err);
+      document.getElementById('embedRoot').innerHTML =
+        '<div class="loading"><div style="color:var(--red);">' + (err.message || t('not_found')) + '</div></div>';
+    }
+  }
+
+  // ==========================================
+  // RENDER WIDGET
+  // ==========================================
+  function renderWidget() {
+    const c = state.center;
+    const supported = c.supported_languages || ['fr','de','it','en'];
+
+    document.getElementById('embedRoot').innerHTML = `
+      <div class="embed-header">
+        <div class="embed-title"><span class="star">✦</span> ${c.name}</div>
+        <div class="lang-switcher">
+          ${supported.map(lang => `
+            <button class="lang-btn ${lang === state.currentLang ? 'active' : ''}" data-lang="${lang}">${lang}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="embed-body">
+        <div class="progress">
+          <div class="step-indicator active" data-step="1"><span class="num">1</span></div>
+          <div class="step-line" data-line="1-2"></div>
+          <div class="step-indicator" data-step="2"><span class="num">2</span></div>
+          <div class="step-line" data-line="2-3"></div>
+          <div class="step-indicator" data-step="3"><span class="num">3</span></div>
+        </div>
+        <div id="viewContent"></div>
+      </div>
+      <div class="powered" style="padding: 0 18px 14px;">
+        ${t('powered_by')} <a href="https://frizz-instant.com/box/" target="_blank"><span class="serif">Frizz</span></a>
+      </div>
+    `;
+
+    // Bind language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentLang = btn.dataset.lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderStep(state.currentStep);
+      });
+    });
+
+    renderStep(1);
+  }
+
+  // ==========================================
+  // RENDER STEP
+  // ==========================================
+  function renderStep(step) {
+    state.currentStep = step;
+    const container = document.getElementById('viewContent');
+
+    // Update progress
+    document.querySelectorAll('.step-indicator').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (i + 1 < step) el.classList.add('done');
+      else if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-line').forEach((el, i) => {
+      el.classList.toggle('filled', i + 1 < step);
+    });
+
+    if (step === 1) renderStep1(container);
+    else if (step === 2) renderStep2(container);
+    else if (step === 3) renderStep3(container);
+  }
+
+  function getTranslation(item, field) {
+    const trans = item[field + '_translations'];
+    if (trans && trans[state.currentLang]) return trans[state.currentLang];
+    return item[field] || '';
+  }
+
+  // ==========================================
+  // STEP 1
+  // ==========================================
+  function renderStep1(container) {
+    const c = state.center;
+    const aiPricingActive = c.ai_pricing_enabled;
+
+    container.innerHTML = `
+      <h2>${t('title_step1')}</h2>
+      <p class="subtitle">${t('sub_step1')}</p>
+      <div class="quick-q">
+        <div class="question-label">${t('what_to_store')}</div>
+        <div class="qopts">
+          <button class="qopt" data-need="boxes">${t('need_boxes')}</button>
+          <button class="qopt" data-need="studio">${t('need_studio')}</button>
+          <button class="qopt" data-need="apartment_t1">${t('need_t1')}</button>
+          <button class="qopt" data-need="apartment_t2">${t('need_t2')}</button>
+          <button class="qopt" data-need="moving">${t('need_moving')}</button>
+        </div>
+      </div>
+      <div class="ai-suggest" id="aiSuggest" style="display:none;">
+        <span class="ai-icon">✦</span>
+        <span><strong>${t('ai_suggestion')}</strong> <span id="aiSuggestText"></span></span>
+      </div>
+      <div class="types-label">${t('sizes')}</div>
+      <div class="types-grid" id="typesGrid"></div>
+      <div id="summaryBlock"></div>
+      <button class="btn-primary" id="btnNext1" disabled>${t('continue')}</button>
+    `;
+
+    renderTypes();
+
+    // Bind events
+    container.querySelectorAll('.qopt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.qopt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.selectedNeed = btn.dataset.need;
+        runAISuggest();
+      });
+    });
+
+    document.getElementById('btnNext1').addEventListener('click', () => {
+      if (state.selectedBoxType) renderStep(2);
+    });
+  }
+
+  function renderTypes() {
+    const c = state.center;
+    const html = state.boxTypes.map(type => {
+      const name = getTranslation(type, 'name');
+      const desc = getTranslation(type, 'description');
+      const basePrice = parseFloat(type.price_monthly);
+      const dynamicPrice = calculateDynamicPrice(type, c);
+      const showAI = c.ai_pricing_enabled && Math.abs(dynamicPrice - basePrice) > 0.5;
+
+      let priceHtml = '';
+      if (showAI) {
+        priceHtml = `
+          <span class="original">${basePrice.toFixed(0)} €</span>
+          ${dynamicPrice.toFixed(0)} €<small>/${t('monthly')}</small>
+          <span class="ai-tag">${t('ai_pricing_active')}</span>
+        `;
+      } else {
+        priceHtml = `${basePrice.toFixed(0)} €<small>/${t('monthly')}</small>`;
+      }
+
+      return `
+        <div class="type-card ${type.is_recommended ? 'recommended' : ''}" data-id="${type.id}">
+          <div class="type-info">
+            <div class="type-name">${name} · ${type.surface_m2} m²</div>
+            <div class="type-desc">${desc}</div>
+          </div>
+          <div class="type-price">${priceHtml}</div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('typesGrid').innerHTML = html;
+
+    document.querySelectorAll('.type-card').forEach(card => {
+      card.addEventListener('click', () => selectBoxType(card.dataset.id));
+    });
+  }
+
+  function selectBoxType(id) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector(`.type-card[data-id="${id}"]`).classList.add('selected');
+    state.selectedBoxType = state.boxTypes.find(t => t.id === id);
+    state.selectedBoxType._dynamicPrice = calculateDynamicPrice(state.selectedBoxType, state.center);
+    updateSummary();
+    document.getElementById('btnNext1').disabled = false;
+  }
+
+  function runAISuggest() {
+    const need = state.selectedNeed;
+    if (!need) return;
+    let suggested = state.boxTypes.find(t => t.ai_suggest_for && t.ai_suggest_for.includes(need));
+    if (!suggested) suggested = state.boxTypes.find(t => t.is_recommended);
+    if (!suggested) return;
+
+    const name = getTranslation(suggested, 'name');
+    document.getElementById('aiSuggest').style.display = 'flex';
+    document.getElementById('aiSuggestText').innerHTML = t('box_label_format', { name: name, surface: suggested.surface_m2 });
+    selectBoxType(suggested.id);
+  }
+
+  function updateSummary() {
+    const t_obj = state.selectedBoxType;
+    if (!t_obj) return;
+    const monthly = t_obj._dynamicPrice || parseFloat(t_obj.price_monthly);
+    const deposit = parseFloat(t_obj.deposit) || 0;
+    const total = monthly + deposit;
+    const name = getTranslation(t_obj, 'name');
+
+    document.getElementById('summaryBlock').innerHTML = `
+      <div class="summary">
+        <div class="sum-row"><span>${name} · ${t_obj.surface_m2}m²</span><span>${monthly.toFixed(2)} €</span></div>
+        <div class="sum-row"><span>${t('deposit')}</span><span>${deposit.toFixed(2)} €</span></div>
+        <div class="sum-row total"><span>${t('total_today')}</span><span class="price">${total.toFixed(2)} €</span></div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // STEP 2
+  // ==========================================
+  function renderStep2(container) {
+    container.innerHTML = `
+      <button class="btn-back" id="btnBack2">${t('back')}</button>
+      <h2>${t('title_step2')}</h2>
+      <p class="subtitle">${t('sub_step2')}</p>
+      <div class="error" id="errorBox" style="display:none;"></div>
+      <form class="form-grid" id="reservationForm">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">${t('first_name')} <span class="required">*</span></label>
+            <input type="text" name="firstName" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">${t('last_name')} <span class="required">*</span></label>
+            <input type="text" name="lastName" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">${t('email')} <span class="required">*</span></label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">${t('phone')} <span class="required">*</span></label>
+          <input type="tel" name="phone" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">${t('address')} <span class="required">*</span></label>
+          <input type="text" name="address" required>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">${t('postal')} <span class="required">*</span></label>
+            <input type="text" name="postalCode" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">${t('city')} <span class="required">*</span></label>
+            <input type="text" name="city" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">${t('birth')} <span class="required">*</span></label>
+            <input type="date" name="dateOfBirth" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">${t('start')} <span class="required">*</span></label>
+            <input type="date" name="startDate" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">${t('id_doc')} <span class="required">*</span></label>
+          <input type="text" name="idDocument" required>
+        </div>
+      </form>
+      <div id="summary2"></div>
+      <button class="btn-primary" id="btnSubmit">${t('pay', { amount: ((state.selectedBoxType._dynamicPrice || parseFloat(state.selectedBoxType.price_monthly)) + (parseFloat(state.selectedBoxType.deposit) || 0)).toFixed(2) + ' €' })}</button>
+    `;
+
+    // Sync summary
+    document.getElementById('summary2').innerHTML = '';
+    const sumDiv = document.createElement('div');
+    sumDiv.id = 'summaryBlock';
+    document.getElementById('summary2').appendChild(sumDiv);
+    updateSummary();
+    sumDiv.innerHTML = document.getElementById('summaryBlock').innerHTML;
+
+    document.getElementById('btnBack2').addEventListener('click', () => renderStep(1));
+    document.getElementById('btnSubmit').addEventListener('click', submitReservation);
+  }
+
+  // ==========================================
+  // SUBMIT
+  // ==========================================
+  async function submitReservation() {
+    const form = document.getElementById('reservationForm');
+    const button = document.getElementById('btnSubmit');
+    const errorBox = document.getElementById('errorBox');
+    errorBox.style.display = 'none';
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    button.disabled = true;
+    button.textContent = t('processing');
+
+    try {
+      const clientRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_clients', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json', 'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          email: data.email, phone: data.phone,
+          first_name: data.firstName, last_name: data.lastName,
+          address: data.address, city: data.city,
+          postal_code: data.postalCode, country: state.center.country,
+          date_of_birth: data.dateOfBirth, id_document_number: data.idDocument
+        })
+      });
+      const clientArr = await clientRes.json();
+      const client = Array.isArray(clientArr) ? clientArr[0] : clientArr;
+      if (!client || !client.id) throw new Error('Client error');
+
+      const t_obj = state.selectedBoxType;
+      const monthly = t_obj._dynamicPrice || parseFloat(t_obj.price_monthly);
+      const deposit = parseFloat(t_obj.deposit) || 0;
+      const total = monthly + deposit;
+
+      const year = new Date().getFullYear();
+      const resNumber = 'FB-' + year + '-' + String(Date.now()).slice(-5);
+      const pin = String(Math.floor(1000 + Math.random() * 9000));
+
+      const resRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_reservations', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json', 'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          reservation_number: resNumber, center_id: state.center.id,
+          box_type_id: t_obj.id, client_id: client.id,
+          start_date: data.startDate, monthly_price: monthly,
+          deposit: deposit, setup_fee: 0, total_paid_today: total,
+          status: 'paid', access_pin: pin, user_agent: navigator.userAgent
+        })
+      });
+      if (!resRes.ok) throw new Error('Reservation error');
+
+      state._lastResNumber = resNumber;
+      state._lastPin = pin;
+      renderStep(3);
+    } catch (err) {
+      console.error(err);
+      errorBox.textContent = t('error');
+      errorBox.style.display = 'block';
+      button.disabled = false;
+      button.textContent = t('pay', { amount: ((state.selectedBoxType._dynamicPrice || parseFloat(state.selectedBoxType.price_monthly)) + (parseFloat(state.selectedBoxType.deposit) || 0)).toFixed(2) + ' €' });
+    }
+  }
+
+  // ==========================================
+  // STEP 3
+  // ==========================================
+  function renderStep3(container) {
+    const pin = state._lastPin || '----';
+    const pinDigits = pin.split('').map(d => `<div class="pin-digit">${d}</div>`).join('');
+
+    container.innerHTML = `
+      <div class="success-icon">✓</div>
+      <h2 style="text-align:center;">${t('title_step3')}</h2>
+      <p class="subtitle" style="text-align:center; margin-bottom:14px;">${t('sub_step3')} <strong>#${state._lastResNumber}</strong></p>
+      <div class="pin-display">
+        <div class="pin-label">${t('pin_label')}</div>
+        <div class="pin-digits">${pinDigits}</div>
+      </div>
+      <button class="btn-primary" id="btnRestart">${t('reserve_again')}</button>
+    `;
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      state.selectedBoxType = null;
+      state.selectedNeed = null;
+      state._lastResNumber = null;
+      state._lastPin = null;
+      renderStep(1);
+    });
+  }
+
+  loadCenter();
+</script>
+</body>
+</html>

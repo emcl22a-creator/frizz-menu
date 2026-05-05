@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Frizz · La réservation moderne pour votre garde-meubles</title>
-<meta name="description" content="Vos clients réservent leur box, paient et signent en 5 minutes. Ouverture par téléphone. Installé sur votre site en 7 jours. Beta gratuite 3 mois.">
+<meta name="description" content="Vos clients réservent leur box, paient et signent en 5 minutes. Ouverture par téléphone. Installé sur votre site en 7 jours. Démo gratuite sur demande.">
 <meta property="og:title" content="Frizz · La réservation moderne pour votre garde-meubles">
-<meta property="og:description" content="Vos clients réservent leur box en 5 minutes et l'ouvrent avec leur téléphone. Beta privée — 20 places.">
+<meta property="og:description" content="Vos clients réservent leur box en 5 minutes et l'ouvrent avec leur téléphone. Réservez votre démo personnalisée.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://frizz-instant.com/box/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -219,23 +219,70 @@
   .hero-checks .check { color: var(--orange); font-weight: 700; }
   
   /* WIDGET */
+  /* PHONE MOCKUP - Téléphone réaliste */
   .widget-wrap {
-    background: var(--gray-50); padding: 32px; border-radius: 24px;
-    border: 1px solid var(--gray-100);
-    box-shadow: 0 30px 80px rgba(234,88,12,0.08);
+    /* Le cadre extérieur du téléphone (bordures noires) */
+    background: #1a1a1a;
+    padding: 14px 14px 14px 14px;
+    border-radius: 44px;
+    border: 2px solid #2a2a2a;
+    box-shadow:
+      0 0 0 2px #0a0a0a,
+      0 50px 100px rgba(0,0,0,0.25),
+      0 30px 60px rgba(234,88,12,0.12),
+      inset 0 0 0 1px rgba(255,255,255,0.05);
     position: relative;
+    max-width: 380px;
+    margin: 0 auto;
     animation: slideInRight 1s ease-out 0.4s backwards, glow 4s ease-in-out 1.5s infinite;
   }
-  .widget-wrap::before {
-    content: 'Vu par votre client'; position: absolute;
-    top: -12px; left: 24px; background: var(--orange); color: var(--white);
-    padding: 4px 12px; border-radius: 100px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
-    animation: bounce 3s ease-in-out infinite;
+  /* Encoche du téléphone (notch) */
+  .widget-wrap::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 28px;
+    background: #0a0a0a;
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
   }
+  /* Badge "Vu par votre client" repositionné au-dessus du téléphone */
+  .widget-wrap::before {
+    content: 'Vu par votre client';
+    position: absolute;
+    top: -34px; left: 50%; transform: translateX(-50%);
+    background: var(--orange); color: var(--white);
+    padding: 5px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    white-space: nowrap;
+    animation: bounce 3s ease-in-out infinite;
+    box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+  }
+  /* Bouton power latéral droit (détail réaliste) */
+  .widget-wrap .phone-btn-right {
+    position: absolute;
+    right: -3px; top: 110px;
+    width: 3px; height: 60px;
+    background: #1a1a1a;
+    border-radius: 0 2px 2px 0;
+  }
+  /* Boutons volume gauche (détail réaliste) */
+  .widget-wrap .phone-btn-left {
+    position: absolute;
+    left: -3px; top: 90px;
+    width: 3px; height: 35px;
+    background: #1a1a1a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 50px 0 #1a1a1a;
+  }
+  /* L'écran intérieur (le widget) */
   .widget {
-    background: var(--white); border-radius: 16px;
-    border: 1px solid var(--gray-100); overflow: hidden;
+    background: var(--white); border-radius: 32px;
+    border: none; overflow: hidden;
+    padding-top: 50px; /* espace pour l'encoche */
   }
   .widget-header {
     padding: 20px 24px; border-bottom: 1px solid var(--gray-100);
@@ -548,7 +595,7 @@
   .footer-inner .serif { color: var(--gray-700); }
   
   @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; padding: 80px 24px 60px; gap: 48px; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
     h1 { font-size: 40px; }
     h2 { font-size: 30px; }
     .three-steps { grid-template-columns: 1fr; gap: 24px; }
@@ -558,6 +605,10 @@
     .form-cta button { width: 100%; }
     .access-flow { gap: 8px; }
     .flow-step { font-size: 12px; padding: 10px 14px; }
+    /* Téléphone responsive */
+    .widget-wrap { max-width: 320px; padding: 12px; border-radius: 38px; }
+    .widget-wrap::after { width: 90px; height: 24px; top: 12px; }
+    .widget { border-radius: 26px; padding-top: 42px; }
   }
 </style>
 </head>
@@ -569,8 +620,8 @@
     <div class="nav-links">
       <a href="#features">Fonctionnalités</a>
       <a href="#access">Ouverture</a>
-      <a href="#beta">Beta</a>
-      <a href="#beta" class="btn-cta">Essai gratuit</a>
+      <a href="#cta">Tarifs</a>
+      <a href="#cta" class="btn-cta">Réserver une démo</a>
     </div>
   </div>
 </nav>
@@ -581,16 +632,18 @@
     <h1>Vos clients réservent leur box <span class="accent serif">en 5 minutes.</span></h1>
     <p class="hero-sub">Le widget Frizz s'installe sur votre site en 1 ligne de code. Choix de la taille, paiement, signature électronique. <span class="serif">Et ils ouvrent leur box avec leur téléphone.</span></p>
     <div class="hero-ctas">
-      <a href="#beta" class="btn-primary">Demander une démo →</a>
-      <a href="#features" class="btn-secondary">Tester le widget</a>
+      <a href="#cta" class="btn-primary">Réserver une démo →</a>
+      <a href="https://frizz-instant.com/box/embed.html?c=demo-bale" target="_blank" rel="noopener" class="btn-secondary">Voir un exemple ↗</a>
     </div>
     <div class="hero-checks">
       <span><span class="check">✓</span> Installé en 7 jours</span>
-      <span><span class="check">✓</span> 1 mois gratuit</span>
+      <span><span class="check">✓</span> Sans engagement</span>
     </div>
   </div>
   
   <div class="widget-wrap">
+    <span class="phone-btn-left"></span>
+    <span class="phone-btn-right"></span>
     <div class="widget">
       <div class="widget-header">
         <div class="widget-title">✦ Réserver un box</div>
@@ -734,17 +787,17 @@
 </section>
 
 <!-- CTA FINAL -->
-<section class="section-cta" id="beta">
-  <div class="section-label">Beta privée</div>
-  <h2>20 places. <span class="serif">1 mois gratuit.</span></h2>
-  <p class="section-sub center">Inscrivez-vous avant que la beta soit complète. <em class="serif">Aucune carte bancaire demandée.</em></p>
+<section class="section-cta" id="cta">
+  <div class="section-label">Démo gratuite</div>
+  <h2>Prêt à transformer <span class="serif">votre centre ?</span></h2>
+  <p class="section-sub center">Réservez 30 minutes avec notre équipe. <em class="serif">Configuration et installation en 7 jours.</em></p>
   
   <form class="form-cta" id="leadForm" onsubmit="return submitLead(event)">
     <input type="email" id="leadEmail" placeholder="votre@email.com" required autocomplete="email">
-    <button type="submit" id="leadButton">Réserver →</button>
+    <button type="submit" id="leadButton">Réserver une démo →</button>
   </form>
   <div class="form-status" id="formStatus"></div>
-  <p class="cta-disclaimer">Réponse sous 24h · Démo en 30 min · 100% gratuit</p>
+  <p class="cta-disclaimer">Réponse sous 24h · Démo personnalisée · Sans engagement</p>
 </section>
 
 <footer>
@@ -811,22 +864,22 @@
       
       if (response.ok || response.status === 201) {
         form.classList.add('success');
-        status.textContent = '✓ Inscrit ! On vous contacte sous 24h.';
+        status.textContent = '✓ Demande reçue ! On vous contacte sous 24h pour caler votre démo.';
         status.className = 'form-status success';
-        button.textContent = 'Inscrit ✓';
+        button.textContent = 'Demande envoyée ✓';
         emailInput.disabled = true;
       } else if (response.status === 409) {
-        status.textContent = 'Cet email est déjà inscrit. On revient vers vous bientôt !';
+        status.textContent = 'Cet email est déjà enregistré. On revient vers vous bientôt !';
         status.className = 'form-status success';
         form.classList.add('success');
-        button.textContent = 'Déjà inscrit';
+        button.textContent = 'Déjà enregistré';
       } else {
         const errorData = await response.json();
         if (errorData.code === '23505' || (errorData.message && errorData.message.includes('duplicate'))) {
-          status.textContent = 'Cet email est déjà inscrit. On revient vers vous bientôt !';
+          status.textContent = 'Cet email est déjà enregistré. On revient vers vous bientôt !';
           status.className = 'form-status success';
           form.classList.add('success');
-          button.textContent = 'Déjà inscrit';
+          button.textContent = 'Déjà enregistré';
         } else {
           throw new Error('Submit failed');
         }
@@ -836,7 +889,7 @@
       status.textContent = 'Erreur. Réessayez ou contactez-nous à contact@frizz-instant.com';
       status.className = 'form-status error';
       button.disabled = false;
-      button.textContent = 'Réserver →';
+      button.textContent = 'Réserver une démo →';
     }
     return false;
   }

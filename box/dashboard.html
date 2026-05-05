@@ -949,6 +949,124 @@
         </div>
         <button class="btn-save" onclick="saveCenter()">Enregistrer →</button>
       </div>
+
+      <!-- LANGUES -->
+      <div class="settings-section">
+        <div class="settings-title">🌍 Langues supportées</div>
+        <div class="settings-desc">Choisissez les langues que vos clients pourront sélectionner sur le widget.</div>
+
+        <div class="form-field">
+          <label class="form-label">Langue par défaut</label>
+          <select class="form-select" id="setDefaultLanguage">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="en">🇬🇧 English</option>
+          </select>
+        </div>
+
+        <div class="form-field" style="margin-bottom:18px;">
+          <label class="form-label">Langues disponibles (cochez celles que vos clients verront)</label>
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:6px;">
+            <label style="display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(243,244,246,0.5); border-radius:10px; cursor:pointer;">
+              <input type="checkbox" id="lang-fr" value="fr" style="width:16px; height:16px;">
+              <span style="font-size:14px;">🇫🇷 Français</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(243,244,246,0.5); border-radius:10px; cursor:pointer;">
+              <input type="checkbox" id="lang-de" value="de" style="width:16px; height:16px;">
+              <span style="font-size:14px;">🇩🇪 Deutsch</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(243,244,246,0.5); border-radius:10px; cursor:pointer;">
+              <input type="checkbox" id="lang-it" value="it" style="width:16px; height:16px;">
+              <span style="font-size:14px;">🇮🇹 Italiano</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(243,244,246,0.5); border-radius:10px; cursor:pointer;">
+              <input type="checkbox" id="lang-en" value="en" style="width:16px; height:16px;">
+              <span style="font-size:14px;">🇬🇧 English</span>
+            </label>
+          </div>
+        </div>
+        <button class="btn-save" onclick="saveLanguages()">Enregistrer les langues →</button>
+      </div>
+
+      <!-- AI PRICING -->
+      <div class="settings-section" style="border-color: rgba(234, 88, 12, 0.3);">
+        <div class="settings-title">⚡ <span class="serif">AI Pricing dynamique</span></div>
+        <div class="settings-desc">Ajustez automatiquement vos prix selon la disponibilité et la saison. Comme les hôtels et Uber.</div>
+
+        <label style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:linear-gradient(135deg, rgba(234,88,12,0.06), rgba(249,115,22,0.04)); border:1px solid rgba(234,88,12,0.2); border-radius:12px; cursor:pointer; margin-bottom:18px;">
+          <input type="checkbox" id="aiPricingEnabled" style="width:20px; height:20px;">
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:14px;">Activer l'AI Pricing</div>
+            <div style="font-size:12px; color:var(--gray-500);">Vos prix s'adapteront automatiquement.</div>
+          </div>
+        </label>
+
+        <div style="background: rgba(243,244,246,0.4); padding:18px; border-radius:12px;">
+          <div style="font-size:12px; font-weight:700; color:var(--gray-700); margin-bottom:14px; text-transform:uppercase; letter-spacing:0.05em;">Règles d'ajustement</div>
+          <div class="form-row-grid">
+            <div class="form-field">
+              <label class="form-label">Stock faible (&lt;30%) → Augmenter de</label>
+              <input type="number" class="form-input" id="aiLowStock" placeholder="20" min="0" max="50" step="1">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Stock élevé (&gt;70%) → Baisser de</label>
+              <input type="number" class="form-input" id="aiHighStock" placeholder="8" min="0" max="20" step="1">
+            </div>
+          </div>
+          <div class="form-row-grid">
+            <div class="form-field">
+              <label class="form-label">Haute saison (Juin-Sept) → +%</label>
+              <input type="number" class="form-input" id="aiHighSeason" placeholder="10" min="0" max="30" step="1">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Basse saison (Jan/Fev/Nov) → -%</label>
+              <input type="number" class="form-input" id="aiLowSeason" placeholder="5" min="0" max="20" step="1">
+            </div>
+          </div>
+          <div class="form-row-grid">
+            <div class="form-field">
+              <label class="form-label">Limite augmentation max (%)</label>
+              <input type="number" class="form-input" id="aiMaxIncrease" placeholder="25" min="0" max="100" step="1">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Limite baisse max (%)</label>
+              <input type="number" class="form-input" id="aiMaxDecrease" placeholder="15" min="0" max="50" step="1">
+            </div>
+          </div>
+        </div>
+
+        <div id="pricingPreview" style="margin-top:18px; background:var(--orange-bg); padding:16px; border-radius:12px; display:none;">
+          <div style="font-size:12px; font-weight:700; color:var(--orange); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em;">✦ Aperçu de vos prix actuels</div>
+          <div id="pricingPreviewList"></div>
+        </div>
+
+        <button class="btn-save" onclick="saveAIPricing()" style="margin-top:18px;">Enregistrer les règles →</button>
+      </div>
+
+      <!-- EMBED CODE -->
+      <div class="settings-section" style="border-color: rgba(59, 130, 246, 0.3);">
+        <div class="settings-title">🔗 Intégrer sur votre site</div>
+        <div class="settings-desc">Copiez ce code et collez-le sur votre site web. Vos clients pourront réserver directement chez vous.</div>
+
+        <div style="background: var(--gray-900); color: var(--orange-light); padding:18px; border-radius:12px; font-family:monospace; font-size:12px; line-height:1.7; word-break:break-all; position:relative;">
+          <button onclick="copyEmbedCode()" style="position:absolute; top:12px; right:12px; background:var(--orange); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit;">Copier</button>
+          <div id="embedCode"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px;">
+          <div style="background:rgba(243,244,246,0.5); padding:14px; border-radius:10px;">
+            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">URL directe widget</div>
+            <div style="font-family:monospace; font-size:11px; word-break:break-all; color:var(--gray-700);" id="directUrl"></div>
+            <button onclick="copyDirectUrl()" class="btn-action secondary" style="margin-top:8px; padding:6px 10px; font-size:11px;">Copier l'URL</button>
+          </div>
+          <div style="background:rgba(243,244,246,0.5); padding:14px; border-radius:10px;">
+            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Aperçu sur votre site</div>
+            <button onclick="previewEmbed()" class="btn-action" style="margin-top:8px; padding:6px 10px; font-size:11px; width:100%;">Voir l'aperçu →</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -1517,6 +1635,178 @@
     document.getElementById('setCity').value = center.city || '';
     document.getElementById('setEmail').value = center.email || '';
     document.getElementById('setDescription').value = center.description || '';
+
+    // LANGUES
+    document.getElementById('setDefaultLanguage').value = center.default_language || 'fr';
+    const supported = center.supported_languages || ['fr','de','it','en'];
+    ['fr','de','it','en'].forEach(lang => {
+      const cb = document.getElementById('lang-' + lang);
+      if (cb) cb.checked = supported.includes(lang);
+    });
+
+    // AI PRICING
+    const rules = center.ai_pricing_rules || {};
+    document.getElementById('aiPricingEnabled').checked = !!center.ai_pricing_enabled;
+    document.getElementById('aiLowStock').value = Math.round(((rules.low_stock_multiplier || 1.20) - 1) * 100);
+    document.getElementById('aiHighStock').value = Math.round((1 - (rules.high_stock_multiplier || 0.92)) * 100);
+    document.getElementById('aiHighSeason').value = Math.round(((rules.high_season_multiplier || 1.10) - 1) * 100);
+    document.getElementById('aiLowSeason').value = Math.round((1 - (rules.low_season_multiplier || 0.95)) * 100);
+    document.getElementById('aiMaxIncrease').value = rules.max_increase_pct || 25;
+    document.getElementById('aiMaxDecrease').value = rules.max_decrease_pct || 15;
+
+    renderPricingPreview();
+    renderEmbedCode();
+  }
+
+  async function saveLanguages() {
+    const defaultLang = document.getElementById('setDefaultLanguage').value;
+    const supported = ['fr','de','it','en'].filter(l => document.getElementById('lang-' + l).checked);
+    if (supported.length === 0) {
+      showToast('❌ Au moins une langue doit être active', 'error');
+      return;
+    }
+    if (!supported.includes(defaultLang)) {
+      showToast('❌ La langue par défaut doit être dans les langues actives', 'error');
+      return;
+    }
+    try {
+      const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_centers?id=eq.' + center.id, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({ default_language: defaultLang, supported_languages: supported })
+      });
+      if (!res.ok) throw new Error('Erreur enregistrement');
+      const updated = await res.json();
+      center = updated[0];
+      renderEmbedCode();
+      showToast('✓ Langues mises à jour', 'success');
+    } catch (err) {
+      showToast('❌ ' + err.message, 'error');
+    }
+  }
+
+  async function saveAIPricing() {
+    const enabled = document.getElementById('aiPricingEnabled').checked;
+    const lowStock = parseFloat(document.getElementById('aiLowStock').value || 20);
+    const highStock = parseFloat(document.getElementById('aiHighStock').value || 8);
+    const highSeason = parseFloat(document.getElementById('aiHighSeason').value || 10);
+    const lowSeason = parseFloat(document.getElementById('aiLowSeason').value || 5);
+    const maxInc = parseFloat(document.getElementById('aiMaxIncrease').value || 25);
+    const maxDec = parseFloat(document.getElementById('aiMaxDecrease').value || 15);
+
+    const rules = {
+      low_stock_threshold: 0.3,
+      low_stock_multiplier: 1 + lowStock/100,
+      high_stock_threshold: 0.7,
+      high_stock_multiplier: 1 - highStock/100,
+      high_season_months: [6,7,8,9],
+      high_season_multiplier: 1 + highSeason/100,
+      low_season_months: [1,2,11],
+      low_season_multiplier: 1 - lowSeason/100,
+      max_increase_pct: maxInc,
+      max_decrease_pct: maxDec
+    };
+
+    try {
+      const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_centers?id=eq.' + center.id, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({ ai_pricing_enabled: enabled, ai_pricing_rules: rules })
+      });
+      if (!res.ok) throw new Error('Erreur enregistrement');
+      const updated = await res.json();
+      center = updated[0];
+      renderPricingPreview();
+      showToast('✓ Règles AI Pricing mises à jour', 'success');
+    } catch (err) {
+      showToast('❌ ' + err.message, 'error');
+    }
+  }
+
+  function calculateDynamicPrice(type) {
+    if (!center.ai_pricing_enabled) return parseFloat(type.price_monthly);
+    const rules = center.ai_pricing_rules || {};
+    const basePrice = parseFloat(type.price_monthly);
+    let multiplier = 1.0;
+
+    const availability = type.total_count > 0 ? type.available_count / type.total_count : 1;
+    if (availability < (rules.low_stock_threshold || 0.3)) {
+      multiplier *= (rules.low_stock_multiplier || 1.20);
+    } else if (availability > (rules.high_stock_threshold || 0.7)) {
+      multiplier *= (rules.high_stock_multiplier || 0.92);
+    }
+
+    const month = new Date().getMonth() + 1;
+    if ((rules.high_season_months || [6,7,8,9]).includes(month)) {
+      multiplier *= (rules.high_season_multiplier || 1.10);
+    } else if ((rules.low_season_months || [1,2,11]).includes(month)) {
+      multiplier *= (rules.low_season_multiplier || 0.95);
+    }
+
+    const maxInc = 1 + (rules.max_increase_pct || 25) / 100;
+    const maxDec = 1 - (rules.max_decrease_pct || 15) / 100;
+    multiplier = Math.max(maxDec, Math.min(maxInc, multiplier));
+
+    return Math.round(basePrice * multiplier * 100) / 100;
+  }
+
+  function renderPricingPreview() {
+    const preview = document.getElementById('pricingPreview');
+    if (!center.ai_pricing_enabled || allBoxTypes.length === 0) {
+      preview.style.display = 'none';
+      return;
+    }
+    preview.style.display = 'block';
+    document.getElementById('pricingPreviewList').innerHTML = allBoxTypes.map(t => {
+      const base = parseFloat(t.price_monthly);
+      const dynamic = calculateDynamicPrice(t);
+      const diff = ((dynamic - base) / base * 100);
+      const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '→');
+      const color = diff > 0 ? 'var(--green)' : (diff < 0 ? 'var(--red)' : 'var(--gray-500)');
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(229,231,235,0.5);">
+          <span style="font-weight:600; font-size:13px;">${t.name} · ${t.surface_m2}m²</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="text-decoration:line-through; color:var(--gray-500); font-size:12px;">${base.toFixed(0)} €</span>
+            <span style="font-weight:800; color:var(--orange); font-size:15px;">${dynamic.toFixed(0)} €</span>
+            <span style="font-size:11px; font-weight:700; color:${color};">${arrow} ${Math.abs(diff).toFixed(0)}%</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderEmbedCode() {
+    const slug = center.slug;
+    const lang = center.default_language || 'fr';
+    const baseUrl = window.location.origin + '/box';
+
+    const code = `&lt;!-- ✦ Frizz Reservation Widget --&gt;
+&lt;script src="${baseUrl}/frizz-loader.js" data-center="${slug}" data-lang="${lang}"&gt;&lt;/script&gt;`;
+
+    document.getElementById('embedCode').innerHTML = code;
+    document.getElementById('directUrl').textContent = baseUrl + '/embed.html?c=' + slug;
+  }
+
+  function copyEmbedCode() {
+    const slug = center.slug;
+    const lang = center.default_language || 'fr';
+    const baseUrl = window.location.origin + '/box';
+    const code = `<!-- ✦ Frizz Reservation Widget -->
+<script src="${baseUrl}/frizz-loader.js" data-center="${slug}" data-lang="${lang}"><` + `/script>`;
+    navigator.clipboard.writeText(code);
+    showToast('✓ Code embed copié', 'success');
+  }
+
+  function copyDirectUrl() {
+    const url = window.location.origin + '/box/embed.html?c=' + center.slug;
+    navigator.clipboard.writeText(url);
+    showToast('✓ URL copiée', 'success');
+  }
+
+  function previewEmbed() {
+    const url = window.location.origin + '/box/embed.html?c=' + center.slug;
+    window.open(url, '_blank', 'width=620,height=820');
   }
 
   async function saveCenter() {

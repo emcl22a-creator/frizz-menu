@@ -724,13 +724,48 @@
     .widget-link-card { padding: 22px; }
     .boxes-grid { grid-template-columns: 1fr; }
   }
+
+  /* === LANG SWITCHER === */
+  .lang-switcher-wrap {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100;
+    display: flex; gap: 4px; background: var(--white); padding: 4px;
+    border-radius: 10px; border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .lang-btn {
+    padding: 5px 9px; border: none; cursor: pointer;
+    background: transparent; color: var(--gray-500);
+    font-size: 11px; font-weight: 600; border-radius: 6px;
+    font-family: inherit; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .lang-btn:hover { color: var(--orange); }
+  .lang-btn.active { background: var(--orange); color: var(--white); }
+
+  @media (max-width: 768px) {
+    .lang-switcher-wrap {
+      top: auto; bottom: 16px; right: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+  }
 </style>
 </head>
 <body>
 
+<!-- Sélecteur de langue (visible partout) -->
+<div class="lang-switcher-wrap" id="langSwitcher">
+  <button class="lang-btn" data-lang="fr">FR</button>
+  <button class="lang-btn" data-lang="de">DE</button>
+  <button class="lang-btn" data-lang="it">IT</button>
+  <button class="lang-btn" data-lang="en">EN</button>
+</div>
+
 <div id="loadingScreen" class="loading" style="min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; position:relative; z-index:1;">
   <div class="loading-spinner"></div>
-  <div>Chargement de votre dashboard...</div>
+  <div data-i18n="loading_dashboard">Chargement de votre dashboard...</div>
 </div>
 
 <div class="app" id="appContent" style="display:none;">
@@ -747,18 +782,18 @@
   <!-- MOBILE MENU POPUP (mobile uniquement) -->
   <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <div class="nav-section-label">Pilotage</div>
-    <div class="nav-item active" data-page="dashboard" onclick="goToPageMobile('dashboard')"><span class="icon">📊</span> Dashboard</div>
-    <div class="nav-item" data-page="reservations" onclick="goToPageMobile('reservations')"><span class="icon">📋</span> Réservations <span class="badge-count" id="navResaCountMobile" style="display:none;">0</span></div>
-    <div class="nav-item" data-page="clients" onclick="goToPageMobile('clients')"><span class="icon">👥</span> Clients</div>
+    <div class="nav-section-label" data-i18n="nav_section_pilotage">Pilotage</div>
+    <div class="nav-item active" data-page="dashboard" onclick="goToPageMobile('dashboard')"><span class="icon">📊</span> <span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="nav-item" data-page="reservations" onclick="goToPageMobile('reservations')"><span class="icon">📋</span> <span data-i18n="nav_reservations">Réservations</span> <span class="badge-count" id="navResaCountMobile" style="display:none;">0</span></div>
+    <div class="nav-item" data-page="clients" onclick="goToPageMobile('clients')"><span class="icon">👥</span> <span data-i18n="nav_clients">Clients</span></div>
 
-    <div class="nav-section-label">Configuration</div>
-    <div class="nav-item" data-page="boxes" onclick="goToPageMobile('boxes')"><span class="icon">📦</span> Mes box</div>
-    <div class="nav-item" data-page="settings" onclick="goToPageMobile('settings')"><span class="icon">⚙️</span> Paramètres</div>
+    <div class="nav-section-label" data-i18n="nav_section_config">Configuration</div>
+    <div class="nav-item" data-page="boxes" onclick="goToPageMobile('boxes')"><span class="icon">📦</span> <span data-i18n="nav_boxes">Mes box</span></div>
+    <div class="nav-item" data-page="settings" onclick="goToPageMobile('settings')"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
 
     <div class="user-info-mobile">
       <div class="user-email-mobile" id="userEmailMobile">...</div>
-      <button class="btn-logout-mobile" onclick="logout()">Se déconnecter</button>
+      <button class="btn-logout-mobile" onclick="logout()" data-i18n="btn_logout">Se déconnecter</button>
     </div>
   </div>
 
@@ -766,20 +801,20 @@
   <div class="sidebar">
     <div class="logo"><span class="star">✦</span> Frizz</div>
 
-    <div class="nav-section-label">Pilotage</div>
-    <div class="nav-item active" data-page="dashboard"><span class="icon">📊</span> Dashboard</div>
-    <div class="nav-item" data-page="reservations"><span class="icon">📋</span> Réservations <span class="badge-count" id="navResaCount" style="display:none;">0</span></div>
-    <div class="nav-item" data-page="clients"><span class="icon">👥</span> Clients</div>
+    <div class="nav-section-label" data-i18n="nav_section_pilotage">Pilotage</div>
+    <div class="nav-item active" data-page="dashboard"><span class="icon">📊</span> <span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="nav-item" data-page="reservations"><span class="icon">📋</span> <span data-i18n="nav_reservations">Réservations</span> <span class="badge-count" id="navResaCount" style="display:none;">0</span></div>
+    <div class="nav-item" data-page="clients"><span class="icon">👥</span> <span data-i18n="nav_clients">Clients</span></div>
 
-    <div class="nav-section-label">Configuration</div>
-    <div class="nav-item" data-page="boxes"><span class="icon">📦</span> Mes box</div>
-    <div class="nav-item" data-page="settings"><span class="icon">⚙️</span> Paramètres</div>
+    <div class="nav-section-label" data-i18n="nav_section_config">Configuration</div>
+    <div class="nav-item" data-page="boxes"><span class="icon">📦</span> <span data-i18n="nav_boxes">Mes box</span></div>
+    <div class="nav-item" data-page="settings"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
 
     <div class="nav-spacer"></div>
 
     <div class="user-info">
       <div class="user-email" id="userEmail">...</div>
-      <button class="btn-logout" onclick="logout()">Se déconnecter</button>
+      <button class="btn-logout" onclick="logout()" data-i18n="btn_logout">Se déconnecter</button>
     </div>
   </div>
 
@@ -790,8 +825,8 @@
     <div class="page active" id="page-dashboard">
       <div class="page-header">
         <div>
-          <div class="page-title">Bonjour, <span class="serif" id="hello-name">gérant</span></div>
-          <div class="page-subtitle">Voici votre activité aujourd'hui.</div>
+          <div class="page-title"><span data-i18n="hello">Bonjour,</span> <span class="serif" id="hello-name">gérant</span></div>
+          <div class="page-subtitle" data-i18n="hello_subtitle">Voici votre activité aujourd'hui.</div>
         </div>
         <div class="center-name-tag" id="centerNameTag">...</div>
       </div>
@@ -799,41 +834,41 @@
       <div id="dashboardAlert"></div>
 
       <div class="widget-link-card">
-        <div class="widget-link-title">✦ Votre widget de réservation</div>
-        <div class="widget-link-desc">Partagez ce lien à vos clients ou intégrez-le sur votre site web.</div>
+        <div class="widget-link-title" data-i18n="widget_card_title">✦ Votre widget de réservation</div>
+        <div class="widget-link-desc" data-i18n="widget_card_desc">Partagez ce lien à vos clients ou intégrez-le sur votre site web.</div>
         <div class="widget-link-url" id="widgetUrl" onclick="copyWidgetUrl()">
-          <span id="widgetUrlText">Chargement...</span>
+          <span id="widgetUrlText" data-i18n="loading">Chargement...</span>
           <span class="copy-icon">⎘</span>
         </div>
       </div>
 
       <div class="stats-grid">
         <div class="stat-card highlight" onclick="openStatModal('revenue')" style="cursor:pointer;">
-          <div class="stat-label">CA mensuel</div>
+          <div class="stat-label" data-i18n="stat_revenue">CA mensuel</div>
           <div class="stat-value" id="statRevenue">0 €</div>
-          <div class="stat-detail" id="statRevenueDetail">Aucune résa ce mois</div>
+          <div class="stat-detail" id="statRevenueDetail" data-i18n="stat_no_resa_month">Aucune résa ce mois</div>
         </div>
         <div class="stat-card" onclick="openStatModal('reservations')" style="cursor:pointer;">
-          <div class="stat-label">Réservations</div>
+          <div class="stat-label" data-i18n="stat_reservations">Réservations</div>
           <div class="stat-value" id="statReservations">0</div>
-          <div class="stat-detail" id="statReservationsDetail">Toutes statuts confondus</div>
+          <div class="stat-detail" id="statReservationsDetail" data-i18n="stat_all_statuses">Toutes statuts confondus</div>
         </div>
         <div class="stat-card" onclick="openStatModal('boxes')" style="cursor:pointer;">
-          <div class="stat-label">Box loués</div>
+          <div class="stat-label" data-i18n="stat_boxes_rented">Box loués</div>
           <div class="stat-value" id="statBoxes">0</div>
-          <div class="stat-detail" id="statBoxesDetail">Taux d'occupation</div>
+          <div class="stat-detail" id="statBoxesDetail" data-i18n="stat_occupancy">Taux d'occupation</div>
         </div>
         <div class="stat-card" onclick="openStatModal('clients')" style="cursor:pointer;">
-          <div class="stat-label">Clients actifs</div>
+          <div class="stat-label" data-i18n="stat_active_clients">Clients actifs</div>
           <div class="stat-value" id="statClients">0</div>
-          <div class="stat-detail">Total</div>
+          <div class="stat-detail" data-i18n="total">Total</div>
         </div>
       </div>
 
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Dernières réservations</div>
-          <button class="btn-action secondary" onclick="goToPage('reservations')">Voir tout →</button>
+          <div class="table-title" data-i18n="latest_reservations">Dernières réservations</div>
+          <button class="btn-action secondary" onclick="goToPage('reservations')" data-i18n="see_all">Voir tout →</button>
         </div>
         <div id="recentReservations">
           <div class="loading"><div class="loading-spinner"></div></div>
@@ -845,20 +880,20 @@
     <div class="page" id="page-reservations">
       <div class="page-header">
         <div>
-          <div class="page-title"><span class="serif">Réservations</span></div>
-          <div class="page-subtitle">Toutes les réservations de votre centre.</div>
+          <div class="page-title"><span class="serif" data-i18n="page_reservations_title">Réservations</span></div>
+          <div class="page-subtitle" data-i18n="page_reservations_subtitle">Toutes les réservations de votre centre.</div>
         </div>
-        <button class="btn-action" onclick="exportCSV('reservations')">📥 Export CSV</button>
+        <button class="btn-action" onclick="exportCSV('reservations')"><span data-i18n="export_csv">📥 Export CSV</span></button>
       </div>
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Liste complète</div>
+          <div class="table-title" data-i18n="full_list">Liste complète</div>
           <div class="table-actions">
-            <input type="text" class="search-input" id="searchReservations" placeholder="Rechercher..." oninput="renderAllReservations()">
-            <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Toutes</button>
-            <button class="filter-btn" data-filter="paid" onclick="setFilter('paid')">Payées</button>
-            <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')">En attente</button>
-            <button class="filter-btn" data-filter="cancelled" onclick="setFilter('cancelled')">Annulées</button>
+            <input type="text" class="search-input" id="searchReservations" data-i18n-placeholder="search_placeholder" placeholder="Rechercher..." oninput="renderAllReservations()">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all')" data-i18n="filter_all">Toutes</button>
+            <button class="filter-btn" data-filter="paid" onclick="setFilter('paid')" data-i18n="filter_paid">Payées</button>
+            <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')" data-i18n="filter_pending">En attente</button>
+            <button class="filter-btn" data-filter="cancelled" onclick="setFilter('cancelled')" data-i18n="filter_cancelled">Annulées</button>
           </div>
         </div>
         <div id="allReservations">
@@ -871,15 +906,15 @@
     <div class="page" id="page-clients">
       <div class="page-header">
         <div>
-          <div class="page-title"><span class="serif">Clients</span></div>
-          <div class="page-subtitle">Vos clients ayant réservé chez vous.</div>
+          <div class="page-title"><span class="serif" data-i18n="page_clients_title">Clients</span></div>
+          <div class="page-subtitle" data-i18n="page_clients_subtitle">Vos clients ayant réservé chez vous.</div>
         </div>
-        <button class="btn-action" onclick="exportCSV('clients')">📥 Export CSV</button>
+        <button class="btn-action" onclick="exportCSV('clients')"><span data-i18n="export_csv">📥 Export CSV</span></button>
       </div>
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Tous les clients</div>
-          <input type="text" class="search-input" id="searchClients" placeholder="Rechercher..." oninput="renderClients()">
+          <div class="table-title" data-i18n="all_clients">Tous les clients</div>
+          <input type="text" class="search-input" id="searchClients" data-i18n-placeholder="search_placeholder" placeholder="Rechercher..." oninput="renderClients()">
         </div>
         <div id="clientsList">
           <div class="loading"><div class="loading-spinner"></div></div>
@@ -891,10 +926,10 @@
     <div class="page" id="page-boxes">
       <div class="page-header">
         <div>
-          <div class="page-title">Mes types de <span class="serif">box</span></div>
-          <div class="page-subtitle">Configurez les box que vos clients pourront réserver.</div>
+          <div class="page-title" data-i18n-html="page_boxes_title">Mes types de <span class="serif">box</span></div>
+          <div class="page-subtitle" data-i18n="page_boxes_subtitle">Configurez les box que vos clients pourront réserver.</div>
         </div>
-        <button class="btn-action" onclick="openBoxModal()">+ Ajouter un type</button>
+        <button class="btn-action" onclick="openBoxModal()" data-i18n="add_box_type">+ Ajouter un type</button>
       </div>
       <div id="boxesList">
         <div class="loading"><div class="loading-spinner"></div></div>
@@ -905,61 +940,61 @@
     <div class="page" id="page-settings">
       <div class="page-header">
         <div>
-          <div class="page-title">Paramètres du <span class="serif">centre</span></div>
-          <div class="page-subtitle">Modifiez les informations de votre centre de stockage.</div>
+          <div class="page-title" data-i18n-html="page_settings_title">Paramètres du <span class="serif">centre</span></div>
+          <div class="page-subtitle" data-i18n="page_settings_subtitle">Modifiez les informations de votre centre de stockage.</div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-title">Informations générales</div>
-        <div class="settings-desc">Apparaissent sur le widget et le contrat client.</div>
+        <div class="settings-title" data-i18n="settings_general_title">Informations générales</div>
+        <div class="settings-desc" data-i18n="settings_general_desc">Apparaissent sur le widget et le contrat client.</div>
 
         <div class="form-field">
-          <label class="form-label">Nom du centre</label>
+          <label class="form-label" data-i18n="field_center_name">Nom du centre</label>
           <input type="text" class="form-input" id="setName">
         </div>
         <div class="form-row-grid">
           <div class="form-field">
-            <label class="form-label">Slug (URL widget)</label>
+            <label class="form-label" data-i18n="field_slug">Slug (URL widget)</label>
             <input type="text" class="form-input" id="setSlug" readonly style="opacity:0.6;cursor:not-allowed;">
           </div>
           <div class="form-field">
-            <label class="form-label">Téléphone</label>
+            <label class="form-label" data-i18n="field_phone">Téléphone</label>
             <input type="text" class="form-input" id="setPhone">
           </div>
         </div>
         <div class="form-field">
-          <label class="form-label">Adresse</label>
+          <label class="form-label" data-i18n="field_address">Adresse</label>
           <input type="text" class="form-input" id="setAddress">
         </div>
         <div class="form-row-grid">
           <div class="form-field">
-            <label class="form-label">Code postal</label>
+            <label class="form-label" data-i18n="field_postal_code">Code postal</label>
             <input type="text" class="form-input" id="setPostalCode">
           </div>
           <div class="form-field">
-            <label class="form-label">Ville</label>
+            <label class="form-label" data-i18n="field_city">Ville</label>
             <input type="text" class="form-input" id="setCity">
           </div>
         </div>
         <div class="form-field">
-          <label class="form-label">Email de contact</label>
+          <label class="form-label" data-i18n="field_contact_email">Email de contact</label>
           <input type="email" class="form-input" id="setEmail">
         </div>
         <div class="form-field">
-          <label class="form-label">Description du centre</label>
+          <label class="form-label" data-i18n="field_description">Description du centre</label>
           <textarea class="form-textarea" id="setDescription" rows="3"></textarea>
         </div>
-        <button class="btn-save" onclick="saveCenter()">Enregistrer →</button>
+        <button class="btn-save" onclick="saveCenter()" data-i18n="btn_save">Enregistrer →</button>
       </div>
 
       <!-- LANGUES -->
       <div class="settings-section">
-        <div class="settings-title">🌍 Langues supportées</div>
-        <div class="settings-desc">Choisissez les langues que vos clients pourront sélectionner sur le widget.</div>
+        <div class="settings-title" data-i18n="settings_lang_title">🌍 Langues supportées</div>
+        <div class="settings-desc" data-i18n="settings_lang_desc">Choisissez les langues que vos clients pourront sélectionner sur le widget.</div>
 
         <div class="form-field">
-          <label class="form-label">Langue par défaut</label>
+          <label class="form-label" data-i18n="field_default_lang">Langue par défaut</label>
           <select class="form-select" id="setDefaultLanguage">
             <option value="fr">🇫🇷 Français</option>
             <option value="de">🇩🇪 Deutsch</option>
@@ -969,7 +1004,7 @@
         </div>
 
         <div class="form-field" style="margin-bottom:18px;">
-          <label class="form-label">Langues disponibles (cochez celles que vos clients verront)</label>
+          <label class="form-label" data-i18n="field_available_langs">Langues disponibles (cochez celles que vos clients verront)</label>
           <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:6px;">
             <label style="display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(243,244,246,0.5); border-radius:10px; cursor:pointer;">
               <input type="checkbox" id="lang-fr" value="fr" style="width:16px; height:16px;">
@@ -989,83 +1024,83 @@
             </label>
           </div>
         </div>
-        <button class="btn-save" onclick="saveLanguages()">Enregistrer les langues →</button>
+        <button class="btn-save" onclick="saveLanguages()" data-i18n="btn_save_langs">Enregistrer les langues →</button>
       </div>
 
       <!-- AI PRICING -->
       <div class="settings-section" style="border-color: rgba(234, 88, 12, 0.3);">
-        <div class="settings-title">⚡ <span class="serif">AI Pricing dynamique</span></div>
-        <div class="settings-desc">Ajustez automatiquement vos prix selon la disponibilité et la saison. Comme les hôtels et Uber.</div>
+        <div class="settings-title">⚡ <span class="serif" data-i18n="settings_ai_pricing_title">AI Pricing dynamique</span></div>
+        <div class="settings-desc" data-i18n="settings_ai_pricing_desc">Ajustez automatiquement vos prix selon la disponibilité et la saison. Comme les hôtels et Uber.</div>
 
         <label style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:linear-gradient(135deg, rgba(234,88,12,0.06), rgba(249,115,22,0.04)); border:1px solid rgba(234,88,12,0.2); border-radius:12px; cursor:pointer; margin-bottom:18px;">
           <input type="checkbox" id="aiPricingEnabled" style="width:20px; height:20px;">
           <div style="flex:1;">
-            <div style="font-weight:700; font-size:14px;">Activer l'AI Pricing</div>
-            <div style="font-size:12px; color:var(--gray-500);">Vos prix s'adapteront automatiquement.</div>
+            <div style="font-weight:700; font-size:14px;" data-i18n="ai_enable_title">Activer l'AI Pricing</div>
+            <div style="font-size:12px; color:var(--gray-500);" data-i18n="ai_enable_desc">Vos prix s'adapteront automatiquement.</div>
           </div>
         </label>
 
         <div style="background: rgba(243,244,246,0.4); padding:18px; border-radius:12px;">
-          <div style="font-size:12px; font-weight:700; color:var(--gray-700); margin-bottom:14px; text-transform:uppercase; letter-spacing:0.05em;">Règles d'ajustement</div>
+          <div style="font-size:12px; font-weight:700; color:var(--gray-700); margin-bottom:14px; text-transform:uppercase; letter-spacing:0.05em;" data-i18n="ai_rules_title">Règles d'ajustement</div>
           <div class="form-row-grid">
             <div class="form-field">
-              <label class="form-label">Stock faible (&lt;30%) → Augmenter de</label>
+              <label class="form-label" data-i18n="ai_low_stock_label">Stock faible (&lt;30%) → Augmenter de</label>
               <input type="number" class="form-input" id="aiLowStock" placeholder="20" min="0" max="50" step="1">
             </div>
             <div class="form-field">
-              <label class="form-label">Stock élevé (&gt;70%) → Baisser de</label>
+              <label class="form-label" data-i18n="ai_high_stock_label">Stock élevé (&gt;70%) → Baisser de</label>
               <input type="number" class="form-input" id="aiHighStock" placeholder="8" min="0" max="20" step="1">
             </div>
           </div>
           <div class="form-row-grid">
             <div class="form-field">
-              <label class="form-label">Haute saison (Juin-Sept) → +%</label>
+              <label class="form-label" data-i18n="ai_high_season_label">Haute saison (Juin-Sept) → +%</label>
               <input type="number" class="form-input" id="aiHighSeason" placeholder="10" min="0" max="30" step="1">
             </div>
             <div class="form-field">
-              <label class="form-label">Basse saison (Jan/Fev/Nov) → -%</label>
+              <label class="form-label" data-i18n="ai_low_season_label">Basse saison (Jan/Fev/Nov) → -%</label>
               <input type="number" class="form-input" id="aiLowSeason" placeholder="5" min="0" max="20" step="1">
             </div>
           </div>
           <div class="form-row-grid">
             <div class="form-field">
-              <label class="form-label">Limite augmentation max (%)</label>
+              <label class="form-label" data-i18n="ai_max_increase">Limite augmentation max (%)</label>
               <input type="number" class="form-input" id="aiMaxIncrease" placeholder="25" min="0" max="100" step="1">
             </div>
             <div class="form-field">
-              <label class="form-label">Limite baisse max (%)</label>
+              <label class="form-label" data-i18n="ai_max_decrease">Limite baisse max (%)</label>
               <input type="number" class="form-input" id="aiMaxDecrease" placeholder="15" min="0" max="50" step="1">
             </div>
           </div>
         </div>
 
         <div id="pricingPreview" style="margin-top:18px; background:var(--orange-bg); padding:16px; border-radius:12px; display:none;">
-          <div style="font-size:12px; font-weight:700; color:var(--orange); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em;">✦ Aperçu de vos prix actuels</div>
+          <div style="font-size:12px; font-weight:700; color:var(--orange); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em;" data-i18n="ai_preview_title">✦ Aperçu de vos prix actuels</div>
           <div id="pricingPreviewList"></div>
         </div>
 
-        <button class="btn-save" onclick="saveAIPricing()" style="margin-top:18px;">Enregistrer les règles →</button>
+        <button class="btn-save" onclick="saveAIPricing()" style="margin-top:18px;" data-i18n="btn_save_rules">Enregistrer les règles →</button>
       </div>
 
       <!-- EMBED CODE -->
       <div class="settings-section" style="border-color: rgba(59, 130, 246, 0.3);">
-        <div class="settings-title">🔗 Intégrer sur votre site</div>
-        <div class="settings-desc">Copiez ce code et collez-le sur votre site web. Vos clients pourront réserver directement chez vous.</div>
+        <div class="settings-title" data-i18n="settings_embed_title">🔗 Intégrer sur votre site</div>
+        <div class="settings-desc" data-i18n="settings_embed_desc">Copiez ce code et collez-le sur votre site web. Vos clients pourront réserver directement chez vous.</div>
 
         <div style="background: var(--gray-900); color: var(--orange-light); padding:18px; border-radius:12px; font-family:monospace; font-size:12px; line-height:1.7; word-break:break-all; position:relative;">
-          <button onclick="copyEmbedCode()" style="position:absolute; top:12px; right:12px; background:var(--orange); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit;">Copier</button>
+          <button onclick="copyEmbedCode()" style="position:absolute; top:12px; right:12px; background:var(--orange); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit;" data-i18n="btn_copy">Copier</button>
           <div id="embedCode"></div>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px;">
           <div style="background:rgba(243,244,246,0.5); padding:14px; border-radius:10px;">
-            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">URL directe widget</div>
+            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;" data-i18n="direct_widget_url">URL directe widget</div>
             <div style="font-family:monospace; font-size:11px; word-break:break-all; color:var(--gray-700);" id="directUrl"></div>
-            <button onclick="copyDirectUrl()" class="btn-action secondary" style="margin-top:8px; padding:6px 10px; font-size:11px;">Copier l'URL</button>
+            <button onclick="copyDirectUrl()" class="btn-action secondary" style="margin-top:8px; padding:6px 10px; font-size:11px;" data-i18n="btn_copy_url">Copier l'URL</button>
           </div>
           <div style="background:rgba(243,244,246,0.5); padding:14px; border-radius:10px;">
-            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Aperçu sur votre site</div>
-            <button onclick="previewEmbed()" class="btn-action" style="margin-top:8px; padding:6px 10px; font-size:11px; width:100%;">Voir l'aperçu →</button>
+            <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;" data-i18n="preview_on_site">Aperçu sur votre site</div>
+            <button onclick="previewEmbed()" class="btn-action" style="margin-top:8px; padding:6px 10px; font-size:11px; width:100%;" data-i18n="btn_see_preview">Voir l'aperçu →</button>
           </div>
         </div>
       </div>
@@ -1088,54 +1123,57 @@
     <div class="modal-header">
       <div>
         <div class="modal-title" id="boxModalTitle">Nouveau type de <span class="serif">box</span></div>
-        <div class="modal-subtitle">Configurez votre offre de stockage.</div>
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="boxModalTitle" data-i18n-html="modal_box_title">Nouveau type de <span class="serif">box</span></div>
+        <div class="modal-subtitle" data-i18n="modal_box_subtitle">Configurez votre offre de stockage.</div>
       </div>
       <button class="modal-close" onclick="closeModal('modalBox')">×</button>
     </div>
     <input type="hidden" id="boxEditId">
     <div class="form-row-grid">
       <div class="form-field">
-        <label class="form-label">Nom</label>
-        <input type="text" class="form-input" id="boxName" placeholder="Petit, Moyen, Grand...">
+        <label class="form-label" data-i18n="box_name">Nom</label>
+        <input type="text" class="form-input" id="boxName" data-i18n-placeholder="box_name_ph" placeholder="Petit, Moyen, Grand...">
       </div>
       <div class="form-field">
-        <label class="form-label">Surface (m²)</label>
+        <label class="form-label" data-i18n="box_surface">Surface (m²)</label>
         <input type="number" class="form-input" id="boxSurface" step="0.5" placeholder="6">
       </div>
     </div>
     <div class="form-field">
-      <label class="form-label">Description courte</label>
-      <input type="text" class="form-input" id="boxDescription" placeholder="Studio ou T1">
+      <label class="form-label" data-i18n="box_description">Description courte</label>
+      <input type="text" class="form-input" id="boxDescription" data-i18n-placeholder="box_description_ph" placeholder="Studio ou T1">
     </div>
     <div class="form-row-grid">
       <div class="form-field">
-        <label class="form-label">Prix mensuel (€)</label>
+        <label class="form-label" data-i18n="box_price">Prix mensuel (€)</label>
         <input type="number" class="form-input" id="boxPrice" step="0.01" placeholder="99">
       </div>
       <div class="form-field">
-        <label class="form-label">Caution (€)</label>
+        <label class="form-label" data-i18n="box_deposit">Caution (€)</label>
         <input type="number" class="form-input" id="boxDeposit" step="0.01" placeholder="200">
       </div>
     </div>
     <div class="form-row-grid">
       <div class="form-field">
-        <label class="form-label">Disponibles</label>
+        <label class="form-label" data-i18n="box_available">Disponibles</label>
         <input type="number" class="form-input" id="boxAvailable" placeholder="5">
       </div>
       <div class="form-field">
-        <label class="form-label">Total</label>
+        <label class="form-label" data-i18n="box_total">Total</label>
         <input type="number" class="form-input" id="boxTotal" placeholder="8">
       </div>
     </div>
     <div class="form-field">
       <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
         <input type="checkbox" id="boxRecommended" style="width:18px; height:18px;">
-        <span style="font-size:14px;">✦ Marquer comme recommandé</span>
+        <span style="font-size:14px;" data-i18n="box_mark_recommended">✦ Marquer comme recommandé</span>
       </label>
     </div>
     <div class="modal-actions">
-      <button class="btn-action secondary" onclick="closeModal('modalBox')">Annuler</button>
-      <button class="btn-action" id="btnSaveBox" onclick="saveBox()">Enregistrer</button>
+      <button class="btn-action secondary" onclick="closeModal('modalBox')" data-i18n="btn_cancel">Annuler</button>
+      <button class="btn-action" id="btnSaveBox" onclick="saveBox()" data-i18n="btn_save_simple">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -1147,8 +1185,8 @@
   <div class="modal" id="modalStatContent" style="max-width: 760px;">
     <div class="modal-header">
       <div>
-        <div class="modal-title" id="statModalTitle">Évolution</div>
-        <div class="modal-subtitle" id="statModalSubtitle">Comparaison mois par mois</div>
+        <div class="modal-title" id="statModalTitle" data-i18n="stat_evolution">Évolution</div>
+        <div class="modal-subtitle" id="statModalSubtitle" data-i18n="stat_compare_months">Comparaison mois par mois</div>
       </div>
       <button class="modal-close" onclick="closeModal('modalStat')">×</button>
     </div>
@@ -1163,6 +1201,651 @@
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 
+  // ============================================
+  // I18N — Système de traduction multilingue
+  // ============================================
+  const I18N = {
+    fr: {
+      // Loading & génériques
+      loading: 'Chargement...',
+      loading_dashboard: 'Chargement de votre dashboard...',
+      total: 'Total',
+      // Navigation
+      nav_section_pilotage: 'Pilotage', nav_section_config: 'Configuration',
+      nav_dashboard: 'Dashboard', nav_reservations: 'Réservations',
+      nav_clients: 'Clients', nav_boxes: 'Mes box', nav_settings: 'Paramètres',
+      btn_logout: 'Se déconnecter',
+      // Page Dashboard
+      hello: 'Bonjour,', hello_default_name: 'gérant',
+      hello_subtitle: "Voici votre activité aujourd'hui.",
+      widget_card_title: '✦ Votre widget de réservation',
+      widget_card_desc: 'Partagez ce lien à vos clients ou intégrez-le sur votre site web.',
+      stat_revenue: 'CA mensuel', stat_no_resa_month: 'Aucune résa ce mois',
+      stat_reservations: 'Réservations', stat_all_statuses: 'Toutes statuts confondus',
+      stat_boxes_rented: 'Box loués', stat_occupancy: "Taux d'occupation",
+      stat_active_clients: 'Clients actifs',
+      latest_reservations: 'Dernières réservations',
+      see_all: 'Voir tout →',
+      // Page Réservations
+      page_reservations_title: 'Réservations',
+      page_reservations_subtitle: 'Toutes les réservations de votre centre.',
+      export_csv: '📥 Export CSV',
+      full_list: 'Liste complète', search_placeholder: 'Rechercher...',
+      filter_all: 'Toutes', filter_paid: 'Payées',
+      filter_pending: 'En attente', filter_cancelled: 'Annulées',
+      // Page Clients
+      page_clients_title: 'Clients',
+      page_clients_subtitle: 'Vos clients ayant réservé chez vous.',
+      all_clients: 'Tous les clients',
+      // Page Boxes
+      page_boxes_title: 'Mes types de <span class="serif">box</span>',
+      page_boxes_subtitle: 'Configurez les box que vos clients pourront réserver.',
+      add_box_type: '+ Ajouter un type',
+      // Page Settings
+      page_settings_title: 'Paramètres du <span class="serif">centre</span>',
+      page_settings_subtitle: 'Modifiez les informations de votre centre de stockage.',
+      settings_general_title: 'Informations générales',
+      settings_general_desc: 'Apparaissent sur le widget et le contrat client.',
+      field_center_name: 'Nom du centre', field_slug: 'Slug (URL widget)',
+      field_phone: 'Téléphone', field_address: 'Adresse',
+      field_postal_code: 'Code postal', field_city: 'Ville',
+      field_contact_email: 'Email de contact',
+      field_description: 'Description du centre',
+      btn_save: 'Enregistrer →', btn_save_simple: 'Enregistrer',
+      // Settings Langues
+      settings_lang_title: '🌍 Langues supportées',
+      settings_lang_desc: 'Choisissez les langues que vos clients pourront sélectionner sur le widget.',
+      field_default_lang: 'Langue par défaut',
+      field_available_langs: 'Langues disponibles (cochez celles que vos clients verront)',
+      btn_save_langs: 'Enregistrer les langues →',
+      // Settings AI Pricing
+      settings_ai_pricing_title: 'AI Pricing dynamique',
+      settings_ai_pricing_desc: 'Ajustez automatiquement vos prix selon la disponibilité et la saison. Comme les hôtels et Uber.',
+      ai_enable_title: "Activer l'AI Pricing",
+      ai_enable_desc: "Vos prix s'adapteront automatiquement.",
+      ai_rules_title: "Règles d'ajustement",
+      ai_low_stock_label: 'Stock faible (&lt;30%) → Augmenter de',
+      ai_high_stock_label: 'Stock élevé (&gt;70%) → Baisser de',
+      ai_high_season_label: 'Haute saison (Juin-Sept) → +%',
+      ai_low_season_label: 'Basse saison (Jan/Fev/Nov) → -%',
+      ai_max_increase: 'Limite augmentation max (%)',
+      ai_max_decrease: 'Limite baisse max (%)',
+      ai_preview_title: '✦ Aperçu de vos prix actuels',
+      btn_save_rules: 'Enregistrer les règles →',
+      // Settings Embed
+      settings_embed_title: '🔗 Intégrer sur votre site',
+      settings_embed_desc: 'Copiez ce code et collez-le sur votre site web. Vos clients pourront réserver directement chez vous.',
+      btn_copy: 'Copier', btn_copy_url: "Copier l'URL",
+      direct_widget_url: 'URL directe widget',
+      preview_on_site: 'Aperçu sur votre site',
+      btn_see_preview: "Voir l'aperçu →",
+      // Modal Box
+      modal_box_title: 'Nouveau type de <span class="serif">box</span>',
+      modal_box_subtitle: 'Configurez votre offre de stockage.',
+      box_name: 'Nom', box_name_ph: 'Petit, Moyen, Grand...',
+      box_surface: 'Surface (m²)', box_description: 'Description courte',
+      box_description_ph: 'Studio ou T1',
+      box_price: 'Prix mensuel (€)', box_deposit: 'Caution (€)',
+      box_available: 'Disponibles', box_total: 'Total',
+      box_mark_recommended: '✦ Marquer comme recommandé',
+      btn_cancel: 'Annuler',
+      // Modal Stat
+      stat_evolution: 'Évolution',
+      stat_compare_months: 'Comparaison mois par mois',
+      // Toasts & messages JS
+      toast_box_saved: '✓ Box enregistré',
+      toast_box_modified: '✓ Box modifié',
+      toast_box_created: '✓ Box créé',
+      toast_box_deleted: '✓ Box supprimé',
+      toast_center_saved: '✓ Centre mis à jour',
+      toast_langs_saved: '✓ Langues enregistrées',
+      toast_ai_saved: '✓ Règles AI Pricing enregistrées',
+      toast_resa_updated: '✓ Réservation mise à jour',
+      toast_copied: '✓ Copié dans le presse-papier',
+      toast_url_copied: '✓ URL copiée',
+      toast_widget_url_copied: '✓ Lien widget copié',
+      toast_csv_exported: '✓ Export CSV téléchargé',
+      err_no_center: 'Aucun centre trouvé pour votre compte',
+      err_load: 'Erreur de chargement',
+      err_save: "Erreur d'enregistrement",
+      err_fill_required: 'Remplissez Nom, Surface et Prix',
+      err_at_least_one_lang: 'Au moins une langue doit être active',
+      err_default_lang_active: 'La langue par défaut doit être dans les langues actives',
+      reconnect: 'Se reconnecter',
+      empty_no_resa: 'Aucune réservation',
+      empty_no_resa_widget: 'Partagez votre widget pour recevoir vos premières réservations.',
+      empty_no_resa_filter: 'Aucune réservation pour ce filtre',
+      empty_no_clients: 'Aucun client',
+      empty_no_clients_text: 'Vos clients apparaîtront ici dès la première réservation.',
+      empty_no_box: 'Aucun type de box configuré',
+      no_results: 'Aucun résultat',
+      // Confirm dialogs
+      confirm_delete_box: 'Êtes-vous sûr de vouloir supprimer le type "{name}" ? Cette action est irréversible.',
+      // Reservation table
+      th_number: 'N°', th_client: 'Client', th_box: 'Box',
+      th_date_entry: 'Date entrée', th_total: 'Total',
+      th_pin: 'PIN', th_status: 'Statut',
+      th_name: 'Nom', th_email: 'Email', th_phone: 'Téléphone',
+      th_reservations_count: 'Réservations', th_total_spent: 'Total dépensé',
+      th_first_name: 'Prénom', th_address_table: 'Adresse', th_postal: 'CP', th_city_table: 'Ville',
+      // Status badges
+      status_paid: 'Payée', status_pending: 'En attente',
+      status_pending_payment: 'En attente paiement', status_cancelled: 'Annulée',
+      status_active: 'Active', status_ended: 'Terminée',
+      // Box card
+      box_card_rent: 'Loyer', box_card_deposit: 'Caution',
+      box_card_available: 'Disponibles', box_card_total: 'Total',
+      btn_modify: 'Modifier', btn_delete: 'Supprimer',
+      add_box_card_text: 'Nouveau type de box',
+      add_first_box: 'Ajouter votre 1er box',
+      // Modal Reservation Detail
+      modal_resa_client: 'Client', modal_resa_reservation: 'Réservation',
+      modal_resa_of_date: 'Réservation du',
+      info_access_pin: "PIN d'accès",
+      info_full_name: 'Nom complet', info_email: 'Email', info_phone: 'Téléphone',
+      info_address: 'Adresse', info_box: 'Box', info_date_entry: "Date d'entrée",
+      info_monthly_rent: 'Loyer mensuel', info_deposit: 'Caution',
+      info_total_paid: 'Total payé', info_pin_not_generated: 'Non généré',
+      modal_resa_change_status: 'Changer le statut',
+      btn_close: 'Fermer', btn_update: 'Mettre à jour',
+      // Stat modal labels
+      info_monthly_avg: 'Moyenne mensuelle',
+      total_6_months: 'Total 6 mois',
+      monthly_evolution: 'Évolution mensuelle',
+      stat_revenue_chart_title: "Chiffre d'affaires",
+      stat_revenue_subtitle: '6 derniers mois (€)',
+      stat_revenue_label: 'CA (€)',
+      stat_reservations_chart_title: 'Réservations',
+      stat_reservations_subtitle: 'Nombre par mois',
+      stat_reservations_label: 'Réservations',
+      stat_boxes_chart_title: 'Box loués',
+      stat_boxes_subtitle: 'Box payés ou actifs par mois',
+      stat_boxes_label: 'Box loués',
+      stat_clients_chart_title: 'Clients actifs',
+      stat_clients_subtitle: 'Clients uniques par mois',
+      stat_clients_label: 'Clients'
+    },
+    de: {
+      loading: 'Lädt...',
+      loading_dashboard: 'Ihr Dashboard wird geladen...',
+      total: 'Gesamt',
+      nav_section_pilotage: 'Steuerung', nav_section_config: 'Konfiguration',
+      nav_dashboard: 'Dashboard', nav_reservations: 'Buchungen',
+      nav_clients: 'Kunden', nav_boxes: 'Meine Boxen', nav_settings: 'Einstellungen',
+      btn_logout: 'Abmelden',
+      hello: 'Hallo,', hello_default_name: 'Verwalter',
+      hello_subtitle: 'Hier ist Ihre heutige Aktivität.',
+      widget_card_title: '✦ Ihr Buchungs-Widget',
+      widget_card_desc: 'Teilen Sie diesen Link mit Ihren Kunden oder integrieren Sie ihn auf Ihrer Website.',
+      stat_revenue: 'Monatsumsatz', stat_no_resa_month: 'Keine Buchung diesen Monat',
+      stat_reservations: 'Buchungen', stat_all_statuses: 'Alle Status',
+      stat_boxes_rented: 'Vermietete Boxen', stat_occupancy: 'Belegungsrate',
+      stat_active_clients: 'Aktive Kunden',
+      latest_reservations: 'Neueste Buchungen',
+      see_all: 'Alle anzeigen →',
+      page_reservations_title: 'Buchungen',
+      page_reservations_subtitle: 'Alle Buchungen Ihres Centers.',
+      export_csv: '📥 CSV-Export',
+      full_list: 'Vollständige Liste', search_placeholder: 'Suchen...',
+      filter_all: 'Alle', filter_paid: 'Bezahlt',
+      filter_pending: 'Ausstehend', filter_cancelled: 'Storniert',
+      page_clients_title: 'Kunden',
+      page_clients_subtitle: 'Ihre Kunden, die bei Ihnen gebucht haben.',
+      all_clients: 'Alle Kunden',
+      page_boxes_title: 'Meine <span class="serif">Box</span>-Typen',
+      page_boxes_subtitle: 'Konfigurieren Sie die Boxen, die Ihre Kunden buchen können.',
+      add_box_type: '+ Typ hinzufügen',
+      page_settings_title: 'Center-<span class="serif">Einstellungen</span>',
+      page_settings_subtitle: 'Bearbeiten Sie die Informationen Ihres Lagercenters.',
+      settings_general_title: 'Allgemeine Informationen',
+      settings_general_desc: 'Erscheinen im Widget und im Kundenvertrag.',
+      field_center_name: 'Center-Name', field_slug: 'Slug (Widget-URL)',
+      field_phone: 'Telefon', field_address: 'Adresse',
+      field_postal_code: 'PLZ', field_city: 'Stadt',
+      field_contact_email: 'Kontakt-E-Mail',
+      field_description: 'Center-Beschreibung',
+      btn_save: 'Speichern →', btn_save_simple: 'Speichern',
+      settings_lang_title: '🌍 Unterstützte Sprachen',
+      settings_lang_desc: 'Wählen Sie die Sprachen, die Ihre Kunden im Widget auswählen können.',
+      field_default_lang: 'Standardsprache',
+      field_available_langs: 'Verfügbare Sprachen (ankreuzen, was Ihre Kunden sehen)',
+      btn_save_langs: 'Sprachen speichern →',
+      settings_ai_pricing_title: 'Dynamische KI-Preise',
+      settings_ai_pricing_desc: 'Passen Sie Ihre Preise automatisch an Verfügbarkeit und Saison an. Wie Hotels und Uber.',
+      ai_enable_title: 'KI-Preise aktivieren',
+      ai_enable_desc: 'Ihre Preise passen sich automatisch an.',
+      ai_rules_title: 'Anpassungsregeln',
+      ai_low_stock_label: 'Wenig Bestand (&lt;30%) → Erhöhen um',
+      ai_high_stock_label: 'Hoher Bestand (&gt;70%) → Senken um',
+      ai_high_season_label: 'Hochsaison (Juni-Sept) → +%',
+      ai_low_season_label: 'Nebensaison (Jan/Feb/Nov) → -%',
+      ai_max_increase: 'Max. Erhöhung (%)',
+      ai_max_decrease: 'Max. Senkung (%)',
+      ai_preview_title: '✦ Vorschau Ihrer aktuellen Preise',
+      btn_save_rules: 'Regeln speichern →',
+      settings_embed_title: '🔗 Auf Ihrer Website einbetten',
+      settings_embed_desc: 'Kopieren Sie diesen Code und fügen Sie ihn auf Ihrer Website ein. Ihre Kunden können direkt bei Ihnen buchen.',
+      btn_copy: 'Kopieren', btn_copy_url: 'URL kopieren',
+      direct_widget_url: 'Direkte Widget-URL',
+      preview_on_site: 'Vorschau auf Ihrer Website',
+      btn_see_preview: 'Vorschau anzeigen →',
+      modal_box_title: 'Neuer <span class="serif">Box</span>-Typ',
+      modal_box_subtitle: 'Konfigurieren Sie Ihr Lagerangebot.',
+      box_name: 'Name', box_name_ph: 'Klein, Mittel, Groß...',
+      box_surface: 'Fläche (m²)', box_description: 'Kurzbeschreibung',
+      box_description_ph: 'Studio oder 1-Zimmer',
+      box_price: 'Monatspreis (€)', box_deposit: 'Kaution (€)',
+      box_available: 'Verfügbar', box_total: 'Gesamt',
+      box_mark_recommended: '✦ Als empfohlen markieren',
+      btn_cancel: 'Abbrechen',
+      stat_evolution: 'Entwicklung',
+      stat_compare_months: 'Monatsvergleich',
+      toast_box_saved: '✓ Box gespeichert',
+      toast_box_modified: '✓ Box geändert',
+      toast_box_created: '✓ Box erstellt',
+      toast_box_deleted: '✓ Box gelöscht',
+      toast_center_saved: '✓ Center aktualisiert',
+      toast_langs_saved: '✓ Sprachen gespeichert',
+      toast_ai_saved: '✓ KI-Preisregeln gespeichert',
+      toast_resa_updated: '✓ Buchung aktualisiert',
+      toast_copied: '✓ In Zwischenablage kopiert',
+      toast_url_copied: '✓ URL kopiert',
+      toast_widget_url_copied: '✓ Widget-Link kopiert',
+      toast_csv_exported: '✓ CSV-Export heruntergeladen',
+      err_no_center: 'Kein Center für Ihr Konto gefunden',
+      err_load: 'Ladefehler', err_save: 'Speicherfehler',
+      err_fill_required: 'Füllen Sie Name, Fläche und Preis aus',
+      err_at_least_one_lang: 'Mindestens eine Sprache muss aktiv sein',
+      err_default_lang_active: 'Die Standardsprache muss unter den aktiven Sprachen sein',
+      reconnect: 'Erneut anmelden',
+      empty_no_resa: 'Keine Buchungen',
+      empty_no_resa_widget: 'Teilen Sie Ihr Widget, um die ersten Buchungen zu erhalten.',
+      empty_no_resa_filter: 'Keine Buchungen für diesen Filter',
+      empty_no_clients: 'Keine Kunden',
+      empty_no_clients_text: 'Ihre Kunden erscheinen hier nach der ersten Buchung.',
+      empty_no_box: 'Kein Box-Typ konfiguriert',
+      no_results: 'Keine Ergebnisse',
+      confirm_delete_box: 'Möchten Sie den Typ "{name}" wirklich löschen? Diese Aktion ist unwiderruflich.',
+      th_number: 'Nr.', th_client: 'Kunde', th_box: 'Box',
+      th_date_entry: 'Einzugsdatum', th_total: 'Gesamt',
+      th_pin: 'PIN', th_status: 'Status',
+      th_name: 'Name', th_email: 'E-Mail', th_phone: 'Telefon',
+      th_reservations_count: 'Buchungen', th_total_spent: 'Gesamtausgaben',
+      th_first_name: 'Vorname', th_address_table: 'Adresse', th_postal: 'PLZ', th_city_table: 'Stadt',
+      status_paid: 'Bezahlt', status_pending: 'Ausstehend',
+      status_pending_payment: 'Zahlung ausstehend', status_cancelled: 'Storniert',
+      status_active: 'Aktiv', status_ended: 'Beendet',
+      box_card_rent: 'Miete', box_card_deposit: 'Kaution',
+      box_card_available: 'Verfügbar', box_card_total: 'Gesamt',
+      btn_modify: 'Ändern', btn_delete: 'Löschen',
+      add_box_card_text: 'Neuer Box-Typ',
+      add_first_box: 'Erste Box hinzufügen',
+      modal_resa_client: 'Kunde', modal_resa_reservation: 'Buchung',
+      modal_resa_of_date: 'Buchung vom',
+      info_access_pin: 'Zugangs-PIN',
+      info_full_name: 'Vollständiger Name', info_email: 'E-Mail', info_phone: 'Telefon',
+      info_address: 'Adresse', info_box: 'Box', info_date_entry: 'Einzugsdatum',
+      info_monthly_rent: 'Monatsmiete', info_deposit: 'Kaution',
+      info_total_paid: 'Bezahlt insgesamt', info_pin_not_generated: 'Nicht erstellt',
+      modal_resa_change_status: 'Status ändern',
+      btn_close: 'Schließen', btn_update: 'Aktualisieren',
+      info_monthly_avg: 'Monatsdurchschnitt',
+      total_6_months: 'Gesamt 6 Monate',
+      monthly_evolution: 'Monatliche Entwicklung',
+      stat_revenue_chart_title: 'Umsatz',
+      stat_revenue_subtitle: 'Letzte 6 Monate (€)',
+      stat_revenue_label: 'Umsatz (€)',
+      stat_reservations_chart_title: 'Buchungen',
+      stat_reservations_subtitle: 'Anzahl pro Monat',
+      stat_reservations_label: 'Buchungen',
+      stat_boxes_chart_title: 'Vermietete Boxen',
+      stat_boxes_subtitle: 'Bezahlte oder aktive Boxen pro Monat',
+      stat_boxes_label: 'Boxen',
+      stat_clients_chart_title: 'Aktive Kunden',
+      stat_clients_subtitle: 'Eindeutige Kunden pro Monat',
+      stat_clients_label: 'Kunden'
+    },
+    it: {
+      loading: 'Caricamento...',
+      loading_dashboard: 'Caricamento della dashboard...',
+      total: 'Totale',
+      nav_section_pilotage: 'Pilotaggio', nav_section_config: 'Configurazione',
+      nav_dashboard: 'Dashboard', nav_reservations: 'Prenotazioni',
+      nav_clients: 'Clienti', nav_boxes: 'I miei box', nav_settings: 'Impostazioni',
+      btn_logout: 'Esci',
+      hello: 'Ciao,', hello_default_name: 'gestore',
+      hello_subtitle: 'Ecco la tua attività di oggi.',
+      widget_card_title: '✦ Il tuo widget di prenotazione',
+      widget_card_desc: 'Condividi questo link con i tuoi clienti o integralo sul tuo sito.',
+      stat_revenue: 'Ricavi mensili', stat_no_resa_month: 'Nessuna prenotazione questo mese',
+      stat_reservations: 'Prenotazioni', stat_all_statuses: 'Tutti gli stati',
+      stat_boxes_rented: 'Box affittati', stat_occupancy: 'Tasso di occupazione',
+      stat_active_clients: 'Clienti attivi',
+      latest_reservations: 'Ultime prenotazioni',
+      see_all: 'Vedi tutto →',
+      page_reservations_title: 'Prenotazioni',
+      page_reservations_subtitle: 'Tutte le prenotazioni del tuo centro.',
+      export_csv: '📥 Esporta CSV',
+      full_list: 'Elenco completo', search_placeholder: 'Cerca...',
+      filter_all: 'Tutte', filter_paid: 'Pagate',
+      filter_pending: 'In attesa', filter_cancelled: 'Annullate',
+      page_clients_title: 'Clienti',
+      page_clients_subtitle: 'I tuoi clienti che hanno prenotato da te.',
+      all_clients: 'Tutti i clienti',
+      page_boxes_title: 'I miei tipi di <span class="serif">box</span>',
+      page_boxes_subtitle: 'Configura i box che i tuoi clienti potranno prenotare.',
+      add_box_type: '+ Aggiungi un tipo',
+      page_settings_title: 'Impostazioni del <span class="serif">centro</span>',
+      page_settings_subtitle: 'Modifica le informazioni del tuo centro di stoccaggio.',
+      settings_general_title: 'Informazioni generali',
+      settings_general_desc: 'Appaiono nel widget e nel contratto cliente.',
+      field_center_name: 'Nome del centro', field_slug: 'Slug (URL widget)',
+      field_phone: 'Telefono', field_address: 'Indirizzo',
+      field_postal_code: 'CAP', field_city: 'Città',
+      field_contact_email: 'Email di contatto',
+      field_description: 'Descrizione del centro',
+      btn_save: 'Salva →', btn_save_simple: 'Salva',
+      settings_lang_title: '🌍 Lingue supportate',
+      settings_lang_desc: 'Scegli le lingue che i tuoi clienti potranno selezionare nel widget.',
+      field_default_lang: 'Lingua predefinita',
+      field_available_langs: 'Lingue disponibili (spunta quelle che vedranno i clienti)',
+      btn_save_langs: 'Salva le lingue →',
+      settings_ai_pricing_title: 'Prezzi dinamici IA',
+      settings_ai_pricing_desc: 'Adatta automaticamente i tuoi prezzi in base a disponibilità e stagione. Come gli hotel e Uber.',
+      ai_enable_title: 'Attiva i prezzi IA',
+      ai_enable_desc: 'I tuoi prezzi si adatteranno automaticamente.',
+      ai_rules_title: 'Regole di adeguamento',
+      ai_low_stock_label: 'Scorte basse (&lt;30%) → Aumentare di',
+      ai_high_stock_label: 'Scorte alte (&gt;70%) → Diminuire di',
+      ai_high_season_label: 'Alta stagione (Giu-Set) → +%',
+      ai_low_season_label: 'Bassa stagione (Gen/Feb/Nov) → -%',
+      ai_max_increase: 'Aumento massimo (%)',
+      ai_max_decrease: 'Diminuzione massima (%)',
+      ai_preview_title: '✦ Anteprima dei tuoi prezzi attuali',
+      btn_save_rules: 'Salva le regole →',
+      settings_embed_title: '🔗 Integra sul tuo sito',
+      settings_embed_desc: 'Copia questo codice e incollalo sul tuo sito. I clienti potranno prenotare direttamente da te.',
+      btn_copy: 'Copia', btn_copy_url: "Copia l'URL",
+      direct_widget_url: 'URL diretto widget',
+      preview_on_site: 'Anteprima sul tuo sito',
+      btn_see_preview: "Vedi l'anteprima →",
+      modal_box_title: 'Nuovo tipo di <span class="serif">box</span>',
+      modal_box_subtitle: 'Configura la tua offerta di stoccaggio.',
+      box_name: 'Nome', box_name_ph: 'Piccolo, Medio, Grande...',
+      box_surface: 'Superficie (m²)', box_description: 'Descrizione breve',
+      box_description_ph: 'Monolocale o T1',
+      box_price: 'Prezzo mensile (€)', box_deposit: 'Cauzione (€)',
+      box_available: 'Disponibili', box_total: 'Totale',
+      box_mark_recommended: '✦ Contrassegna come consigliato',
+      btn_cancel: 'Annulla',
+      stat_evolution: 'Evoluzione',
+      stat_compare_months: 'Confronto mese per mese',
+      toast_box_saved: '✓ Box salvato',
+      toast_box_modified: '✓ Box modificato',
+      toast_box_created: '✓ Box creato',
+      toast_box_deleted: '✓ Box eliminato',
+      toast_center_saved: '✓ Centro aggiornato',
+      toast_langs_saved: '✓ Lingue salvate',
+      toast_ai_saved: '✓ Regole IA salvate',
+      toast_resa_updated: '✓ Prenotazione aggiornata',
+      toast_copied: '✓ Copiato negli appunti',
+      toast_url_copied: '✓ URL copiato',
+      toast_widget_url_copied: '✓ Link widget copiato',
+      toast_csv_exported: '✓ Esportazione CSV scaricata',
+      err_no_center: 'Nessun centro trovato per il tuo account',
+      err_load: 'Errore di caricamento', err_save: 'Errore di salvataggio',
+      err_fill_required: 'Compila Nome, Superficie e Prezzo',
+      err_at_least_one_lang: 'Almeno una lingua deve essere attiva',
+      err_default_lang_active: 'La lingua predefinita deve essere tra le lingue attive',
+      reconnect: 'Riconnettiti',
+      empty_no_resa: 'Nessuna prenotazione',
+      empty_no_resa_widget: 'Condividi il tuo widget per ricevere le prime prenotazioni.',
+      empty_no_resa_filter: 'Nessuna prenotazione per questo filtro',
+      empty_no_clients: 'Nessun cliente',
+      empty_no_clients_text: 'I tuoi clienti appariranno qui dopo la prima prenotazione.',
+      empty_no_box: 'Nessun tipo di box configurato',
+      no_results: 'Nessun risultato',
+      confirm_delete_box: 'Sei sicuro di voler eliminare il tipo "{name}"? Questa azione è irreversibile.',
+      th_number: 'N°', th_client: 'Cliente', th_box: 'Box',
+      th_date_entry: 'Data ingresso', th_total: 'Totale',
+      th_pin: 'PIN', th_status: 'Stato',
+      th_name: 'Cognome', th_email: 'Email', th_phone: 'Telefono',
+      th_reservations_count: 'Prenotazioni', th_total_spent: 'Totale speso',
+      th_first_name: 'Nome', th_address_table: 'Indirizzo', th_postal: 'CAP', th_city_table: 'Città',
+      status_paid: 'Pagata', status_pending: 'In attesa',
+      status_pending_payment: 'In attesa pagamento', status_cancelled: 'Annullata',
+      status_active: 'Attiva', status_ended: 'Terminata',
+      box_card_rent: 'Affitto', box_card_deposit: 'Cauzione',
+      box_card_available: 'Disponibili', box_card_total: 'Totale',
+      btn_modify: 'Modifica', btn_delete: 'Elimina',
+      add_box_card_text: 'Nuovo tipo di box',
+      add_first_box: 'Aggiungi il tuo 1° box',
+      modal_resa_client: 'Cliente', modal_resa_reservation: 'Prenotazione',
+      modal_resa_of_date: 'Prenotazione del',
+      info_access_pin: 'PIN di accesso',
+      info_full_name: 'Nome completo', info_email: 'Email', info_phone: 'Telefono',
+      info_address: 'Indirizzo', info_box: 'Box', info_date_entry: "Data d'ingresso",
+      info_monthly_rent: 'Affitto mensile', info_deposit: 'Cauzione',
+      info_total_paid: 'Totale pagato', info_pin_not_generated: 'Non generato',
+      modal_resa_change_status: 'Cambia stato',
+      btn_close: 'Chiudi', btn_update: 'Aggiorna',
+      info_monthly_avg: 'Media mensile',
+      total_6_months: 'Totale 6 mesi',
+      monthly_evolution: 'Evoluzione mensile',
+      stat_revenue_chart_title: 'Fatturato',
+      stat_revenue_subtitle: 'Ultimi 6 mesi (€)',
+      stat_revenue_label: 'Fatt. (€)',
+      stat_reservations_chart_title: 'Prenotazioni',
+      stat_reservations_subtitle: 'Numero per mese',
+      stat_reservations_label: 'Prenotazioni',
+      stat_boxes_chart_title: 'Box affittati',
+      stat_boxes_subtitle: 'Box pagati o attivi per mese',
+      stat_boxes_label: 'Box',
+      stat_clients_chart_title: 'Clienti attivi',
+      stat_clients_subtitle: 'Clienti unici per mese',
+      stat_clients_label: 'Clienti'
+    },
+    en: {
+      loading: 'Loading...',
+      loading_dashboard: 'Loading your dashboard...',
+      total: 'Total',
+      nav_section_pilotage: 'Pilot', nav_section_config: 'Configuration',
+      nav_dashboard: 'Dashboard', nav_reservations: 'Reservations',
+      nav_clients: 'Clients', nav_boxes: 'My boxes', nav_settings: 'Settings',
+      btn_logout: 'Sign out',
+      hello: 'Hello,', hello_default_name: 'manager',
+      hello_subtitle: "Here's your activity today.",
+      widget_card_title: '✦ Your reservation widget',
+      widget_card_desc: 'Share this link with your clients or embed it on your website.',
+      stat_revenue: 'Monthly revenue', stat_no_resa_month: 'No reservation this month',
+      stat_reservations: 'Reservations', stat_all_statuses: 'All statuses combined',
+      stat_boxes_rented: 'Boxes rented', stat_occupancy: 'Occupancy rate',
+      stat_active_clients: 'Active clients',
+      latest_reservations: 'Latest reservations',
+      see_all: 'See all →',
+      page_reservations_title: 'Reservations',
+      page_reservations_subtitle: 'All reservations of your center.',
+      export_csv: '📥 Export CSV',
+      full_list: 'Full list', search_placeholder: 'Search...',
+      filter_all: 'All', filter_paid: 'Paid',
+      filter_pending: 'Pending', filter_cancelled: 'Cancelled',
+      page_clients_title: 'Clients',
+      page_clients_subtitle: 'Your clients who have booked with you.',
+      all_clients: 'All clients',
+      page_boxes_title: 'My <span class="serif">box</span> types',
+      page_boxes_subtitle: 'Configure the boxes your clients will be able to book.',
+      add_box_type: '+ Add a type',
+      page_settings_title: 'Center <span class="serif">settings</span>',
+      page_settings_subtitle: 'Edit your storage center information.',
+      settings_general_title: 'General information',
+      settings_general_desc: 'Appear on the widget and customer contract.',
+      field_center_name: 'Center name', field_slug: 'Slug (widget URL)',
+      field_phone: 'Phone', field_address: 'Address',
+      field_postal_code: 'Postal code', field_city: 'City',
+      field_contact_email: 'Contact email',
+      field_description: 'Center description',
+      btn_save: 'Save →', btn_save_simple: 'Save',
+      settings_lang_title: '🌍 Supported languages',
+      settings_lang_desc: 'Choose the languages your clients can select on the widget.',
+      field_default_lang: 'Default language',
+      field_available_langs: 'Available languages (check what your clients will see)',
+      btn_save_langs: 'Save languages →',
+      settings_ai_pricing_title: 'AI Dynamic Pricing',
+      settings_ai_pricing_desc: 'Automatically adjust your prices based on availability and season. Like hotels and Uber.',
+      ai_enable_title: 'Enable AI Pricing',
+      ai_enable_desc: 'Your prices will adapt automatically.',
+      ai_rules_title: 'Adjustment rules',
+      ai_low_stock_label: 'Low stock (&lt;30%) → Increase by',
+      ai_high_stock_label: 'High stock (&gt;70%) → Decrease by',
+      ai_high_season_label: 'High season (Jun-Sept) → +%',
+      ai_low_season_label: 'Low season (Jan/Feb/Nov) → -%',
+      ai_max_increase: 'Max increase (%)',
+      ai_max_decrease: 'Max decrease (%)',
+      ai_preview_title: '✦ Preview of your current prices',
+      btn_save_rules: 'Save rules →',
+      settings_embed_title: '🔗 Embed on your site',
+      settings_embed_desc: 'Copy this code and paste it on your website. Your clients will be able to book directly with you.',
+      btn_copy: 'Copy', btn_copy_url: 'Copy URL',
+      direct_widget_url: 'Direct widget URL',
+      preview_on_site: 'Preview on your site',
+      btn_see_preview: 'See preview →',
+      modal_box_title: 'New <span class="serif">box</span> type',
+      modal_box_subtitle: 'Configure your storage offer.',
+      box_name: 'Name', box_name_ph: 'Small, Medium, Large...',
+      box_surface: 'Surface (m²)', box_description: 'Short description',
+      box_description_ph: 'Studio or 1-bedroom',
+      box_price: 'Monthly price (€)', box_deposit: 'Deposit (€)',
+      box_available: 'Available', box_total: 'Total',
+      box_mark_recommended: '✦ Mark as recommended',
+      btn_cancel: 'Cancel',
+      stat_evolution: 'Evolution',
+      stat_compare_months: 'Month-by-month comparison',
+      toast_box_saved: '✓ Box saved',
+      toast_box_modified: '✓ Box updated',
+      toast_box_created: '✓ Box created',
+      toast_box_deleted: '✓ Box deleted',
+      toast_center_saved: '✓ Center updated',
+      toast_langs_saved: '✓ Languages saved',
+      toast_ai_saved: '✓ AI Pricing rules saved',
+      toast_resa_updated: '✓ Reservation updated',
+      toast_copied: '✓ Copied to clipboard',
+      toast_url_copied: '✓ URL copied',
+      toast_widget_url_copied: '✓ Widget link copied',
+      toast_csv_exported: '✓ CSV export downloaded',
+      err_no_center: 'No center found for your account',
+      err_load: 'Loading error', err_save: 'Save error',
+      err_fill_required: 'Fill Name, Surface and Price',
+      err_at_least_one_lang: 'At least one language must be active',
+      err_default_lang_active: 'The default language must be in the active languages',
+      reconnect: 'Reconnect',
+      empty_no_resa: 'No reservation',
+      empty_no_resa_widget: 'Share your widget to receive your first reservations.',
+      empty_no_resa_filter: 'No reservation for this filter',
+      empty_no_clients: 'No client',
+      empty_no_clients_text: 'Your clients will appear here after the first reservation.',
+      empty_no_box: 'No box type configured',
+      no_results: 'No results',
+      confirm_delete_box: 'Are you sure you want to delete the type "{name}"? This action cannot be undone.',
+      th_number: 'N°', th_client: 'Client', th_box: 'Box',
+      th_date_entry: 'Move-in date', th_total: 'Total',
+      th_pin: 'PIN', th_status: 'Status',
+      th_name: 'Name', th_email: 'Email', th_phone: 'Phone',
+      th_reservations_count: 'Reservations', th_total_spent: 'Total spent',
+      th_first_name: 'First name', th_address_table: 'Address', th_postal: 'PC', th_city_table: 'City',
+      status_paid: 'Paid', status_pending: 'Pending',
+      status_pending_payment: 'Pending payment', status_cancelled: 'Cancelled',
+      status_active: 'Active', status_ended: 'Ended',
+      box_card_rent: 'Rent', box_card_deposit: 'Deposit',
+      box_card_available: 'Available', box_card_total: 'Total',
+      btn_modify: 'Edit', btn_delete: 'Delete',
+      add_box_card_text: 'New box type',
+      add_first_box: 'Add your 1st box',
+      modal_resa_client: 'Client', modal_resa_reservation: 'Reservation',
+      modal_resa_of_date: 'Reservation from',
+      info_access_pin: 'Access PIN',
+      info_full_name: 'Full name', info_email: 'Email', info_phone: 'Phone',
+      info_address: 'Address', info_box: 'Box', info_date_entry: 'Move-in date',
+      info_monthly_rent: 'Monthly rent', info_deposit: 'Deposit',
+      info_total_paid: 'Total paid', info_pin_not_generated: 'Not generated',
+      modal_resa_change_status: 'Change status',
+      btn_close: 'Close', btn_update: 'Update',
+      info_monthly_avg: 'Monthly average',
+      total_6_months: 'Total 6 months',
+      monthly_evolution: 'Monthly evolution',
+      stat_revenue_chart_title: 'Revenue',
+      stat_revenue_subtitle: 'Last 6 months (€)',
+      stat_revenue_label: 'Rev. (€)',
+      stat_reservations_chart_title: 'Reservations',
+      stat_reservations_subtitle: 'Count per month',
+      stat_reservations_label: 'Reservations',
+      stat_boxes_chart_title: 'Boxes rented',
+      stat_boxes_subtitle: 'Paid or active boxes per month',
+      stat_boxes_label: 'Boxes',
+      stat_clients_chart_title: 'Active clients',
+      stat_clients_subtitle: 'Unique clients per month',
+      stat_clients_label: 'Clients'
+    }
+  };
+
+  let currentLang = 'fr';
+
+  function detectLang() {
+    const saved = localStorage.getItem('frizz_lang');
+    if (saved && I18N[saved]) return saved;
+    const browser = (navigator.language || 'fr').substring(0, 2).toLowerCase();
+    if (I18N[browser]) return browser;
+    return 'fr';
+  }
+
+  function t(key, replacements) {
+    let str = (I18N[currentLang] && I18N[currentLang][key]) || I18N.fr[key] || key;
+    if (replacements) Object.keys(replacements).forEach(k => str = str.replace('{' + k + '}', replacements[k]));
+    return str;
+  }
+
+  function applyTranslations() {
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      el.textContent = t(key);
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      el.innerHTML = t(key);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      el.setAttribute('placeholder', t(key));
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === currentLang);
+    });
+  }
+
+  function setLang(lang) {
+    if (!I18N[lang]) return;
+    currentLang = lang;
+    localStorage.setItem('frizz_lang', lang);
+    applyTranslations();
+    // Re-render les vues dynamiques (tables, cards, etc.)
+    if (typeof renderRecentReservations === 'function' && allReservations.length) renderRecentReservations();
+    if (typeof renderAllReservations === 'function' && allReservations.length) renderAllReservations();
+    if (typeof renderClients === 'function') renderClients();
+    if (typeof renderBoxes === 'function' && allBoxTypes.length) renderBoxes();
+    if (typeof updateNavCounts === 'function') updateNavCounts();
+  }
+
+  currentLang = detectLang();
+  document.addEventListener('DOMContentLoaded', () => {
+    applyTranslations();
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+  });
+
+  // ============================================
+  // Logique du dashboard
+  // ============================================
   let session = null;
   let center = null;
   let allReservations = [];
@@ -1210,13 +1893,13 @@
     try {
       const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_centers?select=*&order=created_at.desc');
       const centers = await res.json();
-      if (!centers || centers.length === 0) throw new Error('Aucun centre trouvé pour votre compte');
+      if (!centers || centers.length === 0) throw new Error(t('err_no_center'));
 
       // Trouver le centre du gérant connecté en priorité
       const userId = session.user?.id;
       center = centers.find(c => c.manager_id === userId) || centers[0];
 
-      const userEmail = session.user?.email || 'Gérant';
+      const userEmail = session.user?.email || t('hello_default_name');
       document.getElementById('userEmail').textContent = userEmail;
       document.getElementById('userEmailMobile').textContent = userEmail;
       document.getElementById('hello-name').textContent = userEmail.split('@')[0];
@@ -1244,9 +1927,9 @@
       document.getElementById('loadingScreen').innerHTML =
         '<div style="color:#EF4444;text-align:center;padding:40px;max-width:500px;">' +
         '<div style="font-size:56px;margin-bottom:18px;">⚠️</div>' +
-        '<div style="font-size:20px;font-weight:600;margin-bottom:8px;">Erreur de chargement</div>' +
+        '<div style="font-size:20px;font-weight:600;margin-bottom:8px;">' + t('err_load') + '</div>' +
         '<div style="font-size:14px;color:#6B7280;margin-bottom:16px;">' + err.message + '</div>' +
-        '<button class="btn-logout" onclick="logout()">Se reconnecter</button>' +
+        '<button class="btn-logout" onclick="logout()">' + t('reconnect') + '</button>' +
         '</div>';
     }
   }
@@ -1305,8 +1988,8 @@
     if (recent.length === 0) {
       document.getElementById('recentReservations').innerHTML =
         '<div class="empty-state"><div class="big-icon">📋</div>' +
-        '<div class="empty-state-title">Aucune réservation</div>' +
-        '<div class="empty-state-text">Partagez votre widget pour recevoir vos premières réservations.</div></div>';
+        '<div class="empty-state-title">' + t('empty_no_resa') + '</div>' +
+        '<div class="empty-state-text">' + t('empty_no_resa_widget') + '</div></div>';
       return;
     }
     document.getElementById('recentReservations').innerHTML = renderReservationTable(recent);
@@ -1332,29 +2015,30 @@
     if (list.length === 0) {
       document.getElementById('allReservations').innerHTML =
         '<div class="empty-state"><div class="big-icon">🔍</div>' +
-        '<div class="empty-state-title">Aucune réservation</div>' +
-        '<div class="empty-state-text">Aucun résultat pour ce filtre.</div></div>';
+        '<div class="empty-state-title">' + t('empty_no_resa') + '</div>' +
+        '<div class="empty-state-text">' + t('empty_no_resa_filter') + '</div></div>';
       return;
     }
     document.getElementById('allReservations').innerHTML = renderReservationTable(list);
   }
 
   function renderReservationTable(list) {
+    const lang = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
     return `<table>
       <thead><tr>
-        <th>N°</th><th>Client</th><th>Box</th><th>Date entrée</th><th>Total</th><th>PIN</th><th>Statut</th>
+        <th>${t('th_number')}</th><th>${t('th_client')}</th><th>${t('th_box')}</th><th>${t('th_date_entry')}</th><th>${t('th_total')}</th><th>${t('th_pin')}</th><th>${t('th_status')}</th>
       </tr></thead>
       <tbody>
       ${list.map(r => {
         const c = r.frizz_box_clients || {};
         const b = r.frizz_box_types || {};
         const badgeClass = 'badge-' + (r.status || 'pending');
-        const badgeLabel = { paid: 'Payée', pending: 'En attente', cancelled: 'Annulée', active: 'Active', ended: 'Terminée' }[r.status] || r.status;
+        const badgeLabel = { paid: t('status_paid'), pending: t('status_pending'), pending_payment: t('status_pending_payment'), cancelled: t('status_cancelled'), active: t('status_active'), ended: t('status_ended') }[r.status] || r.status;
         return `<tr class="clickable" onclick="openReservationModal('${r.id}')">
           <td><strong>${r.reservation_number}</strong></td>
           <td>${(c.first_name || '') + ' ' + (c.last_name || '')}<br><small style="color:var(--gray-500);">${c.email || ''}</small></td>
           <td>${b.name || ''} · ${b.surface_m2 || ''}m²</td>
-          <td>${r.start_date ? new Date(r.start_date).toLocaleDateString('fr-FR') : '-'}</td>
+          <td>${r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-'}</td>
           <td><strong>${parseFloat(r.total_paid_today || 0).toFixed(2)} €</strong></td>
           <td><span class="pin-display ${!r.access_pin ? 'empty' : ''}">${r.access_pin || '----'}</span></td>
           <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
@@ -1387,12 +2071,12 @@
     if (clients.length === 0) {
       document.getElementById('clientsList').innerHTML =
         '<div class="empty-state"><div class="big-icon">👥</div>' +
-        '<div class="empty-state-title">Aucun client</div>' +
-        '<div class="empty-state-text">Vos clients apparaîtront ici dès la première réservation.</div></div>';
+        '<div class="empty-state-title">' + t('empty_no_clients') + '</div>' +
+        '<div class="empty-state-text">' + t('empty_no_clients_text') + '</div></div>';
       return;
     }
     document.getElementById('clientsList').innerHTML = `<table>
-      <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Réservations</th><th>Total dépensé</th></tr></thead>
+      <thead><tr><th>${t('th_name')}</th><th>${t('th_email')}</th><th>${t('th_phone')}</th><th>${t('th_reservations_count')}</th><th>${t('th_total_spent')}</th></tr></thead>
       <tbody>
       ${clients.map(c => `<tr>
         <td><strong>${(c.first_name || '') + ' ' + (c.last_name || '')}</strong></td>
@@ -1410,40 +2094,40 @@
       document.getElementById('boxesList').innerHTML =
         '<div class="boxes-grid"><div class="add-box-card" onclick="openBoxModal()">' +
         '<div class="plus">+</div>' +
-        '<div class="add-box-card-text">Ajouter votre 1er box</div>' +
+        '<div class="add-box-card-text">' + t('add_first_box') + '</div>' +
         '</div></div>';
       return;
     }
     document.getElementById('boxesList').innerHTML = `<div class="boxes-grid">
-      ${types.map(t => `<div class="box-card ${t.is_recommended ? 'recommended' : ''}">
-        <div class="box-card-name">${t.name} · ${t.surface_m2}m²</div>
-        <div class="box-card-desc">${t.description || ''}</div>
+      ${types.map(bt => `<div class="box-card ${bt.is_recommended ? 'recommended' : ''}">
+        <div class="box-card-name">${bt.name} · ${bt.surface_m2}m²</div>
+        <div class="box-card-desc">${bt.description || ''}</div>
         <div class="box-card-stats">
           <div class="box-card-stat">
-            <div class="box-card-stat-label">Loyer</div>
-            <div class="box-card-stat-value">${parseFloat(t.price_monthly).toFixed(0)} €</div>
+            <div class="box-card-stat-label">${t('box_card_rent')}</div>
+            <div class="box-card-stat-value">${parseFloat(bt.price_monthly).toFixed(0)} €</div>
           </div>
           <div class="box-card-stat">
-            <div class="box-card-stat-label">Caution</div>
-            <div class="box-card-stat-value">${parseFloat(t.deposit || 0).toFixed(0)} €</div>
+            <div class="box-card-stat-label">${t('box_card_deposit')}</div>
+            <div class="box-card-stat-value">${parseFloat(bt.deposit || 0).toFixed(0)} €</div>
           </div>
           <div class="box-card-stat">
-            <div class="box-card-stat-label">Disponibles</div>
-            <div class="box-card-stat-value">${t.available_count}</div>
+            <div class="box-card-stat-label">${t('box_card_available')}</div>
+            <div class="box-card-stat-value">${bt.available_count}</div>
           </div>
           <div class="box-card-stat">
-            <div class="box-card-stat-label">Total</div>
-            <div class="box-card-stat-value">${t.total_count}</div>
+            <div class="box-card-stat-label">${t('box_card_total')}</div>
+            <div class="box-card-stat-value">${bt.total_count}</div>
           </div>
         </div>
         <div class="box-card-actions">
-          <button class="box-card-btn" onclick="openBoxModal('${t.id}')">Modifier</button>
-          <button class="box-card-btn danger" onclick="deleteBox('${t.id}', '${t.name}')">Supprimer</button>
+          <button class="box-card-btn" onclick="openBoxModal('${bt.id}')">${t('btn_modify')}</button>
+          <button class="box-card-btn danger" onclick="deleteBox('${bt.id}', '${bt.name}')">${t('btn_delete')}</button>
         </div>
       </div>`).join('')}
       <div class="add-box-card" onclick="openBoxModal()">
         <div class="plus">+</div>
-        <div class="add-box-card-text">Nouveau type de box</div>
+        <div class="add-box-card-text">${t('add_box_card_text')}</div>
       </div>
     </div>`;
   }
@@ -1454,79 +2138,80 @@
     if (!r) return;
     const c = r.frizz_box_clients || {};
     const b = r.frizz_box_types || {};
-    const badgeLabel = { paid: 'Payée', pending: 'En attente', cancelled: 'Annulée', active: 'Active', ended: 'Terminée' }[r.status] || r.status;
+    const lang = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
+    const badgeLabel = { paid: t('status_paid'), pending: t('status_pending'), pending_payment: t('status_pending_payment'), cancelled: t('status_cancelled'), active: t('status_active'), ended: t('status_ended') }[r.status] || r.status;
 
     document.getElementById('modalReservationContent').innerHTML = `
       <div class="modal-header">
         <div>
           <div class="modal-title">${r.reservation_number}</div>
-          <div class="modal-subtitle">Réservation du ${new Date(r.created_at).toLocaleDateString('fr-FR')} · <span class="badge badge-${r.status}">${badgeLabel}</span></div>
+          <div class="modal-subtitle">${t('modal_resa_of_date')} ${new Date(r.created_at).toLocaleDateString(lang)} · <span class="badge badge-${r.status}">${badgeLabel}</span></div>
         </div>
         <button class="modal-close" onclick="closeModal('modalReservation')">×</button>
       </div>
 
-      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">Client</div>
+      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">${t('modal_resa_client')}</div>
       <div class="info-grid">
         <div class="info-item">
-          <div class="info-item-label">Nom complet</div>
+          <div class="info-item-label">${t('info_full_name')}</div>
           <div class="info-item-value">${(c.first_name || '') + ' ' + (c.last_name || '')}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Email</div>
+          <div class="info-item-label">${t('info_email')}</div>
           <div class="info-item-value">${c.email || '-'}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Téléphone</div>
+          <div class="info-item-label">${t('info_phone')}</div>
           <div class="info-item-value">${c.phone || '-'}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Adresse</div>
+          <div class="info-item-label">${t('info_address')}</div>
           <div class="info-item-value">${c.address || '-'}<br>${c.postal_code || ''} ${c.city || ''}</div>
         </div>
       </div>
 
-      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">Réservation</div>
+      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">${t('modal_resa_reservation')}</div>
       <div class="info-grid">
         <div class="info-item">
-          <div class="info-item-label">Box</div>
+          <div class="info-item-label">${t('info_box')}</div>
           <div class="info-item-value">${b.name || '-'} · ${b.surface_m2 || '-'} m²</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Date d'entrée</div>
-          <div class="info-item-value">${r.start_date ? new Date(r.start_date).toLocaleDateString('fr-FR') : '-'}</div>
+          <div class="info-item-label">${t('info_date_entry')}</div>
+          <div class="info-item-value">${r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-'}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Loyer mensuel</div>
+          <div class="info-item-label">${t('info_monthly_rent')}</div>
           <div class="info-item-value">${parseFloat(r.monthly_price).toFixed(2)} €</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Caution</div>
+          <div class="info-item-label">${t('info_deposit')}</div>
           <div class="info-item-value">${parseFloat(r.deposit || 0).toFixed(2)} €</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Total payé</div>
+          <div class="info-item-label">${t('info_total_paid')}</div>
           <div class="info-item-value" style="color:var(--orange);">${parseFloat(r.total_paid_today || 0).toFixed(2)} €</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">PIN d'accès</div>
-          <div class="info-item-value">${r.access_pin ? '<span class="pin-display">' + r.access_pin + '</span>' : '<span class="pin-display empty">Non généré</span>'}</div>
+          <div class="info-item-label">${t('info_access_pin')}</div>
+          <div class="info-item-value">${r.access_pin ? '<span class="pin-display">' + r.access_pin + '</span>' : '<span class="pin-display empty">' + t('info_pin_not_generated') + '</span>'}</div>
         </div>
       </div>
 
-      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">Changer le statut</div>
+      <div style="font-size:13px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">${t('modal_resa_change_status')}</div>
       <div class="form-field" style="margin-bottom:0;">
         <select class="form-select" id="modalStatusSelect">
-          <option value="pending" ${r.status === 'pending' ? 'selected' : ''}>En attente</option>
-          <option value="paid" ${r.status === 'paid' ? 'selected' : ''}>Payée</option>
-          <option value="active" ${r.status === 'active' ? 'selected' : ''}>Active</option>
-          <option value="ended" ${r.status === 'ended' ? 'selected' : ''}>Terminée</option>
-          <option value="cancelled" ${r.status === 'cancelled' ? 'selected' : ''}>Annulée</option>
+          <option value="pending" ${r.status === 'pending' ? 'selected' : ''}>${t('status_pending')}</option>
+          <option value="paid" ${r.status === 'paid' ? 'selected' : ''}>${t('status_paid')}</option>
+          <option value="active" ${r.status === 'active' ? 'selected' : ''}>${t('status_active')}</option>
+          <option value="ended" ${r.status === 'ended' ? 'selected' : ''}>${t('status_ended')}</option>
+          <option value="cancelled" ${r.status === 'cancelled' ? 'selected' : ''}>${t('status_cancelled')}</option>
         </select>
       </div>
 
       <div class="modal-actions">
-        <button class="btn-action secondary" onclick="closeModal('modalReservation')">Fermer</button>
-        <button class="btn-action" onclick="updateReservationStatus('${r.id}')">Mettre à jour</button>
+        <button class="btn-action secondary" onclick="closeModal('modalReservation')">${t('btn_close')}</button>
+        <button class="btn-action" onclick="updateReservationStatus('${r.id}')">${t('btn_update')}</button>
       </div>
     `;
     document.getElementById('modalReservation').classList.add('active');
@@ -1539,9 +2224,9 @@
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus })
       });
-      if (!res.ok) throw new Error('Erreur mise à jour');
+      if (!res.ok) throw new Error(t('err_save'));
       closeModal('modalReservation');
-      showToast('✓ Statut mis à jour', 'success');
+      showToast(t('toast_resa_updated'), 'success');
       await loadReservations();
     } catch (err) {
       showToast('❌ ' + err.message, 'error');
@@ -1585,7 +2270,7 @@
     const recommended = document.getElementById('boxRecommended').checked;
 
     if (!name || !surface || !price) {
-      showToast('❌ Remplissez Nom, Surface et Prix', 'error');
+      showToast('❌ ' + t('err_fill_required'), 'error');
       return;
     }
 
@@ -1600,14 +2285,14 @@
         const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_types?id=eq.' + id, {
           method: 'PATCH', body: JSON.stringify(data)
         });
-        if (!res.ok) throw new Error('Erreur modification');
-        showToast('✓ Box modifié', 'success');
+        if (!res.ok) throw new Error(t('err_save'));
+        showToast(t('toast_box_modified'), 'success');
       } else {
         const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_types', {
           method: 'POST', body: JSON.stringify({ ...data, display_order: allBoxTypes.length + 1 })
         });
-        if (!res.ok) throw new Error('Erreur création');
-        showToast('✓ Box créé', 'success');
+        if (!res.ok) throw new Error(t('err_save'));
+        showToast(t('toast_box_created'), 'success');
       }
       closeModal('modalBox');
       await loadBoxTypes();
@@ -1617,11 +2302,11 @@
   }
 
   async function deleteBox(id, name) {
-    if (!confirm('Supprimer le box "' + name + '" ?\nCette action est irréversible.')) return;
+    if (!confirm(t('confirm_delete_box', { name: name }))) return;
     try {
       const res = await authFetch(SUPABASE_URL + '/rest/v1/frizz_box_types?id=eq.' + id, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Erreur suppression');
-      showToast('✓ Box supprimé', 'success');
+      if (!res.ok) throw new Error(t('err_save'));
+      showToast(t('toast_box_deleted'), 'success');
       await loadBoxTypes();
     } catch (err) {
       showToast('❌ ' + err.message, 'error');
@@ -1665,11 +2350,11 @@
     const defaultLang = document.getElementById('setDefaultLanguage').value;
     const supported = ['fr','de','it','en'].filter(l => document.getElementById('lang-' + l).checked);
     if (supported.length === 0) {
-      showToast('❌ Au moins une langue doit être active', 'error');
+      showToast('❌ ' + t('err_at_least_one_lang'), 'error');
       return;
     }
     if (!supported.includes(defaultLang)) {
-      showToast('❌ La langue par défaut doit être dans les langues actives', 'error');
+      showToast('❌ ' + t('err_default_lang_active'), 'error');
       return;
     }
     try {
@@ -1678,11 +2363,11 @@
         headers: { 'Prefer': 'return=representation' },
         body: JSON.stringify({ default_language: defaultLang, supported_languages: supported })
       });
-      if (!res.ok) throw new Error('Erreur enregistrement');
+      if (!res.ok) throw new Error(t('err_save'));
       const updated = await res.json();
       center = updated[0];
       renderEmbedCode();
-      showToast('✓ Langues mises à jour', 'success');
+      showToast(t('toast_langs_saved'), 'success');
     } catch (err) {
       showToast('❌ ' + err.message, 'error');
     }
@@ -1716,11 +2401,11 @@
         headers: { 'Prefer': 'return=representation' },
         body: JSON.stringify({ ai_pricing_enabled: enabled, ai_pricing_rules: rules })
       });
-      if (!res.ok) throw new Error('Erreur enregistrement');
+      if (!res.ok) throw new Error(t('err_save'));
       const updated = await res.json();
       center = updated[0];
       renderPricingPreview();
-      showToast('✓ Règles AI Pricing mises à jour', 'success');
+      showToast(t('toast_ai_saved'), 'success');
     } catch (err) {
       showToast('❌ ' + err.message, 'error');
     }
@@ -1798,13 +2483,13 @@
     const code = `<!-- ✦ Frizz Reservation Widget -->
 <script src="${baseUrl}/frizz-loader.js" data-center="${slug}" data-lang="${lang}"><` + `/script>`;
     navigator.clipboard.writeText(code);
-    showToast('✓ Code embed copié', 'success');
+    showToast(t('toast_copied'), 'success');
   }
 
   function copyDirectUrl() {
     const url = window.location.origin + '/box/embed.html?c=' + center.slug;
     navigator.clipboard.writeText(url);
-    showToast('✓ URL copiée', 'success');
+    showToast(t('toast_url_copied'), 'success');
   }
 
   function previewEmbed() {
@@ -1828,11 +2513,11 @@
         headers: { 'Prefer': 'return=representation' },
         body: JSON.stringify(updates)
       });
-      if (!res.ok) throw new Error('Erreur enregistrement');
+      if (!res.ok) throw new Error(t('err_save'));
       const updated = await res.json();
       center = updated[0];
       document.getElementById('centerNameTag').textContent = center.name;
-      showToast('✓ Centre mis à jour', 'success');
+      showToast(t('toast_center_saved'), 'success');
     } catch (err) {
       showToast('❌ ' + err.message, 'error');
     }
@@ -1887,7 +2572,7 @@
     a.href = url; a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('✓ Export téléchargé', 'success');
+    showToast(t('toast_csv_exported'), 'success');
   }
 
   // ============== STAT CHART MODAL ==============
@@ -1899,9 +2584,10 @@
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const localeForMonth = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
       months.push({
         key: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'),
-        label: d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }),
+        label: d.toLocaleDateString(localeForMonth, { month: 'short', year: '2-digit' }),
         start: d,
         end: new Date(d.getFullYear(), d.getMonth() + 1, 1)
       });
@@ -1935,10 +2621,10 @@
     const data = getMonthlyData(metric);
 
     const titles = {
-      revenue: { title: 'Chiffre d\'affaires', subtitle: '6 derniers mois (€)', label: 'CA (€)', color: '#EA580C' },
-      reservations: { title: 'Réservations', subtitle: 'Nombre par mois', label: 'Réservations', color: '#3B82F6' },
-      boxes: { title: 'Box loués', subtitle: 'Box payés ou actifs par mois', label: 'Box loués', color: '#10B981' },
-      clients: { title: 'Clients actifs', subtitle: 'Clients uniques par mois', label: 'Clients', color: '#F59E0B' }
+      revenue: { title: t('stat_revenue_chart_title'), subtitle: t('stat_revenue_subtitle'), label: t('stat_revenue_label'), color: '#EA580C' },
+      reservations: { title: t('stat_reservations_chart_title'), subtitle: t('stat_reservations_subtitle'), label: t('stat_reservations_label'), color: '#3B82F6' },
+      boxes: { title: t('stat_boxes_chart_title'), subtitle: t('stat_boxes_subtitle'), label: t('stat_boxes_label'), color: '#10B981' },
+      clients: { title: t('stat_clients_chart_title'), subtitle: t('stat_clients_subtitle'), label: t('stat_clients_label'), color: '#F59E0B' }
     };
     const config = titles[metric];
 
@@ -2032,15 +2718,15 @@
 
       document.getElementById('statSummary').innerHTML = `
         <div class="info-item">
-          <div class="info-item-label">Total 6 mois</div>
+          <div class="info-item-label">${t('total_6_months')}</div>
           <div class="info-item-value">${formatVal(total)}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Moyenne mensuelle</div>
+          <div class="info-item-label">${t('info_monthly_avg')}</div>
           <div class="info-item-value">${formatVal(avg)}</div>
         </div>
         <div class="info-item">
-          <div class="info-item-label">Évolution mensuelle</div>
+          <div class="info-item-label">${t('monthly_evolution')}</div>
           <div class="info-item-value" style="color: ${variationColor};">
             ${variationIcon} ${Math.abs(variation).toFixed(0)}%
           </div>
@@ -2053,7 +2739,7 @@
   function copyWidgetUrl() {
     const url = document.getElementById('widgetUrl').dataset.url;
     navigator.clipboard.writeText(url);
-    showToast('✓ URL copiée', 'success');
+    showToast(t('toast_widget_url_copied'), 'success');
   }
 
   function closeModal(id) { document.getElementById(id).classList.remove('active'); }

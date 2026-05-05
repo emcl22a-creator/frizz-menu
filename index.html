@@ -219,70 +219,183 @@
   .hero-checks .check { color: var(--orange); font-weight: 700; }
   
   /* WIDGET */
-  /* PHONE MOCKUP - Téléphone réaliste */
-  .widget-wrap {
-    /* Le cadre extérieur du téléphone (bordures noires) */
-    background: #1a1a1a;
-    padding: 14px 14px 14px 14px;
-    border-radius: 44px;
-    border: 2px solid #2a2a2a;
-    box-shadow:
-      0 0 0 2px #0a0a0a,
-      0 50px 100px rgba(0,0,0,0.25),
-      0 30px 60px rgba(234,88,12,0.12),
-      inset 0 0 0 1px rgba(255,255,255,0.05);
+  /* === CALCULATEUR ROI INTERACTIF === */
+  .roi-calculator {
+    background: var(--white);
+    border-radius: 28px;
+    padding: 36px 32px;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 30px 80px rgba(234,88,12,0.12), 0 12px 30px rgba(0,0,0,0.06);
     position: relative;
-    max-width: 380px;
+    max-width: 480px;
     margin: 0 auto;
     animation: slideInRight 1s ease-out 0.4s backwards, glow 4s ease-in-out 1.5s infinite;
   }
-  /* Encoche du téléphone (notch) */
-  .widget-wrap::after {
+  .roi-calculator::before {
     content: '';
     position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 110px;
-    height: 28px;
-    background: #0a0a0a;
-    border-radius: 0 0 18px 18px;
-    z-index: 10;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(135deg, rgba(234,88,12,0.3), transparent 50%, rgba(234,88,12,0.15));
+    border-radius: 30px;
+    z-index: -1;
+    opacity: 0.6;
   }
-  /* Badge "Vu par votre client" repositionné au-dessus du téléphone */
-  .widget-wrap::before {
-    content: 'Vu par votre client';
-    position: absolute;
-    top: -34px; left: 50%; transform: translateX(-50%);
-    background: var(--orange); color: var(--white);
-    padding: 5px 14px; border-radius: 100px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
-    white-space: nowrap;
-    animation: bounce 3s ease-in-out infinite;
+
+  .roi-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--orange) 0%, #F97316 100%);
+    color: var(--white);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(234,88,12,0.25);
+  }
+  .roi-spark {
+    font-size: 14px;
+    animation: starSpinRoi 3s linear infinite;
+    display: inline-block;
+  }
+  @keyframes starSpinRoi {
+    0%, 85%, 100% { transform: rotate(0deg); }
+    92% { transform: rotate(360deg); }
+  }
+
+  .roi-question {
+    font-size: 15px; font-weight: 700; color: var(--black);
+    margin-bottom: 14px;
+  }
+
+  .roi-slider-wrap {
+    background: linear-gradient(135deg, var(--orange-bg) 0%, #FFF 100%);
+    border: 1px solid rgba(234,88,12,0.15);
+    padding: 18px 20px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+  }
+
+  #roiSlider {
+    width: 100%; height: 8px; -webkit-appearance: none; appearance: none;
+    background: var(--gray-200);
+    border-radius: 100px; outline: none;
+    margin-bottom: 14px; cursor: pointer;
+    background-image: linear-gradient(var(--orange), var(--orange));
+    background-repeat: no-repeat;
+    background-size: 50% 100%;
+    transition: background-size 0.1s;
+  }
+  #roiSlider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 24px; height: 24px;
+    background: var(--white);
+    border: 3px solid var(--orange);
+    border-radius: 50%; cursor: grab;
+    box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+    transition: transform 0.15s;
+  }
+  #roiSlider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  #roiSlider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.05); }
+  #roiSlider::-moz-range-thumb {
+    width: 24px; height: 24px;
+    background: var(--white); border: 3px solid var(--orange);
+    border-radius: 50%; cursor: grab;
     box-shadow: 0 4px 12px rgba(234,88,12,0.3);
   }
-  /* Bouton power latéral droit (détail réaliste) */
-  .widget-wrap .phone-btn-right {
-    position: absolute;
-    right: -3px; top: 110px;
-    width: 3px; height: 60px;
-    background: #1a1a1a;
-    border-radius: 0 2px 2px 0;
+
+  .roi-slider-value {
+    text-align: center;
+    font-size: 32px; font-weight: 800;
+    color: var(--orange); letter-spacing: -0.02em;
   }
-  /* Boutons volume gauche (détail réaliste) */
-  .widget-wrap .phone-btn-left {
-    position: absolute;
-    left: -3px; top: 90px;
-    width: 3px; height: 35px;
-    background: #1a1a1a;
-    border-radius: 2px 0 0 2px;
-    box-shadow: 0 50px 0 #1a1a1a;
+  .roi-slider-value small {
+    font-size: 14px; color: var(--gray-700);
+    font-weight: 500; margin-left: 4px;
   }
-  /* L'écran intérieur (le widget) */
-  .widget {
-    background: var(--white); border-radius: 32px;
-    border: none; overflow: hidden;
-    padding-top: 50px; /* espace pour l'encoche */
+
+  .roi-stats {
+    display: grid; gap: 12px; margin-bottom: 18px;
+  }
+
+  .roi-stat.highlight {
+    background: linear-gradient(135deg, var(--black) 0%, #1f1f1f 100%);
+    color: var(--white);
+    padding: 22px 24px; border-radius: 18px;
+    position: relative; overflow: hidden;
+  }
+  .roi-stat.highlight::before {
+    content: '✦'; position: absolute;
+    top: -20px; right: -20px;
+    font-size: 100px; color: var(--orange);
+    opacity: 0.08; font-family: serif;
+    pointer-events: none;
+  }
+  .roi-stat-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--orange-light);
+    margin-bottom: 4px;
+  }
+  .roi-stat-value {
+    font-size: 42px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1; display: flex; align-items: baseline; gap: 4px;
+  }
+  .roi-stat-value span:first-child {
+    background: linear-gradient(135deg, var(--orange) 0%, #FED7AA 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: opacity 0.2s;
+  }
+  .roi-stat-unit {
+    font-size: 28px; color: var(--orange);
+    font-weight: 700;
+  }
+  .roi-stat-note {
+    font-size: 11px; color: var(--gray-300); margin-top: 6px;
+    font-family: 'Source Serif 4', serif; font-style: italic;
+  }
+
+  .roi-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .roi-stat-mini {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    padding: 14px 16px;
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .roi-stat-mini-icon {
+    font-size: 20px;
+    width: 36px; height: 36px;
+    background: var(--white);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .roi-stat-mini-value {
+    font-size: 18px; font-weight: 800;
+    color: var(--black); line-height: 1.1;
+  }
+  .roi-stat-mini-value span { color: var(--orange); }
+  .roi-stat-mini-label {
+    font-size: 11px; color: var(--gray-500);
+    font-weight: 600;
+  }
+
+  .roi-footer {
+    text-align: center; font-size: 11px;
+    color: var(--gray-500); padding-top: 14px;
+    border-top: 1px solid var(--gray-100);
+    line-height: 1.5;
+  }
+  .roi-check {
+    color: var(--orange); font-weight: 700;
+    margin-right: 4px;
+  }
+  .roi-stat-bump {
+    animation: bumpRoi 0.3s ease-out;
+  }
+  @keyframes bumpRoi {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+    100% { transform: scale(1); }
   }
   .widget-header {
     padding: 20px 24px; border-bottom: 1px solid var(--gray-100);
@@ -606,9 +719,11 @@
     .access-flow { gap: 8px; }
     .flow-step { font-size: 12px; padding: 10px 14px; }
     /* Téléphone responsive */
-    .widget-wrap { max-width: 320px; padding: 12px; border-radius: 38px; }
-    .widget-wrap::after { width: 90px; height: 24px; top: 12px; }
-    .widget { border-radius: 26px; padding-top: 42px; }
+    .roi-calculator { max-width: 100%; padding: 28px 20px; border-radius: 22px; }
+    .roi-stat-value { font-size: 36px; }
+    .roi-stat-unit { font-size: 24px; }
+    .roi-stat-row { grid-template-columns: 1fr; }
+    .roi-slider-value { font-size: 28px; }
   }
 </style>
 </head>
@@ -641,59 +756,49 @@
     </div>
   </div>
   
-  <div class="widget-wrap">
-    <span class="phone-btn-left"></span>
-    <span class="phone-btn-right"></span>
-    <div class="widget">
-      <div class="widget-header">
-        <div class="widget-title">✦ Réserver un box</div>
-        <div class="widget-step">Étape 1/3</div>
+  <div class="roi-calculator">
+    <div class="roi-badge">
+      <span class="roi-spark">✦</span> Calculez votre gain
+    </div>
+
+    <div class="roi-question">Vous gérez combien de box ?</div>
+
+    <div class="roi-slider-wrap">
+      <input type="range" id="roiSlider" min="20" max="500" value="80" step="5">
+      <div class="roi-slider-value">
+        <span id="roiBoxCount">80</span> <small>box</small>
       </div>
-      <div class="widget-body">
-        <div class="widget-q">Quelle taille vous convient ?</div>
-        <div class="ai-suggest">
-          <span class="ai-icon">✦</span>
-          <span><strong>Notre suggestion :</strong> pour un studio meublé, un box de 6m² est <em>idéal</em>.</span>
+    </div>
+
+    <div class="roi-stats">
+      <div class="roi-stat highlight">
+        <div class="roi-stat-label">Économies par mois</div>
+        <div class="roi-stat-value">
+          <span id="roiSavings">3 200</span><span class="roi-stat-unit">€</span>
         </div>
-        <div class="box-options">
-          <div class="box-opt">
-            <div class="box-opt-info">
-              <div class="box-opt-icon">📦</div>
-              <div>
-                <div class="box-opt-name">Petit · 2m²</div>
-                <div class="box-opt-desc">Cartons & objets</div>
-              </div>
-            </div>
-            <div class="box-opt-price">49€<small>/mois</small></div>
-          </div>
-          <div class="box-opt selected">
-            <div class="box-opt-info">
-              <div class="box-opt-icon">📦</div>
-              <div>
-                <div class="box-opt-name">Moyen · 6m²</div>
-                <div class="box-opt-desc">Studio ou T1 — Recommandé</div>
-              </div>
-            </div>
-            <div class="box-opt-price">99€<small>/mois</small></div>
-          </div>
-          <div class="box-opt">
-            <div class="box-opt-info">
-              <div class="box-opt-icon">📦</div>
-              <div>
-                <div class="box-opt-name">Grand · 12m²</div>
-                <div class="box-opt-desc">T2 ou T3</div>
-              </div>
-            </div>
-            <div class="box-opt-price">169€<small>/mois</small></div>
-          </div>
-        </div>
-        <div class="widget-summary">
-          <div class="summary-row"><span>Box moyen 6m²</span><span>99,00 €</span></div>
-          <div class="summary-row"><span>Caution (remboursable)</span><span>200,00 €</span></div>
-          <div class="summary-row total"><span>Total à payer aujourd'hui</span><span class="price">299,00 €</span></div>
-        </div>
-        <button class="widget-cta-btn">Continuer →</button>
+        <div class="roi-stat-note">vs gestion manuelle</div>
       </div>
+
+      <div class="roi-stat-row">
+        <div class="roi-stat-mini">
+          <div class="roi-stat-mini-icon">⏱</div>
+          <div>
+            <div class="roi-stat-mini-value"><span id="roiHours">68</span>h</div>
+            <div class="roi-stat-mini-label">gagnées /mois</div>
+          </div>
+        </div>
+        <div class="roi-stat-mini">
+          <div class="roi-stat-mini-icon">📈</div>
+          <div>
+            <div class="roi-stat-mini-value">+<span id="roiOccupancy">12</span>%</div>
+            <div class="roi-stat-mini-label">d'occupation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roi-footer">
+      <span class="roi-check">✓</span> Réservations 24/7 automatiques · Signature électronique · AI Pricing
     </div>
   </div>
 </section>
@@ -921,13 +1026,66 @@
     observer.observe(el);
   });
   
-  // Animation cliquable sur les box options du widget
-  document.querySelectorAll('.box-opt').forEach(opt => {
-    opt.addEventListener('click', function() {
-      document.querySelectorAll('.box-opt').forEach(o => o.classList.remove('selected'));
-      this.classList.add('selected');
-    });
-  });
+  // ============================================
+  // CALCULATEUR ROI INTERACTIF
+  // ============================================
+  (function initRoiCalculator() {
+    const slider = document.getElementById('roiSlider');
+    if (!slider) return;
+
+    const boxCountEl = document.getElementById('roiBoxCount');
+    const savingsEl = document.getElementById('roiSavings');
+    const hoursEl = document.getElementById('roiHours');
+    const occupancyEl = document.getElementById('roiOccupancy');
+
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    function updateSliderBackground() {
+      const min = parseFloat(slider.min);
+      const max = parseFloat(slider.max);
+      const val = parseFloat(slider.value);
+      const pct = ((val - min) / (max - min)) * 100;
+      slider.style.backgroundSize = pct + '% 100%';
+    }
+
+    let lastBumpTime = 0;
+    function bumpStat(el) {
+      const now = Date.now();
+      if (now - lastBumpTime < 80) return;
+      lastBumpTime = now;
+      el.classList.remove('roi-stat-bump');
+      void el.offsetWidth;
+      el.classList.add('roi-stat-bump');
+    }
+
+    function calculateROI(boxCount) {
+      // Économies €/mois : ~40€ par box (gestion automatisée)
+      const savings = Math.round(boxCount * 40);
+      // Heures gagnées : ~50 min par box / mois en automation
+      const hours = Math.round(boxCount * 0.85);
+      // Taux d'occupation amélioré : entre 8% (petit centre) et 18% (gros centre)
+      const occupancy = Math.min(18, Math.round(8 + (boxCount / 500) * 10));
+      return { savings, hours, occupancy };
+    }
+
+    function update() {
+      const boxCount = parseInt(slider.value);
+      const { savings, hours, occupancy } = calculateROI(boxCount);
+
+      boxCountEl.textContent = boxCount;
+      savingsEl.textContent = formatNumber(savings);
+      hoursEl.textContent = hours;
+      occupancyEl.textContent = occupancy;
+
+      updateSliderBackground();
+      bumpStat(savingsEl.parentElement);
+    }
+
+    slider.addEventListener('input', update);
+    update();
+  })();
 </script>
 
 </body>

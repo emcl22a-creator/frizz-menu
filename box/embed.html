@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Frizz · Embed Widget</title>
+<title>Frizz · Réservation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -15,9 +16,9 @@
     --gray-50: #FAFAFA; --white: #FFFFFF;
     --orange: #EA580C; --orange-soft: #F97316;
     --orange-light: #FED7AA; --orange-bg: #FFF7ED;
-    --green: #10B981; --red: #EF4444; --red-bg: #FEE2E2;
+    --green: #10B981; --green-bg: #DCFCE7;
+    --red: #EF4444; --red-bg: #FEE2E2;
   }
-  /* Reset pour iframe : transparent background pour s'intégrer */
   body {
     font-family: 'Inter Tight', sans-serif;
     color: var(--black); background: transparent;
@@ -26,7 +27,6 @@
   }
   .serif { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 400; }
 
-  /* Container : tout dans 1 box compact pour embed */
   .frizz-embed {
     max-width: 100%;
     background: var(--white); border-radius: 16px;
@@ -34,8 +34,6 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.06), 0 4px 12px rgba(234,88,12,0.04);
     overflow: hidden; position: relative;
   }
-
-  /* HEADER COMPACT */
   .embed-header {
     padding: 14px 18px;
     border-bottom: 1px solid var(--gray-100);
@@ -75,9 +73,8 @@
 
   .embed-body { padding: 18px; }
 
-  /* PROGRESS COMPACT */
   .progress {
-    display: flex; align-items: center; gap: 5px;
+    display: flex; align-items: center; gap: 4px;
     margin-bottom: 18px;
   }
   .step-indicator {
@@ -85,10 +82,10 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: 700;
     background: var(--gray-100); color: var(--gray-500);
-    transition: all 0.3s;
+    transition: all 0.3s; flex-shrink: 0;
   }
   .step-indicator.active { background: var(--orange); color: var(--white); transform: scale(1.1); }
-  .step-indicator.done { background: #DCFCE7; color: var(--green); }
+  .step-indicator.done { background: var(--green-bg); color: var(--green); }
   .step-indicator.done::before { content: '✓'; font-size: 12px; }
   .step-indicator.done .num { display: none; }
   .step-line {
@@ -101,7 +98,6 @@
   }
   .step-line.filled::after { width: 100%; }
 
-  /* VIEWS */
   .view { display: none; animation: fadeIn 0.3s; }
   .view.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -113,21 +109,12 @@
   h2 .serif { color: var(--orange); }
   .subtitle { color: var(--gray-700); font-size: 12px; margin-bottom: 14px; }
 
-  /* AI SUGGEST */
   .ai-suggest {
     background: var(--orange-bg); padding: 9px 12px; border-radius: 8px;
     border-left: 2px solid var(--orange); margin-bottom: 14px;
     font-size: 12px; color: var(--gray-700);
     display: flex; align-items: flex-start; gap: 6px;
-    position: relative; overflow: hidden;
   }
-  .ai-suggest::after {
-    content: ''; position: absolute; top: 0; left: -100%;
-    width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    animation: shimmer 3s ease-in-out infinite;
-  }
-  @keyframes shimmer { 0%, 100% { left: -100%; } 50% { left: 200%; } }
   .ai-suggest strong { color: var(--black); }
   .ai-suggest em {
     font-family: 'Source Serif 4', serif; font-style: italic;
@@ -187,7 +174,6 @@
     display: inline-block; margin-top: 2px; letter-spacing: 0.05em;
   }
 
-  /* FORM COMPACT */
   .form-grid { display: grid; gap: 8px; margin-bottom: 14px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .form-field { display: flex; flex-direction: column; }
@@ -202,6 +188,83 @@
   }
   .form-field input:focus {
     border-color: var(--orange); box-shadow: 0 0 0 2px rgba(234,88,12,0.1);
+  }
+
+  .upload-section {
+    border: 2px dashed var(--gray-200);
+    border-radius: 10px; padding: 14px; margin-bottom: 10px;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--gray-50);
+    display: block;
+  }
+  .upload-section:hover { border-color: var(--orange); background: var(--orange-bg); }
+  .upload-section.has-file {
+    border-color: var(--green); background: var(--green-bg); border-style: solid;
+  }
+  .upload-icon { font-size: 22px; margin-bottom: 4px; }
+  .upload-section.has-file .upload-icon { color: var(--green); }
+  .upload-label { font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 2px; }
+  .upload-hint { font-size: 10px; color: var(--gray-500); }
+  .upload-section input[type="file"] { display: none; }
+  .upload-progress {
+    height: 3px; background: var(--gray-200); border-radius: 2px;
+    overflow: hidden; margin-top: 8px; display: none;
+  }
+  .upload-progress.active { display: block; }
+  .upload-progress-bar {
+    height: 100%; background: var(--orange); width: 0;
+    transition: width 0.3s;
+  }
+  .upload-filename {
+    font-size: 11px; color: var(--green); font-weight: 600;
+    margin-top: 4px; word-break: break-all;
+  }
+
+  .signature-container {
+    border: 2px solid var(--gray-200);
+    border-radius: 10px; padding: 8px; margin-bottom: 10px;
+    background: var(--white);
+  }
+  .signature-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px; font-size: 11px;
+  }
+  .signature-header .label { color: var(--gray-700); font-weight: 600; }
+  .signature-header .clear-btn {
+    background: none; border: none; color: var(--orange);
+    cursor: pointer; font-size: 11px; font-weight: 600;
+    font-family: inherit; padding: 2px 6px;
+  }
+  .signature-header .clear-btn:hover { text-decoration: underline; }
+  #signaturePad {
+    width: 100%; height: 120px;
+    border: 1px dashed var(--gray-300); border-radius: 6px;
+    background: var(--gray-50); cursor: crosshair;
+    display: block; touch-action: none;
+  }
+  .signature-hint {
+    font-size: 10px; color: var(--gray-500); text-align: center;
+    margin-top: 4px;
+  }
+
+  .cgv-block {
+    background: var(--gray-50); padding: 12px;
+    border-radius: 10px; margin-bottom: 12px;
+  }
+  .cgv-checkbox {
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .cgv-checkbox input[type="checkbox"] {
+    width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px;
+    accent-color: var(--orange); cursor: pointer;
+  }
+  .cgv-checkbox label {
+    font-size: 11px; color: var(--gray-700); line-height: 1.4;
+    cursor: pointer;
+  }
+  .cgv-checkbox label a {
+    color: var(--orange); text-decoration: underline;
+    font-weight: 600;
   }
 
   .summary {
@@ -225,9 +288,10 @@
     padding: 12px; border-radius: 10px;
     font-weight: 700; font-size: 13px; border: none; cursor: pointer;
     font-family: inherit; transition: all 0.25s;
-    position: relative; overflow: hidden;
   }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(234,88,12,0.3); }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px); box-shadow: 0 8px 20px rgba(234,88,12,0.3);
+  }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
   .btn-back {
@@ -256,18 +320,14 @@
 
   .success-icon {
     width: 56px; height: 56px; border-radius: 50%;
-    background: #DCFCE7; border: 2px solid var(--green);
+    background: var(--green-bg); border: 2px solid var(--green);
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 14px; font-size: 28px; color: var(--green); font-weight: 800;
   }
   .pin-display {
     background: var(--black); color: var(--orange-light);
     padding: 14px; border-radius: 10px; text-align: center;
-    margin-bottom: 12px; position: relative; overflow: hidden;
-  }
-  .pin-display::before {
-    content: '✦'; position: absolute; top: -10px; right: -5px;
-    font-size: 60px; color: var(--orange); opacity: 0.1; font-family: serif;
+    margin-bottom: 12px;
   }
   .pin-label {
     font-size: 9px; color: var(--orange-light); font-weight: 700;
@@ -275,7 +335,6 @@
   }
   .pin-digits {
     display: flex; justify-content: center; gap: 5px;
-    position: relative; z-index: 2;
   }
   .pin-digit {
     width: 28px; height: 36px; background: rgba(255,255,255,0.08);
@@ -283,6 +342,16 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; font-weight: 800; color: var(--orange);
   }
+
+  .download-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    color: var(--gray-700); padding: 10px 16px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+    margin-bottom: 8px;
+  }
+  .download-btn:hover { border-color: var(--orange); color: var(--orange); }
 
   .powered {
     text-align: center; padding-top: 10px; font-size: 9px;
@@ -297,14 +366,11 @@
 <div class="frizz-embed" id="embedRoot">
   <div class="loading">
     <div class="spinner"></div>
-    <div data-i18n="loading">Chargement...</div>
+    <div>Chargement...</div>
   </div>
 </div>
 
 <script>
-  // ==========================================
-  // CONFIGURATION
-  // ==========================================
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 
@@ -312,235 +378,198 @@
   const centerSlug = urlParams.get('c') || 'demo-bale';
   const initialLang = urlParams.get('lang') || null;
 
-  // ==========================================
-  // I18N — TRADUCTIONS
-  // ==========================================
   const I18N = {
     fr: {
       title_step1: 'Choisissez votre <span class="serif">box</span>',
       sub_step1: 'Notre IA peut vous aider à trouver la bonne taille.',
       title_step2: 'Vos <span class="serif">informations</span>',
-      sub_step2: 'Contrat envoyé par email après paiement.',
-      title_step3: 'Bienvenue chez <span class="serif">Frizz</span>',
-      sub_step3: 'Réservation confirmée.',
-      what_to_store: 'Que stockez-vous ?',
-      sizes: 'Tailles disponibles',
+      sub_step2: 'Pour le contrat de location.',
+      title_step3: 'Documents & <span class="serif">signature</span>',
+      sub_step3: 'Obligatoire selon la législation FR/CH.',
+      title_step4: 'Bienvenue chez <span class="serif">Frizz</span>',
+      sub_step4: 'Réservation confirmée.',
+      what_to_store: 'Que stockez-vous ?', sizes: 'Tailles disponibles',
       ai_suggestion: 'Notre suggestion :',
       box_label_format: 'le box <em>{name}</em> ({surface} m²) est idéal.',
       monthly: 'mois',
-      first_name: 'Prénom',
-      last_name: 'Nom',
-      email: 'Email',
-      phone: 'Téléphone',
-      address: 'Adresse',
-      postal: 'Code postal',
-      city: 'Ville',
-      birth: 'Date de naissance',
-      start: 'Date d\'entrée',
-      id_doc: 'N° pièce d\'identité',
-      monthly_price: 'Loyer mensuel',
-      deposit: 'Caution (remboursable)',
-      total_today: 'Total à payer aujourd\'hui',
-      continue: 'Continuer →',
-      pay: 'Payer {amount} →',
-      back: '← Retour',
-      pin_label: 'Votre code d\'accès',
-      reserve_again: 'Faire une autre réservation',
-      need_boxes: 'Cartons',
-      need_studio: 'Un studio',
-      need_t1: 'Un T1',
-      need_t2: 'Un T2/T3',
-      need_moving: 'Déménagement',
+      first_name: 'Prénom', last_name: 'Nom', email: 'Email',
+      phone: 'Téléphone', address: 'Adresse', postal: 'Code postal', city: 'Ville',
+      birth: 'Date de naissance', start: "Date d'entrée", id_doc: "N° pièce d'identité",
+      monthly_price: 'Loyer mensuel', deposit: 'Caution (remboursable)',
+      total_today: "Total à payer aujourd'hui",
+      continue: 'Continuer →', pay: 'Payer {amount} →', back: '← Retour',
+      pin_label: "Votre code d'accès", reserve_again: 'Faire une autre réservation',
+      need_boxes: 'Cartons', need_studio: 'Un studio', need_t1: 'Un T1',
+      need_t2: 'Un T2/T3', need_moving: 'Déménagement',
       ai_pricing_active: '⚡ Prix dynamique IA',
       loading: 'Chargement...',
       error: 'Erreur. Vérifiez vos informations.',
-      not_found: 'Centre introuvable.',
-      processing: 'Traitement...',
-      powered_by: 'Propulsé par'
+      not_found: 'Centre introuvable.', processing: 'Traitement...',
+      powered_by: 'Propulsé par',
+      upload_id: "Pièce d'identité",
+      upload_id_hint: "Carte d'identité, passeport ou permis (JPG/PNG/PDF, max 10 MB)",
+      upload_residence: 'Justificatif de domicile',
+      upload_residence_hint: 'Facture < 3 mois (JPG/PNG/PDF, max 10 MB)',
+      upload_click: 'Cliquez pour télécharger',
+      uploading: 'Téléchargement...', uploaded: '✓ Téléchargé',
+      cgv_label: "J'ai lu et j'accepte les <a href=\"cgv.html\" target=\"_blank\">Conditions Générales de Vente</a> et certifie avoir 18 ans révolus.",
+      signature_label: 'Signature électronique',
+      signature_hint: 'Signez avec votre souris ou doigt',
+      signature_clear: 'Effacer',
+      download_contract: '📄 Télécharger votre contrat (PDF)',
+      contract_title: "CONTRAT DE MISE À DISPOSITION D'ESPACE DE STOCKAGE"
     },
     de: {
       title_step1: 'Wählen Sie Ihre <span class="serif">Box</span>',
       sub_step1: 'Unsere KI hilft Ihnen, die richtige Größe zu finden.',
       title_step2: 'Ihre <span class="serif">Daten</span>',
-      sub_step2: 'Vertrag per E-Mail nach Zahlung.',
-      title_step3: 'Willkommen bei <span class="serif">Frizz</span>',
-      sub_step3: 'Buchung bestätigt.',
-      what_to_store: 'Was möchten Sie lagern?',
-      sizes: 'Verfügbare Größen',
+      sub_step2: 'Für den Mietvertrag.',
+      title_step3: 'Dokumente & <span class="serif">Unterschrift</span>',
+      sub_step3: 'Gesetzlich vorgeschrieben FR/CH.',
+      title_step4: 'Willkommen bei <span class="serif">Frizz</span>',
+      sub_step4: 'Buchung bestätigt.',
+      what_to_store: 'Was möchten Sie lagern?', sizes: 'Verfügbare Größen',
       ai_suggestion: 'Unsere Empfehlung:',
       box_label_format: 'die Box <em>{name}</em> ({surface} m²) ist ideal.',
       monthly: 'Monat',
-      first_name: 'Vorname',
-      last_name: 'Nachname',
-      email: 'E-Mail',
-      phone: 'Telefon',
-      address: 'Adresse',
-      postal: 'PLZ',
-      city: 'Stadt',
-      birth: 'Geburtsdatum',
-      start: 'Einzugsdatum',
-      id_doc: 'Ausweisnummer',
-      monthly_price: 'Monatsmiete',
-      deposit: 'Kaution (rückzahlbar)',
+      first_name: 'Vorname', last_name: 'Nachname', email: 'E-Mail',
+      phone: 'Telefon', address: 'Adresse', postal: 'PLZ', city: 'Stadt',
+      birth: 'Geburtsdatum', start: 'Einzugsdatum', id_doc: 'Ausweisnummer',
+      monthly_price: 'Monatsmiete', deposit: 'Kaution (rückzahlbar)',
       total_today: 'Heute zu zahlen',
-      continue: 'Weiter →',
-      pay: '{amount} zahlen →',
-      back: '← Zurück',
-      pin_label: 'Ihr Zugangscode',
-      reserve_again: 'Weitere Buchung',
-      need_boxes: 'Kartons',
-      need_studio: 'Studio',
-      need_t1: '1-Zimmer',
-      need_t2: '2-3 Zimmer',
-      need_moving: 'Umzug',
+      continue: 'Weiter →', pay: '{amount} zahlen →', back: '← Zurück',
+      pin_label: 'Ihr Zugangscode', reserve_again: 'Weitere Buchung',
+      need_boxes: 'Kartons', need_studio: 'Studio', need_t1: '1-Zimmer',
+      need_t2: '2-3 Zimmer', need_moving: 'Umzug',
       ai_pricing_active: '⚡ KI-Dynamikpreis',
-      loading: 'Lädt...',
-      error: 'Fehler. Bitte überprüfen Sie Ihre Daten.',
-      not_found: 'Zentrum nicht gefunden.',
-      processing: 'Verarbeitung...',
-      powered_by: 'Angetrieben von'
+      loading: 'Lädt...', error: 'Fehler.',
+      not_found: 'Zentrum nicht gefunden.', processing: 'Verarbeitung...',
+      powered_by: 'Angetrieben von',
+      upload_id: 'Ausweis',
+      upload_id_hint: 'Personalausweis, Pass oder Führerschein (JPG/PNG/PDF, max 10 MB)',
+      upload_residence: 'Wohnsitznachweis',
+      upload_residence_hint: 'Rechnung < 3 Monate (JPG/PNG/PDF, max 10 MB)',
+      upload_click: 'Klicken zum Hochladen',
+      uploading: 'Wird hochgeladen...', uploaded: '✓ Hochgeladen',
+      cgv_label: 'Ich habe die <a href="cgv.html" target="_blank">AGB</a> gelesen und akzeptiert. Ich bestätige, 18 Jahre alt zu sein.',
+      signature_label: 'Elektronische Unterschrift',
+      signature_hint: 'Mit Maus oder Finger unterschreiben',
+      signature_clear: 'Löschen',
+      download_contract: '📄 Vertrag herunterladen (PDF)',
+      contract_title: 'VERTRAG ÜBER DIE BEREITSTELLUNG VON LAGERFLÄCHE'
     },
     it: {
       title_step1: 'Scegli il tuo <span class="serif">box</span>',
       sub_step1: 'La nostra IA può aiutarti a trovare la giusta dimensione.',
       title_step2: 'I tuoi <span class="serif">dati</span>',
-      sub_step2: 'Contratto inviato via email dopo il pagamento.',
-      title_step3: 'Benvenuto da <span class="serif">Frizz</span>',
-      sub_step3: 'Prenotazione confermata.',
-      what_to_store: 'Cosa vuoi stoccare?',
-      sizes: 'Misure disponibili',
+      sub_step2: 'Per il contratto.',
+      title_step3: 'Documenti & <span class="serif">firma</span>',
+      sub_step3: 'Obbligatorio secondo la legge FR/CH.',
+      title_step4: 'Benvenuto da <span class="serif">Frizz</span>',
+      sub_step4: 'Prenotazione confermata.',
+      what_to_store: 'Cosa vuoi stoccare?', sizes: 'Misure disponibili',
       ai_suggestion: 'Il nostro suggerimento:',
       box_label_format: 'il box <em>{name}</em> ({surface} m²) è ideale.',
       monthly: 'mese',
-      first_name: 'Nome',
-      last_name: 'Cognome',
-      email: 'Email',
-      phone: 'Telefono',
-      address: 'Indirizzo',
-      postal: 'CAP',
-      city: 'Città',
-      birth: 'Data di nascita',
-      start: 'Data di ingresso',
-      id_doc: 'N° documento identità',
-      monthly_price: 'Affitto mensile',
-      deposit: 'Cauzione (rimborsabile)',
+      first_name: 'Nome', last_name: 'Cognome', email: 'Email',
+      phone: 'Telefono', address: 'Indirizzo', postal: 'CAP', city: 'Città',
+      birth: 'Data di nascita', start: 'Data di ingresso', id_doc: 'N° documento',
+      monthly_price: 'Affitto mensile', deposit: 'Cauzione (rimborsabile)',
       total_today: 'Totale da pagare oggi',
-      continue: 'Continua →',
-      pay: 'Paga {amount} →',
-      back: '← Indietro',
-      pin_label: 'Il tuo codice di accesso',
-      reserve_again: 'Nuova prenotazione',
-      need_boxes: 'Scatoloni',
-      need_studio: 'Monolocale',
-      need_t1: 'T1',
-      need_t2: 'T2/T3',
-      need_moving: 'Trasloco',
+      continue: 'Continua →', pay: 'Paga {amount} →', back: '← Indietro',
+      pin_label: 'Il tuo codice', reserve_again: 'Nuova prenotazione',
+      need_boxes: 'Scatoloni', need_studio: 'Monolocale', need_t1: 'T1',
+      need_t2: 'T2/T3', need_moving: 'Trasloco',
       ai_pricing_active: '⚡ Prezzo dinamico IA',
-      loading: 'Caricamento...',
-      error: 'Errore. Verifica i tuoi dati.',
-      not_found: 'Centro non trovato.',
-      processing: 'In elaborazione...',
-      powered_by: 'Powered by'
+      loading: 'Caricamento...', error: 'Errore.',
+      not_found: 'Centro non trovato.', processing: 'In elaborazione...',
+      powered_by: 'Powered by',
+      upload_id: "Documento d'identità",
+      upload_id_hint: "Carta d'identità, passaporto o patente (JPG/PNG/PDF, max 10 MB)",
+      upload_residence: 'Certificato di residenza',
+      upload_residence_hint: 'Bolletta < 3 mesi (JPG/PNG/PDF, max 10 MB)',
+      upload_click: 'Clicca per caricare',
+      uploading: 'Caricamento...', uploaded: '✓ Caricato',
+      cgv_label: 'Ho letto e accetto le <a href="cgv.html" target="_blank">Condizioni Generali</a>. Confermo di avere 18 anni.',
+      signature_label: 'Firma elettronica',
+      signature_hint: 'Firma con mouse o dito',
+      signature_clear: 'Cancella',
+      download_contract: '📄 Scarica il contratto (PDF)',
+      contract_title: 'CONTRATTO DI MESSA A DISPOSIZIONE DI SPAZIO DI STOCCAGGIO'
     },
     en: {
       title_step1: 'Choose your <span class="serif">box</span>',
       sub_step1: 'Our AI can help you find the right size.',
       title_step2: 'Your <span class="serif">information</span>',
-      sub_step2: 'Contract sent by email after payment.',
-      title_step3: 'Welcome to <span class="serif">Frizz</span>',
-      sub_step3: 'Booking confirmed.',
-      what_to_store: 'What do you want to store?',
-      sizes: 'Available sizes',
+      sub_step2: 'For the rental contract.',
+      title_step3: 'Documents & <span class="serif">signature</span>',
+      sub_step3: 'Required by FR/CH law.',
+      title_step4: 'Welcome to <span class="serif">Frizz</span>',
+      sub_step4: 'Booking confirmed.',
+      what_to_store: 'What do you want to store?', sizes: 'Available sizes',
       ai_suggestion: 'Our suggestion:',
       box_label_format: 'the <em>{name}</em> box ({surface} m²) is ideal.',
       monthly: 'month',
-      first_name: 'First name',
-      last_name: 'Last name',
-      email: 'Email',
-      phone: 'Phone',
-      address: 'Address',
-      postal: 'Postal code',
-      city: 'City',
-      birth: 'Date of birth',
-      start: 'Move-in date',
-      id_doc: 'ID document number',
-      monthly_price: 'Monthly rent',
-      deposit: 'Deposit (refundable)',
+      first_name: 'First name', last_name: 'Last name', email: 'Email',
+      phone: 'Phone', address: 'Address', postal: 'Postal code', city: 'City',
+      birth: 'Date of birth', start: 'Move-in date', id_doc: 'ID number',
+      monthly_price: 'Monthly rent', deposit: 'Deposit (refundable)',
       total_today: 'Total due today',
-      continue: 'Continue →',
-      pay: 'Pay {amount} →',
-      back: '← Back',
-      pin_label: 'Your access code',
-      reserve_again: 'New reservation',
-      need_boxes: 'Boxes',
-      need_studio: 'Studio',
-      need_t1: '1-bedroom',
-      need_t2: '2-3 bedroom',
-      need_moving: 'Moving',
+      continue: 'Continue →', pay: 'Pay {amount} →', back: '← Back',
+      pin_label: 'Your access code', reserve_again: 'New reservation',
+      need_boxes: 'Boxes', need_studio: 'Studio', need_t1: '1-bedroom',
+      need_t2: '2-3 bedroom', need_moving: 'Moving',
       ai_pricing_active: '⚡ AI Dynamic pricing',
-      loading: 'Loading...',
-      error: 'Error. Please check your information.',
-      not_found: 'Center not found.',
-      processing: 'Processing...',
-      powered_by: 'Powered by'
+      loading: 'Loading...', error: 'Error.',
+      not_found: 'Center not found.', processing: 'Processing...',
+      powered_by: 'Powered by',
+      upload_id: 'ID document',
+      upload_id_hint: 'ID card, passport or driver license (JPG/PNG/PDF, max 10 MB)',
+      upload_residence: 'Proof of residence',
+      upload_residence_hint: 'Bill < 3 months (JPG/PNG/PDF, max 10 MB)',
+      upload_click: 'Click to upload',
+      uploading: 'Uploading...', uploaded: '✓ Uploaded',
+      cgv_label: 'I have read and accept the <a href="cgv.html" target="_blank">Terms & Conditions</a>. I confirm being 18+.',
+      signature_label: 'Electronic signature',
+      signature_hint: 'Sign with mouse or finger',
+      signature_clear: 'Clear',
+      download_contract: '📄 Download your contract (PDF)',
+      contract_title: 'STORAGE SPACE RENTAL AGREEMENT'
     }
   };
 
-  // ==========================================
-  // STATE
-  // ==========================================
   let state = {
     center: null, boxTypes: [], selectedNeed: null,
-    selectedBoxType: null, currentStep: 1, currentLang: 'fr'
+    selectedBoxType: null, currentStep: 1, currentLang: 'fr',
+    formData: {},
+    idDocumentUrl: null, idDocumentFilename: null,
+    proofOfResidenceUrl: null, proofOfResidenceFilename: null,
+    signatureDataUrl: null, cgvAccepted: false
   };
 
   function t(key, replacements) {
     let str = (I18N[state.currentLang] && I18N[state.currentLang][key]) || I18N.fr[key] || key;
-    if (replacements) {
-      Object.keys(replacements).forEach(k => {
-        str = str.replace('{' + k + '}', replacements[k]);
-      });
-    }
+    if (replacements) Object.keys(replacements).forEach(k => str = str.replace('{' + k + '}', replacements[k]));
     return str;
   }
 
-  // ==========================================
-  // AI PRICING — Calcul du prix dynamique côté client
-  // ==========================================
   function calculateDynamicPrice(type, center) {
     if (!center.ai_pricing_enabled) return parseFloat(type.price_monthly);
-
     const rules = center.ai_pricing_rules || {};
     const basePrice = parseFloat(type.price_monthly);
     let multiplier = 1.0;
-
-    // 1. Disponibilité (low stock = augmenter, high stock = baisser)
     const availability = type.total_count > 0 ? type.available_count / type.total_count : 1;
-    if (availability < (rules.low_stock_threshold || 0.3)) {
-      multiplier *= (rules.low_stock_multiplier || 1.20);
-    } else if (availability > (rules.high_stock_threshold || 0.7)) {
-      multiplier *= (rules.high_stock_multiplier || 0.92);
-    }
-
-    // 2. Saisonnalité
+    if (availability < (rules.low_stock_threshold || 0.3)) multiplier *= (rules.low_stock_multiplier || 1.20);
+    else if (availability > (rules.high_stock_threshold || 0.7)) multiplier *= (rules.high_stock_multiplier || 0.92);
     const month = new Date().getMonth() + 1;
-    if ((rules.high_season_months || [6,7,8,9]).includes(month)) {
-      multiplier *= (rules.high_season_multiplier || 1.10);
-    } else if ((rules.low_season_months || [1,2,11]).includes(month)) {
-      multiplier *= (rules.low_season_multiplier || 0.95);
-    }
-
-    // 3. Capping
+    if ((rules.high_season_months || [6,7,8,9]).includes(month)) multiplier *= (rules.high_season_multiplier || 1.10);
+    else if ((rules.low_season_months || [1,2,11]).includes(month)) multiplier *= (rules.low_season_multiplier || 0.95);
     const maxIncrease = 1 + (rules.max_increase_pct || 25) / 100;
     const maxDecrease = 1 - (rules.max_decrease_pct || 15) / 100;
     multiplier = Math.max(maxDecrease, Math.min(maxIncrease, multiplier));
-
     return Math.round(basePrice * multiplier * 100) / 100;
   }
 
-  // ==========================================
-  // LOAD CENTER
-  // ==========================================
   async function loadCenter() {
     try {
       const centerRes = await fetch(
@@ -550,41 +579,30 @@
       const centers = await centerRes.json();
       if (!centers || centers.length === 0) throw new Error(t('not_found'));
       state.center = centers[0];
-
-      // Définir la langue : URL > préférence centre > navigateur > FR
       const supportedLangs = state.center.supported_languages || ['fr','de','it','en'];
       const browserLang = (navigator.language || 'fr').substring(0, 2);
       state.currentLang = initialLang || state.center.default_language ||
         (supportedLangs.includes(browserLang) ? browserLang : 'fr');
-
       const typesRes = await fetch(
         SUPABASE_URL + '/rest/v1/frizz_box_types?center_id=eq.' + state.center.id + '&order=display_order&select=*',
         { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
       );
       state.boxTypes = await typesRes.json();
-
       renderWidget();
     } catch (err) {
-      console.error('Load error:', err);
       document.getElementById('embedRoot').innerHTML =
         '<div class="loading"><div style="color:var(--red);">' + (err.message || t('not_found')) + '</div></div>';
     }
   }
 
-  // ==========================================
-  // RENDER WIDGET
-  // ==========================================
   function renderWidget() {
     const c = state.center;
     const supported = c.supported_languages || ['fr','de','it','en'];
-
     document.getElementById('embedRoot').innerHTML = `
       <div class="embed-header">
         <div class="embed-title"><span class="star">✦</span> ${c.name}</div>
         <div class="lang-switcher">
-          ${supported.map(lang => `
-            <button class="lang-btn ${lang === state.currentLang ? 'active' : ''}" data-lang="${lang}">${lang}</button>
-          `).join('')}
+          ${supported.map(lang => `<button class="lang-btn ${lang === state.currentLang ? 'active' : ''}" data-lang="${lang}">${lang}</button>`).join('')}
         </div>
       </div>
       <div class="embed-body">
@@ -594,6 +612,8 @@
           <div class="step-indicator" data-step="2"><span class="num">2</span></div>
           <div class="step-line" data-line="2-3"></div>
           <div class="step-indicator" data-step="3"><span class="num">3</span></div>
+          <div class="step-line" data-line="3-4"></div>
+          <div class="step-indicator" data-step="4"><span class="num">4</span></div>
         </div>
         <div id="viewContent"></div>
       </div>
@@ -601,8 +621,6 @@
         ${t('powered_by')} <a href="https://frizz-instant.com/box/" target="_blank"><span class="serif">Frizz</span></a>
       </div>
     `;
-
-    // Bind language buttons
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         state.currentLang = btn.dataset.lang;
@@ -611,18 +629,12 @@
         renderStep(state.currentStep);
       });
     });
-
     renderStep(1);
   }
 
-  // ==========================================
-  // RENDER STEP
-  // ==========================================
   function renderStep(step) {
     state.currentStep = step;
     const container = document.getElementById('viewContent');
-
-    // Update progress
     document.querySelectorAll('.step-indicator').forEach((el, i) => {
       el.classList.remove('active', 'done');
       if (i + 1 < step) el.classList.add('done');
@@ -631,10 +643,10 @@
     document.querySelectorAll('.step-line').forEach((el, i) => {
       el.classList.toggle('filled', i + 1 < step);
     });
-
     if (step === 1) renderStep1(container);
     else if (step === 2) renderStep2(container);
     else if (step === 3) renderStep3(container);
+    else if (step === 4) renderStep4(container);
   }
 
   function getTranslation(item, field) {
@@ -643,13 +655,8 @@
     return item[field] || '';
   }
 
-  // ==========================================
-  // STEP 1
-  // ==========================================
+  // ========= STEP 1 =========
   function renderStep1(container) {
-    const c = state.center;
-    const aiPricingActive = c.ai_pricing_enabled;
-
     container.innerHTML = `
       <h2>${t('title_step1')}</h2>
       <p class="subtitle">${t('sub_step1')}</p>
@@ -672,10 +679,7 @@
       <div id="summaryBlock"></div>
       <button class="btn-primary" id="btnNext1" disabled>${t('continue')}</button>
     `;
-
     renderTypes();
-
-    // Bind events
     container.querySelectorAll('.qopt').forEach(btn => {
       btn.addEventListener('click', () => {
         container.querySelectorAll('.qopt').forEach(b => b.classList.remove('selected'));
@@ -684,7 +688,6 @@
         runAISuggest();
       });
     });
-
     document.getElementById('btnNext1').addEventListener('click', () => {
       if (state.selectedBoxType) renderStep(2);
     });
@@ -692,24 +695,15 @@
 
   function renderTypes() {
     const c = state.center;
-    const html = state.boxTypes.map(type => {
+    document.getElementById('typesGrid').innerHTML = state.boxTypes.map(type => {
       const name = getTranslation(type, 'name');
       const desc = getTranslation(type, 'description');
       const basePrice = parseFloat(type.price_monthly);
       const dynamicPrice = calculateDynamicPrice(type, c);
       const showAI = c.ai_pricing_enabled && Math.abs(dynamicPrice - basePrice) > 0.5;
-
-      let priceHtml = '';
-      if (showAI) {
-        priceHtml = `
-          <span class="original">${basePrice.toFixed(0)} €</span>
-          ${dynamicPrice.toFixed(0)} €<small>/${t('monthly')}</small>
-          <span class="ai-tag">${t('ai_pricing_active')}</span>
-        `;
-      } else {
-        priceHtml = `${basePrice.toFixed(0)} €<small>/${t('monthly')}</small>`;
-      }
-
+      let priceHtml = showAI
+        ? `<span class="original">${basePrice.toFixed(0)} €</span>${dynamicPrice.toFixed(0)} €<small>/${t('monthly')}</small><span class="ai-tag">${t('ai_pricing_active')}</span>`
+        : `${basePrice.toFixed(0)} €<small>/${t('monthly')}</small>`;
       return `
         <div class="type-card ${type.is_recommended ? 'recommended' : ''}" data-id="${type.id}">
           <div class="type-info">
@@ -720,9 +714,6 @@
         </div>
       `;
     }).join('');
-
-    document.getElementById('typesGrid').innerHTML = html;
-
     document.querySelectorAll('.type-card').forEach(card => {
       card.addEventListener('click', () => selectBoxType(card.dataset.id));
     });
@@ -743,7 +734,6 @@
     let suggested = state.boxTypes.find(t => t.ai_suggest_for && t.ai_suggest_for.includes(need));
     if (!suggested) suggested = state.boxTypes.find(t => t.is_recommended);
     if (!suggested) return;
-
     const name = getTranslation(suggested, 'name');
     document.getElementById('aiSuggest').style.display = 'flex';
     document.getElementById('aiSuggestText').innerHTML = t('box_label_format', { name: name, surface: suggested.surface_m2 });
@@ -757,110 +747,227 @@
     const deposit = parseFloat(t_obj.deposit) || 0;
     const total = monthly + deposit;
     const name = getTranslation(t_obj, 'name');
-
-    document.getElementById('summaryBlock').innerHTML = `
-      <div class="summary">
-        <div class="sum-row"><span>${name} · ${t_obj.surface_m2}m²</span><span>${monthly.toFixed(2)} €</span></div>
-        <div class="sum-row"><span>${t('deposit')}</span><span>${deposit.toFixed(2)} €</span></div>
-        <div class="sum-row total"><span>${t('total_today')}</span><span class="price">${total.toFixed(2)} €</span></div>
-      </div>
-    `;
+    const sb = document.getElementById('summaryBlock');
+    if (sb) {
+      sb.innerHTML = `
+        <div class="summary">
+          <div class="sum-row"><span>${name} · ${t_obj.surface_m2}m²</span><span>${monthly.toFixed(2)} €</span></div>
+          <div class="sum-row"><span>${t('deposit')}</span><span>${deposit.toFixed(2)} €</span></div>
+          <div class="sum-row total"><span>${t('total_today')}</span><span class="price">${total.toFixed(2)} €</span></div>
+        </div>
+      `;
+    }
   }
 
-  // ==========================================
-  // STEP 2
-  // ==========================================
+  // ========= STEP 2 =========
   function renderStep2(container) {
     container.innerHTML = `
       <button class="btn-back" id="btnBack2">${t('back')}</button>
       <h2>${t('title_step2')}</h2>
       <p class="subtitle">${t('sub_step2')}</p>
-      <div class="error" id="errorBox" style="display:none;"></div>
       <form class="form-grid" id="reservationForm">
         <div class="form-row">
-          <div class="form-field">
-            <label class="form-label">${t('first_name')} <span class="required">*</span></label>
-            <input type="text" name="firstName" required>
-          </div>
-          <div class="form-field">
-            <label class="form-label">${t('last_name')} <span class="required">*</span></label>
-            <input type="text" name="lastName" required>
-          </div>
+          <div class="form-field"><label class="form-label">${t('first_name')} <span class="required">*</span></label><input type="text" name="firstName" required value="${state.formData.firstName || ''}"></div>
+          <div class="form-field"><label class="form-label">${t('last_name')} <span class="required">*</span></label><input type="text" name="lastName" required value="${state.formData.lastName || ''}"></div>
         </div>
-        <div class="form-field">
-          <label class="form-label">${t('email')} <span class="required">*</span></label>
-          <input type="email" name="email" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label">${t('phone')} <span class="required">*</span></label>
-          <input type="tel" name="phone" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label">${t('address')} <span class="required">*</span></label>
-          <input type="text" name="address" required>
+        <div class="form-field"><label class="form-label">${t('email')} <span class="required">*</span></label><input type="email" name="email" required value="${state.formData.email || ''}"></div>
+        <div class="form-field"><label class="form-label">${t('phone')} <span class="required">*</span></label><input type="tel" name="phone" required value="${state.formData.phone || ''}"></div>
+        <div class="form-field"><label class="form-label">${t('address')} <span class="required">*</span></label><input type="text" name="address" required value="${state.formData.address || ''}"></div>
+        <div class="form-row">
+          <div class="form-field"><label class="form-label">${t('postal')} <span class="required">*</span></label><input type="text" name="postalCode" required value="${state.formData.postalCode || ''}"></div>
+          <div class="form-field"><label class="form-label">${t('city')} <span class="required">*</span></label><input type="text" name="city" required value="${state.formData.city || ''}"></div>
         </div>
         <div class="form-row">
-          <div class="form-field">
-            <label class="form-label">${t('postal')} <span class="required">*</span></label>
-            <input type="text" name="postalCode" required>
-          </div>
-          <div class="form-field">
-            <label class="form-label">${t('city')} <span class="required">*</span></label>
-            <input type="text" name="city" required>
-          </div>
+          <div class="form-field"><label class="form-label">${t('birth')} <span class="required">*</span></label><input type="date" name="dateOfBirth" required value="${state.formData.dateOfBirth || ''}"></div>
+          <div class="form-field"><label class="form-label">${t('start')} <span class="required">*</span></label><input type="date" name="startDate" required value="${state.formData.startDate || ''}"></div>
         </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label class="form-label">${t('birth')} <span class="required">*</span></label>
-            <input type="date" name="dateOfBirth" required>
-          </div>
-          <div class="form-field">
-            <label class="form-label">${t('start')} <span class="required">*</span></label>
-            <input type="date" name="startDate" required>
-          </div>
-        </div>
-        <div class="form-field">
-          <label class="form-label">${t('id_doc')} <span class="required">*</span></label>
-          <input type="text" name="idDocument" required>
-        </div>
+        <div class="form-field"><label class="form-label">${t('id_doc')} <span class="required">*</span></label><input type="text" name="idDocument" required value="${state.formData.idDocument || ''}"></div>
       </form>
-      <div id="summary2"></div>
-      <button class="btn-primary" id="btnSubmit">${t('pay', { amount: ((state.selectedBoxType._dynamicPrice || parseFloat(state.selectedBoxType.price_monthly)) + (parseFloat(state.selectedBoxType.deposit) || 0)).toFixed(2) + ' €' })}</button>
+      <button class="btn-primary" id="btnNext2">${t('continue')}</button>
     `;
-
-    // Sync summary
-    document.getElementById('summary2').innerHTML = '';
-    const sumDiv = document.createElement('div');
-    sumDiv.id = 'summaryBlock';
-    document.getElementById('summary2').appendChild(sumDiv);
-    updateSummary();
-    sumDiv.innerHTML = document.getElementById('summaryBlock').innerHTML;
-
     document.getElementById('btnBack2').addEventListener('click', () => renderStep(1));
-    document.getElementById('btnSubmit').addEventListener('click', submitReservation);
+    document.getElementById('btnNext2').addEventListener('click', () => {
+      const form = document.getElementById('reservationForm');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      state.formData = Object.fromEntries(new FormData(form).entries());
+      renderStep(3);
+    });
   }
 
-  // ==========================================
-  // SUBMIT
-  // ==========================================
+  // ========= STEP 3 — Documents + CGV + Signature =========
+  function renderStep3(container) {
+    container.innerHTML = `
+      <button class="btn-back" id="btnBack3">${t('back')}</button>
+      <h2>${t('title_step3')}</h2>
+      <p class="subtitle">${t('sub_step3')}</p>
+      <div class="error" id="errorBox" style="display:none;"></div>
+
+      <label class="upload-section ${state.idDocumentUrl ? 'has-file' : ''}" id="uploadIdLabel">
+        <input type="file" id="uploadId" accept="image/*,application/pdf">
+        <div class="upload-icon">${state.idDocumentUrl ? '✓' : '📷'}</div>
+        <div class="upload-label">${t('upload_id')} <span style="color:var(--orange);">*</span></div>
+        <div class="upload-hint">${state.idDocumentUrl ? t('uploaded') : t('upload_id_hint')}</div>
+        <div class="upload-progress" id="uploadIdProgress"><div class="upload-progress-bar"></div></div>
+        ${state.idDocumentFilename ? `<div class="upload-filename">${state.idDocumentFilename}</div>` : ''}
+      </label>
+
+      <label class="upload-section ${state.proofOfResidenceUrl ? 'has-file' : ''}" id="uploadResidenceLabel">
+        <input type="file" id="uploadResidence" accept="image/*,application/pdf">
+        <div class="upload-icon">${state.proofOfResidenceUrl ? '✓' : '🏠'}</div>
+        <div class="upload-label">${t('upload_residence')} <span style="color:var(--orange);">*</span></div>
+        <div class="upload-hint">${state.proofOfResidenceUrl ? t('uploaded') : t('upload_residence_hint')}</div>
+        <div class="upload-progress" id="uploadResidenceProgress"><div class="upload-progress-bar"></div></div>
+        ${state.proofOfResidenceFilename ? `<div class="upload-filename">${state.proofOfResidenceFilename}</div>` : ''}
+      </label>
+
+      <div class="signature-container">
+        <div class="signature-header">
+          <span class="label">${t('signature_label')} <span style="color:var(--orange);">*</span></span>
+          <button type="button" class="clear-btn" id="clearSignature">${t('signature_clear')}</button>
+        </div>
+        <canvas id="signaturePad" width="500" height="120"></canvas>
+        <div class="signature-hint">${t('signature_hint')}</div>
+      </div>
+
+      <div class="cgv-block">
+        <div class="cgv-checkbox">
+          <input type="checkbox" id="cgvCheckbox" ${state.cgvAccepted ? 'checked' : ''}>
+          <label for="cgvCheckbox">${t('cgv_label')}</label>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnSubmit" disabled>${t('pay', { amount: ((state.selectedBoxType._dynamicPrice || parseFloat(state.selectedBoxType.price_monthly)) + (parseFloat(state.selectedBoxType.deposit) || 0)).toFixed(2) + ' €' })}</button>
+    `;
+    document.getElementById('btnBack3').addEventListener('click', () => renderStep(2));
+    setupUpload('uploadId', 'idDocumentUrl', 'idDocumentFilename', 'uploadIdProgress');
+    setupUpload('uploadResidence', 'proofOfResidenceUrl', 'proofOfResidenceFilename', 'uploadResidenceProgress');
+    setupSignaturePad();
+    document.getElementById('cgvCheckbox').addEventListener('change', e => {
+      state.cgvAccepted = e.target.checked;
+      validateStep3();
+    });
+    document.getElementById('btnSubmit').addEventListener('click', submitReservation);
+    validateStep3();
+  }
+
+  function validateStep3() {
+    const btn = document.getElementById('btnSubmit');
+    if (!btn) return;
+    const valid = state.idDocumentUrl && state.proofOfResidenceUrl && state.signatureDataUrl && state.cgvAccepted;
+    btn.disabled = !valid;
+  }
+
+  function setupUpload(inputId, urlField, filenameField, progressId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Fichier trop gros (max 10 MB)');
+        return;
+      }
+      const progress = document.getElementById(progressId);
+      const progressBar = progress.querySelector('.upload-progress-bar');
+      progress.classList.add('active');
+      progressBar.style.width = '20%';
+      try {
+        const ext = file.name.split('.').pop();
+        const filename = 'res-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8) + '.' + ext;
+        progressBar.style.width = '40%';
+        const uploadRes = await fetch(SUPABASE_URL + '/storage/v1/object/reservation-documents/' + filename, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type': file.type
+          },
+          body: file
+        });
+        progressBar.style.width = '90%';
+        if (!uploadRes.ok) {
+          const errText = await uploadRes.text();
+          throw new Error('Upload failed: ' + errText);
+        }
+        const publicUrl = SUPABASE_URL + '/storage/v1/object/reservation-documents/' + filename;
+        state[urlField] = publicUrl;
+        state[filenameField] = file.name;
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+          progress.classList.remove('active');
+          progressBar.style.width = '0%';
+          renderStep(3);
+        }, 400);
+      } catch (err) {
+        console.error('Upload error:', err);
+        alert('Erreur upload : ' + err.message);
+        progress.classList.remove('active');
+        progressBar.style.width = '0%';
+      }
+    });
+  }
+
+  function setupSignaturePad() {
+    const canvas = document.getElementById('signaturePad');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#0A0A0A';
+    if (state.signatureDataUrl) {
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
+      img.src = state.signatureDataUrl;
+    }
+    let drawing = false, lastX = 0, lastY = 0;
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+      return { x, y };
+    }
+    function start(e) { e.preventDefault(); drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; }
+    function move(e) {
+      if (!drawing) return; e.preventDefault();
+      const p = getPos(e);
+      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+      lastX = p.x; lastY = p.y;
+    }
+    function end() {
+      drawing = false;
+      state.signatureDataUrl = canvas.toDataURL('image/png');
+      validateStep3();
+    }
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('mouseup', end);
+    canvas.addEventListener('mouseleave', end);
+    canvas.addEventListener('touchstart', start);
+    canvas.addEventListener('touchmove', move);
+    canvas.addEventListener('touchend', end);
+    document.getElementById('clearSignature').addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      state.signatureDataUrl = null;
+      validateStep3();
+    });
+  }
+
+  // ========= SUBMIT =========
   async function submitReservation() {
-    const form = document.getElementById('reservationForm');
     const button = document.getElementById('btnSubmit');
     const errorBox = document.getElementById('errorBox');
     errorBox.style.display = 'none';
-
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-
     button.disabled = true;
     button.textContent = t('processing');
-
     try {
+      const data = state.formData;
       const clientRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_clients', {
         method: 'POST',
         headers: {
@@ -878,16 +985,14 @@
       const clientArr = await clientRes.json();
       const client = Array.isArray(clientArr) ? clientArr[0] : clientArr;
       if (!client || !client.id) throw new Error('Client error');
-
       const t_obj = state.selectedBoxType;
       const monthly = t_obj._dynamicPrice || parseFloat(t_obj.price_monthly);
       const deposit = parseFloat(t_obj.deposit) || 0;
       const total = monthly + deposit;
-
       const year = new Date().getFullYear();
       const resNumber = 'FB-' + year + '-' + String(Date.now()).slice(-5);
       const pin = String(Math.floor(1000 + Math.random() * 9000));
-
+      const now = new Date().toISOString();
       const resRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_reservations', {
         method: 'POST',
         headers: {
@@ -899,47 +1004,177 @@
           box_type_id: t_obj.id, client_id: client.id,
           start_date: data.startDate, monthly_price: monthly,
           deposit: deposit, setup_fee: 0, total_paid_today: total,
-          status: 'paid', access_pin: pin, user_agent: navigator.userAgent
+          status: 'paid', access_pin: pin, user_agent: navigator.userAgent,
+          id_document_url: state.idDocumentUrl,
+          proof_of_residence_url: state.proofOfResidenceUrl,
+          signature_data_url: state.signatureDataUrl,
+          cgv_accepted: true, cgv_accepted_at: now,
+          contract_signed_at: now
         })
       });
       if (!resRes.ok) throw new Error('Reservation error');
-
       state._lastResNumber = resNumber;
       state._lastPin = pin;
-      renderStep(3);
+      state._lastClient = client;
+      state._lastTotal = total;
+      state._lastMonthly = monthly;
+      state._lastDeposit = deposit;
+      state._lastStartDate = data.startDate;
+      renderStep(4);
     } catch (err) {
       console.error(err);
       errorBox.textContent = t('error');
       errorBox.style.display = 'block';
       button.disabled = false;
+      validateStep3();
       button.textContent = t('pay', { amount: ((state.selectedBoxType._dynamicPrice || parseFloat(state.selectedBoxType.price_monthly)) + (parseFloat(state.selectedBoxType.deposit) || 0)).toFixed(2) + ' €' });
     }
   }
 
-  // ==========================================
-  // STEP 3
-  // ==========================================
-  function renderStep3(container) {
+  // ========= STEP 4 =========
+  function renderStep4(container) {
     const pin = state._lastPin || '----';
     const pinDigits = pin.split('').map(d => `<div class="pin-digit">${d}</div>`).join('');
-
     container.innerHTML = `
       <div class="success-icon">✓</div>
-      <h2 style="text-align:center;">${t('title_step3')}</h2>
-      <p class="subtitle" style="text-align:center; margin-bottom:14px;">${t('sub_step3')} <strong>#${state._lastResNumber}</strong></p>
+      <h2 style="text-align:center;">${t('title_step4')}</h2>
+      <p class="subtitle" style="text-align:center; margin-bottom:14px;">${t('sub_step4')} <strong>#${state._lastResNumber}</strong></p>
       <div class="pin-display">
         <div class="pin-label">${t('pin_label')}</div>
         <div class="pin-digits">${pinDigits}</div>
       </div>
+      <div style="text-align:center; margin-bottom:12px;">
+        <button class="download-btn" id="btnDownloadContract">${t('download_contract')}</button>
+      </div>
       <button class="btn-primary" id="btnRestart">${t('reserve_again')}</button>
     `;
+    document.getElementById('btnDownloadContract').addEventListener('click', generateContractPDF);
     document.getElementById('btnRestart').addEventListener('click', () => {
-      state.selectedBoxType = null;
-      state.selectedNeed = null;
-      state._lastResNumber = null;
-      state._lastPin = null;
+      state.selectedBoxType = null; state.selectedNeed = null;
+      state._lastResNumber = null; state._lastPin = null;
+      state.formData = {};
+      state.idDocumentUrl = null; state.idDocumentFilename = null;
+      state.proofOfResidenceUrl = null; state.proofOfResidenceFilename = null;
+      state.signatureDataUrl = null; state.cgvAccepted = false;
       renderStep(1);
     });
+  }
+
+  // ========= CONTRAT PDF =========
+  function generateContractPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const center = state.center;
+    const client = state._lastClient || {};
+    const box = state.selectedBoxType;
+    const boxName = getTranslation(box, 'name');
+    const monthly = state._lastMonthly;
+    const deposit = state._lastDeposit;
+    const total = state._lastTotal;
+    const startDate = state._lastStartDate;
+    let y = 20; const lh = 6;
+
+    doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+    doc.text('FRIZZ', 105, y, { align: 'center' });
+    y += 8;
+    doc.setFontSize(13);
+    doc.text(t('contract_title'), 105, y, { align: 'center' });
+    y += 12;
+
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('Contrat n° : ' + state._lastResNumber, 20, y);
+    doc.text('Date : ' + new Date().toLocaleDateString('fr-FR'), 150, y);
+    y += 10;
+
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('1. PARTIES', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('LA SOCIETE :', 20, y); y += lh;
+    doc.text(center.name || '', 25, y); y += lh;
+    if (center.address) { doc.text((center.address || '') + ', ' + (center.postal_code || '') + ' ' + (center.city || ''), 25, y); y += lh; }
+    if (center.email) { doc.text('Email : ' + center.email, 25, y); y += lh; }
+    y += 3;
+    doc.text('LE CLIENT :', 20, y); y += lh;
+    doc.text((client.first_name || '') + ' ' + (client.last_name || ''), 25, y); y += lh;
+    if (client.address) { doc.text((client.address || '') + ', ' + (client.postal_code || '') + ' ' + (client.city || ''), 25, y); y += lh; }
+    if (client.email) { doc.text('Email : ' + client.email, 25, y); y += lh; }
+    if (client.phone) { doc.text('Tél : ' + client.phone, 25, y); y += lh; }
+    if (client.id_document_number) { doc.text("Pièce d'identité n° : " + client.id_document_number, 25, y); y += lh; }
+    y += 5;
+
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('2. OBJET DU CONTRAT', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    const objet = doc.splitTextToSize(
+      'La SOCIETE met à disposition du CLIENT, qui accepte, un espace de stockage (ci-après "le box") aux conditions définies dans le présent contrat. Ce contrat ne peut être assimilé à un contrat de dépôt au sens des articles 1921 et suivants du Code civil.',
+      170
+    );
+    doc.text(objet, 20, y); y += objet.length * lh + 3;
+
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('3. DESCRIPTION DU BOX', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('Type : ' + boxName, 25, y); y += lh;
+    doc.text('Surface : ' + box.surface_m2 + ' m²', 25, y); y += lh;
+    doc.text("Date d'entrée : " + new Date(startDate).toLocaleDateString('fr-FR'), 25, y); y += lh;
+    doc.text("Code d'accès personnel : " + state._lastPin, 25, y); y += lh;
+    y += 5;
+
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('4. CONDITIONS FINANCIERES', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('Loyer mensuel : ' + monthly.toFixed(2) + ' €', 25, y); y += lh;
+    doc.text('Caution (remboursable) : ' + deposit.toFixed(2) + ' €', 25, y); y += lh;
+    doc.text('Total payé à la signature : ' + total.toFixed(2) + ' €', 25, y); y += lh;
+    doc.text('Modalité de paiement : Carte bancaire en ligne', 25, y); y += lh;
+    y += 5;
+
+    if (y > 220) { doc.addPage(); y = 20; }
+
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('5. ENGAGEMENTS DU CLIENT', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    const eng = doc.splitTextToSize(
+      "Le CLIENT s'engage à : (a) utiliser le box exclusivement pour le stockage, (b) ne pas y entreposer de biens interdits (armes, drogues, périssables, animaux, produits dangereux), (c) souscrire une assurance responsabilité civile locative et une assurance des biens, (d) respecter le règlement intérieur du centre, (e) ne pas communiquer son code d'accès à des tiers.",
+      170
+    );
+    doc.text(eng, 20, y); y += eng.length * lh + 3;
+
+    if (y > 220) { doc.addPage(); y = 20; }
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('6. DUREE & RESILIATION', 20, y); y += 7;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    const duree = doc.splitTextToSize(
+      'Le contrat est conclu pour une durée minimale de 1 mois, renouvelable par tacite reconduction. Préavis de résiliation : 30 jours par email ou courrier recommandé.',
+      170
+    );
+    doc.text(duree, 20, y); y += duree.length * lh + 3;
+
+    if (y > 220) { doc.addPage(); y = 20; }
+    y += 10;
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
+    doc.text('SIGNATURES', 20, y); y += 8;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('Le CLIENT, lu et approuvé :', 20, y);
+    doc.text('La SOCIETE :', 130, y);
+    y += 5;
+
+    if (state.signatureDataUrl) {
+      try { doc.addImage(state.signatureDataUrl, 'PNG', 20, y, 60, 25); }
+      catch (e) { console.error('Sig error:', e); }
+    }
+    y += 30;
+    doc.text((client.first_name || '') + ' ' + (client.last_name || ''), 20, y);
+    doc.text(center.name || '', 130, y);
+    y += 5;
+    doc.setFontSize(8);
+    doc.text('Date : ' + new Date().toLocaleDateString('fr-FR'), 20, y);
+
+    const pageHeight = doc.internal.pageSize.height;
+    doc.setFontSize(8); doc.setTextColor(128);
+    doc.text('Propulsé par Frizz · Self-storage SaaS', 105, pageHeight - 10, { align: 'center' });
+
+    doc.save('contrat-' + state._lastResNumber + '.pdf');
   }
 
   loadCenter();

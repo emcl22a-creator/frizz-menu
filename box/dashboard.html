@@ -725,7 +725,51 @@
     .boxes-grid { grid-template-columns: 1fr; }
   }
 
-  /* === LANG SWITCHER === */
+  /* === TRIAL CARDS (desktop sidebar + mobile menu) === */
+  .trial-card-desktop, .trial-card-mobile {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);
+    border: 1px solid rgba(234, 88, 12, 0.25);
+    border-radius: 14px;
+    padding: 14px;
+    margin: 14px 0;
+    display: flex; gap: 12px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .trial-card-desktop::before, .trial-card-mobile::before {
+    content: '✦'; position: absolute;
+    top: -8px; right: -6px; font-size: 50px;
+    color: var(--orange); opacity: 0.10; font-family: serif;
+    pointer-events: none;
+  }
+  .trial-icon { font-size: 28px; flex-shrink: 0; }
+  .trial-content { flex: 1; min-width: 0; }
+  .trial-title {
+    font-size: 10px; font-weight: 700;
+    color: var(--orange); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 2px;
+  }
+  .trial-days {
+    font-size: 14px; font-weight: 700; color: var(--black);
+    margin-bottom: 2px;
+  }
+  .trial-days span:first-child {
+    color: var(--orange); font-size: 16px;
+  }
+  .trial-price-info {
+    font-size: 11px; color: var(--gray-700);
+  }
+  .trial-price-info strong {
+    color: var(--black); font-weight: 700;
+  }
+  .trial-card-desktop.expired, .trial-card-mobile.expired {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FCA5A5 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .trial-card-desktop.expired .trial-title,
+  .trial-card-mobile.expired .trial-title { color: var(--red); }
+  .trial-card-desktop.expired .trial-days span:first-child,
+  .trial-card-mobile.expired .trial-days span:first-child { color: var(--red); }
+
   .lang-switcher-wrap {
     position: fixed;
     top: 16px;
@@ -791,6 +835,18 @@
     <div class="nav-item" data-page="boxes" onclick="goToPageMobile('boxes')"><span class="icon">📦</span> <span data-i18n="nav_boxes">Mes box</span></div>
     <div class="nav-item" data-page="settings" onclick="goToPageMobile('settings')"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
 
+    <!-- Trial info (mobile) -->
+    <div class="trial-card-mobile" id="trialCardMobile">
+      <div class="trial-icon">🎁</div>
+      <div class="trial-content">
+        <div class="trial-title" data-i18n="trial_title">Essai gratuit</div>
+        <div class="trial-days"><span id="trialDaysMobile">30</span> <span data-i18n="trial_days_left">jours restants</span></div>
+        <div class="trial-price-info">
+          <span data-i18n="trial_then">Puis</span> <strong>49€</strong><span data-i18n="trial_per_month">/mois</span>
+        </div>
+      </div>
+    </div>
+
     <div class="user-info-mobile">
       <div class="user-email-mobile" id="userEmailMobile">...</div>
       <button class="btn-logout-mobile" onclick="logout()" data-i18n="btn_logout">Se déconnecter</button>
@@ -811,6 +867,18 @@
     <div class="nav-item" data-page="settings"><span class="icon">⚙️</span> <span data-i18n="nav_settings">Paramètres</span></div>
 
     <div class="nav-spacer"></div>
+
+    <!-- Trial info (desktop) -->
+    <div class="trial-card-desktop" id="trialCardDesktop">
+      <div class="trial-icon">🎁</div>
+      <div class="trial-content">
+        <div class="trial-title" data-i18n="trial_title">Essai gratuit</div>
+        <div class="trial-days"><span id="trialDaysDesktop">30</span> <span data-i18n="trial_days_left">jours restants</span></div>
+        <div class="trial-price-info">
+          <span data-i18n="trial_then">Puis</span> <strong>49€</strong><span data-i18n="trial_per_month">/mois</span>
+        </div>
+      </div>
+    </div>
 
     <div class="user-info">
       <div class="user-email" id="userEmail">...</div>
@@ -1215,6 +1283,13 @@
       nav_dashboard: 'Dashboard', nav_reservations: 'Réservations',
       nav_clients: 'Clients', nav_boxes: 'Mes box', nav_settings: 'Paramètres',
       btn_logout: 'Se déconnecter',
+      // Trial
+      trial_title: 'Essai gratuit',
+      trial_days_left: 'jours restants',
+      trial_then: 'Puis',
+      trial_per_month: '/mois',
+      trial_expired: 'Essai terminé',
+      trial_upgrade: 'Passer à payant',
       // Page Dashboard
       hello: 'Bonjour,', hello_default_name: 'gérant',
       hello_subtitle: "Voici votre activité aujourd'hui.",
@@ -1350,10 +1425,10 @@
       btn_close: 'Fermer', btn_update: 'Mettre à jour',
       // Stat modal labels
       info_monthly_avg: 'Moyenne mensuelle',
-      total_6_months: 'Total 6 mois',
+      total_6_months: 'Total période',
       monthly_evolution: 'Évolution mensuelle',
       stat_revenue_chart_title: "Chiffre d'affaires",
-      stat_revenue_subtitle: '6 derniers mois (€)',
+      stat_revenue_subtitle: 'Depuis votre inscription (€)',
       stat_revenue_label: 'CA (€)',
       stat_reservations_chart_title: 'Réservations',
       stat_reservations_subtitle: 'Nombre par mois',
@@ -1373,6 +1448,12 @@
       nav_dashboard: 'Dashboard', nav_reservations: 'Buchungen',
       nav_clients: 'Kunden', nav_boxes: 'Meine Boxen', nav_settings: 'Einstellungen',
       btn_logout: 'Abmelden',
+      trial_title: 'Kostenlose Testphase',
+      trial_days_left: 'Tage übrig',
+      trial_then: 'Dann',
+      trial_per_month: '/Monat',
+      trial_expired: 'Test abgelaufen',
+      trial_upgrade: 'Auf bezahlt umstellen',
       hello: 'Hallo,', hello_default_name: 'Verwalter',
       hello_subtitle: 'Hier ist Ihre heutige Aktivität.',
       widget_card_title: '✦ Ihr Buchungs-Widget',
@@ -1490,10 +1571,10 @@
       modal_resa_change_status: 'Status ändern',
       btn_close: 'Schließen', btn_update: 'Aktualisieren',
       info_monthly_avg: 'Monatsdurchschnitt',
-      total_6_months: 'Gesamt 6 Monate',
+      total_6_months: 'Gesamt Zeitraum',
       monthly_evolution: 'Monatliche Entwicklung',
       stat_revenue_chart_title: 'Umsatz',
-      stat_revenue_subtitle: 'Letzte 6 Monate (€)',
+      stat_revenue_subtitle: 'Seit Ihrer Anmeldung (€)',
       stat_revenue_label: 'Umsatz (€)',
       stat_reservations_chart_title: 'Buchungen',
       stat_reservations_subtitle: 'Anzahl pro Monat',
@@ -1513,6 +1594,12 @@
       nav_dashboard: 'Dashboard', nav_reservations: 'Prenotazioni',
       nav_clients: 'Clienti', nav_boxes: 'I miei box', nav_settings: 'Impostazioni',
       btn_logout: 'Esci',
+      trial_title: 'Prova gratuita',
+      trial_days_left: 'giorni rimasti',
+      trial_then: 'Poi',
+      trial_per_month: '/mese',
+      trial_expired: 'Prova terminata',
+      trial_upgrade: 'Passa a pagamento',
       hello: 'Ciao,', hello_default_name: 'gestore',
       hello_subtitle: 'Ecco la tua attività di oggi.',
       widget_card_title: '✦ Il tuo widget di prenotazione',
@@ -1630,10 +1717,10 @@
       modal_resa_change_status: 'Cambia stato',
       btn_close: 'Chiudi', btn_update: 'Aggiorna',
       info_monthly_avg: 'Media mensile',
-      total_6_months: 'Totale 6 mesi',
+      total_6_months: 'Totale periodo',
       monthly_evolution: 'Evoluzione mensile',
       stat_revenue_chart_title: 'Fatturato',
-      stat_revenue_subtitle: 'Ultimi 6 mesi (€)',
+      stat_revenue_subtitle: 'Dalla tua iscrizione (€)',
       stat_revenue_label: 'Fatt. (€)',
       stat_reservations_chart_title: 'Prenotazioni',
       stat_reservations_subtitle: 'Numero per mese',
@@ -1653,6 +1740,12 @@
       nav_dashboard: 'Dashboard', nav_reservations: 'Reservations',
       nav_clients: 'Clients', nav_boxes: 'My boxes', nav_settings: 'Settings',
       btn_logout: 'Sign out',
+      trial_title: 'Free trial',
+      trial_days_left: 'days left',
+      trial_then: 'Then',
+      trial_per_month: '/month',
+      trial_expired: 'Trial expired',
+      trial_upgrade: 'Upgrade to paid',
       hello: 'Hello,', hello_default_name: 'manager',
       hello_subtitle: "Here's your activity today.",
       widget_card_title: '✦ Your reservation widget',
@@ -1770,10 +1863,10 @@
       modal_resa_change_status: 'Change status',
       btn_close: 'Close', btn_update: 'Update',
       info_monthly_avg: 'Monthly average',
-      total_6_months: 'Total 6 months',
+      total_6_months: 'Total period',
       monthly_evolution: 'Monthly evolution',
       stat_revenue_chart_title: 'Revenue',
-      stat_revenue_subtitle: 'Last 6 months (€)',
+      stat_revenue_subtitle: 'Since signup (€)',
       stat_revenue_label: 'Rev. (€)',
       stat_reservations_chart_title: 'Reservations',
       stat_reservations_subtitle: 'Count per month',
@@ -1822,6 +1915,43 @@
     });
   }
 
+  // Trial settings — durée gratuite et prix
+  const TRIAL_DAYS = 30;
+  const TRIAL_PRICE = 49;
+
+  function updateTrialInfo() {
+    if (!session || !session.user || !session.user.created_at) return;
+    const createdAt = new Date(session.user.created_at);
+    const now = new Date();
+    const elapsedDays = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+    const daysLeft = Math.max(0, TRIAL_DAYS - elapsedDays);
+    
+    const expired = daysLeft === 0;
+    
+    const desktopEl = document.getElementById('trialDaysDesktop');
+    const mobileEl = document.getElementById('trialDaysMobile');
+    if (desktopEl) desktopEl.textContent = daysLeft;
+    if (mobileEl) mobileEl.textContent = daysLeft;
+
+    // État expiré
+    const cardDesktop = document.getElementById('trialCardDesktop');
+    const cardMobile = document.getElementById('trialCardMobile');
+    if (cardDesktop) cardDesktop.classList.toggle('expired', expired);
+    if (cardMobile) cardMobile.classList.toggle('expired', expired);
+    
+    // Si expiré : adapter le texte
+    if (expired) {
+      const titleDesktop = cardDesktop?.querySelector('.trial-title');
+      const titleMobile = cardMobile?.querySelector('.trial-title');
+      const daysDesktop = cardDesktop?.querySelector('.trial-days');
+      const daysMobile = cardMobile?.querySelector('.trial-days');
+      if (titleDesktop) titleDesktop.textContent = t('trial_expired');
+      if (titleMobile) titleMobile.textContent = t('trial_expired');
+      if (daysDesktop) daysDesktop.innerHTML = '<span style="font-size:14px;">⚠</span> 0 ' + t('trial_days_left');
+      if (daysMobile) daysMobile.innerHTML = '<span style="font-size:14px;">⚠</span> 0 ' + t('trial_days_left');
+    }
+  }
+
   function setLang(lang) {
     if (!I18N[lang]) return;
     currentLang = lang;
@@ -1833,6 +1963,7 @@
     if (typeof renderClients === 'function') renderClients();
     if (typeof renderBoxes === 'function' && allBoxTypes.length) renderBoxes();
     if (typeof updateNavCounts === 'function') updateNavCounts();
+    if (typeof updateTrialInfo === 'function') updateTrialInfo();
   }
 
   currentLang = detectLang();
@@ -1904,6 +2035,9 @@
       document.getElementById('userEmailMobile').textContent = userEmail;
       document.getElementById('hello-name').textContent = userEmail.split('@')[0];
       document.getElementById('centerNameTag').textContent = center.name;
+
+      // Mise à jour du compteur trial
+      updateTrialInfo();
 
       const widgetUrl = window.location.origin + '/box/widget-v2.html?c=' + center.slug;
       document.getElementById('widgetUrlText').textContent = widgetUrl;
@@ -1992,7 +2126,30 @@
         '<div class="empty-state-text">' + t('empty_no_resa_widget') + '</div></div>';
       return;
     }
-    document.getElementById('recentReservations').innerHTML = renderReservationTable(recent);
+    document.getElementById('recentReservations').innerHTML = renderRecentReservationTable(recent);
+  }
+
+  // Tableau simplifié pour le dashboard (sans N° et Box)
+  function renderRecentReservationTable(list) {
+    const lang = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
+    return `<table>
+      <thead><tr>
+        <th>${t('th_client')}</th><th>${t('th_date_entry')}</th><th>${t('th_total')}</th><th>${t('th_pin')}</th><th>${t('th_status')}</th>
+      </tr></thead>
+      <tbody>
+      ${list.map(r => {
+        const c = r.frizz_box_clients || {};
+        const badgeClass = 'badge-' + (r.status || 'pending');
+        const badgeLabel = { paid: t('status_paid'), pending: t('status_pending'), pending_payment: t('status_pending_payment'), cancelled: t('status_cancelled'), active: t('status_active'), ended: t('status_ended') }[r.status] || r.status;
+        return `<tr class="clickable" onclick="openReservationModal('${r.id}')">
+          <td>${(c.first_name || '') + ' ' + (c.last_name || '')}<br><small style="color:var(--gray-500);">${c.email || ''}</small></td>
+          <td>${r.start_date ? new Date(r.start_date).toLocaleDateString(lang) : '-'}</td>
+          <td><strong>${parseFloat(r.total_paid_today || 0).toFixed(2)} €</strong></td>
+          <td><span class="pin-display ${!r.access_pin ? 'empty' : ''}">${r.access_pin || '----'}</span></td>
+          <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+        </tr>`;
+      }).join('')}
+      </tbody></table>`;
   }
 
   function setFilter(filter) {
@@ -2579,10 +2736,33 @@
   let chartInstance = null;
 
   function getMonthlyData(metric) {
-    // Calcule les 6 derniers mois
+    // Démarre à la création du compte gérant, avec un maximum de 12 mois
     const months = [];
     const now = new Date();
-    for (let i = 5; i >= 0; i--) {
+    
+    // Date de création du compte (signup) ou centre
+    let accountCreatedAt;
+    if (session && session.user && session.user.created_at) {
+      accountCreatedAt = new Date(session.user.created_at);
+    } else if (center && center.created_at) {
+      accountCreatedAt = new Date(center.created_at);
+    } else {
+      // Fallback : 6 mois en arrière
+      accountCreatedAt = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    }
+    
+    // Premier jour du mois de création
+    const firstMonth = new Date(accountCreatedAt.getFullYear(), accountCreatedAt.getMonth(), 1);
+    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // Nombre de mois entre création et maintenant (max 12 pour la lisibilité)
+    let monthsDiff = (currentMonth.getFullYear() - firstMonth.getFullYear()) * 12 + (currentMonth.getMonth() - firstMonth.getMonth());
+    monthsDiff = Math.min(11, Math.max(0, monthsDiff));
+    
+    // Si compte créé ce mois-ci, on affiche au moins le mois en cours
+    const totalMonths = monthsDiff + 1;
+    
+    for (let i = totalMonths - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const localeForMonth = currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-US';
       months.push({

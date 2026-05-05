@@ -324,23 +324,20 @@
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 14px; font-size: 28px; color: var(--green); font-weight: 800;
   }
-  .pin-display {
-    background: var(--black); color: var(--orange-light);
-    padding: 14px; border-radius: 10px; text-align: center;
+  .pin-pending {
+    background: var(--orange-bg); border: 1px solid var(--orange-light);
+    padding: 16px 14px; border-radius: 10px; text-align: center;
     margin-bottom: 12px;
   }
-  .pin-label {
-    font-size: 9px; color: var(--orange-light); font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;
+  .pin-pending-icon {
+    font-size: 26px; margin-bottom: 6px;
   }
-  .pin-digits {
-    display: flex; justify-content: center; gap: 5px;
+  .pin-pending-title {
+    font-size: 11px; color: var(--orange); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;
   }
-  .pin-digit {
-    width: 28px; height: 36px; background: rgba(255,255,255,0.08);
-    border: 1.5px solid var(--orange); border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 800; color: var(--orange);
+  .pin-pending-msg {
+    font-size: 12px; color: var(--gray-700); line-height: 1.5;
   }
 
   .download-btn {
@@ -398,7 +395,9 @@
       monthly_price: 'Loyer mensuel', deposit: 'Caution (remboursable)',
       total_today: "Total à payer aujourd'hui",
       continue: 'Continuer →', pay: 'Payer {amount} →', back: '← Retour',
-      pin_label: "Votre code d'accès", reserve_again: 'Faire une autre réservation',
+      pin_pending_title: "Code d'accès",
+      pin_pending_msg: "Votre code d'accès personnel vous sera envoyé par email dès la validation du paiement.",
+      reserve_again: 'Faire une autre réservation',
       need_boxes: 'Cartons', need_studio: 'Un studio', need_t1: 'Un T1',
       need_t2: 'Un T2/T3', need_moving: 'Déménagement',
       ai_pricing_active: '⚡ Prix dynamique IA',
@@ -438,7 +437,9 @@
       monthly_price: 'Monatsmiete', deposit: 'Kaution (rückzahlbar)',
       total_today: 'Heute zu zahlen',
       continue: 'Weiter →', pay: '{amount} zahlen →', back: '← Zurück',
-      pin_label: 'Ihr Zugangscode', reserve_again: 'Weitere Buchung',
+      pin_pending_title: 'Zugangscode',
+      pin_pending_msg: 'Ihr persönlicher Zugangscode wird Ihnen nach Zahlungsbestätigung per E-Mail zugesandt.',
+      reserve_again: 'Weitere Buchung',
       need_boxes: 'Kartons', need_studio: 'Studio', need_t1: '1-Zimmer',
       need_t2: '2-3 Zimmer', need_moving: 'Umzug',
       ai_pricing_active: '⚡ KI-Dynamikpreis',
@@ -477,7 +478,9 @@
       monthly_price: 'Affitto mensile', deposit: 'Cauzione (rimborsabile)',
       total_today: 'Totale da pagare oggi',
       continue: 'Continua →', pay: 'Paga {amount} →', back: '← Indietro',
-      pin_label: 'Il tuo codice', reserve_again: 'Nuova prenotazione',
+      pin_pending_title: 'Codice di accesso',
+      pin_pending_msg: 'Il tuo codice di accesso personale ti sarà inviato per email dopo la conferma del pagamento.',
+      reserve_again: 'Nuova prenotazione',
       need_boxes: 'Scatoloni', need_studio: 'Monolocale', need_t1: 'T1',
       need_t2: 'T2/T3', need_moving: 'Trasloco',
       ai_pricing_active: '⚡ Prezzo dinamico IA',
@@ -516,7 +519,9 @@
       monthly_price: 'Monthly rent', deposit: 'Deposit (refundable)',
       total_today: 'Total due today',
       continue: 'Continue →', pay: 'Pay {amount} →', back: '← Back',
-      pin_label: 'Your access code', reserve_again: 'New reservation',
+      pin_pending_title: 'Access code',
+      pin_pending_msg: 'Your personal access code will be sent by email once payment is confirmed.',
+      reserve_again: 'New reservation',
       need_boxes: 'Boxes', need_studio: 'Studio', need_t1: '1-bedroom',
       need_t2: '2-3 bedroom', need_moving: 'Moving',
       ai_pricing_active: '⚡ AI Dynamic pricing',
@@ -991,7 +996,7 @@
       const total = monthly + deposit;
       const year = new Date().getFullYear();
       const resNumber = 'FB-' + year + '-' + String(Date.now()).slice(-5);
-      const pin = String(Math.floor(1000 + Math.random() * 9000));
+      // Le PIN n'est PAS généré ici. Il sera créé par le webhook Stripe après paiement confirmé.
       const now = new Date().toISOString();
       const resRes = await fetch(SUPABASE_URL + '/rest/v1/frizz_box_reservations', {
         method: 'POST',
@@ -1004,7 +1009,7 @@
           box_type_id: t_obj.id, client_id: client.id,
           start_date: data.startDate, monthly_price: monthly,
           deposit: deposit, setup_fee: 0, total_paid_today: total,
-          status: 'paid', access_pin: pin, user_agent: navigator.userAgent,
+          status: 'pending_payment', user_agent: navigator.userAgent,
           id_document_url: state.idDocumentUrl,
           proof_of_residence_url: state.proofOfResidenceUrl,
           signature_data_url: state.signatureDataUrl,
@@ -1014,7 +1019,6 @@
       });
       if (!resRes.ok) throw new Error('Reservation error');
       state._lastResNumber = resNumber;
-      state._lastPin = pin;
       state._lastClient = client;
       state._lastTotal = total;
       state._lastMonthly = monthly;
@@ -1033,15 +1037,14 @@
 
   // ========= STEP 4 =========
   function renderStep4(container) {
-    const pin = state._lastPin || '----';
-    const pinDigits = pin.split('').map(d => `<div class="pin-digit">${d}</div>`).join('');
     container.innerHTML = `
       <div class="success-icon">✓</div>
       <h2 style="text-align:center;">${t('title_step4')}</h2>
       <p class="subtitle" style="text-align:center; margin-bottom:14px;">${t('sub_step4')} <strong>#${state._lastResNumber}</strong></p>
-      <div class="pin-display">
-        <div class="pin-label">${t('pin_label')}</div>
-        <div class="pin-digits">${pinDigits}</div>
+      <div class="pin-pending">
+        <div class="pin-pending-icon">📧</div>
+        <div class="pin-pending-title">${t('pin_pending_title')}</div>
+        <div class="pin-pending-msg">${t('pin_pending_msg')}</div>
       </div>
       <div style="text-align:center; margin-bottom:12px;">
         <button class="download-btn" id="btnDownloadContract">${t('download_contract')}</button>
@@ -1051,7 +1054,7 @@
     document.getElementById('btnDownloadContract').addEventListener('click', generateContractPDF);
     document.getElementById('btnRestart').addEventListener('click', () => {
       state.selectedBoxType = null; state.selectedNeed = null;
-      state._lastResNumber = null; state._lastPin = null;
+      state._lastResNumber = null;
       state.formData = {};
       state.idDocumentUrl = null; state.idDocumentFilename = null;
       state.proofOfResidenceUrl = null; state.proofOfResidenceFilename = null;
@@ -1117,7 +1120,7 @@
     doc.text('Type : ' + boxName, 25, y); y += lh;
     doc.text('Surface : ' + box.surface_m2 + ' m²', 25, y); y += lh;
     doc.text("Date d'entrée : " + new Date(startDate).toLocaleDateString('fr-FR'), 25, y); y += lh;
-    doc.text("Code d'accès personnel : " + state._lastPin, 25, y); y += lh;
+    doc.text("Code d'accès personnel : communiqué par email après paiement", 25, y); y += lh;
     y += 5;
 
     doc.setFontSize(12); doc.setFont('helvetica', 'bold');

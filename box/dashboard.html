@@ -759,47 +759,43 @@
     font-size: 15px; padding: 12px 14px;
     margin-bottom: 4px;
     display: flex; align-items: center; gap: 12px;
-    transition: all 0.15s;
+    position: relative;
+    transition: background 0.2s ease, transform 0.15s ease;
   }
-  /* Icônes monochromes (filtre noir gris) */
+  /* Icônes noir & blanc */
   .mobile-menu .nav-item .icon {
-    font-size: 18px; width: 24px;
+    font-size: 17px; width: 22px;
     text-align: center;
-    filter: grayscale(100%) brightness(0.4);
-    opacity: 0.85;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: grayscale(100%) brightness(0.25);
+    opacity: 0.7;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease;
     display: inline-block;
   }
-  .mobile-menu .nav-item.active .icon,
-  .mobile-menu .nav-item:active .icon {
-    filter: grayscale(0%) brightness(1);
-    opacity: 1;
+  /* Hover : juste un peu plus foncé */
+  .mobile-menu .nav-item:hover .icon { opacity: 0.95; }
+  .mobile-menu .nav-item.active .icon { opacity: 1; }
+
+  /* Animation au clic : translation douce vers la droite + fade subtil */
+  .mobile-menu .nav-item.clicked {
+    background: rgba(234, 88, 12, 0.06);
   }
-  /* Animation pulse au clic */
   .mobile-menu .nav-item.clicked .icon {
-    animation: navIconPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: iconNudge 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  @keyframes navIconPulse {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.4) rotate(-8deg); }
-    70%  { transform: scale(0.9) rotate(4deg); }
-    100% { transform: scale(1) rotate(0deg); }
+  @keyframes iconNudge {
+    0%   { transform: translateX(0); opacity: 0.7; }
+    50%  { transform: translateX(3px); opacity: 1; }
+    100% { transform: translateX(0); opacity: 0.85; }
   }
-  /* Effet ripple sur le clic */
-  .mobile-menu .nav-item {
-    position: relative; overflow: hidden;
+  /* Léger glissement du label aussi */
+  .mobile-menu .nav-item.clicked > span:not(.icon):not(.badge-count) {
+    animation: labelNudge 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .mobile-menu .nav-item.clicked::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
-      rgba(234,88,12,0.25) 0%, transparent 60%);
-    animation: ripple 0.5s ease-out;
-    pointer-events: none;
-  }
-  @keyframes ripple {
-    0% { opacity: 1; transform: scale(0.3); }
-    100% { opacity: 0; transform: scale(2); }
+  @keyframes labelNudge {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(2px); }
+    100% { transform: translateX(0); }
   }
   .mobile-menu .user-info-mobile {
     margin-top: 14px; padding-top: 14px;
@@ -2311,7 +2307,7 @@
       <thead><tr>
         <th>${t('th_client')}</th>
         <th class="hide-mobile">${t('th_box')}</th>
-        <th class="hide-mobile">${t('th_date_entry')}</th>
+        <th>${t('th_date_entry')}</th>
         <th>${t('th_total')}</th>
         <th class="hide-mobile">${t('th_status')}</th>
         <th class="show-mobile-only" style="text-align:right;">&nbsp;</th>
@@ -2326,13 +2322,16 @@
         return `<tr class="clickable" onclick="openReservationModal('${r.id}')">
           <td class="cell-client">
             <div class="cell-name">${(c.first_name || '') + ' ' + (c.last_name || '')}</div>
-            <div class="cell-meta">
+            <div class="cell-meta hide-mobile">
               <span class="cell-resa-num">#${r.reservation_number}</span>
+              <span class="cell-email">${c.email || ''}</span>
+            </div>
+            <div class="cell-meta show-mobile-only">
               <span class="cell-email">${c.email || ''}</span>
             </div>
           </td>
           <td class="hide-mobile cell-box">${b.name || ''} · ${b.surface_m2 || ''}m²</td>
-          <td class="hide-mobile cell-date">${startDate}</td>
+          <td class="cell-date">${startDate}</td>
           <td class="cell-total"><strong>${parseFloat(r.total_paid_today || 0).toFixed(0)} €</strong></td>
           <td class="hide-mobile cell-status"><span class="badge ${badgeClass}">${badgeLabel}</span></td>
           <td class="show-mobile-only cell-detail-btn" style="text-align:right;">
@@ -2875,30 +2874,36 @@
   let chartInstance = null;
 
   function getMonthlyData(metric) {
-    // Démarre à la création du compte gérant, avec un maximum de 12 mois
+    // Démarre à la création du compte gérant
     const months = [];
     const now = new Date();
     
-    // Date de création du compte (signup) ou centre
+    // Date de création — priorité au centre (fiable depuis la DB) puis fallback session
     let accountCreatedAt;
-    if (session && session.user && session.user.created_at) {
-      accountCreatedAt = new Date(session.user.created_at);
-    } else if (center && center.created_at) {
+    if (center && center.created_at) {
       accountCreatedAt = new Date(center.created_at);
+    } else if (session && session.user && session.user.created_at) {
+      accountCreatedAt = new Date(session.user.created_at);
+    } else if (allReservations.length > 0) {
+      // Fallback: première réservation
+      const dates = allReservations.map(r => new Date(r.created_at)).filter(d => !isNaN(d.getTime()));
+      accountCreatedAt = dates.length ? new Date(Math.min(...dates.map(d => d.getTime()))) : new Date(now.getFullYear(), now.getMonth() - 5, 1);
     } else {
-      // Fallback : 6 mois en arrière
+      // Dernier fallback : 6 mois en arrière
       accountCreatedAt = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     }
     
-    // Premier jour du mois de création
+    // Vérification de validité
+    if (isNaN(accountCreatedAt.getTime())) {
+      accountCreatedAt = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    }
+    
     const firstMonth = new Date(accountCreatedAt.getFullYear(), accountCreatedAt.getMonth(), 1);
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    // Nombre de mois entre création et maintenant (max 12 pour la lisibilité)
     let monthsDiff = (currentMonth.getFullYear() - firstMonth.getFullYear()) * 12 + (currentMonth.getMonth() - firstMonth.getMonth());
     monthsDiff = Math.min(11, Math.max(0, monthsDiff));
     
-    // Si compte créé ce mois-ci, on affiche au moins le mois en cours
     const totalMonths = monthsDiff + 1;
     
     for (let i = totalMonths - 1; i >= 0; i--) {
@@ -2913,7 +2918,8 @@
     }
 
     return months.map(m => {
-      const inMonth = allReservations.filter(r => {
+      const inMonth = (allReservations || []).filter(r => {
+        if (!r.created_at) return false;
         const created = new Date(r.created_at);
         return created >= m.start && created < m.end;
       });
@@ -2937,11 +2943,10 @@
   }
 
   // Exposer au global pour onclick
+  // Une seule définition globale via window
   window.openStatModal = function(metric) {
-    console.log('[Frizz] openStatModal appelé:', metric);
     try {
       const data = getMonthlyData(metric);
-      console.log('[Frizz] data calculé:', data);
 
       const titles = {
         revenue: { title: t('stat_revenue_chart_title'), subtitle: t('stat_revenue_subtitle'), label: t('stat_revenue_label'), color: '#EA580C' },
@@ -2955,10 +2960,8 @@
       document.getElementById('statModalTitle').textContent = config.title;
       document.getElementById('statModalSubtitle').textContent = config.subtitle;
 
-      // Destroy existing chart
       if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
-      // Affichage du modal d'abord
       document.getElementById('modalStat').classList.add('active');
 
       setTimeout(() => {
@@ -2982,8 +2985,6 @@
     }
   };
 
-  function openStatModal(metric) { window.openStatModal(metric); }
-  
   function renderChart(ctx, data, config, metric) {
       const labels = data.map(d => d.label);
       const values = data.map(d => d.value);
@@ -3098,24 +3099,17 @@
   }
 
   function goToPageMobile(page, event) {
-    // Animation : ajouter classe "clicked" sur l'item
     if (event && event.currentTarget) {
       const item = event.currentTarget;
-      // Position du clic pour effet ripple
-      const rect = item.getBoundingClientRect();
-      const x = ((event.clientX || rect.left + rect.width/2) - rect.left) / rect.width * 100;
-      const y = ((event.clientY || rect.top + rect.height/2) - rect.top) / rect.height * 100;
-      item.style.setProperty('--ripple-x', x + '%');
-      item.style.setProperty('--ripple-y', y + '%');
       item.classList.remove('clicked');
-      void item.offsetWidth; // reflow
+      void item.offsetWidth;
       item.classList.add('clicked');
-      setTimeout(() => item.classList.remove('clicked'), 500);
+      setTimeout(() => item.classList.remove('clicked'), 400);
     }
     setTimeout(() => {
       goToPage(page);
       closeMobileMenu();
-    }, 180);
+    }, 150);
   }
 
   function toggleMobileMenu() {

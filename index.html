@@ -3,1060 +3,1090 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Frizz · La réservation moderne pour votre garde-meubles</title>
-<meta name="description" content="Vos clients réservent leur box, paient et signent en 5 minutes. Ouverture par téléphone. Installé sur votre site en 7 jours. Démo gratuite sur demande.">
-<meta property="og:title" content="Frizz · La réservation moderne pour votre garde-meubles">
-<meta property="og:description" content="Vos clients réservent leur box en 5 minutes et l'ouvrent avec leur téléphone. Réservez votre démo personnalisée.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://frizz-instant.com/box/">
+<title>Frizz✦ — La conformité et la formation, simplifiées pour votre boulangerie</title>
+<meta name="description" content="HACCP, allergènes INCO, tutorat apprenti, formation employés par QR codes. 24,90€/mois. 14 jours d'essai gratuit.">
+
+<!-- ============ FAVICON ============ -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
+
+<!-- ============ FONTS ============ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  :root {
-    --black: #0A0A0A;
-    --gray-700: #4B5563;
-    --gray-500: #6B7280;
-    --gray-300: #D1D5DB;
-    --gray-100: #F3F4F6;
-    --gray-50: #FAFAFA;
-    --white: #FFFFFF;
-    --orange: #EA580C;
-    --orange-soft: #F97316;
-    --orange-light: #FED7AA;
-    --orange-bg: #FFF7ED;
-    --green: #10B981;
-    --red: #EF4444;
-  }
-  
+/* ============================================================
+   FRIZZ✦ — LANDING PAGE
+   Design system : Source Serif italique + aurora bleue + glass
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Safe area sur mobile : aucun élément ne touche les bords */
+@media (max-width: 600px) {
   body {
-    font-family: 'Inter Tight', sans-serif;
-    color: var(--black); background: var(--white);
-    line-height: 1.6; -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    position: relative;
+    padding-left: 34px;
+    padding-right: 34px;
   }
-  
-  /* Effet orange en arrière-plan animé */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -300px; right: -200px;
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(234,88,12,0.15) 0%, rgba(234,88,12,0.05) 40%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-    pointer-events: none;
-    animation: glowFloat 15s ease-in-out infinite;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -300px; left: -200px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(234,88,12,0.10) 0%, rgba(234,88,12,0.04) 40%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-    pointer-events: none;
-    animation: glowFloat 18s ease-in-out infinite reverse;
-  }
-  @keyframes glowFloat {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, 30px) scale(1.1); }
-    66% { transform: translate(-30px, 50px) scale(0.95); }
-  }
-  
-  /* Tous les contenus au-dessus du glow */
-  nav, .hero, .section, .section-access, .section-cta, footer {
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* ANIMATIONS D'ENTREE */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(40px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-40px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  @keyframes glow {
-    0%, 100% { box-shadow: 0 30px 80px rgba(234,88,12,0.08); }
-    50% { box-shadow: 0 40px 100px rgba(234,88,12,0.18); }
-  }
-  
-  /* Reveal au scroll */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-  
-  .serif { font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 400; }
-  
-  /* NAV */
-  nav {
-    position: sticky; top: 0; background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-100);
-    padding: 16px 0; z-index: 100;
-  }
-  .nav-inner {
-    max-width: 1200px; margin: 0 auto; padding: 0 24px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .logo {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 26px; letter-spacing: -0.01em;
-    display: flex; align-items: center; gap: 2px;
-    color: var(--black); text-decoration: none;
-  }
-  .logo .star {
-    color: var(--orange); font-style: normal;
-    font-family: 'Inter Tight', sans-serif; font-weight: 400;
-    display: inline-block;
-    animation: starSpin 8s linear infinite;
-  }
-  @keyframes starSpin {
-    0%, 90%, 100% { transform: rotate(0deg); }
-    95% { transform: rotate(360deg); }
-  }
-  .nav-links { display: flex; gap: 32px; align-items: center; }
-  .nav-links a {
-    color: var(--gray-700); text-decoration: none; font-size: 14px; font-weight: 500;
-  }
-  .btn-cta {
-    background: var(--orange); color: var(--white) !important;
-    padding: 10px 20px; border-radius: 8px; font-weight: 600;
-  }
-  
-  /* HERO */
-  .hero {
-    max-width: 1200px; margin: 0 auto;
-    padding: 120px 24px 80px; display: grid;
-    grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--orange-bg); color: var(--orange);
-    padding: 6px 14px; border-radius: 100px;
-    font-size: 13px; font-weight: 600; margin-bottom: 28px;
-  }
-  
-  h1 {
-    font-size: 60px; font-weight: 700; line-height: 1.02;
-    letter-spacing: -0.035em; margin-bottom: 24px;
-    animation: fadeInUp 0.8s ease-out;
-  }
-  h1 .accent { color: var(--orange); }
-  
-  .hero-sub {
-    font-size: 20px; color: var(--gray-700); line-height: 1.55;
-    max-width: 540px; margin-bottom: 36px;
-    animation: fadeInUp 0.8s ease-out 0.15s backwards;
-  }
-  .hero-sub .serif { color: var(--black); font-size: 21px; }
-  
-  .hero-ctas {
-    display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap;
-    animation: fadeInUp 0.8s ease-out 0.3s backwards;
-  }
-  .btn-primary {
-    background: var(--black); color: var(--white);
-    padding: 14px 28px; border-radius: 10px;
-    font-weight: 600; font-size: 15px; text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer; border: none; font-family: inherit;
-    position: relative; overflow: hidden;
-  }
-  .btn-primary::before {
-    content: ''; position: absolute; top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(234,88,12,0.4), transparent);
-    transition: left 0.6s;
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(234,88,12,0.3);
-  }
-  .btn-primary:hover::before { left: 100%; }
-  .btn-secondary {
-    background: var(--white); color: var(--black);
-    padding: 14px 28px; border-radius: 10px;
-    font-weight: 600; font-size: 15px; text-decoration: none;
-    border: 1px solid var(--gray-300); cursor: pointer; font-family: inherit;
-  }
-  
-  .hero-checks { color: var(--gray-700); font-size: 14px; }
-  .hero-checks span {
-    display: inline-flex; align-items: center; gap: 6px; margin-right: 20px;
-  }
-  .hero-checks .check { color: var(--orange); font-weight: 700; }
-  
-  /* WIDGET */
-  /* === CALCULATEUR ROI INTERACTIF === */
-  .roi-calculator {
-    background: var(--white);
-    border-radius: 28px;
-    padding: 36px 32px;
-    border: 1px solid var(--gray-100);
-    box-shadow: 0 30px 80px rgba(234,88,12,0.12), 0 12px 30px rgba(0,0,0,0.06);
-    position: relative;
-    max-width: 480px;
-    margin: 0 auto;
-    animation: slideInRight 1s ease-out 0.4s backwards, glow 4s ease-in-out 1.5s infinite;
-  }
-  .roi-calculator::before {
-    content: '';
-    position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(135deg, rgba(234,88,12,0.3), transparent 50%, rgba(234,88,12,0.15));
-    border-radius: 30px;
-    z-index: -1;
-    opacity: 0.6;
-  }
+}
 
-  .roi-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: linear-gradient(135deg, var(--orange) 0%, #F97316 100%);
-    color: var(--white);
-    padding: 6px 14px; border-radius: 100px;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
-    margin-bottom: 18px;
-    box-shadow: 0 4px 12px rgba(234,88,12,0.25);
-  }
-  .roi-spark {
-    font-size: 14px;
-    animation: starSpinRoi 3s linear infinite;
-    display: inline-block;
-  }
-  @keyframes starSpinRoi {
-    0%, 85%, 100% { transform: rotate(0deg); }
-    92% { transform: rotate(360deg); }
-  }
+/* ============ AURORA + GRAIN ============ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 25%, rgba(10, 132, 255, 0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 60%, rgba(88, 86, 214, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 50% at 30% 100%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+    #000;
+  z-index: -2;
+  pointer-events: none;
+}
 
-  .roi-question {
-    font-size: 15px; font-weight: 700; color: var(--black);
-    margin-bottom: 14px;
-  }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  z-index: -1;
+  pointer-events: none;
+}
 
-  .roi-slider-wrap {
-    background: linear-gradient(135deg, var(--orange-bg) 0%, #FFF 100%);
-    border: 1px solid rgba(234,88,12,0.15);
-    padding: 18px 20px;
-    border-radius: 14px;
-    margin-bottom: 22px;
-  }
+/* ============ NAV ============ */
+.nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 980px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 22px;
+  background: rgba(20, 20, 22, 0.6);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
 
-  #roiSlider {
-    width: 100%; height: 8px; -webkit-appearance: none; appearance: none;
-    background: var(--gray-200);
-    border-radius: 100px; outline: none;
-    margin-bottom: 14px; cursor: pointer;
-    background-image: linear-gradient(var(--orange), var(--orange));
-    background-repeat: no-repeat;
-    background-size: 50% 100%;
-    transition: background-size 0.1s;
+@media (max-width: 600px) {
+  .nav {
+    width: calc(100% - 50px);
+    padding: 10px 18px;
   }
-  #roiSlider::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 24px; height: 24px;
-    background: var(--white);
-    border: 3px solid var(--orange);
-    border-radius: 50%; cursor: grab;
-    box-shadow: 0 4px 12px rgba(234,88,12,0.3);
-    transition: transform 0.15s;
-  }
-  #roiSlider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-  #roiSlider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.05); }
-  #roiSlider::-moz-range-thumb {
-    width: 24px; height: 24px;
-    background: var(--white); border: 3px solid var(--orange);
-    border-radius: 50%; cursor: grab;
-    box-shadow: 0 4px 12px rgba(234,88,12,0.3);
-  }
+}
 
-  .roi-slider-value {
-    text-align: center;
-    font-size: 32px; font-weight: 800;
-    color: var(--orange); letter-spacing: -0.02em;
-  }
-  .roi-slider-value small {
-    font-size: 14px; color: var(--gray-700);
-    font-weight: 500; margin-left: 4px;
-  }
+.logo {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  text-decoration: none;
+}
 
-  .roi-stats {
-    display: grid; gap: 12px; margin-bottom: 18px;
-  }
+.logo .sparkle {
+  color: #0A84FF;
+  font-size: 20px;
+  text-shadow: 0 0 12px rgba(10, 132, 255, 0.65);
+  animation: pulse 3.5s ease-in-out infinite;
+}
 
-  .roi-stat.highlight {
-    background: linear-gradient(135deg, var(--black) 0%, #1f1f1f 100%);
-    color: var(--white);
-    padding: 22px 24px; border-radius: 18px;
-    position: relative; overflow: hidden;
-  }
-  .roi-stat.highlight::before {
-    content: '✦'; position: absolute;
-    top: -20px; right: -20px;
-    font-size: 100px; color: var(--orange);
-    opacity: 0.08; font-family: serif;
-    pointer-events: none;
-  }
-  .roi-stat-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--orange-light);
-    margin-bottom: 4px;
-  }
-  .roi-stat-value {
-    font-size: 42px; font-weight: 800; letter-spacing: -0.03em;
-    line-height: 1; display: flex; align-items: baseline; gap: 4px;
-  }
-  .roi-stat-value span:first-child {
-    background: linear-gradient(135deg, var(--orange) 0%, #FED7AA 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: opacity 0.2s;
-  }
-  .roi-stat-unit {
-    font-size: 28px; color: var(--orange);
-    font-weight: 700;
-  }
-  .roi-stat-note {
-    font-size: 11px; color: var(--gray-300); margin-top: 6px;
-    font-family: 'Source Serif 4', serif; font-style: italic;
-  }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
 
-  .roi-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .roi-stat-mini {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-100);
-    padding: 14px 16px;
-    border-radius: 12px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .roi-stat-mini-icon {
-    font-size: 20px;
-    width: 36px; height: 36px;
-    background: var(--white);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .roi-stat-mini-value {
-    font-size: 18px; font-weight: 800;
-    color: var(--black); line-height: 1.1;
-  }
-  .roi-stat-mini-value span { color: var(--orange); }
-  .roi-stat-mini-label {
-    font-size: 11px; color: var(--gray-500);
-    font-weight: 600;
-  }
+.nav-cta {
+  padding: 8px 16px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
+  transition: transform 0.15s ease;
+}
 
-  .roi-footer {
-    text-align: center; font-size: 11px;
-    color: var(--gray-500); padding-top: 14px;
-    border-top: 1px solid var(--gray-100);
-    line-height: 1.5;
-  }
-  .roi-check {
-    color: var(--orange); font-weight: 700;
-    margin-right: 4px;
-  }
-  .roi-stat-bump {
-    animation: bumpRoi 0.3s ease-out;
-  }
-  @keyframes bumpRoi {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-    100% { transform: scale(1); }
-  }
-  .widget-header {
-    padding: 20px 24px; border-bottom: 1px solid var(--gray-100);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .widget-title { font-weight: 700; font-size: 16px; }
-  .widget-step {
-    background: var(--orange-bg); color: var(--orange);
-    padding: 4px 10px; border-radius: 100px;
-    font-size: 11px; font-weight: 700;
-  }
-  .widget-body { padding: 24px; }
-  .widget-q {
-    font-size: 13px; color: var(--gray-500);
-    margin-bottom: 12px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .box-options { display: grid; gap: 10px; margin-bottom: 24px; }
-  .box-opt {
-    padding: 16px; border: 2px solid var(--gray-100); border-radius: 12px;
-    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .box-opt:hover {
-    border-color: var(--gray-300);
-    transform: translateX(4px);
-  }
-  .box-opt.selected {
-    border-color: var(--orange);
-    background: var(--orange-bg);
-    box-shadow: 0 4px 12px rgba(234,88,12,0.15);
-  }
-  .box-opt-info { display: flex; align-items: center; gap: 14px; }
-  .box-opt-icon {
-    width: 44px; height: 44px; background: var(--white); border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; border: 1px solid var(--gray-100);
-  }
-  .box-opt.selected .box-opt-icon { border-color: var(--orange); background: var(--white); }
-  .box-opt-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
-  .box-opt-desc {
-    font-size: 12px; color: var(--gray-500);
-    font-family: 'Source Serif 4', serif; font-style: italic;
-  }
-  .box-opt-price { font-weight: 700; font-size: 18px; color: var(--orange); }
-  .box-opt-price small { font-size: 11px; color: var(--gray-500); font-weight: 500; }
-  .ai-suggest {
-    background: var(--orange-bg); padding: 12px 16px; border-radius: 10px;
-    border-left: 3px solid var(--orange); margin-bottom: 20px;
-    font-size: 13px; color: var(--gray-700);
-    display: flex; align-items: flex-start; gap: 10px;
-    position: relative; overflow: hidden;
-  }
-  .ai-suggest::after {
-    content: ''; position: absolute;
-    top: 0; left: -100%;
-    width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    animation: shimmer 3s ease-in-out infinite;
-  }
-  @keyframes shimmer {
-    0%, 100% { left: -100%; }
-    50% { left: 200%; }
-  }
-  .ai-suggest .ai-icon {
-    color: var(--orange); font-weight: 700; flex-shrink: 0;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  .ai-suggest strong { color: var(--black); }
-  .ai-suggest em {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--orange); font-weight: 600;
-  }
-  .widget-summary {
-    background: var(--gray-50); padding: 16px; border-radius: 10px; margin-bottom: 16px;
-  }
-  .summary-row {
-    display: flex; justify-content: space-between; font-size: 14px;
-    padding: 4px 0; color: var(--gray-700);
-  }
-  .summary-row.total {
-    border-top: 1px solid var(--gray-300); margin-top: 8px; padding-top: 12px;
-    font-weight: 700; color: var(--black); font-size: 16px;
-  }
-  .summary-row.total .price { color: var(--orange); font-size: 20px; }
-  .widget-cta-btn {
-    width: 100%; background: var(--orange); color: var(--white);
-    padding: 14px; border-radius: 10px;
-    font-weight: 700; font-size: 15px; border: none; cursor: pointer;
-    font-family: inherit;
-  }
-  
-  /* SECTIONS */
-  .section { padding: 100px 24px; }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
-  .section-gray { background: var(--gray-50); }
-  .section-label {
-    font-size: 13px; font-weight: 700; color: var(--orange);
-    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px;
-  }
-  h2 {
-    font-size: 44px; font-weight: 700; line-height: 1.1;
-    letter-spacing: -0.025em; margin-bottom: 14px;
-  }
-  .section-sub {
-    font-size: 18px; color: var(--gray-700);
-    max-width: 620px; margin-bottom: 56px;
-  }
-  .section-sub.center { margin: 0 auto 56px; text-align: center; }
-  .section-header-center { text-align: center; }
-  
-  .three-steps {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; position: relative;
-  }
-  .step-card {
-    padding: 32px; background: var(--white); border-radius: 16px;
-    border: 1px solid var(--gray-100); position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .step-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(234,88,12,0.12);
-    border-color: var(--orange-light);
-  }
-  .step-num {
-    position: absolute; top: -16px; left: 28px;
-    background: var(--orange); color: var(--white);
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 14px;
-    transition: transform 0.3s;
-  }
-  .step-card:hover .step-num {
-    transform: scale(1.15) rotate(-5deg);
-  }
-  .step-title {
-    font-size: 22px; font-weight: 700; margin-bottom: 10px; margin-top: 12px;
-    letter-spacing: -0.01em;
-  }
-  .step-title .serif { color: var(--orange); }
-  .step-desc { color: var(--gray-700); font-size: 15px; }
-  .step-desc em {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--black); font-weight: 600;
-  }
-  
-  /* SECTION OUVERTURE */
-  .section-access {
-    background: var(--black); color: var(--white);
-    padding: 100px 24px; position: relative; overflow: hidden;
-  }
-  .section-access::before {
-    content: '✦'; position: absolute; top: 60px; right: 60px;
-    font-size: 200px; color: var(--orange); opacity: 0.05;
-    font-family: serif;
-  }
-  .section-access .section-label { color: var(--orange-light); }
-  .section-access h2 { color: var(--white); }
-  .section-access .section-sub { color: var(--gray-300); }
-  .access-modes-wrap { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
-  .access-flow {
-    display: flex; align-items: center; gap: 16px; margin-bottom: 56px;
-    flex-wrap: wrap; justify-content: center;
-  }
-  .flow-step {
-    background: rgba(255,255,255,0.05); padding: 16px 24px;
-    border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
-    font-size: 14px; font-weight: 500; color: var(--gray-300);
-  }
-  .flow-step.highlight {
-    background: var(--orange); color: var(--white); border-color: var(--orange); font-weight: 700;
-  }
-  .flow-step .step-icon { margin-right: 8px; }
-  .flow-arrow { color: var(--orange); font-size: 20px; }
-  .access-modes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-  .access-card {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    padding: 36px; border-radius: 16px; position: relative; overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-  }
-  .access-card:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: var(--orange);
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(234,88,12,0.3);
-  }
-  .access-card::before {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-    background: var(--orange); transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .access-card:hover::before { transform: scaleX(1); }
-  .access-card:hover .access-icon-wrap {
-    transform: rotate(-8deg) scale(1.1);
-  }
-  .access-icon-wrap {
-    width: 64px; height: 64px; border-radius: 14px;
-    background: rgba(234,88,12,0.15); border: 1px solid var(--orange);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 24px; font-size: 32px;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .access-title {
-    font-size: 24px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em;
-  }
-  .access-subtitle {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--orange); font-size: 15px; margin-bottom: 16px; font-weight: 400;
-  }
-  .access-desc {
-    color: var(--gray-300); font-size: 14px; line-height: 1.65; margin-bottom: 20px;
-  }
-  .access-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .access-tag {
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-    padding: 4px 10px; border-radius: 6px; font-size: 11px; color: var(--gray-300);
-  }
-  .qr-preview {
-    width: 56px; height: 56px; background: var(--white);
-    background-image:
-      linear-gradient(45deg, var(--black) 25%, transparent 25%),
-      linear-gradient(-45deg, var(--black) 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, var(--black) 75%),
-      linear-gradient(-45deg, transparent 75%, var(--black) 75%);
-    background-size: 8px 8px;
-    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
-    border-radius: 6px; margin: 0 auto;
-  }
-  .pin-display { display: flex; gap: 8px; justify-content: center; }
-  .pin-digit {
-    width: 36px; height: 44px; background: rgba(255,255,255,0.06);
-    border: 1px solid var(--orange); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; font-weight: 700; color: var(--orange);
-  }
-  .bluetooth-icon {
-    width: 56px; height: 56px; background: var(--orange);
-    border-radius: 14px; display: flex; align-items: center; justify-content: center;
-    font-size: 26px; color: var(--white);
-    animation: pulse-bt 2s infinite;
-  }
-  @keyframes pulse-bt {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(234,88,12,0.5); }
-    50% { box-shadow: 0 0 0 12px rgba(234,88,12,0); }
-  }
-  .access-bottom-note {
-    margin-top: 56px; padding: 24px 32px;
-    background: rgba(234,88,12,0.08); border: 1px solid rgba(234,88,12,0.2);
-    border-radius: 12px; text-align: center;
-  }
-  .access-bottom-note .note-icon { color: var(--orange); font-size: 20px; margin-right: 8px; }
-  .access-bottom-note .serif { color: var(--orange-light); font-size: 19px; }
-  
-  /* CTA FINAL */
-  .section-cta {
-    background: var(--white); color: var(--black);
-    padding: 100px 24px; text-align: center;
-    border-top: 1px solid var(--gray-100);
-  }
-  .form-cta {
-    max-width: 480px; margin: 0 auto; display: flex; gap: 8px;
-    background: var(--gray-50); padding: 6px; border-radius: 12px;
-    border: 1px solid var(--gray-100);
-    transition: all 0.3s;
-  }
-  .form-cta input {
-    flex: 1; border: none; padding: 14px 16px; font-size: 15px;
-    background: transparent; outline: none; font-family: inherit;
-  }
-  .form-cta button {
-    background: var(--orange); color: var(--white);
-    border: none; padding: 14px 24px; border-radius: 8px;
-    font-weight: 600; font-size: 14px; cursor: pointer;
-    font-family: inherit; transition: all 0.3s;
-    min-width: 130px; position: relative; overflow: hidden;
-  }
-  .form-cta button::after {
-    content: ''; position: absolute; top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.6s;
-  }
-  .form-cta button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(234,88,12,0.4);
-  }
-  .form-cta button:hover::after { left: 100%; }
-  .form-cta button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .form-cta.success { background: #DCFCE7; border-color: var(--green); }
-  .form-cta.error { background: #FEE2E2; border-color: var(--red); }
-  
-  .form-status {
-    margin-top: 16px; font-size: 14px; font-weight: 500;
-    min-height: 20px;
-  }
-  .form-status.success { color: var(--green); }
-  .form-status.error { color: var(--red); }
-  
-  .cta-disclaimer { margin-top: 8px; font-size: 13px; color: var(--gray-500); }
+.nav-cta:active { transform: scale(0.97); }
 
-  /* Pricing inline dans CTA */
-  .pricing-cta {
-    margin: 28px auto 8px;
-    background: linear-gradient(135deg, rgba(234,88,12,0.08), rgba(255,255,255,0.5));
-    border: 1px solid rgba(234,88,12,0.15);
-    padding: 16px 24px; border-radius: 14px;
-    display: inline-block;
+/* ============ CONTAINER ============ */
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.container-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 600px) {
+  .container, .container-narrow {
+    padding: 0;
   }
-  .pricing-cta-line {
-    display: flex; align-items: baseline; gap: 12px; justify-content: center;
-    flex-wrap: wrap;
-  }
-  .pricing-cta-strike {
-    color: var(--gray-500); text-decoration: line-through;
-    font-size: 18px; font-weight: 500;
-  }
-  .pricing-cta-price {
-    color: var(--orange); font-size: 36px; font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-  .pricing-cta-price small {
-    font-size: 16px; color: var(--gray-700); font-weight: 500;
-  }
-  .pricing-cta-tag {
-    background: var(--orange); color: var(--white);
-    padding: 4px 10px; border-radius: 100px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .pricing-cta-after {
-    font-size: 12px; color: var(--gray-700); margin-top: 8px;
-    font-style: italic; font-family: 'Source Serif 4', serif;
-    text-align: center;
-  }
-  
-  footer {
-    border-top: 1px solid var(--gray-100); padding: 32px 24px;
-  }
-  .footer-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between;
-    color: var(--gray-500); font-size: 13px;
-  }
-  .footer-inner .serif { color: var(--gray-700); }
-  
-  @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
-    h1 { font-size: 40px; }
-    h2 { font-size: 30px; }
-    .three-steps { grid-template-columns: 1fr; gap: 24px; }
-    .access-modes { grid-template-columns: 1fr; }
-    .nav-links a:not(.btn-cta) { display: none; }
-    .form-cta { flex-direction: column; padding: 12px; }
-    .form-cta button { width: 100%; }
-    .access-flow { gap: 8px; }
-    .flow-step { font-size: 12px; padding: 10px 14px; }
-    /* Téléphone responsive */
-    .roi-calculator { max-width: 100%; padding: 28px 20px; border-radius: 22px; }
-    .roi-stat-value { font-size: 36px; }
-    .roi-stat-unit { font-size: 24px; }
-    .roi-stat-row { grid-template-columns: 1fr; }
-    .roi-slider-value { font-size: 28px; }
-  }
+}
+
+/* ============ HERO ============ */
+.hero {
+  padding: 160px 0 96px 0;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(10, 132, 255, 0.12);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 32px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.hero-badge .material-icons-round {
+  color: #0A84FF;
+  font-size: 16px;
+}
+
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: clamp(40px, 7vw, 76px);
+  line-height: 1.0;
+  letter-spacing: -2.5px;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  padding-right: 0.08em;
+}
+
+.hero-subtitle {
+  font-size: clamp(16px, 2vw, 19px);
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 620px;
+  margin: 0 auto 40px auto;
+  line-height: 1.5;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 22px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35), 0 2px 6px rgba(10, 132, 255, 0.2);
+  transition: transform 0.15s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-primary .material-icons-round { font-size: 17px; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.15s ease;
+}
+
+.btn-secondary:active { transform: scale(0.97); }
+
+.hero-trust {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-trust .material-icons-round {
+  color: #34C759;
+  font-size: 16px;
+}
+
+/* ============ TWO-PILLARS HERO ============ */
+.pillars {
+  padding: 64px 0 96px 0;
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 720px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+}
+
+.pillar {
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+}
+
+@media (max-width: 600px) {
+  .pillar { padding: 28px 24px; }
+}
+
+.pillar-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.pillar-icon .material-icons-round {
+  color: #0A84FF;
+  font-size: 28px;
+}
+
+.pillar-tag {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.pillar-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 14px;
+}
+
+.pillar-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+
+.pillar-desc {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pillar-list {
+  list-style: none;
+  padding: 0;
+}
+
+.pillar-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 6px 0;
+}
+
+.pillar-list li::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  flex-shrink: 0;
+  margin-top: 2px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2334C759'%3E%3Cpath d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+}
+
+/* ============ HOW IT WORKS ============ */
+.how {
+  padding: 96px 0;
+  text-align: center;
+}
+
+.section-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+.section-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -1.8px;
+  margin-bottom: 56px;
+}
+
+.section-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .steps { grid-template-columns: 1fr; }
+}
+
+.step {
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .step { padding: 28px 24px; }
+}
+
+.step-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 56px;
+  color: rgba(10, 132, 255, 0.35);
+  line-height: 1;
+  margin-bottom: 18px;
+  text-shadow: 0 0 20px rgba(10, 132, 255, 0.3);
+}
+
+.step-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+
+.step-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+}
+
+/* ============ PRICING ============ */
+.pricing {
+  padding: 96px 0;
+  text-align: center;
+}
+
+.price-card {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 36px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 32px;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(10, 132, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .price-card { padding: 36px 24px; }
+}
+
+.price-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.6) 0%, rgba(88, 86, 214, 0.6) 100%);
+  border-radius: 34px;
+  z-index: -1;
+  opacity: 0.5;
+  filter: blur(16px);
+}
+
+.price-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.price-tag .num {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 84px;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: #fff;
+}
+
+.price-tag .num em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+  font-size: 36px;
+  letter-spacing: -1px;
+}
+
+.price-tag .unit {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+}
+
+.price-trial {
+  font-size: 14px;
+  color: #34C759;
+  font-weight: 500;
+  margin-bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.price-trial .material-icons-round { font-size: 16px; }
+
+.price-features {
+  text-align: left;
+  list-style: none;
+  margin: 28px 0;
+  padding: 28px 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.price-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 0;
+}
+
+.price-features li::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  flex-shrink: 0;
+  margin-top: 1px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2334C759'%3E%3Cpath d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 13px;
+}
+
+.price-cta {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.price-amende {
+  margin-top: 18px;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============ CONTACT FORM ============ */
+.contact {
+  padding: 96px 0 128px 0;
+}
+
+.form-card {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+}
+
+@media (max-width: 600px) {
+  .form-card { padding: 36px 24px; }
+}
+
+.form-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 36px;
+  letter-spacing: -1.2px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.form-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+
+.form-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 32px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 540px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.input-wrap { position: relative; margin-bottom: 14px; }
+
+.input-wrap.full { grid-column: 1 / -1; }
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.08);
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.5)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+select option {
+  background: #1a1a1c;
+  color: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 14px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35), 0 2px 6px rgba(10, 132, 255, 0.2);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  letter-spacing: -0.1px;
+}
+
+.form-submit:active { transform: scale(0.98); }
+
+.form-submit:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.form-rgpd {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+/* ============ FORM TOAST (success / error) ============ */
+.toast {
+  display: none;
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.toast.success {
+  display: block;
+  background: rgba(52, 199, 89, 0.12);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+
+.toast.error {
+  display: block;
+  background: rgba(255, 69, 58, 0.12);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  color: #FF453A;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  padding: 40px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.footer .logo {
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: inline-flex;
+}
+
+.footer p { margin-top: 8px; }
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero > * {
+  animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+.hero > *:nth-child(1) { animation-delay: 0.05s; }
+.hero > *:nth-child(2) { animation-delay: 0.15s; }
+.hero > *:nth-child(3) { animation-delay: 0.25s; }
+.hero > *:nth-child(4) { animation-delay: 0.35s; }
+.hero > *:nth-child(5) { animation-delay: 0.45s; }
+
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/box/" class="logo"><span class="star">✦</span> Frizz</a>
-    <div class="nav-links">
-      <a href="#features">Fonctionnalités</a>
-      <a href="#access">Ouverture</a>
-      <a href="#cta">Tarifs</a>
-      <a href="dashboard-login.html?signup=1" class="btn-cta">Inscrivez-vous gratuitement</a>
-    </div>
-  </div>
+<!-- ============ NAVIGATION ============ -->
+<nav class="nav">
+  <a href="#" class="logo">Frizz<span class="sparkle">✦</span></a>
+  <a href="#contact" class="nav-cta">S'inscrire</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div>
-    <h1>Vos clients réservent leur box <span class="accent serif">en 5 minutes.</span></h1>
-    <p class="hero-sub">Le widget Frizz s'installe sur votre site en 1 ligne de code. Choix de la taille, paiement, signature électronique. <span class="serif">Et ils ouvrent leur box avec leur téléphone.</span></p>
-    <div class="hero-ctas">
-      <a href="dashboard-login.html?signup=1" class="btn-primary">Inscrivez-vous gratuitement →</a>
-      <a href="https://frizz-instant.com/box/embed.html?c=demo" target="_blank" rel="noopener" class="btn-secondary">Voir un exemple ↗</a>
-    </div>
-    <div class="hero-checks">
-      <span><span class="check">✓</span> Installé en 7 jours</span>
-      <span><span class="check">✓</span> Sans engagement</span>
-    </div>
+<!-- ============ HERO ============ -->
+<header class="hero container">
+  <div class="hero-badge">
+    <span class="material-icons-round">verified</span>
+    Conçu pour les boulangeries artisanales
   </div>
-  
-  <div class="roi-calculator">
-    <div class="roi-badge">
-      <span class="roi-spark">✦</span> Calculez votre gain
+
+  <h1 class="hero-title">
+    Votre conformité.<br>
+    Votre <em>savoir-faire</em>.<br>
+    Une seule app.
+  </h1>
+
+  <p class="hero-subtitle">
+    Frizz gère vos obligations légales et forme vos employés en quelques jours grâce à des QR codes collés dans le fournil. Vous gagnez des heures, vous restez en règle.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#contact" class="btn-primary">
+      <span class="material-icons-round">arrow_forward</span>
+      Essayer 14 jours gratuits
+    </a>
+    <a href="#how" class="btn-secondary">Comment ça marche</a>
+  </div>
+
+  <div class="hero-trust">
+    <span class="material-icons-round">check_circle</span>
+    Sans engagement · Sans carte bancaire à l'inscription
+  </div>
+</header>
+
+<!-- ============ DEUX PILIERS ============ -->
+<section class="pillars container">
+  <div class="pillars-grid">
+
+    <!-- PILIER 1 : CONFORMITÉ -->
+    <div class="pillar">
+      <div class="pillar-icon">
+        <span class="material-icons-round">gavel</span>
+      </div>
+      <div class="pillar-tag">— Pilier n°1</div>
+      <h2 class="pillar-title">La <em>conformité</em>, en pilote automatique.</h2>
+      <p class="pillar-desc">
+        Toutes vos obligations légales dans une seule app. Le PMS DDPP est généré tout seul à la fin du mois.
+      </p>
+      <ul class="pillar-list">
+        <li>Relevés HACCP en 10 secondes par jour</li>
+        <li>14 allergènes par produit, mise à jour automatique</li>
+        <li>Carnet apprenti CAP/BTM exporté en PDF pour le CFA</li>
+        <li>Traçabilité fournisseurs photo + horodatage</li>
+        <li>PMS PDF mensuel prêt pour le contrôle DDPP</li>
+      </ul>
     </div>
 
-    <div class="roi-question">Vous gérez combien de box ?</div>
+    <!-- PILIER 2 : FORMATION -->
+    <div class="pillar">
+      <div class="pillar-icon">
+        <span class="material-icons-round">qr_code_2</span>
+      </div>
+      <div class="pillar-tag">— Pilier n°2</div>
+      <h2 class="pillar-title">Le <em>savoir-faire</em>, transmis en 5 jours.</h2>
+      <p class="pillar-desc">
+        Filmez vos gestes une fois. Collez un QR. Vos employés deviennent autonomes sans que vous répétiez mille fois.
+      </p>
+      <ul class="pillar-list">
+        <li>Procédures texte, photos, vidéos courtes</li>
+        <li>QR codes imprimables à coller dans le fournil</li>
+        <li>15 procédures de base prêtes à l'emploi</li>
+        <li>Multi-langues (FR, DE, IT, EN, AR, PT, RO, PL)</li>
+        <li>Suivi de progression par employé</li>
+      </ul>
+    </div>
 
-    <div class="roi-slider-wrap">
-      <input type="range" id="roiSlider" min="20" max="500" value="80" step="5">
-      <div class="roi-slider-value">
-        <span id="roiBoxCount">80</span> <small>box</small>
+  </div>
+</section>
+
+<!-- ============ COMMENT ÇA MARCHE ============ -->
+<section id="how" class="how container">
+  <div class="section-eyebrow">— Démarrage en 10 minutes</div>
+  <h2 class="section-title">Trois <em>étapes</em>, c'est tout.</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Créez vos procédures</div>
+      <div class="step-desc">
+        Filmez une fournée, prenez des photos, écrivez vos étapes. L'app génère automatiquement le QR code à imprimer.
       </div>
     </div>
 
-    <div class="roi-stats">
-      <div class="roi-stat highlight">
-        <div class="roi-stat-label">Économies par mois</div>
-        <div class="roi-stat-value">
-          <span id="roiSavings">3 200</span><span class="roi-stat-unit">€</span>
-        </div>
-        <div class="roi-stat-note">vs gestion manuelle</div>
-      </div>
-
-      <div class="roi-stat-row">
-        <div class="roi-stat-mini">
-          <div class="roi-stat-mini-icon">⏱</div>
-          <div>
-            <div class="roi-stat-mini-value"><span id="roiHours">68</span>h</div>
-            <div class="roi-stat-mini-label">gagnées /mois</div>
-          </div>
-        </div>
-        <div class="roi-stat-mini">
-          <div class="roi-stat-mini-icon">📈</div>
-          <div>
-            <div class="roi-stat-mini-value">+<span id="roiOccupancy">12</span>%</div>
-            <div class="roi-stat-mini-label">d'occupation</div>
-          </div>
-        </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Collez les QR au fournil</div>
+      <div class="step-desc">
+        Une feuille A4, 30 QR codes, à découper et coller au four, au pétrin, au comptoir. Vos employés scannent avec leur téléphone — sans compte à créer.
       </div>
     </div>
 
-    <div class="roi-footer">
-      <span class="roi-check">✓</span> Réservations 24/7 automatiques · Signature électronique · AI Pricing
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Restez en règle, sans y penser</div>
+      <div class="step-desc">
+        Les relevés HACCP s'enregistrent en quelques secondes. Le PMS DDPP est généré chaque mois. Vous récupérez du temps pour ce qui compte vraiment.
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 3 STEPS -->
-<section class="section section-gray" id="features">
-  <div class="section-inner">
-    <div class="section-label">Le parcours client</div>
-    <h2>De la visite du site<br>au <span class="serif">contrat signé</span> — 5 minutes.</h2>
-    <p class="section-sub">Vos clients vivent <em class="serif">l'expérience d'une grosse marque</em>. Vous, vous gérez votre centre tranquillement.</p>
-    <div class="three-steps">
-      <div class="step-card reveal">
-        <div class="step-num">1</div>
-        <div class="step-title">Le client <span class="serif">choisit</span></div>
-        <div class="step-desc">Il clique sur "Réserver un box" sur votre site. Notre <em>IA l'aide à choisir la bonne taille</em> selon son besoin (studio, déménagement, archives...).</div>
-      </div>
-      <div class="step-card reveal reveal-delay-1">
-        <div class="step-num">2</div>
-        <div class="step-title">Il <span class="serif">paie</span> en ligne</div>
-        <div class="step-desc">Carte bancaire sécurisée Stripe. <em>Premier mois + caution prélevés instantanément</em>. Abonnement mensuel automatique ensuite.</div>
-      </div>
-      <div class="step-card reveal reveal-delay-2">
-        <div class="step-num">3</div>
-        <div class="step-title">Il <span class="serif">signe</span> le contrat</div>
-        <div class="step-desc">Contrat PDF généré automatiquement. <em>Signature électronique simple</em>. Vous recevez tout sur votre dashboard, prêt à archiver.</div>
-      </div>
+<!-- ============ PRICING ============ -->
+<section class="pricing container-narrow">
+  <div class="section-eyebrow">— Un seul tarif, tout inclus</div>
+  <h2 class="section-title">Le <em>juste prix</em>.</h2>
+
+  <div class="price-card">
+    <div class="price-tag">
+      <span class="num">24<em>,90€</em></span>
+      <span class="unit">/mois</span>
     </div>
+
+    <div class="price-trial">
+      <span class="material-icons-round">check_circle</span>
+      14 jours gratuits · sans carte bancaire
+    </div>
+
+    <ul class="price-features">
+      <li>Procédures illimitées + QR codes imprimables</li>
+      <li>HACCP complet + génération PMS DDPP automatique</li>
+      <li>14 allergènes INCO avec affichage boutique</li>
+      <li>Carnet apprenti CAP/BTM avec export PDF CFA</li>
+      <li>Multi-langues (8 langues incluses)</li>
+      <li>Jusqu'à 3 boutiques par compte</li>
+      <li>Support par email en moins de 24h</li>
+    </ul>
+
+    <a href="#contact" class="btn-primary price-cta">
+      <span class="material-icons-round">arrow_forward</span>
+      Démarrer mon essai gratuit
+    </a>
+
+    <div class="price-amende">— Soit moins cher qu'une amende DDPP.</div>
   </div>
 </section>
 
-<!-- SECTION OUVERTURE -->
-<section class="section-access" id="access">
-  <div class="access-modes-wrap">
-    <div class="section-header-center">
-      <div class="section-label">Et après le paiement ?</div>
-      <h2>Vos clients ouvrent leur box<br><span class="serif">avec leur téléphone.</span></h2>
-      <p class="section-sub center">Plus de remise de clé en personne. Plus d'attente à l'ouverture du centre. <em class="serif">Trois modes d'accès</em> au choix — selon votre installation.</p>
-    </div>
-    <div class="access-flow">
-      <div class="flow-step"><span class="step-icon">💳</span> Paiement reçu</div>
-      <span class="flow-arrow">→</span>
-      <div class="flow-step"><span class="step-icon">📝</span> Contrat signé</div>
-      <span class="flow-arrow">→</span>
-      <div class="flow-step highlight"><span class="step-icon">🔓</span> Accès débloqué</div>
-    </div>
-    <div class="access-modes">
-      <div class="access-card reveal">
-        <div class="access-icon-wrap"><div class="qr-preview"></div></div>
-        <div class="access-title">Code QR</div>
-        <div class="access-subtitle">Le plus rapide.</div>
-        <div class="access-desc">Le client scanne un QR code unique sur son téléphone. La caméra à l'entrée valide en 1 seconde. Idéal pour les centres <em>déjà équipés</em> d'un système de lecture QR.</div>
-        <div class="access-tags">
-          <span class="access-tag">Compatible Salto</span>
-          <span class="access-tag">Compatible Hikvision</span>
-          <span class="access-tag">Compatible Dahua</span>
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="contact container">
+  <div class="form-card">
+    <h2 class="form-title">S'<em>inscrire</em>.</h2>
+    <p class="form-subtitle">Laissez-nous votre contact, on vous rappelle sous 24h.</p>
+
+    <form id="prospect-form" novalidate>
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="nom">Prénom & Nom</label>
+          <input type="text" id="nom" name="nom" placeholder="Marc Dupont" required>
+        </div>
+        <div class="input-wrap">
+          <label for="telephone">Téléphone</label>
+          <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78">
         </div>
       </div>
-      <div class="access-card reveal reveal-delay-1">
-        <div class="access-icon-wrap">
-          <div class="pin-display">
-            <div class="pin-digit">7</div><div class="pin-digit">4</div>
-            <div class="pin-digit">9</div><div class="pin-digit">2</div>
-          </div>
+
+      <div class="input-wrap">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" placeholder="marc@maboulangerie.fr" required>
+      </div>
+
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="nom_boulangerie">Nom de la boulangerie</label>
+          <input type="text" id="nom_boulangerie" name="nom_boulangerie" placeholder="Boulangerie Dupont">
         </div>
-        <div class="access-title">Code PIN</div>
-        <div class="access-subtitle">Universel.</div>
-        <div class="access-desc">Un PIN unique de 4 à 6 chiffres généré automatiquement. Le client le voit dans son espace Frizz et le tape sur <em>n'importe quel clavier</em> déjà installé chez vous. Aucun matériel à acheter.</div>
-        <div class="access-tags">
-          <span class="access-tag">Aucun hardware requis</span>
-          <span class="access-tag">100% des centres</span>
+        <div class="input-wrap">
+          <label for="ville">Ville</label>
+          <input type="text" id="ville" name="ville" placeholder="Lyon">
         </div>
       </div>
-      <div class="access-card reveal reveal-delay-2">
-        <div class="access-icon-wrap"><div class="bluetooth-icon">📡</div></div>
-        <div class="access-title">Bluetooth</div>
-        <div class="access-subtitle">Sans contact.</div>
-        <div class="access-desc">Le téléphone du client émet un signal Bluetooth quand il s'approche. La porte se déverrouille <em>automatiquement</em>. Premium, pour les centres avec serrures connectées modernes.</div>
-        <div class="access-tags">
-          <span class="access-tag">Compatible Nuki</span>
-          <span class="access-tag">Compatible ASSA ABLOY</span>
-          <span class="access-tag">Compatible August</span>
-        </div>
+
+      <div class="input-wrap">
+        <label for="pays">Pays</label>
+        <select id="pays" name="pays">
+          <option value="FR">France</option>
+          <option value="CH">Suisse</option>
+        </select>
       </div>
-    </div>
-    <div class="access-bottom-note">
-      <span class="note-icon">✦</span>
-      <span class="serif">Vous choisissez le mode qui correspond à votre centre.</span>
-      <span style="color: var(--gray-300); margin-left: 6px;">Frizz s'adapte — pas l'inverse.</span>
-    </div>
+
+      <div class="input-wrap">
+        <label for="message">Votre message (optionnel)</label>
+        <textarea id="message" name="message" placeholder="Ce qui vous intéresse, vos questions..."></textarea>
+      </div>
+
+      <button type="submit" class="form-submit" id="submit-btn">
+        S'inscrire
+      </button>
+
+      <p class="form-rgpd">
+        En soumettant ce formulaire, vous acceptez d'être recontacté par Frizz. Vos données sont stockées en Europe et ne sont jamais revendues.
+      </p>
+
+      <div class="toast" id="toast"></div>
+    </form>
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="section-cta" id="cta">
-  <div class="section-label">Essai gratuit 30 jours</div>
-  <h2>Prêt à transformer <span class="serif">votre centre ?</span></h2>
-  <p class="section-sub center">Créez votre compte, configurez votre centre, recevez vos premières réservations. <em class="serif">Sans carte bancaire, sans engagement.</em></p>
-
-  <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin: 32px 0 18px;">
-    <a href="dashboard-login.html?signup=1" class="btn-primary" style="display:inline-block;">Inscrivez-vous gratuitement →</a>
-    <a href="https://frizz-instant.com/box/embed.html?c=demo" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block;">Voir un exemple ↗</a>
-  </div>
-
-  <div class="pricing-cta">
-    <div class="pricing-cta-line">
-      <span class="pricing-cta-strike">99€/mois</span>
-      <span class="pricing-cta-price">89€<small>/mois</small></span>
-      <span class="pricing-cta-tag">offre fondateurs</span>
-    </div>
-    <div class="pricing-cta-after">après les 30 jours d'essai</div>
-  </div>
-
-  <p class="cta-disclaimer">✓ Configuration en 7 jours · ✓ Sans carte bancaire · ✓ Annulable à tout moment</p>
-</section>
-
-<footer>
-  <div class="footer-inner">
-    <div>✦ Frizz · <span class="serif">Self-storage simplifié</span></div>
-    <div>contact@frizz-instant.com · Bâle 🇨🇭</div>
-  </div>
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <a href="#" class="logo">Frizz<span class="sparkle">✦</span></a>
+  <p>La conformité et la formation, simplifiées pour les boulangeries artisanales.</p>
+  <p style="margin-top: 14px;">© 2026 Frizz · Fait à Bâle, en Suisse 🇨🇭 · contact@frizz-instant.com</p>
 </footer>
 
-<script>
-  // Configuration Supabase
+<!-- ============ SUPABASE CLIENT ============ -->
+<script type="module">
+  // Import Supabase client depuis CDN officiel
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  // ⚠️ Tes clés Supabase (anon = safe en public)
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-  
-  function getUTMParams() {
-    const params = new URLSearchParams(window.location.search);
-    return {
-      utm_source: params.get('utm_source') || null,
-      utm_medium: params.get('utm_medium') || null,
-      utm_campaign: params.get('utm_campaign') || null
-    };
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ============ FORMULAIRE PROSPECT ============
+  const form = document.getElementById('prospect-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const toast = document.getElementById('toast');
+
+  function showToast(message, type) {
+    toast.textContent = message;
+    toast.className = 'toast ' + type;
+    setTimeout(() => {
+      if (type === 'success') {
+        toast.style.display = 'none';
+      }
+    }, 8000);
   }
-  
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Récupérer les données
+    const formData = new FormData(form);
+    const data = {
+      nom: formData.get('nom')?.trim() || null,
+      email: formData.get('email')?.trim().toLowerCase(),
+      telephone: formData.get('telephone')?.trim() || null,
+      nom_boulangerie: formData.get('nom_boulangerie')?.trim() || null,
+      ville: formData.get('ville')?.trim() || null,
+      pays: formData.get('pays') || 'FR',
+      message: formData.get('message')?.trim() || null,
+      source: 'landing'
+    };
+
+    // Validation simple
+    if (!data.email || !data.email.includes('@')) {
+      showToast('Merci d\'indiquer une adresse email valide.', 'error');
+      return;
+    }
+
+    // UI loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours...';
+    toast.style.display = 'none';
+
+    try {
+      // Insert dans Supabase
+      const { error } = await supabase
+        .from('prospects')
+        .insert([data]);
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
       }
-    });
+
+      // Succès
+      showToast('✓ Merci ! Nous vous recontactons sous 24h.', 'success');
+      form.reset();
+      submitBtn.textContent = "S'inscrire";
+
+    } catch (err) {
+      console.error(err);
+      showToast('Une erreur est survenue. Réessayez ou écrivez-nous à contact@frizz-instant.com', 'error');
+      submitBtn.textContent = "S'inscrire";
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
-  
-  // Animation au scroll avec IntersectionObserver
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
-  
-  document.querySelectorAll('.reveal').forEach(el => {
-    observer.observe(el);
-  });
-  
-  // ============================================
-  // CALCULATEUR ROI INTERACTIF
-  // ============================================
-  (function initRoiCalculator() {
-    const slider = document.getElementById('roiSlider');
-    if (!slider) return;
-
-    const boxCountEl = document.getElementById('roiBoxCount');
-    const savingsEl = document.getElementById('roiSavings');
-    const hoursEl = document.getElementById('roiHours');
-    const occupancyEl = document.getElementById('roiOccupancy');
-
-    function formatNumber(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    }
-
-    function updateSliderBackground() {
-      const min = parseFloat(slider.min);
-      const max = parseFloat(slider.max);
-      const val = parseFloat(slider.value);
-      const pct = ((val - min) / (max - min)) * 100;
-      slider.style.backgroundSize = pct + '% 100%';
-    }
-
-    let lastBumpTime = 0;
-    function bumpStat(el) {
-      const now = Date.now();
-      if (now - lastBumpTime < 80) return;
-      lastBumpTime = now;
-      el.classList.remove('roi-stat-bump');
-      void el.offsetWidth;
-      el.classList.add('roi-stat-bump');
-    }
-
-    function calculateROI(boxCount) {
-      // Économies €/mois : ~40€ par box (gestion automatisée)
-      const savings = Math.round(boxCount * 40);
-      // Heures gagnées : ~50 min par box / mois en automation
-      const hours = Math.round(boxCount * 0.85);
-      // Taux d'occupation amélioré : entre 8% (petit centre) et 18% (gros centre)
-      const occupancy = Math.min(18, Math.round(8 + (boxCount / 500) * 10));
-      return { savings, hours, occupancy };
-    }
-
-    function update() {
-      const boxCount = parseInt(slider.value);
-      const { savings, hours, occupancy } = calculateROI(boxCount);
-
-      boxCountEl.textContent = boxCount;
-      savingsEl.textContent = formatNumber(savings);
-      hoursEl.textContent = hours;
-      occupancyEl.textContent = occupancy;
-
-      updateSliderBackground();
-      bumpStat(savingsEl.parentElement);
-    }
-
-    slider.addEventListener('input', update);
-    update();
-  })();
 </script>
 
 </body>

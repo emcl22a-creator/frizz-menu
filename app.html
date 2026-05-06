@@ -4720,7 +4720,10 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         <div class="cmd-time-day"></div>
       </div>
       <div class="cmd-body">
-        <div class="cmd-client"></div>
+        <div class="cmd-client-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <div class="cmd-client"></div>
+          <span class="cmd-source-badge" style="display:none;"></span>
+        </div>
         <div class="cmd-articles"></div>
         <div class="cmd-statut-badge"></div>
       </div>
@@ -4730,6 +4733,25 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     card.querySelector('.cmd-time-day').textContent = jourCourt;
     card.querySelector('.cmd-client').textContent = c.nom_client;
     card.querySelector('.cmd-articles').textContent = c.articles;
+
+    // Badge "Boutique" pour les commandes venant du site public
+    if (c.source === 'boutique') {
+      const sourceBadge = card.querySelector('.cmd-source-badge');
+      sourceBadge.style.display = 'inline-flex';
+      sourceBadge.innerHTML = '<span class="material-icons-round" style="font-size:11px;margin-right:3px;">storefront</span>Boutique';
+      Object.assign(sourceBadge.style, {
+        alignItems: 'center',
+        padding: '2px 8px 2px 6px',
+        background: 'rgba(10, 132, 255, 0.15)',
+        border: '1px solid rgba(10, 132, 255, 0.35)',
+        borderRadius: '100px',
+        fontSize: '10px',
+        fontWeight: '600',
+        color: '#0A84FF',
+        letterSpacing: '0.2px'
+      });
+    }
+
     const badge = card.querySelector('.cmd-statut-badge');
     badge.textContent = statutLabel.label;
     badge.classList.add(statutLabel.cls);

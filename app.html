@@ -80,6 +80,142 @@ body::after {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ============ SIDEBAR DESKTOP ============ */
+.sidebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: rgba(15, 15, 17, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  flex-direction: column;
+  padding: 28px 16px 16px 16px;
+  z-index: 50;
+}
+
+.sidebar-logo {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 26px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  padding: 0 12px;
+  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.sidebar-logo .sparkle {
+  color: #0A84FF;
+  font-size: 22px;
+  text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+  animation: pulse 3.5s ease-in-out infinite;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-item.active {
+  background: rgba(10, 132, 255, 0.14);
+  color: #fff;
+}
+
+.nav-item.active .material-icons-round {
+  color: #0A84FF;
+}
+
+.nav-item .material-icons-round {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  margin-top: auto;
+}
+
+.sidebar-account:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-account .avatar-circle {
+  width: 38px;
+  height: 38px;
+  font-size: 13px;
+}
+
+.sidebar-account-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-account-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1px;
+}
+
+.sidebar-account-name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============ DESKTOP LAYOUT ≥1024px ============ */
+@media (min-width: 1024px) {
+  .sidebar { display: flex; }
+  .stage { padding-left: 240px; padding-bottom: 40px; }
+  .screen { max-width: 760px; padding: 32px 40px 40px 40px; }
+  #topbar-wrapper { display: none !important; }
+  .tabbar { display: none; }
+}
+
 /* ============ TOPBAR ============ */
 .topbar {
   display: flex;
@@ -1303,6 +1439,22 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
 .qr-frame canvas, .qr-frame img { display: block; width: 200px; height: 200px; }
 
+.qr-loading, .qr-error {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+  color: #555;
+  padding: 14px;
+  font-weight: 500;
+}
+
+.qr-error { color: #c00; }
+.qr-error small { color: #888; font-weight: 400; font-size: 11px; }
+
 .qr-emoji-big { font-size: 24px; margin-bottom: 6px; }
 .qr-title-big { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 18px; letter-spacing: -0.4px; margin-bottom: 3px; text-align: center; }
 .qr-sub-big { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-bottom: 16px; text-align: center; }
@@ -1664,6 +1816,32 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 <!-- ============================================
      STAGE
      ============================================ -->
+<!-- SIDEBAR DESKTOP (≥1024px) -->
+<aside class="sidebar" id="sidebar">
+  <a href="#" class="sidebar-logo" id="sidebar-logo-link">Frizz<span class="sparkle">✦</span></a>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-tab="procedures">
+      <span class="material-icons-round">menu_book</span>
+      <span class="nav-label">Procédures</span>
+    </button>
+    <button class="nav-item" data-tab="haccp">
+      <span class="material-icons-round">thermostat</span>
+      <span class="nav-label">HACCP</span>
+    </button>
+    <button class="nav-item" data-tab="apprenti">
+      <span class="material-icons-round">school</span>
+      <span class="nav-label">Apprenti</span>
+    </button>
+  </nav>
+  <button class="sidebar-account" data-tab="profil" aria-label="Mon compte">
+    <span class="avatar-circle" id="sidebar-avatar-initials">??</span>
+    <div class="sidebar-account-info">
+      <div class="sidebar-account-label">Mon compte</div>
+      <div class="sidebar-account-name" id="sidebar-user-name">—</div>
+    </div>
+  </button>
+</aside>
+
 <div class="stage" id="stage">
 
   <!-- TOPBAR PARTAGÉ -->
@@ -2130,7 +2308,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
   // ============ NAVIGATION ENTRE ONGLETS ============
   const screens = document.querySelectorAll('.screen[data-screen]');
-  const tabs = document.querySelectorAll('.tab[data-tab]');
+  const tabs = document.querySelectorAll('[data-tab]');
 
   function goTo(name) {
     screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
@@ -2149,7 +2327,11 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     b.addEventListener('click', () => goTo(b.dataset.go));
   });
 
-  $('home-logo').addEventListener('click', (e) => { e.preventDefault(); goTo('accueil'); });
+  $('home-logo').addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
+  const sidebarLogoLink = document.getElementById('sidebar-logo-link');
+  if (sidebarLogoLink) {
+    sidebarLogoLink.addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
+  }
 
   // ============ AVATAR + DROPDOWN ============
   function getInitials(name) {
@@ -2165,7 +2347,13 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     || user.email?.split('@')[0]
     || 'Patron';
 
-  $('avatar-initials').textContent = getInitials(userName);
+  const initials = getInitials(userName);
+  $('avatar-initials').textContent = initials;
+  const sbAvatar = document.getElementById('sidebar-avatar-initials');
+  if (sbAvatar) sbAvatar.textContent = initials;
+  const sbName = document.getElementById('sidebar-user-name');
+  if (sbName) sbName.textContent = userName;
+
   $('dropdown-name').textContent = userName;
   $('dropdown-email').textContent = user.email || '';
 
@@ -2427,23 +2615,40 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     $('qr-title-big').textContent = p.titre;
     $('qr-sub-big').textContent = `Niveau ${p.niveau || 'débutant'}`;
     $('qr-url-text').textContent = url;
+
     const frame = $('qr-frame');
-    frame.innerHTML = '';
+    frame.innerHTML = '<div class="qr-loading">Génération…</div>';
+
+    // Ouvre le modal immédiatement pour feedback utilisateur
+    openModal('modal-qr');
+
+    // Vérifie que la lib est dispo
+    if (typeof QRCode === 'undefined') {
+      console.error('QRCode library not loaded');
+      frame.innerHTML = '<div class="qr-error">Librairie QR non chargée.<br>Recharge la page.</div>';
+      return;
+    }
+
     try {
       const dataUrl = await QRCode.toDataURL(url, {
         width: 400,
         margin: 1,
+        errorCorrectionLevel: 'M',
         color: { dark: '#000000', light: '#ffffff' }
       });
+      frame.innerHTML = '';
       const img = document.createElement('img');
       img.src = dataUrl;
       img.alt = `QR code ${p.titre}`;
+      img.onerror = () => {
+        frame.innerHTML = '<div class="qr-error">L\'image n\'a pas pu charger.</div>';
+      };
       frame.appendChild(img);
     } catch (e) {
-      console.error('Erreur QR:', e);
-      showToast('Erreur génération QR', 'error');
+      console.error('Erreur génération QR:', e);
+      frame.innerHTML = `<div class="qr-error">Erreur QR<br><small>${e.message || 'inconnu'}</small></div>`;
+      showToast('Erreur QR — voir console', 'error');
     }
-    openModal('modal-qr');
   }
 
   // Imprimer un QR seul (A4)

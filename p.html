@@ -1,264 +1,508 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Procédure — Frizz✦</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      background: #050505;
-      color: #fff;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      padding-bottom: 40px;
-    }
-    .bg-glow {
-      position: fixed; inset: 0; z-index: -1;
-      background: radial-gradient(60% 50% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .page { max-width: 600px; margin: 0 auto; padding: 26px 22px 60px 22px; }
-    .header {
-      display: inline-flex; align-items: baseline; gap: 4px;
-      font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-      font-size: 22px;
-      color: #fff;
-      text-decoration: none;
-      letter-spacing: -0.5px;
-      margin-bottom: 36px;
-    }
-    .sparkle {
-      color: #0A84FF; font-size: 18px;
-      text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
-    }
-    .emoji {
-      width: 72px; height: 72px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 42px;
-      margin-bottom: 18px;
-    }
-    .titre {
-      font-family: 'Source Serif 4', serif;
-      font-style: italic;
-      font-weight: 600;
-      font-size: 34px;
-      line-height: 1.05;
-      letter-spacing: -1.2px;
-      margin-bottom: 8px;
-    }
-    .meta { font-size: 14px; color: rgba(255, 255, 255, 0.5); margin-bottom: 32px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Procédure</title>
 
-    .video-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #000;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 28px;
-    }
-    .video-wrap iframe,
-    .video-wrap video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .steps-section { margin-bottom: 24px; }
-    .steps-label {
-      font-size: 12px; font-weight: 500;
-      color: rgba(255, 255, 255, 0.5);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    .step {
-      display: flex; gap: 14px; padding: 18px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
-      margin-bottom: 10px;
-    }
-    .step-num {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: rgba(10, 132, 255, 0.18);
-      border: 1px solid rgba(10, 132, 255, 0.4);
-      color: #0A84FF;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Source Serif 4', serif; font-style: italic;
-      font-weight: 700;
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .step-body { flex: 1; min-width: 0; }
-    .step-titre { font-size: 16px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
-    .step-desc {
-      font-size: 14px; color: rgba(255, 255, 255, 0.7);
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
-    .loading, .error {
-      text-align: center; padding: 60px 20px;
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 14px;
-    }
-    .error-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px; }
-    .footer {
-      text-align: center;
-      padding: 24px 0 0 0;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.3);
-      letter-spacing: 0.3px;
-    }
-    @media (min-width: 1024px) {
-      .page { padding: 50px 32px 80px 32px; }
-      .titre { font-size: 42px; }
-    }
-  </style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%23B8593A'%3E✦%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg-main: #F5EFE6;
+  --bg-card: #FFFFFF;
+  --bg-warm: #ECE3D5;
+  --text-primary: #2A1810;
+  --text-secondary: #6B5544;
+  --text-tertiary: #A89180;
+  --accent: #B8593A;
+  --accent-hover: #9C4830;
+  --accent-light: rgba(184, 89, 58, 0.1);
+  --border: rgba(42, 24, 16, 0.08);
+  --border-strong: rgba(42, 24, 16, 0.15);
+}
+
+html, body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+/* Texture papier subtile */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.09 0 0 0 0 0.06 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* ============ HERO MEDIA ============ */
+.media-hero {
+  width: 100%;
+  position: relative;
+  background: var(--bg-warm);
+  overflow: hidden;
+}
+.media-hero img,
+.media-hero video,
+.media-hero iframe {
+  width: 100%;
+  display: block;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: none;
+}
+.media-hero iframe { aspect-ratio: 16 / 9; }
+.media-hero-empty {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, var(--bg-warm) 0%, #D9CCB7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+.media-hero-empty .material-icons-round {
+  font-size: 64px;
+  opacity: 0.4;
+}
+
+@media (min-width: 720px) {
+  .media-hero { border-radius: 0 0 32px 32px; }
+}
+
+/* ============ HEADER (titre + meta) ============ */
+.header-section {
+  position: relative;
+  padding: 0 24px;
+  margin-top: -28px;
+}
+
+.emoji-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: var(--bg-card);
+  border-radius: 18px;
+  font-size: 36px;
+  box-shadow: 0 8px 24px -8px rgba(42, 24, 16, 0.25);
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 2;
+}
+
+.eyebrow-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+}
+.pill.accent {
+  background: var(--accent-light);
+  border-color: rgba(184, 89, 58, 0.2);
+  color: var(--accent);
+}
+.pill .material-icons-round {
+  font-size: 14px;
+  color: var(--accent);
+}
+.pill.accent .material-icons-round { color: var(--accent); }
+
+.titre {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 1.02;
+  letter-spacing: -1.4px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.titre em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+/* ============ ÉTAPES ============ */
+.etapes-section {
+  padding: 40px 24px 0;
+}
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.section-eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--text-tertiary);
+}
+.section-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+  margin-bottom: 24px;
+}
+.section-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+
+.etape {
+  display: flex;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.etape:last-of-type { border-bottom: none; }
+
+.etape-num {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 17px;
+  box-shadow: 0 4px 14px -4px rgba(184, 89, 58, 0.5);
+}
+
+.etape-content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+.etape-titre {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.etape-desc {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  white-space: pre-line;
+}
+
+.empty-etapes {
+  padding: 30px 0;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 16px;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  margin-top: 60px;
+  padding: 30px 24px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.footer-text {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.3px;
+}
+.logo-mini {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.logo-mini-sparkle { color: var(--accent); }
+
+/* ============ STATES ============ */
+.state-screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px 24px;
+  text-align: center;
+}
+.state-icon {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  background: rgba(184, 89, 58, 0.15);
+  color: var(--accent);
+}
+.state-icon .material-icons-round { font-size: 44px; }
+.state-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+.state-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 28px;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+}
+.state-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 360px;
+  line-height: 1.6;
+}
+.spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Material icons fallback */
+.material-icons-round {
+  font-family: 'Material Icons Round';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+</style>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-  <div class="bg-glow"></div>
-  <div class="page">
-    <a href="/" class="header">Frizz<span class="sparkle">✦</span></a>
-    <div id="content" class="loading">Chargement de la procédure…</div>
+
+<div id="app">
+  <div class="state-screen">
+    <div class="spinner"></div>
+    <div class="state-desc">Chargement…</div>
   </div>
+</div>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get('s');
-    const content = document.getElementById('content');
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
 
-    function showError(title, msg) {
-      content.classList.remove('loading');
-      content.classList.add('error');
-      content.innerHTML = `<div class="error-title"></div><div></div>`;
-      content.querySelector('.error-title').textContent = title;
-      content.querySelectorAll('div')[1].textContent = msg;
+const CAT_LABELS = {
+  production: 'Production',
+  vente: 'Vente',
+  hygiene: 'Hygiène',
+  caisse: 'Caisse',
+  securite: 'Sécurité',
+  maintenance: 'Maintenance'
+};
+
+function fmtDuree(m) {
+  if (!m || m <= 0) return null;
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  if (h > 0 && min > 0) return `${h}h ${min}min`;
+  if (h > 0) return `${h}h`;
+  return `${min}min`;
+}
+
+function mediaEmbedHtml(url) {
+  if (!url) return `
+    <div class="media-hero-empty">
+      <span class="material-icons-round">restaurant_menu</span>
+    </div>
+  `;
+  if (/\.(jpg|jpeg|png|gif|webp)(\?|$)/i.test(url)) {
+    return `<img src="${escapeHtml(url)}" alt="Photo de la procédure">`;
+  }
+  if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)) {
+    return `<video src="${escapeHtml(url)}" controls playsinline preload="metadata"></video>`;
+  }
+  // YouTube / Vimeo legacy
+  try {
+    const u = new URL(url);
+    let ytId = null;
+    if (u.hostname.includes('youtube.com')) ytId = u.searchParams.get('v');
+    else if (u.hostname === 'youtu.be') ytId = u.pathname.slice(1);
+    if (ytId) return `<iframe src="https://www.youtube.com/embed/${escapeHtml(ytId)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    if (u.hostname.includes('vimeo.com')) {
+      const vId = u.pathname.split('/').filter(Boolean)[0];
+      if (vId && /^\d+$/.test(vId)) return `<iframe src="https://player.vimeo.com/video/${escapeHtml(vId)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
     }
+  } catch (e) { /* ignore */ }
+  return `<div class="media-hero-empty"><span class="material-icons-round">restaurant_menu</span></div>`;
+}
 
-    if (!slug) {
-      showError('Lien invalide', 'Aucune procédure spécifiée dans l\'URL.');
-    } else {
-      try {
-        const { data: p, error } = await supabase
-          .from('procedures')
-          .select('titre, emoji, niveau, duree_minutes, etapes, video_url')
-          .eq('slug', slug)
-          .maybeSingle();
+function renderError(title, desc) {
+  document.getElementById('app').innerHTML = `
+    <div class="state-screen">
+      <div class="state-icon"><span class="material-icons-round">error_outline</span></div>
+      <div class="state-eyebrow">— Oups</div>
+      <h1 class="state-title">${title}</h1>
+      <p class="state-desc">${desc}</p>
+    </div>
+  `;
+}
 
-        if (error) {
-          console.error(error);
-          showError('Erreur de chargement', error.message || 'Réessayez dans un instant.');
-        } else if (!p) {
-          showError('Procédure introuvable', 'Cette procédure n\'existe pas ou a été supprimée.');
-        } else {
-          const niveauMap = { debutant: 'Débutant', apprenti: 'Apprenti', confirme: 'Confirmé', expert: 'Expert' };
-          const metaParts = [];
-          if (p.niveau) metaParts.push(niveauMap[p.niveau] || p.niveau);
-          if (p.duree_minutes) {
-            const h = Math.floor(p.duree_minutes / 60);
-            const m = p.duree_minutes % 60;
-            if (h > 0 && m > 0) metaParts.push(`${h}h ${m}min`);
-            else if (h > 0) metaParts.push(`${h}h`);
-            else metaParts.push(`${m} min`);
-          }
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('s');
 
-          const etapes = Array.isArray(p.etapes) ? p.etapes : [];
+  if (!slug) {
+    renderError('Lien invalide', 'Aucune procédure spécifiée.');
+    return;
+  }
 
-          // Helper : transformer une URL vidéo en HTML embed
-          function videoEmbedHtml(url) {
-            if (!url) return '';
-            try {
-              const u = new URL(url);
-              // YouTube
-              let ytId = null;
-              if (u.hostname.includes('youtube.com')) ytId = u.searchParams.get('v');
-              else if (u.hostname === 'youtu.be') ytId = u.pathname.slice(1);
-              if (ytId) {
-                return `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-              }
-              // Vimeo
-              if (u.hostname.includes('vimeo.com')) {
-                const vId = u.pathname.split('/').filter(Boolean)[0];
-                if (vId && /^\d+$/.test(vId)) {
-                  return `<div class="video-wrap"><iframe src="https://player.vimeo.com/video/${vId}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
-                }
-              }
-              // Vidéo directe (MP4, WebM)
-              if (/\.(mp4|webm|mov)$/i.test(u.pathname)) {
-                return `<div class="video-wrap"><video src="${url}" controls playsinline preload="metadata"></video></div>`;
-              }
-            } catch (e) { /* invalid URL — on ignore */ }
-            return '';
-          }
+  const { data: p, error } = await supabase
+    .from('procedures')
+    .select('titre, emoji, categorie, duree_minutes, etapes, video_url')
+    .eq('slug', slug)
+    .maybeSingle();
 
-          const videoHtml = videoEmbedHtml(p.video_url);
+  if (error) {
+    console.error(error);
+    renderError('Erreur', 'Impossible de charger la procédure.');
+    return;
+  }
 
-          content.classList.remove('loading');
-          content.innerHTML = `
-            <div class="emoji"></div>
-            <div class="titre"></div>
-            <div class="meta"></div>
-            ${videoHtml}
-            <div class="steps-section">
-              <div class="steps-label">Étapes</div>
-              <div id="steps-list"></div>
-            </div>
-            <div class="footer">Procédure générée par Frizz✦</div>
-          `;
+  if (!p) {
+    renderError('Procédure introuvable', 'Cette procédure n\'existe pas ou n\'est plus disponible.');
+    return;
+  }
 
-          content.querySelector('.emoji').textContent = p.emoji || '📋';
-          content.querySelector('.titre').textContent = p.titre;
-          content.querySelector('.meta').textContent = metaParts.join(' · ');
+  document.title = `${p.emoji || ''} ${p.titre}`.trim();
 
-          const stepsList = document.getElementById('steps-list');
-          if (etapes.length === 0) {
-            stepsList.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:13px;">Aucune étape renseignée pour cette procédure.</div>';
-          } else {
-            etapes.forEach((e, i) => {
-              const div = document.createElement('div');
-              div.className = 'step';
-              div.innerHTML = `
-                <div class="step-num">${i + 1}</div>
-                <div class="step-body">
-                  <div class="step-titre"></div>
-                  <div class="step-desc"></div>
-                </div>
-              `;
-              div.querySelector('.step-titre').textContent = e.titre || `Étape ${i + 1}`;
-              const descEl = div.querySelector('.step-desc');
-              if (e.description) {
-                descEl.textContent = e.description;
-              } else {
-                descEl.style.display = 'none';
-              }
-              stepsList.appendChild(div);
-            });
-          }
-        }
-      } catch (err) {
-        console.error(err);
-        showError('Erreur', err.message || 'Impossible de charger cette procédure.');
-      }
-    }
-  </script>
+  const mediaHtml = mediaEmbedHtml(p.video_url);
+  const etapes = Array.isArray(p.etapes) ? p.etapes : [];
+  const dureeStr = fmtDuree(p.duree_minutes);
+  const catLabel = CAT_LABELS[p.categorie] || null;
+
+  const pills = [];
+  if (catLabel) pills.push(`
+    <span class="pill accent">
+      <span class="material-icons-round">label</span>
+      ${escapeHtml(catLabel)}
+    </span>
+  `);
+  if (dureeStr) pills.push(`
+    <span class="pill">
+      <span class="material-icons-round">schedule</span>
+      ${escapeHtml(dureeStr)}
+    </span>
+  `);
+
+  const etapesHtml = etapes.length === 0
+    ? `<div class="empty-etapes">Aucune étape renseignée.</div>`
+    : etapes.map((e, i) => `
+        <div class="etape">
+          <div class="etape-num">${i + 1}</div>
+          <div class="etape-content">
+            <div class="etape-titre">${escapeHtml(e.titre || `Étape ${i + 1}`)}</div>
+            ${e.description ? `<div class="etape-desc">${escapeHtml(e.description)}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="wrapper">
+      <div class="media-hero">
+        ${mediaHtml}
+      </div>
+
+      <div class="header-section">
+        <div class="emoji-badge">${escapeHtml(p.emoji || '📋')}</div>
+        ${pills.length ? `<div class="eyebrow-pills">${pills.join('')}</div>` : ''}
+        <h1 class="titre">${escapeHtml(p.titre)}</h1>
+      </div>
+
+      <div class="etapes-section">
+        <div class="section-eyebrow">Procédure</div>
+        <h2 class="section-title">Les <em>étapes</em>.</h2>
+        ${etapesHtml}
+      </div>
+
+      <div class="footer">
+        <div class="footer-text">
+          Propulsé par <span class="logo-mini">Frizz<span class="logo-mini-sparkle">✦</span></span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+init();
+</script>
+
 </body>
 </html>

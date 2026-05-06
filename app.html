@@ -932,7 +932,7 @@ body::after {
 .modal {
   width: 100%;
   max-width: 480px;
-  max-height: 92vh;
+  max-height: 88vh;
   background: rgba(20, 20, 22, 0.95);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
@@ -942,6 +942,9 @@ body::after {
   border-top-right-radius: 28px;
   padding: 22px 22px 28px 22px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   animation: slideUp 0.32s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
 }
@@ -987,8 +990,8 @@ body::after {
 .modal-title em { font-style: italic; font-weight: 400; color: #0A84FF; }
 
 .modal-close {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1000,29 +1003,29 @@ body::after {
 }
 
 .modal-close:hover { background: rgba(255, 255, 255, 0.1); }
-.modal-close .material-icons-round { font-size: 16px; }
+.modal-close .material-icons-round { font-size: 20px; }
 
 /* ============ FORM ============ */
-.input-wrap { margin-bottom: 12px; }
+.input-wrap { margin-bottom: 14px; }
 
 label {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   letter-spacing: 0.3px;
 }
 
 input, select, textarea {
   width: 100%;
-  padding: 11px 14px;
+  padding: 14px 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #fff;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 15px;
   outline: none;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
@@ -1039,14 +1042,40 @@ select {
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.5)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 18px;
-  padding-right: 36px;
+  background-position: right 14px center;
+  background-size: 20px;
+  padding-right: 42px;
 }
 
 select option { background: #1a1a1c; color: #fff; }
 
-textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+textarea { resize: vertical; min-height: 72px; font-family: inherit; }
+
+/* ============ DURATION INPUTS (h + min) ============ */
+.duration-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.duration-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.duration-field input {
+  padding-right: 44px;
+}
+
+.duration-unit {
+  position: absolute;
+  right: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  pointer-events: none;
+}
 
 .form-row {
   display: grid;
@@ -1110,15 +1139,15 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 }
 
 .step-fields { flex: 1; min-width: 0; }
-.step-fields input { margin-bottom: 6px; padding: 8px 10px; font-size: 12px; }
-.step-fields textarea { padding: 8px 10px; font-size: 12px; min-height: 44px; }
+.step-fields input { margin-bottom: 8px; padding: 12px 14px; font-size: 14px; }
+.step-fields textarea { padding: 12px 14px; font-size: 14px; min-height: 56px; }
 
 .step-remove {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(255, 69, 58, 0.1);
-  border: 1px solid rgba(255, 69, 58, 0.25);
+  background: rgba(255, 69, 58, 0.12);
+  border: 1px solid rgba(255, 69, 58, 0.3);
   color: #FF453A;
   cursor: pointer;
   display: flex;
@@ -1126,27 +1155,30 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   justify-content: center;
   flex-shrink: 0;
   margin-top: 4px;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.step-remove:hover { background: rgba(255, 69, 58, 0.2); }
-.step-remove .material-icons-round { font-size: 14px; }
+.step-remove:hover { background: rgba(255, 69, 58, 0.22); }
+.step-remove:active { transform: scale(0.92); }
+.step-remove .material-icons-round { font-size: 18px; }
 
 .btn-add-step {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
-  padding: 10px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px dashed rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   color: rgba(255, 255, 255, 0.7);
   font-family: inherit;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 10px;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-add-step:hover {
@@ -1155,26 +1187,27 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   color: #fff;
 }
 
-.btn-add-step .material-icons-round { font-size: 14px; }
+.btn-add-step .material-icons-round { font-size: 18px; }
 
 /* ============ MODAL ACTIONS ============ */
 .modal-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 22px;
 }
 
 .btn-modal {
-  padding: 12px;
+  padding: 16px;
   border-radius: 100px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   border: none;
   transition: transform 0.15s ease;
   letter-spacing: -0.1px;
+  min-height: 50px;
 }
 
 .btn-modal:active { transform: scale(0.97); }
@@ -1882,8 +1915,17 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
         </div>
       </div>
       <div class="input-wrap">
-        <label for="proc-duree">Durée totale (minutes)</label>
-        <input type="number" id="proc-duree" placeholder="22" min="0">
+        <label>Durée totale</label>
+        <div class="duration-inputs">
+          <div class="duration-field">
+            <input type="number" id="proc-duree-h" placeholder="0" min="0" max="48">
+            <span class="duration-unit">h</span>
+          </div>
+          <div class="duration-field">
+            <input type="number" id="proc-duree-min" placeholder="0" min="0" max="59">
+            <span class="duration-unit">min</span>
+          </div>
+        </div>
       </div>
       <div class="steps-wrap">
         <div class="steps-label">Étapes</div>
@@ -2201,7 +2243,13 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     procedures.forEach(p => {
       const nbE = Array.isArray(p.etapes) ? p.etapes.length : 0;
       const meta = [];
-      if (p.duree_minutes) meta.push(`${p.duree_minutes} min`);
+      if (p.duree_minutes) {
+        const h = Math.floor(p.duree_minutes / 60);
+        const m = p.duree_minutes % 60;
+        if (h > 0 && m > 0) meta.push(`${h}h ${m}min`);
+        else if (h > 0) meta.push(`${h}h`);
+        else meta.push(`${m} min`);
+      }
       meta.push(nbE ? `${nbE} étape${nbE > 1 ? 's' : ''}` : 'Pas d\'étapes');
 
       const card = document.createElement('button');
@@ -2279,7 +2327,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
       $('proc-titre').value = p.titre || '';
       $('proc-categorie').value = p.categorie || 'production';
       $('proc-niveau').value = p.niveau || 'debutant';
-      $('proc-duree').value = p.duree_minutes || '';
+      const totalMin = p.duree_minutes || 0;
+      $('proc-duree-h').value = totalMin >= 60 ? Math.floor(totalMin / 60) : '';
+      $('proc-duree-min').value = totalMin % 60 || (totalMin > 0 ? '' : '');
       $('steps-list').innerHTML = '';
       const etapes = Array.isArray(p.etapes) ? p.etapes : [];
       etapes.forEach(e => addStepRow(e));
@@ -2312,13 +2362,17 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
       description: r.querySelector('.step-desc').value.trim()
     })).filter(e => e.titre || e.description);
 
+    const heures = parseInt($('proc-duree-h').value, 10) || 0;
+    const mins = parseInt($('proc-duree-min').value, 10) || 0;
+    const totalMinutes = heures * 60 + mins;
+
     const data = {
       boulangerie_id: BOU_ID,
       titre,
       emoji: $('emoji').value.trim() || '📋',
       categorie: $('proc-categorie').value,
       niveau: $('proc-niveau').value,
-      duree_minutes: $('proc-duree').value ? parseInt($('proc-duree').value, 10) : null,
+      duree_minutes: totalMinutes > 0 ? totalMinutes : null,
       etapes
     };
 
@@ -2375,11 +2429,20 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     $('qr-url-text').textContent = url;
     const frame = $('qr-frame');
     frame.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    frame.appendChild(canvas);
     try {
-      await QRCode.toCanvas(canvas, url, { width: 200, margin: 1, color: { dark: '#000', light: '#fff' } });
-    } catch (e) { console.error(e); showToast('Erreur QR', 'error'); }
+      const dataUrl = await QRCode.toDataURL(url, {
+        width: 400,
+        margin: 1,
+        color: { dark: '#000000', light: '#ffffff' }
+      });
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.alt = `QR code ${p.titre}`;
+      frame.appendChild(img);
+    } catch (e) {
+      console.error('Erreur QR:', e);
+      showToast('Erreur génération QR', 'error');
+    }
     openModal('modal-qr');
   }
 

@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
 <!-- Libs : QR code + PDF -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -2608,6 +2608,14 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
   let currentQrProc = null;
 
+  // Helper : génère un dataURL PNG du QR
+  function makeQrDataUrl(text, cellSize = 8, margin = 4) {
+    const qr = qrcode(0, 'M');  // type=auto, error correction=Medium
+    qr.addData(text);
+    qr.make();
+    return qr.createDataURL(cellSize, margin);
+  }
+
   async function openQrModal(p) {
     currentQrProc = p;
     const url = getProcedureUrl(p.slug);
@@ -2623,19 +2631,14 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     openModal('modal-qr');
 
     // Vérifie que la lib est dispo
-    if (typeof QRCode === 'undefined') {
-      console.error('QRCode library not loaded');
+    if (typeof qrcode === 'undefined') {
+      console.error('qrcode library not loaded');
       frame.innerHTML = '<div class="qr-error">Librairie QR non chargée.<br>Recharge la page.</div>';
       return;
     }
 
     try {
-      const dataUrl = await QRCode.toDataURL(url, {
-        width: 400,
-        margin: 1,
-        errorCorrectionLevel: 'M',
-        color: { dark: '#000000', light: '#ffffff' }
-      });
+      const dataUrl = makeQrDataUrl(url, 8, 4);
       frame.innerHTML = '';
       const img = document.createElement('img');
       img.src = dataUrl;
@@ -2662,8 +2665,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const url = getProcedureUrl(p.slug);
 
-    // Générer le QR en data URL
-    const qrDataUrl = await QRCode.toDataURL(url, { width: 600, margin: 1 });
+    // Générer le QR en data URL (haute résolution pour PDF)
+    const qrDataUrl = makeQrDataUrl(url, 16, 4);
 
     // Page : QR centré + titre dessous
     const pageW = 210;

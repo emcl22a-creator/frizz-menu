@@ -2799,11 +2799,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       </div>
 
       <div class="input-wrap">
-        <label for="bq-adresse">Adresse de la boutique</label>
-        <input type="text" id="bq-adresse" placeholder="12 rue du Pain, 4051 Bâle">
-      </div>
-
-      <div class="input-wrap">
         <label for="bq-horaires">Horaires de retrait</label>
         <textarea id="bq-horaires" rows="3" placeholder="Du mardi au samedi : 7h - 19h&#10;Dimanche : 8h - 13h&#10;Fermé le lundi"></textarea>
       </div>
@@ -2901,6 +2896,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <div class="profil-row">
         <span class="profil-row-label">Ville</span>
         <span class="profil-row-value" id="profil-bou-ville">—</span>
+      </div>
+      <div class="profil-row">
+        <span class="profil-row-label">Adresse</span>
+        <span class="profil-row-value" id="profil-bou-adresse">—</span>
       </div>
       <div class="profil-row">
         <span class="profil-row-label">Pays</span>
@@ -4404,7 +4403,6 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
 
     // Configuration
     $('bq-description').value = bou.boutique_description || '';
-    $('bq-adresse').value = bou.boutique_adresse || '';
     $('bq-horaires').value = bou.boutique_horaires || '';
     $('bq-banner-url').value = bou.boutique_banner_url || '';
     if (bou.boutique_banner_url) showBannerPreview(bou.boutique_banner_url);
@@ -4675,7 +4673,6 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       .update({
         boutique_banner_url: $('bq-banner-url').value || null,
         boutique_description: $('bq-description').value.trim() || null,
-        boutique_adresse: $('bq-adresse').value.trim() || null,
         boutique_horaires: $('bq-horaires').value.trim() || null
       })
       .eq('id', BOU_ID);
@@ -5525,6 +5522,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     // Boulangerie
     $('profil-bou-nom').textContent = boulangerie.nom || 'Ma boulangerie';
     $('profil-bou-ville').textContent = boulangerie.ville || '—';
+    $('profil-bou-adresse').textContent = boulangerie.boutique_adresse || '—';
     $('profil-bou-pays').textContent = boulangerie.pays === 'CH' ? 'Suisse 🇨🇭' : 'France 🇫🇷';
 
     // Abonnement
@@ -5561,15 +5559,22 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     if (newNom === null) return;
     const newVille = prompt('Nouvelle ville ?', boulangerie.ville || '');
     if (newVille === null) return;
+    const newAdresse = prompt('Adresse complète ? (ex: 12 rue du Pain, 4051 Bâle)', boulangerie.boutique_adresse || '');
+    if (newAdresse === null) return;
 
     supabase
       .from('boulangeries')
-      .update({ nom: newNom.trim(), ville: newVille.trim() || null })
+      .update({
+        nom: newNom.trim(),
+        ville: newVille.trim() || null,
+        boutique_adresse: newAdresse.trim() || null
+      })
       .eq('id', BOU_ID)
       .then(({ error }) => {
         if (error) { showToast('Erreur', 'error'); return; }
         boulangerie.nom = newNom.trim();
         boulangerie.ville = newVille.trim() || null;
+        boulangerie.boutique_adresse = newAdresse.trim() || null;
         showToast('✓ Modifié', 'success');
         renderProfil();
       });

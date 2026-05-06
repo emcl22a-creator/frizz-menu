@@ -1018,6 +1018,143 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 .qr-sub-big { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-bottom: 16px; text-align: center; }
 .qr-url { font-family: monospace; font-size: 10px; color: rgba(255, 255, 255, 0.4); margin-bottom: 14px; word-break: break-all; text-align: center; padding: 0 14px; }
 
+/* ============ HACCP — MODE RAPIDE ============ */
+.quick-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.quick-zone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+}
+
+.quick-zone-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-zone-icon .material-icons-round { color: #0A84FF; font-size: 20px; }
+
+.quick-zone-body { flex: 1; min-width: 0; }
+.quick-zone-name { font-size: 12px; font-weight: 600; margin-bottom: 1px; letter-spacing: -0.1px; }
+.quick-zone-range { font-size: 10px; color: rgba(255, 255, 255, 0.45); }
+
+.quick-temp-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.quick-temp-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.quick-temp-btn:active { transform: scale(0.92); background: rgba(10, 132, 255, 0.2); }
+
+.quick-temp-value {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.4px;
+  min-width: 56px;
+  text-align: center;
+  color: #fff;
+}
+
+.quick-temp-value.bad { color: #FF453A; }
+
+.btn-quick-validate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(10, 132, 255, 0.4), 0 2px 8px rgba(10, 132, 255, 0.25);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-quick-validate:active { transform: scale(0.98); }
+.btn-quick-validate:disabled { opacity: 0.5; cursor: wait; }
+.btn-quick-validate .material-icons-round { font-size: 18px; }
+
+.quick-done-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(52, 199, 89, 0.12);
+  border: 1px solid rgba(52, 199, 89, 0.35);
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.quick-done-banner .material-icons-round { color: #34C759; font-size: 22px; flex-shrink: 0; }
+.quick-done-banner-text { flex: 1; font-size: 13px; font-weight: 500; }
+.quick-done-banner-text strong { color: #34C759; }
+.quick-done-banner-time { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-top: 2px; }
+
+.haccp-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 14px 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.haccp-divider::before, .haccp-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ============ HACCP — MODE RAPIDE ============ END */
+
 /* ============ HACCP ONGLET ============ */
 .releve-card {
   display: flex;
@@ -1366,31 +1503,54 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
   <!-- ============ ONGLET 4 : HACCP ============ -->
   <section class="screen" data-screen="haccp">
-    <div style="height: 32px;"></div>
-    <div class="hero">
-      <div class="hero-eyebrow">— Hygiène alimentaire</div>
+    <div style="height: 28px;"></div>
+    <div class="hero" style="margin-bottom: 22px;">
+      <div class="hero-eyebrow">— En 5 secondes par jour</div>
       <h1 class="hero-title">Mes <em>relevés</em>.</h1>
     </div>
 
-    <button class="btn-primary" id="btn-new-releve">
-      <span class="material-icons-round">add</span>
-      Nouveau relevé
+    <!-- Bandeau si déjà fait aujourd'hui (caché si pas encore fait) -->
+    <div class="quick-done-banner" id="quick-done-banner" style="display: none;">
+      <span class="material-icons-round">check_circle</span>
+      <div>
+        <div class="quick-done-banner-text"><strong>Relevés du matin enregistrés</strong></div>
+        <div class="quick-done-banner-time" id="quick-done-time">—</div>
+      </div>
+    </div>
+
+    <!-- Mode rapide : 3 zones avec ajustement -->
+    <div class="quick-card-stack" id="quick-zones">
+      <!-- Généré par JS -->
+    </div>
+
+    <button type="button" class="btn-quick-validate" id="btn-quick-validate">
+      <span class="material-icons-round">check</span>
+      Tout valider en une fois
     </button>
 
-    <button class="btn-secondary" id="btn-pms-pdf">
+    <button type="button" class="btn-secondary" id="btn-pms-pdf">
       <span class="material-icons-round">picture_as_pdf</span>
       Télécharger le PMS du mois
     </button>
 
+    <!-- Séparateur -->
+    <div class="haccp-divider">Historique</div>
+
+    <!-- Bouton ajout détaillé (autres zones, anomalies) -->
+    <button type="button" class="btn-secondary" id="btn-new-releve" style="margin-top: 0;">
+      <span class="material-icons-round">add</span>
+      Ajouter un relevé détaillé
+    </button>
+
     <div class="section-header">
       <span class="section-title" id="haccp-section-title">Aujourd'hui</span>
-      <span class="section-link" id="haccp-toggle" style="cursor: pointer;">Voir tout le mois</span>
+      <button type="button" class="section-link" id="haccp-toggle">Voir tout le mois</button>
     </div>
 
     <div class="empty" id="haccp-empty" style="display: none;">
       <div class="empty-icon"><span class="material-icons-round">thermostat</span></div>
       <div class="empty-title">Aucun relevé aujourd'hui</div>
-      <div class="empty-desc">Cliquez sur "Nouveau relevé" pour enregistrer une température.</div>
+      <div class="empty-desc">Validez vos relevés ci-dessus pour démarrer l'historique du mois.</div>
     </div>
 
     <div id="haccp-list"></div>
@@ -2175,6 +2335,155 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     return true;
   }
 
+  // ============ MODE RAPIDE — 3 zones quotidiennes ============
+  const QUICK_ZONES = [
+    { id: 'chambre_froide', name: 'Chambre froide', icon: 'ac_unit', defaultValue: 2 },
+    { id: 'congelateur', name: 'Congélateur', icon: 'kitchen', defaultValue: -19 },
+    { id: 'vitrine', name: 'Vitrine pâtisserie', icon: 'storefront', defaultValue: 5 }
+  ];
+
+  // Valeurs courantes (pré-remplies, ajustables au doigt)
+  const quickValues = {};
+
+  // Calcule la moyenne des 7 derniers relevés conformes par zone
+  // pour pré-remplir avec les valeurs habituelles du boulanger
+  function computeQuickDefaults() {
+    QUICK_ZONES.forEach(z => {
+      // Filtrer les relevés conformes de cette zone (sur les données chargées)
+      const recentForZone = releves
+        .filter(r => r.zone === z.id && r.conforme)
+        .slice(0, 7);
+
+      if (recentForZone.length > 0) {
+        const avg = recentForZone.reduce((s, r) => s + parseFloat(r.valeur), 0) / recentForZone.length;
+        quickValues[z.id] = Math.round(avg * 10) / 10;
+      } else {
+        quickValues[z.id] = z.defaultValue;
+      }
+    });
+  }
+
+  function renderQuickZones() {
+    const stack = $('quick-zones');
+    stack.innerHTML = '';
+
+    QUICK_ZONES.forEach(z => {
+      const range = ZONE_RANGES[z.id];
+      let rangeText = '';
+      if (range) {
+        if (range.min !== undefined && range.max !== undefined) rangeText = `Plage ${range.min}°C → +${range.max}°C`;
+        else if (range.max !== undefined) rangeText = `Max ${range.max}°C`;
+        else if (range.min !== undefined) rangeText = `Min ${range.min}°C`;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'quick-zone';
+      card.innerHTML = `
+        <div class="quick-zone-icon"><span class="material-icons-round">${z.icon}</span></div>
+        <div class="quick-zone-body">
+          <div class="quick-zone-name">${z.name}</div>
+          <div class="quick-zone-range">${rangeText}</div>
+        </div>
+        <div class="quick-temp-controls">
+          <button type="button" class="quick-temp-btn" data-zone="${z.id}" data-act="-">−</button>
+          <div class="quick-temp-value" id="quick-val-${z.id}">${formatTemp(quickValues[z.id])}</div>
+          <button type="button" class="quick-temp-btn" data-zone="${z.id}" data-act="+">+</button>
+        </div>
+      `;
+      stack.appendChild(card);
+    });
+
+    // Attacher les events +/-
+    stack.querySelectorAll('.quick-temp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const zone = btn.dataset.zone;
+        const act = btn.dataset.act;
+        const step = 0.1;
+        quickValues[zone] = Math.round((quickValues[zone] + (act === '+' ? step : -step)) * 10) / 10;
+        const valEl = $(`quick-val-${zone}`);
+        valEl.textContent = formatTemp(quickValues[zone]);
+        // Indicateur rouge si hors plage
+        const conforme = checkConformity(zone, quickValues[zone]);
+        valEl.classList.toggle('bad', !conforme);
+      });
+    });
+  }
+
+  function formatTemp(v) {
+    const n = Math.round(v * 10) / 10;
+    return `${n > 0 ? '+' : ''}${n}°C`;
+  }
+
+  // Vérifier si les 3 zones ont déjà été enregistrées aujourd'hui
+  function checkQuickAlreadyDone() {
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    const todayReleves = releves.filter(r => new Date(r.created_at) >= today);
+
+    const zonesDone = new Set(todayReleves.map(r => r.zone));
+    const allDone = QUICK_ZONES.every(z => zonesDone.has(z.id));
+
+    const banner = $('quick-done-banner');
+    const validateBtn = $('btn-quick-validate');
+    const stack = $('quick-zones');
+
+    if (allDone) {
+      // Trouver l'heure du dernier relevé du matin
+      const lastTime = todayReleves
+        .filter(r => QUICK_ZONES.some(z => z.id === r.zone))
+        .map(r => new Date(r.created_at))
+        .sort((a, b) => b - a)[0];
+      if (lastTime) {
+        const hh = lastTime.getHours().toString().padStart(2, '0');
+        const mm = lastTime.getMinutes().toString().padStart(2, '0');
+        $('quick-done-time').textContent = `Aujourd'hui à ${hh}h${mm}`;
+      }
+      banner.style.display = 'flex';
+      stack.style.display = 'none';
+      validateBtn.style.display = 'none';
+    } else {
+      banner.style.display = 'none';
+      stack.style.display = 'flex';
+      validateBtn.style.display = 'flex';
+    }
+  }
+
+  // Tout valider en une fois
+  $('btn-quick-validate').addEventListener('click', async () => {
+    const btn = $('btn-quick-validate');
+    btn.disabled = true;
+    const oldHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="material-icons-round">hourglass_empty</span> Enregistrement...';
+
+    try {
+      const inserts = QUICK_ZONES.map(z => ({
+        boulangerie_id: BOU_ID,
+        type: 'temperature',
+        zone: z.id,
+        valeur: quickValues[z.id],
+        conforme: checkConformity(z.id, quickValues[z.id]),
+        commentaire: 'Mode rapide',
+        user_id: user.id
+      }));
+
+      const { error } = await supabase.from('releves_haccp').insert(inserts);
+      if (error) throw error;
+
+      // Compter les non-conformes
+      const nonConformes = inserts.filter(r => !r.conforme).length;
+      if (nonConformes > 0) {
+        showToast(`⚠ ${nonConformes} relevé${nonConformes > 1 ? 's' : ''} hors plage`, 'error');
+      } else {
+        showToast('✓ 3 relevés enregistrés', 'success');
+      }
+      await loadReleves();
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur', 'error');
+      btn.disabled = false;
+      btn.innerHTML = oldHtml;
+    }
+  });
+
   let haccpViewMode = 'today';  // 'today' ou 'month'
 
   async function loadReleves() {
@@ -2192,6 +2501,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
     releves = data || [];
     renderReleves();
+    computeQuickDefaults();
+    renderQuickZones();
+    checkQuickAlreadyDone();
     renderHome();
   }
 

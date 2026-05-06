@@ -34,9 +34,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.06) 0%, transparent 60%),
     #000;
   z-index: -2;
   pointer-events: none;
@@ -616,13 +616,13 @@ body::after {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 4px;
+  gap: 2px;
   padding: 6px;
   background: rgba(20, 20, 22, 0.7);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 100px;
+  border-radius: 32px;
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
@@ -630,21 +630,31 @@ body::after {
 }
 
 .tab {
-  width: 50px;
-  height: 50px;
+  min-width: 60px;
+  padding: 8px 10px 6px 10px;
   background: transparent;
   border: none;
-  border-radius: 100px;
+  border-radius: 24px;
   color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
   text-decoration: none;
+  font-family: inherit;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tab .material-icons-round { font-size: 22px; }
+.tab .material-icons-round { font-size: 20px; }
+
+.tab .tab-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 1;
+}
 
 .tab.active {
   background: #0A84FF;
@@ -1398,8 +1408,8 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     </div>
   </div>
 
-  <!-- ============ ONGLET 1 : ACCUEIL ============ -->
-  <section class="screen active" data-screen="accueil">
+  <!-- ============ ONGLET 1 : PROCÉDURES (page d'accueil) ============ -->
+  <section class="screen active" data-screen="procedures">
 
     <!-- Bandeau trial -->
     <div class="trial-banner" id="trial-banner" style="display: none;">
@@ -1407,57 +1417,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
       <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
     </div>
 
-    <!-- Date + salutation -->
-    <div class="hero" style="margin-bottom: 22px;">
-      <div class="hero-eyebrow" id="status-label">— Bonjour</div>
-      <h1 class="hero-title" id="home-greeting">Bon<em>jour</em>.</h1>
-    </div>
-
-    <!-- 3 chiffres clés (style Apple Watch) -->
-    <div class="stats-row">
-      <div class="stat-cell">
-        <div class="stat-num" id="stat-procs">0</div>
-        <div class="stat-label">Procédures</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" id="stat-scans">0</div>
-        <div class="stat-label">Scans 7j</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" id="stat-clean">0<em>j</em></div>
-        <div class="stat-label">Sans incident</div>
-      </div>
-    </div>
-
-    <!-- Tâches du jour -->
-    <h2 class="home-section-title">
-      À faire aujourd'hui
-      <span class="count-pill" id="tasks-count">0</span>
-    </h2>
-
-    <div id="tasks-list-home"></div>
-
-    <!-- Si tout est fait -->
-    <div class="home-empty" id="tasks-empty" style="display: none;">
-      <span class="material-icons-round">verified</span>
-      <div class="home-empty-title">Tout est <em>en règle</em>.</div>
-      <div class="home-empty-desc">Vos obligations légales du jour sont à jour. Rien à faire.</div>
-    </div>
-
-    <!-- CTA principal -->
-    <button class="home-cta" data-go="procedures">
-      <div class="home-cta-icon"><span class="material-icons-round">add</span></div>
-      <div class="home-cta-body">
-        <div class="home-cta-title">Nouvelle procédure</div>
-        <div class="home-cta-sub">Filmer une étape, générer son QR code</div>
-      </div>
-      <span class="material-icons-round home-cta-arrow">arrow_forward</span>
-    </button>
-
-  </section>
-
-  <!-- ============ ONGLET 2 : PROCÉDURES ============ -->
-  <section class="screen" data-screen="procedures">
     <div class="hero">
       <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
       <h1 class="hero-title">Mes <em>procédures</em>.</h1>
@@ -1577,11 +1536,22 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
 <!-- ============ TABBAR ============ -->
 <nav class="tabbar">
-  <button class="tab active" data-tab="accueil" aria-label="Accueil"><span class="material-icons-round">home</span></button>
-  <button class="tab" data-tab="procedures" aria-label="Procédures"><span class="material-icons-round">menu_book</span></button>
-  <button class="tab" data-tab="qr" aria-label="QR codes"><span class="material-icons-round">qr_code_2</span></button>
-  <button class="tab" data-tab="haccp" aria-label="HACCP"><span class="material-icons-round">thermostat</span></button>
-  <button class="tab" data-tab="apprenti" aria-label="Apprenti"><span class="material-icons-round">school</span></button>
+  <button class="tab active" data-tab="procedures" aria-label="Procédures">
+    <span class="material-icons-round">menu_book</span>
+    <span class="tab-label">Procédures</span>
+  </button>
+  <button class="tab" data-tab="qr" aria-label="QR codes">
+    <span class="material-icons-round">qr_code_2</span>
+    <span class="tab-label">QR codes</span>
+  </button>
+  <button class="tab" data-tab="haccp" aria-label="HACCP">
+    <span class="material-icons-round">thermostat</span>
+    <span class="tab-label">HACCP</span>
+  </button>
+  <button class="tab" data-tab="apprenti" aria-label="Apprenti">
+    <span class="material-icons-round">school</span>
+    <span class="tab-label">Apprenti</span>
+  </button>
 </nav>
 
 <!-- ============ MODAL PROCÉDURE ============ -->
@@ -1900,8 +1870,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   const now = new Date();
   const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-  const jourStr = jours[now.getDay()];
-  $('status-label').textContent = `— ${jourStr.charAt(0).toUpperCase() + jourStr.slice(1)} ${now.getDate()} ${mois[now.getMonth()]}`;
 
   // ========================================================
   // ============ ÉTAT GLOBAL DES DONNÉES ============
@@ -1987,7 +1955,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     });
 
     // Mettre à jour les stats de l'accueil
-    if (typeof renderHome === 'function') renderHome();
   }
 
   // Étapes : ajouter / supprimer
@@ -2499,7 +2466,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     computeQuickDefaults();
     renderQuickZones();
     checkQuickAlreadyDone();
-    renderHome();
   }
 
   function renderReleves() {
@@ -2700,147 +2666,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
   $('btn-pms-pdf').addEventListener('click', generatePMSPdf);
 
-  // ========================================================
-  // ============ ACCUEIL : tâches + stats ============
-  // ========================================================
-
-  function renderHome() {
-    // -------- 1. Salutation contextuelle selon l'heure --------
-    const hour = new Date().getHours();
-    let greet = 'Bon<em>jour</em>.';
-    if (hour < 5) greet = 'Bonne <em>nuit</em>.';
-    else if (hour < 12) greet = 'Bon<em>jour</em>.';
-    else if (hour < 18) greet = 'Bon <em>après-midi</em>.';
-    else greet = 'Bon<em>soir</em>.';
-    $('home-greeting').innerHTML = greet;
-
-    // -------- 2. STATS --------
-    // Procédures
-    $('stat-procs').textContent = procedures.length;
-
-    // Scans des 7 derniers jours (somme des scans_count des procédures)
-    // Note : c'est un total cumulé, pas exactement "7j" - mais c'est ce qu'on a en base
-    const totalScans = procedures.reduce((sum, p) => sum + (p.scans_count || 0), 0);
-    $('stat-scans').textContent = totalScans;
-
-    // Jours consécutifs sans incident HACCP
-    // On prend tous les relevés du mois (via "releves" qui peut être en mode jour ou mois)
-    // et on calcule le nb de jours depuis le dernier relevé non-conforme
-    let cleanDays = 0;
-    if (releves.length > 0) {
-      const lastIncident = releves.find(r => !r.conforme);
-      if (lastIncident) {
-        const incidentDate = new Date(lastIncident.created_at);
-        const now = new Date();
-        cleanDays = Math.floor((now - incidentDate) / (1000 * 60 * 60 * 24));
-      } else {
-        // Aucun incident sur la période chargée → on prend les jours depuis le 1er du mois
-        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        cleanDays = Math.floor((new Date() - monthStart) / (1000 * 60 * 60 * 24));
-      }
-    }
-    $('stat-clean').innerHTML = `${cleanDays}<em>j</em>`;
-
-    // -------- 3. TÂCHES DU JOUR --------
-    const tasks = [];
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-    const todayReleves = releves.filter(r => new Date(r.created_at) >= today);
-    const todayConformes = todayReleves.filter(r => r.conforme).length;
-    const todayNonConformes = todayReleves.filter(r => !r.conforme).length;
-
-    // Tâche 1 : alertes HACCP non-conformes (URGENT)
-    if (todayNonConformes > 0) {
-      tasks.push({
-        urgent: true,
-        done: false,
-        icon: 'warning',
-        label: `${todayNonConformes} relevé${todayNonConformes > 1 ? 's' : ''} hors plage`,
-        meta: 'Action corrective à enregistrer',
-        action: () => goTo('haccp')
-      });
-    }
-
-    // Tâche 2 : relevé température du jour
-    if (todayConformes === 0 && todayNonConformes === 0) {
-      tasks.push({
-        urgent: false,
-        done: false,
-        icon: 'thermostat',
-        label: 'Faire le relevé de température',
-        meta: 'Chambre froide, vitrine, congélateur · 30 sec',
-        action: () => goTo('haccp')
-      });
-    } else {
-      tasks.push({
-        urgent: false,
-        done: true,
-        icon: 'check',
-        label: 'Relevé de température fait',
-        meta: `${todayReleves.length} relevé${todayReleves.length > 1 ? 's' : ''} aujourd'hui`,
-        action: () => goTo('haccp')
-      });
-    }
-
-    // Tâche 3 : créer une procédure si aucune
-    if (procedures.length === 0) {
-      tasks.push({
-        urgent: false,
-        done: false,
-        icon: 'menu_book',
-        label: 'Créer votre première procédure',
-        meta: 'Filmer un geste, générer le QR code',
-        action: () => goTo('procedures')
-      });
-    }
-
-    // Tâche 4 : PMS du mois précédent (à télécharger en début de mois)
-    const dayOfMonth = new Date().getDate();
-    if (dayOfMonth <= 5 && releves.length > 0) {
-      tasks.push({
-        urgent: false,
-        done: false,
-        icon: 'picture_as_pdf',
-        label: 'PMS du mois précédent à archiver',
-        meta: 'PDF prêt pour la DDPP',
-        action: generatePMSPdf
-      });
-    }
-
-    // -------- Render tâches --------
-    const list = $('tasks-list-home');
-    const empty = $('tasks-empty');
-    const countPill = $('tasks-count');
-
-    list.innerHTML = '';
-    const undone = tasks.filter(t => !t.done).length;
-    countPill.textContent = undone;
-
-    if (tasks.length === 0 || undone === 0) {
-      empty.style.display = 'block';
-    } else {
-      empty.style.display = 'none';
-    }
-
-    tasks.forEach(t => {
-      const row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'task-row' + (t.urgent ? ' urgent' : '') + (t.done ? ' done' : '');
-      row.innerHTML = `
-        <div class="task-icon"><span class="material-icons-round">${t.icon}</span></div>
-        <div class="task-body">
-          <div class="task-label"></div>
-          <div class="task-meta"></div>
-        </div>
-        <span class="material-icons-round task-arrow">arrow_forward</span>
-      `;
-      row.querySelector('.task-label').textContent = t.label;
-      row.querySelector('.task-meta').textContent = t.meta;
-      if (!t.done && t.action) {
-        row.addEventListener('click', t.action);
-      }
-      list.appendChild(row);
-    });
-  }
 
   // ========================================================
   // ============ ONGLET APPRENTI ============
@@ -3161,7 +2986,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   ]);
 
   // Render initial de l'accueil avec toutes les données chargées
-  renderHome();
 
   loading.style.display = 'none';
   stage.classList.add('ready');

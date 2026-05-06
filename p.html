@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procédure — Frizz✦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      background: #050505;
+      color: #fff;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+    .bg-glow {
+      position: fixed; inset: 0; z-index: -1;
+      background: radial-gradient(60% 50% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page { max-width: 600px; margin: 0 auto; padding: 26px 22px 60px 22px; }
+    .header {
+      display: inline-flex; align-items: baseline; gap: 4px;
+      font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
+      font-size: 22px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      margin-bottom: 36px;
+    }
+    .sparkle {
+      color: #0A84FF; font-size: 18px;
+      text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+    }
+    .emoji {
+      width: 72px; height: 72px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 42px;
+      margin-bottom: 18px;
+    }
+    .titre {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 1.05;
+      letter-spacing: -1.2px;
+      margin-bottom: 8px;
+    }
+    .meta { font-size: 14px; color: rgba(255, 255, 255, 0.5); margin-bottom: 32px; }
+    .steps-section { margin-bottom: 24px; }
+    .steps-label {
+      font-size: 12px; font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .step {
+      display: flex; gap: 14px; padding: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      margin-bottom: 10px;
+    }
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(10, 132, 255, 0.18);
+      border: 1px solid rgba(10, 132, 255, 0.4);
+      color: #0A84FF;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Source Serif 4', serif; font-style: italic;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; min-width: 0; }
+    .step-titre { font-size: 16px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
+    .step-desc {
+      font-size: 14px; color: rgba(255, 255, 255, 0.7);
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .loading, .error {
+      text-align: center; padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 14px;
+    }
+    .error-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .footer {
+      text-align: center;
+      padding: 24px 0 0 0;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.3px;
+    }
+    @media (min-width: 1024px) {
+      .page { padding: 50px 32px 80px 32px; }
+      .titre { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="page">
+    <a href="/" class="header">Frizz<span class="sparkle">✦</span></a>
+    <div id="content" class="loading">Chargement de la procédure…</div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('s');
+    const content = document.getElementById('content');
+
+    function showError(title, msg) {
+      content.classList.remove('loading');
+      content.classList.add('error');
+      content.innerHTML = `<div class="error-title"></div><div></div>`;
+      content.querySelector('.error-title').textContent = title;
+      content.querySelectorAll('div')[1].textContent = msg;
+    }
+
+    if (!slug) {
+      showError('Lien invalide', 'Aucune procédure spécifiée dans l\'URL.');
+    } else {
+      try {
+        const { data: p, error } = await supabase
+          .from('procedures')
+          .select('titre, emoji, niveau, duree_minutes, etapes')
+          .eq('slug', slug)
+          .maybeSingle();
+
+        if (error) {
+          console.error(error);
+          showError('Erreur de chargement', error.message || 'Réessayez dans un instant.');
+        } else if (!p) {
+          showError('Procédure introuvable', 'Cette procédure n\'existe pas ou a été supprimée.');
+        } else {
+          const niveauMap = { debutant: 'Débutant', apprenti: 'Apprenti', confirme: 'Confirmé', expert: 'Expert' };
+          const metaParts = [];
+          if (p.niveau) metaParts.push(niveauMap[p.niveau] || p.niveau);
+          if (p.duree_minutes) {
+            const h = Math.floor(p.duree_minutes / 60);
+            const m = p.duree_minutes % 60;
+            if (h > 0 && m > 0) metaParts.push(`${h}h ${m}min`);
+            else if (h > 0) metaParts.push(`${h}h`);
+            else metaParts.push(`${m} min`);
+          }
+
+          const etapes = Array.isArray(p.etapes) ? p.etapes : [];
+
+          content.classList.remove('loading');
+          content.innerHTML = `
+            <div class="emoji"></div>
+            <div class="titre"></div>
+            <div class="meta"></div>
+            <div class="steps-section">
+              <div class="steps-label">Étapes</div>
+              <div id="steps-list"></div>
+            </div>
+            <div class="footer">Procédure générée par Frizz✦</div>
+          `;
+
+          content.querySelector('.emoji').textContent = p.emoji || '📋';
+          content.querySelector('.titre').textContent = p.titre;
+          content.querySelector('.meta').textContent = metaParts.join(' · ');
+
+          const stepsList = document.getElementById('steps-list');
+          if (etapes.length === 0) {
+            stepsList.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:13px;">Aucune étape renseignée pour cette procédure.</div>';
+          } else {
+            etapes.forEach((e, i) => {
+              const div = document.createElement('div');
+              div.className = 'step';
+              div.innerHTML = `
+                <div class="step-num">${i + 1}</div>
+                <div class="step-body">
+                  <div class="step-titre"></div>
+                  <div class="step-desc"></div>
+                </div>
+              `;
+              div.querySelector('.step-titre').textContent = e.titre || `Étape ${i + 1}`;
+              const descEl = div.querySelector('.step-desc');
+              if (e.description) {
+                descEl.textContent = e.description;
+              } else {
+                descEl.style.display = 'none';
+              }
+              stepsList.appendChild(div);
+            });
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        showError('Erreur', err.message || 'Impossible de charger cette procédure.');
+      }
+    }
+  </script>
+</body>
+</html>

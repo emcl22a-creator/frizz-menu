@@ -4234,7 +4234,12 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('— PROCÉDURE —', pageW / 2, 34, { align: 'center', charSpace: 1.8 });
+    {
+      const t = '— PROCÉDURE —';
+      const cs = 1.8;
+      const w = pdf.getTextWidth(t) + (t.length - 1) * cs;
+      pdf.text(t, (pageW - w) / 2, 34, { charSpace: cs });
+    }
 
     // ============ EMOJI BADGE ============
     let titleY = 60;
@@ -4501,7 +4506,12 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('— BOUTIQUE EN LIGNE —', pageW / 2, 34, { align: 'center', charSpace: 1.8 });
+    {
+      const t = '— BOUTIQUE EN LIGNE —';
+      const cs = 1.8;
+      const w = pdf.getTextWidth(t) + (t.length - 1) * cs;
+      pdf.text(t, (pageW - w) / 2, 34, { charSpace: cs });
+    }
 
     // ============ TITRE = nom boulangerie ============
     pdf.setFont('helvetica', 'bold');

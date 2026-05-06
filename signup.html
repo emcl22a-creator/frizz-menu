@@ -2,607 +2,615 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#040810">
-<meta name="color-scheme" content="dark">
-<meta name="description" content="Inscription Frizz · Rejoins l'app de padel transfrontalière FR-CH">
-<title>Inscription — Frizz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription · Frizz✦</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  :root {
-    --bg: #040810;
-    --surface: rgba(255,255,255,0.03);
-    --surface-strong: rgba(255,255,255,0.05);
-    --text: #F2F4F8;
-    --text-2: rgba(255,255,255,0.65);
-    --text-3: rgba(255,255,255,0.45);
-    --text-4: rgba(255,255,255,0.25);
-    --border: rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.12);
-    --brand: #06B6D4;
-    --brand-bright: #22D3EE;
-    --brand-deep: #0891B2;
-    --brand-glow: rgba(6, 182, 212, 0.55);
-    --brand-soft: rgba(6, 182, 212, 0.14);
-    --green: #10B981;
-    --green-soft: rgba(16, 185, 129, 0.14);
-    --red: #F43F5E;
-    --red-soft: rgba(244, 63, 94, 0.14);
-    --orange: #F59E0B;
-    --orange-soft: rgba(245, 158, 11, 0.14);
-    --r: 14px;
-    --r-md: 18px;
-    --r-xl: 28px;
-    --r-pill: 100px;
-  }
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
 
-  html, body {
-    color: var(--text);
-    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.014em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+@media (max-width: 600px) {
+  body { padding: 0 24px; }
+}
 
-  html {
-    background:
-      radial-gradient(ellipse 70% 55% at 12% 8%, rgba(6, 182, 212, 0.32), transparent 50%),
-      radial-gradient(ellipse 55% 45% at 88% 12%, rgba(34, 211, 238, 0.22), transparent 55%),
-      radial-gradient(ellipse 50% 45% at 92% 65%, rgba(8, 145, 178, 0.20), transparent 55%),
-      radial-gradient(ellipse 40% 35% at 8% 75%, rgba(16, 185, 129, 0.15), transparent 60%),
-      #040810 !important;
-    background-attachment: fixed !important;
-  }
-  body { background: transparent !important; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.18) 0%, transparent 60%),
+    #000;
+  z-index: -2;
+  pointer-events: none;
+}
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background:
-      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(6, 182, 212, 0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(34, 211, 238, 0.08), transparent 50%);
-    animation: auroraDrift 26s ease-in-out infinite alternate;
-    mix-blend-mode: screen;
-  }
-  body::after {
-    content: '';
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
-    opacity: 0.04;
-    mix-blend-mode: overlay;
-  }
-  @keyframes auroraDrift {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(3%, 2%) scale(1.06); }
-    100% { transform: translate(-2%, 3%) scale(1.04); }
-  }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  z-index: -1;
+  pointer-events: none;
+}
 
-  .topbar {
-    position: sticky; top: 0; z-index: 50;
-    padding: 14px 28px;
-    padding-top: calc(14px + env(safe-area-inset-top));
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(4, 8, 16, 0.85);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
-  .logo-link:hover { transform: scale(1.04); }
-  .logo {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    letter-spacing: -0.022em; font-size: 26px; color: var(--text);
-    display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;
-  }
-  .logo .spark {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--brand-bright); font-weight: 700; font-size: 22px; margin-left: 1px;
-    animation: sparkPulse 3.5s ease-in-out infinite; display: inline-block;
-    text-shadow: 0 0 14px var(--brand-glow);
-  }
-  @keyframes sparkPulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.1); }
-  }
-  .topbar-link {
-    font-size: 13px; font-weight: 800; color: var(--text-2);
-    text-decoration: none; padding: 8px 14px; border-radius: var(--r-pill);
-    transition: all 0.2s ease; letter-spacing: -0.005em;
-  }
-  .topbar-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+/* ============ LAYOUT ============ */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
 
-  .auth-wrap {
-    min-height: calc(100vh - 70px);
-    display: flex; align-items: center; justify-content: center;
-    padding: 40px 24px;
-  }
-  .auth-card {
-    width: 100%;
-    max-width: 480px;
-    padding: 36px 28px;
-    background: var(--surface);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-xl);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 24px 60px -20px rgba(0,0,0,0.6),
-      0 0 100px -20px rgba(6, 182, 212, 0.20);
-    position: relative;
-    overflow: hidden;
-  }
-  .auth-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -30%;
-    width: 70%; height: 200%;
-    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.12), transparent 60%);
-    pointer-events: none;
-  }
+.card {
+  width: 100%;
+  max-width: 480px;
+  padding: 48px 40px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
 
-  .auth-eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 12px; color: var(--brand-bright);
-    margin-bottom: 14px; letter-spacing: -0.005em;
-    padding: 5px 12px; background: var(--brand-soft);
-    border: 1px solid rgba(34, 211, 238, 0.30); border-radius: var(--r-pill);
-    position: relative; z-index: 1;
-  }
+@media (max-width: 600px) {
+  .card { padding: 36px 24px; }
+}
 
-  .auth-title {
-    font-size: 36px; font-weight: 900; letter-spacing: -0.034em;
-    line-height: 1.05; color: var(--text); margin-bottom: 10px;
-    font-family: 'Inter Tight', sans-serif;
-    position: relative; z-index: 1;
-  }
-  .auth-title em {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    color: var(--brand-bright);
-    text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
-  }
+/* ============ LOGO ============ */
+.logo-link {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+  text-decoration: none;
+}
 
-  .auth-sub {
-    font-size: 14px; font-weight: 700; color: var(--text-2);
-    letter-spacing: -0.012em; line-height: 1.5;
-    margin-bottom: 26px;
-    position: relative; z-index: 1;
-  }
+.logo {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 32px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
 
-  .audience-toggle {
-    display: flex;
-    background: var(--surface-strong);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-pill);
-    padding: 4px;
-    margin-bottom: 24px;
-    position: relative; z-index: 1;
-  }
-  .audience-btn {
-    flex: 1;
-    padding: 11px 16px;
-    font-size: 13px; font-weight: 800; color: var(--text-2);
-    background: transparent; border: 0;
-    border-radius: var(--r-pill);
-    cursor: pointer; font-family: inherit; letter-spacing: -0.008em;
-    transition: all 0.25s ease;
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  }
-  .audience-btn.active {
-    background: var(--brand-bright); color: var(--bg);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 2px 8px -2px var(--brand-glow);
-  }
+.logo .sparkle {
+  color: #0A84FF;
+  font-size: 28px;
+  text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+  animation: pulse 3.5s ease-in-out infinite;
+}
 
-  .field {
-    margin-bottom: 14px;
-    position: relative; z-index: 1;
-  }
-  .field-label {
-    display: block;
-    font-size: 11px; font-weight: 800; color: var(--text-2);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    margin-bottom: 7px;
-  }
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .input, .select {
-    width: 100%;
-    padding: 14px 16px;
-    background: var(--surface-strong);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r);
-    color: var(--text); font-family: inherit;
-    font-size: 14px; font-weight: 700;
-    letter-spacing: -0.014em; outline: none;
-    transition: all 0.2s ease;
-    -webkit-appearance: none; appearance: none;
-  }
-  .select {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2322D3EE' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-    cursor: pointer;
-  }
-  .input::placeholder { color: var(--text-3); }
-  .input:focus, .select:focus {
-    border-color: var(--brand-bright);
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.20);
-    background-color: rgba(255,255,255,0.07);
-  }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
 
-  .field-help {
-    font-size: 11px; font-weight: 700; color: var(--text-3);
-    margin-top: 6px; letter-spacing: -0.005em; line-height: 1.4;
-  }
-  .field-help.success { color: var(--green); }
-  .field-help.warning { color: var(--orange); }
+/* ============ HERO ============ */
+.hero-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 6px;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
 
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 15px 24px; border-radius: var(--r);
-    font-size: 14px; font-weight: 800; line-height: 1; cursor: pointer; border: 0;
-    font-family: inherit; letter-spacing: -0.014em;
-    transition: all 0.15s ease; white-space: nowrap;
-    width: 100%;
-  }
-  .btn-primary {
-    background: linear-gradient(180deg, var(--brand-bright), var(--brand));
-    color: var(--bg);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 16px -4px var(--brand-glow);
-    margin-top: 10px;
-  }
-  .btn-primary:hover {
-    background: linear-gradient(180deg, #fff, var(--brand-bright));
-    transform: translateY(-1px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 8px 26px -4px var(--brand-glow);
-  }
-  .btn-primary:active { transform: translateY(0) scale(0.98); }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  text-align: center;
+  margin-bottom: 8px;
+}
 
-  .msg-success, .msg-error, .msg-info {
-    margin-top: 16px; padding: 12px 14px; border-radius: var(--r);
-    font-size: 13px; font-weight: 800; letter-spacing: -0.012em;
-    text-align: center;
-    display: none;
-    position: relative; z-index: 1;
-  }
-  .msg-success {
-    background: var(--green-soft); border: 1px solid rgba(16, 185, 129, 0.30);
-    color: var(--green);
-  }
-  .msg-error {
-    background: var(--red-soft); border: 1px solid rgba(244, 63, 94, 0.30);
-    color: var(--red);
-  }
-  .msg-info {
-    background: var(--brand-soft); border: 1px solid rgba(34, 211, 238, 0.30);
-    color: var(--brand-bright);
-  }
-  .msg-success.show, .msg-error.show, .msg-info.show {
-    display: block;
-    animation: fadeUp 0.4s ease;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
 
-  .auth-footer {
-    margin-top: 24px;
-    text-align: center;
-    font-size: 13px; font-weight: 700; color: var(--text-3);
-    letter-spacing: -0.005em;
-    position: relative; z-index: 1;
-  }
-  .auth-footer a {
-    color: var(--brand-bright);
-    text-decoration: none;
-    font-weight: 800;
-    transition: opacity 0.2s ease;
-  }
-  .auth-footer a:hover { opacity: 0.8; }
+.hero-sub {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 28px;
+}
 
-  @media (min-width: 768px) {
-    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
-    .auth-wrap { padding: 60px 24px; }
-    .auth-card { padding: 44px 36px; }
-    .auth-title { font-size: 42px; }
-  }
+/* ============ BANDEAU TRIAL ============ */
+.trial-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+
+.trial-banner .material-icons-round {
+  color: #0A84FF;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.trial-banner-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.trial-banner-text strong {
+  color: #0A84FF;
+  font-weight: 600;
+}
+
+/* ============ FORM ============ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.input-wrap { margin-bottom: 12px; }
+.input-wrap.full { grid-column: 1 / -1; }
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+input, select {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.08);
+}
+
+input::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.5)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+select option { background: #1a1a1c; color: #fff; }
+
+.password-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+}
+
+/* ============ BUTTONS ============ */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35), 0 2px 6px rgba(10, 132, 255, 0.2);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px;
+  background: #fff;
+  border: none;
+  border-radius: 100px;
+  color: #1a1a1c;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-google:active { transform: scale(0.98); }
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ============ DIVIDER ============ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ============ LIEN BAS ============ */
+.bottom-link {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.bottom-link a {
+  color: #0A84FF;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bottom-link a:hover { text-decoration: underline; }
+
+/* ============ TOAST ============ */
+.toast {
+  display: none;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.toast.success {
+  display: block;
+  background: rgba(52, 199, 89, 0.12);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+
+.toast.error {
+  display: block;
+  background: rgba(255, 69, 58, 0.12);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  color: #FF453A;
+}
+
+/* ============ RGPD ============ */
+.rgpd {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+.rgpd a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <a href="index.html" class="logo-link">
-    <span class="logo">Frizz<span class="spark">✦</span></span>
-  </a>
-  <a href="login.html" class="topbar-link">Déjà inscrit ? Connexion</a>
-</header>
+<div class="wrapper">
+  <div class="card">
 
-<main class="auth-wrap">
-  <div class="auth-card">
-    <div class="auth-eyebrow">✦ Pré-inscription</div>
-    <h1 class="auth-title">Rejoins <em>Frizz</em>.</h1>
-    <p class="auth-sub">Crée ton compte en 30 secondes et débloque l'app dès l'ouverture.</p>
+    <a href="/" class="logo-link">
+      <span class="logo">Frizz<span class="sparkle">✦</span></span>
+    </a>
 
-    <div class="audience-toggle">
-      <button type="button" class="audience-btn active" data-audience="joueur" id="btn-joueur">
-        <span>🎾</span> Joueur
-      </button>
-      <button type="button" class="audience-btn" data-audience="club" id="btn-club">
-        <span>🏟️</span> Club
-      </button>
+    <div class="hero-eyebrow">— Créer un compte</div>
+    <h1 class="hero-title">Bienvenue chez <em>Frizz</em>.</h1>
+    <p class="hero-sub">Démarrez votre essai en 30 secondes</p>
+
+    <!-- Bandeau trial -->
+    <div class="trial-banner">
+      <span class="material-icons-round">verified</span>
+      <span class="trial-banner-text">
+        <strong>14 jours gratuits</strong> — sans carte bancaire, sans engagement
+      </span>
     </div>
 
-    <form id="signup-form" onsubmit="return submitSignup(event)">
+    <!-- Bouton Google -->
+    <button type="button" class="btn-google" id="google-btn">
+      <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continuer avec Google
+    </button>
 
-      <!-- Champs JOUEUR -->
-      <div id="fields-joueur">
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label" for="prenom">Prénom</label>
-            <input type="text" id="prenom" name="prenom" class="input" placeholder="Em" required>
-          </div>
-          <div class="field">
-            <label class="field-label" for="nom">Nom</label>
-            <input type="text" id="nom" name="nom" class="input" placeholder="Dupont" required>
-          </div>
+    <div class="divider">ou avec votre email</div>
+
+    <!-- Formulaire email/password -->
+    <form id="signup-form" novalidate>
+
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="prenom">Prénom *</label>
+          <input type="text" id="prenom" name="prenom" placeholder="Marc" required>
+        </div>
+        <div class="input-wrap">
+          <label for="nom_patron">Nom *</label>
+          <input type="text" id="nom_patron" name="nom_patron" placeholder="Dupont" required>
         </div>
       </div>
 
-      <!-- Champs CLUB -->
-      <div id="fields-club" style="display:none;">
-        <div class="field">
-          <label class="field-label" for="nom-club">Nom du club</label>
-          <input type="text" id="nom-club" name="nom-club" class="input" placeholder="Padel First Bâle">
-        </div>
+      <div class="input-wrap">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" placeholder="marc@maboulangerie.fr" required>
+      </div>
 
-        <div class="field">
-          <label class="field-label" for="rue">Adresse (rue + numéro)</label>
-          <input type="text" id="rue" name="rue" class="input" placeholder="Klybeckstrasse 141" autocomplete="street-address">
-        </div>
+      <div class="input-wrap">
+        <label for="password">Mot de passe *</label>
+        <input type="password" id="password" name="password" placeholder="Au moins 8 caractères" required minlength="8">
+        <div class="password-hint">Minimum 8 caractères</div>
+      </div>
 
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label" for="code-postal">Code postal</label>
-            <input type="text" id="code-postal" name="code-postal" class="input" placeholder="4002" autocomplete="postal-code">
-          </div>
-          <div class="field">
-            <label class="field-label" for="ville-club">Ville</label>
-            <input type="text" id="ville-club" name="ville-club" class="input" placeholder="Bâle">
-          </div>
-        </div>
+      <div class="input-wrap">
+        <label for="nom_boulangerie">Nom de la boulangerie *</label>
+        <input type="text" id="nom_boulangerie" name="nom_boulangerie" placeholder="Boulangerie Dupont" required>
+      </div>
 
-        <div class="field">
-          <label class="field-label" for="pays-club">Pays</label>
-          <select id="pays-club" name="pays-club" class="select">
-            <option value="FR">🇫🇷 France</option>
-            <option value="CH" selected>🇨🇭 Suisse</option>
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="ville">Ville</label>
+          <input type="text" id="ville" name="ville" placeholder="Lyon">
+        </div>
+        <div class="input-wrap">
+          <label for="pays">Pays *</label>
+          <select id="pays" name="pays" required>
+            <option value="FR">France</option>
+            <option value="CH">Suisse</option>
           </select>
         </div>
-
-        <div class="field-help" id="geo-status" style="display:none;"></div>
       </div>
 
-      <!-- Champs communs -->
-      <div class="field">
-        <label class="field-label" for="email">Email</label>
-        <input type="email" id="email" name="email" class="input" placeholder="ton@email.fr" required>
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" class="input" placeholder="Minimum 6 caractères" minlength="6" required>
-        <div class="field-help">6 caractères minimum</div>
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="btn-submit">
-        Créer mon compte →
+      <button type="submit" class="btn-primary" id="submit-btn">
+        Créer mon compte
       </button>
 
-      <div class="msg-info" id="msg-info"></div>
-      <div class="msg-success" id="msg-success">✓ Compte créé. Vérifie ton email pour confirmer.</div>
-      <div class="msg-error" id="msg-error"></div>
+      <div class="toast" id="toast"></div>
+
+      <p class="rgpd">
+        En vous inscrivant, vous acceptez les conditions d'utilisation. Vos données sont stockées en Europe et ne sont jamais revendues.
+      </p>
     </form>
 
-    <div class="auth-footer">
-      Déjà inscrit ? <a href="login.html">Se connecter</a>
-    </div>
-  </div>
-</main>
+    <p class="bottom-link">
+      Vous avez déjà un compte ? <a href="/login.html">Se connecter</a>
+    </p>
 
-<script>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let currentAudience = 'joueur';
-  const btnJoueur = document.getElementById('btn-joueur');
-  const btnClub = document.getElementById('btn-club');
-  const fieldsJoueur = document.getElementById('fields-joueur');
-  const fieldsClub = document.getElementById('fields-club');
-  const inputPrenom = document.getElementById('prenom');
-  const inputNom = document.getElementById('nom');
-  const inputNomClub = document.getElementById('nom-club');
-  const inputRue = document.getElementById('rue');
-  const inputCodePostal = document.getElementById('code-postal');
-  const inputVilleClub = document.getElementById('ville-club');
-  const selectPaysClub = document.getElementById('pays-club');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  function switchAudience(audience) {
-    currentAudience = audience;
-    if (audience === 'joueur') {
-      btnJoueur.classList.add('active');
-      btnClub.classList.remove('active');
-      fieldsJoueur.style.display = 'block';
-      fieldsClub.style.display = 'none';
-      inputPrenom.required = true;
-      inputNom.required = true;
-      inputNomClub.required = false;
-      inputRue.required = false;
-      inputCodePostal.required = false;
-      inputVilleClub.required = false;
-    } else {
-      btnClub.classList.add('active');
-      btnJoueur.classList.remove('active');
-      fieldsJoueur.style.display = 'none';
-      fieldsClub.style.display = 'block';
-      inputPrenom.required = false;
-      inputNom.required = false;
-      inputNomClub.required = true;
-      inputRue.required = true;
-      inputCodePostal.required = true;
-      inputVilleClub.required = true;
-    }
-  }
-  btnJoueur.addEventListener('click', () => switchAudience('joueur'));
-  btnClub.addEventListener('click', () => switchAudience('club'));
-
-  // ════════════ GEOCODING NOMINATIM ════════════
-  async function geocodeAddress(rue, codePostal, ville, pays) {
-    const paysFull = pays === 'CH' ? 'Switzerland' : 'France';
-    const query = `${rue}, ${codePostal} ${ville}, ${paysFull}`;
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
-
-    try {
-      const response = await fetch(url, {
-        headers: { 'User-Agent': 'Frizz Padel App (frizz-instant.com)' }
-      });
-      const data = await response.json();
-      if (data && data.length > 0) {
-        return {
-          lat: parseFloat(data[0].lat),
-          lon: parseFloat(data[0].lon),
-          display: data[0].display_name
-        };
-      }
-    } catch (err) {
-      console.error('Geocoding error:', err);
-    }
-    return null;
+  // Si déjà connecté, redirige direct vers le dashboard
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    window.location.href = '/dashboard.html';
   }
 
-  // ════════════ SUBMIT ════════════
-  async function submitSignup(event) {
-    event.preventDefault();
+  // ============ DOM ============
+  const form = document.getElementById('signup-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const googleBtn = document.getElementById('google-btn');
+  const toast = document.getElementById('toast');
 
-    const btn = document.getElementById('btn-submit');
-    const msgSuccess = document.getElementById('msg-success');
-    const msgError = document.getElementById('msg-error');
-    const msgInfo = document.getElementById('msg-info');
-    const geoStatus = document.getElementById('geo-status');
+  function showToast(message, type) {
+    toast.textContent = message;
+    toast.className = 'toast ' + type;
+    if (type === 'success') {
+      setTimeout(() => { toast.style.display = 'none'; }, 8000);
+    }
+  }
 
-    msgSuccess.classList.remove('show');
-    msgError.classList.remove('show');
-    msgInfo.classList.remove('show');
+  function hideToast() {
+    toast.style.display = 'none';
+    toast.className = 'toast';
+  }
 
-    const email = document.getElementById('email').value.trim().toLowerCase();
-    const password = document.getElementById('password').value;
+  // ============ INSCRIPTION EMAIL / PASSWORD ============
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideToast();
 
-    let metadata = {};
-    if (currentAudience === 'joueur') {
-      metadata = {
-        prenom: inputPrenom.value.trim(),
-        nom: inputNom.value.trim(),
-        type_compte: 'joueur'
-      };
-    } else {
-      // Pour les clubs : geocode l'adresse d'abord
-      btn.disabled = true;
-      btn.innerHTML = 'Localisation du club...';
-      msgInfo.innerHTML = '🌍 Recherche de l\'adresse sur la carte...';
-      msgInfo.classList.add('show');
+    const formData = new FormData(form);
+    const data = {
+      prenom: formData.get('prenom').trim(),
+      nom_patron: formData.get('nom_patron').trim(),
+      email: formData.get('email').trim().toLowerCase(),
+      password: formData.get('password'),
+      nom_boulangerie: formData.get('nom_boulangerie').trim(),
+      ville: formData.get('ville').trim() || null,
+      pays: formData.get('pays')
+    };
 
-      const rue = inputRue.value.trim();
-      const codePostal = inputCodePostal.value.trim();
-      const ville = inputVilleClub.value.trim();
-      const pays = selectPaysClub.value;
-
-      const geo = await geocodeAddress(rue, codePostal, ville, pays);
-
-      if (geo) {
-        msgInfo.innerHTML = '✓ Adresse trouvée : ' + geo.display.substring(0, 60) + '...';
-      } else {
-        msgInfo.innerHTML = '⚠️ Adresse non trouvée précisément. Le club sera créé, tu pourras corriger sa position plus tard.';
-      }
-
-      metadata = {
-        nom_club: inputNomClub.value.trim(),
-        rue: rue,
-        code_postal: codePostal,
-        ville: ville,
-        pays: pays,
-        type_compte: 'club',
-        latitude: geo ? geo.lat.toString() : '',
-        longitude: geo ? geo.lon.toString() : ''
-      };
+    // Validation
+    if (data.password.length < 8) {
+      showToast('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+      return;
     }
 
-    btn.innerHTML = 'Création du compte...';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Création du compte...';
 
     try {
-      const { data, error } = await sb.auth.signUp({
-        email: email,
-        password: password,
+      // 1. Création du compte Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
         options: {
-          data: metadata,
-          emailRedirectTo: window.location.origin + '/login.html'
+          data: {
+            // Metadata stockées dans auth.users.raw_user_meta_data
+            prenom: data.prenom,
+            nom: data.nom_patron,
+            full_name: `${data.prenom} ${data.nom_patron}`
+          }
+        }
+      });
+
+      if (authError) {
+        if (authError.message.includes('already registered')) {
+          showToast('Un compte existe déjà avec cet email. Connectez-vous plutôt.', 'error');
+        } else {
+          showToast(`Erreur : ${authError.message}`, 'error');
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Créer mon compte';
+        return;
+      }
+
+      if (!authData.user) {
+        showToast('Erreur : compte non créé. Réessayez.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Créer mon compte';
+        return;
+      }
+
+      // 2. Création de la fiche boulangerie liée
+      const { error: bouError } = await supabase
+        .from('boulangeries')
+        .insert([{
+          user_id: authData.user.id,
+          nom: data.nom_boulangerie,
+          ville: data.ville,
+          pays: data.pays,
+          raison_sociale: data.nom_boulangerie
+        }]);
+
+      if (bouError) {
+        console.error('Erreur création boulangerie:', bouError);
+        // Note : le compte auth existe mais pas la boulangerie
+        // Le dashboard détectera et proposera de compléter
+        showToast('Compte créé, mais erreur lors de l\'enregistrement de la boulangerie. Vous serez guidé au prochain écran.', 'error');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 2500);
+        return;
+      }
+
+      // 3. Succès → redirection
+      showToast('✓ Compte créé ! Redirection...', 'success');
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 1200);
+
+    } catch (err) {
+      console.error(err);
+      showToast('Une erreur est survenue. Réessayez ou écrivez à contact.frizz.box@gmail.com', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Créer mon compte';
+    }
+  });
+
+  // ============ INSCRIPTION GOOGLE ============
+  googleBtn.addEventListener('click', async () => {
+    hideToast();
+    googleBtn.disabled = true;
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard.html`
         }
       });
 
       if (error) {
-        if (error.message.includes('already registered') || error.message.includes('User already')) {
-          showError(msgError, 'Cet email est déjà utilisé. Connecte-toi plutôt.');
-        } else if (error.message.includes('Password')) {
-          showError(msgError, 'Mot de passe trop court (6 caractères min).');
-        } else {
-          showError(msgError, 'Erreur : ' + error.message);
-        }
-      } else {
-        msgInfo.classList.remove('show');
-        if (data.user && !data.session) {
-          msgSuccess.innerHTML = '✓ Compte créé ! Vérifie ton email pour confirmer ton inscription.';
-        } else {
-          msgSuccess.innerHTML = '✓ Compte créé ! Redirection...';
-          setTimeout(() => {
-            window.location.href = 'app.html';
-          }, 1500);
-        }
-        msgSuccess.classList.add('show');
-        document.getElementById('signup-form').reset();
-        switchAudience('joueur');
+        showToast(`Erreur Google : ${error.message}`, 'error');
+        googleBtn.disabled = false;
       }
+      // Si OK, l'utilisateur est redirigé automatiquement vers Google
     } catch (err) {
-      console.error('Signup error:', err);
-      showError(msgError, 'Une erreur est survenue. Réessaie dans un instant.');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = 'Créer mon compte →';
+      console.error(err);
+      showToast('Erreur lors de la connexion Google.', 'error');
+      googleBtn.disabled = false;
     }
-    return false;
-  }
-
-  function showError(el, msg) {
-    el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(() => { el.classList.remove('show'); }, 6000);
-  }
+  });
 </script>
 
 </body>

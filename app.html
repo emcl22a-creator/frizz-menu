@@ -34,9 +34,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.08) 0%, transparent 60%),
     #000;
   z-index: -2;
   pointer-events: none;
@@ -609,6 +609,236 @@ body::after {
 .empty-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 20px; letter-spacing: -0.5px; margin-bottom: 6px; }
 .empty-desc { font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.5; max-width: 260px; margin: 0 auto; }
 
+/* ============ PROFIL ONGLET ============ */
+.profil-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.profil-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(10, 132, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.profil-info { flex: 1; min-width: 0; }
+
+.profil-name {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.4px;
+  margin-bottom: 2px;
+}
+
+.profil-email {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profil-section-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.2px;
+  margin: 22px 0 10px 0;
+}
+
+.profil-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profil-row:last-child { border-bottom: none; padding-bottom: 0; }
+.profil-row:first-child { padding-top: 0; }
+
+.profil-row-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+
+.profil-row-value {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ============ PLAN CARD (abonnement) ============ */
+.profil-plan-card {
+  position: relative;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(10, 132, 255, 0.18);
+  margin-bottom: 18px;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.plan-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.3px;
+}
+
+.plan-status {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(255, 159, 10, 0.15);
+  border: 1px solid rgba(255, 159, 10, 0.4);
+  color: #FF9F0A;
+}
+
+.plan-status.active {
+  background: rgba(52, 199, 89, 0.15);
+  border-color: rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.plan-price-num {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 42px;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.plan-price-num em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.plan-price-unit {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.plan-trial-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(10, 132, 255, 0.12);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 100px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.plan-trial-info .material-icons-round { color: #0A84FF; font-size: 14px; }
+
+.plan-features {
+  list-style: none;
+  padding: 14px 0;
+  margin-bottom: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.plan-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 4px 0;
+}
+
+.plan-features li::before {
+  content: '✓';
+  color: #34C759;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.plan-stripe-note {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.btn-logout-profil {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 69, 58, 0.3);
+  border-radius: 100px;
+  color: #FF453A;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 18px;
+}
+
+.btn-logout-profil:hover { background: rgba(255, 69, 58, 0.08); }
+.btn-logout-profil .material-icons-round { font-size: 16px; }
+
 /* ============ TABBAR ============ */
 .tabbar {
   position: fixed;
@@ -616,13 +846,13 @@ body::after {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 2px;
-  padding: 6px;
+  gap: 4px;
+  padding: 8px;
   background: rgba(20, 20, 22, 0.7);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 32px;
+  border-radius: 100px;
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
@@ -630,18 +860,18 @@ body::after {
 }
 
 .tab {
-  min-width: 60px;
-  padding: 8px 10px 6px 10px;
+  min-width: 68px;
+  padding: 10px 12px 8px 12px;
   background: transparent;
   border: none;
-  border-radius: 24px;
+  border-radius: 100px;
   color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   text-decoration: none;
   font-family: inherit;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1532,6 +1762,79 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     <div id="apprenti-list" style="margin-top: 18px;"></div>
   </section>
 
+  <!-- ============ ONGLET 6 : PROFIL ============ -->
+  <section class="screen" data-screen="profil">
+    <div class="hero">
+      <div class="hero-eyebrow">— Mon compte</div>
+      <h1 class="hero-title">Mon <em>profil</em>.</h1>
+    </div>
+
+    <!-- Carte utilisateur -->
+    <div class="profil-card">
+      <div class="profil-avatar" id="profil-avatar">??</div>
+      <div class="profil-info">
+        <div class="profil-name" id="profil-name">—</div>
+        <div class="profil-email" id="profil-email">—</div>
+      </div>
+    </div>
+
+    <!-- Carte boulangerie -->
+    <div class="profil-section-title">Boulangerie</div>
+    <div class="profil-card">
+      <div class="profil-row">
+        <span class="profil-row-label">Nom</span>
+        <span class="profil-row-value" id="profil-bou-nom">—</span>
+      </div>
+      <div class="profil-row">
+        <span class="profil-row-label">Ville</span>
+        <span class="profil-row-value" id="profil-bou-ville">—</span>
+      </div>
+      <div class="profil-row">
+        <span class="profil-row-label">Pays</span>
+        <span class="profil-row-value" id="profil-bou-pays">—</span>
+      </div>
+    </div>
+    <button type="button" class="btn-secondary" id="btn-edit-bou">
+      <span class="material-icons-round">edit</span>
+      Modifier
+    </button>
+
+    <!-- Carte abonnement -->
+    <div class="profil-section-title">Abonnement</div>
+    <div class="profil-plan-card" id="profil-plan-card">
+      <div class="plan-header">
+        <div class="plan-eyebrow">— Frizz✦</div>
+        <div class="plan-status" id="plan-status">Période d'essai</div>
+      </div>
+      <div class="plan-price">
+        <span class="plan-price-num">24<em>,90€</em></span>
+        <span class="plan-price-unit">/mois</span>
+      </div>
+      <div class="plan-trial-info" id="plan-trial-info">
+        <span class="material-icons-round">schedule</span>
+        <span id="plan-trial-text">14 jours d'essai restants</span>
+      </div>
+      <ul class="plan-features">
+        <li>Procédures illimitées + QR codes</li>
+        <li>HACCP complet + PMS DDPP automatique</li>
+        <li>Carnet apprenti CAP/BTM</li>
+        <li>Support par email en moins de 24h</li>
+      </ul>
+      <button type="button" class="btn-quick-validate" id="btn-subscribe">
+        <span class="material-icons-round">credit_card</span>
+        Activer mon abonnement
+      </button>
+      <div class="plan-stripe-note">Paiement sécurisé par Stripe · Annulable à tout moment</div>
+    </div>
+
+    <!-- Déconnexion -->
+    <button type="button" class="btn-logout-profil" id="btn-logout-profil">
+      <span class="material-icons-round">logout</span>
+      Se déconnecter
+    </button>
+
+  </section>
+
 </div>
 
 <!-- ============ TABBAR ============ -->
@@ -1540,9 +1843,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     <span class="material-icons-round">menu_book</span>
     <span class="tab-label">Procédures</span>
   </button>
-  <button class="tab" data-tab="qr" aria-label="QR codes">
+  <button class="tab" data-tab="qr" aria-label="QR">
     <span class="material-icons-round">qr_code_2</span>
-    <span class="tab-label">QR codes</span>
+    <span class="tab-label">QR</span>
   </button>
   <button class="tab" data-tab="haccp" aria-label="HACCP">
     <span class="material-icons-round">thermostat</span>
@@ -1551,6 +1854,10 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   <button class="tab" data-tab="apprenti" aria-label="Apprenti">
     <span class="material-icons-round">school</span>
     <span class="tab-label">Apprenti</span>
+  </button>
+  <button class="tab" data-tab="profil" aria-label="Profil">
+    <span class="material-icons-round">person</span>
+    <span class="tab-label">Profil</span>
   </button>
 </nav>
 
@@ -1813,6 +2120,7 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     if (name === 'qr') renderQrList();
     if (name === 'haccp') renderReleves();
     if (name === 'apprenti') renderApprentis();
+    if (name === 'profil') renderProfil();
   }
 
   tabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
@@ -2976,6 +3284,81 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   });
 
   // ========================================================
+  // ============ ONGLET PROFIL ============
+  // ========================================================
+
+  function renderProfil() {
+    // Avatar + identité
+    $('profil-avatar').textContent = getInitials(userName);
+    $('profil-name').textContent = userName;
+    $('profil-email').textContent = user.email || '';
+
+    // Boulangerie
+    $('profil-bou-nom').textContent = boulangerie.nom || 'Ma boulangerie';
+    $('profil-bou-ville').textContent = boulangerie.ville || '—';
+    $('profil-bou-pays').textContent = boulangerie.pays === 'CH' ? 'Suisse 🇨🇭' : 'France 🇫🇷';
+
+    // Abonnement
+    const status = boulangerie.abonnement_status || 'trial';
+    const planStatus = $('plan-status');
+    const planTrialInfo = $('plan-trial-info');
+    const planTrialText = $('plan-trial-text');
+    const btnSubscribe = $('btn-subscribe');
+
+    if (status === 'active') {
+      planStatus.textContent = 'Actif';
+      planStatus.classList.add('active');
+      planTrialInfo.style.display = 'none';
+      btnSubscribe.innerHTML = '<span class="material-icons-round">credit_card</span> Gérer mon abonnement';
+    } else if (status === 'trial' && boulangerie.trial_end_date) {
+      const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
+      if (daysLeft > 0) {
+        planStatus.textContent = 'Période d\'essai';
+        planStatus.classList.remove('active');
+        planTrialInfo.style.display = 'inline-flex';
+        planTrialText.textContent = `${daysLeft} jour${daysLeft > 1 ? 's' : ''} d'essai restant${daysLeft > 1 ? 's' : ''}`;
+      } else {
+        planStatus.textContent = 'Essai expiré';
+        planStatus.classList.remove('active');
+        planTrialInfo.style.display = 'none';
+      }
+    }
+  }
+
+  // Bouton "Activer mon abonnement"
+  $('btn-subscribe').addEventListener('click', () => {
+    showToast('Stripe arrive bientôt — pour l\'instant, contactez-nous à contact.frizz.box@gmail.com', 'success');
+    // TODO : intégrer Stripe Checkout
+    // window.location.href = `https://checkout.stripe.com/...`
+  });
+
+  // Bouton "Modifier" la boulangerie → ouvre la modal d'inscription rapide (à coder plus tard)
+  $('btn-edit-bou').addEventListener('click', () => {
+    const newNom = prompt('Nouveau nom de boulangerie ?', boulangerie.nom || '');
+    if (newNom === null) return;
+    const newVille = prompt('Nouvelle ville ?', boulangerie.ville || '');
+    if (newVille === null) return;
+
+    supabase
+      .from('boulangeries')
+      .update({ nom: newNom.trim(), ville: newVille.trim() || null })
+      .eq('id', BOU_ID)
+      .then(({ error }) => {
+        if (error) { showToast('Erreur', 'error'); return; }
+        boulangerie.nom = newNom.trim();
+        boulangerie.ville = newVille.trim() || null;
+        showToast('✓ Modifié', 'success');
+        renderProfil();
+      });
+  });
+
+  // Bouton déconnexion (en bas du profil)
+  $('btn-logout-profil').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+  });
+
+  // ========================================================
   // ============ INIT ============
   // ========================================================
 
@@ -2985,7 +3368,7 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     loadApprentis()
   ]);
 
-  // Render initial de l'accueil avec toutes les données chargées
+  renderProfil();
 
   loading.style.display = 'none';
   stage.classList.add('ready');

@@ -571,6 +571,181 @@ body::after {
 .btn-logout-profil:hover { background: rgba(255, 69, 58, 0.08); }
 .btn-logout-profil .material-icons-round { font-size: 16px; }
 
+/* ============ SIDEBAR DESKTOP ============ */
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    padding: 28px 16px 20px 16px;
+    background: rgba(20, 20, 22, 0.5);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 90;
+  }
+
+  .sidebar-logo {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    text-decoration: none;
+    padding: 0 12px;
+    margin-bottom: 36px;
+  }
+
+  .sidebar-logo .sparkle {
+    color: #0A84FF;
+    font-size: 24px;
+    text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+    animation: pulse 3.5s ease-in-out infinite;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .sidebar-tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: -0.1px;
+  }
+
+  .sidebar-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .sidebar-tab .material-icons-round {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-tab.active {
+    background: rgba(10, 132, 255, 0.15);
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.18);
+  }
+
+  .sidebar-tab.active .material-icons-round { color: #0A84FF; }
+
+  .sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 12px 8px;
+  }
+
+  /* Bouton "Mon compte" en bas de sidebar */
+  .sidebar-account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    color: #fff;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar-account:hover {
+    background: rgba(10, 132, 255, 0.1);
+    border-color: rgba(10, 132, 255, 0.3);
+  }
+
+  .sidebar-account-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(10, 132, 255, 0.4);
+  }
+
+  .sidebar-account-info { flex: 1; min-width: 0; }
+  .sidebar-account-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 1px;
+  }
+  .sidebar-account-sub {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.2px;
+  }
+
+  /* Décaler tout le contenu pour laisser place à la sidebar */
+  .stage { padding-left: 240px; }
+
+  /* Sur desktop, contenu plus large */
+  .screen { max-width: 720px; padding: 32px 56px 80px 56px; }
+
+  /* Cacher la tabbar mobile */
+  .tabbar { display: none !important; }
+
+  /* Cacher le bouton "Mon compte" de la topbar (déjà dans la sidebar) */
+  .profil-trigger { display: none; }
+
+  /* Cacher le logo de la topbar (déjà dans la sidebar) */
+  #topbar-wrapper { display: none !important; }
+
+  /* Aurora plus présente sur PC pour combler les côtés */
+  body::before {
+    background:
+      radial-gradient(ellipse 60% 70% at 0% 0%, rgba(10, 132, 255, 0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 100% 30%, rgba(10, 132, 255, 0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 50% 100%, rgba(88, 86, 214, 0.12) 0%, transparent 60%),
+      #000 !important;
+  }
+}
+
 /* ============ TABBAR ============ */
 .tabbar {
   position: fixed;
@@ -622,6 +797,141 @@ body::after {
   background: #0A84FF;
   color: #fff;
   box-shadow: 0 4px 14px rgba(10, 132, 255, 0.5);
+}
+
+/* ============================================================
+   DESKTOP LAYOUT (≥1024px) — sidebar gauche + contenu plus large
+   Mobile <1024px : tabbar en bas, contenu 430px (inchangé)
+   ============================================================ */
+@media (min-width: 1024px) {
+
+  /* Stage : on laisse plus de place pour la sidebar */
+  .stage {
+    padding-left: 240px;
+    padding-bottom: 0;
+  }
+
+  /* Contenu : plus large sur desktop */
+  .screen {
+    max-width: 720px;
+    padding: 32px 48px 80px 48px;
+  }
+
+  /* Topbar wrapper aussi */
+  #topbar-wrapper {
+    max-width: 720px !important;
+  }
+
+  /* Tabbar devient sidebar verticale fixée à gauche */
+  .tabbar {
+    bottom: auto;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 220px;
+    height: 100vh;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 24px 16px;
+    background: rgba(15, 15, 17, 0.85);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+  }
+
+  /* Logo Frizz✦ en haut de la sidebar */
+  .tabbar::before {
+    content: 'Frizz✦';
+    display: block;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: -0.4px;
+    padding: 8px 14px 28px 14px;
+    margin-bottom: 8px;
+  }
+
+  /* Onglets : pleine largeur, alignés à gauche, icône + label horizontal */
+  .tab {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 12px;
+  }
+
+  .tab .material-icons-round { font-size: 20px; }
+
+  .tab .tab-label {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+  }
+
+  .tab.active {
+    background: #0A84FF;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
+  }
+
+  /* Hover desktop seulement */
+  .tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* La topbar partagée a moins de sens en desktop : on cache le logo (déjà dans la sidebar) */
+  .topbar .logo {
+    display: none;
+  }
+
+  /* "Mon compte" reste à droite, mais ajuste la position */
+  .topbar {
+    justify-content: flex-end !important;
+    padding: 24px 48px 0 48px !important;
+  }
+
+  /* Hero plus généreux sur desktop */
+  .hero-title {
+    font-size: 48px;
+  }
+
+  /* Cards plus généreuses */
+  .proc-card, .qr-card, .apprenti-card {
+    padding: 22px 24px;
+  }
+
+  /* Modals : centrées avec plus de marge */
+  .modal {
+    max-width: 540px;
+  }
+
+  /* Aurora : étendre sur toute la largeur même avec sidebar */
+  body::before {
+    inset: 0;
+  }
+}
+
+/* Très grand écran : limite max et centrage */
+@media (min-width: 1440px) {
+  .stage {
+    padding-left: 240px;
+  }
+  .screen {
+    max-width: 760px;
+  }
+  #topbar-wrapper {
+    max-width: 760px !important;
+  }
 }
 
 /* ============ MODAL ============ */
@@ -1346,6 +1656,40 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 <!-- ============================================
      STAGE
      ============================================ -->
+<!-- ============ SIDEBAR DESKTOP (cachée sur mobile) ============ -->
+<aside class="sidebar" id="sidebar">
+  <a href="#" class="sidebar-logo" id="sidebar-logo-link">Frizz<span class="sparkle">✦</span></a>
+
+  <nav class="sidebar-nav">
+    <button type="button" class="sidebar-tab active" data-tab="procedures">
+      <span class="material-icons-round">menu_book</span>
+      Procédures
+    </button>
+    <button type="button" class="sidebar-tab" data-tab="qr">
+      <span class="material-icons-round">qr_code_2</span>
+      QR codes
+    </button>
+    <button type="button" class="sidebar-tab" data-tab="haccp">
+      <span class="material-icons-round">thermostat</span>
+      HACCP
+    </button>
+    <button type="button" class="sidebar-tab" data-tab="apprenti">
+      <span class="material-icons-round">school</span>
+      Apprenti
+    </button>
+  </nav>
+
+  <div class="sidebar-divider"></div>
+
+  <button type="button" class="sidebar-account" id="sidebar-account-btn">
+    <span class="sidebar-account-avatar" id="sidebar-account-avatar">??</span>
+    <span class="sidebar-account-info">
+      <span class="sidebar-account-name" id="sidebar-account-name">Patron</span>
+      <span class="sidebar-account-sub">Mon compte</span>
+    </span>
+  </button>
+</aside>
+
 <div class="stage" id="stage">
 
   <!-- TOPBAR PARTAGÉ -->
@@ -1825,10 +2169,12 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   // ============ NAVIGATION ENTRE ONGLETS ============
   const screens = document.querySelectorAll('.screen[data-screen]');
   const tabs = document.querySelectorAll('.tab[data-tab]');
+  const sidebarTabs = document.querySelectorAll('.sidebar-tab[data-tab]');
 
   function goTo(name) {
     screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
     tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    sidebarTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Charger les données spécifiques à l'onglet
@@ -1839,12 +2185,21 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   }
 
   tabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
+  sidebarTabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
 
   document.querySelectorAll('[data-go]').forEach(b => {
     b.addEventListener('click', () => goTo(b.dataset.go));
   });
 
-  $('home-logo').addEventListener('click', (e) => { e.preventDefault(); goTo('accueil'); });
+  // Logo de sidebar et topbar → ramène à Procédures (page d'accueil)
+  const homeLogo = $('home-logo');
+  if (homeLogo) homeLogo.addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
+  const sidebarLogo = $('sidebar-logo-link');
+  if (sidebarLogo) sidebarLogo.addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
+
+  // Bouton "Mon compte" en bas de sidebar → ouvre Profil
+  const sidebarAccountBtn = $('sidebar-account-btn');
+  if (sidebarAccountBtn) sidebarAccountBtn.addEventListener('click', () => goTo('profil'));
 
   // ============ AVATAR + DROPDOWN ============
   function getInitials(name) {

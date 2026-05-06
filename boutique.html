@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Boutique en ligne</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+    #000;
+  z-index: -2;
+  pointer-events: none;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 0 0 120px;
+}
+
+/* ============ HERO ============ */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  background-size: cover;
+  background-position: center;
+}
+.hero-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.hero-content {
+  padding: 28px 24px 8px;
+}
+.hero-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+.hero-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+/* ============ HORAIRES ============ */
+.horaires-card {
+  margin: 18px 24px 0;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  display: flex;
+  gap: 12px;
+}
+.horaires-card .material-icons-round {
+  color: #0A84FF;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.horaires-card-content {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre-line;
+  line-height: 1.5;
+}
+.horaires-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+/* ============ PRODUITS ============ */
+.produits-section {
+  padding: 28px 24px 0;
+}
+.section-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.produits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.produit {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.produit-photo {
+  aspect-ratio: 1 / 1;
+  background-color: rgba(255, 255, 255, 0.04);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.25);
+}
+.produit-photo .material-icons-round { font-size: 48px; }
+.produit-info {
+  padding: 12px 14px 14px;
+}
+.produit-nom {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 36px;
+}
+.produit-desc {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.produit-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.produit-prix {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 18px;
+  color: #0A84FF;
+}
+.produit-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.produit-add:active { transform: scale(0.9); }
+.produit-add .material-icons-round { font-size: 18px; }
+.produit-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  border-radius: 100px;
+  padding: 2px;
+}
+.produit-qty button {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #0A84FF;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.produit-qty button:active { background: rgba(10, 132, 255, 0.3); }
+.produit-qty .material-icons-round { font-size: 16px; }
+.produit-qty-num {
+  min-width: 18px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ============ FOOTER ============ */
+.shop-footer {
+  margin-top: 40px;
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+.shop-footer .logo-mini {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+}
+.shop-footer .logo-mini-sparkle { color: #0A84FF; }
+
+/* ============ CART BUTTON FLOTTANT ============ */
+.cart-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(10, 132, 255, 0.5);
+  z-index: 50;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.cart-btn:active { transform: translateX(-50%) scale(0.96); }
+.cart-btn.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(80px); }
+.cart-btn .material-icons-round { font-size: 18px; }
+.cart-btn-count {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 100px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+}
+.cart-btn-total { font-family: 'Source Serif 4', serif; font-style: italic; }
+
+/* ============ DRAWER PANIER ============ */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 580px;
+  max-height: 92vh;
+  background: #1a1a1c;
+  border-radius: 28px 28px 0 0;
+  z-index: 101;
+  transition: transform 0.35s cubic-bezier(.32,.72,0,1);
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open { transform: translateX(-50%) translateY(0); }
+
+.drawer-handle {
+  width: 38px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  margin: 10px auto 0;
+  flex-shrink: 0;
+}
+.drawer-header {
+  padding: 14px 22px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.drawer-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+.drawer-title em { font-style: italic; font-weight: 400; color: #0A84FF; }
+.drawer-close {
+  width: 36px; height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer-body {
+  padding: 16px 22px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Cart items */
+.cart-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cart-item:last-child { border-bottom: none; }
+.cart-item-photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-nom {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.cart-item-prix {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+}
+.cart-item-prix .unit-price {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: #0A84FF;
+  font-weight: 600;
+}
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cart-item-controls .produit-qty {
+  background: rgba(10, 132, 255, 0.1);
+  border-color: rgba(10, 132, 255, 0.25);
+}
+
+/* Form */
+.form-section { margin-top: 18px; }
+.form-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.input-wrap { margin-bottom: 12px; }
+.input-wrap label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+  letter-spacing: 0.2px;
+}
+input[type=text], input[type=email], input[type=tel], input[type=datetime-local], textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+input:focus, textarea:focus { border-color: #0A84FF; }
+input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
+.lead-time-info {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: rgba(255, 132, 0, 0.85);
+  line-height: 1.4;
+}
+
+/* Footer drawer (total + checkout) */
+.drawer-footer {
+  padding: 16px 22px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.total-label { font-size: 13px; color: rgba(255, 255, 255, 0.65); }
+.total-value {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 28px;
+  color: #fff;
+}
+.btn-checkout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.4);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+.btn-checkout:active { transform: scale(0.98); }
+.btn-checkout:disabled { opacity: 0.5; cursor: wait; }
+
+/* ============ SUCCESS / ERROR / LOADING ============ */
+.state-screen {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px 24px;
+  text-align: center;
+}
+.state-icon {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.state-icon.success { background: rgba(52, 199, 89, 0.15); color: #34C759; }
+.state-icon.error { background: rgba(255, 69, 58, 0.15); color: #FF453A; }
+.state-icon .material-icons-round { font-size: 44px; }
+.state-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.state-title em { font-style: italic; font-weight: 400; color: #0A84FF; }
+.state-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 380px;
+  line-height: 1.55;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 132, 255, 0.2);
+  border-top-color: #0A84FF;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast-floating {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 20px;
+  background: rgba(255, 69, 58, 0.95);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 90%;
+}
+.toast-floating.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- État loading -->
+  <div class="state-screen" id="state-loading">
+    <div class="spinner"></div>
+    <div class="state-desc">Chargement de la boutique…</div>
+  </div>
+</div>
+
+<div class="toast-floating" id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+
+// État global
+let boulangerie = null;
+let produits = [];
+let cart = {};  // { produit_id: quantity }
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), 3500);
+}
+
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function fmtPrix(p) {
+  return parseFloat(p || 0).toFixed(2).replace('.', ',') + ' €';
+}
+
+// ============ INIT ============
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('s');
+
+  if (!slug) {
+    renderError('Lien invalide', 'Aucune boutique spécifiée.');
+    return;
+  }
+
+  // Charger la boulangerie via slug
+  const { data: bou, error: bouErr } = await supabase
+    .from('boulangeries')
+    .select('id, nom, ville, pays, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_horaires')
+    .eq('boutique_slug', slug)
+    .eq('boutique_active', true)
+    .maybeSingle();
+
+  if (bouErr) {
+    console.error(bouErr);
+    renderError('Erreur de chargement', 'Impossible de charger la boutique. Réessayez plus tard.');
+    return;
+  }
+
+  if (!bou) {
+    renderError('Boutique introuvable', 'Cette boutique n\'existe pas ou n\'est plus active.');
+    return;
+  }
+
+  boulangerie = bou;
+  document.title = bou.nom + ' — Commander en ligne';
+
+  // Charger les produits actifs
+  const { data: prods, error: prodErr } = await supabase
+    .from('produits_boutique')
+    .select('*')
+    .eq('boulangerie_id', bou.id)
+    .eq('actif', true)
+    .order('ordre', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  if (prodErr) {
+    console.error(prodErr);
+  }
+  produits = prods || [];
+
+  renderShop();
+}
+
+// ============ RENDER ÉTATS ============
+function renderError(title, desc) {
+  $('app').innerHTML = `
+    <div class="state-screen">
+      <div class="state-icon error"><span class="material-icons-round">error_outline</span></div>
+      <h1 class="state-title">${title}</h1>
+      <p class="state-desc">${desc}</p>
+    </div>
+  `;
+}
+
+function renderSuccess(numCommande) {
+  $('app').innerHTML = `
+    <div class="state-screen">
+      <div class="state-icon success"><span class="material-icons-round">check_circle</span></div>
+      <h1 class="state-title">Commande <em>confirmée</em>.</h1>
+      <p class="state-desc">Votre commande a bien été enregistrée auprès de <strong>${escapeHtml(boulangerie.nom)}</strong>. Le boulanger vous contactera si nécessaire. À bientôt !</p>
+    </div>
+  `;
+}
+
+// ============ RENDER BOUTIQUE ============
+function renderShop() {
+  const banner = boulangerie.boutique_banner_url
+    ? `<div class="hero-banner" style="background-image: url('${boulangerie.boutique_banner_url}')"><div class="hero-banner-overlay"></div></div>`
+    : `<div class="hero-banner"><div class="hero-banner-overlay"></div></div>`;
+
+  const horaires = boulangerie.boutique_horaires
+    ? `<div class="horaires-card">
+         <span class="material-icons-round">schedule</span>
+         <div>
+           <div class="horaires-card-label">Horaires de retrait</div>
+           <div class="horaires-card-content">${escapeHtml(boulangerie.boutique_horaires)}</div>
+         </div>
+       </div>`
+    : '';
+
+  const produitsHtml = produits.length === 0
+    ? `<div style="padding: 40px 24px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">Aucun produit disponible pour le moment.</div>`
+    : `<div class="produits-grid">${produits.map(produitCard).join('')}</div>`;
+
+  $('app').innerHTML = `
+    <div class="wrapper">
+      ${banner}
+      <div class="hero-content">
+        <div class="hero-eyebrow">— ${escapeHtml(boulangerie.ville || 'Boulangerie')}</div>
+        <h1 class="hero-title">${escapeHtml(boulangerie.nom)}</h1>
+        ${boulangerie.boutique_description ? `<p class="hero-desc">${escapeHtml(boulangerie.boutique_description)}</p>` : ''}
+      </div>
+      ${horaires}
+      <div class="produits-section">
+        <h2 class="section-title">Produits</h2>
+        ${produitsHtml}
+      </div>
+      <div class="shop-footer">
+        Propulsé par <span class="logo-mini">Frizz<span class="logo-mini-sparkle">✦</span></span>
+      </div>
+    </div>
+
+    <button class="cart-btn hidden" id="cart-btn">
+      <span class="material-icons-round">shopping_bag</span>
+      <span class="cart-btn-count" id="cart-count">0</span>
+      <span class="cart-btn-total" id="cart-total">0,00 €</span>
+    </button>
+
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="drawer" id="drawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-header">
+        <h2 class="drawer-title">Votre <em>commande</em></h2>
+        <button class="drawer-close" id="drawer-close"><span class="material-icons-round">close</span></button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+      <div class="drawer-footer" id="drawer-footer" style="display: none;">
+        <div class="total-row">
+          <span class="total-label">Total</span>
+          <span class="total-value" id="checkout-total">0,00 €</span>
+        </div>
+        <button class="btn-checkout" id="btn-checkout">
+          <span class="material-icons-round">check</span>
+          Confirmer ma commande
+        </button>
+      </div>
+    </div>
+  `;
+
+  attachShopHandlers();
+  updateCartButton();
+}
+
+function produitCard(p) {
+  const photo = p.photo_url
+    ? `<div class="produit-photo" style="background-image: url('${p.photo_url}')"></div>`
+    : `<div class="produit-photo"><span class="material-icons-round">cake</span></div>`;
+  return `
+    <div class="produit" data-id="${p.id}">
+      ${photo}
+      <div class="produit-info">
+        <div class="produit-nom">${escapeHtml(p.nom)}</div>
+        ${p.description ? `<div class="produit-desc">${escapeHtml(p.description)}</div>` : '<div class="produit-desc"></div>'}
+        <div class="produit-bottom">
+          <span class="produit-prix">${fmtPrix(p.prix)}</span>
+          <div class="produit-action" id="action-${p.id}"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachShopHandlers() {
+  produits.forEach(p => updateProduitAction(p.id));
+
+  $('cart-btn').addEventListener('click', openDrawer);
+  $('drawer-overlay').addEventListener('click', closeDrawer);
+  $('drawer-close').addEventListener('click', closeDrawer);
+}
+
+function updateProduitAction(id) {
+  const wrap = $('action-' + id);
+  if (!wrap) return;
+  const qty = cart[id] || 0;
+  if (qty === 0) {
+    wrap.innerHTML = `<button class="produit-add" data-add="${id}"><span class="material-icons-round">add</span></button>`;
+    wrap.querySelector('button').addEventListener('click', () => addToCart(id));
+  } else {
+    wrap.innerHTML = `
+      <div class="produit-qty">
+        <button data-dec="${id}"><span class="material-icons-round">remove</span></button>
+        <span class="produit-qty-num">${qty}</span>
+        <button data-inc="${id}"><span class="material-icons-round">add</span></button>
+      </div>
+    `;
+    wrap.querySelector('[data-dec]').addEventListener('click', () => decrement(id));
+    wrap.querySelector('[data-inc]').addEventListener('click', () => addToCart(id));
+  }
+}
+
+function addToCart(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  updateProduitAction(id);
+  updateCartButton();
+}
+function decrement(id) {
+  cart[id] = Math.max(0, (cart[id] || 0) - 1);
+  if (cart[id] === 0) delete cart[id];
+  updateProduitAction(id);
+  updateCartButton();
+  if (Object.keys(cart).length === 0) closeDrawer();
+}
+
+function getCartTotal() {
+  let t = 0, c = 0;
+  Object.entries(cart).forEach(([id, qty]) => {
+    const p = produits.find(x => x.id === id);
+    if (p) { t += parseFloat(p.prix) * qty; c += qty; }
+  });
+  return { total: t, count: c };
+}
+
+function updateCartButton() {
+  const { total, count } = getCartTotal();
+  const btn = $('cart-btn');
+  if (count === 0) {
+    btn.classList.add('hidden');
+  } else {
+    btn.classList.remove('hidden');
+    $('cart-count').textContent = count;
+    $('cart-total').textContent = fmtPrix(total);
+  }
+  // Si le drawer est ouvert, met à jour aussi
+  if ($('drawer').classList.contains('open')) renderDrawer();
+}
+
+// ============ DRAWER PANIER ============
+function openDrawer() {
+  renderDrawer();
+  $('drawer-overlay').classList.add('open');
+  $('drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  $('drawer-overlay').classList.remove('open');
+  $('drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function getMaxLeadHours() {
+  let max = 0;
+  Object.keys(cart).forEach(id => {
+    const p = produits.find(x => x.id === id);
+    if (p && (p.lead_time_hours || 0) > max) max = p.lead_time_hours || 0;
+  });
+  return max;
+}
+
+function getMinDateTime() {
+  const max = getMaxLeadHours();
+  const dt = new Date(Date.now() + max * 60 * 60 * 1000);
+  // Arrondi au quart d'heure supérieur
+  dt.setMinutes(Math.ceil(dt.getMinutes() / 15) * 15);
+  dt.setSeconds(0);
+  const tz = dt.getTimezoneOffset() * 60000;
+  return new Date(dt - tz).toISOString().slice(0, 16);
+}
+
+function leadTimeLabel(hours) {
+  if (hours <= 4) return '4 heures';
+  if (hours <= 24) return '24 heures';
+  if (hours <= 48) return '48 heures';
+  return '1 semaine';
+}
+
+function renderDrawer() {
+  const body = $('drawer-body');
+  const footer = $('drawer-footer');
+  const { total, count } = getCartTotal();
+
+  if (count === 0) {
+    body.innerHTML = `<div style="padding: 40px 0; text-align: center; color: rgba(255,255,255,0.5);">Votre panier est vide.</div>`;
+    footer.style.display = 'none';
+    return;
+  }
+
+  const items = Object.entries(cart).map(([id, qty]) => {
+    const p = produits.find(x => x.id === id);
+    if (!p) return '';
+    const photo = p.photo_url
+      ? `<div class="cart-item-photo" style="background-image: url('${p.photo_url}')"></div>`
+      : `<div class="cart-item-photo"><span class="material-icons-round" style="font-size: 24px;">cake</span></div>`;
+    return `
+      <div class="cart-item">
+        ${photo}
+        <div class="cart-item-info">
+          <div class="cart-item-nom">${escapeHtml(p.nom)}</div>
+          <div class="cart-item-prix"><span class="unit-price">${fmtPrix(p.prix)}</span> × ${qty} = ${fmtPrix(parseFloat(p.prix) * qty)}</div>
+          <div class="cart-item-controls">
+            <div class="produit-qty">
+              <button data-dec="${id}"><span class="material-icons-round">remove</span></button>
+              <span class="produit-qty-num">${qty}</span>
+              <button data-inc="${id}"><span class="material-icons-round">add</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const minDt = getMinDateTime();
+  const maxLead = getMaxLeadHours();
+  const leadInfo = maxLead > 0
+    ? `<div class="lead-time-info">⚠ Délai minimum de préparation : ${leadTimeLabel(maxLead)}</div>`
+    : '';
+
+  body.innerHTML = `
+    ${items}
+
+    <div class="form-section">
+      <div class="form-section-title">Vos coordonnées</div>
+      <div class="input-wrap">
+        <label for="ck-nom">Nom *</label>
+        <input type="text" id="ck-nom" placeholder="Marie Martin" required>
+      </div>
+      <div class="input-wrap">
+        <label for="ck-tel">Téléphone *</label>
+        <input type="tel" id="ck-tel" placeholder="06 12 34 56 78" required>
+      </div>
+      <div class="input-wrap">
+        <label for="ck-email">Email (optionnel)</label>
+        <input type="email" id="ck-email" placeholder="marie@example.com">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Date de retrait</div>
+      <div class="input-wrap">
+        <label for="ck-dt">Quand souhaitez-vous récupérer ? *</label>
+        <input type="datetime-local" id="ck-dt" min="${minDt}" required>
+        ${leadInfo}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Notes (optionnel)</div>
+      <div class="input-wrap">
+        <textarea id="ck-notes" rows="2" placeholder="Allergies, demandes particulières…"></textarea>
+      </div>
+    </div>
+  `;
+
+  footer.style.display = 'block';
+  $('checkout-total').textContent = fmtPrix(total);
+
+  // Réattacher les handlers de qté dans le drawer
+  body.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click', () => decrement(b.dataset.dec)));
+  body.querySelectorAll('[data-inc]').forEach(b => b.addEventListener('click', () => addToCart(b.dataset.inc)));
+
+  $('btn-checkout').onclick = submitCommande;
+}
+
+// ============ SUBMIT COMMANDE ============
+async function submitCommande() {
+  const nom = $('ck-nom').value.trim();
+  const tel = $('ck-tel').value.trim();
+  const email = $('ck-email').value.trim();
+  const dt = $('ck-dt').value;
+  const notes = $('ck-notes').value.trim();
+
+  if (!nom) { showToast('Veuillez indiquer votre nom'); $('ck-nom').focus(); return; }
+  if (!tel) { showToast('Téléphone requis'); $('ck-tel').focus(); return; }
+  if (!dt) { showToast('Date de retrait requise'); $('ck-dt').focus(); return; }
+
+  // Vérification lead time
+  const dtMs = new Date(dt).getTime();
+  const minMs = Date.now() + getMaxLeadHours() * 60 * 60 * 1000;
+  if (dtMs < minMs) {
+    showToast('Délai de préparation insuffisant');
+    return;
+  }
+
+  const { total } = getCartTotal();
+  const articlesText = Object.entries(cart).map(([id, qty]) => {
+    const p = produits.find(x => x.id === id);
+    return p ? `${qty} × ${p.nom}` : '';
+  }).filter(Boolean).join(', ');
+
+  const btn = $('btn-checkout');
+  btn.disabled = true;
+  btn.innerHTML = `<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;"></span> Envoi…`;
+
+  const { data, error } = await supabase
+    .from('commandes')
+    .insert([{
+      boulangerie_id: boulangerie.id,
+      nom_client: nom,
+      telephone: tel,
+      email: email || null,
+      articles: articlesText,
+      date_retrait: new Date(dt).toISOString(),
+      montant: total,
+      notes: notes || null,
+      statut: 'a_preparer',
+      source: 'boutique'
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    showToast('Erreur : ' + error.message);
+    btn.disabled = false;
+    btn.innerHTML = `<span class="material-icons-round">check</span> Confirmer ma commande`;
+    return;
+  }
+
+  // Succès → page de confirmation
+  closeDrawer();
+  document.body.style.overflow = '';
+  cart = {};
+  renderSuccess(data.id);
+}
+
+init();
+</script>
+
+</body>
+</html>

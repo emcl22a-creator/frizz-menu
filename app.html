@@ -123,35 +123,48 @@ body::after {
 .user-menu { position: relative; }
 
 .avatar-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-  border: 2.5px solid rgba(255, 255, 255, 0.18);
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 17px;
-  color: #fff;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 6px 20px rgba(10, 132, 255, 0.45),
-    0 0 0 4px rgba(10, 132, 255, 0.12);
-  transition: transform 0.15s ease, box-shadow 0.25s ease;
-  position: relative;
+  gap: 8px;
+  padding: 4px 4px 4px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .avatar-btn:hover {
-  transform: scale(1.05);
-  box-shadow:
-    0 8px 24px rgba(10, 132, 255, 0.6),
-    0 0 0 6px rgba(10, 132, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.avatar-btn:active { transform: scale(0.95); }
+.avatar-btn:active { transform: scale(0.97); }
+
+.account-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.1px;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.35);
+  flex-shrink: 0;
+}
 
 .user-dropdown {
   position: absolute;
@@ -580,6 +593,24 @@ body::after {
 .proc-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .proc-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
 .proc-arrow { color: rgba(255, 255, 255, 0.25); font-size: 18px; flex-shrink: 0; }
+
+.proc-qr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(10, 132, 255, 0.15);
+  color: #0A84FF;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.proc-qr-btn:hover { background: rgba(10, 132, 255, 0.25); }
+.proc-qr-btn:active { transform: scale(0.92); }
+.proc-qr-btn .material-icons-round { font-size: 20px; }
 
 /* ============ ÉTAT VIDE ============ */
 .empty {
@@ -1607,8 +1638,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     <div class="topbar" style="padding: 24px 28px 0 28px; margin-bottom: 0;">
       <a href="#" class="logo" id="home-logo">Frizz<span class="sparkle">✦</span></a>
       <div class="user-menu">
-        <button class="avatar-btn" id="avatar-btn" aria-label="Menu">
-          <span id="avatar-initials">??</span>
+        <button class="avatar-btn" id="avatar-btn" aria-label="Mon compte">
+          <span class="account-label">Mon compte</span>
+          <span class="avatar-circle" id="avatar-initials">??</span>
         </button>
         <div class="user-dropdown" id="user-dropdown">
           <div class="dropdown-header">
@@ -1644,27 +1676,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     </div>
 
     <div class="proc-list" id="proc-list"></div>
-  </section>
-
-  <!-- ============ ONGLET 3 : QR CODES ============ -->
-  <section class="screen" data-screen="qr">
-    <div class="hero">
-      <div class="hero-eyebrow">— À coller dans le fournil</div>
-      <h1 class="hero-title">QR <em>codes</em>.</h1>
-    </div>
-
-    <button class="btn-primary" id="btn-print-all">
-      <span class="material-icons-round">print</span>
-      Imprimer tous les QR (A4)
-    </button>
-
-    <div class="empty" id="qr-empty" style="display: none;">
-      <div class="empty-icon"><span class="material-icons-round">qr_code_2</span></div>
-      <div class="empty-title">Pas encore de QR</div>
-      <div class="empty-desc">Créez d'abord des procédures, leurs QR codes seront générés ici.</div>
-    </div>
-
-    <div id="qr-list" style="margin-top: 18px;"></div>
   </section>
 
   <!-- ============ ONGLET 4 : HACCP ============ -->
@@ -1818,10 +1829,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   <button class="tab active" data-tab="procedures" aria-label="Procédures">
     <span class="material-icons-round">menu_book</span>
     <span class="tab-label">Procédures</span>
-  </button>
-  <button class="tab" data-tab="qr" aria-label="QR">
-    <span class="material-icons-round">qr_code_2</span>
-    <span class="tab-label">QR</span>
   </button>
   <button class="tab" data-tab="haccp" aria-label="HACCP">
     <span class="material-icons-round">thermostat</span>
@@ -2089,7 +2096,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Charger les données spécifiques à l'onglet
-    if (name === 'qr') renderQrList();
     if (name === 'haccp') renderReleves();
     if (name === 'apprenti') renderApprentis();
     if (name === 'profil') renderProfil();
@@ -2206,10 +2212,17 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
           <div class="proc-title"></div>
           <div class="proc-meta"></div>
         </div>
+        <span class="proc-qr-btn" role="button" aria-label="Télécharger le QR code">
+          <span class="material-icons-round">qr_code_2</span>
+        </span>
         <span class="material-icons-round proc-arrow">chevron_right</span>
       `;
       card.querySelector('.proc-title').textContent = p.titre;
       card.querySelector('.proc-meta').textContent = meta.join(' · ');
+      card.querySelector('.proc-qr-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openQrModal(p);
+      });
       card.addEventListener('click', () => openProcModal(p));
       list.appendChild(card);
     });
@@ -2344,50 +2357,11 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   });
 
   // ========================================================
-  // ============ ONGLET QR CODES ============
+  // ============ QR CODES (intégrés aux procédures) ============
   // ========================================================
 
   function getProcedureUrl(slug) {
     return `${window.location.origin}/p.html?s=${slug}`;
-  }
-
-  async function renderQrList() {
-    const list = $('qr-list');
-    const empty = $('qr-empty');
-    list.innerHTML = '';
-
-    if (procedures.length === 0) {
-      empty.style.display = 'block';
-      return;
-    }
-    empty.style.display = 'none';
-
-    for (const p of procedures) {
-      const url = getProcedureUrl(p.slug);
-      const card = document.createElement('button');
-      card.className = 'qr-card';
-      card.innerHTML = `
-        <div class="qr-mini" id="qr-mini-${p.id}"></div>
-        <div class="qr-body">
-          <div class="qr-title"></div>
-          <div class="qr-meta"></div>
-        </div>
-        <span class="material-icons-round qr-arrow">chevron_right</span>
-      `;
-      card.querySelector('.qr-title').textContent = `${p.emoji || '📋'} ${p.titre}`;
-      card.querySelector('.qr-meta').textContent = `Scanné ${p.scans_count || 0} fois`;
-      card.addEventListener('click', () => openQrModal(p));
-      list.appendChild(card);
-
-      // Générer le mini-QR
-      try {
-        await QRCode.toCanvas(card.querySelector(`#qr-mini-${p.id}`), url, {
-          width: 50,
-          margin: 1,
-          color: { dark: '#000', light: '#fff' }
-        });
-      } catch (e) { console.error(e); }
-    }
   }
 
   let currentQrProc = null;
@@ -2447,89 +2421,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     pdf.save(`QR-${p.slug}.pdf`);
     showToast('✓ PDF téléchargé');
   }
-
-  // Imprimer toutes les procédures (grille A4)
-  $('btn-print-all').addEventListener('click', async () => {
-    if (procedures.length === 0) { showToast('Aucune procédure', 'error'); return; }
-
-    const btn = $('btn-print-all');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-icons-round">hourglass_empty</span> Génération...';
-
-    try {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-
-      // Grille 3 colonnes × 4 lignes = 12 QR par page
-      const cols = 3;
-      const rows = 4;
-      const perPage = cols * rows;
-      const margin = 12;
-      const pageW = 210;
-      const pageH = 297;
-      const cellW = (pageW - margin * 2) / cols;
-      const cellH = (pageH - margin * 2 - 20) / rows; // -20 pour laisser place au header
-      const qrSize = Math.min(cellW, cellH) - 18;
-
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(16);
-      pdf.text('Frizz✦ — Mes QR codes', pageW / 2, 12, { align: 'center' });
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'normal');
-      pdf.setTextColor(120);
-      pdf.text(boulangerie.nom || 'Ma boulangerie', pageW / 2, 17, { align: 'center' });
-      pdf.setTextColor(0);
-
-      for (let i = 0; i < procedures.length; i++) {
-        const p = procedures[i];
-        const idxOnPage = i % perPage;
-
-        if (i > 0 && idxOnPage === 0) {
-          pdf.addPage();
-          pdf.setFont('helvetica', 'bold');
-          pdf.setFontSize(16);
-          pdf.text('Frizz✦ — Mes QR codes', pageW / 2, 12, { align: 'center' });
-          pdf.setFontSize(9);
-          pdf.setFont('helvetica', 'normal');
-          pdf.setTextColor(120);
-          pdf.text(boulangerie.nom || 'Ma boulangerie', pageW / 2, 17, { align: 'center' });
-          pdf.setTextColor(0);
-        }
-
-        const col = idxOnPage % cols;
-        const row = Math.floor(idxOnPage / cols);
-        const cellX = margin + col * cellW;
-        const cellY = margin + 14 + row * cellH;
-
-        // QR
-        const url = getProcedureUrl(p.slug);
-        const qrDataUrl = await QRCode.toDataURL(url, { width: 400, margin: 1 });
-        const qrX = cellX + (cellW - qrSize) / 2;
-        const qrY = cellY + 4;
-        pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-
-        // Titre sous le QR
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(9);
-        const titre = p.titre.length > 24 ? p.titre.substring(0, 22) + '..' : p.titre;
-        pdf.text(`${p.emoji || ''} ${titre}`, cellX + cellW / 2, qrY + qrSize + 5, { align: 'center' });
-      }
-
-      // Footer dernière page
-      pdf.setFontSize(8);
-      pdf.setTextColor(150);
-      pdf.text('Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
-
-      pdf.save(`Frizz-QR-codes-${new Date().toISOString().slice(0, 10)}.pdf`);
-      showToast('✓ Grille A4 téléchargée');
-    } catch (err) {
-      console.error(err);
-      showToast('Erreur PDF', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<span class="material-icons-round">print</span> Imprimer tous les QR (A4)';
-    }
-  });
 
   // ========================================================
   // ============ ONGLET HACCP ============

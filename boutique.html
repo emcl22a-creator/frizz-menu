@@ -371,6 +371,7 @@ a { color: inherit; text-decoration: none; }
   transition: transform 0.2s cubic-bezier(.22,.61,.36,1), opacity 0.2s ease;
   min-width: 240px;
   justify-content: space-between;
+  white-space: nowrap;
 }
 .cart-btn:active { transform: translateX(-50%) scale(0.96); }
 .cart-btn.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(120px); }
@@ -740,7 +741,7 @@ async function init() {
 
   const { data: bou, error: bouErr } = await supabase
     .from('boulangeries')
-    .select('id, nom, ville, pays, telephone, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_horaires')
+    .select('id, nom, ville, pays, telephone, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_adresse, boutique_horaires')
     .eq('boutique_slug', slug)
     .eq('boutique_active', true)
     .maybeSingle();
@@ -807,12 +808,21 @@ function renderShop() {
     </div>
   ` : '';
 
-  const adresse = boulangerie.ville ? `
+  const adresseLines = [];
+  if (boulangerie.boutique_adresse) adresseLines.push(boulangerie.boutique_adresse);
+  if (boulangerie.ville) {
+    const villePays = boulangerie.ville + (boulangerie.pays === 'CH' ? ', Suisse' : boulangerie.pays === 'FR' ? ', France' : '');
+    // n'ajoute la ville séparément que si elle n'est pas déjà dans l'adresse complète
+    if (!boulangerie.boutique_adresse || !boulangerie.boutique_adresse.toLowerCase().includes(boulangerie.ville.toLowerCase())) {
+      adresseLines.push(villePays);
+    }
+  }
+  const adresse = adresseLines.length > 0 ? `
     <div class="info-card">
       <div class="info-card-icon"><span class="material-icons-round">place</span></div>
       <div class="info-card-content">
         <div class="info-card-label">Adresse</div>
-        <div class="info-card-value">${escapeHtml(boulangerie.ville)}${boulangerie.pays === 'CH' ? ', Suisse' : ', France'}</div>
+        <div class="info-card-value">${escapeHtml(adresseLines.join('\n'))}</div>
       </div>
     </div>
   ` : '';

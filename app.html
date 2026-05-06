@@ -2,600 +2,2570 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#040810">
-<meta name="color-scheme" content="dark">
-<title>Mon espace — Frizz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Frizz✦</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Libs : QR code + PDF -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  :root {
-    --bg: #040810;
-    --surface: rgba(255,255,255,0.03);
-    --surface-strong: rgba(255,255,255,0.05);
-    --text: #F2F4F8;
-    --text-2: rgba(255,255,255,0.65);
-    --text-3: rgba(255,255,255,0.45);
-    --text-4: rgba(255,255,255,0.25);
-    --border: rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.12);
-    --brand: #06B6D4;
-    --brand-bright: #22D3EE;
-    --brand-deep: #0891B2;
-    --brand-glow: rgba(6, 182, 212, 0.55);
-    --brand-soft: rgba(6, 182, 212, 0.14);
-    --green: #10B981;
-    --green-soft: rgba(16, 185, 129, 0.14);
-    --orange: #F59E0B;
-    --orange-soft: rgba(245, 158, 11, 0.14);
-    --red: #F43F5E;
-    --red-soft: rgba(244, 63, 94, 0.14);
-    --r: 14px;
-    --r-md: 18px;
-    --r-lg: 22px;
-    --r-xl: 28px;
-    --r-pill: 100px;
-  }
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  background: #000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
 
-  html, body {
-    color: var(--text);
-    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.014em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.16) 0%, transparent 60%),
+    #000;
+  z-index: -2;
+  pointer-events: none;
+}
 
-  html {
-    background:
-      radial-gradient(ellipse 70% 55% at 12% 8%, rgba(6, 182, 212, 0.32), transparent 50%),
-      radial-gradient(ellipse 55% 45% at 88% 12%, rgba(34, 211, 238, 0.22), transparent 55%),
-      radial-gradient(ellipse 50% 45% at 92% 65%, rgba(8, 145, 178, 0.20), transparent 55%),
-      radial-gradient(ellipse 40% 35% at 8% 75%, rgba(16, 185, 129, 0.15), transparent 60%),
-      #040810 !important;
-    background-attachment: fixed !important;
-  }
-  body { background: transparent !important; }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  z-index: -1;
+  pointer-events: none;
+}
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background:
-      radial-gradient(ellipse 50% 35% at 30% 30%, rgba(6, 182, 212, 0.10), transparent 50%),
-      radial-gradient(ellipse 50% 35% at 70% 50%, rgba(34, 211, 238, 0.08), transparent 50%);
-    animation: auroraDrift 26s ease-in-out infinite alternate;
-    mix-blend-mode: screen;
-  }
-  @keyframes auroraDrift {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(3%, 2%) scale(1.06); }
-    100% { transform: translate(-2%, 3%) scale(1.04); }
-  }
+/* ============ STAGE / SCREEN ============ */
+.stage {
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 110px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
 
-  /* TOPBAR */
-  .topbar {
-    position: sticky; top: 0; z-index: 50;
-    padding: 14px 28px;
-    padding-top: calc(14px + env(safe-area-inset-top));
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(4, 8, 16, 0.85);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .logo-link { display: inline-flex; align-items: center; text-decoration: none; transition: transform 0.2s ease; }
-  .logo-link:hover { transform: scale(1.04); }
-  .logo {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    letter-spacing: -0.022em; font-size: 26px; color: var(--text);
-    display: inline-flex; align-items: baseline; gap: 2px; line-height: 1;
-  }
-  .logo .spark {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--brand-bright); font-weight: 700; font-size: 22px; margin-left: 1px;
-    animation: sparkPulse 3.5s ease-in-out infinite; display: inline-block;
-    text-shadow: 0 0 14px var(--brand-glow);
-  }
-  @keyframes sparkPulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.1); }
-  }
-  .logout-btn {
-    font-size: 12px; font-weight: 800; color: var(--text-2);
-    background: var(--surface-strong); border: 1px solid var(--border-strong);
-    padding: 9px 14px; border-radius: var(--r-pill);
-    cursor: pointer; font-family: inherit; letter-spacing: -0.005em;
-    transition: all 0.2s ease;
-  }
-  .logout-btn:hover {
-    color: var(--red); border-color: rgba(244, 63, 94, 0.40);
-    background: var(--red-soft);
-  }
+.stage.ready { opacity: 1; }
 
-  /* CONTENT */
-  .content {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 28px;
-  }
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 80px 28px 40px 28px;
+  animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  /* LOADING STATE */
-  .loading-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border-strong);
-    border-top-color: var(--brand-bright);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  .loading-text {
-    font-size: 14px; font-weight: 700; color: var(--text-3);
-    letter-spacing: -0.012em;
-  }
+.screen.active { display: block; }
 
-  /* HEADER */
-  .welcome-eyebrow {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 14px; color: var(--brand-bright);
-    margin-bottom: 8px; letter-spacing: -0.005em;
-  }
-  .welcome-title {
-    font-size: 36px; font-weight: 900; letter-spacing: -0.034em;
-    line-height: 1.05; color: var(--text); margin-bottom: 8px;
-    font-family: 'Inter Tight', sans-serif;
-  }
-  .welcome-title em {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    color: var(--brand-bright);
-  }
-  .welcome-sub {
-    font-size: 14px; font-weight: 700; color: var(--text-2);
-    letter-spacing: -0.012em; line-height: 1.5; margin-bottom: 32px;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* INFO BANNER */
-  .info-banner {
-    padding: 16px 18px;
-    background: var(--brand-soft);
-    border: 1px solid rgba(34, 211, 238, 0.30);
-    border-radius: var(--r-md);
-    margin-bottom: 28px;
-    display: flex; align-items: flex-start; gap: 12px;
-  }
-  .info-banner-icon {
-    flex-shrink: 0;
-    font-size: 18px;
-  }
-  .info-banner-text {
-    font-size: 13px; font-weight: 700; color: var(--text);
-    line-height: 1.5; letter-spacing: -0.005em;
-  }
-  .info-banner-text em {
-    font-family: 'Source Serif 4', serif; font-style: italic;
-    color: var(--brand-bright); font-weight: 700;
-  }
+/* ============ TOPBAR ============ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
 
-  /* STATS GRID */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 28px;
-  }
-  .stat-card {
-    padding: 18px 12px 16px;
-    background: var(--surface);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-md);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 8px 24px -8px rgba(0,0,0,0.4);
-    text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -30%;
-    width: 70%; height: 200%;
-    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.16), transparent 60%);
-    pointer-events: none;
-  }
-  .stat-num {
-    font-family: 'Source Serif 4', serif; font-style: italic; font-weight: 700;
-    font-size: 26px; color: var(--text); letter-spacing: -0.024em;
-    line-height: 1; margin-bottom: 4px;
-    position: relative; z-index: 1;
-  }
-  .stat-label {
-    font-size: 9px; font-weight: 800; color: var(--text-3);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    position: relative; z-index: 1;
-  }
+.logo {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  text-decoration: none;
+}
 
-  /* ACTION CARDS */
-  .actions-title {
-    font-size: 13px; font-weight: 800; color: var(--text-2);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+.logo .sparkle {
+  color: #0A84FF;
+  font-size: 24px;
+  text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+  animation: pulse 3.5s ease-in-out infinite;
+}
 
-  .actions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .action-card {
-    padding: 22px 18px;
-    background: var(--surface);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-md);
-    text-decoration: none;
-    color: var(--text);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    text-align: left;
-    display: flex; flex-direction: column;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    position: relative; overflow: hidden;
-  }
-  .action-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--brand-bright);
-    box-shadow: 0 12px 40px -12px var(--brand-glow);
-    background: var(--surface-strong);
-  }
-  .action-icon {
-    width: 44px; height: 44px;
-    background: var(--brand-soft);
-    border: 1px solid rgba(34, 211, 238, 0.25);
-    border-radius: var(--r);
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    margin-bottom: 14px;
-  }
-  .action-title {
-    font-size: 16px; font-weight: 900; color: var(--text);
-    letter-spacing: -0.022em; margin-bottom: 4px;
-  }
-  .action-desc {
-    font-size: 12px; font-weight: 700; color: var(--text-3);
-    line-height: 1.4; letter-spacing: -0.005em;
-  }
-  .action-card .badge-soon {
-    position: absolute;
-    top: 14px; right: 14px;
-    font-size: 9px; font-weight: 900;
-    color: var(--orange);
-    background: var(--orange-soft);
-    padding: 4px 8px;
-    border-radius: var(--r-pill);
-    border: 1px solid rgba(245, 158, 11, 0.30);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
 
-  /* CLUB INFO CARD */
-  .club-info-card {
-    padding: 22px 20px;
-    background: var(--surface);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-lg);
-    margin-bottom: 24px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
-    position: relative; overflow: hidden;
-  }
-  .club-info-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -30%;
-    width: 70%; height: 200%;
-    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.12), transparent 60%);
-    pointer-events: none;
-  }
-  .club-info-row {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    position: relative; z-index: 1;
-  }
-  .club-info-row:last-child { border-bottom: 0; }
-  .club-info-label {
-    font-size: 11px; font-weight: 800; color: var(--text-3);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    min-width: 100px; flex-shrink: 0;
-    padding-top: 2px;
-  }
-  .club-info-value {
-    flex: 1;
-    font-size: 14px; font-weight: 700; color: var(--text);
-    letter-spacing: -0.012em; line-height: 1.4;
-  }
-  .club-info-value.success {
-    color: var(--green);
-    font-family: 'Source Serif 4', serif; font-style: italic;
-  }
-  .club-info-value.warning {
-    color: var(--orange);
-    font-family: 'Source Serif 4', serif; font-style: italic;
-  }
+.greeting {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
 
-  @media (min-width: 768px) {
-    .topbar { padding: 14px 36px; padding-top: calc(14px + env(safe-area-inset-top)); }
-    .content { padding: 60px 36px; }
-    .welcome-title { font-size: 42px; }
-    .stats-grid { gap: 14px; }
-    .stat-card { padding: 24px 16px 20px; }
-    .stat-num { font-size: 32px; }
-    .actions-grid { gap: 14px; }
-    .action-card { padding: 28px 22px; }
+/* ============ AVATAR + DROPDOWN ============ */
+.user-menu { position: relative; }
+
+.avatar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.avatar-btn:active { transform: scale(0.95); }
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(20, 20, 22, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  display: none;
+}
+
+.user-dropdown.open { display: block; }
+
+.dropdown-header {
+  padding: 10px 14px 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 6px;
+}
+
+.dropdown-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.dropdown-email { font-size: 11px; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+}
+
+.dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+.dropdown-item.danger { color: #FF453A; }
+.dropdown-item .material-icons-round { font-size: 18px; }
+
+/* ============ HERO ÉDITORIAL ============ */
+.hero { margin-bottom: 28px; }
+
+.hero-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+  color: #fff;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+
+/* ============ TRIAL BANNER ============ */
+.trial-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+
+.trial-banner .material-icons-round { color: #0A84FF; font-size: 16px; flex-shrink: 0; }
+.trial-banner-text { flex: 1; font-size: 11px; font-weight: 500; }
+.trial-banner-text strong { color: #0A84FF; font-weight: 600; }
+
+/* ============ STATUS HERO (ACCUEIL) ============ */
+.status-hero { text-align: center; margin-bottom: 36px; }
+
+.status-hero .label {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+
+.status-hero .check-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.15);
+  border: 2px solid rgba(52, 199, 89, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px auto;
+  box-shadow: 0 0 36px rgba(52, 199, 89, 0.25);
+}
+
+.status-hero .check-circle .material-icons-round { color: #34C759; font-size: 40px; }
+
+.status-hero.warn .check-circle {
+  background: rgba(255, 159, 10, 0.15);
+  border-color: rgba(255, 159, 10, 0.5);
+  box-shadow: 0 0 36px rgba(255, 159, 10, 0.25);
+}
+
+.status-hero.warn .check-circle .material-icons-round { color: #FF9F0A; }
+
+.status-hero .verdict {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.status-hero .verdict em { font-style: italic; font-weight: 400; color: #34C759; }
+.status-hero.warn .verdict em { color: #FF9F0A; }
+
+.status-hero .submeta { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+
+/* ============ BOUTONS ACTIONS ============ */
+.big-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.big-action:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.big-action.primary {
+  background: #0A84FF;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35);
+}
+
+.big-action.primary:active { background: #0A84FF; box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3); }
+
+.action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-icon .material-icons-round { color: #0A84FF; font-size: 22px; }
+
+.big-action.primary .action-icon { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.25); }
+.big-action.primary .action-icon .material-icons-round { color: #fff; }
+
+.action-body { flex: 1; min-width: 0; }
+.action-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; }
+.action-sub { font-size: 12px; color: rgba(255, 255, 255, 0.55); }
+.big-action.primary .action-sub { color: rgba(255, 255, 255, 0.85); }
+
+.action-arrow { color: rgba(255, 255, 255, 0.3); font-size: 20px; flex-shrink: 0; }
+.big-action.primary .action-arrow { color: rgba(255, 255, 255, 0.7); }
+
+/* ============ BTN PRIMARY ============ */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 100px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.5; cursor: wait; }
+.btn-primary .material-icons-round { font-size: 18px; }
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.15s ease;
+}
+
+.btn-secondary:active { transform: scale(0.98); }
+.btn-secondary .material-icons-round { font-size: 16px; }
+
+/* ============ LISTE PROCÉDURES ============ */
+.proc-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+.proc-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: #fff;
+  width: 100%;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.proc-card:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.proc-emoji {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.proc-body { flex: 1; min-width: 0; }
+.proc-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proc-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+.proc-arrow { color: rgba(255, 255, 255, 0.25); font-size: 18px; flex-shrink: 0; }
+
+/* ============ ÉTAT VIDE ============ */
+.empty {
+  text-align: center;
+  padding: 48px 20px 20px 20px;
+  margin-top: 8px;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.12);
+  border: 1px solid rgba(10, 132, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.empty-icon .material-icons-round { color: #0A84FF; font-size: 30px; }
+.empty-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 20px; letter-spacing: -0.5px; margin-bottom: 6px; }
+.empty-desc { font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.5; max-width: 260px; margin: 0 auto; }
+
+/* ============ TABBAR ============ */
+.tabbar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(20, 20, 22, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  z-index: 100;
+}
+
+.tab {
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab .material-icons-round { font-size: 22px; }
+
+.tab.active {
+  background: #0A84FF;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(10, 132, 255, 0.5);
+}
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-overlay.open { display: flex; animation: fadeOverlay 0.25s ease; }
+
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  background: rgba(20, 20, 22, 0.95);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  padding: 22px 22px 28px 22px;
+  overflow-y: auto;
+  animation: slideUp 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@media (min-width: 600px) {
+  .modal-overlay { align-items: center; }
+  .modal {
+    max-height: 88vh;
+    border-radius: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    animation: scaleIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  @keyframes scaleIn {
+    from { transform: scale(0.96); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+}
+
+.modal-handle {
+  width: 32px;
+  height: 4px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 auto 16px auto;
+}
+
+@media (min-width: 600px) { .modal-handle { display: none; } }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+.modal-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 22px; letter-spacing: -0.6px; }
+.modal-title em { font-style: italic; font-weight: 400; color: #0A84FF; }
+
+.modal-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover { background: rgba(255, 255, 255, 0.1); }
+.modal-close .material-icons-round { font-size: 16px; }
+
+/* ============ FORM ============ */
+.input-wrap { margin-bottom: 12px; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+  letter-spacing: 0.3px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.08);
+}
+
+input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.5)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+  padding-right: 36px;
+}
+
+select option { background: #1a1a1c; color: #fff; }
+
+textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: end;
+}
+
+.emoji-input {
+  width: 56px !important;
+  text-align: center;
+  font-size: 22px !important;
+  padding: 11px 6px !important;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ============ ÉTAPES ============ */
+.steps-wrap { margin-top: 6px; }
+
+.steps-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+.steps-list { display: flex; flex-direction: column; gap: 8px; }
+
+.step-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.18);
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  color: #0A84FF;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.step-fields { flex: 1; min-width: 0; }
+.step-fields input { margin-bottom: 6px; padding: 8px 10px; font-size: 12px; }
+.step-fields textarea { padding: 8px 10px; font-size: 12px; min-height: 44px; }
+
+.step-remove {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 69, 58, 0.1);
+  border: 1px solid rgba(255, 69, 58, 0.25);
+  color: #FF453A;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.step-remove:hover { background: rgba(255, 69, 58, 0.2); }
+.step-remove .material-icons-round { font-size: 14px; }
+
+.btn-add-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-add-step:hover {
+  background: rgba(10, 132, 255, 0.08);
+  border-color: rgba(10, 132, 255, 0.3);
+  color: #fff;
+}
+
+.btn-add-step .material-icons-round { font-size: 14px; }
+
+/* ============ MODAL ACTIONS ============ */
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-modal {
+  padding: 12px;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease;
+  letter-spacing: -0.1px;
+}
+
+.btn-modal:active { transform: scale(0.97); }
+
+.btn-modal.primary {
+  background: #0A84FF;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(10, 132, 255, 0.35);
+}
+
+.btn-modal.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn-modal:disabled { opacity: 0.5; cursor: wait; }
+
+.btn-delete {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 69, 58, 0.25);
+  border-radius: 100px;
+  color: #FF453A;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-delete:hover { background: rgba(255, 69, 58, 0.08); }
+.btn-delete .material-icons-round { font-size: 14px; }
+
+/* ============ QR CODES ONGLET ============ */
+.qr-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.qr-card:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.qr-mini {
+  width: 50px;
+  height: 50px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.qr-mini canvas, .qr-mini img { width: 100%; height: 100%; display: block; border-radius: 6px; }
+
+.qr-body { flex: 1; min-width: 0; }
+.qr-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qr-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+.qr-arrow { color: rgba(255, 255, 255, 0.25); font-size: 18px; flex-shrink: 0; }
+
+/* QR fullscreen modal */
+.qr-fullscreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 8px 0;
+}
+
+.qr-frame {
+  background: #fff;
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 16px 40px rgba(10, 132, 255, 0.3);
+  margin-bottom: 18px;
+}
+
+.qr-frame canvas, .qr-frame img { display: block; width: 200px; height: 200px; }
+
+.qr-emoji-big { font-size: 24px; margin-bottom: 6px; }
+.qr-title-big { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 18px; letter-spacing: -0.4px; margin-bottom: 3px; text-align: center; }
+.qr-sub-big { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-bottom: 16px; text-align: center; }
+.qr-url { font-family: monospace; font-size: 10px; color: rgba(255, 255, 255, 0.4); margin-bottom: 14px; word-break: break-all; text-align: center; padding: 0 14px; }
+
+/* ============ HACCP ONGLET ============ */
+.releve-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  margin-bottom: 8px;
+}
+
+.releve-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.releve-icon.warn {
+  background: rgba(255, 159, 10, 0.15);
+  border-color: rgba(255, 159, 10, 0.3);
+}
+
+.releve-icon.bad {
+  background: rgba(255, 69, 58, 0.15);
+  border-color: rgba(255, 69, 58, 0.3);
+}
+
+.releve-icon .material-icons-round { font-size: 18px; color: #34C759; }
+.releve-icon.warn .material-icons-round { color: #FF9F0A; }
+.releve-icon.bad .material-icons-round { color: #FF453A; }
+
+.releve-body { flex: 1; min-width: 0; }
+.releve-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.releve-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+.releve-value { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 18px; letter-spacing: -0.4px; flex-shrink: 0; }
+.releve-value.bad { color: #FF453A; }
+.releve-value.warn { color: #FF9F0A; }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 24px 0 12px 0;
+}
+
+.section-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+}
+
+.section-link {
+  font-size: 12px;
+  color: #0A84FF;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+/* ============ APPRENTI ONGLET ============ */
+.apprenti-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.apprenti-card:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.apprenti-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.apprenti-body { flex: 1; min-width: 0; }
+.apprenti-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; }
+.apprenti-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+.apprenti-progress { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 16px; color: #0A84FF; flex-shrink: 0; }
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.task-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.task-item.done .task-check { background: #34C759; border-color: #34C759; }
+.task-item.done .task-check::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 700; }
+
+.task-label { flex: 1; font-size: 13px; font-weight: 500; }
+.task-item.done .task-label { color: rgba(255, 255, 255, 0.4); text-decoration: line-through; }
+
+.task-remove {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.task-remove:hover { background: rgba(255, 69, 58, 0.15); color: #FF453A; }
+.task-remove .material-icons-round { font-size: 14px; }
+
+/* ============ LOADING + TOAST ============ */
+.loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(10, 132, 255, 0.2);
+  border-top-color: #0A84FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast-zone {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  pointer-events: none;
+  width: 100%;
+  max-width: 380px;
+  padding: 0 24px;
+}
+
+.toast {
+  display: none;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  pointer-events: auto;
+  backdrop-filter: blur(40px);
+}
+
+.toast.success { display: block; background: rgba(52, 199, 89, 0.15); border: 1px solid rgba(52, 199, 89, 0.4); color: #34C759; }
+.toast.error   { display: block; background: rgba(255, 69, 58, 0.15); border: 1px solid rgba(255, 69, 58, 0.4); color: #FF453A; }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <a href="index.html" class="logo-link">
-    <span class="logo">Frizz<span class="spark">✦</span></span>
-  </a>
-  <button class="logout-btn" onclick="logout()">Déconnexion</button>
-</header>
+<div class="loading" id="loading"><div class="spinner"></div></div>
+<div class="toast-zone"><div class="toast" id="toast"></div></div>
 
-<!-- LOADING -->
-<div class="content" id="loading">
-  <div class="loading-screen">
-    <div class="spinner"></div>
-    <div class="loading-text">Chargement de ton espace...</div>
+<!-- ============================================
+     STAGE
+     ============================================ -->
+<div class="stage" id="stage">
+
+  <!-- TOPBAR PARTAGÉ -->
+  <div class="screen" id="topbar-wrapper" style="display: block; padding: 0; max-width: 430px; margin: 0 auto;">
+    <div class="topbar" style="padding: 24px 28px 0 28px; margin-bottom: 0;">
+      <a href="#" class="logo" id="home-logo">Frizz<span class="sparkle">✦</span></a>
+      <div class="user-menu">
+        <button class="avatar-btn" id="avatar-btn" aria-label="Menu">
+          <span id="avatar-initials">??</span>
+        </button>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-name" id="dropdown-name">—</div>
+            <div class="dropdown-email" id="dropdown-email">—</div>
+          </div>
+          <button class="dropdown-item danger" id="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ONGLET 1 : ACCUEIL ============ -->
+  <section class="screen active" data-screen="accueil">
+    <div style="height: 32px;"></div>
+
+    <!-- Bandeau trial -->
+    <div class="trial-banner" id="trial-banner" style="display: none;">
+      <span class="material-icons-round">verified</span>
+      <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
+    </div>
+
+    <!-- Statut du jour -->
+    <div class="status-hero" id="status-hero">
+      <div class="label" id="status-label">— Bonjour</div>
+      <div class="check-circle"><span class="material-icons-round">check</span></div>
+      <div class="verdict" id="status-verdict">Bonne <em>journée</em>.</div>
+      <div class="submeta" id="status-submeta">Bienvenue chez Frizz</div>
+    </div>
+
+    <!-- 3 actions -->
+    <button class="big-action primary" data-go="procedures">
+      <div class="action-icon"><span class="material-icons-round">add</span></div>
+      <div class="action-body">
+        <div class="action-title">Nouvelle procédure</div>
+        <div class="action-sub">Filmer une étape, ajouter un QR</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </button>
+
+    <button class="big-action" data-go="haccp">
+      <div class="action-icon"><span class="material-icons-round">thermostat</span></div>
+      <div class="action-body">
+        <div class="action-title">Relevé température</div>
+        <div class="action-sub">Chambre froide, vitrine, congélateur</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </button>
+
+    <button class="big-action" id="btn-pms">
+      <div class="action-icon"><span class="material-icons-round">picture_as_pdf</span></div>
+      <div class="action-body">
+        <div class="action-title">PMS du mois</div>
+        <div class="action-sub">PDF prêt pour la DDPP</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </button>
+  </section>
+
+  <!-- ============ ONGLET 2 : PROCÉDURES ============ -->
+  <section class="screen" data-screen="procedures">
+    <div style="height: 32px;"></div>
+    <div class="hero">
+      <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
+      <h1 class="hero-title">Mes <em>procédures</em>.</h1>
+    </div>
+
+    <button class="btn-primary" id="btn-new-proc">
+      <span class="material-icons-round">add</span>
+      Créer une procédure
+    </button>
+
+    <div class="empty" id="proc-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">menu_book</span></div>
+      <div class="empty-title">Aucune procédure</div>
+      <div class="empty-desc">Créez votre première procédure pour générer son QR code.</div>
+    </div>
+
+    <div class="proc-list" id="proc-list"></div>
+  </section>
+
+  <!-- ============ ONGLET 3 : QR CODES ============ -->
+  <section class="screen" data-screen="qr">
+    <div style="height: 32px;"></div>
+    <div class="hero">
+      <div class="hero-eyebrow">— À coller dans le fournil</div>
+      <h1 class="hero-title">QR <em>codes</em>.</h1>
+    </div>
+
+    <button class="btn-primary" id="btn-print-all">
+      <span class="material-icons-round">print</span>
+      Imprimer tous les QR (A4)
+    </button>
+
+    <div class="empty" id="qr-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">qr_code_2</span></div>
+      <div class="empty-title">Pas encore de QR</div>
+      <div class="empty-desc">Créez d'abord des procédures, leurs QR codes seront générés ici.</div>
+    </div>
+
+    <div id="qr-list" style="margin-top: 18px;"></div>
+  </section>
+
+  <!-- ============ ONGLET 4 : HACCP ============ -->
+  <section class="screen" data-screen="haccp">
+    <div style="height: 32px;"></div>
+    <div class="hero">
+      <div class="hero-eyebrow">— Hygiène alimentaire</div>
+      <h1 class="hero-title">Mes <em>relevés</em>.</h1>
+    </div>
+
+    <button class="btn-primary" id="btn-new-releve">
+      <span class="material-icons-round">add</span>
+      Nouveau relevé
+    </button>
+
+    <button class="btn-secondary" id="btn-pms-pdf">
+      <span class="material-icons-round">picture_as_pdf</span>
+      Télécharger le PMS du mois
+    </button>
+
+    <div class="section-header">
+      <span class="section-title" id="haccp-section-title">Aujourd'hui</span>
+      <span class="section-link" id="haccp-toggle" style="cursor: pointer;">Voir tout le mois</span>
+    </div>
+
+    <div class="empty" id="haccp-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">thermostat</span></div>
+      <div class="empty-title">Aucun relevé aujourd'hui</div>
+      <div class="empty-desc">Cliquez sur "Nouveau relevé" pour enregistrer une température.</div>
+    </div>
+
+    <div id="haccp-list"></div>
+  </section>
+
+  <!-- ============ ONGLET 5 : APPRENTI ============ -->
+  <section class="screen" data-screen="apprenti">
+    <div style="height: 32px;"></div>
+    <div class="hero">
+      <div class="hero-eyebrow">— Carnet de stage</div>
+      <h1 class="hero-title">Mes <em>apprentis</em>.</h1>
+    </div>
+
+    <button class="btn-primary" id="btn-new-apprenti">
+      <span class="material-icons-round">add</span>
+      Ajouter un apprenti
+    </button>
+
+    <div class="empty" id="apprenti-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">school</span></div>
+      <div class="empty-title">Aucun apprenti</div>
+      <div class="empty-desc">Ajoutez un apprenti pour suivre son parcours CAP/BTM.</div>
+    </div>
+
+    <div id="apprenti-list" style="margin-top: 18px;"></div>
+  </section>
+
+</div>
+
+<!-- ============ TABBAR ============ -->
+<nav class="tabbar">
+  <button class="tab active" data-tab="accueil" aria-label="Accueil"><span class="material-icons-round">home</span></button>
+  <button class="tab" data-tab="procedures" aria-label="Procédures"><span class="material-icons-round">menu_book</span></button>
+  <button class="tab" data-tab="qr" aria-label="QR codes"><span class="material-icons-round">qr_code_2</span></button>
+  <button class="tab" data-tab="haccp" aria-label="HACCP"><span class="material-icons-round">thermostat</span></button>
+  <button class="tab" data-tab="apprenti" aria-label="Apprenti"><span class="material-icons-round">school</span></button>
+</nav>
+
+<!-- ============ MODAL PROCÉDURE ============ -->
+<div class="modal-overlay" id="modal-proc">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-proc-title">Nouvelle <em>procédure</em></h2>
+      <button class="modal-close" data-close="modal-proc"><span class="material-icons-round">close</span></button>
+    </div>
+    <form id="proc-form">
+      <div class="form-row">
+        <div class="input-wrap" style="margin-bottom: 0;">
+          <label for="emoji">Icône</label>
+          <input type="text" id="emoji" class="emoji-input" maxlength="2" value="📋">
+        </div>
+        <div class="input-wrap" style="margin-bottom: 0;">
+          <label for="proc-titre">Titre *</label>
+          <input type="text" id="proc-titre" placeholder="Cuisson baguette tradition" required>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top: 12px;">
+        <div class="input-wrap">
+          <label for="proc-categorie">Catégorie</label>
+          <select id="proc-categorie">
+            <option value="production">Production</option>
+            <option value="vente">Vente</option>
+            <option value="hygiene">Hygiène</option>
+            <option value="caisse">Caisse</option>
+            <option value="securite">Sécurité</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
+        <div class="input-wrap">
+          <label for="proc-niveau">Niveau</label>
+          <select id="proc-niveau">
+            <option value="debutant">Débutant</option>
+            <option value="apprenti">Apprenti</option>
+            <option value="confirme">Confirmé</option>
+            <option value="expert">Expert</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-wrap">
+        <label for="proc-duree">Durée totale (minutes)</label>
+        <input type="number" id="proc-duree" placeholder="22" min="0">
+      </div>
+      <div class="steps-wrap">
+        <div class="steps-label">Étapes</div>
+        <div class="steps-list" id="steps-list"></div>
+        <button type="button" class="btn-add-step" id="btn-add-step">
+          <span class="material-icons-round">add</span>
+          Ajouter une étape
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal secondary" data-close="modal-proc">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-proc">Enregistrer</button>
+      </div>
+      <button type="button" class="btn-delete" id="btn-delete-proc">
+        <span class="material-icons-round">delete</span>
+        Supprimer cette procédure
+      </button>
+    </form>
   </div>
 </div>
 
-<!-- DASHBOARD JOUEUR -->
-<div class="content" id="dashboard-joueur" style="display:none;">
-  <div class="welcome-eyebrow">— Mon espace</div>
-  <h1 class="welcome-title">Salut <em><span id="prenom-joueur">Em</span></em> !</h1>
-  <p class="welcome-sub">Prêt à jouer ? Trouve un terrain, matche avec d'autres joueurs ou suis ta progression.</p>
-
-  <div class="info-banner">
-    <div class="info-banner-icon">⏳</div>
-    <div class="info-banner-text">
-      L'app est en <em>construction active</em>. La carte des clubs, le matchmaking et les réservations arrivent bientôt. Tu fais partie des <em>premiers utilisateurs</em>.
+<!-- ============ MODAL QR CODE ============ -->
+<div class="modal-overlay" id="modal-qr">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title">QR <em>code</em></h2>
+      <button class="modal-close" data-close="modal-qr"><span class="material-icons-round">close</span></button>
     </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-num" id="elo-joueur">1500</div>
-      <div class="stat-label">Niveau ELO</div>
+    <div class="qr-fullscreen">
+      <div class="qr-frame" id="qr-frame"></div>
+      <div class="qr-emoji-big" id="qr-emoji-big">📋</div>
+      <div class="qr-title-big" id="qr-title-big">Procédure</div>
+      <div class="qr-sub-big" id="qr-sub-big">Scannez avec votre téléphone</div>
+      <div class="qr-url" id="qr-url-text"></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-num" id="matchs-joues">0</div>
-      <div class="stat-label">Matchs joués</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="matchs-gagnes">0</div>
-      <div class="stat-label">Victoires</div>
-    </div>
-  </div>
-
-  <div class="actions-title">— Que veux-tu faire ?</div>
-  <div class="actions-grid">
-    <a href="clubs.html" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">🗺️</div>
-      <div class="action-title">Carte des clubs</div>
-      <div class="action-desc">Trouve un terrain près de toi, FR ou CH</div>
-    </a>
-    <a href="matchs.html" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">👥</div>
-      <div class="action-title">Trouver un match</div>
-      <div class="action-desc">3 partenaires de ton niveau ELO</div>
-    </a>
-    <a href="mes-resas.html" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">📅</div>
-      <div class="action-title">Mes réservations</div>
-      <div class="action-desc">Historique et matchs à venir</div>
-    </a>
-    <a href="profile.html" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">👤</div>
-      <div class="action-title">Mon profil</div>
-      <div class="action-desc">Stats, badges et préférences</div>
-    </a>
+    <button type="button" class="btn-modal primary" id="btn-print-single" style="width: 100%;">
+      Imprimer ce QR (A4)
+    </button>
   </div>
 </div>
 
-<!-- DASHBOARD CLUB -->
-<div class="content" id="dashboard-club" style="display:none;">
-  <div class="welcome-eyebrow">— Espace partenaire</div>
-  <h1 class="welcome-title">Bienvenue <em><span id="nom-club">Mon club</span></em></h1>
-  <p class="welcome-sub">Ton espace club Frizz. Bientôt : calendrier des résas, commissions et statistiques.</p>
-
-  <div class="info-banner">
-    <div class="info-banner-icon">🎉</div>
-    <div class="info-banner-text">
-      <em>Ton club est inscrit !</em> On revient vers toi très bientôt pour finaliser ton partenariat. En attendant, ton club est visible sur la carte Frizz dès qu'on lance.
+<!-- ============ MODAL HACCP RELEVÉ ============ -->
+<div class="modal-overlay" id="modal-releve">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title">Nouveau <em>relevé</em></h2>
+      <button class="modal-close" data-close="modal-releve"><span class="material-icons-round">close</span></button>
     </div>
-  </div>
-
-  <!-- INFOS DU CLUB -->
-  <div class="club-info-card">
-    <div class="club-info-row">
-      <div class="club-info-label">Nom</div>
-      <div class="club-info-value" id="club-nom">—</div>
-    </div>
-    <div class="club-info-row">
-      <div class="club-info-label">Adresse</div>
-      <div class="club-info-value" id="club-adresse">—</div>
-    </div>
-    <div class="club-info-row">
-      <div class="club-info-label">Ville</div>
-      <div class="club-info-value" id="club-ville">—</div>
-    </div>
-    <div class="club-info-row">
-      <div class="club-info-label">Pays</div>
-      <div class="club-info-value" id="club-pays">—</div>
-    </div>
-    <div class="club-info-row">
-      <div class="club-info-label">Position GPS</div>
-      <div class="club-info-value" id="club-gps">—</div>
-    </div>
-    <div class="club-info-row">
-      <div class="club-info-label">Email</div>
-      <div class="club-info-value" id="club-email">—</div>
-    </div>
-  </div>
-
-  <div class="actions-title">— Bientôt disponible</div>
-  <div class="actions-grid">
-    <a href="#" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">📅</div>
-      <div class="action-title">Calendrier</div>
-      <div class="action-desc">Gère tes créneaux Frizz</div>
-    </a>
-    <a href="#" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">💰</div>
-      <div class="action-title">Mes commissions</div>
-      <div class="action-desc">Suivi des paiements Frizz</div>
-    </a>
-    <a href="#" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">📊</div>
-      <div class="action-title">Statistiques</div>
-      <div class="action-desc">Réservations, CA, taux remplissage</div>
-    </a>
-    <a href="#" class="action-card">
-      <span class="badge-soon">Bientôt</span>
-      <div class="action-icon">⚙️</div>
-      <div class="action-title">Paramètres</div>
-      <div class="action-desc">Photos, prix, horaires, terrains</div>
-    </a>
+    <form id="releve-form">
+      <div class="input-wrap">
+        <label for="releve-zone">Zone</label>
+        <select id="releve-zone">
+          <option value="chambre_froide">Chambre froide positive (0°C → +4°C)</option>
+          <option value="congelateur">Congélateur (≤ −18°C)</option>
+          <option value="vitrine">Vitrine pâtisserie (+4°C → +6°C)</option>
+          <option value="four">Four (cuisson)</option>
+        </select>
+      </div>
+      <div class="input-wrap">
+        <label for="releve-valeur">Température (°C)</label>
+        <input type="number" id="releve-valeur" placeholder="3.8" step="0.1" required>
+      </div>
+      <div class="input-wrap">
+        <label for="releve-commentaire">Commentaire (optionnel)</label>
+        <textarea id="releve-commentaire" placeholder="Anomalie, action corrective..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal secondary" data-close="modal-releve">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-releve">Enregistrer</button>
+      </div>
+    </form>
   </div>
 </div>
 
-<script>
+<!-- ============ MODAL APPRENTI ============ -->
+<div class="modal-overlay" id="modal-apprenti">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-apprenti-title">Nouvel <em>apprenti</em></h2>
+      <button class="modal-close" data-close="modal-apprenti"><span class="material-icons-round">close</span></button>
+    </div>
+    <form id="apprenti-form">
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="app-prenom">Prénom *</label>
+          <input type="text" id="app-prenom" placeholder="Lucas" required>
+        </div>
+        <div class="input-wrap">
+          <label for="app-nom">Nom *</label>
+          <input type="text" id="app-nom" placeholder="Dubois" required>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="app-formation">Formation</label>
+          <select id="app-formation">
+            <option value="cap">CAP Boulanger</option>
+            <option value="btm">BTM</option>
+            <option value="mention_complementaire">Mention complémentaire</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="input-wrap">
+          <label for="app-annee">Année</label>
+          <select id="app-annee">
+            <option value="1">Année 1</option>
+            <option value="2">Année 2</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-wrap">
+        <label for="app-cfa">CFA (optionnel)</label>
+        <input type="text" id="app-cfa" placeholder="Nom du CFA">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal secondary" data-close="modal-apprenti">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-apprenti">Enregistrer</button>
+      </div>
+      <button type="button" class="btn-delete" id="btn-delete-apprenti">
+        <span class="material-icons-round">delete</span>
+        Supprimer cet apprenti
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL TÂCHES APPRENTI ============ -->
+<div class="modal-overlay" id="modal-tasks">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-tasks-title">Carnet de <em>stage</em></h2>
+      <button class="modal-close" data-close="modal-tasks"><span class="material-icons-round">close</span></button>
+    </div>
+    <div id="tasks-list" style="margin-bottom: 14px;"></div>
+    <form id="add-task-form" style="display: flex; gap: 8px; margin-bottom: 18px;">
+      <input type="text" id="new-task-input" placeholder="Nouvelle compétence..." style="flex: 1; margin-bottom: 0;">
+      <button type="submit" class="btn-modal primary" style="width: auto; padding: 11px 16px;">+</button>
+    </form>
+    <button type="button" class="btn-primary" id="btn-export-cfa">
+      <span class="material-icons-round">download</span>
+      Exporter le carnet (PDF CFA)
+    </button>
+    <button type="button" class="btn-secondary" id="btn-edit-apprenti">
+      <span class="material-icons-round">edit</span>
+      Modifier les infos
+    </button>
+  </div>
+</div>
+
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ════════════ AU CHARGEMENT ════════════
-  (async () => {
-    // Vérifie que l'user est connecté
-    const { data: { session } } = await sb.auth.getSession();
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    if (!session) {
-      // Pas connecté → redirection login
-      window.location.href = 'login.html';
+  // ============ AUTH GUARD ============
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { window.location.href = '/login.html'; throw new Error('No session'); }
+
+  // ============ BOULANGERIE ============
+  let { data: boulangerie } = await supabase
+    .from('boulangeries')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .maybeSingle();
+
+  if (!boulangerie) {
+    const { data: newBou } = await supabase
+      .from('boulangeries')
+      .insert([{ user_id: session.user.id, nom: 'Ma boulangerie', pays: 'FR', raison_sociale: 'Ma boulangerie' }])
+      .select()
+      .single();
+    boulangerie = newBou;
+  }
+
+  if (!boulangerie) {
+    window.location.href = '/login.html';
+    throw new Error('No boulangerie');
+  }
+
+  const BOU_ID = boulangerie.id;
+  const user = session.user;
+
+  // ============ DOM REFS ============
+  const $ = (id) => document.getElementById(id);
+  const loading = $('loading');
+  const stage = $('stage');
+  const toast = $('toast');
+
+  function showToast(msg, type = 'success') {
+    toast.textContent = msg;
+    toast.className = 'toast ' + type;
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+  }
+
+  // ============ NAVIGATION ENTRE ONGLETS ============
+  const screens = document.querySelectorAll('.screen[data-screen]');
+  const tabs = document.querySelectorAll('.tab[data-tab]');
+
+  function goTo(name) {
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Charger les données spécifiques à l'onglet
+    if (name === 'qr') renderQrList();
+    if (name === 'haccp') renderReleves();
+    if (name === 'apprenti') renderApprentis();
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
+
+  document.querySelectorAll('[data-go]').forEach(b => {
+    b.addEventListener('click', () => goTo(b.dataset.go));
+  });
+
+  $('home-logo').addEventListener('click', (e) => { e.preventDefault(); goTo('accueil'); });
+
+  // ============ AVATAR + DROPDOWN ============
+  function getInitials(name) {
+    if (!name) return '??';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  const userName = user.user_metadata?.full_name
+    || (user.user_metadata?.prenom && user.user_metadata?.nom ? `${user.user_metadata.prenom} ${user.user_metadata.nom}` : null)
+    || user.user_metadata?.name
+    || user.email?.split('@')[0]
+    || 'Patron';
+
+  $('avatar-initials').textContent = getInitials(userName);
+  $('dropdown-name').textContent = userName;
+  $('dropdown-email').textContent = user.email || '';
+
+  $('avatar-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    $('user-dropdown').classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!$('avatar-btn').contains(e.target) && !$('user-dropdown').contains(e.target)) {
+      $('user-dropdown').classList.remove('open');
+    }
+  });
+
+  $('logout-btn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+  });
+
+  // ============ TRIAL BANNER ============
+  if (boulangerie.abonnement_status === 'trial' && boulangerie.trial_end_date) {
+    const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysLeft > 0) {
+      $('trial-days').textContent = daysLeft === 1 ? '1 jour' : `${daysLeft} jours`;
+      $('trial-banner').style.display = 'flex';
+    }
+  }
+
+  // ============ SALUTATION DU JOUR ============
+  const now = new Date();
+  const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  const jourStr = jours[now.getDay()];
+  $('status-label').textContent = `— ${jourStr.charAt(0).toUpperCase() + jourStr.slice(1)} ${now.getDate()} ${mois[now.getMonth()]}`;
+
+  // ========================================================
+  // ============ ÉTAT GLOBAL DES DONNÉES ============
+  // ========================================================
+  let procedures = [];
+  let releves = [];
+  let apprentis = [];
+
+  // ============ HELPER : ouvrir/fermer modal ============
+  function openModal(id) { $(id).classList.add('open'); }
+  function closeModal(id) { $(id).classList.remove('open'); }
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+
+  document.querySelectorAll('.modal-overlay').forEach(ov => {
+    ov.addEventListener('click', (e) => {
+      if (e.target === ov) closeModal(ov.id);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    }
+  });
+
+  // ========================================================
+  // ============ ONGLET PROCÉDURES ============
+  // ========================================================
+
+  const CAT_EMOJI = { production: '🥖', vente: '🛒', hygiene: '🧼', caisse: '💰', securite: '🛡️', maintenance: '🔧' };
+
+  let editingProcId = null;
+
+  async function loadProcedures() {
+    const { data, error } = await supabase
+      .from('procedures')
+      .select('id, titre, emoji, categorie, niveau, duree_minutes, etapes, slug, scans_count')
+      .eq('boulangerie_id', BOU_ID)
+      .eq('archivee', false)
+      .order('created_at', { ascending: false });
+    if (!error) procedures = data || [];
+    renderProcedures();
+  }
+
+  function renderProcedures() {
+    const list = $('proc-list');
+    const empty = $('proc-empty');
+    const count = $('proc-count');
+    list.innerHTML = '';
+
+    if (procedures.length === 0) {
+      empty.style.display = 'block';
+      count.textContent = '0 procédure';
       return;
     }
 
-    const user = session.user;
-    const metadata = user.user_metadata || {};
-    const typeCompte = metadata.type_compte || 'joueur';
+    empty.style.display = 'none';
+    count.textContent = `${procedures.length} procédure${procedures.length > 1 ? 's' : ''}`;
 
-    document.getElementById('loading').style.display = 'none';
+    procedures.forEach(p => {
+      const nbE = Array.isArray(p.etapes) ? p.etapes.length : 0;
+      const meta = [];
+      if (p.duree_minutes) meta.push(`${p.duree_minutes} min`);
+      meta.push(nbE ? `${nbE} étape${nbE > 1 ? 's' : ''}` : 'Pas d\'étapes');
 
-    if (typeCompte === 'club') {
-      await loadClubDashboard(user);
+      const card = document.createElement('button');
+      card.className = 'proc-card';
+      card.innerHTML = `
+        <div class="proc-emoji">${p.emoji || '📋'}</div>
+        <div class="proc-body">
+          <div class="proc-title"></div>
+          <div class="proc-meta"></div>
+        </div>
+        <span class="material-icons-round proc-arrow">chevron_right</span>
+      `;
+      card.querySelector('.proc-title').textContent = p.titre;
+      card.querySelector('.proc-meta').textContent = meta.join(' · ');
+      card.addEventListener('click', () => openProcModal(p));
+      list.appendChild(card);
+    });
+  }
+
+  // Étapes : ajouter / supprimer
+  function addStepRow(et = { titre: '', description: '' }) {
+    const list = $('steps-list');
+    const idx = list.children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'step-item';
+    row.innerHTML = `
+      <div class="step-num">${idx}</div>
+      <div class="step-fields">
+        <input type="text" class="step-titre" placeholder="Titre">
+        <textarea class="step-desc" placeholder="Description (optionnel)"></textarea>
+      </div>
+      <button type="button" class="step-remove" aria-label="Supprimer">
+        <span class="material-icons-round">close</span>
+      </button>
+    `;
+    row.querySelector('.step-titre').value = et.titre || '';
+    row.querySelector('.step-desc').value = et.description || '';
+    row.querySelector('.step-remove').addEventListener('click', () => {
+      row.remove();
+      renumberSteps();
+    });
+    list.appendChild(row);
+  }
+
+  function renumberSteps() {
+    [...$('steps-list').children].forEach((r, i) => {
+      r.querySelector('.step-num').textContent = i + 1;
+    });
+  }
+
+  $('btn-add-step').addEventListener('click', () => addStepRow());
+
+  let emojiTouched = false;
+  $('emoji').addEventListener('input', () => { emojiTouched = true; });
+  $('proc-categorie').addEventListener('change', () => {
+    if (!emojiTouched && (!$('emoji').value || $('emoji').value === '📋')) {
+      $('emoji').value = CAT_EMOJI[$('proc-categorie').value] || '📋';
+    }
+  });
+
+  function openProcModal(p) {
+    if (p) {
+      editingProcId = p.id;
+      $('modal-proc-title').innerHTML = 'Modifier <em>la procédure</em>';
+      $('emoji').value = p.emoji || '📋';
+      $('proc-titre').value = p.titre || '';
+      $('proc-categorie').value = p.categorie || 'production';
+      $('proc-niveau').value = p.niveau || 'debutant';
+      $('proc-duree').value = p.duree_minutes || '';
+      $('steps-list').innerHTML = '';
+      const etapes = Array.isArray(p.etapes) ? p.etapes : [];
+      etapes.forEach(e => addStepRow(e));
+      if (etapes.length === 0) addStepRow();
+      $('btn-delete-proc').style.display = 'flex';
     } else {
-      await loadJoueurDashboard(user);
+      editingProcId = null;
+      $('modal-proc-title').innerHTML = 'Nouvelle <em>procédure</em>';
+      $('proc-form').reset();
+      $('emoji').value = '📋';
+      $('steps-list').innerHTML = '';
+      addStepRow();
+      $('btn-delete-proc').style.display = 'none';
     }
-  })();
+    emojiTouched = false;
+    openModal('modal-proc');
+    setTimeout(() => $('proc-titre').focus(), 100);
+  }
 
-  // ════════════ DASHBOARD JOUEUR ════════════
-  async function loadJoueurDashboard(user) {
-    document.getElementById('dashboard-joueur').style.display = 'block';
+  $('btn-new-proc').addEventListener('click', () => openProcModal(null));
 
-    // Récupère le profile
-    const { data: profile } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+  $('proc-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const titre = $('proc-titre').value.trim();
+    if (!titre) { showToast('Titre obligatoire', 'error'); return; }
 
-    if (profile) {
-      document.getElementById('prenom-joueur').textContent = profile.prenom || 'Joueur';
-      document.getElementById('elo-joueur').textContent = profile.niveau_elo || 1500;
-      document.getElementById('matchs-joues').textContent = profile.matchs_joues || 0;
-      document.getElementById('matchs-gagnes').textContent = profile.matchs_gagnes || 0;
+    const etapes = [...$('steps-list').children].map((r, i) => ({
+      numero: i + 1,
+      titre: r.querySelector('.step-titre').value.trim(),
+      description: r.querySelector('.step-desc').value.trim()
+    })).filter(e => e.titre || e.description);
+
+    const data = {
+      boulangerie_id: BOU_ID,
+      titre,
+      emoji: $('emoji').value.trim() || '📋',
+      categorie: $('proc-categorie').value,
+      niveau: $('proc-niveau').value,
+      duree_minutes: $('proc-duree').value ? parseInt($('proc-duree').value, 10) : null,
+      etapes
+    };
+
+    const btn = $('btn-save-proc');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    try {
+      let error;
+      if (editingProcId) {
+        ({ error } = await supabase.from('procedures').update(data).eq('id', editingProcId));
+      } else {
+        ({ error } = await supabase.from('procedures').insert([data]));
+      }
+      if (error) throw error;
+      showToast(editingProcId ? '✓ Modifiée' : '✓ Créée');
+      closeModal('modal-proc');
+      await loadProcedures();
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  });
+
+  $('btn-delete-proc').addEventListener('click', async () => {
+    if (!editingProcId) return;
+    if (!confirm('Supprimer définitivement cette procédure ?')) return;
+    const { error } = await supabase.from('procedures').delete().eq('id', editingProcId);
+    if (error) { showToast('Erreur', 'error'); return; }
+    showToast('Supprimée');
+    closeModal('modal-proc');
+    await loadProcedures();
+  });
+
+  // ========================================================
+  // ============ ONGLET QR CODES ============
+  // ========================================================
+
+  function getProcedureUrl(slug) {
+    return `${window.location.origin}/p.html?s=${slug}`;
+  }
+
+  async function renderQrList() {
+    const list = $('qr-list');
+    const empty = $('qr-empty');
+    list.innerHTML = '';
+
+    if (procedures.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    for (const p of procedures) {
+      const url = getProcedureUrl(p.slug);
+      const card = document.createElement('button');
+      card.className = 'qr-card';
+      card.innerHTML = `
+        <div class="qr-mini" id="qr-mini-${p.id}"></div>
+        <div class="qr-body">
+          <div class="qr-title"></div>
+          <div class="qr-meta"></div>
+        </div>
+        <span class="material-icons-round qr-arrow">chevron_right</span>
+      `;
+      card.querySelector('.qr-title').textContent = `${p.emoji || '📋'} ${p.titre}`;
+      card.querySelector('.qr-meta').textContent = `Scanné ${p.scans_count || 0} fois`;
+      card.addEventListener('click', () => openQrModal(p));
+      list.appendChild(card);
+
+      // Générer le mini-QR
+      try {
+        await QRCode.toCanvas(card.querySelector(`#qr-mini-${p.id}`), url, {
+          width: 50,
+          margin: 1,
+          color: { dark: '#000', light: '#fff' }
+        });
+      } catch (e) { console.error(e); }
     }
   }
 
-  // ════════════ DASHBOARD CLUB ════════════
-  async function loadClubDashboard(user) {
-    document.getElementById('dashboard-club').style.display = 'block';
+  let currentQrProc = null;
 
-    // Récupère le club lié au user via clubs_admins
-    const { data: adminLink } = await sb
-      .from('clubs_admins')
-      .select('club_id')
-      .eq('user_id', user.id)
-      .single();
+  async function openQrModal(p) {
+    currentQrProc = p;
+    const url = getProcedureUrl(p.slug);
+    $('qr-emoji-big').textContent = p.emoji || '📋';
+    $('qr-title-big').textContent = p.titre;
+    $('qr-sub-big').textContent = `Niveau ${p.niveau || 'débutant'}`;
+    $('qr-url-text').textContent = url;
+    const frame = $('qr-frame');
+    frame.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    frame.appendChild(canvas);
+    try {
+      await QRCode.toCanvas(canvas, url, { width: 200, margin: 1, color: { dark: '#000', light: '#fff' } });
+    } catch (e) { console.error(e); showToast('Erreur QR', 'error'); }
+    openModal('modal-qr');
+  }
 
-    if (!adminLink) {
-      console.error('Pas de club lié à cet utilisateur');
+  // Imprimer un QR seul (A4)
+  $('btn-print-single').addEventListener('click', async () => {
+    if (!currentQrProc) return;
+    await printSingleQR(currentQrProc);
+  });
+
+  async function printSingleQR(p) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const url = getProcedureUrl(p.slug);
+
+    // Générer le QR en data URL
+    const qrDataUrl = await QRCode.toDataURL(url, { width: 600, margin: 1 });
+
+    // Page : QR centré + titre dessous
+    const pageW = 210;
+    const qrSize = 120;
+    const qrX = (pageW - qrSize) / 2;
+    const qrY = 50;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(28);
+    pdf.text(`${p.emoji || ''} ${p.titre}`, pageW / 2, 30, { align: 'center' });
+
+    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(14);
+    pdf.text('Scannez avec votre téléphone', pageW / 2, qrY + qrSize + 15, { align: 'center' });
+
+    pdf.setFontSize(10);
+    pdf.setTextColor(120);
+    pdf.text(url, pageW / 2, qrY + qrSize + 25, { align: 'center' });
+    pdf.text('Frizz✦ — frizz-instant.com', pageW / 2, 280, { align: 'center' });
+
+    pdf.save(`QR-${p.slug}.pdf`);
+    showToast('✓ PDF téléchargé');
+  }
+
+  // Imprimer toutes les procédures (grille A4)
+  $('btn-print-all').addEventListener('click', async () => {
+    if (procedures.length === 0) { showToast('Aucune procédure', 'error'); return; }
+
+    const btn = $('btn-print-all');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-icons-round">hourglass_empty</span> Génération...';
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+      // Grille 3 colonnes × 4 lignes = 12 QR par page
+      const cols = 3;
+      const rows = 4;
+      const perPage = cols * rows;
+      const margin = 12;
+      const pageW = 210;
+      const pageH = 297;
+      const cellW = (pageW - margin * 2) / cols;
+      const cellH = (pageH - margin * 2 - 20) / rows; // -20 pour laisser place au header
+      const qrSize = Math.min(cellW, cellH) - 18;
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(16);
+      pdf.text('Frizz✦ — Mes QR codes', pageW / 2, 12, { align: 'center' });
+      pdf.setFontSize(9);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(120);
+      pdf.text(boulangerie.nom || 'Ma boulangerie', pageW / 2, 17, { align: 'center' });
+      pdf.setTextColor(0);
+
+      for (let i = 0; i < procedures.length; i++) {
+        const p = procedures[i];
+        const idxOnPage = i % perPage;
+
+        if (i > 0 && idxOnPage === 0) {
+          pdf.addPage();
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(16);
+          pdf.text('Frizz✦ — Mes QR codes', pageW / 2, 12, { align: 'center' });
+          pdf.setFontSize(9);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(120);
+          pdf.text(boulangerie.nom || 'Ma boulangerie', pageW / 2, 17, { align: 'center' });
+          pdf.setTextColor(0);
+        }
+
+        const col = idxOnPage % cols;
+        const row = Math.floor(idxOnPage / cols);
+        const cellX = margin + col * cellW;
+        const cellY = margin + 14 + row * cellH;
+
+        // QR
+        const url = getProcedureUrl(p.slug);
+        const qrDataUrl = await QRCode.toDataURL(url, { width: 400, margin: 1 });
+        const qrX = cellX + (cellW - qrSize) / 2;
+        const qrY = cellY + 4;
+        pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+        // Titre sous le QR
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(9);
+        const titre = p.titre.length > 24 ? p.titre.substring(0, 22) + '..' : p.titre;
+        pdf.text(`${p.emoji || ''} ${titre}`, cellX + cellW / 2, qrY + qrSize + 5, { align: 'center' });
+      }
+
+      // Footer dernière page
+      pdf.setFontSize(8);
+      pdf.setTextColor(150);
+      pdf.text('Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
+
+      pdf.save(`Frizz-QR-codes-${new Date().toISOString().slice(0, 10)}.pdf`);
+      showToast('✓ Grille A4 téléchargée');
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur PDF', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-icons-round">print</span> Imprimer tous les QR (A4)';
+    }
+  });
+
+  // ========================================================
+  // ============ ONGLET HACCP ============
+  // ========================================================
+
+  const ZONE_LABELS = {
+    chambre_froide: 'Chambre froide positive',
+    congelateur: 'Congélateur',
+    vitrine: 'Vitrine pâtisserie',
+    four: 'Four'
+  };
+
+  const ZONE_RANGES = {
+    chambre_froide: { min: 0, max: 4 },
+    congelateur: { max: -18 },
+    vitrine: { min: 4, max: 6 },
+    four: null  // Pas de plage de conformité
+  };
+
+  function checkConformity(zone, valeur) {
+    const r = ZONE_RANGES[zone];
+    if (!r) return true;
+    if (r.min !== undefined && valeur < r.min) return false;
+    if (r.max !== undefined && valeur > r.max) return false;
+    return true;
+  }
+
+  let haccpViewMode = 'today';  // 'today' ou 'month'
+
+  async function loadReleves() {
+    const startDate = haccpViewMode === 'today'
+      ? new Date(new Date().setHours(0, 0, 0, 0)).toISOString()
+      : new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+
+    const { data } = await supabase
+      .from('releves_haccp')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .eq('type', 'temperature')
+      .gte('created_at', startDate)
+      .order('created_at', { ascending: false });
+
+    releves = data || [];
+    renderReleves();
+    updateStatusVerdict();
+  }
+
+  function renderReleves() {
+    const list = $('haccp-list');
+    const empty = $('haccp-empty');
+    list.innerHTML = '';
+
+    $('haccp-section-title').textContent = haccpViewMode === 'today' ? 'Aujourd\'hui' : 'Ce mois';
+    $('haccp-toggle').textContent = haccpViewMode === 'today' ? 'Voir tout le mois' : 'Voir aujourd\'hui';
+
+    if (releves.length === 0) {
+      empty.style.display = 'block';
+      empty.querySelector('.empty-title').textContent = haccpViewMode === 'today' ? 'Aucun relevé aujourd\'hui' : 'Aucun relevé ce mois';
+      return;
+    }
+    empty.style.display = 'none';
+
+    releves.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'releve-card';
+
+      const iconClass = r.conforme ? '' : 'bad';
+      const icon = r.zone === 'congelateur' ? 'kitchen' : r.zone === 'four' ? 'local_fire_department' : 'ac_unit';
+      const date = new Date(r.created_at);
+      const time = `${date.getHours().toString().padStart(2, '0')}h${date.getMinutes().toString().padStart(2, '0')}`;
+      const dayLabel = haccpViewMode === 'month'
+        ? `${date.getDate()}/${date.getMonth() + 1} · ${time}`
+        : time;
+
+      card.innerHTML = `
+        <div class="releve-icon ${iconClass}"><span class="material-icons-round">${icon}</span></div>
+        <div class="releve-body">
+          <div class="releve-title">${ZONE_LABELS[r.zone] || r.zone}</div>
+          <div class="releve-meta">${dayLabel}${r.commentaire ? ' · ' + r.commentaire : ''}</div>
+        </div>
+        <div class="releve-value ${r.conforme ? '' : 'bad'}">${r.valeur > 0 ? '+' : ''}${r.valeur}°C</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  $('haccp-toggle').addEventListener('click', () => {
+    haccpViewMode = haccpViewMode === 'today' ? 'month' : 'today';
+    loadReleves();
+  });
+
+  $('btn-new-releve').addEventListener('click', () => {
+    $('releve-form').reset();
+    openModal('modal-releve');
+    setTimeout(() => $('releve-valeur').focus(), 100);
+  });
+
+  $('releve-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const zone = $('releve-zone').value;
+    const valeur = parseFloat($('releve-valeur').value);
+    const commentaire = $('releve-commentaire').value.trim() || null;
+
+    if (isNaN(valeur)) { showToast('Température invalide', 'error'); return; }
+
+    const conforme = checkConformity(zone, valeur);
+
+    const btn = $('btn-save-releve');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    try {
+      const { error } = await supabase.from('releves_haccp').insert([{
+        boulangerie_id: BOU_ID,
+        type: 'temperature',
+        zone,
+        valeur,
+        conforme,
+        commentaire,
+        user_id: user.id
+      }]);
+      if (error) throw error;
+
+      showToast(conforme ? '✓ Relevé conforme' : '⚠ Relevé hors plage');
+      closeModal('modal-releve');
+      await loadReleves();
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  });
+
+  // PMS PDF mensuel
+  async function generatePMSPdf() {
+    // Charger TOUS les relevés du mois
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    const { data } = await supabase
+      .from('releves_haccp')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .eq('type', 'temperature')
+      .gte('created_at', monthStart)
+      .order('created_at', { ascending: true });
+
+    if (!data || data.length === 0) {
+      showToast('Aucun relevé ce mois', 'error');
       return;
     }
 
-    const { data: club } = await sb
-      .from('clubs')
-      .select('*')
-      .eq('id', adminLink.club_id)
-      .single();
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = 210;
+    const pageH = 297;
+    let y = 20;
 
-    if (club) {
-      document.getElementById('nom-club').textContent = club.nom || 'Mon club';
-      document.getElementById('club-nom').textContent = club.nom || '—';
-      document.getElementById('club-adresse').textContent = club.adresse || '—';
-      document.getElementById('club-ville').textContent =
-        (club.code_postal ? club.code_postal + ' ' : '') + (club.ville || '—');
-      document.getElementById('club-pays').textContent =
-        club.pays === 'CH' ? '🇨🇭 Suisse' : '🇫🇷 France';
-      document.getElementById('club-email').textContent = club.email || user.email;
+    // Header
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(20);
+    pdf.text('Plan de Maîtrise Sanitaire', pageW / 2, y, { align: 'center' });
+    y += 8;
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(120);
+    pdf.text(`${mois[new Date().getMonth()]} ${new Date().getFullYear()}`, pageW / 2, y, { align: 'center' });
+    y += 12;
 
-      const gpsEl = document.getElementById('club-gps');
-      if (club.latitude && club.longitude) {
-        gpsEl.textContent = '✓ Localisé : ' + parseFloat(club.latitude).toFixed(4) + ', ' + parseFloat(club.longitude).toFixed(4);
-        gpsEl.classList.add('success');
-      } else {
-        gpsEl.textContent = '⚠️ Pas de GPS — sera configuré manuellement';
-        gpsEl.classList.add('warning');
+    pdf.setTextColor(0);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(boulangerie.nom || 'Ma boulangerie', 15, y);
+    y += 5;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    if (boulangerie.adresse) { pdf.text(boulangerie.adresse, 15, y); y += 4; }
+    if (boulangerie.ville) { pdf.text(`${boulangerie.code_postal || ''} ${boulangerie.ville}`.trim(), 15, y); y += 4; }
+    if (boulangerie.siret) { pdf.text(`SIRET : ${boulangerie.siret}`, 15, y); y += 4; }
+    y += 6;
+
+    // Résumé
+    const total = data.length;
+    const conformes = data.filter(r => r.conforme).length;
+    const nonConformes = total - conformes;
+
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Synthèse du mois', 15, y); y += 6;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.text(`Total des relevés : ${total}`, 15, y); y += 5;
+    pdf.text(`Conformes : ${conformes}  /  Non conformes : ${nonConformes}`, 15, y); y += 5;
+    pdf.text(`Taux de conformité : ${Math.round(conformes / total * 100)}%`, 15, y); y += 10;
+
+    // Tableau
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Détail des relevés', 15, y); y += 6;
+
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFillColor(240, 240, 240);
+    pdf.rect(15, y, pageW - 30, 6, 'F');
+    pdf.text('Date', 17, y + 4);
+    pdf.text('Heure', 50, y + 4);
+    pdf.text('Zone', 75, y + 4);
+    pdf.text('Temp.', 130, y + 4);
+    pdf.text('Conforme', 155, y + 4);
+    y += 8;
+
+    pdf.setFont('helvetica', 'normal');
+
+    for (const r of data) {
+      if (y > pageH - 20) {
+        pdf.addPage();
+        y = 20;
       }
+      const d = new Date(r.created_at);
+      pdf.text(d.toLocaleDateString('fr-FR'), 17, y);
+      pdf.text(`${d.getHours().toString().padStart(2, '0')}h${d.getMinutes().toString().padStart(2, '0')}`, 50, y);
+      pdf.text(ZONE_LABELS[r.zone] || r.zone, 75, y);
+      pdf.text(`${r.valeur > 0 ? '+' : ''}${r.valeur}°C`, 130, y);
+      if (r.conforme) {
+        pdf.setTextColor(40, 160, 70);
+        pdf.text('Oui', 155, y);
+      } else {
+        pdf.setTextColor(200, 50, 40);
+        pdf.text('Non', 155, y);
+      }
+      pdf.setTextColor(0);
+      y += 5;
+    }
+
+    // Footer
+    pdf.setFontSize(8);
+    pdf.setTextColor(150);
+    pdf.text('Document généré automatiquement par Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
+
+    pdf.save(`PMS-${new Date().toISOString().slice(0, 7)}.pdf`);
+    showToast('✓ PMS téléchargé');
+  }
+
+  $('btn-pms-pdf').addEventListener('click', generatePMSPdf);
+  $('btn-pms').addEventListener('click', generatePMSPdf);
+
+  // Statut HACCP du jour pour l'accueil
+  function updateStatusVerdict() {
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    const todayReleves = releves.filter(r => new Date(r.created_at) >= today);
+    const total = todayReleves.length;
+    const nonConformes = todayReleves.filter(r => !r.conforme).length;
+    const heroEl = $('status-hero');
+    const verdict = $('status-verdict');
+    const submeta = $('status-submeta');
+
+    heroEl.classList.remove('warn');
+
+    if (total === 0) {
+      verdict.innerHTML = 'Bonne <em>journée</em>.';
+      submeta.textContent = `Aucun relevé HACCP aujourd'hui`;
+    } else if (nonConformes === 0) {
+      verdict.innerHTML = 'Tout est <em>en règle</em>.';
+      submeta.textContent = `${total} relevé${total > 1 ? 's' : ''} validé${total > 1 ? 's' : ''} aujourd'hui`;
+    } else {
+      heroEl.classList.add('warn');
+      verdict.innerHTML = `${nonConformes} <em>alerte${nonConformes > 1 ? 's' : ''}</em>.`;
+      submeta.textContent = `Sur ${total} relevé${total > 1 ? 's' : ''} aujourd'hui`;
     }
   }
 
-  // ════════════ LOGOUT ════════════
-  async function logout() {
-    await sb.auth.signOut();
-    window.location.href = 'index.html';
+  // ========================================================
+  // ============ ONGLET APPRENTI ============
+  // ========================================================
+
+  let editingApprentiId = null;
+  let currentApprenti = null;
+  let currentTasks = [];
+
+  async function loadApprentis() {
+    const { data } = await supabase
+      .from('apprentis')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .eq('actif', true)
+      .order('created_at', { ascending: false });
+    apprentis = data || [];
   }
+
+  async function renderApprentis() {
+    await loadApprentis();
+    const list = $('apprenti-list');
+    const empty = $('apprenti-empty');
+    list.innerHTML = '';
+
+    if (apprentis.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // Pour chaque apprenti, charger ses tâches pour calculer la progression
+    for (const a of apprentis) {
+      const { data: tasks } = await supabase
+        .from('taches_apprenti')
+        .select('id, validee')
+        .eq('apprenti_id', a.id);
+      const total = tasks?.length || 0;
+      const validees = tasks?.filter(t => t.validee).length || 0;
+      const pct = total > 0 ? Math.round((validees / total) * 100) : 0;
+
+      const card = document.createElement('button');
+      card.className = 'apprenti-card';
+      const initials = ((a.prenom?.[0] || '') + (a.nom?.[0] || '')).toUpperCase();
+      const formationLabel = a.formation === 'cap' ? 'CAP' : a.formation === 'btm' ? 'BTM' : a.formation;
+
+      card.innerHTML = `
+        <div class="apprenti-avatar">${initials || '??'}</div>
+        <div class="apprenti-body">
+          <div class="apprenti-name"></div>
+          <div class="apprenti-meta">${formationLabel} année ${a.annee} · ${validees}/${total} compétences</div>
+        </div>
+        <div class="apprenti-progress">${pct}%</div>
+      `;
+      card.querySelector('.apprenti-name').textContent = `${a.prenom} ${a.nom}`;
+      card.addEventListener('click', () => openTasksModal(a));
+      list.appendChild(card);
+    }
+  }
+
+  $('btn-new-apprenti').addEventListener('click', () => {
+    editingApprentiId = null;
+    $('modal-apprenti-title').innerHTML = 'Nouvel <em>apprenti</em>';
+    $('apprenti-form').reset();
+    $('btn-delete-apprenti').style.display = 'none';
+    openModal('modal-apprenti');
+    setTimeout(() => $('app-prenom').focus(), 100);
+  });
+
+  $('btn-edit-apprenti').addEventListener('click', () => {
+    if (!currentApprenti) return;
+    editingApprentiId = currentApprenti.id;
+    $('modal-apprenti-title').innerHTML = 'Modifier <em>l\'apprenti</em>';
+    $('app-prenom').value = currentApprenti.prenom || '';
+    $('app-nom').value = currentApprenti.nom || '';
+    $('app-formation').value = currentApprenti.formation || 'cap';
+    $('app-annee').value = currentApprenti.annee || 1;
+    $('app-cfa').value = currentApprenti.cfa_nom || '';
+    $('btn-delete-apprenti').style.display = 'flex';
+    closeModal('modal-tasks');
+    openModal('modal-apprenti');
+  });
+
+  $('apprenti-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      boulangerie_id: BOU_ID,
+      prenom: $('app-prenom').value.trim(),
+      nom: $('app-nom').value.trim(),
+      formation: $('app-formation').value,
+      annee: parseInt($('app-annee').value, 10),
+      cfa_nom: $('app-cfa').value.trim() || null
+    };
+    if (!data.prenom || !data.nom) { showToast('Prénom et nom requis', 'error'); return; }
+
+    const btn = $('btn-save-apprenti');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    try {
+      let error;
+      if (editingApprentiId) {
+        ({ error } = await supabase.from('apprentis').update(data).eq('id', editingApprentiId));
+      } else {
+        ({ error } = await supabase.from('apprentis').insert([data]));
+      }
+      if (error) throw error;
+      showToast(editingApprentiId ? '✓ Modifié' : '✓ Apprenti ajouté');
+      closeModal('modal-apprenti');
+      await renderApprentis();
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  });
+
+  $('btn-delete-apprenti').addEventListener('click', async () => {
+    if (!editingApprentiId) return;
+    if (!confirm('Supprimer cet apprenti et son carnet ?')) return;
+    const { error } = await supabase.from('apprentis').delete().eq('id', editingApprentiId);
+    if (error) { showToast('Erreur', 'error'); return; }
+    showToast('Supprimé');
+    closeModal('modal-apprenti');
+    await renderApprentis();
+  });
+
+  // Modal tâches
+  async function openTasksModal(a) {
+    currentApprenti = a;
+    $('modal-tasks-title').innerHTML = `Carnet de <em>${a.prenom}</em>`;
+    await loadTasks(a.id);
+    openModal('modal-tasks');
+  }
+
+  async function loadTasks(apprentiId) {
+    const { data } = await supabase
+      .from('taches_apprenti')
+      .select('*')
+      .eq('apprenti_id', apprentiId)
+      .order('ordre', { ascending: true })
+      .order('created_at', { ascending: true });
+    currentTasks = data || [];
+    renderTasks();
+  }
+
+  function renderTasks() {
+    const list = $('tasks-list');
+    list.innerHTML = '';
+
+    if (currentTasks.length === 0) {
+      list.innerHTML = '<div style="text-align: center; padding: 24px 0; font-size: 12px; color: rgba(255,255,255,0.5);">Aucune compétence. Ajoutez-en ci-dessous.</div>';
+      return;
+    }
+
+    currentTasks.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'task-item' + (t.validee ? ' done' : '');
+      item.innerHTML = `
+        <div class="task-check"></div>
+        <div class="task-label"></div>
+        <button type="button" class="task-remove" aria-label="Supprimer">
+          <span class="material-icons-round">close</span>
+        </button>
+      `;
+      item.querySelector('.task-label').textContent = t.libelle;
+
+      // Toggle au clic sur la ligne (pas sur le bouton supprimer)
+      item.addEventListener('click', async (e) => {
+        if (e.target.closest('.task-remove')) return;
+        const newVal = !t.validee;
+        const { error } = await supabase
+          .from('taches_apprenti')
+          .update({
+            validee: newVal,
+            date_validation: newVal ? new Date().toISOString().slice(0, 10) : null
+          })
+          .eq('id', t.id);
+        if (!error) {
+          t.validee = newVal;
+          renderTasks();
+        }
+      });
+
+      // Suppression
+      item.querySelector('.task-remove').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('Supprimer cette compétence ?')) return;
+        const { error } = await supabase.from('taches_apprenti').delete().eq('id', t.id);
+        if (!error) {
+          currentTasks = currentTasks.filter(x => x.id !== t.id);
+          renderTasks();
+        }
+      });
+
+      list.appendChild(item);
+    });
+  }
+
+  $('add-task-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = $('new-task-input');
+    const libelle = input.value.trim();
+    if (!libelle || !currentApprenti) return;
+
+    const { data, error } = await supabase
+      .from('taches_apprenti')
+      .insert([{
+        apprenti_id: currentApprenti.id,
+        libelle,
+        ordre: currentTasks.length
+      }])
+      .select()
+      .single();
+
+    if (!error && data) {
+      currentTasks.push(data);
+      input.value = '';
+      renderTasks();
+    }
+  });
+
+  // Export PDF carnet CFA
+  $('btn-export-cfa').addEventListener('click', async () => {
+    if (!currentApprenti) return;
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = 210;
+    const pageH = 297;
+    let y = 22;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(20);
+    pdf.text('Carnet de stage', pageW / 2, y, { align: 'center' });
+    y += 7;
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(120);
+    const formationLabel = currentApprenti.formation === 'cap' ? 'CAP Boulanger' : currentApprenti.formation === 'btm' ? 'BTM' : currentApprenti.formation;
+    pdf.text(`${formationLabel} — Année ${currentApprenti.annee}`, pageW / 2, y, { align: 'center' });
+    y += 14;
+
+    pdf.setTextColor(0);
+    pdf.setFontSize(13);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`${currentApprenti.prenom} ${currentApprenti.nom}`, 15, y); y += 7;
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'normal');
+    if (currentApprenti.cfa_nom) { pdf.text(`CFA : ${currentApprenti.cfa_nom}`, 15, y); y += 4; }
+    pdf.text(`Boulangerie : ${boulangerie.nom || ''}`, 15, y); y += 4;
+    if (boulangerie.ville) { pdf.text(`Ville : ${boulangerie.ville}`, 15, y); y += 4; }
+    y += 8;
+
+    // Synthèse
+    const total = currentTasks.length;
+    const validees = currentTasks.filter(t => t.validee).length;
+    const pct = total > 0 ? Math.round((validees / total) * 100) : 0;
+
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Progression', 15, y); y += 6;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.text(`Compétences validées : ${validees} / ${total}`, 15, y); y += 5;
+    pdf.text(`Taux d'autonomie : ${pct}%`, 15, y); y += 10;
+
+    // Liste des compétences
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Compétences', 15, y); y += 7;
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+
+    for (const t of currentTasks) {
+      if (y > pageH - 20) {
+        pdf.addPage();
+        y = 20;
+      }
+      const cb = t.validee ? '☑' : '☐';
+      pdf.text(`${cb} ${t.libelle}`, 17, y);
+      if (t.validee && t.date_validation) {
+        pdf.setTextColor(120);
+        pdf.text(`Validé le ${new Date(t.date_validation).toLocaleDateString('fr-FR')}`, 130, y);
+        pdf.setTextColor(0);
+      }
+      y += 6;
+    }
+
+    // Footer
+    y += 16;
+    if (y > pageH - 30) { pdf.addPage(); y = 30; }
+    pdf.setFontSize(9);
+    pdf.text('Signature du tuteur :', 15, y);
+    pdf.text('Signature de l\'apprenti :', 110, y);
+    pdf.line(15, y + 14, 80, y + 14);
+    pdf.line(110, y + 14, 175, y + 14);
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(150);
+    pdf.text('Document généré par Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
+
+    pdf.save(`Carnet-${currentApprenti.prenom}-${currentApprenti.nom}.pdf`);
+    showToast('✓ Carnet téléchargé');
+  });
+
+  // ========================================================
+  // ============ INIT ============
+  // ========================================================
+
+  await Promise.all([
+    loadProcedures(),
+    loadReleves(),
+    loadApprentis()
+  ]);
+
+  loading.style.display = 'none';
+  stage.classList.add('ready');
 </script>
 
 </body>

@@ -128,22 +128,14 @@ body::after {
   border-radius: 100px;
   color: #fff;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  white-space: nowrap;
   box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
   transition: transform 0.15s ease;
-}
-
-@media (max-width: 600px) {
-  .nav-cta {
-    font-size: 11px;
-    padding: 7px 14px;
-  }
 }
 
 .nav-cta:active { transform: scale(0.97); }
@@ -797,6 +789,17 @@ textarea {
 .hero > *:nth-child(3) { animation-delay: 0.25s; }
 .hero > *:nth-child(4) { animation-delay: 0.35s; }
 .hero > *:nth-child(5) { animation-delay: 0.45s; }
+/* ============ MOBILE — RÉDUCTION ESPACES ENTRE SECTIONS ============ */
+@media (max-width: 600px) {
+  .hero    { padding: 120px 0 48px 0; }
+  .pillars { padding: 32px 0 48px 0; }
+  .how     { padding: 48px 0; }
+  .pricing { padding: 48px 0; }
+  .contact { padding: 48px 0 64px 0; }
+
+  /* Espacements internes des sections */
+  .section-title { margin-bottom: 32px; }
+}
 
 </style>
 </head>
@@ -805,7 +808,7 @@ textarea {
 <!-- ============ NAVIGATION ============ -->
 <nav class="nav">
   <a href="#" class="logo">Frizz<span class="sparkle">✦</span></a>
-  <a href="mailto:contact.frizz.box@gmail.com" class="nav-cta">contact.frizz.box@gmail.com</a>
+  <a href="mailto:contact.frizz.box@gmail.com" class="nav-cta">S'inscrire</a>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -826,7 +829,7 @@ textarea {
   </p>
 
   <div class="hero-ctas">
-    <a href="#contact" class="btn-primary">
+    <a href="mailto:contact.frizz.box@gmail.com" class="btn-primary">
       <span class="material-icons-round">arrow_forward</span>
       Essayer 14 jours gratuits
     </a>
@@ -942,72 +945,12 @@ textarea {
       <li>Support par email en moins de 24h</li>
     </ul>
 
-    <a href="#contact" class="btn-primary price-cta">
+    <a href="mailto:contact.frizz.box@gmail.com" class="btn-primary price-cta">
       <span class="material-icons-round">arrow_forward</span>
       Démarrer mon essai gratuit
     </a>
 
     <div class="price-amende">— Soit moins cher qu'une amende DDPP.</div>
-  </div>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section id="contact" class="contact container">
-  <div class="form-card">
-    <h2 class="form-title">S'<em>inscrire</em>.</h2>
-    <p class="form-subtitle">Laissez-nous votre contact, on vous rappelle sous 24h.</p>
-
-    <form id="prospect-form" novalidate>
-      <div class="form-grid">
-        <div class="input-wrap">
-          <label for="nom">Prénom & Nom</label>
-          <input type="text" id="nom" name="nom" placeholder="Marc Dupont" required>
-        </div>
-        <div class="input-wrap">
-          <label for="telephone">Téléphone</label>
-          <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78">
-        </div>
-      </div>
-
-      <div class="input-wrap">
-        <label for="email">Email *</label>
-        <input type="email" id="email" name="email" placeholder="marc@maboulangerie.fr" required>
-      </div>
-
-      <div class="form-grid">
-        <div class="input-wrap">
-          <label for="nom_boulangerie">Nom de la boulangerie</label>
-          <input type="text" id="nom_boulangerie" name="nom_boulangerie" placeholder="Boulangerie Dupont">
-        </div>
-        <div class="input-wrap">
-          <label for="ville">Ville</label>
-          <input type="text" id="ville" name="ville" placeholder="Lyon">
-        </div>
-      </div>
-
-      <div class="input-wrap">
-        <label for="pays">Pays</label>
-        <select id="pays" name="pays">
-          <option value="FR">France</option>
-          <option value="CH">Suisse</option>
-        </select>
-      </div>
-
-      <div class="input-wrap">
-        <label for="message">Votre message (optionnel)</label>
-        <textarea id="message" name="message" placeholder="Ce qui vous intéresse, vos questions..."></textarea>
-      </div>
-
-      <button type="submit" class="form-submit" id="submit-btn">
-        S'inscrire
-      </button>
-
-      <p class="form-rgpd">
-        En soumettant ce formulaire, vous acceptez d'être recontacté par Frizz. Vos données sont stockées en Europe et ne sont jamais revendues.
-      </p>
-
-      <div class="toast" id="toast"></div>
-    </form>
   </div>
 </section>
 
@@ -1017,85 +960,6 @@ textarea {
   <p>La conformité et la formation, simplifiées pour les boulangeries artisanales.</p>
   <p style="margin-top: 14px;">© 2026 Frizz · Fait à Bâle, en Suisse 🇨🇭 · contact.frizz.box@gmail.com</p>
 </footer>
-
-<!-- ============ SUPABASE CLIENT ============ -->
-<script type="module">
-  // Import Supabase client depuis CDN officiel
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-  // ⚠️ Tes clés Supabase (anon = safe en public)
-  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // ============ FORMULAIRE PROSPECT ============
-  const form = document.getElementById('prospect-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const toast = document.getElementById('toast');
-
-  function showToast(message, type) {
-    toast.textContent = message;
-    toast.className = 'toast ' + type;
-    setTimeout(() => {
-      if (type === 'success') {
-        toast.style.display = 'none';
-      }
-    }, 8000);
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Récupérer les données
-    const formData = new FormData(form);
-    const data = {
-      nom: formData.get('nom')?.trim() || null,
-      email: formData.get('email')?.trim().toLowerCase(),
-      telephone: formData.get('telephone')?.trim() || null,
-      nom_boulangerie: formData.get('nom_boulangerie')?.trim() || null,
-      ville: formData.get('ville')?.trim() || null,
-      pays: formData.get('pays') || 'FR',
-      message: formData.get('message')?.trim() || null,
-      source: 'landing'
-    };
-
-    // Validation simple
-    if (!data.email || !data.email.includes('@')) {
-      showToast('Merci d\'indiquer une adresse email valide.', 'error');
-      return;
-    }
-
-    // UI loading
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Envoi en cours...';
-    toast.style.display = 'none';
-
-    try {
-      // Insert dans Supabase
-      const { error } = await supabase
-        .from('prospects')
-        .insert([data]);
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
-      // Succès
-      showToast('✓ Merci ! Nous vous recontactons sous 24h.', 'success');
-      form.reset();
-      submitBtn.textContent = "S'inscrire";
-
-    } catch (err) {
-      console.error(err);
-      showToast('Une erreur est survenue. Réessayez ou écrivez-nous à contact.frizz.box@gmail.com', 'error');
-      submitBtn.textContent = "S'inscrire";
-    } finally {
-      submitBtn.disabled = false;
-    }
-  });
-</script>
 
 </body>
 </html>

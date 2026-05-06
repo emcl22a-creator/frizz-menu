@@ -1196,6 +1196,153 @@ select option { background: #1a1a1c; color: #fff; }
 
 textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
+/* ============ VOICE RECORDING ============ */
+.steps-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.btn-voice-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px 7px 10px;
+  background: rgba(10, 132, 255, 0.12);
+  border: 1px solid rgba(10, 132, 255, 0.35);
+  border-radius: 100px;
+  color: #0A84FF;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-voice-trigger:hover { background: rgba(10, 132, 255, 0.2); }
+.btn-voice-trigger .material-icons-round { font-size: 16px; }
+
+.voice-panel {
+  margin-bottom: 14px;
+  padding: 18px;
+  background: rgba(10, 132, 255, 0.06);
+  border: 1px solid rgba(10, 132, 255, 0.2);
+  border-radius: 16px;
+}
+
+.voice-hint {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.voice-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.voice-btn-record,
+.voice-btn-stop,
+.voice-btn-process {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 18px 11px 14px;
+  border: none;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.voice-btn-record { background: #FF453A; color: #fff; box-shadow: 0 4px 14px rgba(255, 69, 58, 0.3); }
+.voice-btn-stop { background: #FF453A; color: #fff; box-shadow: 0 4px 14px rgba(255, 69, 58, 0.3); }
+.voice-btn-process { background: #0A84FF; color: #fff; box-shadow: 0 4px 14px rgba(10, 132, 255, 0.3); }
+.voice-btn-record:active,
+.voice-btn-stop:active,
+.voice-btn-process:active { transform: scale(0.97); }
+
+.voice-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.voice-btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
+
+.voice-recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.voice-pulse {
+  width: 12px;
+  height: 12px;
+  background: #FF453A;
+  border-radius: 50%;
+  animation: voice-pulse 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes voice-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.6); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(255, 69, 58, 0); }
+}
+
+.voice-transcript {
+  min-height: 60px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+}
+.voice-transcript:empty::before {
+  content: 'Parle maintenant…';
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+.voice-transcript-interim {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+.voice-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.55;
+  resize: vertical;
+  margin-bottom: 12px;
+  outline: none;
+}
+.voice-textarea:focus { border-color: #0A84FF; }
+
 /* ============ MEDIA UPLOADER ============ */
 .media-uploader { width: 100%; }
 
@@ -2379,27 +2526,16 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
           <input type="text" id="proc-titre" placeholder="Cuisson baguette tradition" required>
         </div>
       </div>
-      <div class="form-grid" style="margin-top: 12px;">
-        <div class="input-wrap">
-          <label for="proc-categorie">Catégorie</label>
-          <select id="proc-categorie">
-            <option value="production">Production</option>
-            <option value="vente">Vente</option>
-            <option value="hygiene">Hygiène</option>
-            <option value="caisse">Caisse</option>
-            <option value="securite">Sécurité</option>
-            <option value="maintenance">Maintenance</option>
-          </select>
-        </div>
-        <div class="input-wrap">
-          <label for="proc-niveau">Niveau</label>
-          <select id="proc-niveau">
-            <option value="debutant">Débutant</option>
-            <option value="apprenti">Apprenti</option>
-            <option value="confirme">Confirmé</option>
-            <option value="expert">Expert</option>
-          </select>
-        </div>
+      <div class="input-wrap" style="margin-top: 12px;">
+        <label for="proc-categorie">Catégorie</label>
+        <select id="proc-categorie">
+          <option value="production">Production</option>
+          <option value="vente">Vente</option>
+          <option value="hygiene">Hygiène</option>
+          <option value="caisse">Caisse</option>
+          <option value="securite">Sécurité</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
       </div>
       <div class="input-wrap">
         <label>Durée totale</label>
@@ -2442,7 +2578,61 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
         </div>
       </div>
       <div class="steps-wrap">
-        <div class="steps-label">Étapes</div>
+        <div class="steps-label-row">
+          <div class="steps-label">Étapes</div>
+          <button type="button" class="btn-voice-trigger" id="btn-voice-trigger">
+            <span class="material-icons-round">mic</span>
+            Dicter
+          </button>
+        </div>
+
+        <!-- Bloc enregistrement vocal -->
+        <div class="voice-panel" id="voice-panel" style="display: none;">
+          <div class="voice-state" id="voice-state-idle">
+            <p class="voice-hint">Dicte ta procédure naturellement. L'IA va découper en étapes claires.</p>
+            <div class="voice-actions">
+              <button type="button" class="voice-btn-record" id="btn-voice-record">
+                <span class="material-icons-round">fiber_manual_record</span>
+                Démarrer l'enregistrement
+              </button>
+              <button type="button" class="voice-btn-cancel" id="btn-voice-close">Annuler</button>
+            </div>
+          </div>
+
+          <div class="voice-state" id="voice-state-recording" style="display: none;">
+            <div class="voice-recording-indicator">
+              <span class="voice-pulse"></span>
+              <span>Enregistrement en cours…</span>
+            </div>
+            <div class="voice-transcript" id="voice-transcript-live"></div>
+            <div class="voice-actions">
+              <button type="button" class="voice-btn-stop" id="btn-voice-stop">
+                <span class="material-icons-round">stop</span>
+                Arrêter
+              </button>
+            </div>
+          </div>
+
+          <div class="voice-state" id="voice-state-review" style="display: none;">
+            <p class="voice-hint">Voici ce qui a été capté. Tu peux corriger avant de convertir.</p>
+            <textarea class="voice-textarea" id="voice-transcript-edit" rows="5"></textarea>
+            <div class="voice-actions">
+              <button type="button" class="voice-btn-process" id="btn-voice-process">
+                <span class="material-icons-round">auto_awesome</span>
+                Convertir en étapes
+              </button>
+              <button type="button" class="voice-btn-cancel" id="btn-voice-restart">Recommencer</button>
+            </div>
+          </div>
+
+          <div class="voice-state" id="voice-state-processing" style="display: none;">
+            <div class="voice-recording-indicator">
+              <div class="spinner-small"></div>
+              <span>L'IA traite ta dictée…</span>
+            </div>
+          </div>
+        </div>
+
         <div class="steps-list" id="steps-list"></div>
         <button type="button" class="btn-add-step" id="btn-add-step">
           <span class="material-icons-round">add</span>
@@ -2771,6 +2961,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
           $('emoji').value = '📋';
           $('proc-titre').classList.remove('input-error');
           if (typeof clearMediaPreview === 'function') clearMediaPreview();
+          // reset voice panel
+          const vp = $('voice-panel');
+          if (vp) vp.style.display = 'none';
+          if (speechRecognition) { try { speechRecognition.stop(); } catch (e) {} }
           editingProcId = null;
           emojiTouched = false;
         } catch (err) { console.error('Reset modal-proc error:', err); }
@@ -2831,7 +3025,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   async function loadProcedures() {
     const { data, error } = await supabase
       .from('procedures')
-      .select('id, titre, emoji, categorie, niveau, duree_minutes, etapes, slug, scans_count, video_url')
+      .select('id, titre, emoji, categorie, duree_minutes, etapes, slug, scans_count, video_url')
       .eq('boulangerie_id', BOU_ID)
       .eq('archivee', false)
       .order('created_at', { ascending: false });
@@ -3057,6 +3251,231 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     e.target.value = '';  // permet de re-sélectionner le même fichier
   });
 
+  // ============ VOICE RECORDING + IA ============
+  let speechRecognition = null;
+  let voiceFinalTranscript = '';
+
+  // Récupère / demande la clé Anthropic (stockée localement, jamais envoyée à un serveur)
+  function getAnthropicKey() {
+    let key = localStorage.getItem('frizz_anthropic_key');
+    if (!key) {
+      key = prompt(
+        'Pour utiliser la dictée vocale, colle ta clé API Anthropic ci-dessous.\n\n' +
+        '1. Va sur console.anthropic.com\n' +
+        '2. Crée une clé API (Settings → API Keys)\n' +
+        '3. Colle-la ici (commence par sk-ant-...)\n\n' +
+        'La clé est stockée UNIQUEMENT dans ton navigateur, jamais sur un serveur.'
+      );
+      if (key && key.trim().startsWith('sk-ant-')) {
+        localStorage.setItem('frizz_anthropic_key', key.trim());
+      } else if (key) {
+        showToast('Clé invalide (doit commencer par sk-ant-)', 'error');
+        return null;
+      } else {
+        return null;
+      }
+    }
+    return key;
+  }
+
+  function showVoiceState(name) {
+    ['idle', 'recording', 'review', 'processing'].forEach(s => {
+      const el = $('voice-state-' + s);
+      if (el) el.style.display = (s === name) ? 'block' : 'none';
+    });
+  }
+
+  $('btn-voice-trigger').addEventListener('click', () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      showToast('Dictée vocale non supportée. Utilise Safari ou Chrome.', 'error');
+      return;
+    }
+    $('voice-panel').style.display = 'block';
+    showVoiceState('idle');
+    voiceFinalTranscript = '';
+    $('voice-transcript-live').innerHTML = '';
+    $('voice-transcript-edit').value = '';
+  });
+
+  $('btn-voice-close').addEventListener('click', () => {
+    $('voice-panel').style.display = 'none';
+  });
+
+  $('btn-voice-restart').addEventListener('click', () => {
+    voiceFinalTranscript = '';
+    $('voice-transcript-live').innerHTML = '';
+    $('voice-transcript-edit').value = '';
+    showVoiceState('idle');
+  });
+
+  $('btn-voice-record').addEventListener('click', () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+
+    speechRecognition = new SR();
+    speechRecognition.lang = 'fr-FR';
+    speechRecognition.continuous = true;
+    speechRecognition.interimResults = true;
+
+    voiceFinalTranscript = '';
+    showVoiceState('recording');
+    $('voice-transcript-live').innerHTML = '';
+
+    speechRecognition.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const txt = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          voiceFinalTranscript += txt + ' ';
+        } else {
+          interim += txt;
+        }
+      }
+      const live = $('voice-transcript-live');
+      live.innerHTML = voiceFinalTranscript +
+        (interim ? `<span class="voice-transcript-interim">${interim}</span>` : '');
+      live.scrollTop = live.scrollHeight;
+    };
+
+    speechRecognition.onerror = (event) => {
+      console.error('SpeechRecognition error:', event.error);
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        showToast('Permission micro refusée. Autorise dans les réglages du navigateur.', 'error');
+      } else if (event.error === 'no-speech') {
+        // ignore — l'utilisateur n'a juste rien dit
+      } else {
+        showToast('Erreur dictée : ' + event.error, 'error');
+      }
+    };
+
+    speechRecognition.onend = () => {
+      // Si on a du texte → passer en review, sinon retour idle
+      const text = voiceFinalTranscript.trim();
+      if (text) {
+        $('voice-transcript-edit').value = text;
+        showVoiceState('review');
+      } else {
+        showVoiceState('idle');
+      }
+    };
+
+    try {
+      speechRecognition.start();
+    } catch (err) {
+      console.error('Erreur start():', err);
+      showToast('Impossible de démarrer la dictée', 'error');
+      showVoiceState('idle');
+    }
+  });
+
+  $('btn-voice-stop').addEventListener('click', () => {
+    if (speechRecognition) {
+      try { speechRecognition.stop(); } catch (e) { /* ignore */ }
+    }
+  });
+
+  $('btn-voice-process').addEventListener('click', async () => {
+    const transcript = $('voice-transcript-edit').value.trim();
+    if (!transcript) {
+      showToast('Aucun texte à convertir', 'error');
+      return;
+    }
+
+    const apiKey = getAnthropicKey();
+    if (!apiKey) return;
+
+    showVoiceState('processing');
+
+    try {
+      const procTitre = $('proc-titre').value.trim() || 'la procédure';
+      const prompt = `Tu es un assistant pour boulangers professionnels. Voici la dictée vocale d'une procédure de boulangerie ("${procTitre}") :
+
+"""
+${transcript}
+"""
+
+Décompose ce texte en étapes individuelles pour la fiche de procédure. Pour chaque étape :
+- Un TITRE court (2 à 5 mots, à l'infinitif ou substantif : "Pétrissage", "Mise en forme", "Cuisson")
+- Une DESCRIPTION détaillée d'une à deux phrases, claire et professionnelle, à l'impératif ou à l'infinitif
+- IMPÉRATIF : conserver TOUTES les quantités, températures et durées mentionnées
+- Corriger les fautes, supprimer les hésitations ("euh", "alors", "voilà", "donc")
+- Si une étape contient plusieurs actions distinctes, la découper
+
+Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
+{"steps":[{"titre":"...","description":"..."},...]}`;
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Claude API error:', res.status, errText);
+        if (res.status === 401) {
+          localStorage.removeItem('frizz_anthropic_key');
+          showToast('Clé API invalide ou expirée. Réessaie.', 'error');
+        } else {
+          showToast('Erreur API (' + res.status + ')', 'error');
+        }
+        showVoiceState('review');
+        return;
+      }
+
+      const data = await res.json();
+      const text = (data.content && data.content[0] && data.content[0].text) || '';
+
+      // Extraire le JSON même si Claude met du texte autour
+      let parsed;
+      try {
+        const match = text.match(/\{[\s\S]*\}/);
+        parsed = JSON.parse(match ? match[0] : text);
+      } catch (e) {
+        console.error('JSON parse error:', e, 'Texte reçu:', text);
+        showToast('Réponse IA mal formatée — réessaie', 'error');
+        showVoiceState('review');
+        return;
+      }
+
+      if (!parsed.steps || !Array.isArray(parsed.steps) || parsed.steps.length === 0) {
+        showToast('L\'IA n\'a pas pu identifier d\'étapes', 'error');
+        showVoiceState('review');
+        return;
+      }
+
+      // Vider la liste actuelle et insérer les nouvelles étapes
+      $('steps-list').innerHTML = '';
+      parsed.steps.forEach(s => {
+        addStepRow();
+        const rows = $('steps-list').querySelectorAll('.step-row');
+        const last = rows[rows.length - 1];
+        if (last) {
+          const inputs = last.querySelectorAll('input, textarea');
+          if (inputs[0]) inputs[0].value = s.titre || '';
+          if (inputs[1]) inputs[1].value = s.description || '';
+        }
+      });
+
+      $('voice-panel').style.display = 'none';
+      showToast(`✓ ${parsed.steps.length} étape${parsed.steps.length > 1 ? 's' : ''} générée${parsed.steps.length > 1 ? 's' : ''}`);
+    } catch (err) {
+      console.error('Erreur process voice:', err);
+      showToast('Erreur : ' + (err.message || 'inconnue'), 'error');
+      showVoiceState('review');
+    }
+  });
+
   function openProcModal(p) {
     // Reset complet AVANT de set les valeurs (évite états résiduels)
     $('proc-form').reset();
@@ -3069,7 +3488,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       $('emoji').value = p.emoji || '📋';
       $('proc-titre').value = p.titre || '';
       $('proc-categorie').value = p.categorie || 'production';
-      $('proc-niveau').value = p.niveau || 'debutant';
       const totalMin = p.duree_minutes || 0;
       $('proc-duree-h').value = totalMin >= 60 ? Math.floor(totalMin / 60) : '';
       $('proc-duree-min').value = totalMin % 60 || (totalMin > 0 ? '' : '');
@@ -3126,7 +3544,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       titre,
       emoji: $('emoji').value.trim() || '📋',
       categorie: $('proc-categorie').value,
-      niveau: $('proc-niveau').value,
       duree_minutes: totalMinutes > 0 ? totalMinutes : null,
       video_url: videoUrl || null,
       etapes
@@ -3205,7 +3622,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     const url = getProcedureUrl(p.slug);
     $('qr-emoji-big').textContent = p.emoji || '📋';
     $('qr-title-big').textContent = p.titre;
-    $('qr-sub-big').textContent = `Niveau ${p.niveau || 'débutant'}`;
+    const catLabels = { production: 'Production', vente: 'Vente', hygiene: 'Hygiène', caisse: 'Caisse', securite: 'Sécurité', maintenance: 'Maintenance' };
+    $('qr-sub-big').textContent = catLabels[p.categorie] || 'Procédure';
     $('qr-url-text').textContent = url;
 
     const frame = $('qr-frame');

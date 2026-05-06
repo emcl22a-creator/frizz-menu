@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Frizz✦ — Tableau de bord</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  background: #000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Aurora */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.16) 0%, transparent 60%),
+    #000;
+  z-index: -2;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ============ STAGE ============ */
+.stage {
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 120px;
+}
+
+.screen {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 88px 28px 56px 28px;
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ TOPBAR ============ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.logo {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  text-decoration: none;
+}
+
+.logo .sparkle {
+  color: #0A84FF;
+  font-size: 24px;
+  text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+  animation: pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* Menu utilisateur (avatar + dropdown) */
+.user-menu { position: relative; }
+
+.avatar-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.avatar-btn:active { transform: scale(0.95); }
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(20, 20, 22, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  display: none;
+  animation: dropdownIn 0.2s ease;
+}
+
+.user-dropdown.open { display: block; }
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  padding: 10px 14px 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 6px;
+}
+
+.dropdown-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.dropdown-email {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+.dropdown-item.danger { color: #FF453A; }
+
+.dropdown-item .material-icons-round { font-size: 18px; }
+
+/* ============ TRIAL BANNER ============ */
+.trial-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 14px;
+  margin-bottom: 28px;
+}
+
+.trial-banner .material-icons-round {
+  color: #0A84FF;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.trial-banner-text {
+  flex: 1;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.trial-banner-text strong { color: #0A84FF; font-weight: 600; }
+
+.trial-cta {
+  font-size: 11px;
+  color: #0A84FF;
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ============ STATUS HERO ============ */
+.status-hero { text-align: center; margin-bottom: 40px; }
+
+.status-hero .label {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 18px;
+  letter-spacing: 0.3px;
+}
+
+.status-hero .check-circle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.15);
+  border: 2px solid rgba(52, 199, 89, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px auto;
+  box-shadow: 0 0 40px rgba(52, 199, 89, 0.25);
+}
+
+.status-hero .check-circle .material-icons-round {
+  color: #34C759;
+  font-size: 44px;
+}
+
+.status-hero.warn .check-circle {
+  background: rgba(255, 159, 10, 0.15);
+  border-color: rgba(255, 159, 10, 0.5);
+  box-shadow: 0 0 40px rgba(255, 159, 10, 0.25);
+}
+
+.status-hero.warn .check-circle .material-icons-round { color: #FF9F0A; }
+
+.status-hero .verdict {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.status-hero .verdict em {
+  font-style: italic;
+  font-weight: 400;
+  color: #34C759;
+}
+
+.status-hero.warn .verdict em { color: #FF9F0A; }
+
+.status-hero .submeta {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Salutation cachée par défaut, montrée si bienvenue */
+.welcome-greeting {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 14px;
+}
+
+/* ============ BIG ACTIONS ============ */
+.big-action {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 22px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 14px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.big-action:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.big-action.primary {
+  background: #0A84FF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 32px rgba(10, 132, 255, 0.4), 0 2px 8px rgba(10, 132, 255, 0.25);
+}
+
+.big-action.primary:active {
+  background: #0A84FF;
+  transform: scale(0.98);
+  box-shadow: 0 4px 16px rgba(10, 132, 255, 0.35);
+}
+
+.action-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-icon .material-icons-round { color: #0A84FF; font-size: 26px; }
+
+.big-action.primary .action-icon {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.big-action.primary .action-icon .material-icons-round { color: #fff; }
+
+.action-body { flex: 1; min-width: 0; }
+
+.action-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 3px;
+  letter-spacing: -0.2px;
+}
+
+.action-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+}
+
+.big-action.primary .action-sub { color: rgba(255, 255, 255, 0.85); }
+
+.action-arrow { color: rgba(255, 255, 255, 0.3); font-size: 22px; flex-shrink: 0; }
+.big-action.primary .action-arrow { color: rgba(255, 255, 255, 0.7); }
+
+/* ============ TABBAR ============ */
+.tabbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(20, 20, 22, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  z-index: 100;
+}
+
+.tab {
+  width: 56px;
+  height: 56px;
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab .material-icons-round { font-size: 24px; }
+
+.tab.active {
+  background: #0A84FF;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(10, 132, 255, 0.5);
+}
+
+/* ============ LOADING SCREEN ============ */
+.loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 132, 255, 0.2);
+  border-top-color: #0A84FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Hidden initially, shown when ready */
+.stage { opacity: 0; transition: opacity 0.4s ease; }
+.stage.ready { opacity: 1; }
+
+/* ============ TOAST ============ */
+.toast-zone {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  pointer-events: none;
+  width: 100%;
+  max-width: 380px;
+  padding: 0 24px;
+}
+
+.toast {
+  display: none;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  pointer-events: auto;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+.toast.success {
+  display: block;
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+
+.toast.error {
+  display: block;
+  background: rgba(255, 69, 58, 0.15);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  color: #FF453A;
+}
+</style>
+</head>
+<body>
+
+<!-- Loader plein écran tant que les données ne sont pas chargées -->
+<div class="loading" id="loading"><div class="spinner"></div></div>
+
+<!-- Zone toast -->
+<div class="toast-zone"><div class="toast" id="toast"></div></div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="stage" id="stage">
+  <section class="screen">
+
+    <!-- Topbar : logo + avatar dropdown -->
+    <div class="topbar">
+      <a href="/dashboard.html" class="logo">Frizz<span class="sparkle">✦</span></a>
+
+      <div class="user-menu">
+        <button class="avatar-btn" id="avatar-btn" aria-label="Menu utilisateur">
+          <span id="avatar-initials">??</span>
+        </button>
+
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-name" id="dropdown-name">—</div>
+            <div class="dropdown-email" id="dropdown-email">—</div>
+          </div>
+          <a href="/parametres.html" class="dropdown-item">
+            <span class="material-icons-round">settings</span>
+            Paramètres
+          </a>
+          <a href="/abonnement.html" class="dropdown-item">
+            <span class="material-icons-round">card_membership</span>
+            Mon abonnement
+          </a>
+          <button class="dropdown-item danger" id="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bandeau trial (caché si abonnement actif) -->
+    <div class="trial-banner" id="trial-banner" style="display: none;">
+      <span class="material-icons-round">verified</span>
+      <span class="trial-banner-text">
+        <strong id="trial-days">14 jours</strong> d'essai restants
+      </span>
+      <a href="/abonnement.html" class="trial-cta">Activer →</a>
+    </div>
+
+    <!-- Statut du jour -->
+    <div class="status-hero" id="status-hero">
+      <div class="label" id="status-label">— Bonjour</div>
+      <div class="check-circle">
+        <span class="material-icons-round">check</span>
+      </div>
+      <div class="verdict" id="status-verdict">Tout est <em>en règle</em>.</div>
+      <div class="submeta" id="status-submeta">Bienvenue chez Frizz</div>
+    </div>
+
+    <!-- 3 actions principales -->
+    <a href="/procedures.html" class="big-action primary">
+      <div class="action-icon"><span class="material-icons-round">add</span></div>
+      <div class="action-body">
+        <div class="action-title">Nouvelle procédure</div>
+        <div class="action-sub">Filmer une étape, ajouter un QR</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </a>
+
+    <a href="/haccp.html" class="big-action">
+      <div class="action-icon"><span class="material-icons-round">thermostat</span></div>
+      <div class="action-body">
+        <div class="action-title">Relevé température</div>
+        <div class="action-sub">Chambre froide, vitrine, congélateur</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </a>
+
+    <a href="/pms.html" class="big-action">
+      <div class="action-icon"><span class="material-icons-round">picture_as_pdf</span></div>
+      <div class="action-body">
+        <div class="action-title">PMS du mois</div>
+        <div class="action-sub">PDF prêt pour la DDPP</div>
+      </div>
+      <span class="material-icons-round action-arrow">arrow_forward</span>
+    </a>
+
+  </section>
+</div>
+
+<!-- ============ TABBAR ============ -->
+<nav class="tabbar">
+  <a href="/dashboard.html" class="tab active" aria-label="Accueil">
+    <span class="material-icons-round">home</span>
+  </a>
+  <a href="/procedures.html" class="tab" aria-label="Procédures">
+    <span class="material-icons-round">menu_book</span>
+  </a>
+  <a href="/qr-codes.html" class="tab" aria-label="QR Codes">
+    <span class="material-icons-round">qr_code_2</span>
+  </a>
+  <a href="/haccp.html" class="tab" aria-label="HACCP">
+    <span class="material-icons-round">thermostat</span>
+  </a>
+  <a href="/apprenti.html" class="tab" aria-label="Apprenti">
+    <span class="material-icons-round">school</span>
+  </a>
+</nav>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ============ DOM REFS ============
+  const loading = document.getElementById('loading');
+  const stage = document.getElementById('stage');
+  const toast = document.getElementById('toast');
+
+  const avatarBtn = document.getElementById('avatar-btn');
+  const avatarInitials = document.getElementById('avatar-initials');
+  const userDropdown = document.getElementById('user-dropdown');
+  const dropdownName = document.getElementById('dropdown-name');
+  const dropdownEmail = document.getElementById('dropdown-email');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  const trialBanner = document.getElementById('trial-banner');
+  const trialDays = document.getElementById('trial-days');
+
+  const statusHero = document.getElementById('status-hero');
+  const statusLabel = document.getElementById('status-label');
+  const statusVerdict = document.getElementById('status-verdict');
+  const statusSubmeta = document.getElementById('status-submeta');
+
+  // ============ TOAST HELPERS ============
+  function showToast(message, type) {
+    toast.textContent = message;
+    toast.className = 'toast ' + type;
+    setTimeout(() => { toast.style.display = 'none'; }, 5000);
+  }
+
+  // ============ AUTH GUARD ============
+  // Redirige vers login si pas connecté
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+  if (sessionError || !session) {
+    window.location.href = '/login.html';
+    throw new Error('No session');
+  }
+
+  const user = session.user;
+
+  // ============ CHARGEMENT BOULANGERIE ============
+  let boulangerie = null;
+
+  const { data: bouData, error: bouError } = await supabase
+    .from('boulangeries')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (bouError) {
+    console.error('Erreur chargement boulangerie:', bouError);
+    showToast('Erreur de chargement. Reconnectez-vous.', 'error');
+  }
+
+  // Si pas de fiche boulangerie, en créer une (cas Google OAuth)
+  if (!bouData) {
+    const fullName = user.user_metadata?.full_name || user.user_metadata?.name || 'Patron';
+    const email = user.email || 'inconnu';
+
+    const { data: newBou, error: createError } = await supabase
+      .from('boulangeries')
+      .insert([{
+        user_id: user.id,
+        nom: 'Ma boulangerie',
+        pays: 'FR',
+        raison_sociale: 'Ma boulangerie'
+      }])
+      .select()
+      .single();
+
+    if (createError) {
+      console.error('Erreur création boulangerie:', createError);
+      showToast('Erreur création de votre boulangerie. Contactez-nous.', 'error');
+    } else {
+      boulangerie = newBou;
+      showToast('Bienvenue ! Pensez à compléter le nom de votre boulangerie dans Paramètres.', 'success');
+    }
+  } else {
+    boulangerie = bouData;
+  }
+
+  // ============ DROPDOWN UTILISATEUR ============
+  // Initiales : Marc Dupont → MD
+  function getInitials(name) {
+    if (!name) return '??';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  const userName = user.user_metadata?.full_name
+    || (user.user_metadata?.prenom && user.user_metadata?.nom
+      ? `${user.user_metadata.prenom} ${user.user_metadata.nom}`
+      : null)
+    || user.user_metadata?.name
+    || user.email?.split('@')[0]
+    || 'Patron';
+
+  avatarInitials.textContent = getInitials(userName);
+  dropdownName.textContent = userName;
+  dropdownEmail.textContent = user.email || '';
+
+  // Toggle dropdown
+  avatarBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!avatarBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+      userDropdown.classList.remove('open');
+    }
+  });
+
+  // ============ LOGOUT ============
+  logoutBtn.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+  });
+
+  // ============ TRIAL BANNER ============
+  if (boulangerie && boulangerie.abonnement_status === 'trial' && boulangerie.trial_end_date) {
+    const trialEnd = new Date(boulangerie.trial_end_date);
+    const now = new Date();
+    const daysLeft = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
+
+    if (daysLeft > 0) {
+      trialDays.textContent = daysLeft === 1 ? '1 jour' : `${daysLeft} jours`;
+      trialBanner.style.display = 'flex';
+    }
+  }
+
+  // ============ SALUTATION DU JOUR ============
+  // Format : "— Mardi 6 mai · 8h12"
+  const now = new Date();
+  const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  const jour = jours[now.getDay()];
+  const dateStr = `${jour.charAt(0).toUpperCase() + jour.slice(1)} ${now.getDate()} ${mois[now.getMonth()]}`;
+  statusLabel.textContent = `— ${dateStr}`;
+
+  // ============ STATUT HACCP DU JOUR ============
+  // On regarde s'il y a au moins un relevé HACCP aujourd'hui
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+
+  if (boulangerie) {
+    const { data: relevesData, error: relevesError } = await supabase
+      .from('releves_haccp')
+      .select('id, conforme')
+      .eq('boulangerie_id', boulangerie.id)
+      .gte('created_at', todayStart);
+
+    if (!relevesError && relevesData) {
+      const total = relevesData.length;
+      const nonConformes = relevesData.filter(r => !r.conforme).length;
+
+      if (total === 0) {
+        // Aucun relevé aujourd'hui : verdict neutre
+        statusVerdict.innerHTML = 'Bonne <em>journée</em>.';
+        statusSubmeta.textContent = `Aucun relevé HACCP aujourd'hui`;
+      } else if (nonConformes === 0) {
+        // Tout est OK
+        statusVerdict.innerHTML = 'Tout est <em>en règle</em>.';
+        statusSubmeta.textContent = `${total} relevé${total > 1 ? 's' : ''} validé${total > 1 ? 's' : ''} aujourd'hui`;
+      } else {
+        // Au moins 1 non-conforme : alerte orange
+        statusHero.classList.add('warn');
+        statusVerdict.innerHTML = `${nonConformes} <em>alerte${nonConformes > 1 ? 's' : ''}</em> à traiter.`;
+        statusSubmeta.textContent = `Sur ${total} relevé${total > 1 ? 's' : ''} aujourd'hui`;
+      }
+    }
+  }
+
+  // ============ TOUT EST PRÊT — afficher la page ============
+  loading.style.display = 'none';
+  stage.classList.add('ready');
+</script>
+
+</body>
+</html>

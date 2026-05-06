@@ -123,22 +123,32 @@ body::after {
 .user-menu { position: relative; }
 
 .avatar-btn {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2.5px solid rgba(255, 255, 255, 0.18);
   font-family: 'Source Serif 4', serif;
   font-style: italic;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 17px;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-  transition: transform 0.15s ease;
+  box-shadow:
+    0 6px 20px rgba(10, 132, 255, 0.45),
+    0 0 0 4px rgba(10, 132, 255, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.avatar-btn:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 8px 24px rgba(10, 132, 255, 0.6),
+    0 0 0 6px rgba(10, 132, 255, 0.18);
 }
 
 .avatar-btn:active { transform: scale(0.95); }
@@ -220,22 +230,6 @@ body::after {
   font-weight: 400;
   color: #0A84FF;
 }
-
-/* ============ TRIAL BANNER ============ */
-.trial-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  border-radius: 14px;
-  margin-bottom: 22px;
-}
-
-.trial-banner .material-icons-round { color: #0A84FF; font-size: 16px; flex-shrink: 0; }
-.trial-banner-text { flex: 1; font-size: 11px; font-weight: 500; }
-.trial-banner-text strong { color: #0A84FF; font-weight: 600; }
 
 /* ============ HOME — TÂCHES DU JOUR ============ */
 .home-section-title {
@@ -649,7 +643,7 @@ body::after {
   flex-direction: column;
   align-items: stretch;
   gap: 0;
-  padding: 4px 18px;
+  padding: 18px 24px;
 }
 
 .profil-name {
@@ -778,22 +772,6 @@ body::after {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
 }
-
-.plan-trial-info {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: rgba(10, 132, 255, 0.12);
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  border-radius: 100px;
-  margin-bottom: 14px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #fff;
-}
-
-.plan-trial-info .material-icons-round { color: #0A84FF; font-size: 14px; }
 
 .plan-features {
   list-style: none;
@@ -1649,12 +1627,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   <!-- ============ ONGLET 1 : PROCÉDURES (page d'accueil) ============ -->
   <section class="screen active" data-screen="procedures">
 
-    <!-- Bandeau trial -->
-    <div class="trial-banner" id="trial-banner" style="display: none;">
-      <span class="material-icons-round">verified</span>
-      <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
-    </div>
-
     <div class="hero">
       <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
       <h1 class="hero-title">Mes <em>procédures</em>.</h1>
@@ -1818,10 +1790,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
         <span class="plan-price-num">24<em>,90€</em></span>
         <span class="plan-price-unit">/mois</span>
       </div>
-      <div class="plan-trial-info" id="plan-trial-info">
-        <span class="material-icons-round">schedule</span>
-        <span id="plan-trial-text">14 jours d'essai restants</span>
-      </div>
       <ul class="plan-features">
         <li>Procédures illimitées + QR codes</li>
         <li>HACCP complet + PMS DDPP automatique</li>
@@ -1862,10 +1830,6 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   <button class="tab" data-tab="apprenti" aria-label="Apprenti">
     <span class="material-icons-round">school</span>
     <span class="tab-label">Apprenti</span>
-  </button>
-  <button class="tab" data-tab="profil" aria-label="Profil">
-    <span class="material-icons-round">person</span>
-    <span class="tab-label">Profil</span>
   </button>
 </nav>
 
@@ -2159,28 +2123,8 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
   $('avatar-btn').addEventListener('click', (e) => {
     e.stopPropagation();
-    $('user-dropdown').classList.toggle('open');
+    goTo('profil');
   });
-
-  document.addEventListener('click', (e) => {
-    if (!$('avatar-btn').contains(e.target) && !$('user-dropdown').contains(e.target)) {
-      $('user-dropdown').classList.remove('open');
-    }
-  });
-
-  $('logout-btn').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login.html';
-  });
-
-  // ============ TRIAL BANNER ============
-  if (boulangerie.abonnement_status === 'trial' && boulangerie.trial_end_date) {
-    const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
-    if (daysLeft > 0) {
-      $('trial-days').textContent = daysLeft === 1 ? '1 jour' : `${daysLeft} jours`;
-      $('trial-banner').style.display = 'flex';
-    }
-  }
 
   // ============ SALUTATION DU JOUR ============
   const now = new Date();
@@ -3309,26 +3253,20 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     // Abonnement
     const status = boulangerie.abonnement_status || 'trial';
     const planStatus = $('plan-status');
-    const planTrialInfo = $('plan-trial-info');
-    const planTrialText = $('plan-trial-text');
     const btnSubscribe = $('btn-subscribe');
 
     if (status === 'active') {
       planStatus.textContent = 'Actif';
       planStatus.classList.add('active');
-      planTrialInfo.style.display = 'none';
       btnSubscribe.innerHTML = '<span class="material-icons-round">credit_card</span> Gérer mon abonnement';
     } else if (status === 'trial' && boulangerie.trial_end_date) {
       const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
       if (daysLeft > 0) {
         planStatus.textContent = 'Période d\'essai';
         planStatus.classList.remove('active');
-        planTrialInfo.style.display = 'inline-flex';
-        planTrialText.textContent = `${daysLeft} jour${daysLeft > 1 ? 's' : ''} d'essai restant${daysLeft > 1 ? 's' : ''}`;
       } else {
         planStatus.textContent = 'Essai expiré';
         planStatus.classList.remove('active');
-        planTrialInfo.style.display = 'none';
       }
     }
   }

@@ -1706,6 +1706,280 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 .qr-sub-big { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-bottom: 16px; text-align: center; }
 .qr-url { font-family: monospace; font-size: 10px; color: rgba(255, 255, 255, 0.4); margin-bottom: 14px; word-break: break-all; text-align: center; padding: 0 14px; }
 
+/* ============ BOUTIQUE EN LIGNE ============ */
+.bq-activate-card {
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  margin-bottom: 16px;
+}
+.bq-activate-card.active {
+  background: rgba(10, 132, 255, 0.08);
+  border-color: rgba(10, 132, 255, 0.35);
+}
+.bq-activate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.bq-activate-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.bq-activate-card.active .bq-activate-title { color: #0A84FF; }
+.bq-activate-sub {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+.bq-toggle {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+}
+.bq-toggle input { opacity: 0; width: 0; height: 0; }
+.bq-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(120, 120, 128, 0.32);
+  border-radius: 31px;
+  transition: 0.25s;
+}
+.bq-toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  top: 2px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.25s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.bq-toggle input:checked + .bq-toggle-slider { background: #34C759; }
+.bq-toggle input:checked + .bq-toggle-slider::before { transform: translateX(20px); }
+
+.bq-link-card {
+  padding: 18px 20px;
+  background: rgba(10, 132, 255, 0.06);
+  border: 1px solid rgba(10, 132, 255, 0.25);
+  border-radius: 18px;
+  margin-bottom: 22px;
+}
+.bq-link-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 10px;
+}
+.bq-link-label .material-icons-round { font-size: 16px; color: #0A84FF; }
+.bq-link-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.bq-link-row input {
+  flex: 1;
+  padding: 11px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  outline: none;
+}
+.bq-link-copy {
+  width: 44px;
+  flex-shrink: 0;
+  background: #0A84FF;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bq-link-copy:active { transform: scale(0.95); }
+.bq-link-copy .material-icons-round { font-size: 18px; }
+.bq-link-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.bq-link-open:hover { background: rgba(255, 255, 255, 0.1); }
+.bq-link-open .material-icons-round { font-size: 16px; }
+
+.bq-config { margin-bottom: 22px; }
+.bq-config textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+.bq-config textarea:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.06);
+}
+
+.btn-primary-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 6px 18px rgba(10, 132, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+.btn-primary-full:active { transform: scale(0.98); }
+.btn-primary-full .material-icons-round { font-size: 18px; }
+
+.bq-produits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 480px) { .bq-produits-grid { grid-template-columns: 1fr 1fr; } }
+
+.bq-produit-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.bq-produit-card:hover { transform: translateY(-1px); border-color: rgba(10, 132, 255, 0.4); }
+.bq-produit-card.inactive { opacity: 0.5; }
+.bq-produit-photo {
+  aspect-ratio: 1 / 1;
+  background: rgba(255, 255, 255, 0.03);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.bq-produit-photo-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+.bq-produit-photo-empty .material-icons-round { font-size: 36px; }
+.bq-produit-info {
+  padding: 10px 12px 12px;
+}
+.bq-produit-nom {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bq-produit-prix {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  color: #0A84FF;
+}
+.bq-produit-badge-off {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 100px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Lead time pills dans modal produit */
+.bq-leadtime-pills {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.bq-leadtime-pill {
+  padding: 10px 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+.bq-leadtime-pill.selected {
+  background: rgba(10, 132, 255, 0.15);
+  border-color: #0A84FF;
+  color: #fff;
+}
+
+.bq-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+.bq-toggle-row-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
 /* ============ HACCP — MODE RAPIDE ============ */
 .quick-card-stack {
   display: flex;
@@ -2258,9 +2532,9 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <span class="material-icons-round">inventory_2</span>
       <span class="nav-label">Stocks</span>
     </button>
-    <button class="nav-item" data-tab="haccp">
-      <span class="material-icons-round">thermostat</span>
-      <span class="nav-label">HACCP</span>
+    <button class="nav-item" data-tab="boutique">
+      <span class="material-icons-round">storefront</span>
+      <span class="nav-label">Boutique</span>
     </button>
   </nav>
   <button class="sidebar-account" data-tab="profil" aria-label="Mon compte">
@@ -2319,58 +2593,109 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <div class="proc-list" id="proc-list"></div>
   </section>
 
-  <!-- ============ ONGLET 4 : HACCP ============ -->
-  <section class="screen" data-screen="haccp">
+  <!-- ============ ONGLET BOUTIQUE EN LIGNE ============ -->
+  <section class="screen" data-screen="boutique">
     <div class="hero" style="margin-bottom: 22px;">
-      <div class="hero-eyebrow">— En 5 secondes par jour</div>
-      <h1 class="hero-title">Mes <em>relevés</em>.</h1>
+      <div class="hero-eyebrow">— Vendez en ligne 24/7</div>
+      <h1 class="hero-title">Ma <em>boutique</em>.</h1>
     </div>
 
-    <!-- Bandeau si déjà fait aujourd'hui (caché si pas encore fait) -->
-    <div class="quick-done-banner" id="quick-done-banner" style="display: none;">
-      <span class="material-icons-round">check_circle</span>
-      <div>
-        <div class="quick-done-banner-text"><strong>Relevés du matin enregistrés</strong></div>
-        <div class="quick-done-banner-time" id="quick-done-time">—</div>
+    <!-- Bloc activation -->
+    <div class="bq-activate-card" id="bq-activate-card">
+      <div class="bq-activate-row">
+        <div>
+          <div class="bq-activate-title" id="bq-status-title">Boutique non active</div>
+          <div class="bq-activate-sub" id="bq-status-sub">Activez pour recevoir des commandes en ligne</div>
+        </div>
+        <label class="bq-toggle">
+          <input type="checkbox" id="bq-active-toggle">
+          <span class="bq-toggle-slider"></span>
+        </label>
       </div>
     </div>
 
-    <!-- Mode rapide : 3 zones avec ajustement -->
-    <div class="quick-card-stack" id="quick-zones">
-      <!-- Généré par JS -->
+    <!-- Lien public (visible quand active) -->
+    <div class="bq-link-card" id="bq-link-card" style="display: none;">
+      <div class="bq-link-label">
+        <span class="material-icons-round">link</span>
+        Lien à partager (Insta, SMS, QR…)
+      </div>
+      <div class="bq-link-row">
+        <input type="text" id="bq-public-url" readonly>
+        <button type="button" class="bq-link-copy" id="btn-copy-bq-link">
+          <span class="material-icons-round">content_copy</span>
+        </button>
+      </div>
+      <button type="button" class="bq-link-open" id="btn-open-bq">
+        <span class="material-icons-round">open_in_new</span>
+        Voir ma boutique
+      </button>
     </div>
 
-    <button type="button" class="btn-quick-validate" id="btn-quick-validate">
-      <span class="material-icons-round">check</span>
-      Tout valider en une fois
-    </button>
+    <!-- Configuration boutique -->
+    <div class="section-header" id="bq-config-header" style="display: none;">
+      <span class="section-title">Configuration</span>
+    </div>
 
-    <button type="button" class="btn-secondary" id="btn-pms-pdf">
-      <span class="material-icons-round">picture_as_pdf</span>
-      Télécharger le PMS du mois
-    </button>
+    <div class="bq-config" id="bq-config" style="display: none;">
 
-    <!-- Séparateur -->
-    <div class="haccp-divider">Historique</div>
+      <div class="input-wrap">
+        <label>Bannière de la boutique</label>
+        <div class="media-uploader">
+          <input type="file" id="bq-banner-file" accept="image/*" style="display: none;">
+          <input type="hidden" id="bq-banner-url">
+          <div id="bq-banner-empty" class="media-empty">
+            <button type="button" class="media-pick-btn" id="btn-pick-bq-banner">
+              <span class="material-icons-round">add_photo_alternate</span>
+              Ajouter une photo de couverture
+            </button>
+          </div>
+          <div id="bq-banner-uploading" class="media-uploading" style="display: none;">
+            <div class="spinner-small"></div>
+            <span>Envoi…</span>
+          </div>
+          <div id="bq-banner-preview" class="media-preview" style="display: none;">
+            <div class="media-preview-content" id="bq-banner-preview-content"></div>
+            <button type="button" class="media-remove-btn" id="btn-remove-bq-banner">
+              <span class="material-icons-round">close</span> Retirer
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <!-- Bouton ajout détaillé (autres zones, anomalies) -->
-    <button type="button" class="btn-secondary" id="btn-new-releve" style="margin-top: 0;">
+      <div class="input-wrap">
+        <label for="bq-description">Description de la boutique</label>
+        <textarea id="bq-description" rows="3" placeholder="Boulangerie artisanale de Bâle. Pain au levain, viennoiseries, pâtisseries sur commande."></textarea>
+      </div>
+
+      <div class="input-wrap">
+        <label for="bq-horaires">Horaires de retrait</label>
+        <textarea id="bq-horaires" rows="3" placeholder="Du mardi au samedi : 7h - 19h&#10;Dimanche : 8h - 13h&#10;Fermé le lundi"></textarea>
+      </div>
+
+      <button type="button" class="btn-primary-full" id="btn-save-bq-config">
+        <span class="material-icons-round">save</span>
+        Enregistrer la configuration
+      </button>
+    </div>
+
+    <!-- Produits -->
+    <div class="section-header" id="bq-produits-header" style="display: none;">
+      <span class="section-title">Mes produits</span>
+    </div>
+
+    <div class="empty" id="bq-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">cake</span></div>
+      <div class="empty-title">Aucun produit</div>
+      <div class="empty-desc">Ajoutez vos premiers produits pour démarrer.</div>
+    </div>
+
+    <div class="bq-produits-grid" id="bq-produits-list"></div>
+
+    <button type="button" class="btn-add-step" id="btn-new-produit" style="display: none;">
       <span class="material-icons-round">add</span>
-      Ajouter un relevé détaillé
+      Ajouter un produit
     </button>
-
-    <div class="section-header">
-      <span class="section-title" id="haccp-section-title">Aujourd'hui</span>
-      <button type="button" class="section-link" id="haccp-toggle">Voir tout le mois</button>
-    </div>
-
-    <div class="empty" id="haccp-empty" style="display: none;">
-      <div class="empty-icon"><span class="material-icons-round">thermostat</span></div>
-      <div class="empty-title">Aucun relevé aujourd'hui</div>
-      <div class="empty-desc">Validez vos relevés ci-dessus pour démarrer l'historique du mois.</div>
-    </div>
-
-    <div id="haccp-list"></div>
   </section>
 
   <!-- ============ ONGLET 4 : COMMANDES ============ -->
@@ -2501,9 +2826,9 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <span class="material-icons-round">inventory_2</span>
     <span class="tab-label">Stocks</span>
   </button>
-  <button class="tab" data-tab="haccp" aria-label="HACCP">
-    <span class="material-icons-round">thermostat</span>
-    <span class="tab-label">HACCP</span>
+  <button class="tab" data-tab="boutique" aria-label="Boutique">
+    <span class="material-icons-round">storefront</span>
+    <span class="tab-label">Boutique</span>
   </button>
 </nav>
 
@@ -2719,6 +3044,86 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   </div>
 </div>
 
+<!-- ============ MODAL PRODUIT BOUTIQUE ============ -->
+<div class="modal-overlay" id="modal-produit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-produit-title">Nouveau <em>produit</em></h2>
+      <button class="modal-close" data-close="modal-produit"><span class="material-icons-round">close</span></button>
+    </div>
+    <form id="produit-form">
+
+      <div class="input-wrap">
+        <label>Photo du produit</label>
+        <div class="media-uploader">
+          <input type="file" id="produit-photo-file" accept="image/*" style="display: none;">
+          <input type="hidden" id="produit-photo-url">
+          <div id="produit-photo-empty" class="media-empty">
+            <button type="button" class="media-pick-btn" id="btn-pick-produit-photo">
+              <span class="material-icons-round">add_photo_alternate</span>
+              Ajouter une photo
+            </button>
+          </div>
+          <div id="produit-photo-uploading" class="media-uploading" style="display: none;">
+            <div class="spinner-small"></div><span>Envoi…</span>
+          </div>
+          <div id="produit-photo-preview" class="media-preview" style="display: none;">
+            <div class="media-preview-content" id="produit-photo-preview-content"></div>
+            <button type="button" class="media-remove-btn" id="btn-remove-produit-photo">
+              <span class="material-icons-round">close</span> Retirer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-wrap">
+        <label for="produit-nom">Nom du produit *</label>
+        <input type="text" id="produit-nom" placeholder="Croissant pur beurre" required>
+      </div>
+
+      <div class="input-wrap">
+        <label for="produit-description">Description</label>
+        <textarea id="produit-description" rows="2" placeholder="Pâte feuilletée maison, beurre AOP Charentes-Poitou."></textarea>
+      </div>
+
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="produit-prix">Prix (€) *</label>
+          <input type="number" id="produit-prix" step="0.10" min="0" placeholder="1.50" required>
+        </div>
+      </div>
+
+      <div class="input-wrap">
+        <label>Délai de préparation</label>
+        <div class="bq-leadtime-pills" id="bq-leadtime-pills">
+          <button type="button" class="bq-leadtime-pill" data-hours="4">4 h</button>
+          <button type="button" class="bq-leadtime-pill selected" data-hours="24">24 h</button>
+          <button type="button" class="bq-leadtime-pill" data-hours="48">48 h</button>
+          <button type="button" class="bq-leadtime-pill" data-hours="168">1 sem.</button>
+        </div>
+      </div>
+
+      <div class="bq-toggle-row">
+        <span class="bq-toggle-row-label">Produit actif (visible)</span>
+        <label class="bq-toggle">
+          <input type="checkbox" id="produit-actif" checked>
+          <span class="bq-toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal secondary" data-close="modal-produit">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-produit">Enregistrer</button>
+      </div>
+      <button type="button" class="btn-delete" id="btn-delete-produit" style="display: none;">
+        <span class="material-icons-round">delete</span>
+        Supprimer ce produit
+      </button>
+    </form>
+  </div>
+</div>
+
 <!-- ============ MODAL COMMANDE ============ -->
 <div class="modal-overlay" id="modal-cmd">
   <div class="modal">
@@ -2888,7 +3293,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Charger les données spécifiques à l'onglet
-    if (name === 'haccp') renderReleves();
+    if (name === 'boutique') loadBoutique();
     if (name === 'commandes') renderCommandes();
     if (name === 'stocks') renderStocks();
     if (name === 'profil') renderProfil();
@@ -2944,7 +3349,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   // ============ ÉTAT GLOBAL DES DONNÉES ============
   // ========================================================
   let procedures = [];
-  let releves = [];
   let commandes = [];
   let stocks = [];
 
@@ -3696,399 +4100,445 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
   }
 
   // ========================================================
-  // ============ ONGLET HACCP ============
+  // ============ ONGLET BOUTIQUE EN LIGNE ============
   // ========================================================
 
-  const ZONE_LABELS = {
-    chambre_froide: 'Chambre froide positive',
-    congelateur: 'Congélateur',
-    vitrine: 'Vitrine pâtisserie',
-    four: 'Four'
-  };
+  let editingProduitId = null;
+  let bqProduits = [];
+  let bqProduitLeadtime = 24;
 
-  const ZONE_RANGES = {
-    chambre_froide: { min: 0, max: 4 },
-    congelateur: { max: -18 },
-    vitrine: { min: 4, max: 6 },
-    four: null  // Pas de plage de conformité
-  };
-
-  function checkConformity(zone, valeur) {
-    const r = ZONE_RANGES[zone];
-    if (!r) return true;
-    if (r.min !== undefined && valeur < r.min) return false;
-    if (r.max !== undefined && valeur > r.max) return false;
-    return true;
+  // Helper : générer un slug propre depuis un texte
+  function slugify(text) {
+    return (text || '')
+      .toString()
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // retire accents
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60);
   }
 
-  // ============ MODE RAPIDE — 3 zones quotidiennes ============
-  const QUICK_ZONES = [
-    { id: 'chambre_froide', name: 'Chambre froide', icon: 'ac_unit', defaultValue: 2 },
-    { id: 'congelateur', name: 'Congélateur', icon: 'kitchen', defaultValue: -19 },
-    { id: 'vitrine', name: 'Vitrine pâtisserie', icon: 'storefront', defaultValue: 5 }
-  ];
+  // Génère un slug unique pour la boulangerie (vérifie disponibilité)
+  async function generateUniqueSlug(base) {
+    let slug = slugify(base);
+    if (!slug) slug = 'boulangerie';
 
-  // Valeurs courantes (pré-remplies, ajustables au doigt)
-  const quickValues = {};
-
-  // Calcule la moyenne des 7 derniers relevés conformes par zone
-  // pour pré-remplir avec les valeurs habituelles du boulanger
-  function computeQuickDefaults() {
-    QUICK_ZONES.forEach(z => {
-      // Filtrer les relevés conformes de cette zone (sur les données chargées)
-      const recentForZone = releves
-        .filter(r => r.zone === z.id && r.conforme)
-        .slice(0, 7);
-
-      if (recentForZone.length > 0) {
-        const avg = recentForZone.reduce((s, r) => s + parseFloat(r.valeur), 0) / recentForZone.length;
-        quickValues[z.id] = Math.round(avg * 10) / 10;
-      } else {
-        quickValues[z.id] = z.defaultValue;
-      }
-    });
+    for (let i = 0; i < 10; i++) {
+      const candidate = i === 0 ? slug : `${slug}-${i + 1}`;
+      const { data } = await supabase
+        .from('boulangeries')
+        .select('id')
+        .eq('boutique_slug', candidate)
+        .maybeSingle();
+      if (!data) return candidate;
+    }
+    return `${slug}-${Date.now()}`;
   }
 
-  function renderQuickZones() {
-    const stack = $('quick-zones');
-    stack.innerHTML = '';
+  async function loadBoutique() {
+    const { data: bou, error } = await supabase
+      .from('boulangeries')
+      .select('id, nom, ville, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_horaires')
+      .eq('id', BOU_ID)
+      .single();
 
-    QUICK_ZONES.forEach(z => {
-      const range = ZONE_RANGES[z.id];
-      let rangeText = '';
-      if (range) {
-        if (range.min !== undefined && range.max !== undefined) rangeText = `Plage ${range.min}°C → +${range.max}°C`;
-        else if (range.max !== undefined) rangeText = `Max ${range.max}°C`;
-        else if (range.min !== undefined) rangeText = `Min ${range.min}°C`;
-      }
+    if (error || !bou) {
+      console.error('Erreur chargement boulangerie:', error);
+      return;
+    }
 
-      const card = document.createElement('div');
-      card.className = 'quick-zone';
-      card.innerHTML = `
-        <div class="quick-zone-icon"><span class="material-icons-round">${z.icon}</span></div>
-        <div class="quick-zone-body">
-          <div class="quick-zone-name">${z.name}</div>
-          <div class="quick-zone-range">${rangeText}</div>
-        </div>
-        <div class="quick-temp-controls">
-          <button type="button" class="quick-temp-btn" data-zone="${z.id}" data-act="-">−</button>
-          <div class="quick-temp-value" id="quick-val-${z.id}">${formatTemp(quickValues[z.id])}</div>
-          <button type="button" class="quick-temp-btn" data-zone="${z.id}" data-act="+">+</button>
-        </div>
-      `;
-      stack.appendChild(card);
-    });
+    // Toggle activation
+    $('bq-active-toggle').checked = !!bou.boutique_active;
+    updateBoutiqueStatusUI(bou);
 
-    // Attacher les events +/-
-    stack.querySelectorAll('.quick-temp-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const zone = btn.dataset.zone;
-        const act = btn.dataset.act;
-        const step = 0.1;
-        quickValues[zone] = Math.round((quickValues[zone] + (act === '+' ? step : -step)) * 10) / 10;
-        const valEl = $(`quick-val-${zone}`);
-        valEl.textContent = formatTemp(quickValues[zone]);
-        // Indicateur rouge si hors plage
-        const conforme = checkConformity(zone, quickValues[zone]);
-        valEl.classList.toggle('bad', !conforme);
-      });
-    });
+    // Configuration
+    $('bq-description').value = bou.boutique_description || '';
+    $('bq-horaires').value = bou.boutique_horaires || '';
+    $('bq-banner-url').value = bou.boutique_banner_url || '';
+    if (bou.boutique_banner_url) showBannerPreview(bou.boutique_banner_url);
+    else clearBannerPreview();
+
+    // Charger produits
+    await loadProduits();
   }
 
-  function formatTemp(v) {
-    const n = Math.round(v * 10) / 10;
-    return `${n > 0 ? '+' : ''}${n}°C`;
-  }
+  function updateBoutiqueStatusUI(bou) {
+    const card = $('bq-activate-card');
+    const titleEl = $('bq-status-title');
+    const subEl = $('bq-status-sub');
+    const linkCard = $('bq-link-card');
 
-  // Vérifier si les 3 zones ont déjà été enregistrées aujourd'hui
-  function checkQuickAlreadyDone() {
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-    const todayReleves = releves.filter(r => new Date(r.created_at) >= today);
+    if (bou.boutique_active) {
+      card.classList.add('active');
+      titleEl.textContent = '✓ Boutique active';
+      subEl.textContent = 'Vos clients peuvent commander en ligne';
+      linkCard.style.display = 'block';
 
-    const zonesDone = new Set(todayReleves.map(r => r.zone));
-    const allDone = QUICK_ZONES.every(z => zonesDone.has(z.id));
+      const url = `${window.location.origin}/boutique.html?s=${bou.boutique_slug}`;
+      $('bq-public-url').value = url;
 
-    const banner = $('quick-done-banner');
-    const validateBtn = $('btn-quick-validate');
-    const stack = $('quick-zones');
-
-    if (allDone) {
-      // Trouver l'heure du dernier relevé du matin
-      const lastTime = todayReleves
-        .filter(r => QUICK_ZONES.some(z => z.id === r.zone))
-        .map(r => new Date(r.created_at))
-        .sort((a, b) => b - a)[0];
-      if (lastTime) {
-        const hh = lastTime.getHours().toString().padStart(2, '0');
-        const mm = lastTime.getMinutes().toString().padStart(2, '0');
-        $('quick-done-time').textContent = `Aujourd'hui à ${hh}h${mm}`;
-      }
-      banner.style.display = 'flex';
-      stack.style.display = 'none';
-      validateBtn.style.display = 'none';
+      $('bq-config-header').style.display = 'flex';
+      $('bq-config').style.display = 'block';
+      $('bq-produits-header').style.display = 'flex';
+      $('btn-new-produit').style.display = 'flex';
     } else {
-      banner.style.display = 'none';
-      stack.style.display = 'flex';
-      validateBtn.style.display = 'flex';
+      card.classList.remove('active');
+      titleEl.textContent = 'Boutique non active';
+      subEl.textContent = 'Activez pour recevoir des commandes en ligne';
+      linkCard.style.display = 'none';
+      $('bq-config-header').style.display = 'none';
+      $('bq-config').style.display = 'none';
+      $('bq-produits-header').style.display = 'none';
+      $('btn-new-produit').style.display = 'none';
+      $('bq-empty').style.display = 'none';
+      $('bq-produits-list').innerHTML = '';
     }
   }
 
-  // Tout valider en une fois
-  $('btn-quick-validate').addEventListener('click', async () => {
-    const btn = $('btn-quick-validate');
-    btn.disabled = true;
-    const oldHtml = btn.innerHTML;
-    btn.innerHTML = '<span class="material-icons-round">hourglass_empty</span> Enregistrement...';
+  // Activation toggle
+  $('bq-active-toggle').addEventListener('change', async (e) => {
+    const wantActive = e.target.checked;
 
-    try {
-      const inserts = QUICK_ZONES.map(z => ({
-        boulangerie_id: BOU_ID,
-        type: 'temperature',
-        zone: z.id,
-        valeur: quickValues[z.id],
-        conforme: checkConformity(z.id, quickValues[z.id]),
-        commentaire: 'Mode rapide',
-        user_id: user.id
-      }));
+    if (wantActive) {
+      // S'assurer qu'un slug existe
+      const { data: bou } = await supabase
+        .from('boulangeries')
+        .select('id, nom, ville, boutique_slug')
+        .eq('id', BOU_ID)
+        .single();
 
-      const { error } = await supabase.from('releves_haccp').insert(inserts);
-      if (error) throw error;
-
-      // Compter les non-conformes
-      const nonConformes = inserts.filter(r => !r.conforme).length;
-      if (nonConformes > 0) {
-        showToast(`⚠ ${nonConformes} relevé${nonConformes > 1 ? 's' : ''} hors plage`, 'error');
-      } else {
-        showToast('✓ 3 relevés enregistrés', 'success');
+      let slug = bou.boutique_slug;
+      if (!slug) {
+        const base = bou.nom + (bou.ville ? '-' + bou.ville : '');
+        slug = await generateUniqueSlug(base);
       }
-      await loadReleves();
-    } catch (err) {
-      console.error(err);
-      showToast('Erreur', 'error');
-      btn.disabled = false;
-      btn.innerHTML = oldHtml;
+
+      const { error } = await supabase
+        .from('boulangeries')
+        .update({ boutique_active: true, boutique_slug: slug })
+        .eq('id', BOU_ID);
+
+      if (error) {
+        showToast('Erreur activation : ' + error.message, 'error');
+        e.target.checked = false;
+        return;
+      }
+      showToast('✓ Boutique activée');
+    } else {
+      const { error } = await supabase
+        .from('boulangeries')
+        .update({ boutique_active: false })
+        .eq('id', BOU_ID);
+
+      if (error) {
+        showToast('Erreur : ' + error.message, 'error');
+        e.target.checked = true;
+        return;
+      }
+      showToast('Boutique mise en pause');
+    }
+
+    await loadBoutique();
+  });
+
+  // Copier le lien public
+  $('btn-copy-bq-link').addEventListener('click', async () => {
+    const url = $('bq-public-url').value;
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('✓ Lien copié');
+    } catch (e) {
+      $('bq-public-url').select();
+      document.execCommand('copy');
+      showToast('✓ Lien copié');
     }
   });
 
-  let haccpViewMode = 'today';  // 'today' ou 'month'
+  // Ouvrir la boutique dans un nouvel onglet
+  $('btn-open-bq').addEventListener('click', () => {
+    const url = $('bq-public-url').value;
+    if (url) window.open(url, '_blank');
+  });
 
-  async function loadReleves() {
-    const startDate = haccpViewMode === 'today'
-      ? new Date(new Date().setHours(0, 0, 0, 0)).toISOString()
-      : new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-
-    const { data } = await supabase
-      .from('releves_haccp')
-      .select('*')
-      .eq('boulangerie_id', BOU_ID)
-      .eq('type', 'temperature')
-      .gte('created_at', startDate)
-      .order('created_at', { ascending: false });
-
-    releves = data || [];
-    renderReleves();
-    computeQuickDefaults();
-    renderQuickZones();
-    checkQuickAlreadyDone();
+  // ========== Banner upload ==========
+  function showBannerPreview(url) {
+    $('bq-banner-empty').style.display = 'none';
+    $('bq-banner-uploading').style.display = 'none';
+    $('bq-banner-preview').style.display = 'block';
+    $('bq-banner-preview-content').innerHTML = `<img src="${url}" alt="Bannière" style="width:100%;height:160px;object-fit:cover;display:block;">`;
+  }
+  function clearBannerPreview() {
+    $('bq-banner-url').value = '';
+    $('bq-banner-file').value = '';
+    $('bq-banner-preview').style.display = 'none';
+    $('bq-banner-uploading').style.display = 'none';
+    $('bq-banner-empty').style.display = 'block';
+    $('bq-banner-preview-content').innerHTML = '';
   }
 
-  function renderReleves() {
-    const list = $('haccp-list');
-    const empty = $('haccp-empty');
+  $('btn-pick-bq-banner').addEventListener('click', () => $('bq-banner-file').click());
+  $('btn-remove-bq-banner').addEventListener('click', clearBannerPreview);
+  $('bq-banner-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Image trop grosse (max 10 MB)', 'error');
+      return;
+    }
+
+    $('bq-banner-empty').style.display = 'none';
+    $('bq-banner-preview').style.display = 'none';
+    $('bq-banner-uploading').style.display = 'flex';
+
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const fileName = `boutique/${BOU_ID}/banner_${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from(MEDIA_BUCKET)
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(fileName);
+      $('bq-banner-url').value = urlData.publicUrl;
+      showBannerPreview(urlData.publicUrl);
+      showToast('✓ Bannière uploadée');
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur upload : ' + err.message, 'error');
+      clearBannerPreview();
+    }
+    e.target.value = '';
+  });
+
+  // ========== Save config ==========
+  $('btn-save-bq-config').addEventListener('click', async () => {
+    const btn = $('btn-save-bq-config');
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+
+    const { error } = await supabase
+      .from('boulangeries')
+      .update({
+        boutique_banner_url: $('bq-banner-url').value || null,
+        boutique_description: $('bq-description').value.trim() || null,
+        boutique_horaires: $('bq-horaires').value.trim() || null
+      })
+      .eq('id', BOU_ID);
+
+    btn.disabled = false;
+    btn.style.opacity = '1';
+
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+    showToast('✓ Configuration enregistrée');
+  });
+
+  // ========== Produits ==========
+  async function loadProduits() {
+    const { data, error } = await supabase
+      .from('produits_boutique')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .order('ordre', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur produits:', error);
+      return;
+    }
+    bqProduits = data || [];
+    renderProduits();
+  }
+
+  function renderProduits() {
+    const list = $('bq-produits-list');
+    const empty = $('bq-empty');
     list.innerHTML = '';
 
-    $('haccp-section-title').textContent = haccpViewMode === 'today' ? 'Aujourd\'hui' : 'Ce mois';
-    $('haccp-toggle').textContent = haccpViewMode === 'today' ? 'Voir tout le mois' : 'Voir aujourd\'hui';
-
-    if (releves.length === 0) {
+    if (bqProduits.length === 0) {
       empty.style.display = 'block';
-      empty.querySelector('.empty-title').textContent = haccpViewMode === 'today' ? 'Aucun relevé aujourd\'hui' : 'Aucun relevé ce mois';
       return;
     }
     empty.style.display = 'none';
 
-    releves.forEach(r => {
+    bqProduits.forEach(p => {
       const card = document.createElement('div');
-      card.className = 'releve-card';
-
-      const iconClass = r.conforme ? '' : 'bad';
-      const icon = r.zone === 'congelateur' ? 'kitchen' : r.zone === 'four' ? 'local_fire_department' : 'ac_unit';
-      const date = new Date(r.created_at);
-      const time = `${date.getHours().toString().padStart(2, '0')}h${date.getMinutes().toString().padStart(2, '0')}`;
-      const dayLabel = haccpViewMode === 'month'
-        ? `${date.getDate()}/${date.getMonth() + 1} · ${time}`
-        : time;
-
+      card.className = 'bq-produit-card' + (p.actif ? '' : ' inactive');
+      const photoStyle = p.photo_url ? `background-image: url('${p.photo_url}');` : '';
+      const photoHtml = p.photo_url
+        ? `<div class="bq-produit-photo" style="${photoStyle}">${!p.actif ? '<span class="bq-produit-badge-off">Inactif</span>' : ''}</div>`
+        : `<div class="bq-produit-photo"><div class="bq-produit-photo-empty"><span class="material-icons-round">cake</span></div>${!p.actif ? '<span class="bq-produit-badge-off">Inactif</span>' : ''}</div>`;
+      const prix = parseFloat(p.prix || 0).toFixed(2).replace('.', ',');
       card.innerHTML = `
-        <div class="releve-icon ${iconClass}"><span class="material-icons-round">${icon}</span></div>
-        <div class="releve-body">
-          <div class="releve-title">${ZONE_LABELS[r.zone] || r.zone}</div>
-          <div class="releve-meta">${dayLabel}${r.commentaire ? ' · ' + r.commentaire : ''}</div>
+        ${photoHtml}
+        <div class="bq-produit-info">
+          <div class="bq-produit-nom">${escapeHtml(p.nom)}</div>
+          <div class="bq-produit-prix">${prix} €</div>
         </div>
-        <div class="releve-value ${r.conforme ? '' : 'bad'}">${r.valeur > 0 ? '+' : ''}${r.valeur}°C</div>
       `;
+      card.addEventListener('click', () => openProduitModal(p));
       list.appendChild(card);
     });
   }
 
-  $('haccp-toggle').addEventListener('click', () => {
-    haccpViewMode = haccpViewMode === 'today' ? 'month' : 'today';
-    loadReleves();
+  function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  $('btn-new-produit').addEventListener('click', () => openProduitModal());
+
+  function openProduitModal(p) {
+    if (p) {
+      editingProduitId = p.id;
+      $('modal-produit-title').innerHTML = 'Modifier <em>le produit</em>';
+      $('produit-nom').value = p.nom || '';
+      $('produit-description').value = p.description || '';
+      $('produit-prix').value = p.prix || '';
+      $('produit-photo-url').value = p.photo_url || '';
+      $('produit-actif').checked = !!p.actif;
+      bqProduitLeadtime = p.lead_time_hours || 24;
+      if (p.photo_url) showProduitPhotoPreview(p.photo_url);
+      else clearProduitPhotoPreview();
+      $('btn-delete-produit').style.display = 'flex';
+    } else {
+      editingProduitId = null;
+      $('modal-produit-title').innerHTML = 'Nouveau <em>produit</em>';
+      $('produit-form').reset();
+      $('produit-actif').checked = true;
+      bqProduitLeadtime = 24;
+      clearProduitPhotoPreview();
+      $('btn-delete-produit').style.display = 'none';
+    }
+
+    // Met à jour les pills lead time
+    document.querySelectorAll('.bq-leadtime-pill').forEach(pill => {
+      pill.classList.toggle('selected', parseInt(pill.dataset.hours) === bqProduitLeadtime);
+    });
+
+    openModal('modal-produit');
+  }
+
+  // Pills lead time
+  document.querySelectorAll('.bq-leadtime-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      bqProduitLeadtime = parseInt(pill.dataset.hours);
+      document.querySelectorAll('.bq-leadtime-pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+    });
   });
 
-  $('btn-new-releve').addEventListener('click', () => {
-    $('releve-form').reset();
-    openModal('modal-releve');
-    setTimeout(() => $('releve-valeur').focus(), 100);
-  });
-
-  $('releve-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const zone = $('releve-zone').value;
-    const valeur = parseFloat($('releve-valeur').value);
-    const commentaire = $('releve-commentaire').value.trim() || null;
-
-    if (isNaN(valeur)) { showToast('Température invalide', 'error'); return; }
-
-    const conforme = checkConformity(zone, valeur);
-
-    const btn = $('btn-save-releve');
-    btn.disabled = true;
-    btn.textContent = 'Enregistrement...';
+  // Photo produit upload
+  function showProduitPhotoPreview(url) {
+    $('produit-photo-empty').style.display = 'none';
+    $('produit-photo-uploading').style.display = 'none';
+    $('produit-photo-preview').style.display = 'block';
+    $('produit-photo-preview-content').innerHTML = `<img src="${url}" alt="Produit" style="width:100%;height:200px;object-fit:cover;display:block;">`;
+  }
+  function clearProduitPhotoPreview() {
+    $('produit-photo-url').value = '';
+    $('produit-photo-file').value = '';
+    $('produit-photo-preview').style.display = 'none';
+    $('produit-photo-uploading').style.display = 'none';
+    $('produit-photo-empty').style.display = 'block';
+    $('produit-photo-preview-content').innerHTML = '';
+  }
+  $('btn-pick-produit-photo').addEventListener('click', () => $('produit-photo-file').click());
+  $('btn-remove-produit-photo').addEventListener('click', clearProduitPhotoPreview);
+  $('produit-photo-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Image trop grosse (max 10 MB)', 'error');
+      return;
+    }
+    $('produit-photo-empty').style.display = 'none';
+    $('produit-photo-preview').style.display = 'none';
+    $('produit-photo-uploading').style.display = 'flex';
 
     try {
-      const { error } = await supabase.from('releves_haccp').insert([{
-        boulangerie_id: BOU_ID,
-        type: 'temperature',
-        zone,
-        valeur,
-        conforme,
-        commentaire,
-        user_id: user.id
-      }]);
-      if (error) throw error;
-
-      showToast(conforme ? '✓ Relevé conforme' : '⚠ Relevé hors plage');
-      closeModal('modal-releve');
-      await loadReleves();
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const fileName = `boutique/${BOU_ID}/produit_${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from(MEDIA_BUCKET)
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(fileName);
+      $('produit-photo-url').value = urlData.publicUrl;
+      showProduitPhotoPreview(urlData.publicUrl);
     } catch (err) {
       console.error(err);
-      showToast('Erreur', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Enregistrer';
+      showToast('Erreur upload : ' + err.message, 'error');
+      clearProduitPhotoPreview();
     }
+    e.target.value = '';
   });
 
-  // PMS PDF mensuel
-  async function generatePMSPdf() {
-    // Charger TOUS les relevés du mois
-    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-    const { data } = await supabase
-      .from('releves_haccp')
-      .select('*')
-      .eq('boulangerie_id', BOU_ID)
-      .eq('type', 'temperature')
-      .gte('created_at', monthStart)
-      .order('created_at', { ascending: true });
+  // Save produit
+  $('produit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    if (!data || data.length === 0) {
-      showToast('Aucun relevé ce mois', 'error');
+    const nom = $('produit-nom').value.trim();
+    const prix = parseFloat($('produit-prix').value);
+
+    if (!nom) {
+      showToast('Le nom est requis', 'error');
+      return;
+    }
+    if (isNaN(prix) || prix < 0) {
+      showToast('Prix invalide', 'error');
       return;
     }
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-    const pageW = 210;
-    const pageH = 297;
-    let y = 20;
+    const data = {
+      boulangerie_id: BOU_ID,
+      nom,
+      description: $('produit-description').value.trim() || null,
+      prix,
+      photo_url: $('produit-photo-url').value || null,
+      lead_time_hours: bqProduitLeadtime,
+      actif: $('produit-actif').checked
+    };
 
-    // Header
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(20);
-    pdf.text('Plan de Maîtrise Sanitaire', pageW / 2, y, { align: 'center' });
-    y += 8;
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(120);
-    pdf.text(`${mois[new Date().getMonth()]} ${new Date().getFullYear()}`, pageW / 2, y, { align: 'center' });
-    y += 12;
+    const btn = $('btn-save-produit');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
 
-    pdf.setTextColor(0);
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(boulangerie.nom || 'Ma boulangerie', 15, y);
-    y += 5;
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    if (boulangerie.adresse) { pdf.text(boulangerie.adresse, 15, y); y += 4; }
-    if (boulangerie.ville) { pdf.text(`${boulangerie.code_postal || ''} ${boulangerie.ville}`.trim(), 15, y); y += 4; }
-    if (boulangerie.siret) { pdf.text(`SIRET : ${boulangerie.siret}`, 15, y); y += 4; }
-    y += 6;
-
-    // Résumé
-    const total = data.length;
-    const conformes = data.filter(r => r.conforme).length;
-    const nonConformes = total - conformes;
-
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Synthèse du mois', 15, y); y += 6;
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    pdf.text(`Total des relevés : ${total}`, 15, y); y += 5;
-    pdf.text(`Conformes : ${conformes}  /  Non conformes : ${nonConformes}`, 15, y); y += 5;
-    pdf.text(`Taux de conformité : ${Math.round(conformes / total * 100)}%`, 15, y); y += 10;
-
-    // Tableau
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Détail des relevés', 15, y); y += 6;
-
-    pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFillColor(240, 240, 240);
-    pdf.rect(15, y, pageW - 30, 6, 'F');
-    pdf.text('Date', 17, y + 4);
-    pdf.text('Heure', 50, y + 4);
-    pdf.text('Zone', 75, y + 4);
-    pdf.text('Temp.', 130, y + 4);
-    pdf.text('Conforme', 155, y + 4);
-    y += 8;
-
-    pdf.setFont('helvetica', 'normal');
-
-    for (const r of data) {
-      if (y > pageH - 20) {
-        pdf.addPage();
-        y = 20;
-      }
-      const d = new Date(r.created_at);
-      pdf.text(d.toLocaleDateString('fr-FR'), 17, y);
-      pdf.text(`${d.getHours().toString().padStart(2, '0')}h${d.getMinutes().toString().padStart(2, '0')}`, 50, y);
-      pdf.text(ZONE_LABELS[r.zone] || r.zone, 75, y);
-      pdf.text(`${r.valeur > 0 ? '+' : ''}${r.valeur}°C`, 130, y);
-      if (r.conforme) {
-        pdf.setTextColor(40, 160, 70);
-        pdf.text('Oui', 155, y);
-      } else {
-        pdf.setTextColor(200, 50, 40);
-        pdf.text('Non', 155, y);
-      }
-      pdf.setTextColor(0);
-      y += 5;
+    let error;
+    if (editingProduitId) {
+      const r = await supabase.from('produits_boutique').update(data).eq('id', editingProduitId);
+      error = r.error;
+    } else {
+      const r = await supabase.from('produits_boutique').insert([data]);
+      error = r.error;
     }
 
-    // Footer
-    pdf.setFontSize(8);
-    pdf.setTextColor(150);
-    pdf.text('Document généré automatiquement par Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
+    btn.disabled = false;
+    btn.textContent = 'Enregistrer';
 
-    pdf.save(`PMS-${new Date().toISOString().slice(0, 7)}.pdf`);
-    showToast('✓ PMS téléchargé');
-  }
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+    showToast(editingProduitId ? '✓ Produit modifié' : '✓ Produit ajouté');
+    closeModal('modal-produit');
+    await loadProduits();
+  });
 
-  $('btn-pms-pdf').addEventListener('click', generatePMSPdf);
+  // Delete produit
+  $('btn-delete-produit').addEventListener('click', async () => {
+    if (!editingProduitId) return;
+    const ok = await showConfirm('Supprimer ce produit ?', 'Cette action est définitive.');
+    if (!ok) return;
+    const { error } = await supabase.from('produits_boutique').delete().eq('id', editingProduitId);
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+    showToast('✓ Produit supprimé');
+    closeModal('modal-produit');
+    await loadProduits();
+  });
 
 
   // ========================================================

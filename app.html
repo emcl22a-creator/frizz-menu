@@ -2630,6 +2630,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
         <span class="material-icons-round">open_in_new</span>
         Voir ma boutique
       </button>
+      <button type="button" class="bq-link-open" id="btn-bq-qr-pdf" style="margin-top: 8px;">
+        <span class="material-icons-round">qr_code_2</span>
+        Télécharger un QR code A4 à imprimer
+      </button>
     </div>
 
     <!-- Configuration boutique -->
@@ -4070,30 +4074,34 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const url = getProcedureUrl(p.slug);
-
-    // Générer le QR en data URL (haute résolution pour PDF)
     const qrDataUrl = makeQrDataUrl(url, 16, 4);
 
-    // Page : QR centré + titre dessous
     const pageW = 210;
-    const qrSize = 120;
+    const qrSize = 130;
     const qrX = (pageW - qrSize) / 2;
-    const qrY = 50;
+    const qrY = 75;
 
+    // Titre principal — gros, gras, centré
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(28);
-    pdf.text(`${p.emoji || ''} ${p.titre}`, pageW / 2, 30, { align: 'center' });
+    pdf.setFontSize(36);
+    pdf.setTextColor(20);
+    pdf.text(`${p.emoji || ''} ${p.titre}`.trim(), pageW / 2, 50, { align: 'center' });
 
+    // QR code centré
     pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
+    // Consigne en gras sous le QR
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(18);
+    pdf.setTextColor(20);
+    pdf.text('Scannez ce QR code', pageW / 2, qrY + qrSize + 20, { align: 'center' });
     pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(14);
-    pdf.text('Scannez avec votre téléphone', pageW / 2, qrY + qrSize + 15, { align: 'center' });
+    pdf.text('pour accéder à la procédure', pageW / 2, qrY + qrSize + 30, { align: 'center' });
 
+    // Lien en petit, en bas
     pdf.setFontSize(10);
-    pdf.setTextColor(120);
-    pdf.text(url, pageW / 2, qrY + qrSize + 25, { align: 'center' });
-    pdf.text('Frizz✦ — frizz-instant.com', pageW / 2, 280, { align: 'center' });
+    pdf.setTextColor(140);
+    pdf.text(url, pageW / 2, qrY + qrSize + 50, { align: 'center' });
 
     pdf.save(`QR-${p.slug}.pdf`);
     showToast('✓ PDF téléchargé');
@@ -4260,6 +4268,69 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
   $('btn-open-bq').addEventListener('click', () => {
     const url = $('bq-public-url').value;
     if (url) window.open(url, '_blank');
+  });
+
+  // Télécharger un QR A4 pour la boutique
+  $('btn-bq-qr-pdf').addEventListener('click', async () => {
+    const url = $('bq-public-url').value;
+    if (!url) {
+      showToast('Activez d\'abord votre boutique', 'error');
+      return;
+    }
+
+    if (typeof qrcode === 'undefined') {
+      showToast('QR code non chargé, recharge la page', 'error');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const qrDataUrl = makeQrDataUrl(url, 16, 4);
+
+    // Récupérer le nom de la boulangerie pour le titre
+    const { data: bou } = await supabase
+      .from('boulangeries')
+      .select('nom')
+      .eq('id', BOU_ID)
+      .single();
+    const nomBou = (bou && bou.nom) || 'Notre boulangerie';
+
+    const pageW = 210;
+    const qrSize = 130;
+    const qrX = (pageW - qrSize) / 2;
+    const qrY = 75;
+
+    // Titre = nom de la boulangerie
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(34);
+    pdf.setTextColor(20);
+    pdf.text(nomBou, pageW / 2, 45, { align: 'center' });
+
+    // Sous-titre
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(16);
+    pdf.setTextColor(80);
+    pdf.text('Commandez en ligne', pageW / 2, 58, { align: 'center' });
+
+    // QR code centré
+    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+    // Consigne en gras sous le QR
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(18);
+    pdf.setTextColor(20);
+    pdf.text('Scannez ce QR code', pageW / 2, qrY + qrSize + 20, { align: 'center' });
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('pour passer commande en ligne', pageW / 2, qrY + qrSize + 30, { align: 'center' });
+
+    // Lien en petit
+    pdf.setFontSize(10);
+    pdf.setTextColor(140);
+    pdf.text(url, pageW / 2, qrY + qrSize + 50, { align: 'center' });
+
+    const safeName = nomBou.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+    pdf.save(`QR-boutique-${safeName}.pdf`);
+    showToast('✓ PDF téléchargé');
   });
 
   // ========== Banner upload ==========

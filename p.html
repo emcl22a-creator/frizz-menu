@@ -54,6 +54,25 @@
       margin-bottom: 8px;
     }
     .meta { font-size: 14px; color: rgba(255, 255, 255, 0.5); margin-bottom: 32px; }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 28px;
+    }
+    .video-wrap iframe,
+    .video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
     .steps-section { margin-bottom: 24px; }
     .steps-label {
       font-size: 12px; font-weight: 500;
@@ -141,7 +160,7 @@
       try {
         const { data: p, error } = await supabase
           .from('procedures')
-          .select('titre, emoji, niveau, duree_minutes, etapes')
+          .select('titre, emoji, niveau, duree_minutes, etapes, video_url')
           .eq('slug', slug)
           .maybeSingle();
 
@@ -164,11 +183,41 @@
 
           const etapes = Array.isArray(p.etapes) ? p.etapes : [];
 
+          // Helper : transformer une URL vidéo en HTML embed
+          function videoEmbedHtml(url) {
+            if (!url) return '';
+            try {
+              const u = new URL(url);
+              // YouTube
+              let ytId = null;
+              if (u.hostname.includes('youtube.com')) ytId = u.searchParams.get('v');
+              else if (u.hostname === 'youtu.be') ytId = u.pathname.slice(1);
+              if (ytId) {
+                return `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+              }
+              // Vimeo
+              if (u.hostname.includes('vimeo.com')) {
+                const vId = u.pathname.split('/').filter(Boolean)[0];
+                if (vId && /^\d+$/.test(vId)) {
+                  return `<div class="video-wrap"><iframe src="https://player.vimeo.com/video/${vId}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                }
+              }
+              // Vidéo directe (MP4, WebM)
+              if (/\.(mp4|webm|mov)$/i.test(u.pathname)) {
+                return `<div class="video-wrap"><video src="${url}" controls playsinline preload="metadata"></video></div>`;
+              }
+            } catch (e) { /* invalid URL — on ignore */ }
+            return '';
+          }
+
+          const videoHtml = videoEmbedHtml(p.video_url);
+
           content.classList.remove('loading');
           content.innerHTML = `
             <div class="emoji"></div>
             <div class="titre"></div>
             <div class="meta"></div>
+            ${videoHtml}
             <div class="steps-section">
               <div class="steps-label">Étapes</div>
               <div id="steps-list"></div>

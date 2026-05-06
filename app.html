@@ -119,328 +119,60 @@ body::after {
   font-weight: 500;
 }
 
-/* ============ AVATAR + DROPDOWN ============ */
-.user-menu { position: relative; }
+/* ============ BOUTON PROFIL (TOPBAR) ============ */
+.profil-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15);
+}
 
-.avatar-btn {
-  width: 36px;
-  height: 36px;
+.profil-trigger:hover {
+  background: rgba(10, 132, 255, 0.12);
+  border-color: rgba(10, 132, 255, 0.4);
+  box-shadow: 0 6px 16px rgba(10, 132, 255, 0.25);
+}
+
+.profil-trigger:active { transform: scale(0.96); }
+
+.profil-trigger-avatar {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.15);
   font-family: 'Source Serif 4', serif;
   font-style: italic;
   font-weight: 700;
-  font-size: 13px;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-  transition: transform 0.15s ease;
-}
-
-.avatar-btn:active { transform: scale(0.95); }
-
-.user-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 220px;
-  background: rgba(20, 20, 22, 0.85);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  padding: 8px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  z-index: 200;
-  display: none;
-}
-
-.user-dropdown.open { display: block; }
-
-.dropdown-header {
-  padding: 10px 14px 12px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 6px;
-}
-
-.dropdown-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.dropdown-email { font-size: 11px; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 14px;
-  background: none;
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  text-decoration: none;
-}
-
-.dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
-.dropdown-item.danger { color: #FF453A; }
-.dropdown-item .material-icons-round { font-size: 18px; }
-
-/* ============ HERO ÉDITORIAL ============ */
-.hero { margin-bottom: 28px; }
-
-.hero-eyebrow {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 8px;
-  letter-spacing: 0.3px;
-}
-
-.hero-title {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 36px;
-  line-height: 1.05;
-  letter-spacing: -1.2px;
-  color: #fff;
-}
-
-.hero-title em {
-  font-style: italic;
-  font-weight: 400;
-  color: #0A84FF;
-}
-
-/* ============ TRIAL BANNER ============ */
-.trial-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  border-radius: 14px;
-  margin-bottom: 22px;
-}
-
-.trial-banner .material-icons-round { color: #0A84FF; font-size: 16px; flex-shrink: 0; }
-.trial-banner-text { flex: 1; font-size: 11px; font-weight: 500; }
-.trial-banner-text strong { color: #0A84FF; font-weight: 600; }
-
-/* ============ HOME — TÂCHES DU JOUR ============ */
-.home-section-title {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 600;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: -0.2px;
-  margin: 0 0 12px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.home-section-title .count-pill {
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 11px;
-  color: #0A84FF;
-  background: rgba(10, 132, 255, 0.15);
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  border-radius: 100px;
-  padding: 2px 9px;
-  letter-spacing: 0.3px;
-}
-
-.task-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  color: #fff;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  margin-bottom: 8px;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.task-row:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
-
-.task-row.urgent {
-  border-color: rgba(255, 159, 10, 0.35);
-  background: linear-gradient(135deg, rgba(255, 159, 10, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-}
-
-.task-row.done {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.task-row.done:active { transform: none; background: rgba(255, 255, 255, 0.04); }
-
-.task-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: rgba(10, 132, 255, 0.15);
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.task-icon .material-icons-round { color: #0A84FF; font-size: 18px; }
-
-.task-row.urgent .task-icon { background: rgba(255, 159, 10, 0.18); border-color: rgba(255, 159, 10, 0.4); }
-.task-row.urgent .task-icon .material-icons-round { color: #FF9F0A; }
-
-.task-row.done .task-icon { background: rgba(52, 199, 89, 0.15); border-color: rgba(52, 199, 89, 0.35); }
-.task-row.done .task-icon .material-icons-round { color: #34C759; }
-
-.task-body { flex: 1; min-width: 0; }
-.task-row .task-label { font-size: 13px; font-weight: 600; margin-bottom: 1px; letter-spacing: -0.15px; }
-.task-row.done .task-label { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
-.task-row .task-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
-
-.task-arrow { color: rgba(255, 255, 255, 0.3); font-size: 18px; flex-shrink: 0; }
-.task-row.done .task-arrow { display: none; }
-
-/* ============ HOME — STATS APPLE WATCH STYLE ============ */
-.stats-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 28px;
-}
-
-.stat-cell {
-  padding: 16px 8px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 18px;
-  text-align: center;
-}
-
-.stat-num {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 28px;
-  letter-spacing: -1px;
-  line-height: 1;
-  margin-bottom: 4px;
-  color: #fff;
-}
-
-.stat-num em {
-  font-style: italic;
-  font-weight: 400;
-  color: #0A84FF;
-  font-size: 16px;
-  letter-spacing: -0.4px;
-}
-
-.stat-label {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-
-/* ============ HOME — BIG CTA ============ */
-.home-cta {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 18px 20px;
-  background: #0A84FF;
-  border: none;
-  border-radius: 22px;
-  color: #fff;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  margin-top: 8px;
-  box-shadow: 0 12px 32px rgba(10, 132, 255, 0.4), 0 2px 8px rgba(10, 132, 255, 0.25);
-  transition: transform 0.15s ease;
-}
-
-.home-cta:active { transform: scale(0.98); }
-
-.home-cta-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.home-cta-icon .material-icons-round { color: #fff; font-size: 24px; }
-
-.home-cta-body { flex: 1; }
-.home-cta-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.3px; }
-.home-cta-sub { font-size: 12px; color: rgba(255, 255, 255, 0.85); }
-
-.home-cta-arrow { color: rgba(255, 255, 255, 0.7); font-size: 22px; flex-shrink: 0; }
-
-/* ============ HOME — EMPTY (premier jour) ============ */
-.home-empty {
-  text-align: center;
-  padding: 32px 16px 24px 16px;
-  margin-bottom: 16px;
-  background: rgba(52, 199, 89, 0.08);
-  border: 1px solid rgba(52, 199, 89, 0.25);
-  border-radius: 18px;
-}
-
-.home-empty .material-icons-round {
-  color: #34C759;
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-
-.home-empty-title {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: -0.4px;
-  margin-bottom: 6px;
-}
-
-.home-empty-title em { font-style: italic; font-weight: 400; color: #34C759; }
-
-.home-empty-desc {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 280px;
-  margin: 0 auto;
-  line-height: 1.5;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(10, 132, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.profil-trigger-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .profil-trigger-label { display: none; }
+  .profil-trigger { padding: 5px; }
 }
 
 /* ============ BOUTONS ACTIONS ============ */
@@ -1620,32 +1352,15 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   <div class="screen" id="topbar-wrapper" style="display: block; padding: 0; max-width: 430px; margin: 0 auto;">
     <div class="topbar" style="padding: 24px 28px 0 28px; margin-bottom: 0;">
       <a href="#" class="logo" id="home-logo">Frizz<span class="sparkle">✦</span></a>
-      <div class="user-menu">
-        <button class="avatar-btn" id="avatar-btn" aria-label="Menu">
-          <span id="avatar-initials">??</span>
-        </button>
-        <div class="user-dropdown" id="user-dropdown">
-          <div class="dropdown-header">
-            <div class="dropdown-name" id="dropdown-name">—</div>
-            <div class="dropdown-email" id="dropdown-email">—</div>
-          </div>
-          <button class="dropdown-item danger" id="logout-btn">
-            <span class="material-icons-round">logout</span>
-            Se déconnecter
-          </button>
-        </div>
-      </div>
+      <button class="profil-trigger" id="profil-trigger" aria-label="Mon profil">
+        <span class="profil-trigger-avatar" id="avatar-initials">??</span>
+        <span class="profil-trigger-label">Mon compte</span>
+      </button>
     </div>
   </div>
 
   <!-- ============ ONGLET 1 : PROCÉDURES (page d'accueil) ============ -->
   <section class="screen active" data-screen="procedures">
-
-    <!-- Bandeau trial -->
-    <div class="trial-banner" id="trial-banner" style="display: none;">
-      <span class="material-icons-round">verified</span>
-      <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
-    </div>
 
     <div class="hero">
       <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
@@ -2146,33 +1861,11 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     || 'Patron';
 
   $('avatar-initials').textContent = getInitials(userName);
-  $('dropdown-name').textContent = userName;
-  $('dropdown-email').textContent = user.email || '';
 
-  $('avatar-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    $('user-dropdown').classList.toggle('open');
+  // Click sur le bouton "Mon compte" → ouvre l'onglet Profil
+  $('profil-trigger').addEventListener('click', () => {
+    goTo('profil');
   });
-
-  document.addEventListener('click', (e) => {
-    if (!$('avatar-btn').contains(e.target) && !$('user-dropdown').contains(e.target)) {
-      $('user-dropdown').classList.remove('open');
-    }
-  });
-
-  $('logout-btn').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login.html';
-  });
-
-  // ============ TRIAL BANNER ============
-  if (boulangerie.abonnement_status === 'trial' && boulangerie.trial_end_date) {
-    const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
-    if (daysLeft > 0) {
-      $('trial-days').textContent = daysLeft === 1 ? '1 jour' : `${daysLeft} jours`;
-      $('trial-banner').style.display = 'flex';
-    }
-  }
 
   // ============ SALUTATION DU JOUR ============
   const now = new Date();

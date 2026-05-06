@@ -4099,21 +4099,21 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     const COLOR_ACCENT = [184, 89, 58];
     const COLOR_GRAY = [140, 130, 120];
 
-    // ============ EYEBROW (haut de page) ============
+    // ============ EYEBROW ============
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('— PROCÉDURE —', pageW / 2, 28, { align: 'center', charSpace: 1.8 });
+    pdf.text('— PROCÉDURE —', pageW / 2, 34, { align: 'center', charSpace: 1.8 });
 
     // ============ EMOJI BADGE ============
-    let titleY = 55;
+    let titleY = 60;
     if (p.emoji) {
       try {
         const emojiUrl = emojiToDataUrl(p.emoji, 220);
-        const emSize = 18; // mm
-        pdf.addImage(emojiUrl, 'PNG', (pageW - emSize) / 2, 38, emSize, emSize);
-        titleY = 75;
-      } catch (e) { /* skip emoji if fails */ }
+        const emSize = 16;
+        pdf.addImage(emojiUrl, 'PNG', (pageW - emSize) / 2, 44, emSize, emSize);
+        titleY = 80;
+      } catch (e) { /* skip */ }
     }
 
     // ============ TITRE ============
@@ -4123,45 +4123,50 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.text(p.titre, pageW / 2, titleY, { align: 'center' });
 
     // ============ QR + COINS DÉCO ============
-    const qrSize = 110;
+    const qrSize = 120;
     const qrX = (pageW - qrSize) / 2;
-    const qrY = 105;
+    const qrY = 95;
 
     pdf.setDrawColor(...COLOR_ACCENT);
     pdf.setLineWidth(0.7);
     const c = 6, l = 9;
 
-    // Coin haut-gauche
     pdf.line(qrX - c, qrY - c, qrX - c + l, qrY - c);
     pdf.line(qrX - c, qrY - c, qrX - c, qrY - c + l);
-    // Coin haut-droit
     pdf.line(qrX + qrSize + c, qrY - c, qrX + qrSize + c - l, qrY - c);
     pdf.line(qrX + qrSize + c, qrY - c, qrX + qrSize + c, qrY - c + l);
-    // Coin bas-gauche
     pdf.line(qrX - c, qrY + qrSize + c, qrX - c + l, qrY + qrSize + c);
     pdf.line(qrX - c, qrY + qrSize + c, qrX - c, qrY + qrSize + c - l);
-    // Coin bas-droit
     pdf.line(qrX + qrSize + c, qrY + qrSize + c, qrX + qrSize + c - l, qrY + qrSize + c);
     pdf.line(qrX + qrSize + c, qrY + qrSize + c, qrX + qrSize + c, qrY + qrSize + c - l);
 
     pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
     // ============ CONSIGNE ============
+    const afterQrY = qrY + qrSize;
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(20);
     pdf.setTextColor(...COLOR_DARK);
-    pdf.text('Scannez ce QR code', pageW / 2, qrY + qrSize + 22, { align: 'center' });
+    pdf.text('Scannez ce QR code', pageW / 2, afterQrY + 22, { align: 'center' });
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(15);
     pdf.setTextColor(...COLOR_GRAY);
-    pdf.text('pour accéder à la procédure complète', pageW / 2, qrY + qrSize + 33, { align: 'center' });
+    pdf.text('pour accéder à la procédure complète', pageW / 2, afterQrY + 33, { align: 'center' });
 
-    // ============ URL en italic ============
+    // ============ URL ============
     pdf.setFont('helvetica', 'italic');
     pdf.setFontSize(9);
     pdf.setTextColor(...COLOR_GRAY);
-    pdf.text(url, pageW / 2, qrY + qrSize + 50, { align: 'center' });
+    pdf.text(url, pageW / 2, afterQrY + 50, { align: 'center' });
+
+    // ============ SIGNATURE FRIZZ (bas de page) ============
+    pdf.setFont('helvetica', 'bolditalic');
+    pdf.setFontSize(11);
+    pdf.setTextColor(...COLOR_ACCENT);
+    pdf.text('Frizz', pageW / 2 - 4, 280, { align: 'right' });
+    pdf.setFontSize(10);
+    pdf.text('*', pageW / 2 + 1, 277, { align: 'left' });
 
     pdf.save(`QR-${p.slug}.pdf`);
     showToast('✓ PDF téléchargé');
@@ -4365,30 +4370,29 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('— BOUTIQUE EN LIGNE —', pageW / 2, 28, { align: 'center', charSpace: 1.8 });
+    pdf.text('— BOUTIQUE EN LIGNE —', pageW / 2, 34, { align: 'center', charSpace: 1.8 });
 
     // ============ TITRE = nom boulangerie ============
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(38);
     pdf.setTextColor(...COLOR_DARK);
-    pdf.text(nomBou, pageW / 2, 50, { align: 'center' });
+    pdf.text(nomBou, pageW / 2, 60, { align: 'center' });
 
     // ============ SOUS-TITRE ============
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(15);
     pdf.setTextColor(...COLOR_GRAY);
-    pdf.text('Commandez en ligne, retirez en boutique', pageW / 2, 64, { align: 'center' });
+    pdf.text('Commandez en ligne, retirez en boutique', pageW / 2, 74, { align: 'center' });
 
     // ============ QR + COINS DÉCO ============
-    const qrSize = 110;
+    const qrSize = 120;
     const qrX = (pageW - qrSize) / 2;
-    const qrY = 105;
+    const qrY = 95;
 
     pdf.setDrawColor(...COLOR_ACCENT);
     pdf.setLineWidth(0.7);
     const c = 6, l = 9;
 
-    // 4 coins L
     pdf.line(qrX - c, qrY - c, qrX - c + l, qrY - c);
     pdf.line(qrX - c, qrY - c, qrX - c, qrY - c + l);
     pdf.line(qrX + qrSize + c, qrY - c, qrX + qrSize + c - l, qrY - c);
@@ -4401,21 +4405,30 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
     // ============ CONSIGNE ============
+    const afterQrY = qrY + qrSize;
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(20);
     pdf.setTextColor(...COLOR_DARK);
-    pdf.text('Scannez ce QR code', pageW / 2, qrY + qrSize + 22, { align: 'center' });
+    pdf.text('Scannez ce QR code', pageW / 2, afterQrY + 22, { align: 'center' });
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(15);
     pdf.setTextColor(...COLOR_GRAY);
-    pdf.text('pour passer commande en ligne', pageW / 2, qrY + qrSize + 33, { align: 'center' });
+    pdf.text('pour passer commande en ligne', pageW / 2, afterQrY + 33, { align: 'center' });
 
-    // ============ URL en italic ============
+    // ============ URL ============
     pdf.setFont('helvetica', 'italic');
     pdf.setFontSize(9);
     pdf.setTextColor(...COLOR_GRAY);
-    pdf.text(url, pageW / 2, qrY + qrSize + 50, { align: 'center' });
+    pdf.text(url, pageW / 2, afterQrY + 50, { align: 'center' });
+
+    // ============ SIGNATURE FRIZZ ============
+    pdf.setFont('helvetica', 'bolditalic');
+    pdf.setFontSize(11);
+    pdf.setTextColor(...COLOR_ACCENT);
+    pdf.text('Frizz', pageW / 2 - 4, 280, { align: 'right' });
+    pdf.setFontSize(10);
+    pdf.text('*', pageW / 2 + 1, 277, { align: 'left' });
 
     const safeName = nomBou.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
     pdf.save(`QR-boutique-${safeName}.pdf`);

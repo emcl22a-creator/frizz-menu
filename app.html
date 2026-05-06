@@ -4174,6 +4174,46 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     return canvas.toDataURL('image/png');
   }
 
+  // Helper : rend le logo Frizz✦ en image PNG (Source Serif italic + sparkle terracotta)
+  async function renderFrizzLogoDataUrl(heightPx = 200) {
+    // Charger la font au cas où
+    try {
+      await document.fonts.load(`italic 700 ${Math.floor(heightPx * 0.7)}px "Source Serif 4"`);
+    } catch (e) { /* ignore */ }
+
+    const fontSize = Math.floor(heightPx * 0.7);
+    const fontFamily = '"Source Serif 4", "Source Serif Pro", "Times New Roman", serif';
+    const padding = 4;
+
+    // Canvas de mesure
+    const measureCanvas = document.createElement('canvas');
+    measureCanvas.width = 800;
+    measureCanvas.height = heightPx;
+    const mctx = measureCanvas.getContext('2d');
+    mctx.font = `italic 700 ${fontSize}px ${fontFamily}`;
+    const frizzW = mctx.measureText('Frizz').width;
+    const sparkleW = mctx.measureText('✦').width;
+    const gap = fontSize * 0.04;
+    const totalW = frizzW + gap + sparkleW;
+
+    // Canvas final dimensionné
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(totalW) + padding * 2;
+    canvas.height = heightPx;
+    const ctx = canvas.getContext('2d');
+    ctx.font = `italic 700 ${fontSize}px ${fontFamily}`;
+    ctx.fillStyle = '#B8593A';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Frizz', padding, heightPx / 2);
+    ctx.fillText('✦', padding + frizzW + gap, heightPx / 2);
+
+    return {
+      dataUrl: canvas.toDataURL('image/png'),
+      width: canvas.width,
+      height: canvas.height
+    };
+  }
+
   async function openQrModal(p) {
     currentQrProc = p;
     const url = getProcedureUrl(p.slug);
@@ -4296,13 +4336,13 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.setTextColor(...COLOR_GRAY);
     pdf.text(url, pageW / 2, afterQrY + 50, { align: 'center' });
 
-    // ============ SIGNATURE FRIZZ (bas de page) ============
-    pdf.setFont('helvetica', 'bolditalic');
-    pdf.setFontSize(11);
-    pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('Frizz', pageW / 2 - 4, 280, { align: 'right' });
-    pdf.setFontSize(10);
-    pdf.text('*', pageW / 2 + 1, 277, { align: 'left' });
+    // ============ SIGNATURE FRIZZ✦ (logo en image, centré) ============
+    try {
+      const logo = await renderFrizzLogoDataUrl(200);
+      const logoH = 8; // mm
+      const logoW = logoH * (logo.width / logo.height);
+      pdf.addImage(logo.dataUrl, 'PNG', (pageW - logoW) / 2, 273, logoW, logoH);
+    } catch (e) { /* ignore */ }
 
     pdf.save(`QR-${p.slug}.pdf`);
     showToast('✓ PDF téléchargé');
@@ -4563,13 +4603,13 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     pdf.setTextColor(...COLOR_GRAY);
     pdf.text(url, pageW / 2, afterQrY + 50, { align: 'center' });
 
-    // ============ SIGNATURE FRIZZ ============
-    pdf.setFont('helvetica', 'bolditalic');
-    pdf.setFontSize(11);
-    pdf.setTextColor(...COLOR_ACCENT);
-    pdf.text('Frizz', pageW / 2 - 4, 280, { align: 'right' });
-    pdf.setFontSize(10);
-    pdf.text('*', pageW / 2 + 1, 277, { align: 'left' });
+    // ============ SIGNATURE FRIZZ✦ ============
+    try {
+      const logo = await renderFrizzLogoDataUrl(200);
+      const logoH = 8;
+      const logoW = logoH * (logo.width / logo.height);
+      pdf.addImage(logo.dataUrl, 'PNG', (pageW - logoW) / 2, 273, logoW, logoH);
+    } catch (e) { /* ignore */ }
 
     const safeName = nomBou.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
     pdf.save(`QR-boutique-${safeName}.pdf`);

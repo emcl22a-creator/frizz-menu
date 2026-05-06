@@ -2105,6 +2105,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
           </div>
         </div>
       </div>
+      <div class="input-wrap">
+        <label for="proc-video">Vidéo (optionnel)</label>
+        <input type="url" id="proc-video" placeholder="Lien YouTube, Vimeo, ou .mp4">
+      </div>
       <div class="steps-wrap">
         <div class="steps-label">Étapes</div>
         <div class="steps-list" id="steps-list"></div>
@@ -2376,7 +2380,21 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
   // ============ HELPER : ouvrir/fermer modal ============
   function openModal(id) { $(id).classList.add('open'); }
-  function closeModal(id) { $(id).classList.remove('open'); }
+  function closeModal(id) {
+    $(id).classList.remove('open');
+    // Reset défensif de l'état du modal procédure
+    if (id === 'modal-proc') {
+      setTimeout(() => {
+        try {
+          $('proc-form').reset();
+          $('steps-list').innerHTML = '';
+          $('emoji').value = '📋';
+          editingProcId = null;
+          emojiTouched = false;
+        } catch (err) { console.error('Reset modal-proc error:', err); }
+      }, 350);
+    }
+  }
 
   document.querySelectorAll('[data-close]').forEach(btn => {
     btn.addEventListener('click', () => closeModal(btn.dataset.close));
@@ -2405,7 +2423,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   async function loadProcedures() {
     const { data, error } = await supabase
       .from('procedures')
-      .select('id, titre, emoji, categorie, niveau, duree_minutes, etapes, slug, scans_count')
+      .select('id, titre, emoji, categorie, niveau, duree_minutes, etapes, slug, scans_count, video_url')
       .eq('boulangerie_id', BOU_ID)
       .eq('archivee', false)
       .order('created_at', { ascending: false });
@@ -2518,6 +2536,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       const totalMin = p.duree_minutes || 0;
       $('proc-duree-h').value = totalMin >= 60 ? Math.floor(totalMin / 60) : '';
       $('proc-duree-min').value = totalMin % 60 || (totalMin > 0 ? '' : '');
+      $('proc-video').value = p.video_url || '';
       $('steps-list').innerHTML = '';
       const etapes = Array.isArray(p.etapes) ? p.etapes : [];
       etapes.forEach(e => addStepRow(e));
@@ -2553,6 +2572,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     const heures = parseInt($('proc-duree-h').value, 10) || 0;
     const mins = parseInt($('proc-duree-min').value, 10) || 0;
     const totalMinutes = heures * 60 + mins;
+    const videoUrl = $('proc-video').value.trim();
 
     const data = {
       boulangerie_id: BOU_ID,
@@ -2561,6 +2581,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       categorie: $('proc-categorie').value,
       niveau: $('proc-niveau').value,
       duree_minutes: totalMinutes > 0 ? totalMinutes : null,
+      video_url: videoUrl || null,
       etapes
     };
 

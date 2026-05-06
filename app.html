@@ -1678,96 +1678,276 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   font-family: inherit;
 }
 
-/* ============ APPRENTI ONGLET ============ */
-.apprenti-card {
+/* ============ COMMANDES ONGLET ============ */
+.cmd-section { margin-bottom: 26px; }
+.cmd-section-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
+  gap: 8px;
+}
+.cmd-section.today .cmd-section-title {
+  font-size: 18px;
+  color: #fff;
+}
+.cmd-section-title .badge-count {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(10, 132, 255, 0.18);
+  color: #0A84FF;
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.3px;
+}
+
+.cmd-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
+  border-radius: 16px;
+  margin-bottom: 8px;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
   color: #fff;
   width: 100%;
-  margin-bottom: 10px;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
+.cmd-card:active { transform: scale(0.99); background: rgba(255, 255, 255, 0.08); }
+.cmd-card.cmd-prete { border-color: rgba(52, 199, 89, 0.35); background: rgba(52, 199, 89, 0.06); }
+.cmd-card.cmd-retiree { opacity: 0.5; }
+.cmd-card.cmd-annulee { opacity: 0.45; }
 
-.apprenti-card:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
-
-.apprenti-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cmd-time {
+  width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.cmd-time-h {
   font-family: 'Source Serif 4', serif;
   font-style: italic;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 22px;
   color: #fff;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  line-height: 1;
+}
+.cmd-time-day {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.cmd-body { flex: 1; min-width: 0; }
+.cmd-client {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cmd-articles {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+.cmd-statut-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+.badge-a-preparer { background: rgba(255, 159, 10, 0.18); color: #FF9F0A; }
+.badge-prete { background: rgba(52, 199, 89, 0.18); color: #34C759; }
+.badge-retiree { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.5); }
+.badge-annulee { background: rgba(255, 69, 58, 0.18); color: #FF453A; }
+
+.cmd-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(10, 132, 255, 0.15);
+  color: #0A84FF;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  text-decoration: none;
   flex-shrink: 0;
 }
+.cmd-action-btn:hover { background: rgba(10, 132, 255, 0.25); }
+.cmd-action-btn:active { transform: scale(0.92); }
+.cmd-action-btn .material-icons-round { font-size: 18px; }
 
-.apprenti-body { flex: 1; min-width: 0; }
-.apprenti-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.2px; }
-.apprenti-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
-.apprenti-progress { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 16px; color: #0A84FF; flex-shrink: 0; }
+/* ============ STOCKS ONGLET ============ */
+.stock-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 69, 58, 0.1);
+  border: 1px solid rgba(255, 69, 58, 0.3);
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+.stock-alert-banner .material-icons-round { color: #FF453A; font-size: 18px; flex-shrink: 0; }
+.stock-alert-banner-text { flex: 1; font-size: 12px; font-weight: 500; color: #fff; }
+.stock-alert-banner-text strong { color: #FF453A; }
 
-.task-item {
+.stock-cat-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 22px 0 10px 0;
+  letter-spacing: -0.2px;
+}
+.stock-cat-title:first-child { margin-top: 0; }
+
+.stock-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  margin-bottom: 6px;
-  cursor: pointer;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: #fff;
 }
+.stock-card.alerte { border-color: rgba(255, 69, 58, 0.4); background: rgba(255, 69, 58, 0.06); }
 
-.task-check {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+.stock-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 22px;
   flex-shrink: 0;
-  transition: all 0.2s ease;
 }
+.stock-card.alerte .stock-icon { background: rgba(255, 69, 58, 0.1); border-color: rgba(255, 69, 58, 0.3); }
 
-.task-item.done .task-check { background: #34C759; border-color: #34C759; }
-.task-item.done .task-check::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 700; }
-
-.task-label { flex: 1; font-size: 13px; font-weight: 500; }
-.task-item.done .task-label { color: rgba(255, 255, 255, 0.4); text-decoration: line-through; }
-
-.task-remove {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+.stock-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.stock-nom {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stock-nom-edit {
+  background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+}
+.stock-nom-edit:hover { color: #0A84FF; }
+.stock-nom-edit .material-icons-round { font-size: 14px; }
+.stock-meta { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-bottom: 6px; }
+
+.stock-progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.stock-progress-fill {
+  height: 100%;
+  background: #0A84FF;
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+.stock-card.alerte .stock-progress-fill { background: #FF453A; }
+
+.stock-niveau {
+  text-align: right;
+  flex-shrink: 0;
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.stock-niveau-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.stock-niveau-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+  line-height: 1;
+}
+.stock-card.alerte .stock-niveau-num { color: #FF453A; }
+.stock-niveau-unit {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.stock-pm {
+  display: flex;
+  gap: 4px;
+}
+.stock-pm-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
-
-.task-remove:hover { background: rgba(255, 69, 58, 0.15); color: #FF453A; }
-.task-remove .material-icons-round { font-size: 14px; }
+.stock-pm-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.stock-pm-btn:active { transform: scale(0.9); }
+.stock-pm-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ============ LOADING + TOAST ============ */
 .loading {
@@ -1834,13 +2014,17 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <span class="material-icons-round">menu_book</span>
       <span class="nav-label">Procédures</span>
     </button>
+    <button class="nav-item" data-tab="commandes">
+      <span class="material-icons-round">receipt_long</span>
+      <span class="nav-label">Commandes</span>
+    </button>
+    <button class="nav-item" data-tab="stocks">
+      <span class="material-icons-round">inventory_2</span>
+      <span class="nav-label">Stocks</span>
+    </button>
     <button class="nav-item" data-tab="haccp">
       <span class="material-icons-round">thermostat</span>
       <span class="nav-label">HACCP</span>
-    </button>
-    <button class="nav-item" data-tab="apprenti">
-      <span class="material-icons-round">school</span>
-      <span class="nav-label">Apprenti</span>
     </button>
   </nav>
   <button class="sidebar-account" data-tab="profil" aria-label="Mon compte">
@@ -1953,25 +2137,46 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <div id="haccp-list"></div>
   </section>
 
-  <!-- ============ ONGLET 5 : APPRENTI ============ -->
-  <section class="screen" data-screen="apprenti">
+  <!-- ============ ONGLET 4 : COMMANDES ============ -->
+  <section class="screen" data-screen="commandes">
     <div class="hero">
-      <div class="hero-eyebrow">— Carnet de stage</div>
-      <h1 class="hero-title">Mes <em>apprentis</em>.</h1>
+      <div class="hero-eyebrow">— <span id="cmd-count">0 commande</span></div>
+      <h1 class="hero-title">Mes <em>commandes</em>.</h1>
     </div>
 
-    <button class="btn-primary" id="btn-new-apprenti">
+    <button class="btn-primary" id="btn-new-cmd">
       <span class="material-icons-round">add</span>
-      Ajouter un apprenti
+      Nouvelle commande
     </button>
 
-    <div class="empty" id="apprenti-empty" style="display: none;">
-      <div class="empty-icon"><span class="material-icons-round">school</span></div>
-      <div class="empty-title">Aucun apprenti</div>
-      <div class="empty-desc">Ajoutez un apprenti pour suivre son parcours CAP/BTM.</div>
+    <div class="empty" id="cmd-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">receipt_long</span></div>
+      <div class="empty-title">Aucune commande</div>
+      <div class="empty-desc">Enregistrez les commandes clients pour ne plus rien oublier.</div>
     </div>
 
-    <div id="apprenti-list" style="margin-top: 18px;"></div>
+    <div id="cmd-list" style="margin-top: 18px;"></div>
+  </section>
+
+  <!-- ============ ONGLET 5 : STOCKS ============ -->
+  <section class="screen" data-screen="stocks">
+    <div class="hero">
+      <div class="hero-eyebrow">— <span id="stocks-count">0 article</span></div>
+      <h1 class="hero-title">Mes <em>stocks</em>.</h1>
+    </div>
+
+    <button class="btn-primary" id="btn-new-stock">
+      <span class="material-icons-round">add</span>
+      Ajouter un article
+    </button>
+
+    <div class="empty" id="stocks-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">inventory_2</span></div>
+      <div class="empty-title">Aucun stock suivi</div>
+      <div class="empty-desc">Ajoutez vos farines, beurres et matières premières pour être alerté avant la rupture.</div>
+    </div>
+
+    <div id="stocks-list" style="margin-top: 18px;"></div>
   </section>
 
   <!-- ============ ONGLET 6 : PROFIL ============ -->
@@ -2025,7 +2230,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <ul class="plan-features">
         <li>Procédures illimitées + QR codes</li>
         <li>HACCP complet + PMS DDPP automatique</li>
-        <li>Carnet apprenti CAP/BTM</li>
+        <li>Carnet de commandes clients + SMS rappel</li>
+        <li>Suivi des stocks avec alerte rupture</li>
         <li>Support par email en moins de 24h</li>
       </ul>
       <button type="button" class="btn-quick-validate" id="btn-subscribe">
@@ -2051,13 +2257,17 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <span class="material-icons-round">menu_book</span>
     <span class="tab-label">Procédures</span>
   </button>
+  <button class="tab" data-tab="commandes" aria-label="Commandes">
+    <span class="material-icons-round">receipt_long</span>
+    <span class="tab-label">Commandes</span>
+  </button>
+  <button class="tab" data-tab="stocks" aria-label="Stocks">
+    <span class="material-icons-round">inventory_2</span>
+    <span class="tab-label">Stocks</span>
+  </button>
   <button class="tab" data-tab="haccp" aria-label="HACCP">
     <span class="material-icons-round">thermostat</span>
     <span class="tab-label">HACCP</span>
-  </button>
-  <button class="tab" data-tab="apprenti" aria-label="Apprenti">
-    <span class="material-icons-round">school</span>
-    <span class="tab-label">Apprenti</span>
   </button>
 </nav>
 
@@ -2207,80 +2417,119 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   </div>
 </div>
 
-<!-- ============ MODAL APPRENTI ============ -->
-<div class="modal-overlay" id="modal-apprenti">
+<!-- ============ MODAL COMMANDE ============ -->
+<div class="modal-overlay" id="modal-cmd">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <h2 class="modal-title" id="modal-apprenti-title">Nouvel <em>apprenti</em></h2>
-      <button class="modal-close" data-close="modal-apprenti"><span class="material-icons-round">close</span></button>
+      <h2 class="modal-title" id="modal-cmd-title">Nouvelle <em>commande</em></h2>
+      <button class="modal-close" data-close="modal-cmd"><span class="material-icons-round">close</span></button>
     </div>
-    <form id="apprenti-form">
+    <form id="cmd-form">
+      <div class="input-wrap">
+        <label for="cmd-client">Nom du client *</label>
+        <input type="text" id="cmd-client" placeholder="Mme Martin" required>
+      </div>
+      <div class="input-wrap">
+        <label for="cmd-tel">Téléphone (pour SMS rappel)</label>
+        <input type="tel" id="cmd-tel" placeholder="06 12 34 56 78">
+      </div>
+      <div class="input-wrap">
+        <label for="cmd-articles">Articles commandés *</label>
+        <textarea id="cmd-articles" placeholder="2 baguettes tradition&#10;1 fraisier 6 personnes" required></textarea>
+      </div>
       <div class="form-grid">
         <div class="input-wrap">
-          <label for="app-prenom">Prénom *</label>
-          <input type="text" id="app-prenom" placeholder="Lucas" required>
+          <label for="cmd-date">Date de retrait *</label>
+          <input type="date" id="cmd-date" required>
         </div>
         <div class="input-wrap">
-          <label for="app-nom">Nom *</label>
-          <input type="text" id="app-nom" placeholder="Dubois" required>
+          <label for="cmd-heure">Heure</label>
+          <input type="time" id="cmd-heure" value="08:00">
         </div>
       </div>
       <div class="form-grid">
         <div class="input-wrap">
-          <label for="app-formation">Formation</label>
-          <select id="app-formation">
-            <option value="cap">CAP Boulanger</option>
-            <option value="btm">BTM</option>
-            <option value="mention_complementaire">Mention complémentaire</option>
-            <option value="autre">Autre</option>
-          </select>
+          <label for="cmd-montant">Montant (€)</label>
+          <input type="number" id="cmd-montant" placeholder="12.50" step="0.10" min="0">
         </div>
         <div class="input-wrap">
-          <label for="app-annee">Année</label>
-          <select id="app-annee">
-            <option value="1">Année 1</option>
-            <option value="2">Année 2</option>
+          <label for="cmd-statut">Statut</label>
+          <select id="cmd-statut">
+            <option value="a_preparer">À préparer</option>
+            <option value="prete">Prête</option>
+            <option value="retiree">Retirée</option>
+            <option value="annulee">Annulée</option>
           </select>
         </div>
       </div>
       <div class="input-wrap">
-        <label for="app-cfa">CFA (optionnel)</label>
-        <input type="text" id="app-cfa" placeholder="Nom du CFA">
+        <label for="cmd-notes">Notes (optionnel)</label>
+        <textarea id="cmd-notes" placeholder="Allergie noix, payée d'avance, etc."></textarea>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-modal secondary" data-close="modal-apprenti">Annuler</button>
-        <button type="submit" class="btn-modal primary" id="btn-save-apprenti">Enregistrer</button>
+        <button type="button" class="btn-modal secondary" data-close="modal-cmd">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-cmd">Enregistrer</button>
       </div>
-      <button type="button" class="btn-delete" id="btn-delete-apprenti">
+      <button type="button" class="btn-delete" id="btn-delete-cmd">
         <span class="material-icons-round">delete</span>
-        Supprimer cet apprenti
+        Supprimer cette commande
       </button>
     </form>
   </div>
 </div>
 
-<!-- ============ MODAL TÂCHES APPRENTI ============ -->
-<div class="modal-overlay" id="modal-tasks">
+<!-- ============ MODAL STOCK ============ -->
+<div class="modal-overlay" id="modal-stock">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <h2 class="modal-title" id="modal-tasks-title">Carnet de <em>stage</em></h2>
-      <button class="modal-close" data-close="modal-tasks"><span class="material-icons-round">close</span></button>
+      <h2 class="modal-title" id="modal-stock-title">Nouvel <em>article</em></h2>
+      <button class="modal-close" data-close="modal-stock"><span class="material-icons-round">close</span></button>
     </div>
-    <div id="tasks-list" style="margin-bottom: 14px;"></div>
-    <form id="add-task-form" style="display: flex; gap: 8px; margin-bottom: 18px;">
-      <input type="text" id="new-task-input" placeholder="Nouvelle compétence..." style="flex: 1; margin-bottom: 0;">
-      <button type="submit" class="btn-modal primary" style="width: auto; padding: 11px 16px;">+</button>
+    <form id="stock-form">
+      <div class="input-wrap">
+        <label for="stock-nom">Nom de l'article *</label>
+        <input type="text" id="stock-nom" placeholder="Farine T65" required>
+      </div>
+      <div class="input-wrap">
+        <label for="stock-categorie">Catégorie</label>
+        <select id="stock-categorie">
+          <option value="farines">🌾 Farines</option>
+          <option value="beurres_cremes">🧈 Beurres &amp; Crèmes</option>
+          <option value="sucres">🍬 Sucres</option>
+          <option value="levures">🧪 Levures &amp; Améliorants</option>
+          <option value="autres">📦 Autres</option>
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="input-wrap">
+          <label for="stock-niveau">Niveau actuel</label>
+          <input type="number" id="stock-niveau" placeholder="50" min="0" step="0.1">
+        </div>
+        <div class="input-wrap">
+          <label for="stock-unite">Unité</label>
+          <select id="stock-unite">
+            <option value="kg">kg</option>
+            <option value="L">L</option>
+            <option value="unités">unités</option>
+            <option value="sacs">sacs</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-wrap">
+        <label for="stock-seuil">Seuil d'alerte (en dessous → notification rouge)</label>
+        <input type="number" id="stock-seuil" placeholder="10" min="0" step="0.1">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal secondary" data-close="modal-stock">Annuler</button>
+        <button type="submit" class="btn-modal primary" id="btn-save-stock">Enregistrer</button>
+      </div>
+      <button type="button" class="btn-delete" id="btn-delete-stock">
+        <span class="material-icons-round">delete</span>
+        Supprimer cet article
+      </button>
     </form>
-    <button type="button" class="btn-primary" id="btn-export-cfa">
-      <span class="material-icons-round">download</span>
-      Exporter le carnet (PDF CFA)
-    </button>
-    <button type="button" class="btn-secondary" id="btn-edit-apprenti">
-      <span class="material-icons-round">edit</span>
-      Modifier les infos
-    </button>
   </div>
 </div>
 
@@ -2344,7 +2593,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
     // Charger les données spécifiques à l'onglet
     if (name === 'haccp') renderReleves();
-    if (name === 'apprenti') renderApprentis();
+    if (name === 'commandes') renderCommandes();
+    if (name === 'stocks') renderStocks();
     if (name === 'profil') renderProfil();
   }
 
@@ -2399,7 +2649,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   // ========================================================
   let procedures = [];
   let releves = [];
-  let apprentis = [];
+  let commandes = [];
+  let stocks = [];
 
   // ============ HELPER : ouvrir/fermer modal ============
   function openModal(id) { $(id).classList.add('open'); }
@@ -3198,314 +3449,448 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
 
   // ========================================================
-  // ============ ONGLET APPRENTI ============
+  // ============ ONGLET COMMANDES ============
   // ========================================================
 
-  let editingApprentiId = null;
-  let currentApprenti = null;
-  let currentTasks = [];
+  let editingCmdId = null;
 
-  async function loadApprentis() {
+  async function loadCommandes() {
     const { data } = await supabase
-      .from('apprentis')
+      .from('commandes')
       .select('*')
       .eq('boulangerie_id', BOU_ID)
-      .eq('actif', true)
-      .order('created_at', { ascending: false });
-    apprentis = data || [];
+      .order('date_retrait', { ascending: true });
+    commandes = data || [];
   }
 
-  async function renderApprentis() {
-    await loadApprentis();
-    const list = $('apprenti-list');
-    const empty = $('apprenti-empty');
+  async function renderCommandes() {
+    await loadCommandes();
+    const list = $('cmd-list');
+    const empty = $('cmd-empty');
+    const count = $('cmd-count');
     list.innerHTML = '';
 
-    if (apprentis.length === 0) {
+    const actives = commandes.filter(c => c.statut === 'a_preparer' || c.statut === 'prete');
+    count.textContent = actives.length === 0
+      ? '0 commande'
+      : `${actives.length} commande${actives.length > 1 ? 's' : ''} en cours`;
+
+    if (commandes.length === 0) {
       empty.style.display = 'block';
       return;
     }
     empty.style.display = 'none';
 
-    // Pour chaque apprenti, charger ses tâches pour calculer la progression
-    for (const a of apprentis) {
-      const { data: tasks } = await supabase
-        .from('taches_apprenti')
-        .select('id, validee')
-        .eq('apprenti_id', a.id);
-      const total = tasks?.length || 0;
-      const validees = tasks?.filter(t => t.validee).length || 0;
-      const pct = total > 0 ? Math.round((validees / total) * 100) : 0;
+    // Group by time bucket
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1);
+    const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate() + 7);
 
-      const card = document.createElement('button');
-      card.className = 'apprenti-card';
-      const initials = ((a.prenom?.[0] || '') + (a.nom?.[0] || '')).toUpperCase();
-      const formationLabel = a.formation === 'cap' ? 'CAP' : a.formation === 'btm' ? 'BTM' : a.formation;
+    const groups = { aujourdhui: [], demain: [], semaine: [], plustard: [], passe: [] };
+    commandes.forEach(c => {
+      const d = new Date(c.date_retrait);
+      const dDay = new Date(d); dDay.setHours(0, 0, 0, 0);
+      const isInactive = c.statut === 'retiree' || c.statut === 'annulee';
+      if (isInactive && dDay < now) groups.passe.push(c);
+      else if (dDay <= now) groups.aujourdhui.push(c);
+      else if (dDay.getTime() === tomorrow.getTime()) groups.demain.push(c);
+      else if (dDay < weekEnd) groups.semaine.push(c);
+      else groups.plustard.push(c);
+    });
 
-      card.innerHTML = `
-        <div class="apprenti-avatar">${initials || '??'}</div>
-        <div class="apprenti-body">
-          <div class="apprenti-name"></div>
-          <div class="apprenti-meta">${formationLabel} année ${a.annee} · ${validees}/${total} compétences</div>
+    const sections = [
+      { key: 'aujourdhui', title: '📍 Aujourd\'hui', emphasis: true },
+      { key: 'demain', title: 'Demain' },
+      { key: 'semaine', title: 'Cette semaine' },
+      { key: 'plustard', title: 'Plus tard' },
+      { key: 'passe', title: 'Passé' }
+    ];
+
+    sections.forEach(s => {
+      const items = groups[s.key];
+      if (items.length === 0) return;
+      const sec = document.createElement('div');
+      sec.className = 'cmd-section' + (s.emphasis ? ' today' : '');
+      sec.innerHTML = `
+        <div class="cmd-section-title">
+          <span class="title-text"></span>
+          <span class="badge-count">${items.length}</span>
         </div>
-        <div class="apprenti-progress">${pct}%</div>
+        <div class="cmd-section-list"></div>
       `;
-      card.querySelector('.apprenti-name').textContent = `${a.prenom} ${a.nom}`;
-      card.addEventListener('click', () => openTasksModal(a));
-      list.appendChild(card);
-    }
-  }
-
-  $('btn-new-apprenti').addEventListener('click', () => {
-    editingApprentiId = null;
-    $('modal-apprenti-title').innerHTML = 'Nouvel <em>apprenti</em>';
-    $('apprenti-form').reset();
-    $('btn-delete-apprenti').style.display = 'none';
-    openModal('modal-apprenti');
-    setTimeout(() => $('app-prenom').focus(), 100);
-  });
-
-  $('btn-edit-apprenti').addEventListener('click', () => {
-    if (!currentApprenti) return;
-    editingApprentiId = currentApprenti.id;
-    $('modal-apprenti-title').innerHTML = 'Modifier <em>l\'apprenti</em>';
-    $('app-prenom').value = currentApprenti.prenom || '';
-    $('app-nom').value = currentApprenti.nom || '';
-    $('app-formation').value = currentApprenti.formation || 'cap';
-    $('app-annee').value = currentApprenti.annee || 1;
-    $('app-cfa').value = currentApprenti.cfa_nom || '';
-    $('btn-delete-apprenti').style.display = 'flex';
-    closeModal('modal-tasks');
-    openModal('modal-apprenti');
-  });
-
-  $('apprenti-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = {
-      boulangerie_id: BOU_ID,
-      prenom: $('app-prenom').value.trim(),
-      nom: $('app-nom').value.trim(),
-      formation: $('app-formation').value,
-      annee: parseInt($('app-annee').value, 10),
-      cfa_nom: $('app-cfa').value.trim() || null
-    };
-    if (!data.prenom || !data.nom) { showToast('Prénom et nom requis', 'error'); return; }
-
-    const btn = $('btn-save-apprenti');
-    btn.disabled = true;
-    btn.textContent = 'Enregistrement...';
-
-    try {
-      let error;
-      if (editingApprentiId) {
-        ({ error } = await supabase.from('apprentis').update(data).eq('id', editingApprentiId));
-      } else {
-        ({ error } = await supabase.from('apprentis').insert([data]));
-      }
-      if (error) throw error;
-      showToast(editingApprentiId ? '✓ Modifié' : '✓ Apprenti ajouté');
-      closeModal('modal-apprenti');
-      await renderApprentis();
-    } catch (err) {
-      console.error(err);
-      showToast('Erreur', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Enregistrer';
-    }
-  });
-
-  $('btn-delete-apprenti').addEventListener('click', async () => {
-    if (!editingApprentiId) return;
-    if (!confirm('Supprimer cet apprenti et son carnet ?')) return;
-    const { error } = await supabase.from('apprentis').delete().eq('id', editingApprentiId);
-    if (error) { showToast('Erreur', 'error'); return; }
-    showToast('Supprimé');
-    closeModal('modal-apprenti');
-    await renderApprentis();
-  });
-
-  // Modal tâches
-  async function openTasksModal(a) {
-    currentApprenti = a;
-    $('modal-tasks-title').innerHTML = `Carnet de <em>${a.prenom}</em>`;
-    await loadTasks(a.id);
-    openModal('modal-tasks');
-  }
-
-  async function loadTasks(apprentiId) {
-    const { data } = await supabase
-      .from('taches_apprenti')
-      .select('*')
-      .eq('apprenti_id', apprentiId)
-      .order('ordre', { ascending: true })
-      .order('created_at', { ascending: true });
-    currentTasks = data || [];
-    renderTasks();
-  }
-
-  function renderTasks() {
-    const list = $('tasks-list');
-    list.innerHTML = '';
-
-    if (currentTasks.length === 0) {
-      list.innerHTML = '<div style="text-align: center; padding: 24px 0; font-size: 12px; color: rgba(255,255,255,0.5);">Aucune compétence. Ajoutez-en ci-dessous.</div>';
-      return;
-    }
-
-    currentTasks.forEach(t => {
-      const item = document.createElement('div');
-      item.className = 'task-item' + (t.validee ? ' done' : '');
-      item.innerHTML = `
-        <div class="task-check"></div>
-        <div class="task-label"></div>
-        <button type="button" class="task-remove" aria-label="Supprimer">
-          <span class="material-icons-round">close</span>
-        </button>
-      `;
-      item.querySelector('.task-label').textContent = t.libelle;
-
-      // Toggle au clic sur la ligne (pas sur le bouton supprimer)
-      item.addEventListener('click', async (e) => {
-        if (e.target.closest('.task-remove')) return;
-        const newVal = !t.validee;
-        const { error } = await supabase
-          .from('taches_apprenti')
-          .update({
-            validee: newVal,
-            date_validation: newVal ? new Date().toISOString().slice(0, 10) : null
-          })
-          .eq('id', t.id);
-        if (!error) {
-          t.validee = newVal;
-          renderTasks();
-        }
-      });
-
-      // Suppression
-      item.querySelector('.task-remove').addEventListener('click', async (e) => {
-        e.stopPropagation();
-        if (!confirm('Supprimer cette compétence ?')) return;
-        const { error } = await supabase.from('taches_apprenti').delete().eq('id', t.id);
-        if (!error) {
-          currentTasks = currentTasks.filter(x => x.id !== t.id);
-          renderTasks();
-        }
-      });
-
-      list.appendChild(item);
+      sec.querySelector('.title-text').textContent = s.title;
+      const sectionList = sec.querySelector('.cmd-section-list');
+      items.forEach(c => sectionList.appendChild(renderCmdCard(c)));
+      list.appendChild(sec);
     });
   }
 
-  $('add-task-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = $('new-task-input');
-    const libelle = input.value.trim();
-    if (!libelle || !currentApprenti) return;
+  function renderCmdCard(c) {
+    const card = document.createElement('div');
+    card.className = 'cmd-card';
+    if (c.statut === 'prete') card.classList.add('cmd-prete');
+    if (c.statut === 'retiree') card.classList.add('cmd-retiree');
+    if (c.statut === 'annulee') card.classList.add('cmd-annulee');
 
-    const { data, error } = await supabase
-      .from('taches_apprenti')
-      .insert([{
-        apprenti_id: currentApprenti.id,
-        libelle,
-        ordre: currentTasks.length
-      }])
-      .select()
-      .single();
+    const d = new Date(c.date_retrait);
+    const heure = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    const jourCourt = d.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '');
 
-    if (!error && data) {
-      currentTasks.push(data);
-      input.value = '';
-      renderTasks();
+    const statutLabel = {
+      'a_preparer': { label: 'À préparer', cls: 'badge-a-preparer' },
+      'prete': { label: 'Prête', cls: 'badge-prete' },
+      'retiree': { label: 'Retirée', cls: 'badge-retiree' },
+      'annulee': { label: 'Annulée', cls: 'badge-annulee' }
+    }[c.statut] || { label: '', cls: '' };
+
+    card.innerHTML = `
+      <div class="cmd-time">
+        <div class="cmd-time-h"></div>
+        <div class="cmd-time-day"></div>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-client"></div>
+        <div class="cmd-articles"></div>
+        <div class="cmd-statut-badge"></div>
+      </div>
+      <div class="cmd-actions-wrap" style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;"></div>
+    `;
+    card.querySelector('.cmd-time-h').textContent = heure;
+    card.querySelector('.cmd-time-day').textContent = jourCourt;
+    card.querySelector('.cmd-client').textContent = c.nom_client;
+    card.querySelector('.cmd-articles').textContent = c.articles;
+    const badge = card.querySelector('.cmd-statut-badge');
+    badge.textContent = statutLabel.label;
+    badge.classList.add(statutLabel.cls);
+
+    const actions = card.querySelector('.cmd-actions-wrap');
+
+    // Bouton SMS si téléphone et commande active
+    if (c.telephone && (c.statut === 'a_preparer' || c.statut === 'prete')) {
+      const dateStr = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+      const message = `Bonjour ${c.nom_client}, je vous rappelle votre commande pour ${dateStr} à ${heure}. À bientôt !`;
+      const smsLink = document.createElement('a');
+      smsLink.className = 'cmd-action-btn';
+      smsLink.setAttribute('aria-label', 'Envoyer un SMS de rappel');
+      smsLink.href = `sms:${c.telephone}?body=${encodeURIComponent(message)}`;
+      smsLink.innerHTML = '<span class="material-icons-round">sms</span>';
+      actions.appendChild(smsLink);
+    }
+
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'cmd-action-btn';
+    editBtn.setAttribute('aria-label', 'Modifier');
+    editBtn.innerHTML = '<span class="material-icons-round">edit</span>';
+    editBtn.addEventListener('click', () => openCmdModal(c));
+    actions.appendChild(editBtn);
+
+    return card;
+  }
+
+  function openCmdModal(c) {
+    $('cmd-form').reset();
+    if (c) {
+      editingCmdId = c.id;
+      $('modal-cmd-title').innerHTML = 'Modifier <em>la commande</em>';
+      $('cmd-client').value = c.nom_client || '';
+      $('cmd-tel').value = c.telephone || '';
+      $('cmd-articles').value = c.articles || '';
+      const d = new Date(c.date_retrait);
+      const tzOffset = d.getTimezoneOffset() * 60000;
+      const localISO = new Date(d - tzOffset).toISOString();
+      $('cmd-date').value = localISO.split('T')[0];
+      $('cmd-heure').value = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      $('cmd-montant').value = c.montant != null ? c.montant : '';
+      $('cmd-statut').value = c.statut || 'a_preparer';
+      $('cmd-notes').value = c.notes || '';
+      $('btn-delete-cmd').style.display = 'flex';
+    } else {
+      editingCmdId = null;
+      $('modal-cmd-title').innerHTML = 'Nouvelle <em>commande</em>';
+      const t = new Date(); t.setDate(t.getDate() + 1);
+      const tzOffset = t.getTimezoneOffset() * 60000;
+      $('cmd-date').value = new Date(t - tzOffset).toISOString().split('T')[0];
+      $('cmd-heure').value = '08:00';
+      $('cmd-statut').value = 'a_preparer';
+      $('btn-delete-cmd').style.display = 'none';
+    }
+    openModal('modal-cmd');
+  }
+
+  $('btn-new-cmd').addEventListener('click', () => openCmdModal(null));
+
+  $('cmd-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const nom_client = $('cmd-client').value.trim();
+    const articles = $('cmd-articles').value.trim();
+    const date = $('cmd-date').value;
+    const heure = $('cmd-heure').value || '08:00';
+
+    if (!nom_client || !articles || !date) {
+      showToast('Champs obligatoires manquants', 'error');
+      return;
+    }
+
+    const date_retrait = new Date(`${date}T${heure}`).toISOString();
+
+    const data = {
+      boulangerie_id: BOU_ID,
+      nom_client,
+      telephone: $('cmd-tel').value.trim() || null,
+      articles,
+      date_retrait,
+      montant: $('cmd-montant').value ? parseFloat($('cmd-montant').value) : null,
+      notes: $('cmd-notes').value.trim() || null,
+      statut: $('cmd-statut').value
+    };
+
+    const btn = $('btn-save-cmd');
+    btn.disabled = true; btn.textContent = 'Enregistrement…';
+    try {
+      let error;
+      if (editingCmdId) {
+        ({ error } = await supabase.from('commandes').update(data).eq('id', editingCmdId));
+      } else {
+        ({ error } = await supabase.from('commandes').insert([data]));
+      }
+      if (error) throw error;
+      showToast(editingCmdId ? '✓ Modifiée' : '✓ Créée');
+      closeModal('modal-cmd');
+      await renderCommandes();
+    } catch (err) {
+      console.error('Erreur commande:', err);
+      showToast('Erreur : ' + (err.message || 'inconnu').substring(0, 60), 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Enregistrer';
     }
   });
 
-  // Export PDF carnet CFA
-  $('btn-export-cfa').addEventListener('click', async () => {
-    if (!currentApprenti) return;
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-    const pageW = 210;
-    const pageH = 297;
-    let y = 22;
-
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(20);
-    pdf.text('Carnet de stage', pageW / 2, y, { align: 'center' });
-    y += 7;
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(120);
-    const formationLabel = currentApprenti.formation === 'cap' ? 'CAP Boulanger' : currentApprenti.formation === 'btm' ? 'BTM' : currentApprenti.formation;
-    pdf.text(`${formationLabel} — Année ${currentApprenti.annee}`, pageW / 2, y, { align: 'center' });
-    y += 14;
-
-    pdf.setTextColor(0);
-    pdf.setFontSize(13);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(`${currentApprenti.prenom} ${currentApprenti.nom}`, 15, y); y += 7;
-    pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'normal');
-    if (currentApprenti.cfa_nom) { pdf.text(`CFA : ${currentApprenti.cfa_nom}`, 15, y); y += 4; }
-    pdf.text(`Boulangerie : ${boulangerie.nom || ''}`, 15, y); y += 4;
-    if (boulangerie.ville) { pdf.text(`Ville : ${boulangerie.ville}`, 15, y); y += 4; }
-    y += 8;
-
-    // Synthèse
-    const total = currentTasks.length;
-    const validees = currentTasks.filter(t => t.validee).length;
-    const pct = total > 0 ? Math.round((validees / total) * 100) : 0;
-
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Progression', 15, y); y += 6;
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    pdf.text(`Compétences validées : ${validees} / ${total}`, 15, y); y += 5;
-    pdf.text(`Taux d'autonomie : ${pct}%`, 15, y); y += 10;
-
-    // Liste des compétences
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Compétences', 15, y); y += 7;
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-
-    for (const t of currentTasks) {
-      if (y > pageH - 20) {
-        pdf.addPage();
-        y = 20;
-      }
-      const cb = t.validee ? '☑' : '☐';
-      pdf.text(`${cb} ${t.libelle}`, 17, y);
-      if (t.validee && t.date_validation) {
-        pdf.setTextColor(120);
-        pdf.text(`Validé le ${new Date(t.date_validation).toLocaleDateString('fr-FR')}`, 130, y);
-        pdf.setTextColor(0);
-      }
-      y += 6;
-    }
-
-    // Footer
-    y += 16;
-    if (y > pageH - 30) { pdf.addPage(); y = 30; }
-    pdf.setFontSize(9);
-    pdf.text('Signature du tuteur :', 15, y);
-    pdf.text('Signature de l\'apprenti :', 110, y);
-    pdf.line(15, y + 14, 80, y + 14);
-    pdf.line(110, y + 14, 175, y + 14);
-
-    pdf.setFontSize(8);
-    pdf.setTextColor(150);
-    pdf.text('Document généré par Frizz✦ — frizz-instant.com', pageW / 2, pageH - 8, { align: 'center' });
-
-    pdf.save(`Carnet-${currentApprenti.prenom}-${currentApprenti.nom}.pdf`);
-    showToast('✓ Carnet téléchargé');
+  $('btn-delete-cmd').addEventListener('click', async () => {
+    if (!editingCmdId) return;
+    const ok = await showConfirm('Supprimer cette commande ?', 'Cette action est irréversible.', 'Supprimer', 'Annuler');
+    if (!ok) return;
+    const { error } = await supabase.from('commandes').delete().eq('id', editingCmdId);
+    if (error) { showToast('Erreur', 'error'); return; }
+    showToast('Supprimée');
+    closeModal('modal-cmd');
+    await renderCommandes();
   });
 
   // ========================================================
+  // ============ ONGLET STOCKS ============
+  // ========================================================
+
+  let editingStockId = null;
+  const STOCK_CAT = {
+    farines: { label: 'Farines', emoji: '🌾' },
+    beurres_cremes: { label: 'Beurres & Crèmes', emoji: '🧈' },
+    sucres: { label: 'Sucres', emoji: '🍬' },
+    levures: { label: 'Levures & Améliorants', emoji: '🧪' },
+    autres: { label: 'Autres', emoji: '📦' }
+  };
+
+  async function loadStocks() {
+    const { data } = await supabase
+      .from('stocks')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .order('categorie', { ascending: true })
+      .order('nom', { ascending: true });
+    stocks = data || [];
+  }
+
+  async function renderStocks() {
+    await loadStocks();
+    const list = $('stocks-list');
+    const empty = $('stocks-empty');
+    const count = $('stocks-count');
+    list.innerHTML = '';
+
+    count.textContent = stocks.length === 0
+      ? '0 article'
+      : `${stocks.length} article${stocks.length > 1 ? 's' : ''}`;
+
+    if (stocks.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    const enAlerte = stocks.filter(s => s.seuil_alerte != null && parseFloat(s.niveau_actuel) < parseFloat(s.seuil_alerte));
+    if (enAlerte.length > 0) {
+      const banner = document.createElement('div');
+      banner.className = 'stock-alert-banner';
+      banner.innerHTML = `
+        <span class="material-icons-round">warning</span>
+        <div class="stock-alert-banner-text"></div>
+      `;
+      banner.querySelector('.stock-alert-banner-text').innerHTML =
+        `<strong>${enAlerte.length} article${enAlerte.length > 1 ? 's' : ''} à réapprovisionner</strong> avant rupture.`;
+      list.appendChild(banner);
+    }
+
+    const byCat = {};
+    stocks.forEach(s => {
+      const cat = s.categorie || 'autres';
+      (byCat[cat] = byCat[cat] || []).push(s);
+    });
+
+    Object.keys(STOCK_CAT).forEach(catKey => {
+      const items = byCat[catKey];
+      if (!items || items.length === 0) return;
+      const title = document.createElement('div');
+      title.className = 'stock-cat-title';
+      title.textContent = `${STOCK_CAT[catKey].emoji} ${STOCK_CAT[catKey].label}`;
+      list.appendChild(title);
+      items.forEach(s => list.appendChild(renderStockCard(s)));
+    });
+  }
+
+  function renderStockCard(s) {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    const niveauNum = parseFloat(s.niveau_actuel) || 0;
+    const seuilNum = s.seuil_alerte != null ? parseFloat(s.seuil_alerte) : null;
+    const enAlerte = seuilNum != null && niveauNum < seuilNum;
+    if (enAlerte) card.classList.add('alerte');
+
+    const cat = STOCK_CAT[s.categorie] || STOCK_CAT.autres;
+    const pct = seuilNum != null && seuilNum > 0
+      ? Math.min(100, (niveauNum / (seuilNum * 2)) * 100)
+      : 70;
+
+    card.innerHTML = `
+      <div class="stock-icon"></div>
+      <div class="stock-body">
+        <div class="stock-nom">
+          <span class="stock-nom-text"></span>
+          <button type="button" class="stock-nom-edit" aria-label="Modifier">
+            <span class="material-icons-round">edit</span>
+          </button>
+        </div>
+        <div class="stock-meta"></div>
+        <div class="stock-progress"><div class="stock-progress-fill"></div></div>
+      </div>
+      <div class="stock-niveau">
+        <div class="stock-niveau-row">
+          <span class="stock-niveau-num"></span>
+          <span class="stock-niveau-unit"></span>
+        </div>
+        <div class="stock-pm">
+          <button type="button" class="stock-pm-btn stock-minus" aria-label="Retirer">−</button>
+          <button type="button" class="stock-pm-btn stock-plus" aria-label="Ajouter">+</button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.stock-icon').textContent = cat.emoji;
+    card.querySelector('.stock-nom-text').textContent = s.nom;
+    const meta = seuilNum != null
+      ? `Seuil d'alerte : ${formatNum(seuilNum)} ${s.unite || 'kg'}`
+      : 'Pas de seuil défini';
+    card.querySelector('.stock-meta').textContent = meta;
+    card.querySelector('.stock-progress-fill').style.width = `${pct}%`;
+    card.querySelector('.stock-niveau-num').textContent = formatNum(niveauNum);
+    card.querySelector('.stock-niveau-unit').textContent = s.unite || 'kg';
+
+    card.querySelector('.stock-nom-edit').addEventListener('click', () => openStockModal(s));
+    card.querySelector('.stock-minus').addEventListener('click', () => adjustStock(s, -1));
+    card.querySelector('.stock-plus').addEventListener('click', () => adjustStock(s, 1));
+
+    return card;
+  }
+
+  function formatNum(n) {
+    if (n == null) return '0';
+    const num = parseFloat(n);
+    if (Number.isInteger(num)) return String(num);
+    return num.toFixed(1).replace(/\.0$/, '');
+  }
+
+  async function adjustStock(s, delta) {
+    const step = (s.unite === 'unités' || s.unite === 'sacs') ? 1 : 1;
+    const newVal = Math.max(0, parseFloat(s.niveau_actuel || 0) + (delta * step));
+    const { error } = await supabase
+      .from('stocks')
+      .update({ niveau_actuel: newVal, updated_at: new Date().toISOString() })
+      .eq('id', s.id);
+    if (error) { showToast('Erreur', 'error'); return; }
+    s.niveau_actuel = newVal;
+    await renderStocks();
+  }
+
+  function openStockModal(s) {
+    $('stock-form').reset();
+    if (s) {
+      editingStockId = s.id;
+      $('modal-stock-title').innerHTML = 'Modifier <em>l\'article</em>';
+      $('stock-nom').value = s.nom || '';
+      $('stock-categorie').value = s.categorie || 'autres';
+      $('stock-niveau').value = s.niveau_actuel != null ? s.niveau_actuel : 0;
+      $('stock-unite').value = s.unite || 'kg';
+      $('stock-seuil').value = s.seuil_alerte != null ? s.seuil_alerte : '';
+      $('btn-delete-stock').style.display = 'flex';
+    } else {
+      editingStockId = null;
+      $('modal-stock-title').innerHTML = 'Nouvel <em>article</em>';
+      $('stock-categorie').value = 'farines';
+      $('stock-niveau').value = '0';
+      $('stock-unite').value = 'kg';
+      $('btn-delete-stock').style.display = 'none';
+    }
+    openModal('modal-stock');
+  }
+
+  $('btn-new-stock').addEventListener('click', () => openStockModal(null));
+
+  $('stock-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const nom = $('stock-nom').value.trim();
+    if (!nom) { showToast('Nom obligatoire', 'error'); return; }
+
+    const data = {
+      boulangerie_id: BOU_ID,
+      nom,
+      categorie: $('stock-categorie').value,
+      niveau_actuel: parseFloat($('stock-niveau').value) || 0,
+      unite: $('stock-unite').value,
+      seuil_alerte: $('stock-seuil').value ? parseFloat($('stock-seuil').value) : null,
+      updated_at: new Date().toISOString()
+    };
+
+    const btn = $('btn-save-stock');
+    btn.disabled = true; btn.textContent = 'Enregistrement…';
+    try {
+      let error;
+      if (editingStockId) {
+        ({ error } = await supabase.from('stocks').update(data).eq('id', editingStockId));
+      } else {
+        ({ error } = await supabase.from('stocks').insert([data]));
+      }
+      if (error) throw error;
+      showToast(editingStockId ? '✓ Modifié' : '✓ Ajouté');
+      closeModal('modal-stock');
+      await renderStocks();
+    } catch (err) {
+      console.error('Erreur stock:', err);
+      showToast('Erreur : ' + (err.message || 'inconnu').substring(0, 60), 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Enregistrer';
+    }
+  });
+
+  $('btn-delete-stock').addEventListener('click', async () => {
+    if (!editingStockId) return;
+    const ok = await showConfirm('Supprimer cet article ?', 'Cette action est irréversible.', 'Supprimer', 'Annuler');
+    if (!ok) return;
+    const { error } = await supabase.from('stocks').delete().eq('id', editingStockId);
+    if (error) { showToast('Erreur', 'error'); return; }
+    showToast('Supprimé');
+    closeModal('modal-stock');
+    await renderStocks();
+  });
+
   // ============ ONGLET PROFIL ============
   // ========================================================
 
@@ -3581,7 +3966,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   await Promise.all([
     loadProcedures(),
     loadReleves(),
-    loadApprentis()
+    loadCommandes(),
+    loadStocks()
   ]);
 
   renderProfil();

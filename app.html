@@ -119,60 +119,328 @@ body::after {
   font-weight: 500;
 }
 
-/* ============ BOUTON PROFIL (TOPBAR) ============ */
-.profil-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px 5px 5px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 100px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15);
-}
+/* ============ AVATAR + DROPDOWN ============ */
+.user-menu { position: relative; }
 
-.profil-trigger:hover {
-  background: rgba(10, 132, 255, 0.12);
-  border-color: rgba(10, 132, 255, 0.4);
-  box-shadow: 0 6px 16px rgba(10, 132, 255, 0.25);
-}
-
-.profil-trigger:active { transform: scale(0.96); }
-
-.profil-trigger-avatar {
-  width: 32px;
-  height: 32px;
+.avatar-btn {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   font-family: 'Source Serif 4', serif;
   font-style: italic;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   color: #fff;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(10, 132, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.avatar-btn:active { transform: scale(0.95); }
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(20, 20, 22, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  display: none;
+}
+
+.user-dropdown.open { display: block; }
+
+.dropdown-header {
+  padding: 10px 14px 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 6px;
+}
+
+.dropdown-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.dropdown-email { font-size: 11px; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+}
+
+.dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+.dropdown-item.danger { color: #FF453A; }
+.dropdown-item .material-icons-round { font-size: 18px; }
+
+/* ============ HERO ÉDITORIAL ============ */
+.hero { margin-bottom: 28px; }
+
+.hero-eyebrow {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+  color: #fff;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+}
+
+/* ============ TRIAL BANNER ============ */
+.trial-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.15) 0%, rgba(88, 86, 214, 0.15) 100%);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+
+.trial-banner .material-icons-round { color: #0A84FF; font-size: 16px; flex-shrink: 0; }
+.trial-banner-text { flex: 1; font-size: 11px; font-weight: 500; }
+.trial-banner-text strong { color: #0A84FF; font-weight: 600; }
+
+/* ============ HOME — TÂCHES DU JOUR ============ */
+.home-section-title {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.2px;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-section-title .count-pill {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  color: #0A84FF;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 100px;
+  padding: 2px 9px;
+  letter-spacing: 0.3px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.task-row:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.task-row.urgent {
+  border-color: rgba(255, 159, 10, 0.35);
+  background: linear-gradient(135deg, rgba(255, 159, 10, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.task-row.done {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.task-row.done:active { transform: none; background: rgba(255, 255, 255, 0.04); }
+
+.task-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.profil-trigger-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.1px;
-  white-space: nowrap;
+.task-icon .material-icons-round { color: #0A84FF; font-size: 18px; }
+
+.task-row.urgent .task-icon { background: rgba(255, 159, 10, 0.18); border-color: rgba(255, 159, 10, 0.4); }
+.task-row.urgent .task-icon .material-icons-round { color: #FF9F0A; }
+
+.task-row.done .task-icon { background: rgba(52, 199, 89, 0.15); border-color: rgba(52, 199, 89, 0.35); }
+.task-row.done .task-icon .material-icons-round { color: #34C759; }
+
+.task-body { flex: 1; min-width: 0; }
+.task-row .task-label { font-size: 13px; font-weight: 600; margin-bottom: 1px; letter-spacing: -0.15px; }
+.task-row.done .task-label { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
+.task-row .task-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+
+.task-arrow { color: rgba(255, 255, 255, 0.3); font-size: 18px; flex-shrink: 0; }
+.task-row.done .task-arrow { display: none; }
+
+/* ============ HOME — STATS APPLE WATCH STYLE ============ */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 28px;
 }
 
-@media (max-width: 380px) {
-  .profil-trigger-label { display: none; }
-  .profil-trigger { padding: 5px; }
+.stat-cell {
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.stat-num em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+  font-size: 16px;
+  letter-spacing: -0.4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ============ HOME — BIG CTA ============ */
+.home-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 18px 20px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 12px 32px rgba(10, 132, 255, 0.4), 0 2px 8px rgba(10, 132, 255, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.home-cta:active { transform: scale(0.98); }
+
+.home-cta-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-cta-icon .material-icons-round { color: #fff; font-size: 24px; }
+
+.home-cta-body { flex: 1; }
+.home-cta-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.3px; }
+.home-cta-sub { font-size: 12px; color: rgba(255, 255, 255, 0.85); }
+
+.home-cta-arrow { color: rgba(255, 255, 255, 0.7); font-size: 22px; flex-shrink: 0; }
+
+/* ============ HOME — EMPTY (premier jour) ============ */
+.home-empty {
+  text-align: center;
+  padding: 32px 16px 24px 16px;
+  margin-bottom: 16px;
+  background: rgba(52, 199, 89, 0.08);
+  border: 1px solid rgba(52, 199, 89, 0.25);
+  border-radius: 18px;
+}
+
+.home-empty .material-icons-round {
+  color: #34C759;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.home-empty-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
+
+.home-empty-title em { font-style: italic; font-weight: 400; color: #34C759; }
+
+.home-empty-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 280px;
+  margin: 0 auto;
+  line-height: 1.5;
 }
 
 /* ============ BOUTONS ACTIONS ============ */
@@ -376,6 +644,13 @@ body::after {
 
 .profil-info { flex: 1; min-width: 0; }
 
+.profil-card-fields {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 4px 18px;
+}
+
 .profil-name {
   font-family: 'Source Serif 4', serif;
   font-weight: 600;
@@ -571,181 +846,6 @@ body::after {
 .btn-logout-profil:hover { background: rgba(255, 69, 58, 0.08); }
 .btn-logout-profil .material-icons-round { font-size: 16px; }
 
-/* ============ SIDEBAR DESKTOP ============ */
-.sidebar {
-  display: none;
-}
-
-@media (min-width: 901px) {
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 240px;
-    padding: 28px 16px 20px 16px;
-    background: rgba(20, 20, 22, 0.5);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    z-index: 90;
-  }
-
-  .sidebar-logo {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 28px;
-    color: #fff;
-    letter-spacing: -0.5px;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 2px;
-    text-decoration: none;
-    padding: 0 12px;
-    margin-bottom: 36px;
-  }
-
-  .sidebar-logo .sparkle {
-    color: #0A84FF;
-    font-size: 24px;
-    text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
-    animation: pulse 3.5s ease-in-out infinite;
-  }
-
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-  }
-
-  .sidebar-tab {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 11px 14px;
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.65);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    text-align: left;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    letter-spacing: -0.1px;
-  }
-
-  .sidebar-tab:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-  }
-
-  .sidebar-tab .material-icons-round {
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-
-  .sidebar-tab.active {
-    background: rgba(10, 132, 255, 0.15);
-    border: 1px solid rgba(10, 132, 255, 0.3);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.18);
-  }
-
-  .sidebar-tab.active .material-icons-round { color: #0A84FF; }
-
-  .sidebar-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.06);
-    margin: 12px 8px;
-  }
-
-  /* Bouton "Mon compte" en bas de sidebar */
-  .sidebar-account {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    cursor: pointer;
-    font-family: inherit;
-    color: #fff;
-    text-align: left;
-    transition: all 0.2s ease;
-  }
-
-  .sidebar-account:hover {
-    background: rgba(10, 132, 255, 0.1);
-    border-color: rgba(10, 132, 255, 0.3);
-  }
-
-  .sidebar-account-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #0A84FF 0%, #5856D6 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(10, 132, 255, 0.4);
-  }
-
-  .sidebar-account-info { flex: 1; min-width: 0; }
-  .sidebar-account-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 1px;
-  }
-  .sidebar-account-sub {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 0.2px;
-  }
-
-  /* Décaler tout le contenu pour laisser place à la sidebar */
-  .stage { padding-left: 240px; }
-
-  /* Sur desktop, contenu plus large */
-  .screen { max-width: 720px; padding: 32px 56px 80px 56px; }
-
-  /* Cacher la tabbar mobile */
-  .tabbar { display: none !important; }
-
-  /* Cacher le bouton "Mon compte" de la topbar (déjà dans la sidebar) */
-  .profil-trigger { display: none; }
-
-  /* Cacher le logo de la topbar (déjà dans la sidebar) */
-  #topbar-wrapper { display: none !important; }
-
-  /* Aurora plus présente sur PC pour combler les côtés */
-  body::before {
-    background:
-      radial-gradient(ellipse 60% 70% at 0% 0%, rgba(10, 132, 255, 0.22) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 100% 30%, rgba(10, 132, 255, 0.16) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 50% 100%, rgba(88, 86, 214, 0.12) 0%, transparent 60%),
-      #000 !important;
-  }
-}
-
 /* ============ TABBAR ============ */
 .tabbar {
   position: fixed;
@@ -797,141 +897,6 @@ body::after {
   background: #0A84FF;
   color: #fff;
   box-shadow: 0 4px 14px rgba(10, 132, 255, 0.5);
-}
-
-/* ============================================================
-   DESKTOP LAYOUT (≥1024px) — sidebar gauche + contenu plus large
-   Mobile <1024px : tabbar en bas, contenu 430px (inchangé)
-   ============================================================ */
-@media (min-width: 1024px) {
-
-  /* Stage : on laisse plus de place pour la sidebar */
-  .stage {
-    padding-left: 240px;
-    padding-bottom: 0;
-  }
-
-  /* Contenu : plus large sur desktop */
-  .screen {
-    max-width: 720px;
-    padding: 32px 48px 80px 48px;
-  }
-
-  /* Topbar wrapper aussi */
-  #topbar-wrapper {
-    max-width: 720px !important;
-  }
-
-  /* Tabbar devient sidebar verticale fixée à gauche */
-  .tabbar {
-    bottom: auto;
-    top: 0;
-    left: 0;
-    transform: none;
-    width: 220px;
-    height: 100vh;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 4px;
-    padding: 24px 16px;
-    background: rgba(15, 15, 17, 0.85);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-radius: 0;
-    border: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: none;
-  }
-
-  /* Logo Frizz✦ en haut de la sidebar */
-  .tabbar::before {
-    content: 'Frizz✦';
-    display: block;
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 26px;
-    color: #fff;
-    letter-spacing: -0.4px;
-    padding: 8px 14px 28px 14px;
-    margin-bottom: 8px;
-  }
-
-  /* Onglets : pleine largeur, alignés à gauche, icône + label horizontal */
-  .tab {
-    width: 100%;
-    min-width: 0;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 11px 14px;
-    border-radius: 12px;
-  }
-
-  .tab .material-icons-round { font-size: 20px; }
-
-  .tab .tab-label {
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: -0.1px;
-  }
-
-  .tab.active {
-    background: #0A84FF;
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
-  }
-
-  /* Hover desktop seulement */
-  .tab:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.85);
-  }
-
-  /* La topbar partagée a moins de sens en desktop : on cache le logo (déjà dans la sidebar) */
-  .topbar .logo {
-    display: none;
-  }
-
-  /* "Mon compte" reste à droite, mais ajuste la position */
-  .topbar {
-    justify-content: flex-end !important;
-    padding: 24px 48px 0 48px !important;
-  }
-
-  /* Hero plus généreux sur desktop */
-  .hero-title {
-    font-size: 48px;
-  }
-
-  /* Cards plus généreuses */
-  .proc-card, .qr-card, .apprenti-card {
-    padding: 22px 24px;
-  }
-
-  /* Modals : centrées avec plus de marge */
-  .modal {
-    max-width: 540px;
-  }
-
-  /* Aurora : étendre sur toute la largeur même avec sidebar */
-  body::before {
-    inset: 0;
-  }
-}
-
-/* Très grand écran : limite max et centrage */
-@media (min-width: 1440px) {
-  .stage {
-    padding-left: 240px;
-  }
-  .screen {
-    max-width: 760px;
-  }
-  #topbar-wrapper {
-    max-width: 760px !important;
-  }
 }
 
 /* ============ MODAL ============ */
@@ -1656,55 +1621,38 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 <!-- ============================================
      STAGE
      ============================================ -->
-<!-- ============ SIDEBAR DESKTOP (cachée sur mobile) ============ -->
-<aside class="sidebar" id="sidebar">
-  <a href="#" class="sidebar-logo" id="sidebar-logo-link">Frizz<span class="sparkle">✦</span></a>
-
-  <nav class="sidebar-nav">
-    <button type="button" class="sidebar-tab active" data-tab="procedures">
-      <span class="material-icons-round">menu_book</span>
-      Procédures
-    </button>
-    <button type="button" class="sidebar-tab" data-tab="qr">
-      <span class="material-icons-round">qr_code_2</span>
-      QR codes
-    </button>
-    <button type="button" class="sidebar-tab" data-tab="haccp">
-      <span class="material-icons-round">thermostat</span>
-      HACCP
-    </button>
-    <button type="button" class="sidebar-tab" data-tab="apprenti">
-      <span class="material-icons-round">school</span>
-      Apprenti
-    </button>
-  </nav>
-
-  <div class="sidebar-divider"></div>
-
-  <button type="button" class="sidebar-account" id="sidebar-account-btn">
-    <span class="sidebar-account-avatar" id="sidebar-account-avatar">??</span>
-    <span class="sidebar-account-info">
-      <span class="sidebar-account-name" id="sidebar-account-name">Patron</span>
-      <span class="sidebar-account-sub">Mon compte</span>
-    </span>
-  </button>
-</aside>
-
 <div class="stage" id="stage">
 
   <!-- TOPBAR PARTAGÉ -->
   <div class="screen" id="topbar-wrapper" style="display: block; padding: 0; max-width: 430px; margin: 0 auto;">
     <div class="topbar" style="padding: 24px 28px 0 28px; margin-bottom: 0;">
       <a href="#" class="logo" id="home-logo">Frizz<span class="sparkle">✦</span></a>
-      <button class="profil-trigger" id="profil-trigger" aria-label="Mon profil">
-        <span class="profil-trigger-avatar" id="avatar-initials">??</span>
-        <span class="profil-trigger-label">Mon compte</span>
-      </button>
+      <div class="user-menu">
+        <button class="avatar-btn" id="avatar-btn" aria-label="Menu">
+          <span id="avatar-initials">??</span>
+        </button>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-name" id="dropdown-name">—</div>
+            <div class="dropdown-email" id="dropdown-email">—</div>
+          </div>
+          <button class="dropdown-item danger" id="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Se déconnecter
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- ============ ONGLET 1 : PROCÉDURES (page d'accueil) ============ -->
   <section class="screen active" data-screen="procedures">
+
+    <!-- Bandeau trial -->
+    <div class="trial-banner" id="trial-banner" style="display: none;">
+      <span class="material-icons-round">verified</span>
+      <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
+    </div>
 
     <div class="hero">
       <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
@@ -1839,7 +1787,7 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
     <!-- Carte boulangerie -->
     <div class="profil-section-title">Boulangerie</div>
-    <div class="profil-card">
+    <div class="profil-card profil-card-fields">
       <div class="profil-row">
         <span class="profil-row-label">Nom</span>
         <span class="profil-row-value" id="profil-bou-nom">—</span>
@@ -2169,12 +2117,10 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   // ============ NAVIGATION ENTRE ONGLETS ============
   const screens = document.querySelectorAll('.screen[data-screen]');
   const tabs = document.querySelectorAll('.tab[data-tab]');
-  const sidebarTabs = document.querySelectorAll('.sidebar-tab[data-tab]');
 
   function goTo(name) {
     screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
     tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-    sidebarTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Charger les données spécifiques à l'onglet
@@ -2185,21 +2131,12 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   }
 
   tabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
-  sidebarTabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tab)));
 
   document.querySelectorAll('[data-go]').forEach(b => {
     b.addEventListener('click', () => goTo(b.dataset.go));
   });
 
-  // Logo de sidebar et topbar → ramène à Procédures (page d'accueil)
-  const homeLogo = $('home-logo');
-  if (homeLogo) homeLogo.addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
-  const sidebarLogo = $('sidebar-logo-link');
-  if (sidebarLogo) sidebarLogo.addEventListener('click', (e) => { e.preventDefault(); goTo('procedures'); });
-
-  // Bouton "Mon compte" en bas de sidebar → ouvre Profil
-  const sidebarAccountBtn = $('sidebar-account-btn');
-  if (sidebarAccountBtn) sidebarAccountBtn.addEventListener('click', () => goTo('profil'));
+  $('home-logo').addEventListener('click', (e) => { e.preventDefault(); goTo('accueil'); });
 
   // ============ AVATAR + DROPDOWN ============
   function getInitials(name) {
@@ -2216,11 +2153,33 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     || 'Patron';
 
   $('avatar-initials').textContent = getInitials(userName);
+  $('dropdown-name').textContent = userName;
+  $('dropdown-email').textContent = user.email || '';
 
-  // Click sur le bouton "Mon compte" → ouvre l'onglet Profil
-  $('profil-trigger').addEventListener('click', () => {
-    goTo('profil');
+  $('avatar-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    $('user-dropdown').classList.toggle('open');
   });
+
+  document.addEventListener('click', (e) => {
+    if (!$('avatar-btn').contains(e.target) && !$('user-dropdown').contains(e.target)) {
+      $('user-dropdown').classList.remove('open');
+    }
+  });
+
+  $('logout-btn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+  });
+
+  // ============ TRIAL BANNER ============
+  if (boulangerie.abonnement_status === 'trial' && boulangerie.trial_end_date) {
+    const daysLeft = Math.ceil((new Date(boulangerie.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysLeft > 0) {
+      $('trial-days').textContent = daysLeft === 1 ? '1 jour' : `${daysLeft} jours`;
+      $('trial-banner').style.display = 'flex';
+    }
+  }
 
   // ============ SALUTATION DU JOUR ============
   const now = new Date();

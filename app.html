@@ -2673,6 +2673,11 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       </div>
 
       <div class="input-wrap">
+        <label for="bq-adresse">Adresse de la boutique</label>
+        <input type="text" id="bq-adresse" placeholder="12 rue du Pain, 4051 Bâle">
+      </div>
+
+      <div class="input-wrap">
         <label for="bq-horaires">Horaires de retrait</label>
         <textarea id="bq-horaires" rows="3" placeholder="Du mardi au samedi : 7h - 19h&#10;Dimanche : 8h - 13h&#10;Fermé le lundi"></textarea>
       </div>
@@ -4148,7 +4153,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
   async function loadBoutique() {
     const { data: bou, error } = await supabase
       .from('boulangeries')
-      .select('id, nom, ville, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_horaires')
+      .select('id, nom, ville, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_adresse, boutique_horaires')
       .eq('id', BOU_ID)
       .single();
 
@@ -4163,6 +4168,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
 
     // Configuration
     $('bq-description').value = bou.boutique_description || '';
+    $('bq-adresse').value = bou.boutique_adresse || '';
     $('bq-horaires').value = bou.boutique_horaires || '';
     $('bq-banner-url').value = bou.boutique_banner_url || '';
     if (bou.boutique_banner_url) showBannerPreview(bou.boutique_banner_url);
@@ -4392,6 +4398,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       .update({
         boutique_banner_url: $('bq-banner-url').value || null,
         boutique_description: $('bq-description').value.trim() || null,
+        boutique_adresse: $('bq-adresse').value.trim() || null,
         boutique_horaires: $('bq-horaires').value.trim() || null
       })
       .eq('id', BOU_ID);

@@ -471,7 +471,7 @@ select option { background: #1a1a1c; color: #fff; }
   // Si déjà connecté, redirige direct vers le dashboard
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
-    window.location.href = '/dashboard.html';
+    window.location.href = '/app.html';
   }
 
   // ============ DOM ============
@@ -568,7 +568,7 @@ select option { background: #1a1a1c; color: #fff; }
         // Le dashboard détectera et proposera de compléter
         showToast('Compte créé, mais erreur lors de l\'enregistrement de la boulangerie. Vous serez guidé au prochain écran.', 'error');
         setTimeout(() => {
-          window.location.href = '/dashboard.html';
+          window.location.href = '/app.html';
         }, 2500);
         return;
       }
@@ -576,7 +576,7 @@ select option { background: #1a1a1c; color: #fff; }
       // 3. Succès → redirection
       showToast('✓ Compte créé ! Redirection...', 'success');
       setTimeout(() => {
-        window.location.href = '/dashboard.html';
+        window.location.href = '/app.html';
       }, 1200);
 
     } catch (err) {
@@ -596,7 +596,7 @@ select option { background: #1a1a1c; color: #fff; }
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard.html`
+          redirectTo: `${window.location.origin}/app.html`
         }
       });
 

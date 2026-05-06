@@ -236,54 +236,212 @@ body::after {
 .trial-banner-text { flex: 1; font-size: 11px; font-weight: 500; }
 .trial-banner-text strong { color: #0A84FF; font-weight: 600; }
 
-/* ============ STATUS HERO (ACCUEIL) ============ */
-.status-hero { text-align: center; margin-bottom: 36px; }
-
-.status-hero .label {
+/* ============ HOME — TÂCHES DU JOUR ============ */
+.home-section-title {
   font-family: 'Source Serif 4', serif;
   font-style: italic;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.2px;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-section-title .count-pill {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  color: #0A84FF;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  border-radius: 100px;
+  padding: 2px 9px;
   letter-spacing: 0.3px;
 }
 
-.status-hero .check-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(52, 199, 89, 0.15);
-  border: 2px solid rgba(52, 199, 89, 0.5);
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.task-row:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+
+.task-row.urgent {
+  border-color: rgba(255, 159, 10, 0.35);
+  background: linear-gradient(135deg, rgba(255, 159, 10, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.task-row.done {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.task-row.done:active { transform: none; background: rgba(255, 255, 255, 0.04); }
+
+.task-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 18px auto;
-  box-shadow: 0 0 36px rgba(52, 199, 89, 0.25);
+  flex-shrink: 0;
 }
 
-.status-hero .check-circle .material-icons-round { color: #34C759; font-size: 40px; }
+.task-icon .material-icons-round { color: #0A84FF; font-size: 18px; }
 
-.status-hero.warn .check-circle {
-  background: rgba(255, 159, 10, 0.15);
-  border-color: rgba(255, 159, 10, 0.5);
-  box-shadow: 0 0 36px rgba(255, 159, 10, 0.25);
+.task-row.urgent .task-icon { background: rgba(255, 159, 10, 0.18); border-color: rgba(255, 159, 10, 0.4); }
+.task-row.urgent .task-icon .material-icons-round { color: #FF9F0A; }
+
+.task-row.done .task-icon { background: rgba(52, 199, 89, 0.15); border-color: rgba(52, 199, 89, 0.35); }
+.task-row.done .task-icon .material-icons-round { color: #34C759; }
+
+.task-body { flex: 1; min-width: 0; }
+.task-row .task-label { font-size: 13px; font-weight: 600; margin-bottom: 1px; letter-spacing: -0.15px; }
+.task-row.done .task-label { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
+.task-row .task-meta { font-size: 11px; color: rgba(255, 255, 255, 0.45); }
+
+.task-arrow { color: rgba(255, 255, 255, 0.3); font-size: 18px; flex-shrink: 0; }
+.task-row.done .task-arrow { display: none; }
+
+/* ============ HOME — STATS APPLE WATCH STYLE ============ */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 28px;
 }
 
-.status-hero.warn .check-circle .material-icons-round { color: #FF9F0A; }
+.stat-cell {
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  text-align: center;
+}
 
-.status-hero .verdict {
+.stat-num {
   font-family: 'Source Serif 4', serif;
   font-weight: 600;
-  font-size: 32px;
-  line-height: 1.05;
+  font-size: 28px;
   letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.stat-num em {
+  font-style: italic;
+  font-weight: 400;
+  color: #0A84FF;
+  font-size: 16px;
+  letter-spacing: -0.4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ============ HOME — BIG CTA ============ */
+.home-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 18px 20px;
+  background: #0A84FF;
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 12px 32px rgba(10, 132, 255, 0.4), 0 2px 8px rgba(10, 132, 255, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.home-cta:active { transform: scale(0.98); }
+
+.home-cta-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-cta-icon .material-icons-round { color: #fff; font-size: 24px; }
+
+.home-cta-body { flex: 1; }
+.home-cta-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.3px; }
+.home-cta-sub { font-size: 12px; color: rgba(255, 255, 255, 0.85); }
+
+.home-cta-arrow { color: rgba(255, 255, 255, 0.7); font-size: 22px; flex-shrink: 0; }
+
+/* ============ HOME — EMPTY (premier jour) ============ */
+.home-empty {
+  text-align: center;
+  padding: 32px 16px 24px 16px;
+  margin-bottom: 16px;
+  background: rgba(52, 199, 89, 0.08);
+  border: 1px solid rgba(52, 199, 89, 0.25);
+  border-radius: 18px;
+}
+
+.home-empty .material-icons-round {
+  color: #34C759;
+  font-size: 32px;
   margin-bottom: 8px;
 }
 
-.status-hero .verdict em { font-style: italic; font-weight: 400; color: #34C759; }
-.status-hero.warn .verdict em { color: #FF9F0A; }
+.home-empty-title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
 
-.status-hero .submeta { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+.home-empty-title em { font-style: italic; font-weight: 400; color: #34C759; }
+
+.home-empty-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 280px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
 
 /* ============ BOUTONS ACTIONS ============ */
 .big-action {
@@ -1105,7 +1263,7 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
   <!-- ============ ONGLET 1 : ACCUEIL ============ -->
   <section class="screen active" data-screen="accueil">
-    <div style="height: 32px;"></div>
+    <div style="height: 28px;"></div>
 
     <!-- Bandeau trial -->
     <div class="trial-banner" id="trial-banner" style="display: none;">
@@ -1113,41 +1271,53 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
       <span class="trial-banner-text"><strong id="trial-days">14 jours</strong> d'essai restants</span>
     </div>
 
-    <!-- Statut du jour -->
-    <div class="status-hero" id="status-hero">
-      <div class="label" id="status-label">— Bonjour</div>
-      <div class="check-circle"><span class="material-icons-round">check</span></div>
-      <div class="verdict" id="status-verdict">Bonne <em>journée</em>.</div>
-      <div class="submeta" id="status-submeta">Bienvenue chez Frizz</div>
+    <!-- Date + salutation -->
+    <div class="hero" style="margin-bottom: 22px;">
+      <div class="hero-eyebrow" id="status-label">— Bonjour</div>
+      <h1 class="hero-title" id="home-greeting">Bon<em>jour</em>.</h1>
     </div>
 
-    <!-- 3 actions -->
-    <button class="big-action primary" data-go="procedures">
-      <div class="action-icon"><span class="material-icons-round">add</span></div>
-      <div class="action-body">
-        <div class="action-title">Nouvelle procédure</div>
-        <div class="action-sub">Filmer une étape, ajouter un QR</div>
+    <!-- 3 chiffres clés (style Apple Watch) -->
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-num" id="stat-procs">0</div>
+        <div class="stat-label">Procédures</div>
       </div>
-      <span class="material-icons-round action-arrow">arrow_forward</span>
+      <div class="stat-cell">
+        <div class="stat-num" id="stat-scans">0</div>
+        <div class="stat-label">Scans 7j</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num" id="stat-clean">0<em>j</em></div>
+        <div class="stat-label">Sans incident</div>
+      </div>
+    </div>
+
+    <!-- Tâches du jour -->
+    <h2 class="home-section-title">
+      À faire aujourd'hui
+      <span class="count-pill" id="tasks-count">0</span>
+    </h2>
+
+    <div id="tasks-list-home"></div>
+
+    <!-- Si tout est fait -->
+    <div class="home-empty" id="tasks-empty" style="display: none;">
+      <span class="material-icons-round">verified</span>
+      <div class="home-empty-title">Tout est <em>en règle</em>.</div>
+      <div class="home-empty-desc">Vos obligations légales du jour sont à jour. Rien à faire.</div>
+    </div>
+
+    <!-- CTA principal -->
+    <button class="home-cta" data-go="procedures">
+      <div class="home-cta-icon"><span class="material-icons-round">add</span></div>
+      <div class="home-cta-body">
+        <div class="home-cta-title">Nouvelle procédure</div>
+        <div class="home-cta-sub">Filmer une étape, générer son QR code</div>
+      </div>
+      <span class="material-icons-round home-cta-arrow">arrow_forward</span>
     </button>
 
-    <button class="big-action" data-go="haccp">
-      <div class="action-icon"><span class="material-icons-round">thermostat</span></div>
-      <div class="action-body">
-        <div class="action-title">Relevé température</div>
-        <div class="action-sub">Chambre froide, vitrine, congélateur</div>
-      </div>
-      <span class="material-icons-round action-arrow">arrow_forward</span>
-    </button>
-
-    <button class="big-action" id="btn-pms">
-      <div class="action-icon"><span class="material-icons-round">picture_as_pdf</span></div>
-      <div class="action-body">
-        <div class="action-title">PMS du mois</div>
-        <div class="action-sub">PDF prêt pour la DDPP</div>
-      </div>
-      <span class="material-icons-round action-arrow">arrow_forward</span>
-    </button>
   </section>
 
   <!-- ============ ONGLET 2 : PROCÉDURES ============ -->
@@ -1660,6 +1830,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
       card.addEventListener('click', () => openProcModal(p));
       list.appendChild(card);
     });
+
+    // Mettre à jour les stats de l'accueil
+    if (typeof renderHome === 'function') renderHome();
   }
 
   // Étapes : ajouter / supprimer
@@ -2019,7 +2192,7 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
     releves = data || [];
     renderReleves();
-    updateStatusVerdict();
+    renderHome();
   }
 
   function renderReleves() {
@@ -2219,31 +2392,147 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
   }
 
   $('btn-pms-pdf').addEventListener('click', generatePMSPdf);
-  $('btn-pms').addEventListener('click', generatePMSPdf);
 
-  // Statut HACCP du jour pour l'accueil
-  function updateStatusVerdict() {
+  // ========================================================
+  // ============ ACCUEIL : tâches + stats ============
+  // ========================================================
+
+  function renderHome() {
+    // -------- 1. Salutation contextuelle selon l'heure --------
+    const hour = new Date().getHours();
+    let greet = 'Bon<em>jour</em>.';
+    if (hour < 5) greet = 'Bonne <em>nuit</em>.';
+    else if (hour < 12) greet = 'Bon<em>jour</em>.';
+    else if (hour < 18) greet = 'Bon <em>après-midi</em>.';
+    else greet = 'Bon<em>soir</em>.';
+    $('home-greeting').innerHTML = greet;
+
+    // -------- 2. STATS --------
+    // Procédures
+    $('stat-procs').textContent = procedures.length;
+
+    // Scans des 7 derniers jours (somme des scans_count des procédures)
+    // Note : c'est un total cumulé, pas exactement "7j" - mais c'est ce qu'on a en base
+    const totalScans = procedures.reduce((sum, p) => sum + (p.scans_count || 0), 0);
+    $('stat-scans').textContent = totalScans;
+
+    // Jours consécutifs sans incident HACCP
+    // On prend tous les relevés du mois (via "releves" qui peut être en mode jour ou mois)
+    // et on calcule le nb de jours depuis le dernier relevé non-conforme
+    let cleanDays = 0;
+    if (releves.length > 0) {
+      const lastIncident = releves.find(r => !r.conforme);
+      if (lastIncident) {
+        const incidentDate = new Date(lastIncident.created_at);
+        const now = new Date();
+        cleanDays = Math.floor((now - incidentDate) / (1000 * 60 * 60 * 24));
+      } else {
+        // Aucun incident sur la période chargée → on prend les jours depuis le 1er du mois
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        cleanDays = Math.floor((new Date() - monthStart) / (1000 * 60 * 60 * 24));
+      }
+    }
+    $('stat-clean').innerHTML = `${cleanDays}<em>j</em>`;
+
+    // -------- 3. TÂCHES DU JOUR --------
+    const tasks = [];
     const today = new Date(new Date().setHours(0, 0, 0, 0));
     const todayReleves = releves.filter(r => new Date(r.created_at) >= today);
-    const total = todayReleves.length;
-    const nonConformes = todayReleves.filter(r => !r.conforme).length;
-    const heroEl = $('status-hero');
-    const verdict = $('status-verdict');
-    const submeta = $('status-submeta');
+    const todayConformes = todayReleves.filter(r => r.conforme).length;
+    const todayNonConformes = todayReleves.filter(r => !r.conforme).length;
 
-    heroEl.classList.remove('warn');
-
-    if (total === 0) {
-      verdict.innerHTML = 'Bonne <em>journée</em>.';
-      submeta.textContent = `Aucun relevé HACCP aujourd'hui`;
-    } else if (nonConformes === 0) {
-      verdict.innerHTML = 'Tout est <em>en règle</em>.';
-      submeta.textContent = `${total} relevé${total > 1 ? 's' : ''} validé${total > 1 ? 's' : ''} aujourd'hui`;
-    } else {
-      heroEl.classList.add('warn');
-      verdict.innerHTML = `${nonConformes} <em>alerte${nonConformes > 1 ? 's' : ''}</em>.`;
-      submeta.textContent = `Sur ${total} relevé${total > 1 ? 's' : ''} aujourd'hui`;
+    // Tâche 1 : alertes HACCP non-conformes (URGENT)
+    if (todayNonConformes > 0) {
+      tasks.push({
+        urgent: true,
+        done: false,
+        icon: 'warning',
+        label: `${todayNonConformes} relevé${todayNonConformes > 1 ? 's' : ''} hors plage`,
+        meta: 'Action corrective à enregistrer',
+        action: () => goTo('haccp')
+      });
     }
+
+    // Tâche 2 : relevé température du jour
+    if (todayConformes === 0 && todayNonConformes === 0) {
+      tasks.push({
+        urgent: false,
+        done: false,
+        icon: 'thermostat',
+        label: 'Faire le relevé de température',
+        meta: 'Chambre froide, vitrine, congélateur · 30 sec',
+        action: () => goTo('haccp')
+      });
+    } else {
+      tasks.push({
+        urgent: false,
+        done: true,
+        icon: 'check',
+        label: 'Relevé de température fait',
+        meta: `${todayReleves.length} relevé${todayReleves.length > 1 ? 's' : ''} aujourd'hui`,
+        action: () => goTo('haccp')
+      });
+    }
+
+    // Tâche 3 : créer une procédure si aucune
+    if (procedures.length === 0) {
+      tasks.push({
+        urgent: false,
+        done: false,
+        icon: 'menu_book',
+        label: 'Créer votre première procédure',
+        meta: 'Filmer un geste, générer le QR code',
+        action: () => goTo('procedures')
+      });
+    }
+
+    // Tâche 4 : PMS du mois précédent (à télécharger en début de mois)
+    const dayOfMonth = new Date().getDate();
+    if (dayOfMonth <= 5 && releves.length > 0) {
+      tasks.push({
+        urgent: false,
+        done: false,
+        icon: 'picture_as_pdf',
+        label: 'PMS du mois précédent à archiver',
+        meta: 'PDF prêt pour la DDPP',
+        action: generatePMSPdf
+      });
+    }
+
+    // -------- Render tâches --------
+    const list = $('tasks-list-home');
+    const empty = $('tasks-empty');
+    const countPill = $('tasks-count');
+
+    list.innerHTML = '';
+    const undone = tasks.filter(t => !t.done).length;
+    countPill.textContent = undone;
+
+    if (tasks.length === 0 || undone === 0) {
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+    }
+
+    tasks.forEach(t => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'task-row' + (t.urgent ? ' urgent' : '') + (t.done ? ' done' : '');
+      row.innerHTML = `
+        <div class="task-icon"><span class="material-icons-round">${t.icon}</span></div>
+        <div class="task-body">
+          <div class="task-label"></div>
+          <div class="task-meta"></div>
+        </div>
+        <span class="material-icons-round task-arrow">arrow_forward</span>
+      `;
+      row.querySelector('.task-label').textContent = t.label;
+      row.querySelector('.task-meta').textContent = t.meta;
+      if (!t.done && t.action) {
+        row.addEventListener('click', t.action);
+      }
+      list.appendChild(row);
+    });
   }
 
   // ========================================================
@@ -2563,6 +2852,9 @@ textarea { resize: vertical; min-height: 60px; font-family: inherit; }
     loadReleves(),
     loadApprentis()
   ]);
+
+  // Render initial de l'accueil avec toutes les données chargées
+  renderHome();
 
   loading.style.display = 'none';
   stage.classList.add('ready');

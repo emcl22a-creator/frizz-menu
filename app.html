@@ -978,6 +978,146 @@ body::after {
   margin-top: 10px;
 }
 
+/* ============ PAIEMENT — Toggles & config ============ */
+.paiement-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 0;
+}
+.paiement-row-info {
+  flex: 1;
+  min-width: 0;
+}
+.paiement-row-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.paiement-row-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.paiement-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 12px 0;
+}
+.paiement-help {
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.paiement-help a {
+  color: #0A84FF;
+  text-decoration: none;
+}
+.paiement-help a:hover { text-decoration: underline; }
+
+.paiement-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 159, 10, 0.08);
+  border: 1px solid rgba(255, 159, 10, 0.3);
+  border-radius: 10px;
+  font-size: 12px;
+  color: #FFC966;
+}
+.paiement-warning .material-icons-round { font-size: 16px; flex-shrink: 0; }
+
+.btn-save-paiement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  border-radius: 10px;
+  color: #0A84FF;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-save-paiement:hover { background: rgba(10, 132, 255, 0.22); }
+.btn-save-paiement .material-icons-round { font-size: 16px; }
+
+/* ============ TOGGLE SWITCH (réutilisable) ============ */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+  transition: background 0.2s ease;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: #34C759;
+}
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* Badges paiement sur cartes commandes */
+.cmd-paiement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.cmd-paiement-badge .material-icons-round { font-size: 11px; }
+.cmd-paiement-badge.paye {
+  background: rgba(52, 199, 89, 0.18);
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+.cmd-paiement-badge.a-regler {
+  background: rgba(142, 142, 147, 0.15);
+  border: 1px solid rgba(142, 142, 147, 0.3);
+  color: rgba(255, 255, 255, 0.65);
+}
+.cmd-paiement-badge.lien-envoye {
+  background: rgba(255, 159, 10, 0.15);
+  border: 1px solid rgba(255, 159, 10, 0.4);
+  color: #FF9F0A;
+}
+
 .profil-contact-card {
   display: flex;
   align-items: center;
@@ -3184,6 +3324,57 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       Modifier
     </button>
 
+    <!-- Carte paiements en ligne -->
+    <div class="profil-section-title">Paiements</div>
+    <div class="profil-card" style="padding: 16px;">
+      <div class="paiement-row">
+        <div class="paiement-row-info">
+          <div class="paiement-row-label">Paiement sur place au retrait</div>
+          <div class="paiement-row-sub">Espèces ou carte bancaire à la boutique</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-paiement-place" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="paiement-divider"></div>
+
+      <div class="paiement-row">
+        <div class="paiement-row-info">
+          <div class="paiement-row-label">Paiement en ligne (Stripe)</div>
+          <div class="paiement-row-sub">Vos clients payent par carte avant le retrait</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-paiement-ligne">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div id="stripe-config-zone" style="display: none; margin-top: 14px;">
+        <div class="input-wrap" style="margin-bottom: 0;">
+          <label for="stripe-payment-link" style="display: flex; align-items: center; gap: 6px;">
+            <span class="material-icons-round" style="font-size: 14px;">link</span>
+            Lien Stripe Payment Link
+          </label>
+          <input type="url" id="stripe-payment-link" placeholder="https://buy.stripe.com/...">
+          <div class="paiement-help">
+            <a href="https://dashboard.stripe.com/payment-links" target="_blank" rel="noopener">Créer un lien sur Stripe →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="paiement-warning" id="paiement-warning" style="display: none;">
+        <span class="material-icons-round">info</span>
+        <span>Activez au moins une option de paiement pour recevoir des commandes.</span>
+      </div>
+
+      <button type="button" class="btn-save-paiement" id="btn-save-paiement">
+        <span class="material-icons-round">save</span>
+        Enregistrer mes options de paiement
+      </button>
+    </div>
+
     <!-- Carte abonnement -->
     <div class="profil-section-title">Abonnement</div>
     <div class="profil-plan-card" id="profil-plan-card">
@@ -3587,6 +3778,14 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
             <option value="annulee">Annulée</option>
           </select>
         </div>
+      </div>
+      <div class="input-wrap">
+        <label for="cmd-paiement">Paiement</label>
+        <select id="cmd-paiement">
+          <option value="a_regler">À régler au retrait</option>
+          <option value="paye_place">Déjà payé sur place</option>
+          <option value="lien_envoye">Envoyer un lien de paiement par SMS</option>
+        </select>
       </div>
       <div class="input-wrap">
         <label for="cmd-notes">Notes (optionnel)</label>
@@ -5336,6 +5535,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         <div class="cmd-client-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <div class="cmd-client"></div>
           <span class="cmd-source-badge" style="display:none;"></span>
+          <span class="cmd-paiement-cell"></span>
         </div>
         <div class="cmd-articles"></div>
         <div class="cmd-statut-badge"></div>
@@ -5363,6 +5563,16 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         color: '#0A84FF',
         letterSpacing: '0.2px'
       });
+    }
+
+    // Badge paiement
+    const paiementCell = card.querySelector('.cmd-paiement-cell');
+    if (c.paiement_statut === 'paye') {
+      paiementCell.innerHTML = '<span class="cmd-paiement-badge paye"><span class="material-icons-round">check_circle</span>Payée</span>';
+    } else if (c.paiement_statut === 'lien_envoye') {
+      paiementCell.innerHTML = '<span class="cmd-paiement-badge lien-envoye"><span class="material-icons-round">schedule</span>Lien envoyé</span>';
+    } else if (c.paiement_statut === 'a_regler' && c.montant) {
+      paiementCell.innerHTML = '<span class="cmd-paiement-badge a-regler"><span class="material-icons-round">euro</span>À régler</span>';
     }
 
     const badge = card.querySelector('.cmd-statut-badge');
@@ -5413,6 +5623,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       const tzOffset = t.getTimezoneOffset() * 60000;
       $('cmd-datetime').value = new Date(t - tzOffset).toISOString().slice(0, 16);
       $('cmd-statut').value = 'a_preparer';
+      $('cmd-paiement').value = 'a_regler';
       $('btn-delete-cmd').style.display = 'none';
     }
     openModal('modal-cmd');
@@ -5521,12 +5732,25 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         </div>
       </div>
 
+      <div class="cmd-view-section">
+        <div class="cmd-view-eyebrow">Paiement</div>
+        <div class="cmd-view-value">${
+          c.paiement_statut === 'paye' ? '✓ Payée' :
+          c.paiement_statut === 'lien_envoye' ? '⏳ Lien de paiement envoyé' :
+          'À régler au retrait'
+        }</div>
+      </div>
+
       ${notesHtml}
 
       <div class="cmd-view-divider"></div>
 
       <div class="cmd-view-actions">
         ${statutActions}
+        ${c.paiement_statut !== 'paye' ? `<button type="button" class="btn-cmd-action gray" id="btn-mark-paid">
+          <span class="material-icons-round">euro</span>
+          Marquer comme payée
+        </button>` : ''}
         ${smsBtn}
         ${cancelBtn}
         <button type="button" class="btn-cmd-action red" id="btn-delete-cmd-view">
@@ -5535,6 +5759,23 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         </button>
       </div>
     `;
+
+    // Bouton "Marquer comme payée"
+    const markPaidBtn = $('cmd-view').querySelector('#btn-mark-paid');
+    if (markPaidBtn) {
+      markPaidBtn.addEventListener('click', async () => {
+        markPaidBtn.disabled = true;
+        const { error } = await supabase.from('commandes').update({ paiement_statut: 'paye' }).eq('id', c.id);
+        if (error) {
+          showToast('Erreur : ' + error.message, 'error');
+          markPaidBtn.disabled = false;
+          return;
+        }
+        showToast('✓ Commande marquée payée');
+        closeModal('modal-cmd');
+        await renderCommandes();
+      });
+    }
 
     // Wire up status change buttons
     $('cmd-view').querySelectorAll('[data-statut]').forEach(btn => {
@@ -5592,6 +5833,11 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
 
     const date_retrait = new Date(datetime).toISOString();
 
+    const paiementMethode = $('cmd-paiement').value;
+    let paiementStatut = 'a_regler';
+    if (paiementMethode === 'paye_place') paiementStatut = 'paye';
+    else if (paiementMethode === 'lien_envoye') paiementStatut = 'lien_envoye';
+
     const data = {
       boulangerie_id: BOU_ID,
       nom_client,
@@ -5600,19 +5846,42 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       date_retrait,
       montant: $('cmd-montant').value ? parseFloat($('cmd-montant').value) : null,
       notes: $('cmd-notes').value.trim() || null,
-      statut: $('cmd-statut').value
+      statut: $('cmd-statut').value,
+      paiement_methode: paiementMethode,
+      paiement_statut: paiementStatut
     };
 
     const btn = $('btn-save-cmd');
     btn.disabled = true; btn.textContent = 'Enregistrement…';
     try {
       let error;
+      let savedId = editingCmdId;
       if (editingCmdId) {
         ({ error } = await supabase.from('commandes').update(data).eq('id', editingCmdId));
       } else {
-        ({ error } = await supabase.from('commandes').insert([data]));
+        const { data: inserted, error: insErr } = await supabase.from('commandes').insert([data]).select().single();
+        error = insErr;
+        if (inserted) savedId = inserted.id;
       }
       if (error) throw error;
+
+      // Si "lien_envoye" demandé, on déclenche le SMS avec le lien Stripe
+      if (paiementMethode === 'lien_envoye') {
+        const tel = $('cmd-tel').value.trim();
+        if (!tel) {
+          showToast('Téléphone requis pour envoyer un lien SMS', 'error');
+        } else if (!boulangerie.stripe_payment_link) {
+          showToast('Configurez d\'abord votre lien Stripe dans Mon compte', 'error');
+        } else {
+          const cleanTel = tel.replace(/\s/g, '');
+          const montant = $('cmd-montant').value || '?';
+          const nomBou = boulangerie.nom || 'votre boulangerie';
+          const smsBody = encodeURIComponent(`Bonjour ${nom_client}, voici le lien pour régler votre commande de ${montant}€ chez ${nomBou} : ${boulangerie.stripe_payment_link}`);
+          // Ouvre l'app SMS native du téléphone
+          window.location.href = `sms:${cleanTel}?body=${smsBody}`;
+        }
+      }
+
       showToast(editingCmdId ? '✓ Modifiée' : '✓ Créée');
       closeModal('modal-cmd');
       await renderCommandes();
@@ -5851,6 +6120,13 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     $('profil-bou-adresse').textContent = boulangerie.boutique_adresse || '—';
     $('profil-bou-pays').textContent = boulangerie.pays === 'CH' ? 'Suisse 🇨🇭' : 'France 🇫🇷';
 
+    // Paiements : load
+    $('toggle-paiement-place').checked = boulangerie.accepter_paiement_place !== false; // default true
+    $('toggle-paiement-ligne').checked = boulangerie.accepter_paiement_ligne === true;
+    $('stripe-payment-link').value = boulangerie.stripe_payment_link || '';
+    $('stripe-config-zone').style.display = $('toggle-paiement-ligne').checked ? 'block' : 'none';
+    updatePaiementWarning();
+
     // Abonnement
     const status = boulangerie.abonnement_status || 'trial';
     const planStatus = $('plan-status');
@@ -5904,6 +6180,67 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
         showToast('✓ Modifié', 'success');
         renderProfil();
       });
+  });
+
+  // ===== Paiements : toggles + save =====
+  function updatePaiementWarning() {
+    const place = $('toggle-paiement-place').checked;
+    const ligne = $('toggle-paiement-ligne').checked;
+    $('paiement-warning').style.display = (!place && !ligne) ? 'flex' : 'none';
+  }
+
+  $('toggle-paiement-place').addEventListener('change', updatePaiementWarning);
+
+  $('toggle-paiement-ligne').addEventListener('change', () => {
+    $('stripe-config-zone').style.display = $('toggle-paiement-ligne').checked ? 'block' : 'none';
+    updatePaiementWarning();
+  });
+
+  $('btn-save-paiement').addEventListener('click', async () => {
+    const accepter_paiement_place = $('toggle-paiement-place').checked;
+    const accepter_paiement_ligne = $('toggle-paiement-ligne').checked;
+    const stripe_payment_link = $('stripe-payment-link').value.trim();
+
+    if (!accepter_paiement_place && !accepter_paiement_ligne) {
+      showToast('Activez au moins une option de paiement', 'error');
+      return;
+    }
+
+    if (accepter_paiement_ligne && !stripe_payment_link) {
+      showToast('Collez votre lien Stripe pour activer le paiement en ligne', 'error');
+      return;
+    }
+
+    if (accepter_paiement_ligne && !stripe_payment_link.startsWith('https://buy.stripe.com/')) {
+      const ok = await showConfirm('Lien Stripe non standard', 'Le lien que vous avez collé ne ressemble pas à un lien Stripe Payment Link standard (https://buy.stripe.com/...). Continuer quand même ?');
+      if (!ok) return;
+    }
+
+    const btn = $('btn-save-paiement');
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+
+    const { error } = await supabase
+      .from('boulangeries')
+      .update({
+        accepter_paiement_place,
+        accepter_paiement_ligne,
+        stripe_payment_link: stripe_payment_link || null
+      })
+      .eq('id', BOU_ID);
+
+    btn.disabled = false;
+    btn.style.opacity = '1';
+
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+
+    boulangerie.accepter_paiement_place = accepter_paiement_place;
+    boulangerie.accepter_paiement_ligne = accepter_paiement_ligne;
+    boulangerie.stripe_payment_link = stripe_payment_link || null;
+    showToast('✓ Options de paiement enregistrées');
   });
 
   // Bouton déconnexion (en bas du profil)

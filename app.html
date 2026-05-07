@@ -1288,6 +1288,39 @@ input.input-error:focus, textarea.input-error:focus {
 
 input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
 
+/* ===== Fix datetime-local sur iOS Safari =====
+   Par défaut iOS centre la valeur, met une font énorme et casse la cohérence.
+   On le ramène au comportement standard de nos autres inputs. */
+input[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.4;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+input[type="datetime-local"]::-webkit-date-and-time-value {
+  text-align: left;
+  font-size: 15px;
+  font-family: inherit;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  min-height: 1.4em;
+}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.5);
+  cursor: pointer;
+  margin-left: auto;
+}
+/* Quand le champ est vide, iOS affiche "jj/mm/aaaa --:--" en gris */
+input[type="datetime-local"]:not(:focus):invalid {
+  color: rgba(255, 255, 255, 0.35);
+}
+
 select {
   appearance: none;
   -webkit-appearance: none;

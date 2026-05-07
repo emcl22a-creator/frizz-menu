@@ -158,6 +158,147 @@ body::before {
   color: var(--accent);
 }
 
+/* ============ INGRÉDIENTS (page publique) ============ */
+.ingredients-section {
+  padding: 40px 24px 0;
+}
+
+.portions-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px -10px rgba(42, 24, 16, 0.15);
+}
+
+.portions-selector-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portions-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 1px solid rgba(184, 89, 58, 0.25);
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.portions-btn:hover {
+  background: rgba(184, 89, 58, 0.18);
+}
+.portions-btn:active {
+  transform: scale(0.92);
+}
+.portions-btn .material-icons-round { font-size: 18px; }
+
+#portions-input {
+  width: 60px;
+  padding: 10px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border-strong);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--text-primary);
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+#portions-input::-webkit-outer-spin-button,
+#portions-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#portions-input:focus {
+  border-color: var(--accent);
+}
+
+.portions-selector-unit {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.ingredients-list-public {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: opacity 0.18s ease;
+}
+
+.ingredient-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.ingredient-line:last-child {
+  border-bottom: none;
+}
+
+.ingredient-line-nom {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.ingredient-line-qte {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.ingredient-line-qte strong {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+}
+.ingredient-line-unite {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@media (max-width: 380px) {
+  .portions-selector {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .portions-selector-controls {
+    justify-content: center;
+  }
+  .portions-selector-unit {
+    text-align: center;
+  }
+}
+
 /* ============ ÉTAPES ============ */
 .etapes-section {
   padding: 40px 24px 0;
@@ -404,6 +545,91 @@ const CAT_LABELS = {
   maintenance: 'Maintenance'
 };
 
+function fmtQuantite(q) {
+  // Affiche un nombre joli : 1000 → 1000, 1.5 → 1,5, 0.333 → 0,33
+  if (q === 0) return '0';
+  if (Number.isInteger(q)) return String(q);
+  const rounded = Math.round(q * 100) / 100;
+  return rounded.toString().replace('.', ',');
+}
+
+let currentIngredients = [];
+let basePortions = 1;
+let currentPortions = 1;
+
+function renderIngredientsSection(p) {
+  const ingredients = Array.isArray(p.ingredients) ? p.ingredients : [];
+  if (ingredients.length === 0) return '';
+
+  basePortions = Math.max(1, parseInt(p.portions_base, 10) || 1);
+  currentPortions = basePortions;
+  currentIngredients = ingredients;
+  const label = p.portions_label || 'pièces';
+
+  return `
+    <div class="ingredients-section">
+      <div class="section-eyebrow">Ingrédients</div>
+      <h2 class="section-title">Pour <em>${basePortions}</em> ${escapeHtml(label)}.</h2>
+
+      <div class="portions-selector">
+        <div class="portions-selector-controls">
+          <button type="button" class="portions-btn" id="btn-portions-minus" aria-label="Moins">
+            <span class="material-icons-round">remove</span>
+          </button>
+          <input type="number" id="portions-input" value="${basePortions}" min="1" step="1">
+          <button type="button" class="portions-btn" id="btn-portions-plus" aria-label="Plus">
+            <span class="material-icons-round">add</span>
+          </button>
+        </div>
+        <span class="portions-selector-unit">${escapeHtml(label)}</span>
+      </div>
+
+      <div class="ingredients-list-public" id="ingredients-list-public">
+        ${renderIngredientsRows(ingredients, basePortions, basePortions)}
+      </div>
+    </div>
+  `;
+}
+
+function renderIngredientsRows(ingredients, basePortions, currentPortions) {
+  const ratio = currentPortions / basePortions;
+  return ingredients.map(ing => {
+    const q = (ing.quantite || 0) * ratio;
+    return `
+      <div class="ingredient-line">
+        <span class="ingredient-line-nom">${escapeHtml(ing.nom)}</span>
+        <span class="ingredient-line-qte">
+          <strong>${fmtQuantite(q)}</strong>
+          <span class="ingredient-line-unite">${escapeHtml(ing.unite || '')}</span>
+        </span>
+      </div>
+    `;
+  }).join('');
+}
+
+function attachPortionsHandlers() {
+  const input = document.getElementById('portions-input');
+  if (!input) return;
+
+  const updateList = (newVal) => {
+    const v = Math.max(1, parseInt(newVal, 10) || 1);
+    currentPortions = v;
+    if (input.value !== String(v)) input.value = v;
+    const list = document.getElementById('ingredients-list-public');
+    if (list) {
+      list.innerHTML = renderIngredientsRows(currentIngredients, basePortions, currentPortions);
+    }
+  };
+
+  document.getElementById('btn-portions-minus').addEventListener('click', () => {
+    updateList(currentPortions - 1);
+  });
+  document.getElementById('btn-portions-plus').addEventListener('click', () => {
+    updateList(currentPortions + 1);
+  });
+  input.addEventListener('input', (ev) => updateList(ev.target.value));
+}
+
 function fmtDuree(m) {
   if (!m || m <= 0) return null;
   const h = Math.floor(m / 60);
@@ -462,7 +688,7 @@ async function init() {
 
   const { data: p, error } = await supabase
     .from('procedures')
-    .select('titre, emoji, categorie, duree_minutes, etapes, video_url')
+    .select('titre, emoji, categorie, duree_minutes, etapes, video_url, ingredients, portions_base, portions_label')
     .eq('slug', slug)
     .maybeSingle();
 
@@ -545,6 +771,8 @@ async function init() {
         <h1 class="titre">${escapeHtml(p.titre)}</h1>
       </div>
 
+      ${renderIngredientsSection(p)}
+
       <div class="etapes-section">
         <div class="section-eyebrow">Procédure</div>
         <h2 class="section-title">Les <em>étapes</em>.</h2>
@@ -558,6 +786,8 @@ async function init() {
       </div>
     </div>
   `;
+
+  attachPortionsHandlers();
 }
 
 init();

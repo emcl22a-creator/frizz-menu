@@ -2537,6 +2537,201 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   font-family: inherit;
 }
 
+/* ============ CLIENTS ONGLET ============ */
+.clients-search-wrap {
+  position: relative;
+  margin-top: 8px;
+}
+.clients-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 20px !important;
+  pointer-events: none;
+}
+#clients-search {
+  width: 100%;
+  padding: 14px 16px 14px 46px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+#clients-search:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.08);
+}
+#clients-search::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+.client-card {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.client-card:hover {
+  background: rgba(10, 132, 255, 0.06);
+  border-color: rgba(10, 132, 255, 0.2);
+}
+
+.client-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF, #5856D6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+  letter-spacing: -0.3px;
+}
+
+.client-body { flex: 1; min-width: 0; }
+.client-name {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: #fff;
+  letter-spacing: -0.2px;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.client-tel {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 8px;
+}
+.client-tel a { color: #0A84FF; text-decoration: none; }
+
+.client-stats {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-wrap: wrap;
+}
+.client-stat-value {
+  color: #fff;
+  font-weight: 600;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  margin-right: 4px;
+}
+
+.client-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.client-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.12);
+  border: 1px solid rgba(10, 132, 255, 0.25);
+  color: #0A84FF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.client-action-btn:hover { background: rgba(10, 132, 255, 0.22); }
+.client-action-btn:active { transform: scale(0.92); }
+.client-action-btn .material-icons-round { font-size: 18px; }
+
+.client-history-toggle {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.client-history-toggle:hover { color: #0A84FF; }
+.client-history-toggle .material-icons-round { font-size: 14px; }
+
+.client-history {
+  margin-top: 10px;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+}
+.client-history.open { display: flex; }
+.client-history-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.client-history-item:hover { background: rgba(255, 255, 255, 0.06); }
+.client-history-date {
+  color: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+.client-history-articles {
+  color: #fff;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.client-history-amount {
+  color: #0A84FF;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+}
+
+.client-card-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.client-card-top {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  width: 100%;
+}
+
 /* ============ COMMANDES ONGLET ============ */
 .cmd-section { margin-bottom: 26px; }
 .cmd-section-title {
@@ -2731,6 +2926,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <span class="material-icons-round">receipt_long</span>
       <span class="nav-label">Commandes</span>
     </button>
+    <button class="nav-item" data-tab="clients">
+      <span class="material-icons-round">groups</span>
+      <span class="nav-label">Clients</span>
+    </button>
     <button class="nav-item" data-tab="boutique">
       <span class="material-icons-round">storefront</span>
       <span class="nav-label">Boutique</span>
@@ -2922,6 +3121,28 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <div id="cmd-list" style="margin-top: 18px;"></div>
   </section>
 
+  <!-- ============ ONGLET 5 : CLIENTS ============ -->
+  <section class="screen" data-screen="clients">
+
+    <div class="hero">
+      <div class="hero-eyebrow">— <span id="clients-count">0 clients</span></div>
+      <h1 class="hero-title">Mes <em>habitués</em>.</h1>
+    </div>
+
+    <div class="clients-search-wrap">
+      <span class="material-icons-round clients-search-icon">search</span>
+      <input type="text" id="clients-search" placeholder="Rechercher un client par nom...">
+    </div>
+
+    <div class="empty" id="clients-empty" style="display: none;">
+      <div class="empty-icon"><span class="material-icons-round">groups</span></div>
+      <div class="empty-title">Pas encore de clients</div>
+      <div class="empty-desc">Vos clients apparaîtront ici automatiquement<br>dès la première commande enregistrée.</div>
+    </div>
+
+    <div id="clients-list" style="margin-top: 18px;"></div>
+  </section>
+
   <!-- ============ ONGLET 6 : PROFIL ============ -->
   <section class="screen" data-screen="profil">
     <div class="hero">
@@ -3019,6 +3240,10 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   <button class="tab" data-tab="commandes" aria-label="Commandes">
     <span class="material-icons-round">receipt_long</span>
     <span class="tab-label">Commandes</span>
+  </button>
+  <button class="tab" data-tab="clients" aria-label="Clients">
+    <span class="material-icons-round">groups</span>
+    <span class="tab-label">Clients</span>
   </button>
   <button class="tab" data-tab="boutique" aria-label="Boutique">
     <span class="material-icons-round">storefront</span>
@@ -3440,6 +3665,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     // Charger les données spécifiques à l'onglet
     if (name === 'boutique') loadBoutique();
     if (name === 'commandes') renderCommandes();
+    if (name === 'clients') renderClients();
     if (name === 'profil') renderProfil();
   }
 
@@ -5407,6 +5633,206 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     showToast('Supprimée');
     closeModal('modal-cmd');
     await renderCommandes();
+  });
+
+
+  // ========================================================
+  // ============ ONGLET CLIENTS ============
+  // ========================================================
+
+  let clientsSearchQuery = '';
+  let openedClientKey = null; // pour persister l'historique ouvert au re-render
+
+  function getInitialsFromName(fullName) {
+    if (!fullName) return '?';
+    const parts = fullName.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '?';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function buildClientsFromCommandes(cmds) {
+    // Regroupe par "clé client" = nom_client + telephone
+    const map = new Map();
+    cmds.forEach(c => {
+      if (!c.nom_client) return;
+      const cleanName = c.nom_client.trim();
+      const cleanTel = (c.telephone || '').trim();
+      const key = (cleanName.toLowerCase() + '|' + cleanTel.replace(/\s/g, ''));
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          nom: cleanName,
+          telephone: cleanTel,
+          commandes: [],
+          total: 0,
+          lastDate: null
+        });
+      }
+      const client = map.get(key);
+      client.commandes.push(c);
+      const m = parseFloat(c.montant);
+      if (!isNaN(m)) client.total += m;
+      const d = new Date(c.date_retrait);
+      if (!client.lastDate || d > client.lastDate) {
+        client.lastDate = d;
+      }
+    });
+    // Tri : par nb de commandes desc, puis date dernière commande desc
+    return [...map.values()].sort((a, b) => {
+      if (b.commandes.length !== a.commandes.length) {
+        return b.commandes.length - a.commandes.length;
+      }
+      return (b.lastDate?.getTime() || 0) - (a.lastDate?.getTime() || 0);
+    });
+  }
+
+  function formatClientDate(d) {
+    if (!d) return '—';
+    const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  async function renderClients() {
+    if (!commandes || commandes.length === 0) {
+      try { await loadCommandes(); } catch (e) {}
+    }
+    const cmds = commandes || [];
+    const allClients = buildClientsFromCommandes(cmds);
+
+    const q = (clientsSearchQuery || '').toLowerCase().trim();
+    const clients = q
+      ? allClients.filter(c =>
+          c.nom.toLowerCase().includes(q) ||
+          (c.telephone || '').toLowerCase().includes(q)
+        )
+      : allClients;
+
+    $('clients-count').textContent = `${allClients.length} client${allClients.length > 1 ? 's' : ''}`;
+
+    const empty = $('clients-empty');
+    const list = $('clients-list');
+
+    if (allClients.length === 0) {
+      empty.style.display = 'block';
+      list.innerHTML = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    if (clients.length === 0) {
+      list.innerHTML = `<div class="empty" style="padding: 40px 20px;">
+        <div class="empty-desc">Aucun client ne correspond à votre recherche.</div>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = '';
+    clients.forEach(client => {
+      const card = document.createElement('div');
+      card.className = 'client-card';
+
+      const telDisplay = client.telephone
+        ? `<a href="tel:${escapeHtml(client.telephone.replace(/\s/g, ''))}">${escapeHtml(client.telephone)}</a>`
+        : '<span style="color: rgba(255,255,255,0.35);">Pas de téléphone</span>';
+
+      const totalDisplay = client.total > 0
+        ? `${client.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`
+        : '—';
+
+      const isOpen = openedClientKey === client.key;
+
+      // Historique : tri par date desc
+      const history = [...client.commandes].sort((a, b) => new Date(b.date_retrait) - new Date(a.date_retrait));
+      const historyHtml = history.map(c => {
+        const d = new Date(c.date_retrait);
+        const m = parseFloat(c.montant);
+        const amountStr = !isNaN(m) ? `${m.toFixed(2).replace('.', ',')} €` : '—';
+        return `<div class="client-history-item" data-cmd-id="${c.id}">
+          <div class="client-history-date">${formatClientDate(d)}</div>
+          <div class="client-history-articles">${escapeHtml((c.articles || '').split('\n')[0])}</div>
+          <div class="client-history-amount">${amountStr}</div>
+        </div>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="client-card-inner">
+          <div class="client-card-top">
+            <div class="client-avatar">${escapeHtml(getInitialsFromName(client.nom))}</div>
+            <div class="client-body">
+              <div class="client-name"></div>
+              <div class="client-tel">${telDisplay}</div>
+              <div class="client-stats">
+                <span><span class="client-stat-value">${client.commandes.length}</span>commande${client.commandes.length > 1 ? 's' : ''}</span>
+                <span><span class="client-stat-value">${totalDisplay}</span>au total</span>
+                <span><span class="client-stat-value">${formatClientDate(client.lastDate)}</span>dernière</span>
+              </div>
+            </div>
+            <div class="client-actions">
+              <button type="button" class="client-action-btn" data-action="new-cmd" title="Nouvelle commande pour ce client">
+                <span class="material-icons-round">add</span>
+              </button>
+              ${client.telephone ? `<button type="button" class="client-action-btn" data-action="call" title="Appeler">
+                <span class="material-icons-round">phone</span>
+              </button>` : ''}
+            </div>
+          </div>
+          <button type="button" class="client-history-toggle">
+            <span class="material-icons-round">${isOpen ? 'expand_less' : 'expand_more'}</span>
+            ${isOpen ? 'Masquer l\'historique' : `Voir les ${client.commandes.length} commande${client.commandes.length > 1 ? 's' : ''}`}
+          </button>
+          <div class="client-history ${isOpen ? 'open' : ''}">${historyHtml}</div>
+        </div>
+      `;
+      card.querySelector('.client-name').textContent = client.nom;
+
+      // Bouton Nouvelle commande
+      card.querySelector('[data-action="new-cmd"]').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        goTo('commandes');
+        setTimeout(() => {
+          openCmdModal(null);
+          // Pré-remplit le formulaire avec les infos du client
+          $('cmd-client').value = client.nom;
+          if (client.telephone) $('cmd-tel').value = client.telephone;
+        }, 100);
+      });
+
+      // Bouton Appeler (si tel)
+      const callBtn = card.querySelector('[data-action="call"]');
+      if (callBtn) {
+        callBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          window.location.href = `tel:${client.telephone.replace(/\s/g, '')}`;
+        });
+      }
+
+      // Toggle historique
+      card.querySelector('.client-history-toggle').addEventListener('click', () => {
+        openedClientKey = (openedClientKey === client.key) ? null : client.key;
+        renderClients();
+      });
+
+      // Click sur une ligne d'historique → ouvre le modal détails
+      card.querySelectorAll('.client-history-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const cmdId = item.dataset.cmdId;
+          const cmd = client.commandes.find(c => String(c.id) === String(cmdId));
+          if (cmd) {
+            goTo('commandes');
+            setTimeout(() => openCmdModal(cmd), 100);
+          }
+        });
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  // Recherche en direct
+  $('clients-search').addEventListener('input', (ev) => {
+    clientsSearchQuery = ev.target.value;
+    renderClients();
   });
 
 

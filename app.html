@@ -5590,16 +5590,14 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       smsLink.setAttribute('aria-label', 'Envoyer un SMS de rappel');
       smsLink.href = `sms:${c.telephone}?body=${encodeURIComponent(message)}`;
       smsLink.innerHTML = '<span class="material-icons-round">sms</span>';
+      // Empêche le clic SMS d'ouvrir aussi le modal de la commande
+      smsLink.addEventListener('click', (ev) => ev.stopPropagation());
       actions.appendChild(smsLink);
     }
 
-    const editBtn = document.createElement('button');
-    editBtn.type = 'button';
-    editBtn.className = 'cmd-action-btn';
-    editBtn.setAttribute('aria-label', 'Modifier');
-    editBtn.innerHTML = '<span class="material-icons-round">edit</span>';
-    editBtn.addEventListener('click', () => openCmdModal(c));
-    actions.appendChild(editBtn);
+    // La carte entière est cliquable → ouvre les détails de la commande
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => openCmdModal(c));
 
     return card;
   }

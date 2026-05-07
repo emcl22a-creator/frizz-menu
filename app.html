@@ -1891,6 +1891,80 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   gap: 10px;
 }
 
+/* ============ PORTIONS & INGRÉDIENTS ============ */
+.portions-input-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+.input-help {
+  margin-top: 4px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.ingredients-wrap {
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+.ingredients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 2fr 80px 80px 30px;
+  gap: 6px;
+  align-items: center;
+}
+.ingredient-row input,
+.ingredient-row select {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.ingredient-row input:focus,
+.ingredient-row select:focus {
+  border-color: #0A84FF;
+  background: rgba(10, 132, 255, 0.06);
+}
+.ingredient-remove {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 69, 58, 0.12);
+  border: 1px solid rgba(255, 69, 58, 0.25);
+  color: #FF453A;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+.ingredient-remove:hover { background: rgba(255, 69, 58, 0.22); }
+.ingredient-remove .material-icons-round { font-size: 14px; }
+
+@media (max-width: 480px) {
+  .ingredient-row {
+    grid-template-columns: 1fr 70px 70px 30px;
+    gap: 4px;
+  }
+  .ingredient-row input,
+  .ingredient-row select {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+}
+
 /* ============ ÉTAPES ============ */
 .steps-wrap { margin-top: 6px; }
 
@@ -3512,6 +3586,28 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
           </div>
         </div>
       </div>
+      <!-- Section : Pour combien de portions / pièces -->
+      <div class="input-wrap">
+        <label>Cette recette est pour</label>
+        <div class="portions-input-row">
+          <input type="number" id="proc-portions-base" placeholder="30" min="1" step="1" value="1">
+          <input type="text" id="proc-portions-label" placeholder="pièces" value="pièces">
+        </div>
+        <div class="input-help">Ex : 30 croissants, 12 tartelettes, 8 personnes…</div>
+      </div>
+
+      <!-- Section : Ingrédients -->
+      <div class="ingredients-wrap">
+        <div class="steps-label-row">
+          <div class="steps-label">Ingrédients</div>
+        </div>
+        <div class="ingredients-list" id="ingredients-list"></div>
+        <button type="button" class="btn-add-step" id="btn-add-ingredient">
+          <span class="material-icons-round">add</span>
+          Ajouter un ingrédient
+        </button>
+      </div>
+
       <div class="steps-wrap">
         <div class="steps-label-row">
           <div class="steps-label">Étapes</div>
@@ -3993,7 +4089,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   async function loadProcedures() {
     const { data, error } = await supabase
       .from('procedures')
-      .select('id, titre, emoji, categorie, duree_minutes, etapes, slug, scans_count, video_url')
+      .select('id, titre, emoji, categorie, duree_minutes, etapes, slug, scans_count, video_url, ingredients, portions_base, portions_label')
       .eq('boulangerie_id', BOU_ID)
       .eq('archivee', false)
       .order('created_at', { ascending: false });
@@ -4198,6 +4294,40 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   }
 
   $('btn-add-step').addEventListener('click', () => addStepRow());
+
+  // ===== Ingrédients =====
+  const UNITES = ['g', 'kg', 'mL', 'L', 'pièce', 'pièces', 'cuillère', 'cuillères', 'pincée', 'sachet'];
+
+  function addIngredientRow(ing = { nom: '', quantite: '', unite: 'g' }) {
+    const list = $('ingredients-list');
+    const row = document.createElement('div');
+    row.className = 'ingredient-row';
+    row.innerHTML = `
+      <input type="text" class="ing-nom" placeholder="Farine T45">
+      <input type="number" class="ing-quantite" placeholder="1000" min="0" step="0.1">
+      <select class="ing-unite">
+        ${UNITES.map(u => `<option value="${u}">${u}</option>`).join('')}
+      </select>
+      <button type="button" class="ingredient-remove" aria-label="Supprimer">
+        <span class="material-icons-round">close</span>
+      </button>
+    `;
+    row.querySelector('.ing-nom').value = ing.nom || '';
+    row.querySelector('.ing-quantite').value = ing.quantite || '';
+    row.querySelector('.ing-unite').value = ing.unite || 'g';
+    row.querySelector('.ingredient-remove').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+  }
+
+  $('btn-add-ingredient').addEventListener('click', () => addIngredientRow());
+
+  function getIngredientsFromForm() {
+    return [...$('ingredients-list').children].map(row => ({
+      nom: row.querySelector('.ing-nom').value.trim(),
+      quantite: parseFloat(row.querySelector('.ing-quantite').value) || 0,
+      unite: row.querySelector('.ing-unite').value
+    })).filter(i => i.nom && i.quantite > 0);
+  }
 
   // Quand on tape dans le titre, on retire l'état d'erreur
   $('proc-titre').addEventListener('input', () => {
@@ -4556,6 +4686,7 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     // Reset complet AVANT de set les valeurs (évite états résiduels)
     $('proc-form').reset();
     $('steps-list').innerHTML = '';
+    $('ingredients-list').innerHTML = '';
     $('proc-titre').classList.remove('input-error');
 
     if (p) {
@@ -4570,6 +4701,15 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       $('proc-media-url').value = p.video_url || '';
       if (p.video_url) showMediaPreview(p.video_url);
       else clearMediaPreview();
+
+      // Portions
+      $('proc-portions-base').value = p.portions_base || 1;
+      $('proc-portions-label').value = p.portions_label || 'pièces';
+
+      // Ingrédients
+      const ingredients = Array.isArray(p.ingredients) ? p.ingredients : [];
+      ingredients.forEach(ing => addIngredientRow(ing));
+
       const etapes = Array.isArray(p.etapes) ? p.etapes : [];
       etapes.forEach(et => addStepRow(et));
       if (etapes.length === 0) addStepRow();
@@ -4580,6 +4720,8 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       editingProcId = null;
       $('modal-proc-title').innerHTML = 'Nouvelle <em>procédure</em>';
       $('emoji').value = '📋';
+      $('proc-portions-base').value = 1;
+      $('proc-portions-label').value = 'pièces';
       clearMediaPreview();
       addStepRow();
       $('btn-delete-proc').style.display = 'none';
@@ -4620,6 +4762,10 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     const totalMinutes = Math.max(0, heures) * 60 + Math.max(0, mins);
     const videoUrl = $('proc-media-url').value.trim();
 
+    const portionsBase = parseInt($('proc-portions-base').value, 10) || 1;
+    const portionsLabel = $('proc-portions-label').value.trim() || 'pièces';
+    const ingredients = getIngredientsFromForm();
+
     const data = {
       boulangerie_id: BOU_ID,
       titre,
@@ -4627,7 +4773,10 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
       categorie: $('proc-categorie').value,
       duree_minutes: totalMinutes > 0 ? totalMinutes : null,
       video_url: videoUrl || null,
-      etapes
+      etapes,
+      portions_base: portionsBase,
+      portions_label: portionsLabel,
+      ingredients
     };
 
     const btn = $('btn-save-proc');

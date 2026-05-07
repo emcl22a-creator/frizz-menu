@@ -53,6 +53,38 @@ body::after {
   pointer-events: none;
 }
 
+/* ============ SPARKLE BACKGROUND ANIMÉ ============ */
+.bg-sparkle {
+  position: fixed;
+  bottom: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 480px;
+  line-height: 1;
+  color: #B8593A;
+  opacity: 0.07;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  animation: sparkle-spin 28s linear infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+@keyframes sparkle-spin {
+  from { transform: translate(-50%, 0) rotate(0deg); }
+  to   { transform: translate(-50%, 0) rotate(360deg); }
+}
+@media (max-width: 768px) {
+  .bg-sparkle {
+    font-size: 360px;
+    bottom: -90px;
+    opacity: 0.06;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-sparkle { animation: none; }
+}
+
 /* ============ STAGE / SCREEN ============ */
 .stage {
   width: 100%;
@@ -2530,269 +2562,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   font-family: inherit;
 }
 
-/* ============ DASHBOARD / ACCUEIL ============ */
-.dash-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 14px;
-}
-.dash-card-header { margin-bottom: 14px; }
-.dash-card-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-  margin-bottom: 8px;
-}
-.dash-card-title {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  color: #fff;
-}
-.dash-card-subtitle {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 2px;
-}
-
-/* Carte aujourd'hui */
-.dash-card-today {
-  background: linear-gradient(135deg, rgba(10, 132, 255, 0.12), rgba(10, 132, 255, 0.04));
-  border-color: rgba(10, 132, 255, 0.25);
-}
-.dash-today-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.dash-today-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-.dash-today-item:hover { background: rgba(255, 255, 255, 0.07); }
-.dash-today-item:active { transform: scale(0.99); }
-.dash-today-time {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 600;
-  font-size: 18px;
-  color: #0A84FF;
-  min-width: 56px;
-}
-.dash-today-body { flex: 1; min-width: 0; }
-.dash-today-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dash-today-articles {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dash-today-statut {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 100px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* KPI row */
-.dash-kpi-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.dash-kpi-card {
-  margin-bottom: 0;
-  padding: 16px;
-}
-.dash-kpi-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-  margin-bottom: 8px;
-}
-.dash-kpi-value {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 700;
-  font-size: 28px;
-  letter-spacing: -1px;
-  color: #fff;
-  margin-bottom: 4px;
-  line-height: 1;
-}
-.dash-kpi-sub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-/* Calendrier 7 jours */
-.dash-calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-.dash-cal-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 4px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-  min-height: 76px;
-  transition: background 0.15s ease;
-}
-.dash-cal-day.has-cmd {
-  background: rgba(10, 132, 255, 0.08);
-  border-color: rgba(10, 132, 255, 0.25);
-}
-.dash-cal-day.is-today {
-  background: rgba(10, 132, 255, 0.18);
-  border-color: rgba(10, 132, 255, 0.5);
-}
-.dash-cal-dow {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 4px;
-}
-.dash-cal-num {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: #fff;
-  margin-bottom: 6px;
-}
-.dash-cal-day.is-today .dash-cal-num { color: #0A84FF; }
-.dash-cal-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 100px;
-  background: rgba(10, 132, 255, 0.25);
-  color: #0A84FF;
-  min-height: 16px;
-}
-.dash-cal-day:not(.has-cmd) .dash-cal-badge {
-  visibility: hidden;
-}
-
-/* Top produits */
-.dash-top-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.dash-top-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-}
-.dash-top-rank {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.45);
-  min-width: 24px;
-}
-.dash-top-row:nth-child(1) .dash-top-rank { color: #FFD60A; }
-.dash-top-row:nth-child(2) .dash-top-rank { color: rgba(255, 255, 255, 0.7); }
-.dash-top-row:nth-child(3) .dash-top-rank { color: #B8593A; }
-.dash-top-name {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dash-top-count {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-  flex-shrink: 0;
-}
-
-.dash-empty {
-  text-align: center;
-  padding: 24px 12px;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 13px;
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-}
-
-/* Raccourcis */
-.dash-shortcuts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 24px;
-}
-.dash-shortcut {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 18px 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  color: #fff;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-.dash-shortcut:hover {
-  background: rgba(10, 132, 255, 0.08);
-  border-color: rgba(10, 132, 255, 0.3);
-}
-.dash-shortcut:active { transform: scale(0.97); }
-.dash-shortcut .material-icons-round {
-  font-size: 24px;
-  color: #0A84FF;
-}
-.dash-shortcut-label {
-  font-size: 11px;
-  font-weight: 500;
-  text-align: center;
-  line-height: 1.25;
-}
-
 /* ============ COMMANDES ONGLET ============ */
 .cmd-section { margin-bottom: 26px; }
 .cmd-section-title {
@@ -2969,6 +2738,9 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 </head>
 <body>
 
+<!-- Sparkle ambient en background, rotation lente -->
+<div class="bg-sparkle" aria-hidden="true">✦</div>
+
 <div class="loading" id="loading"><div class="spinner"></div></div>
 <div class="toast-zone"><div class="toast" id="toast"></div></div>
 
@@ -2979,11 +2751,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 <aside class="sidebar" id="sidebar">
   <a href="#" class="sidebar-logo" id="sidebar-logo-link">Frizz<span class="sparkle">✦</span></a>
   <nav class="sidebar-nav">
-    <button class="nav-item active" data-tab="accueil">
-      <span class="material-icons-round">dashboard</span>
-      <span class="nav-label">Accueil</span>
-    </button>
-    <button class="nav-item" data-tab="procedures">
+    <button class="nav-item active" data-tab="procedures">
       <span class="material-icons-round">menu_book</span>
       <span class="nav-label">Procédures</span>
     </button>
@@ -3030,77 +2798,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     </div>
   </div>
 
-  <!-- ============ ONGLET 0 : ACCUEIL (DASHBOARD) ============ -->
-  <section class="screen active" data-screen="accueil">
-
-    <div class="hero">
-      <div class="hero-eyebrow">— <span id="dash-greeting-date">—</span></div>
-      <h1 class="hero-title">Bonjour <em id="dash-greeting-name">—</em>.</h1>
-    </div>
-
-    <!-- Carte du jour -->
-    <div class="dash-card dash-card-today" id="dash-today-card">
-      <div class="dash-card-header">
-        <div class="dash-card-eyebrow">— Aujourd'hui</div>
-        <div class="dash-card-title" id="dash-today-title">Aucune commande prévue aujourd'hui.</div>
-      </div>
-      <div class="dash-today-list" id="dash-today-list"></div>
-    </div>
-
-    <!-- 2 KPI cards -->
-    <div class="dash-kpi-row">
-      <div class="dash-card dash-kpi-card">
-        <div class="dash-kpi-label">Cette semaine</div>
-        <div class="dash-kpi-value" id="dash-week-amount">—</div>
-        <div class="dash-kpi-sub" id="dash-week-count">— commandes</div>
-      </div>
-      <div class="dash-card dash-kpi-card">
-        <div class="dash-kpi-label">Ce mois-ci</div>
-        <div class="dash-kpi-value" id="dash-month-amount">—</div>
-        <div class="dash-kpi-sub" id="dash-month-count">— commandes</div>
-      </div>
-    </div>
-
-    <!-- Calendrier 7 jours -->
-    <div class="dash-card">
-      <div class="dash-card-header">
-        <div class="dash-card-eyebrow">— Les 7 prochains jours</div>
-        <div class="dash-card-subtitle">Aperçu des commandes à venir</div>
-      </div>
-      <div class="dash-calendar" id="dash-calendar"></div>
-    </div>
-
-    <!-- Top produits -->
-    <div class="dash-card" id="dash-top-card">
-      <div class="dash-card-header">
-        <div class="dash-card-eyebrow">— Top produits commandés</div>
-        <div class="dash-card-subtitle">Sur les 30 derniers jours</div>
-      </div>
-      <div class="dash-top-list" id="dash-top-list">
-        <div class="dash-empty">Aucune donnée pour le moment.</div>
-      </div>
-    </div>
-
-    <!-- Raccourcis -->
-    <div class="dash-shortcuts">
-      <button type="button" class="dash-shortcut" id="dash-shortcut-cmd">
-        <span class="material-icons-round">add_circle_outline</span>
-        <span class="dash-shortcut-label">Nouvelle commande</span>
-      </button>
-      <button type="button" class="dash-shortcut" data-go="boutique" id="dash-shortcut-bq">
-        <span class="material-icons-round">storefront</span>
-        <span class="dash-shortcut-label">Voir ma boutique</span>
-      </button>
-      <button type="button" class="dash-shortcut" data-go="procedures" id="dash-shortcut-proc">
-        <span class="material-icons-round">menu_book</span>
-        <span class="dash-shortcut-label">Mes procédures</span>
-      </button>
-    </div>
-
-  </section>
-
   <!-- ============ ONGLET 1 : PROCÉDURES ============ -->
-  <section class="screen" data-screen="procedures">
+  <section class="screen active" data-screen="procedures">
 
     <div class="hero">
       <div class="hero-eyebrow">— <span id="proc-count">0 procédures</span></div>
@@ -3341,11 +3040,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
 
 <!-- ============ TABBAR ============ -->
 <nav class="tabbar">
-  <button class="tab active" data-tab="accueil" aria-label="Accueil">
-    <span class="material-icons-round">dashboard</span>
-    <span class="tab-label">Accueil</span>
-  </button>
-  <button class="tab" data-tab="procedures" aria-label="Procédures">
+  <button class="tab active" data-tab="procedures" aria-label="Procédures">
     <span class="material-icons-round">menu_book</span>
     <span class="tab-label">Procédures</span>
   </button>
@@ -3771,7 +3466,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Charger les données spécifiques à l'onglet
-    if (name === 'accueil') renderAccueil();
     if (name === 'boutique') loadBoutique();
     if (name === 'commandes') renderCommandes();
     if (name === 'profil') renderProfil();
@@ -3895,189 +3589,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     }
   });
 
-  // ========================================================
-  // ============ ONGLET ACCUEIL (DASHBOARD) ============
-  // ========================================================
-
-  function formatDateLong() {
-    const d = new Date();
-    const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-    return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
-  }
-
-  function startOfDay(d) {
-    const r = new Date(d);
-    r.setHours(0, 0, 0, 0);
-    return r;
-  }
-
-  function isSameDay(a, b) {
-    return startOfDay(a).getTime() === startOfDay(b).getTime();
-  }
-
-  function getCmdStatutLabel(s) {
-    const map = {
-      'a_preparer': { label: 'À préparer', color: '#FF9F0A', bg: 'rgba(255, 159, 10, 0.18)' },
-      'prete':      { label: 'Prête',      color: '#34C759', bg: 'rgba(52, 199, 89, 0.18)' },
-      'retiree':    { label: 'Retirée',    color: '#8E8E93', bg: 'rgba(142, 142, 147, 0.2)' },
-      'annulee':    { label: 'Annulée',    color: '#FF453A', bg: 'rgba(255, 69, 58, 0.18)' }
-    };
-    return map[s] || map['a_preparer'];
-  }
-
-  async function renderAccueil() {
-    // Salutation
-    $('dash-greeting-name').textContent = (userName || 'cher artisan').split(' ')[0];
-    $('dash-greeting-date').textContent = formatDateLong();
-
-    // S'assurer qu'on a la liste des commandes
-    if (!commandes || commandes.length === 0) {
-      try { await loadCommandes(); } catch (e) {}
-    }
-    const cmds = commandes || [];
-
-    const now = new Date();
-    const today = startOfDay(now);
-    const weekStart = startOfDay(now);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay() + (weekStart.getDay() === 0 ? -6 : 1)); // Lundi
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const thirtyDaysAgo = new Date(now);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    // ========== Carte Aujourd'hui ==========
-    const todayCmds = cmds
-      .filter(c => isSameDay(new Date(c.date_retrait), now) && c.statut !== 'annulee')
-      .sort((a, b) => new Date(a.date_retrait) - new Date(b.date_retrait));
-
-    const todayList = $('dash-today-list');
-    const todayTitle = $('dash-today-title');
-
-    if (todayCmds.length === 0) {
-      todayTitle.textContent = 'Aucune commande prévue aujourd\'hui.';
-      todayList.innerHTML = '';
-    } else {
-      todayTitle.textContent = `${todayCmds.length} commande${todayCmds.length > 1 ? 's' : ''} à préparer aujourd'hui.`;
-      todayList.innerHTML = '';
-      todayCmds.forEach(c => {
-        const d = new Date(c.date_retrait);
-        const heure = `${String(d.getHours()).padStart(2, '0')}h${String(d.getMinutes()).padStart(2, '0')}`;
-        const s = getCmdStatutLabel(c.statut);
-        const item = document.createElement('div');
-        item.className = 'dash-today-item';
-        item.innerHTML = `
-          <div class="dash-today-time">${heure}</div>
-          <div class="dash-today-body">
-            <div class="dash-today-name"></div>
-            <div class="dash-today-articles"></div>
-          </div>
-          <span class="dash-today-statut" style="background: ${s.bg}; color: ${s.color};">${s.label}</span>
-        `;
-        item.querySelector('.dash-today-name').textContent = c.nom_client || 'Client';
-        item.querySelector('.dash-today-articles').textContent = c.articles || '';
-        item.addEventListener('click', () => {
-          goTo('commandes');
-          setTimeout(() => openCmdModal(c), 100);
-        });
-        todayList.appendChild(item);
-      });
-    }
-
-    // ========== KPI Semaine + Mois ==========
-    const weekCmds = cmds.filter(c => {
-      const d = new Date(c.date_retrait);
-      return d >= weekStart && d < weekEnd && c.statut !== 'annulee';
-    });
-    const weekAmount = weekCmds.reduce((sum, c) => sum + (parseFloat(c.montant) || 0), 0);
-
-    const monthCmds = cmds.filter(c => {
-      const d = new Date(c.date_retrait);
-      return d >= monthStart && d < monthEnd && c.statut !== 'annulee';
-    });
-    const monthAmount = monthCmds.reduce((sum, c) => sum + (parseFloat(c.montant) || 0), 0);
-
-    $('dash-week-amount').textContent = weekAmount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
-    $('dash-week-count').textContent = `${weekCmds.length} commande${weekCmds.length > 1 ? 's' : ''}`;
-
-    $('dash-month-amount').textContent = monthAmount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
-    $('dash-month-count').textContent = `${monthCmds.length} commande${monthCmds.length > 1 ? 's' : ''}`;
-
-    // ========== Calendrier 7 jours ==========
-    const cal = $('dash-calendar');
-    cal.innerHTML = '';
-    const dowShort = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(today);
-      day.setDate(today.getDate() + i);
-      const dayCmds = cmds.filter(c => isSameDay(new Date(c.date_retrait), day) && c.statut !== 'annulee');
-
-      const cell = document.createElement('div');
-      cell.className = 'dash-cal-day';
-      if (dayCmds.length > 0) cell.classList.add('has-cmd');
-      if (i === 0) cell.classList.add('is-today');
-      cell.innerHTML = `
-        <div class="dash-cal-dow">${dowShort[day.getDay()]}</div>
-        <div class="dash-cal-num">${day.getDate()}</div>
-        <div class="dash-cal-badge">${dayCmds.length}</div>
-      `;
-      if (dayCmds.length > 0) {
-        cell.style.cursor = 'pointer';
-        cell.addEventListener('click', () => goTo('commandes'));
-      }
-      cal.appendChild(cell);
-    }
-
-    // ========== Top produits (sur 30 derniers jours) ==========
-    const recentCmds = cmds.filter(c => {
-      const d = new Date(c.date_retrait);
-      return d >= thirtyDaysAgo && c.statut !== 'annulee';
-    });
-    const productCounts = {};
-    recentCmds.forEach(c => {
-      if (!c.articles) return;
-      // Découpe par retours à la ligne ou virgules, simple heuristique
-      const items = c.articles.split(/[\n,]/).map(s => s.trim()).filter(Boolean);
-      items.forEach(item => {
-        // Retire chiffres + "x" ou "×" en début pour normaliser ("2 x Croissants" → "Croissants")
-        const cleaned = item.replace(/^\s*\d+\s*[x×]\s*/i, '').trim();
-        if (!cleaned) return;
-        const key = cleaned.toLowerCase();
-        productCounts[key] = productCounts[key] || { name: cleaned, count: 0 };
-        productCounts[key].count++;
-      });
-    });
-
-    const topList = $('dash-top-list');
-    const topProducts = Object.values(productCounts).sort((a, b) => b.count - a.count).slice(0, 5);
-    if (topProducts.length === 0) {
-      topList.innerHTML = '<div class="dash-empty">Pas encore assez de commandes pour calculer le top.</div>';
-    } else {
-      topList.innerHTML = '';
-      topProducts.forEach((p, i) => {
-        const row = document.createElement('div');
-        row.className = 'dash-top-row';
-        row.innerHTML = `
-          <div class="dash-top-rank">${i + 1}</div>
-          <div class="dash-top-name"></div>
-          <div class="dash-top-count">${p.count} fois</div>
-        `;
-        row.querySelector('.dash-top-name').textContent = p.name;
-        topList.appendChild(row);
-      });
-    }
-  }
-
-  // Le bouton raccourci "Nouvelle commande" doit ouvrir directement le modal de création
-  $('dash-shortcut-cmd').addEventListener('click', (ev) => {
-    ev.stopPropagation();
-    goTo('commandes');
-    setTimeout(() => openCmdModal(null), 100);
-  });
-
-
   const CAT_EMOJI = { production: '🥖', vente: '🛒', hygiene: '🧼', caisse: '💰', securite: '🛡️', maintenance: '🔧' };
 
   let editingProcId = null;
@@ -4142,8 +3653,6 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       card.addEventListener('click', () => openProcModal(p));
       list.appendChild(card);
     });
-
-    // Mettre à jour les stats de l'accueil
   }
 
   // Étapes : ajouter / supprimer
@@ -6015,7 +5524,6 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
   ]);
 
   renderProfil();
-  renderAccueil();
 
   loading.style.display = 'none';
   stage.classList.add('ready');

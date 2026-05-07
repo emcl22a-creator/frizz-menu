@@ -609,6 +609,79 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 .btn-checkout:active { transform: scale(0.98); }
 .btn-checkout:disabled { opacity: 0.5; cursor: wait; }
 
+/* ===== Paiement options dans le panier ===== */
+.paiement-info-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(184, 89, 58, 0.06);
+  border: 1px solid rgba(184, 89, 58, 0.2);
+  border-radius: 12px;
+}
+.paiement-info-card .material-icons-round {
+  font-size: 28px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.paiement-info-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.paiement-info-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.paiement-option-radio {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.paiement-option-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.paiement-option-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 2px solid rgba(42, 24, 16, 0.08);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.paiement-option-radio input:checked + .paiement-option-content {
+  border-color: var(--accent);
+  background: rgba(184, 89, 58, 0.06);
+}
+.paiement-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(184, 89, 58, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.paiement-option-icon .material-icons-round { color: var(--accent); font-size: 20px; }
+.paiement-option-text { flex: 1; min-width: 0; }
+.paiement-option-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.paiement-option-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 /* STATES */
 .state-screen {
   position: relative;
@@ -741,7 +814,7 @@ async function init() {
 
   const { data: bou, error: bouErr } = await supabase
     .from('boulangeries')
-    .select('id, nom, ville, pays, telephone, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_adresse, boutique_horaires')
+    .select('id, nom, ville, pays, telephone, boutique_active, boutique_slug, boutique_banner_url, boutique_description, boutique_adresse, boutique_horaires, accepter_paiement_place, accepter_paiement_ligne, stripe_payment_link')
     .eq('boutique_slug', slug)
     .eq('boutique_active', true)
     .maybeSingle();
@@ -1009,6 +1082,85 @@ function leadTimeLabel(hours) {
   return '1 semaine';
 }
 
+function renderPaiementSection() {
+  const ligne = boulangerie.accepter_paiement_ligne === true && !!boulangerie.stripe_payment_link;
+  const place = boulangerie.accepter_paiement_place !== false; // default true
+
+  // Aucune option configurée → fallback "sur place" (paiement par défaut)
+  if (!ligne && !place) {
+    return '';
+  }
+
+  // Une seule option active : pas de choix, juste info
+  if (ligne && !place) {
+    return `
+      <div class="form-section">
+        <div class="form-section-eyebrow">Paiement</div>
+        <div class="paiement-info-card">
+          <span class="material-icons-round">credit_card</span>
+          <div>
+            <div class="paiement-info-title">Paiement en ligne sécurisé</div>
+            <div class="paiement-info-sub">Vous serez redirigé vers la page de paiement après confirmation.</div>
+          </div>
+        </div>
+        <input type="hidden" id="ck-paiement" value="ligne">
+      </div>
+    `;
+  }
+  if (place && !ligne) {
+    return `
+      <div class="form-section">
+        <div class="form-section-eyebrow">Paiement</div>
+        <div class="paiement-info-card">
+          <span class="material-icons-round">storefront</span>
+          <div>
+            <div class="paiement-info-title">Paiement à la boutique</div>
+            <div class="paiement-info-sub">Réglez sur place lors du retrait (espèces ou carte).</div>
+          </div>
+        </div>
+        <input type="hidden" id="ck-paiement" value="place">
+      </div>
+    `;
+  }
+
+  // Les deux activées → choix au client
+  return `
+    <div class="form-section">
+      <div class="form-section-eyebrow">Comment souhaitez-vous payer ?</div>
+      <label class="paiement-option-radio">
+        <input type="radio" name="ck-paiement" value="place" checked>
+        <div class="paiement-option-content">
+          <div class="paiement-option-icon"><span class="material-icons-round">storefront</span></div>
+          <div class="paiement-option-text">
+            <div class="paiement-option-title">Sur place lors du retrait</div>
+            <div class="paiement-option-sub">Espèces ou carte bancaire à la boutique</div>
+          </div>
+        </div>
+      </label>
+      <label class="paiement-option-radio">
+        <input type="radio" name="ck-paiement" value="ligne">
+        <div class="paiement-option-content">
+          <div class="paiement-option-icon"><span class="material-icons-round">credit_card</span></div>
+          <div class="paiement-option-text">
+            <div class="paiement-option-title">En ligne maintenant 🔒</div>
+            <div class="paiement-option-sub">Carte bancaire sécurisée (Stripe)</div>
+          </div>
+        </div>
+      </label>
+    </div>
+  `;
+}
+
+function getPaiementChoice() {
+  // Cas radio
+  const radio = document.querySelector('input[name="ck-paiement"]:checked');
+  if (radio) return radio.value;
+  // Cas hidden
+  const hidden = document.getElementById('ck-paiement');
+  if (hidden) return hidden.value;
+  return 'place'; // fallback
+}
+
 function renderDrawer() {
   const body = $('drawer-body');
   const footer = $('drawer-footer');
@@ -1079,6 +1231,7 @@ function renderDrawer() {
         <textarea id="ck-notes" rows="2" placeholder="Allergies, demandes particulières…"></textarea>
       </div>
     </div>
+    ${renderPaiementSection()}
   `;
 
   footer.style.display = 'block';
@@ -1111,6 +1264,10 @@ async function submitCommande() {
     return p ? `${qty} × ${p.nom}` : '';
   }).filter(Boolean).join(', ');
 
+  const paiementChoice = getPaiementChoice();
+  const paiementMethode = paiementChoice === 'ligne' ? 'en_ligne' : 'sur_place';
+  const paiementStatut = 'a_regler';
+
   const btn = $('btn-checkout');
   btn.disabled = true;
   btn.innerHTML = `Envoi…`;
@@ -1127,7 +1284,9 @@ async function submitCommande() {
       montant: total,
       notes: notes || null,
       statut: 'a_preparer',
-      source: 'boutique'
+      source: 'boutique',
+      paiement_methode: paiementMethode,
+      paiement_statut: paiementStatut
     }])
     .select()
     .single();
@@ -1137,6 +1296,19 @@ async function submitCommande() {
     showToast('Erreur : ' + error.message, 'error');
     btn.disabled = false;
     btn.innerHTML = `Confirmer ma commande`;
+    return;
+  }
+
+  // Si paiement en ligne demandé → redirection Stripe
+  if (paiementChoice === 'ligne' && boulangerie.stripe_payment_link) {
+    closeDrawer();
+    document.body.style.overflow = '';
+    cart = {};
+    // Petite UX : afficher un message rassurant pendant la redirection
+    showToast('Redirection vers le paiement…');
+    setTimeout(() => {
+      window.location.href = boulangerie.stripe_payment_link;
+    }, 600);
     return;
   }
 

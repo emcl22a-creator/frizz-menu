@@ -2751,6 +2751,277 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   font-family: inherit;
 }
 
+/* ============ FIDÉLITÉ ============ */
+.fidelite-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.btn-fidelite-qr,
+.btn-fidelite-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-fidelite-qr {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.btn-fidelite-qr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.btn-fidelite-add {
+  background: rgba(10, 132, 255, 0.18);
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  color: #0A84FF;
+}
+.btn-fidelite-add:hover {
+  background: rgba(10, 132, 255, 0.28);
+}
+.btn-fidelite-qr .material-icons-round,
+.btn-fidelite-add .material-icons-round {
+  font-size: 18px;
+}
+
+/* Card client fidelite */
+.carte-card {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+.carte-card.complete {
+  background: rgba(52, 199, 89, 0.08);
+  border-color: rgba(52, 199, 89, 0.35);
+}
+.carte-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0A84FF, #5856D6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.carte-card.complete .carte-avatar {
+  background: linear-gradient(135deg, #34C759, #30B050);
+}
+.carte-body { flex: 1; min-width: 0; }
+.carte-nom {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.carte-tel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.carte-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.carte-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.carte-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0A84FF, #5856D6);
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+.carte-card.complete .carte-progress-fill {
+  background: #34C759;
+}
+.carte-progress-num {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.carte-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.carte-action-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  color: #0A84FF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.carte-action-btn:hover { background: rgba(10, 132, 255, 0.25); }
+.carte-action-btn:active { transform: scale(0.92); }
+.carte-action-btn .material-icons-round { font-size: 18px; }
+.carte-action-btn.success {
+  background: rgba(52, 199, 89, 0.15);
+  border-color: rgba(52, 199, 89, 0.4);
+  color: #34C759;
+}
+.carte-action-btn.success:hover { background: rgba(52, 199, 89, 0.28); }
+.carte-action-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carte-recompense-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.35);
+  border-radius: 100px;
+  font-size: 11px;
+  color: #34C759;
+  font-weight: 600;
+}
+.carte-recompense-banner .material-icons-round { font-size: 14px; }
+
+/* Modal QR fidelite */
+.fidelite-qr-content {
+  padding: 20px 18px;
+}
+.fidelite-qr-card {
+  background: linear-gradient(135deg, #FFF8EE, #F5EFE6);
+  border-radius: 18px;
+  padding: 28px 22px;
+  text-align: center;
+  color: #2A1810;
+  margin-bottom: 18px;
+}
+.fidelite-qr-emoji {
+  font-size: 44px;
+  margin-bottom: 8px;
+}
+.fidelite-qr-titre {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 24px;
+  color: #2A1810;
+  margin-bottom: 4px;
+}
+.fidelite-qr-recompense {
+  font-size: 13px;
+  color: #6B5544;
+  margin-bottom: 18px;
+}
+.fidelite-qr-image {
+  background: #fff;
+  display: inline-block;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.fidelite-qr-image canvas,
+.fidelite-qr-image svg,
+.fidelite-qr-image img {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+.fidelite-qr-bou {
+  font-size: 12px;
+  color: #6B5544;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.fidelite-qr-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Modal add tampon */
+.modal-help {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 14px;
+}
+.add-tampon-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.add-tampon-result-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.add-tampon-result-card:hover {
+  background: rgba(10, 132, 255, 0.12);
+  border-color: rgba(10, 132, 255, 0.3);
+}
+.add-tampon-result-card .carte-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 14px;
+}
+.add-tampon-empty {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-style: italic;
+}
+
 /* ============ CLIENTS ONGLET ============ */
 .clients-search-wrap {
   position: relative;
@@ -3141,8 +3412,8 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       <span class="nav-label">Commandes</span>
     </button>
     <button class="nav-item" data-tab="clients">
-      <span class="material-icons-round">groups</span>
-      <span class="nav-label">Clients</span>
+      <span class="material-icons-round">card_giftcard</span>
+      <span class="nav-label">Fidélité</span>
     </button>
     <button class="nav-item" data-tab="boutique">
       <span class="material-icons-round">storefront</span>
@@ -3335,26 +3606,55 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <div id="cmd-list" style="margin-top: 18px;"></div>
   </section>
 
-  <!-- ============ ONGLET 5 : CLIENTS ============ -->
+  <!-- ============ ONGLET 5 : FIDÉLITÉ ============ -->
   <section class="screen" data-screen="clients">
 
     <div class="hero">
-      <div class="hero-eyebrow">— <span id="clients-count">0 clients</span></div>
-      <h1 class="hero-title">Mes <em>habitués</em>.</h1>
+      <div class="hero-eyebrow">— <span id="fidelite-stats">0 cartes</span></div>
+      <h1 class="hero-title">Carte de <em>fidélité</em>.</h1>
     </div>
 
-    <div class="clients-search-wrap">
-      <span class="material-icons-round clients-search-icon">search</span>
-      <input type="text" id="clients-search" placeholder="Rechercher un client par nom...">
+    <!-- État DÉSACTIVÉ -->
+    <div id="fidelite-disabled-state" style="display: none;">
+      <div class="empty" style="padding: 40px 20px;">
+        <div class="empty-icon"><span class="material-icons-round">card_giftcard</span></div>
+        <div class="empty-title">Activez votre carte de fidélité</div>
+        <div class="empty-desc">Vos clients scannent un QR, accumulent des tampons<br>et reçoivent une récompense après X achats.</div>
+        <button type="button" class="btn-primary" id="btn-goto-fidelite-config" style="margin-top: 18px;">
+          <span class="material-icons-round">settings</span>
+          Configurer la carte
+        </button>
+      </div>
     </div>
 
-    <div class="empty" id="clients-empty" style="display: none;">
-      <div class="empty-icon"><span class="material-icons-round">groups</span></div>
-      <div class="empty-title">Pas encore de clients</div>
-      <div class="empty-desc">Vos clients apparaîtront ici automatiquement<br>dès la première commande enregistrée.</div>
-    </div>
+    <!-- État ACTIVÉ -->
+    <div id="fidelite-enabled-state" style="display: none;">
+      <!-- Bouton QR + Add manual -->
+      <div class="fidelite-actions-row">
+        <button type="button" class="btn-fidelite-qr" id="btn-show-fidelite-qr">
+          <span class="material-icons-round">qr_code_2</span>
+          Voir mon QR
+        </button>
+        <button type="button" class="btn-fidelite-add" id="btn-add-tampon-search">
+          <span class="material-icons-round">add</span>
+          Ajouter un tampon
+        </button>
+      </div>
 
-    <div id="clients-list" style="margin-top: 18px;"></div>
+      <!-- Recherche -->
+      <div class="clients-search-wrap" style="margin-top: 14px;">
+        <span class="material-icons-round clients-search-icon">search</span>
+        <input type="text" id="fidelite-search" placeholder="Rechercher par 4 derniers chiffres ou nom...">
+      </div>
+
+      <div class="empty" id="cartes-empty" style="display: none;">
+        <div class="empty-icon"><span class="material-icons-round">card_giftcard</span></div>
+        <div class="empty-title">Pas encore de cartes</div>
+        <div class="empty-desc">Vos clients scannent votre QR pour créer leur carte.</div>
+      </div>
+
+      <div id="cartes-list" style="margin-top: 18px;"></div>
+    </div>
   </section>
 
   <!-- ============ ONGLET 6 : PROFIL ============ -->
@@ -3449,6 +3749,51 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
       </button>
     </div>
 
+    <!-- Carte fidélité -->
+    <div class="profil-section-title">Carte de fidélité</div>
+    <div class="profil-card" style="padding: 16px;">
+      <div class="paiement-row">
+        <div class="paiement-row-info">
+          <div class="paiement-row-label">Programme de fidélité</div>
+          <div class="paiement-row-sub">Vos clients accumulent des tampons via QR code</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-fidelite-active">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div id="fidelite-config-zone" style="display: none; margin-top: 14px;">
+        <div class="paiement-divider"></div>
+
+        <div class="input-wrap" style="margin-bottom: 12px;">
+          <label for="fidelite-emoji">Emoji</label>
+          <input type="text" id="fidelite-emoji" placeholder="🥖" maxlength="4" style="font-size: 22px; text-align: center; max-width: 80px;">
+        </div>
+
+        <div class="input-wrap" style="margin-bottom: 12px;">
+          <label for="fidelite-titre">Titre de la carte</label>
+          <input type="text" id="fidelite-titre" placeholder="Carte de fidélité">
+        </div>
+
+        <div class="input-wrap" style="margin-bottom: 12px;">
+          <label for="fidelite-objectif">Nombre de tampons pour la récompense</label>
+          <input type="number" id="fidelite-objectif" placeholder="10" min="2" max="30" step="1">
+        </div>
+
+        <div class="input-wrap" style="margin-bottom: 0;">
+          <label for="fidelite-recompense">Récompense</label>
+          <input type="text" id="fidelite-recompense" placeholder="1 baguette offerte">
+          <div class="paiement-help">Ex : "1 baguette offerte", "1 viennoiserie au choix", "-2€ sur la prochaine commande"</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn-save-paiement" id="btn-save-fidelite">
+        <span class="material-icons-round">save</span>
+        Enregistrer ma carte de fidélité
+      </button>
+    </div>
+
     <!-- Carte abonnement -->
     <div class="profil-section-title">Abonnement</div>
     <div class="profil-plan-card" id="profil-plan-card">
@@ -3506,9 +3851,9 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     <span class="material-icons-round">receipt_long</span>
     <span class="tab-label">Commandes</span>
   </button>
-  <button class="tab" data-tab="clients" aria-label="Clients">
-    <span class="material-icons-round">groups</span>
-    <span class="tab-label">Clients</span>
+  <button class="tab" data-tab="clients" aria-label="Fidélité">
+    <span class="material-icons-round">card_giftcard</span>
+    <span class="tab-label">Fidélité</span>
   </button>
   <button class="tab" data-tab="boutique" aria-label="Boutique">
     <span class="material-icons-round">storefront</span>
@@ -3830,6 +4175,54 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
   </div>
 </div>
 
+<!-- ============ MODAL FIDÉLITÉ QR ============ -->
+<div class="modal-overlay" id="modal-fidelite-qr">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title">Mon <em>QR de fidélité</em></h2>
+      <button class="modal-close" data-close="modal-fidelite-qr"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="fidelite-qr-content">
+      <div class="fidelite-qr-card">
+        <div class="fidelite-qr-emoji" id="fid-qr-emoji">🥖</div>
+        <div class="fidelite-qr-titre" id="fid-qr-titre">Carte de fidélité</div>
+        <div class="fidelite-qr-recompense" id="fid-qr-recompense">10 achats = 1 baguette offerte</div>
+        <div class="fidelite-qr-image" id="fid-qr-image">
+          <!-- QR injecté ici -->
+        </div>
+        <div class="fidelite-qr-bou" id="fid-qr-bou-name">Boulangerie</div>
+      </div>
+      <div class="fidelite-qr-actions">
+        <button type="button" class="btn-modal primary" id="btn-download-fidelite-qr">
+          <span class="material-icons-round">download</span>
+          Télécharger en PDF
+        </button>
+        <button type="button" class="btn-modal secondary" data-close="modal-fidelite-qr">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL : AJOUTER UN TAMPON (recherche client) ============ -->
+<div class="modal-overlay" id="modal-add-tampon">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-title">Ajouter <em>un tampon</em></h2>
+      <button class="modal-close" data-close="modal-add-tampon"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-help">Demandez les <strong>4 derniers chiffres</strong> du téléphone du client (ou son nom).</p>
+      <div class="input-wrap">
+        <label for="add-tampon-search">Recherche</label>
+        <input type="text" id="add-tampon-search" placeholder="5678 ou Marie" autocomplete="off">
+      </div>
+      <div id="add-tampon-results" class="add-tampon-results"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL COMMANDE ============ -->
 <div class="modal-overlay" id="modal-cmd">
   <div class="modal">
@@ -3960,7 +4353,7 @@ textarea { resize: vertical; min-height: 72px; font-family: inherit; }
     // Charger les données spécifiques à l'onglet
     if (name === 'boutique') loadBoutique();
     if (name === 'commandes') renderCommandes();
-    if (name === 'clients') renderClients();
+    if (name === 'clients') renderFidelite();
     if (name === 'profil') renderProfil();
   }
 
@@ -6053,11 +6446,11 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
 
 
   // ========================================================
-  // ============ ONGLET CLIENTS ============
+  // ============ ONGLET FIDÉLITÉ ============
   // ========================================================
 
-  let clientsSearchQuery = '';
-  let openedClientKey = null; // pour persister l'historique ouvert au re-render
+  let cartesFidelite = [];
+  let fideliteSearchQuery = '';
 
   function getInitialsFromName(fullName) {
     if (!fullName) return '?';
@@ -6067,188 +6460,343 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
-  function buildClientsFromCommandes(cmds) {
-    // Regroupe par "clé client" = nom_client + telephone
-    const map = new Map();
-    cmds.forEach(c => {
-      if (!c.nom_client) return;
-      const cleanName = c.nom_client.trim();
-      const cleanTel = (c.telephone || '').trim();
-      const key = (cleanName.toLowerCase() + '|' + cleanTel.replace(/\s/g, ''));
-      if (!map.has(key)) {
-        map.set(key, {
-          key,
-          nom: cleanName,
-          telephone: cleanTel,
-          commandes: [],
-          total: 0,
-          lastDate: null
-        });
-      }
-      const client = map.get(key);
-      client.commandes.push(c);
-      const m = parseFloat(c.montant);
-      if (!isNaN(m)) client.total += m;
-      const d = new Date(c.date_retrait);
-      if (!client.lastDate || d > client.lastDate) {
-        client.lastDate = d;
-      }
-    });
-    // Tri : par nb de commandes desc, puis date dernière commande desc
-    return [...map.values()].sort((a, b) => {
-      if (b.commandes.length !== a.commandes.length) {
-        return b.commandes.length - a.commandes.length;
-      }
-      return (b.lastDate?.getTime() || 0) - (a.lastDate?.getTime() || 0);
-    });
+  async function loadCartesFidelite() {
+    const { data, error } = await supabase
+      .from('cartes_fidelite')
+      .select('*')
+      .eq('boulangerie_id', BOU_ID)
+      .order('updated_at', { ascending: false });
+    if (!error) cartesFidelite = data || [];
   }
 
-  function formatClientDate(d) {
-    if (!d) return '—';
-    const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-  }
+  async function renderFidelite() {
+    const isActive = boulangerie.fidelite_active === true;
+    $('fidelite-disabled-state').style.display = isActive ? 'none' : 'block';
+    $('fidelite-enabled-state').style.display = isActive ? 'block' : 'none';
 
-  async function renderClients() {
-    if (!commandes || commandes.length === 0) {
-      try { await loadCommandes(); } catch (e) {}
+    if (!isActive) {
+      $('fidelite-stats').textContent = 'Programme inactif';
+      return;
     }
-    const cmds = commandes || [];
-    const allClients = buildClientsFromCommandes(cmds);
 
-    const q = (clientsSearchQuery || '').toLowerCase().trim();
-    const clients = q
-      ? allClients.filter(c =>
-          c.nom.toLowerCase().includes(q) ||
-          (c.telephone || '').toLowerCase().includes(q)
-        )
-      : allClients;
+    await loadCartesFidelite();
 
-    $('clients-count').textContent = `${allClients.length} client${allClients.length > 1 ? 's' : ''}`;
+    const objectif = boulangerie.fidelite_objectif || 10;
+    const total = cartesFidelite.length;
+    const completes = cartesFidelite.filter(c => c.tampons >= objectif).length;
+    $('fidelite-stats').textContent = `${total} carte${total > 1 ? 's' : ''}${completes > 0 ? ' · ' + completes + ' complète' + (completes > 1 ? 's' : '') : ''}`;
 
-    const empty = $('clients-empty');
-    const list = $('clients-list');
+    const q = (fideliteSearchQuery || '').toLowerCase().trim();
+    let cartes = cartesFidelite;
+    if (q) {
+      cartes = cartesFidelite.filter(c => {
+        const tel = (c.telephone || '').replace(/\s/g, '');
+        const nom = (c.nom_client || '').toLowerCase();
+        return tel.endsWith(q) || tel.includes(q) || nom.includes(q);
+      });
+    }
 
-    if (allClients.length === 0) {
+    const list = $('cartes-list');
+    const empty = $('cartes-empty');
+
+    if (cartesFidelite.length === 0) {
       empty.style.display = 'block';
       list.innerHTML = '';
       return;
     }
     empty.style.display = 'none';
 
-    if (clients.length === 0) {
+    if (cartes.length === 0) {
       list.innerHTML = `<div class="empty" style="padding: 40px 20px;">
-        <div class="empty-desc">Aucun client ne correspond à votre recherche.</div>
+        <div class="empty-desc">Aucune carte ne correspond à votre recherche.</div>
       </div>`;
       return;
     }
 
-    list.innerHTML = '';
-    clients.forEach(client => {
-      const card = document.createElement('div');
-      card.className = 'client-card';
-
-      const telDisplay = client.telephone
-        ? `<a href="tel:${escapeHtml(client.telephone.replace(/\s/g, ''))}">${escapeHtml(client.telephone)}</a>`
-        : '<span style="color: rgba(255,255,255,0.35);">Pas de téléphone</span>';
-
-      const totalDisplay = client.total > 0
-        ? `${client.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`
-        : '—';
-
-      const isOpen = openedClientKey === client.key;
-
-      // Historique : tri par date desc
-      const history = [...client.commandes].sort((a, b) => new Date(b.date_retrait) - new Date(a.date_retrait));
-      const historyHtml = history.map(c => {
-        const d = new Date(c.date_retrait);
-        const m = parseFloat(c.montant);
-        const amountStr = !isNaN(m) ? `${m.toFixed(2).replace('.', ',')} €` : '—';
-        return `<div class="client-history-item" data-cmd-id="${c.id}">
-          <div class="client-history-date">${formatClientDate(d)}</div>
-          <div class="client-history-articles">${escapeHtml((c.articles || '').split('\n')[0])}</div>
-          <div class="client-history-amount">${amountStr}</div>
-        </div>`;
-      }).join('');
-
-      card.innerHTML = `
-        <div class="client-card-inner">
-          <div class="client-card-top">
-            <div class="client-avatar">${escapeHtml(getInitialsFromName(client.nom))}</div>
-            <div class="client-body">
-              <div class="client-name"></div>
-              <div class="client-tel">${telDisplay}</div>
-              <div class="client-stats">
-                <span><span class="client-stat-value">${client.commandes.length}</span>commande${client.commandes.length > 1 ? 's' : ''}</span>
-                <span><span class="client-stat-value">${totalDisplay}</span>au total</span>
-                <span><span class="client-stat-value">${formatClientDate(client.lastDate)}</span>dernière</span>
-              </div>
-            </div>
-            <div class="client-actions">
-              <button type="button" class="client-action-btn" data-action="new-cmd" title="Nouvelle commande pour ce client">
-                <span class="material-icons-round">add</span>
-              </button>
-              ${client.telephone ? `<button type="button" class="client-action-btn" data-action="call" title="Appeler">
-                <span class="material-icons-round">phone</span>
-              </button>` : ''}
-            </div>
-          </div>
-          <button type="button" class="client-history-toggle">
-            <span class="material-icons-round">${isOpen ? 'expand_less' : 'expand_more'}</span>
-            ${isOpen ? 'Masquer l\'historique' : `Voir les ${client.commandes.length} commande${client.commandes.length > 1 ? 's' : ''}`}
-          </button>
-          <div class="client-history ${isOpen ? 'open' : ''}">${historyHtml}</div>
-        </div>
-      `;
-      card.querySelector('.client-name').textContent = client.nom;
-
-      // Bouton Nouvelle commande
-      card.querySelector('[data-action="new-cmd"]').addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        goTo('commandes');
-        setTimeout(() => {
-          openCmdModal(null);
-          // Pré-remplit le formulaire avec les infos du client
-          $('cmd-client').value = client.nom;
-          if (client.telephone) $('cmd-tel').value = client.telephone;
-        }, 100);
-      });
-
-      // Bouton Appeler (si tel)
-      const callBtn = card.querySelector('[data-action="call"]');
-      if (callBtn) {
-        callBtn.addEventListener('click', (ev) => {
-          ev.stopPropagation();
-          window.location.href = `tel:${client.telephone.replace(/\s/g, '')}`;
-        });
-      }
-
-      // Toggle historique
-      card.querySelector('.client-history-toggle').addEventListener('click', () => {
-        openedClientKey = (openedClientKey === client.key) ? null : client.key;
-        renderClients();
-      });
-
-      // Click sur une ligne d'historique → ouvre le modal détails
-      card.querySelectorAll('.client-history-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const cmdId = item.dataset.cmdId;
-          const cmd = client.commandes.find(c => String(c.id) === String(cmdId));
-          if (cmd) {
-            goTo('commandes');
-            setTimeout(() => openCmdModal(cmd), 100);
-          }
-        });
-      });
-
-      list.appendChild(card);
+    // Tri : cartes complètes en premier, puis activité récente
+    cartes.sort((a, b) => {
+      const aComplete = a.tampons >= objectif ? 1 : 0;
+      const bComplete = b.tampons >= objectif ? 1 : 0;
+      if (aComplete !== bComplete) return bComplete - aComplete;
+      return new Date(b.updated_at) - new Date(a.updated_at);
     });
+
+    list.innerHTML = '';
+    cartes.forEach(c => list.appendChild(renderCarteRow(c, objectif)));
+  }
+
+  function renderCarteRow(c, objectif) {
+    const card = document.createElement('div');
+    const isComplete = c.tampons >= objectif;
+    card.className = 'carte-card' + (isComplete ? ' complete' : '');
+
+    const tel = (c.telephone || '').replace(/\s/g, '');
+    const last4 = tel.slice(-4);
+    const progressPct = Math.min(100, (c.tampons / objectif) * 100);
+
+    card.innerHTML = `
+      <div class="carte-avatar">${escapeHtml(getInitialsFromName(c.nom_client || 'Client'))}</div>
+      <div class="carte-body">
+        <div class="carte-nom"></div>
+        <div class="carte-tel">•••• ${escapeHtml(last4)}</div>
+        <div class="carte-progress-row">
+          <div class="carte-progress-bar">
+            <div class="carte-progress-fill" style="width: ${progressPct}%;"></div>
+          </div>
+          <div class="carte-progress-num">${c.tampons}/${objectif}</div>
+        </div>
+        ${isComplete ? '<div class="carte-recompense-banner"><span class="material-icons-round">redeem</span>Récompense disponible !</div>' : ''}
+      </div>
+      <div class="carte-actions">
+        ${isComplete
+          ? `<button type="button" class="carte-action-btn success" data-action="redeem" title="Récompense utilisée"><span class="material-icons-round">check</span></button>`
+          : `<button type="button" class="carte-action-btn" data-action="add-tampon" title="+1 tampon"><span class="material-icons-round">add</span></button>`}
+        <button type="button" class="carte-action-btn" data-action="minus-tampon" title="-1 tampon" ${c.tampons === 0 ? 'disabled' : ''}><span class="material-icons-round">remove</span></button>
+      </div>
+    `;
+    card.querySelector('.carte-nom').textContent = c.nom_client || 'Client';
+
+    card.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', async (ev) => {
+        ev.stopPropagation();
+        const action = btn.dataset.action;
+        btn.disabled = true;
+        if (action === 'add-tampon') {
+          await modifyTampons(c.id, 1);
+        } else if (action === 'minus-tampon') {
+          await modifyTampons(c.id, -1);
+        } else if (action === 'redeem') {
+          await redeemReward(c.id);
+        }
+      });
+    });
+
+    return card;
+  }
+
+  async function modifyTampons(carteId, delta) {
+    const carte = cartesFidelite.find(c => c.id === carteId);
+    if (!carte) return;
+    const newVal = Math.max(0, carte.tampons + delta);
+    const { error } = await supabase
+      .from('cartes_fidelite')
+      .update({ tampons: newVal, updated_at: new Date().toISOString() })
+      .eq('id', carteId);
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+    if (delta > 0 && newVal >= (boulangerie.fidelite_objectif || 10)) {
+      showToast('🎉 Carte complète ! Récompense disponible.');
+    } else {
+      showToast(delta > 0 ? '✓ +1 tampon' : '✓ -1 tampon');
+    }
+    await renderFidelite();
+  }
+
+  async function redeemReward(carteId) {
+    const carte = cartesFidelite.find(c => c.id === carteId);
+    if (!carte) return;
+    const ok = await showConfirm('Récompense utilisée ?', `${escapeHtml(carte.nom_client || 'Le client')} a reçu : ${escapeHtml(boulangerie.fidelite_recompense || 'sa récompense')}. La carte sera remise à 0.`);
+    if (!ok) return;
+    const { error } = await supabase
+      .from('cartes_fidelite')
+      .update({
+        tampons: 0,
+        recompenses_utilisees: (carte.recompenses_utilisees || 0) + 1,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', carteId);
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+    showToast('✓ Récompense utilisée');
+    await renderFidelite();
   }
 
   // Recherche en direct
-  $('clients-search').addEventListener('input', (ev) => {
-    clientsSearchQuery = ev.target.value;
-    renderClients();
+  $('fidelite-search').addEventListener('input', (ev) => {
+    fideliteSearchQuery = ev.target.value;
+    renderFidelite();
+  });
+
+  // Bouton "Configurer la carte" depuis l'état désactivé → va sur Profil
+  $('btn-goto-fidelite-config').addEventListener('click', () => {
+    goTo('profil');
+    setTimeout(() => {
+      $('toggle-fidelite-active').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  });
+
+  // ============ MODAL : Voir mon QR ============
+  $('btn-show-fidelite-qr').addEventListener('click', () => {
+    $('fid-qr-emoji').textContent = boulangerie.fidelite_emoji || '🥖';
+    $('fid-qr-titre').textContent = boulangerie.fidelite_titre || 'Carte de fidélité';
+    const obj = boulangerie.fidelite_objectif || 10;
+    const rec = boulangerie.fidelite_recompense || 'récompense';
+    $('fid-qr-recompense').textContent = `${obj} achats = ${rec}`;
+    $('fid-qr-bou-name').textContent = boulangerie.nom || '';
+
+    // Génération QR pointant vers f.html?b=BOU_ID
+    const qrUrl = `${window.location.origin}/f.html?b=${BOU_ID}`;
+    const qrZone = $('fid-qr-image');
+    qrZone.innerHTML = '';
+    try {
+      const dataUrl = makeQrDataUrl(qrUrl, 8, 2);
+      qrZone.innerHTML = `<img src="${dataUrl}" alt="QR" />`;
+    } catch (err) {
+      // Fallback via API externe
+      qrZone.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrUrl)}" alt="QR" />`;
+    }
+    openModal('modal-fidelite-qr');
+  });
+
+  $('btn-download-fidelite-qr').addEventListener('click', async () => {
+    const btn = $('btn-download-fidelite-qr');
+    btn.disabled = true;
+    try {
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        showToast('Erreur PDF : librairie non chargée', 'error');
+        return;
+      }
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pageW = 210;
+
+      const emoji = boulangerie.fidelite_emoji || '🥖';
+      const titre = boulangerie.fidelite_titre || 'Carte de fidélité';
+      const obj = boulangerie.fidelite_objectif || 10;
+      const rec = boulangerie.fidelite_recompense || 'récompense';
+      const bouNom = boulangerie.nom || '';
+
+      // Background warm
+      pdf.setFillColor(255, 248, 238);
+      pdf.rect(20, 30, pageW - 40, 230, 'F');
+
+      // Emoji
+      pdf.setFontSize(48);
+      pdf.text(emoji, pageW / 2, 70, { align: 'center' });
+
+      // Titre
+      pdf.setFontSize(28);
+      pdf.setTextColor(42, 24, 16);
+      pdf.text(titre, pageW / 2, 95, { align: 'center' });
+
+      // Récompense
+      pdf.setFontSize(14);
+      pdf.setTextColor(107, 85, 68);
+      pdf.text(`${obj} achats = ${rec}`, pageW / 2, 110, { align: 'center' });
+
+      // QR
+      const qrUrl = `${window.location.origin}/f.html?b=${BOU_ID}`;
+      const qrImg = makeQrDataUrl(qrUrl, 12, 4);
+      pdf.addImage(qrImg, 'PNG', (pageW - 70) / 2, 125, 70, 70);
+
+      // Instruction
+      pdf.setFontSize(12);
+      pdf.setTextColor(107, 85, 68);
+      pdf.text('Scannez avec votre téléphone', pageW / 2, 210, { align: 'center' });
+
+      // Nom boulangerie
+      pdf.setFontSize(10);
+      pdf.setTextColor(107, 85, 68);
+      pdf.text(bouNom.toUpperCase(), pageW / 2, 240, { align: 'center', charSpace: 0.5 });
+
+      pdf.save(`carte-fidelite-${(bouNom || 'frizz').replace(/\s+/g, '-').toLowerCase()}.pdf`);
+      showToast('✓ PDF téléchargé');
+    } catch (err) {
+      console.error(err);
+      showToast('Erreur : ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ============ MODAL : Ajouter un tampon (recherche) ============
+  $('btn-add-tampon-search').addEventListener('click', () => {
+    $('add-tampon-search').value = '';
+    $('add-tampon-results').innerHTML = '<div class="add-tampon-empty">Tapez les 4 derniers chiffres ou le nom du client.</div>';
+    openModal('modal-add-tampon');
+    setTimeout(() => $('add-tampon-search').focus(), 200);
+  });
+
+  $('add-tampon-search').addEventListener('input', async (ev) => {
+    const q = ev.target.value.trim().toLowerCase();
+    const results = $('add-tampon-results');
+    if (!q) {
+      results.innerHTML = '<div class="add-tampon-empty">Tapez les 4 derniers chiffres ou le nom du client.</div>';
+      return;
+    }
+    if (cartesFidelite.length === 0) await loadCartesFidelite();
+    const matches = cartesFidelite.filter(c => {
+      const tel = (c.telephone || '').replace(/\s/g, '');
+      const nom = (c.nom_client || '').toLowerCase();
+      return tel.endsWith(q) || tel.includes(q) || nom.includes(q);
+    }).slice(0, 8);
+
+    if (matches.length === 0) {
+      results.innerHTML = '<div class="add-tampon-empty">Aucun client trouvé.<br>Le client doit d\'abord scanner votre QR.</div>';
+      return;
+    }
+
+    const objectif = boulangerie.fidelite_objectif || 10;
+    results.innerHTML = '';
+    matches.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'add-tampon-result-card';
+      const last4 = (c.telephone || '').replace(/\s/g, '').slice(-4);
+      card.innerHTML = `
+        <div class="carte-avatar">${escapeHtml(getInitialsFromName(c.nom_client || 'Client'))}</div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 600; font-size: 14px; color: #fff;"></div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.5);">•••• ${escapeHtml(last4)} · ${c.tampons}/${objectif} tampons</div>
+        </div>
+        <span class="material-icons-round" style="color: #0A84FF;">add_circle</span>
+      `;
+      card.querySelector('div[style*="font-weight"]').textContent = c.nom_client || 'Client';
+      card.addEventListener('click', async () => {
+        await modifyTampons(c.id, 1);
+        closeModal('modal-add-tampon');
+      });
+      results.appendChild(card);
+    });
+  });
+
+  // ============ Configuration fidélité (Mon compte) ============
+
+  $('toggle-fidelite-active').addEventListener('change', () => {
+    $('fidelite-config-zone').style.display = $('toggle-fidelite-active').checked ? 'block' : 'none';
+  });
+
+  $('btn-save-fidelite').addEventListener('click', async () => {
+    const fidelite_active = $('toggle-fidelite-active').checked;
+    const fidelite_emoji = $('fidelite-emoji').value.trim() || '🥖';
+    const fidelite_titre = $('fidelite-titre').value.trim() || 'Carte de fidélité';
+    const fidelite_objectif = Math.max(2, Math.min(30, parseInt($('fidelite-objectif').value, 10) || 10));
+    const fidelite_recompense = $('fidelite-recompense').value.trim() || '1 baguette offerte';
+
+    const btn = $('btn-save-fidelite');
+    btn.disabled = true;
+
+    const { error } = await supabase
+      .from('boulangeries')
+      .update({ fidelite_active, fidelite_emoji, fidelite_titre, fidelite_objectif, fidelite_recompense })
+      .eq('id', BOU_ID);
+
+    btn.disabled = false;
+
+    if (error) {
+      showToast('Erreur : ' + error.message, 'error');
+      return;
+    }
+
+    boulangerie.fidelite_active = fidelite_active;
+    boulangerie.fidelite_emoji = fidelite_emoji;
+    boulangerie.fidelite_titre = fidelite_titre;
+    boulangerie.fidelite_objectif = fidelite_objectif;
+    boulangerie.fidelite_recompense = fidelite_recompense;
+    showToast('✓ Carte de fidélité enregistrée');
   });
 
 
@@ -6273,6 +6821,14 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour, sans markdown :
     $('stripe-payment-link').value = boulangerie.stripe_payment_link || '';
     $('stripe-config-zone').style.display = $('toggle-paiement-ligne').checked ? 'block' : 'none';
     updatePaiementWarning();
+
+    // Fidélité : load
+    $('toggle-fidelite-active').checked = boulangerie.fidelite_active === true;
+    $('fidelite-emoji').value = boulangerie.fidelite_emoji || '🥖';
+    $('fidelite-titre').value = boulangerie.fidelite_titre || 'Carte de fidélité';
+    $('fidelite-objectif').value = boulangerie.fidelite_objectif || 10;
+    $('fidelite-recompense').value = boulangerie.fidelite_recompense || '1 baguette offerte';
+    $('fidelite-config-zone').style.display = $('toggle-fidelite-active').checked ? 'block' : 'none';
 
     // Abonnement
     const status = boulangerie.abonnement_status || 'trial';

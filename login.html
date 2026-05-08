@@ -2,513 +2,309 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connexion · Frizz✦</title>
-
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Source Serif 4, serif' font-style='italic' font-weight='700' fill='%230A84FF'%3E✦%3C/text%3E%3C/svg%3E">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="color-scheme" content="light">
+<title>Se connecter · Frizz</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F2F2F7;
+    --bg-secondary: #FFFFFF;
+    --label: #000000;
+    --label-secondary: rgba(60, 60, 67, 0.60);
+    --label-tertiary: rgba(60, 60, 67, 0.30);
+    --separator: rgba(60, 60, 67, 0.18);
+    --blue: #007AFF;
+    --red: #FF3B30;
+  }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--label);
+    font-size: 17px;
+    line-height: 1.4;
+    letter-spacing: -0.022em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(80% 60% at 50% -10%, rgba(0, 122, 255, 0.08) 0%, transparent 55%);
+  }
+  button, input { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
+  input { cursor: text; }
 
-body {
-  background: #000;
-  color: #fff;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.5;
-}
+  .nav {
+    display: flex;
+    align-items: center;
+    padding: 16px 16px 8px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--blue);
+    font-size: 17px;
+    padding: 4px 8px 4px 0;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .back-btn:active { opacity: 0.5; }
+  .back-btn svg { width: 18px; height: 18px; }
 
-@media (max-width: 600px) {
-  body { padding: 0; }
-}
+  .container {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 12px 22px max(32px, env(safe-area-inset-bottom));
+  }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(10, 132, 255, 0.32) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(88, 86, 214, 0.18) 0%, transparent 60%),
-    #000;
-  z-index: -2;
-  pointer-events: none;
-}
+  .header { padding: 20px 0 32px; text-align: center; }
+  .logo {
+    width: 56px; height: 56px;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 4px 12px rgba(0, 122, 255, 0.30));
+  }
+  .title {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.030em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--label-secondary);
+    letter-spacing: -0.012em;
+  }
 
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.3;
-  mix-blend-mode: overlay;
-  z-index: -1;
-  pointer-events: none;
-}
+  .form { margin-top: 8px; }
+  .field {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--separator);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.14);
+  }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    padding: 0;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder { color: var(--label-tertiary); }
 
-.wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-}
+  .error {
+    color: var(--red);
+    font-size: 14px;
+    margin: 4px 6px 12px;
+    letter-spacing: -0.005em;
+    display: none;
+  }
+  .error.show { display: block; }
 
-@media (max-width: 600px) {
-  .wrapper { padding: 24px 14px; }
-}
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: white;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.30);
+    margin-top: 12px;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s;
+  }
+  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn:disabled { opacity: 0.5; cursor: wait; }
+  .submit-btn .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .submit-btn.loading .spinner { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-.card {
-  width: 100%;
-  max-width: 480px;
-  padding: 48px 40px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 32px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
-}
+  .forgot {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
+  }
+  .forgot a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
 
-@media (max-width: 600px) {
-  .card { padding: 32px 22px; border-radius: 26px; }
-}
-
-.logo-link {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 28px;
-  text-decoration: none;
-}
-
-.logo {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 32px;
-  color: #fff;
-  letter-spacing: -0.5px;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-}
-
-.logo .sparkle {
-  color: #0A84FF;
-  font-size: 28px;
-  text-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
-  animation: pulse 3.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.95); }
-}
-
-.hero-eyebrow {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 6px;
-  text-align: center;
-  letter-spacing: 0.3px;
-}
-
-.hero-title {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 1.05;
-  letter-spacing: -1px;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.hero-title em {
-  font-style: italic;
-  font-weight: 400;
-  color: #0A84FF;
-}
-
-.input-wrap { margin-bottom: 14px; }
-
-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-}
-
-input {
-  width: 100%;
-  padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-input:focus {
-  border-color: #0A84FF;
-  background: rgba(10, 132, 255, 0.08);
-}
-
-input::placeholder { color: rgba(255, 255, 255, 0.35); }
-
-.forgot-link {
-  display: block;
-  text-align: right;
-  font-size: 12px;
-  color: #0A84FF;
-  text-decoration: none;
-  margin-top: -6px;
-  margin-bottom: 18px;
-  font-weight: 500;
-}
-
-.forgot-link:hover { text-decoration: underline; }
-
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px;
-  background: #0A84FF;
-  border: none;
-  border-radius: 100px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35), 0 2px 6px rgba(10, 132, 255, 0.2);
-  transition: transform 0.15s ease, opacity 0.2s ease;
-  letter-spacing: -0.1px;
-}
-
-.btn-primary:active { transform: scale(0.98); }
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-
-.btn-google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 13px;
-  background: #fff;
-  border: none;
-  border-radius: 100px;
-  color: #1a1a1c;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  letter-spacing: -0.1px;
-  margin-bottom: 20px;
-}
-
-.btn-google:active { transform: scale(0.98); }
-
-.google-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.bottom-link {
-  text-align: center;
-  margin-top: 24px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.bottom-link a {
-  color: #0A84FF;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.bottom-link a:hover { text-decoration: underline; }
-
-.toast {
-  display: none;
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 500;
-  text-align: center;
-}
-
-.toast.success {
-  display: block;
-  background: rgba(52, 199, 89, 0.12);
-  border: 1px solid rgba(52, 199, 89, 0.4);
-  color: #34C759;
-}
-
-.toast.error {
-  display: block;
-  background: rgba(255, 69, 58, 0.12);
-  border: 1px solid rgba(255, 69, 58, 0.4);
-  color: #FF453A;
-}
+  .signup-link {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 15px;
+    color: var(--label-secondary);
+  }
+  .signup-link a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
 
-<div class="wrapper">
-  <div class="card">
+<nav class="nav">
+  <a href="landing.html" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Retour
+  </a>
+</nav>
 
-    <a href="/" class="logo-link">
-      <span class="logo">Frizz<span class="sparkle">✦</span></span>
-    </a>
+<div class="container">
+  <div class="header">
+    <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0040DD"/>
+          <stop offset="50%" stop-color="#007AFF"/>
+          <stop offset="100%" stop-color="#5AC8FA"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#grad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+    </svg>
+    <h1 class="title">Bon retour</h1>
+    <p class="subtitle">Connectez-vous à votre compte Frizz</p>
+  </div>
 
-    <div class="hero-eyebrow">— Connexion</div>
-    <h1 class="hero-title">Bienvenue de <em>retour</em>.</h1>
+  <form class="form" id="loginForm" autocomplete="on">
+    <div class="field">
+      <label class="field-label" for="email">Email</label>
+      <input type="email" id="email" placeholder="vous@salon.fr" required autocomplete="email" inputmode="email" />
+    </div>
 
-    <!-- Bouton Google -->
-    <button type="button" class="btn-google" id="google-btn">
-      <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Continuer avec Google
+    <div class="field">
+      <label class="field-label" for="password">Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span class="spinner"></span>
+      <span class="btn-text">Se connecter</span>
     </button>
 
-    <div class="divider">ou avec votre email</div>
+    <div class="forgot">
+      <a href="#" onclick="forgotPassword(event)">Mot de passe oublié ?</a>
+    </div>
+  </form>
 
-    <form id="login-form" novalidate>
-
-      <div class="input-wrap">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="marc@maboulangerie.fr" required autocomplete="email">
-      </div>
-
-      <div class="input-wrap">
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" placeholder="Votre mot de passe" required autocomplete="current-password">
-      </div>
-
-      <a href="#" class="forgot-link" id="forgot-link">Mot de passe oublié ?</a>
-
-      <button type="submit" class="btn-primary" id="submit-btn">
-        Se connecter
-      </button>
-
-      <div class="toast" id="toast"></div>
-
-    </form>
-
-    <p class="bottom-link">
-      Pas encore de compte ? <a href="/inscription.html">Créer un compte</a>
-    </p>
-
+  <div class="signup-link">
+    Pas encore de compte ? <a href="signup.html">Créer un compte</a>
   </div>
 </div>
 
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const form = document.getElementById('loginForm');
+const errorEl = document.getElementById('errorMsg');
+const btn = document.getElementById('submitBtn');
+const btnText = btn.querySelector('.btn-text');
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function showError(msg) {
+  errorEl.textContent = msg;
+  errorEl.classList.add('show');
+}
+function hideError() {
+  errorEl.classList.remove('show');
+}
+function setLoading(loading) {
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+  btnText.textContent = loading ? 'Connexion…' : 'Se connecter';
+}
 
-  // Si déjà connecté, redirige direct vers le dashboard
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    window.location.href = '/app.html';
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideError();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showError('Email et mot de passe requis');
+    return;
   }
-
-  const form = document.getElementById('login-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const googleBtn = document.getElementById('google-btn');
-  const forgotLink = document.getElementById('forgot-link');
-  const toast = document.getElementById('toast');
-  const emailInput = document.getElementById('email');
-
-  function showToast(message, type) {
-    toast.textContent = message;
-    toast.className = 'toast ' + type;
-    if (type === 'success') {
-      setTimeout(() => { toast.style.display = 'none'; }, 8000);
+  setLoading(true);
+  try {
+    const { error } = await supa.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    window.location.href = 'index.html';
+  } catch (err) {
+    setLoading(false);
+    let msg = err.message || 'Erreur de connexion';
+    if (msg.includes('Invalid login credentials')) {
+      msg = 'Email ou mot de passe incorrect';
+    } else if (msg.includes('Email not confirmed')) {
+      msg = 'Email pas encore confirmé. Vérifiez vos emails.';
     }
+    showError(msg);
   }
+});
 
-  function hideToast() {
-    toast.style.display = 'none';
-    toast.className = 'toast';
+async function forgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showError('Entrez votre email d\'abord');
+    return;
   }
+  hideError();
+  try {
+    const { error } = await supa.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+    alert('Un email de réinitialisation vous a été envoyé.');
+  } catch (err) {
+    showError(err.message || 'Erreur lors de l\'envoi');
+  }
+}
 
-  // ============ CONNEXION EMAIL/PASSWORD ============
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hideToast();
-
-    const formData = new FormData(form);
-    const email = formData.get('email').trim().toLowerCase();
-    const password = formData.get('password');
-
-    if (!email || !password) {
-      showToast('Merci de remplir email et mot de passe.', 'error');
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Connexion...';
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          showToast('Email ou mot de passe incorrect.', 'error');
-        } else if (error.message.includes('Email not confirmed')) {
-          showToast('Email pas encore confirmé. Vérifiez votre boîte mail.', 'error');
-        } else {
-          showToast(`Erreur : ${error.message}`, 'error');
-        }
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Se connecter';
-        return;
-      }
-
-      showToast('✓ Connexion réussie !', 'success');
-      setTimeout(() => {
-        window.location.href = '/app.html';
-      }, 600);
-
-    } catch (err) {
-      console.error(err);
-      showToast('Une erreur est survenue. Réessayez.', 'error');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Se connecter';
-    }
-  });
-
-  // ============ CONNEXION GOOGLE ============
-  googleBtn.addEventListener('click', async () => {
-    hideToast();
-    googleBtn.disabled = true;
-    const originalText = googleBtn.innerHTML;
-    googleBtn.innerHTML = `<svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Connexion Google…`;
-
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/app.html`
-        }
-      });
-
-      console.log('Google OAuth response:', { data, error });
-
-      if (error) {
-        console.error('Google OAuth error:', error);
-        if (error.message && error.message.toLowerCase().includes('provider is not enabled')) {
-          showToast('Google n\'est pas activé. Va dans Supabase → Authentication → Providers → Google.', 'error');
-        } else {
-          showToast(`Erreur Google : ${error.message}`, 'error');
-        }
-        googleBtn.disabled = false;
-        googleBtn.innerHTML = originalText;
-      }
-      // Si OK : l'utilisateur est redirigé automatiquement vers Google.
-      // Au retour, Supabase pose la session et on revient sur app.html.
-    } catch (err) {
-      console.error('Exception Google:', err);
-      showToast('Erreur Google : ' + (err.message || 'inconnue') + ' — voir console (F12)', 'error');
-      googleBtn.disabled = false;
-      googleBtn.innerHTML = originalText;
-    }
-  });
-
-  // ============ MOT DE PASSE OUBLIÉ ============
-  forgotLink.addEventListener('click', async (e) => {
-    e.preventDefault();
-    hideToast();
-
-    const email = emailInput.value.trim().toLowerCase();
-
-    if (!email) {
-      showToast('Indiquez d\'abord votre email ci-dessus, puis cliquez à nouveau sur "Mot de passe oublié".', 'error');
-      emailInput.focus();
-      return;
-    }
-
-    forgotLink.style.pointerEvents = 'none';
-    forgotLink.style.opacity = '0.5';
-
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password.html`
-      });
-
-      if (error) {
-        showToast(`Erreur : ${error.message}`, 'error');
-        forgotLink.style.pointerEvents = '';
-        forgotLink.style.opacity = '';
-        return;
-      }
-
-      showToast(`✓ Email de réinitialisation envoyé à ${email}. Vérifiez votre boîte de réception.`, 'success');
-      forgotLink.style.pointerEvents = '';
-      forgotLink.style.opacity = '';
-
-    } catch (err) {
-      console.error(err);
-      showToast('Une erreur est survenue. Réessayez.', 'error');
-      forgotLink.style.pointerEvents = '';
-      forgotLink.style.opacity = '';
-    }
-  });
+// Si déjà connecté, rediriger
+supa.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = 'index.html';
+});
 </script>
-
 </body>
 </html>

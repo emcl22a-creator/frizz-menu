@@ -1889,6 +1889,12 @@ async function loadAllData() {
       userSalons.push(newSalon);
     }
 
+    // If first salon not onboarded, redirect to setup
+    if (userSalons[0].onboarded === false) {
+      window.location.href = 'setup.html';
+      return;
+    }
+
     // Set current salon = first one (or last active in localStorage if any)
     let activeId = null;
     try { activeId = localStorage.getItem('frizz_current_salon'); } catch(e) {}

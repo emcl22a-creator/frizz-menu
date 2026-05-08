@@ -66,6 +66,8 @@
     padding: 12px 22px max(32px, env(safe-area-inset-bottom));
   }
 
+  .marketing-col { display: none; }
+
   .header { padding: 20px 0 32px; text-align: center; }
   .logo {
     width: 56px; height: 56px;
@@ -83,6 +85,70 @@
     font-size: 15px;
     color: var(--label-secondary);
     letter-spacing: -0.012em;
+  }
+
+  /* DESKTOP LAYOUT */
+  @media (min-width: 900px) {
+    body::before {
+      background:
+        radial-gradient(60% 50% at 25% 20%, rgba(0, 122, 255, 0.10) 0%, transparent 55%),
+        radial-gradient(50% 40% at 90% 10%, rgba(175, 82, 222, 0.06) 0%, transparent 60%);
+    }
+    .nav {
+      max-width: 1200px;
+      padding: 22px 60px 0;
+    }
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 80px;
+      padding: 20px 60px 60px;
+      align-items: center;
+      min-height: calc(100vh - 80px);
+    }
+    .marketing-col { display: block; }
+    .marketing-logo {
+      width: 96px; height: 96px;
+      margin-bottom: 32px;
+      filter: drop-shadow(0 8px 24px rgba(0, 122, 255, 0.40));
+    }
+    .marketing-title {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      max-width: 14ch;
+    }
+    .marketing-sub {
+      font-size: 18px;
+      color: var(--label-secondary);
+      line-height: 1.5;
+      max-width: 38ch;
+      letter-spacing: -0.012em;
+    }
+
+    .container {
+      max-width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .form-card {
+      background: var(--bg-secondary);
+      border-radius: 22px;
+      padding: 40px 36px;
+      border: 0.5px solid var(--separator);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+    .header { padding: 0 0 24px; text-align: left; }
+    .logo { display: none; }
+    .title { font-size: 26px; }
+  }
+  @media (max-width: 899px) {
+    .marketing-col { display: none; }
+    .form-card { padding: 0; background: transparent; box-shadow: none; border: none; }
   }
 
   .form { margin-top: 8px; }
@@ -189,48 +255,69 @@
   </a>
 </nav>
 
-<div class="container">
-  <div class="header">
-    <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<div class="page-wrap">
+
+  <div class="marketing-col">
+    <svg class="marketing-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="mgrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#0040DD"/>
           <stop offset="50%" stop-color="#007AFF"/>
           <stop offset="100%" stop-color="#5AC8FA"/>
         </linearGradient>
       </defs>
-      <path fill="url(#grad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+      <path fill="url(#mgrad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
     </svg>
-    <h1 class="title">Bon retour</h1>
-    <p class="subtitle">Connectez-vous à votre compte Frizz</p>
+    <h1 class="marketing-title">Heureux de vous revoir</h1>
+    <p class="marketing-sub">Connectez-vous à votre compte Frizz pour retrouver vos appels, vos rendez-vous et vos statistiques.</p>
   </div>
 
-  <form class="form" id="loginForm" autocomplete="on">
-    <div class="field">
-      <label class="field-label" for="email">Email</label>
-      <input type="email" id="email" placeholder="vous@salon.fr" required autocomplete="email" inputmode="email" />
+  <div class="container">
+    <div class="form-card">
+      <div class="header">
+        <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0040DD"/>
+              <stop offset="50%" stop-color="#007AFF"/>
+              <stop offset="100%" stop-color="#5AC8FA"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#grad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+        </svg>
+        <h1 class="title">Bon retour</h1>
+        <p class="subtitle">Connectez-vous à votre compte Frizz</p>
+      </div>
+
+      <form class="form" id="loginForm" autocomplete="on">
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input type="email" id="email" placeholder="vous@salon.fr" required autocomplete="email" inputmode="email" />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">Mot de passe</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+
+        <div class="error" id="errorMsg"></div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="btn-text">Se connecter</span>
+        </button>
+
+        <div class="forgot">
+          <a href="#" onclick="forgotPassword(event)">Mot de passe oublié ?</a>
+        </div>
+      </form>
+
+      <div class="signup-link">
+        Pas encore de compte ? <a href="signup.html">Créer un compte</a>
+      </div>
     </div>
-
-    <div class="field">
-      <label class="field-label" for="password">Mot de passe</label>
-      <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
-    </div>
-
-    <div class="error" id="errorMsg"></div>
-
-    <button type="submit" class="submit-btn" id="submitBtn">
-      <span class="spinner"></span>
-      <span class="btn-text">Se connecter</span>
-    </button>
-
-    <div class="forgot">
-      <a href="#" onclick="forgotPassword(event)">Mot de passe oublié ?</a>
-    </div>
-  </form>
-
-  <div class="signup-link">
-    Pas encore de compte ? <a href="signup.html">Créer un compte</a>
   </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

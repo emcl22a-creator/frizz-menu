@@ -758,7 +758,8 @@
     z-index: 250;
     display: none;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding-top: env(safe-area-inset-top);
   }
   .onboarding.open { display: flex; }
@@ -783,26 +784,25 @@
   .onb-skip:active { opacity: 0.5; }
 
   .onb-stage {
-    flex: 1;
+    flex: 0 1 auto;
     overflow: hidden;
     position: relative;
+    width: 100%;
+    min-height: 0;
   }
   .onb-track {
     display: flex;
-    height: 100%;
     transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-    width: 400%;
   }
   .onb-step {
-    flex: 0 0 25%;
+    flex: 0 0 100vw;
+    width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 40px 28px 20px;
+    justify-content: flex-start;
+    padding: 28px 28px 4px;
     text-align: center;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .onb-visual {
@@ -1776,7 +1776,7 @@ function onbPrev() {
   }
 }
 function updateOnb() {
-  document.getElementById('onbTrack').style.transform = `translateX(-${onbStep * 25}%)`;
+  document.getElementById('onbTrack').style.transform = `translateX(-${onbStep * 100}vw)`;
   document.querySelectorAll('.onb-dot').forEach((d, i) => {
     d.classList.toggle('active', i === onbStep);
   });

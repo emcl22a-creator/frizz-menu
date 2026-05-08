@@ -1044,6 +1044,114 @@
     .onb-desc { font-size: 15px; }
   }
 
+  /* ─── PUSH NOTIFICATION BANNER ───────────────────────── */
+  .push-banner {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    left: 12px; right: 12px;
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 12px 14px;
+    background: rgba(28, 28, 30, 0.92);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    color: white;
+    border-radius: 22px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 400;
+    transform: translateY(-200%);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+  }
+  .push-banner.show { transform: translateY(0); }
+  .push-icon {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #5AC8FA 0%, #007AFF 50%, #0040DD 100%);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .push-icon svg { width: 22px; height: 22px; color: white; }
+  .push-content { flex: 1; min-width: 0; }
+  .push-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .push-app-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.012em;
+  }
+  .push-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 500;
+  }
+  .push-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    letter-spacing: -0.012em;
+  }
+  .push-body {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── SWIPE TO ACTION (iOS style) ─────────────────────── */
+  .swipe-row {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background: var(--bg-secondary);
+  }
+  .swipe-row .cell {
+    position: relative;
+    z-index: 2;
+    background: var(--bg-secondary);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    will-change: transform;
+  }
+  .swipe-row.swiping .cell {
+    transition: none;
+  }
+  .swipe-row.open .cell {
+    transform: translateX(-160px);
+  }
+  .swipe-actions {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    display: flex;
+    width: 160px;
+    z-index: 1;
+  }
+  .swipe-action {
+    flex: 1;
+    border: none;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .swipe-action:active { opacity: 0.7; }
+  .swipe-action.archive { background: var(--orange); }
+  .swipe-action.delete { background: var(--red); }
+
   /* ─── ADD ITEM MODAL ─────────────────────────────────── */
   .add-modal-backdrop {
     position: fixed;
@@ -1453,7 +1561,6 @@
 
 <!-- ═══ ONBOARDING ═════════════════════════════════════ -->
 <div class="onboarding" id="onboarding">
-  <button class="onb-skip" onclick="skipOnboarding()">Passer</button>
 
   <div class="onb-stage">
     <div class="onb-track" id="onbTrack">
@@ -1574,6 +1681,23 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
   </button>
 </header>
+
+<!-- ═══ PUSH NOTIFICATION ══════════════════════════════ -->
+<div class="push-banner" id="pushBanner" onclick="onPushTap()">
+  <div class="push-icon">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+    </svg>
+  </div>
+  <div class="push-content">
+    <div class="push-row">
+      <span class="push-app-name">FRIZZ</span>
+      <span class="push-time">à l'instant</span>
+    </div>
+    <div class="push-title" id="pushTitle">Nouveau rendez-vous</div>
+    <div class="push-body" id="pushBody">Karim B. — Coupe + barbe vendredi 14h</div>
+  </div>
+</div>
 
 <!-- ═══ ADD ITEM MODAL ═════════════════════════════════ -->
 <div class="add-modal-backdrop" id="addModalBackdrop"></div>
@@ -1744,7 +1868,7 @@
   </div>
   <div class="search-bar">
     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" placeholder="Rechercher" />
+    <input type="text" id="inboxSearch" placeholder="Rechercher" autocomplete="off" />
   </div>
   <div class="segmented" id="segmented-filter"></div>
   <div style="height:14px"></div>
@@ -1848,6 +1972,42 @@
 </nav>
 
 <script>
+/* ─── Push notifications (demo) ─────────────────────── */
+const pushQueue = [
+  { delay: 8000, title: 'Nouveau rendez-vous', body: 'Lina N. — Coupe homme demain 16h', callId: null },
+  { delay: 26000, title: 'Acompte reçu', body: 'Karim B. a réglé 10€ — RDV confirmé', callId: 1 },
+];
+let currentPushCallId = null;
+
+function showPush({ title, body, callId }) {
+  document.getElementById('pushTitle').textContent = title;
+  document.getElementById('pushBody').textContent = body;
+  currentPushCallId = callId;
+  const banner = document.getElementById('pushBanner');
+  banner.classList.add('show');
+  setTimeout(() => banner.classList.remove('show'), 5500);
+}
+function onPushTap() {
+  document.getElementById('pushBanner').classList.remove('show');
+  if (currentPushCallId) {
+    openDetail(currentPushCallId);
+  } else {
+    navigate('inbox');
+  }
+}
+function startPushSchedule() {
+  pushQueue.forEach(n => {
+    setTimeout(() => {
+      // Don't show push during onboarding
+      if (!document.getElementById('onboarding').classList.contains('open')) {
+        showPush(n);
+      }
+    }, n.delay);
+  });
+}
+// Start once onboarding done OR if onboarding not shown
+setTimeout(startPushSchedule, 4000);
+
 /* ─── Onboarding ───────────────────────────────────────── */
 let onbStep = 0;
 const onbTotal = 4;
@@ -2341,6 +2501,66 @@ function setVoice(name) {
   showToast(`Voix ${name} sélectionnée`);
 }
 
+function attachSwipeHandlers() {
+  document.querySelectorAll('#inbox-rows .swipe-row').forEach(row => {
+    let startX = 0, currentX = 0, isSwipingHorizontally = null;
+    const cell = row.querySelector('.cell');
+
+    row.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      currentX = 0;
+      isSwipingHorizontally = null;
+    }, { passive: true });
+
+    row.addEventListener('touchmove', (e) => {
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - (e.touches[0].screenY - e.touches[0].clientY);
+      // Detect intention on first significant move
+      if (isSwipingHorizontally === null && Math.abs(dx) > 8) {
+        isSwipingHorizontally = Math.abs(dx) > Math.abs(dy);
+      }
+      if (!isSwipingHorizontally) return;
+      const isOpen = row.classList.contains('open');
+      const base = isOpen ? -160 : 0;
+      currentX = Math.max(-160, Math.min(0, base + dx));
+      row.classList.add('swiping');
+      cell.style.transform = `translateX(${currentX}px)`;
+    }, { passive: true });
+
+    row.addEventListener('touchend', () => {
+      if (!isSwipingHorizontally) return;
+      row.classList.remove('swiping');
+      cell.style.transform = '';
+      if (currentX < -60) {
+        row.classList.add('open');
+      } else {
+        row.classList.remove('open');
+      }
+    });
+  });
+  // Close other swiped rows when scrolling/tapping
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.swipe-row.open')) {
+      document.querySelectorAll('.swipe-row.open').forEach(r => r.classList.remove('open'));
+    }
+  }, { capture: true });
+}
+
+function archiveCall(id) {
+  const idx = calls.findIndex(c => c.id === id);
+  if (idx >= 0) calls.splice(idx, 1);
+  renderInbox();
+  renderRecent();
+  showToast('Appel archivé');
+}
+function deleteCall(id) {
+  const idx = calls.findIndex(c => c.id === id);
+  if (idx >= 0) calls.splice(idx, 1);
+  renderInbox();
+  renderRecent();
+  showToast('Appel supprimé');
+}
+
 function renderRecent() {
   document.getElementById('recent-list').innerHTML = calls.slice(0, 6).map(c => `
     <button class="cell" onclick="openDetail(${c.id})">
@@ -2354,17 +2574,42 @@ function renderRecent() {
 }
 
 let currentFilter = 'all';
+let currentSearch = '';
 function renderInbox() {
-  const filtered = currentFilter === 'all' ? calls : calls.filter(c => c.criticity === currentFilter);
-  document.getElementById('inbox-rows').innerHTML = filtered.map(c => `
-    <button class="cell" onclick="openDetail(${c.id})">
-      <div class="cell-main">
-        <div class="cell-title">${c.name}</div>
-        <div class="cell-subtitle">${c.time} · ${c.prestation}</div>
+  let filtered = currentFilter === 'all' ? calls : calls.filter(c => c.criticity === currentFilter);
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    filtered = filtered.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.phone.toLowerCase().includes(q) ||
+      c.prestation.toLowerCase().includes(q)
+    );
+  }
+  const container = document.getElementById('inbox-rows');
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 40px 20px; text-align: center;">
+        <svg style="width: 36px; height: 36px; color: var(--label-tertiary); margin-bottom: 10px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div style="font-size: 15px; color: var(--label-secondary); font-weight: 500;">Aucun résultat</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(c => `
+    <div class="swipe-row" data-id="${c.id}">
+      <button class="cell" onclick="openDetail(${c.id})">
+        <div class="cell-main">
+          <div class="cell-title">${c.name}</div>
+          <div class="cell-subtitle">${c.time} · ${c.prestation}</div>
+        </div>
+        <span class="pill ${c.criticity}">${cMap[c.criticity]}</span>
+        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="swipe-actions">
+        <button class="swipe-action archive" onclick="archiveCall(${c.id})">Archiver</button>
+        <button class="swipe-action delete" onclick="deleteCall(${c.id})">Supprimer</button>
       </div>
-      <span class="pill ${c.criticity}">${cMap[c.criticity]}</span>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>`).join('');
+    </div>`).join('');
+  attachSwipeHandlers();
 }
 
 function renderFilterSegmented() {
@@ -2423,6 +2668,11 @@ renderAgenda();
 renderChart();
 renderShops();
 animateCounters();
+
+document.getElementById('inboxSearch').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  renderInbox();
+});
 </script>
 </body>
 </html>

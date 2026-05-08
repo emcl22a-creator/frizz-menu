@@ -356,9 +356,19 @@ form.addEventListener('submit', async (e) => {
   }
   setLoading(true);
   try {
-    const { error } = await supa.auth.signInWithPassword({ email, password });
+    const { data, error } = await supa.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    window.location.href = 'index.html';
+    // Check if onboarded
+    const { data: salon } = await supa
+      .from('frizz_ai_salons')
+      .select('onboarded')
+      .eq('user_id', data.user.id)
+      .limit(1).single();
+    if (salon && salon.onboarded === false) {
+      window.location.href = 'setup.html';
+    } else {
+      window.location.href = 'index.html';
+    }
   } catch (err) {
     setLoading(false);
     let msg = err.message || 'Erreur de connexion';
@@ -389,8 +399,18 @@ async function forgotPassword(e) {
 }
 
 // Si déjà connecté, rediriger
-supa.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = 'index.html';
+supa.auth.getSession().then(async ({ data: { session } }) => {
+  if (!session) return;
+  const { data: salon } = await supa
+    .from('frizz_ai_salons')
+    .select('onboarded')
+    .eq('user_id', session.user.id)
+    .limit(1).single();
+  if (salon && salon.onboarded === false) {
+    window.location.href = 'setup.html';
+  } else {
+    window.location.href = 'index.html';
+  }
 });
 </script>
 </body>

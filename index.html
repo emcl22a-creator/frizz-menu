@@ -2150,6 +2150,13 @@
       <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
   </div>
+
+  <div class="section-header">Compte</div>
+  <div class="group">
+    <button class="cell" onclick="logout()">
+      <div class="cell-main"><div class="cell-title" style="color: var(--red);">Se déconnecter</div></div>
+    </button>
+  </div>
 </div>
 
 <nav class="tabbar">
@@ -2172,7 +2179,34 @@
   </button>
 </nav>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* ─── Supabase auth guard ─────────────────────────────── */
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Redirect to landing if not logged in
+supa.auth.getSession().then(({ data: { session } }) => {
+  if (!session) {
+    window.location.href = 'landing.html';
+  } else {
+    // Load user's salon name into header
+    supa.from('frizz_ai_salons').select('nom').eq('user_id', session.user.id).limit(1).single()
+      .then(({ data }) => {
+        if (data && data.nom) {
+          const el = document.getElementById('shopName');
+          if (el) el.textContent = data.nom;
+        }
+      });
+  }
+});
+
+async function logout() {
+  await supa.auth.signOut();
+  window.location.href = 'landing.html';
+}
+
 /* ─── Push notifications (demo) ─────────────────────── */
 const pushQueue = [
   { delay: 8000, title: 'Nouveau rendez-vous', body: 'Lina N. — Coupe homme demain 16h', callId: null },

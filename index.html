@@ -2403,38 +2403,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 /* ─── Calendar sync sheet ──────────────────────────────── */
-let salonIcalToken = null; // Will be set after Supabase loads salon
+let salonIcalToken = null; // Set to current salon UUID after Supabase loads
 
 function getIcalUrl() {
-  // Once Supabase salon is loaded, this returns the real URL
-  // For now, returns a placeholder that the edge function will handle
-  if (!salonIcalToken) return 'https://api.frizz-instant.com/ical/loading…';
-  return `https://api.frizz-instant.com/ical/${salonIcalToken}.ics`;
-}
-
-/* ─── Calendar sync sheet ─────────────────────────────── */
-let currentSalonId = null;
-
-function getIcalUrl() {
-  const id = currentSalonId || 'demo';
-  return `https://api.frizz-instant.com/ical/${id}/calendar.ics`;
+  if (!salonIcalToken) return SUPABASE_URL + '/functions/v1/ical?salon=loading';
+  return `${SUPABASE_URL}/functions/v1/ical?salon=${salonIcalToken}`;
 }
 
 function openCalendarSheet() {
-  // Try to load real salon ID from session
-  if (typeof supa !== 'undefined' && !currentSalonId) {
-    supa.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        supa.from('frizz_ai_salons').select('id').eq('user_id', session.user.id).limit(1).single()
-          .then(({ data }) => {
-            if (data && data.id) {
-              currentSalonId = data.id;
-              document.getElementById('icalLinkInput').value = getIcalUrl();
-            }
-          });
-      }
-    });
-  }
   document.getElementById('icalLinkInput').value = getIcalUrl();
   document.getElementById('calBackdrop').classList.add('open');
   document.getElementById('calSheet').classList.add('open');
@@ -2447,6 +2423,7 @@ document.getElementById('calBackdrop').addEventListener('click', closeCalendarSh
 
 function copyIcalLink() {
   const input = document.getElementById('icalLinkInput');
+  input.value = getIcalUrl(); // refresh in case salon was just loaded
   input.select();
   input.setSelectionRange(0, 99999);
   try {

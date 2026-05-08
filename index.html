@@ -530,52 +530,235 @@
   }
 
   /* ─── AGENDA ─────────────────────────────────────────── */
-  .agenda { margin: 0 16px; background: var(--bg-secondary); border-radius: 14px; overflow: hidden; border: 0.5px solid rgba(0, 0, 0, 0.08); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04); }
-  .agenda-row {
-    display: grid;
-    grid-template-columns: 64px 1fr;
-    border-bottom: 0.5px solid var(--separator);
-    align-items: stretch;
-    min-height: 48px;
+
+  /* Day strip (horizontal scrollable days, Apple Calendar style) */
+  .day-strip {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 12px 12px;
+    margin: -4px 0 4px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
   }
-  .agenda-row:last-child { border-bottom: none; }
-  .agenda-time {
-    padding: 12px 12px;
-    font-size: 13px;
+  .day-strip::-webkit-scrollbar { display: none; }
+  .day-cell {
+    flex: 0 0 auto;
+    min-width: 52px;
+    padding: 8px 6px 9px;
+    border-radius: 12px;
+    text-align: center;
+    transition: background 0.2s ease;
+    scroll-snap-align: center;
+    cursor: pointer;
+    background: transparent;
+    border: 0.5px solid transparent;
+  }
+  .day-cell:active { background: var(--fill); }
+  .day-cell.today { color: var(--blue); }
+  .day-cell.selected {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .day-cell.selected .day-name,
+  .day-cell.selected .day-num { color: white; }
+  .day-cell.closed { opacity: 0.32; }
+  .day-name {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--label-secondary);
+    margin-bottom: 4px;
+  }
+  .day-num {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.018em;
     font-variant-numeric: tabular-nums;
+  }
+  .day-cell.today .day-name,
+  .day-cell.today .day-num { color: var(--blue); }
+  .day-cell.selected.today .day-name,
+  .day-cell.selected.today .day-num { color: white; }
+
+  .today-btn {
+    margin: 0 16px 10px auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px 6px 10px;
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--separator);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: opacity 0.15s;
+  }
+  .today-btn:active { opacity: 0.5; }
+  .today-btn svg { width: 13px; height: 13px; }
+
+  /* Agenda grid wrapper */
+  .agenda-grid-wrap {
+    margin: 0 16px;
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 0.5px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  /* The grid itself: 1 hour-column + N barber-columns */
+  .agenda-grid {
+    display: grid;
+    /* Set dynamically by JS: 50px [hours] then 1fr per barber */
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .agenda-header {
+    grid-row: 1;
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 0.5px solid var(--separator);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--bg-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .agenda-header.hour-corner { background: var(--bg-secondary); }
+
+  .agenda-hour-label {
+    padding: 0 6px;
+    font-size: 11px;
+    color: var(--label-tertiary);
     text-align: right;
     border-right: 0.5px solid var(--separator);
+    font-variant-numeric: tabular-nums;
     font-weight: 500;
+    background: var(--bg-secondary);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    /* Each row = 60 min = 60px */
+    height: 60px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-top: 2px;
   }
-  .agenda-content { padding: 8px 12px 8px 8px; }
-  .slot {
-    padding: 8px 12px;
+
+  .agenda-cell {
+    border-bottom: 0.5px solid var(--separator);
+    border-right: 0.5px solid var(--separator);
+    height: 60px;
+    position: relative;
+  }
+  .agenda-cell:last-child { border-right: none; }
+
+  /* RDV slot positioned absolutely inside its column */
+  .rdv-slot {
+    position: absolute;
+    left: 4px;
+    right: 4px;
     border-radius: 8px;
-    background: rgba(0, 122, 255, 0.10);
+    padding: 6px 8px;
+    background: rgba(0, 122, 255, 0.12);
     cursor: pointer;
-    transition: all 0.2s ease;
+    overflow: hidden;
+    border-left: 3px solid var(--blue);
+    transition: transform 0.2s, background 0.2s;
   }
-  .slot:active {
+  .rdv-slot:active {
     transform: scale(0.97);
-    background: rgba(0, 122, 255, 0.18);
+    background: rgba(0, 122, 255, 0.20);
   }
-  .slot.urgent { background: rgba(255, 59, 48, 0.10); }
-  .slot.urgent:active { background: rgba(255, 59, 48, 0.18); }
-  .slot-title {
-    font-size: 14px;
+  .rdv-slot.urgent {
+    background: rgba(255, 59, 48, 0.12);
+    border-left-color: var(--red);
+  }
+  .rdv-slot.urgent:active { background: rgba(255, 59, 48, 0.20); }
+  .rdv-slot-title {
+    font-size: 13px;
     font-weight: 600;
     color: var(--blue);
-    margin-bottom: 1px;
-    letter-spacing: -0.015em;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .slot.urgent .slot-title { color: var(--red); }
-  .slot-meta { font-size: 12px; color: var(--label-secondary); }
-  .slot-pause {
-    padding: 12px 4px;
+  .rdv-slot.urgent .rdv-slot-title { color: var(--red); }
+  .rdv-slot-meta {
+    font-size: 11px;
+    color: var(--label-secondary);
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Now-line indicator */
+  .now-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: var(--red);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .now-line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -3.5px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .agenda-empty {
+    margin: 24px 16px;
+    padding: 36px 24px;
+    text-align: center;
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 0.5px solid var(--separator);
+  }
+  .agenda-empty-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 4px;
+    letter-spacing: -0.018em;
+  }
+  .agenda-empty-desc {
     font-size: 14px;
-    color: var(--label-tertiary);
-    letter-spacing: -0.015em;
+    color: var(--label-secondary);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .agenda-empty-cta {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 9px 18px;
+    background: var(--blue);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
   }
 
   /* ─── TAB BAR (floating capsule) ─────────────────────── */
@@ -1728,9 +1911,25 @@
 <div class="page" id="page-agenda">
   <div class="large-title-block">
     <h1 class="large-title">Agenda</h1>
-    <p class="large-title-sub">Jeudi 7 mai · 8 RDV</p>
+    <p class="large-title-sub" id="agendaSub">—</p>
   </div>
-  <div class="agenda" id="agenda-rows"></div>
+
+  <!-- Day strip -->
+  <div class="day-strip" id="dayStrip"></div>
+
+  <!-- Today button (when not on today) -->
+  <button class="today-btn" id="todayBtn" onclick="goToToday()" style="display: none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Aujourd'hui
+  </button>
+
+  <!-- Agenda grid (vertical hours × columns of barbiers) -->
+  <div class="agenda-grid-wrap">
+    <div class="agenda-grid" id="agendaGrid"></div>
+  </div>
+
+  <!-- Empty state shown when salon is closed or no barbiers -->
+  <div id="agendaEmpty" class="agenda-empty" style="display: none;"></div>
 </div>
 
 <!-- ═══ RÉGLAGES ═══════════════════════════════════════ -->
@@ -1978,27 +2177,26 @@ async function loadAppels() {
   });
 }
 
+let rdvRaw = []; // Full RDV data with raw timestamps + barbier_id
+
 async function loadRdv() {
   const { data } = await supa
     .from('frizz_ai_rdv')
-    .select('*, frizz_ai_barbiers(prenom), frizz_ai_prestations(nom)')
+    .select('*, frizz_ai_barbiers(id, prenom), frizz_ai_prestations(nom, duree_minutes)')
     .eq('salon_id', currentSalon.id)
     .order('date_heure', { ascending: true });
 
-  // Map RDV to slots format
-  slots = (data || []).map(r => {
-    const d = new Date(r.date_heure);
-    const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const barber = r.frizz_ai_barbiers?.prenom || '—';
-    const prest = r.frizz_ai_prestations?.nom || 'RDV';
-    return {
-      time,
-      type: 'intervention',
-      title: `${r.client_nom || 'Client'} — ${prest}`,
-      barber,
-      color: r.statut === 'a_confirmer' ? 'urgent' : 'scheduled',
-    };
-  });
+  rdvRaw = (data || []).map(r => ({
+    id: r.id,
+    date_heure: r.date_heure,
+    dateObj: new Date(r.date_heure),
+    barbier_id: r.barbier_id,
+    barbier_prenom: r.frizz_ai_barbiers?.prenom || null,
+    prestation_nom: r.frizz_ai_prestations?.nom || null,
+    duree: r.frizz_ai_prestations?.duree_minutes || 30,
+    client_nom: r.client_nom || 'Client',
+    statut: r.statut,
+  }));
 }
 
 function refreshAllRenders() {
@@ -2190,7 +2388,6 @@ document.getElementById('modalAdd').addEventListener('click', () => {
 
 let calls = []; // Loaded from Supabase
 const cMap = { urgent: "Urgent", scheduled: "Confirmé", out: "Hors zone", spam: "Filtré" };
-let slots = []; // Loaded from Supabase
 const peakData = [18, 28, 35, 50, 60, 70, 100, 88, 55, 72, 80, 64, 30, 12, 5, 2];
 
 function navigate(pageId) {
@@ -2799,33 +2996,248 @@ function renderFilterSegmented() {
   });
 }
 
-function renderAgenda() {
-  document.getElementById('agenda-rows').innerHTML = slots.map((slot, i) => {
-    let inner = '';
-    if (slot.type === 'intervention') {
-      inner = `<div class="slot ${slot.color}" onclick="openSlotMenu(${i})"><div class="slot-title">${slot.title}</div><div class="slot-meta">${slot.barber}</div></div>`;
-    } else {
-      inner = `<div class="slot-pause">${slot.title}</div>`;
-    }
-    return `<div class="agenda-row"><div class="agenda-time">${slot.time}</div><div style="padding: 6px 10px 6px 6px;">${inner}</div></div>`;
-  }).join('');
+/* ─── AGENDA — multi-day, multi-barber ─────────────────── */
+
+let agendaSelectedDate = null; // Date object representing currently viewed day
+let agendaNowLineTimer = null;
+
+// Salon hours per weekday (0 = Sunday, 6 = Saturday)
+// For now hard-coded; later read from Réglages
+const SALON_HOURS = {
+  0: null,             // Dimanche : fermé
+  1: { start: 10, end: 20 },  // Lundi
+  2: { start: 10, end: 20 },  // Mardi
+  3: { start: 10, end: 20 },  // Mercredi
+  4: { start: 10, end: 20 },  // Jeudi
+  5: { start: 10, end: 20 },  // Vendredi
+  6: { start: 9, end: 19 },   // Samedi
+};
+
+function startOfDay(d) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
 }
 
-function openSlotMenu(i) {
-  const slot = slots[i];
-  if (!slot || slot.type !== 'intervention') return;
-  // Reuse add-modal as action sheet for slot actions
-  document.getElementById('addModalTitle').textContent = slot.title;
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
+function renderAgenda() {
+  if (!agendaSelectedDate) {
+    agendaSelectedDate = startOfDay(new Date());
+  }
+  renderDayStrip();
+  renderAgendaSub();
+  renderAgendaGrid();
+  renderTodayButton();
+}
+
+function renderDayStrip() {
+  const strip = document.getElementById('dayStrip');
+  if (!strip) return;
+  const today = startOfDay(new Date());
+  const startRange = new Date(today.getTime() - 7 * 86400000); // 7 days back
+  const days = [];
+  for (let i = 0; i < 30; i++) {
+    days.push(new Date(startRange.getTime() + i * 86400000));
+  }
+  strip.innerHTML = days.map(d => {
+    const isToday = sameDay(d, today);
+    const isSelected = sameDay(d, agendaSelectedDate);
+    const dayOfWeek = d.getDay();
+    const closed = !SALON_HOURS[dayOfWeek];
+    const dayShort = d.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).toUpperCase().replace('.', '');
+    const dayNum = d.getDate();
+    const cls = ['day-cell'];
+    if (isToday) cls.push('today');
+    if (isSelected) cls.push('selected');
+    if (closed) cls.push('closed');
+    return `<button class="${cls.join(' ')}" data-iso="${d.toISOString()}" onclick="selectAgendaDate('${d.toISOString()}')">
+      <div class="day-name">${dayShort}</div>
+      <div class="day-num">${dayNum}</div>
+    </button>`;
+  }).join('');
+  // Scroll selected into view
+  setTimeout(() => {
+    const selected = strip.querySelector('.day-cell.selected');
+    if (selected) selected.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'auto' });
+  }, 50);
+}
+
+function selectAgendaDate(iso) {
+  agendaSelectedDate = new Date(iso);
+  agendaSelectedDate.setHours(0, 0, 0, 0);
+  renderAgenda();
+}
+
+function goToToday() {
+  agendaSelectedDate = startOfDay(new Date());
+  renderAgenda();
+}
+
+function renderTodayButton() {
+  const btn = document.getElementById('todayBtn');
+  if (!btn) return;
+  const today = startOfDay(new Date());
+  btn.style.display = sameDay(agendaSelectedDate, today) ? 'none' : 'flex';
+}
+
+function renderAgendaSub() {
+  const sub = document.getElementById('agendaSub');
+  if (!sub) return;
+  const dateStr = agendaSelectedDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  // Count RDV that day
+  const dayRdv = rdvRaw.filter(r => sameDay(r.dateObj, agendaSelectedDate));
+  if (dayRdv.length === 0) {
+    sub.textContent = `${dateStr} · aucun RDV`;
+  } else {
+    sub.textContent = `${dateStr} · ${dayRdv.length} RDV`;
+  }
+}
+
+function renderAgendaGrid() {
+  const grid = document.getElementById('agendaGrid');
+  const empty = document.getElementById('agendaEmpty');
+  if (!grid || !empty) return;
+
+  const dayOfWeek = agendaSelectedDate.getDay();
+  const hours = SALON_HOURS[dayOfWeek];
+
+  // Salon closed today
+  if (!hours) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    empty.innerHTML = `
+      <div class="agenda-empty-title">Salon fermé</div>
+      <div class="agenda-empty-desc">Aucun rendez-vous possible ce jour. Modifiez vos disponibilités dans Réglages.</div>`;
+    return;
+  }
+
+  // No barbiers configured
+  if (!barbiers || barbiers.length === 0) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    empty.innerHTML = `
+      <div class="agenda-empty-title">Aucun barbier configuré</div>
+      <div class="agenda-empty-desc">Ajoutez vos barbiers dans Réglages pour voir l'agenda.</div>
+      <button class="agenda-empty-cta" onclick="navigate('config')">Ajouter un barbier</button>`;
+    return;
+  }
+
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+
+  const numHours = hours.end - hours.start;
+  const numBarbiers = barbiers.length;
+
+  // Grid columns: 50px (hours) + 1fr per barbier
+  // Min 110px per barbier column for legibility
+  const minColWidth = numBarbiers <= 2 ? '1fr' : 'minmax(110px, 1fr)';
+  grid.style.gridTemplateColumns = `50px ${`${minColWidth} `.repeat(numBarbiers)}`.trim();
+  grid.style.gridTemplateRows = `34px repeat(${numHours}, 60px)`;
+
+  // Build cells
+  let html = '';
+  // Top-left corner
+  html += `<div class="agenda-header hour-corner" style="grid-row: 1; grid-column: 1; border-right: 0.5px solid var(--separator);"></div>`;
+  // Header per barbier
+  barbiers.forEach((b, i) => {
+    html += `<div class="agenda-header" style="grid-row: 1; grid-column: ${i + 2};">${escapeHtml(b.prenom)}</div>`;
+  });
+  // Hour labels (left column)
+  for (let h = 0; h < numHours; h++) {
+    const hourVal = hours.start + h;
+    html += `<div class="agenda-hour-label" style="grid-row: ${h + 2}; grid-column: 1;">${hourVal}h</div>`;
+  }
+  // Empty cells per barbier per hour (background grid)
+  for (let h = 0; h < numHours; h++) {
+    barbiers.forEach((b, i) => {
+      html += `<div class="agenda-cell" style="grid-row: ${h + 2}; grid-column: ${i + 2};"></div>`;
+    });
+  }
+
+  // RDV slots (positioned absolutely inside their cell column)
+  const dayRdv = rdvRaw.filter(r => sameDay(r.dateObj, agendaSelectedDate));
+  dayRdv.forEach(r => {
+    const colIdx = barbiers.findIndex(b => b.id === r.barbier_id);
+    if (colIdx === -1) return; // Barbier deleted, skip
+    const startMin = r.dateObj.getHours() * 60 + r.dateObj.getMinutes();
+    const dayStartMin = hours.start * 60;
+    const offsetMin = startMin - dayStartMin;
+    if (offsetMin < 0 || offsetMin >= numHours * 60) return; // Outside displayed hours
+
+    const top = (offsetMin / 60) * 60; // 60px per hour
+    const heightMin = r.duree || 30;
+    const height = Math.max(28, (heightMin / 60) * 60 - 2);
+
+    const col = colIdx + 2;
+    const isUrgent = r.statut === 'a_confirmer';
+
+    // RDV slot wrapped to span all hour rows + start at offset
+    html += `
+      <div class="agenda-cell" style="grid-row: 2 / span ${numHours}; grid-column: ${col}; position: relative; pointer-events: none; height: auto; background: transparent; border-bottom: none;">
+        <div class="rdv-slot ${isUrgent ? 'urgent' : ''}" style="top: ${top}px; height: ${height}px; pointer-events: auto;" onclick="openRdvMenu('${r.id}')">
+          <div class="rdv-slot-title">${escapeHtml(r.client_nom)}</div>
+          <div class="rdv-slot-meta">${escapeHtml(r.prestation_nom || 'RDV')}${r.duree ? ' · ' + r.duree + 'min' : ''}</div>
+        </div>
+      </div>`;
+  });
+
+  grid.innerHTML = html;
+
+  // Now line if today
+  if (sameDay(agendaSelectedDate, new Date())) {
+    drawNowLine(grid, hours);
+    // Refresh now line every minute
+    if (agendaNowLineTimer) clearInterval(agendaNowLineTimer);
+    agendaNowLineTimer = setInterval(() => drawNowLine(grid, hours), 60000);
+  } else {
+    if (agendaNowLineTimer) { clearInterval(agendaNowLineTimer); agendaNowLineTimer = null; }
+  }
+}
+
+function drawNowLine(grid, hours) {
+  // Remove existing
+  const old = grid.querySelector('.now-line');
+  if (old) old.remove();
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const dayStartMin = hours.start * 60;
+  const offsetMin = nowMin - dayStartMin;
+  const numHours = hours.end - hours.start;
+  if (offsetMin < 0 || offsetMin >= numHours * 60) return;
+  // Place inside the first agenda cell of the corresponding row
+  const top = (offsetMin / 60) * 60;
+  const line = document.createElement('div');
+  line.className = 'now-line';
+  // Span across all barber columns
+  const numBarbiers = barbiers.length;
+  line.style.cssText = `position: absolute; left: 50px; right: 0; top: ${34 + top}px;`;
+  grid.style.position = 'relative';
+  grid.appendChild(line);
+}
+
+function openRdvMenu(rdvId) {
+  const rdv = rdvRaw.find(r => r.id === rdvId);
+  if (!rdv) return;
+  document.getElementById('addModalTitle').textContent = `${rdv.client_nom} · ${rdv.prestation_nom || 'RDV'}`;
   document.getElementById('addModalBody').innerHTML = `
-    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left;" onclick="rescheduleSlot(${i})">
+    <div style="padding: 6px 14px 14px; font-size: 13px; color: var(--label-secondary); letter-spacing: -0.005em; line-height: 1.4;">
+      ${rdv.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} · ${rdv.dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+      ${rdv.barbier_prenom ? '· avec ' + escapeHtml(rdv.barbier_prenom) : ''}
+    </div>
+    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left;" onclick="rescheduleRdv('${rdv.id}')">
       <svg style="width:18px; height:18px; color: var(--blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span style="font-size: 16px; color: var(--label); font-weight: 500;">Déplacer le RDV</span>
     </button>
-    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left;" onclick="callClient(${i})">
+    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left;" onclick="callRdvClient('${rdv.id}')">
       <svg style="width:18px; height:18px; color: var(--blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
       <span style="font-size: 16px; color: var(--label); font-weight: 500;">Appeler le client</span>
     </button>
-    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left; margin-bottom: 0;" onclick="cancelSlot(${i})">
+    <button class="add-field" style="display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; text-align:left; margin-bottom: 0;" onclick="cancelRdv('${rdv.id}')">
       <svg style="width:18px; height:18px; color: var(--red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
       <span style="font-size: 16px; color: var(--red); font-weight: 500;">Annuler le RDV</span>
     </button>
@@ -2834,12 +3246,31 @@ function openSlotMenu(i) {
   document.getElementById('addModalBackdrop').classList.add('open');
   document.getElementById('addModal').classList.add('open');
 }
-function rescheduleSlot(i) { closeAddModal(); showToast('SMS envoyé au client'); }
-function callClient(i) { closeAddModal(); showToast('Appel en cours…'); }
-function cancelSlot(i) {
+
+function rescheduleRdv(rdvId) {
   closeAddModal();
-  showToast('RDV annulé · client prévenu');
+  showToast('Déplacement à venir');
 }
+function callRdvClient(rdvId) {
+  closeAddModal();
+  showToast('Appel client à venir');
+}
+async function cancelRdv(rdvId) {
+  closeAddModal();
+  try {
+    await supa.from('frizz_ai_rdv').delete().eq('id', rdvId);
+    rdvRaw = rdvRaw.filter(r => r.id !== rdvId);
+    renderAgenda();
+    showToast('RDV annulé');
+  } catch (err) {
+    showToast('Erreur lors de l\'annulation');
+  }
+}
+
+function openSlotMenu() { /* deprecated, kept to avoid errors */ }
+function rescheduleSlot() { closeAddModal(); showToast('SMS envoyé au client'); }
+function callClient() { closeAddModal(); showToast('Appel en cours…'); }
+function cancelSlot() { closeAddModal(); showToast('RDV annulé'); }
 
 function renderChart() {
   const max = Math.max(...peakData);

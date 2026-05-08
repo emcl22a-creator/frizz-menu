@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="color-scheme" content="light">
+<title>Configurer mon salon · Frizz</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F2F2F7;
+    --bg-secondary: #FFFFFF;
+    --label: #000000;
+    --label-secondary: rgba(60, 60, 67, 0.60);
+    --label-tertiary: rgba(60, 60, 67, 0.30);
+    --separator: rgba(60, 60, 67, 0.18);
+    --blue: #007AFF;
+    --red: #FF3B30;
+    --green: #34C759;
+    --fill: rgba(120, 120, 128, 0.20);
+  }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--label);
+    font-size: 17px;
+    line-height: 1.4;
+    letter-spacing: -0.022em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(80% 60% at 50% -10%, rgba(0, 122, 255, 0.08) 0%, transparent 55%);
+  }
+  button, input { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
+  input { cursor: text; }
+
+  .container {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: max(20px, env(safe-area-inset-top)) 22px max(120px, env(safe-area-inset-bottom));
+    min-height: 100vh;
+  }
+
+  /* Progress dots */
+  .progress {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 10px 0 28px;
+  }
+  .progress-dot {
+    width: 22px; height: 5px;
+    border-radius: 99px;
+    background: var(--label-tertiary);
+    transition: background 0.3s, width 0.3s;
+  }
+  .progress-dot.active {
+    background: var(--blue);
+    width: 32px;
+  }
+
+  /* Step (only one shows at a time) */
+  .step { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .step.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 22px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #5AC8FA 0%, #007AFF 50%, #0040DD 100%);
+    box-shadow: 0 12px 28px rgba(0, 122, 255, 0.30);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+  }
+  .step-icon svg { width: 32px; height: 32px; }
+
+  .step-eyebrow {
+    text-align: center;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .step-title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.030em;
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .step-sub {
+    font-size: 15px;
+    color: var(--label-secondary);
+    text-align: center;
+    margin-bottom: 22px;
+    letter-spacing: -0.012em;
+    max-width: 36ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Items list */
+  .items {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 0.5px solid var(--separator);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border-bottom: 0.5px solid var(--separator);
+    gap: 10px;
+  }
+  .item:last-child { border-bottom: none; }
+  .item-main { flex: 1; min-width: 0; }
+  .item-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--label);
+    letter-spacing: -0.012em;
+  }
+  .item-sub {
+    font-size: 13px;
+    color: var(--label-secondary);
+    margin-top: 1px;
+  }
+  .item-price {
+    font-size: 15px;
+    color: var(--label-secondary);
+    font-weight: 500;
+  }
+  .item-remove {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--fill);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--label-secondary);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .item-remove:active { background: var(--red); color: white; }
+  .item-remove svg { width: 14px; height: 14px; }
+
+  .empty-list {
+    padding: 28px 16px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--label-tertiary);
+    letter-spacing: -0.005em;
+  }
+
+  /* Add form */
+  .add-form {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    padding: 14px;
+    border: 0.5px solid var(--separator);
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .add-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .add-input {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 11px 12px;
+    border: 0.5px solid transparent;
+    font-size: 15px;
+    color: var(--label);
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+  .add-input:focus {
+    background: white;
+    border-color: var(--blue);
+  }
+  .add-input::placeholder { color: var(--label-tertiary); }
+  .add-btn {
+    background: var(--blue);
+    color: white;
+    padding: 11px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    transition: opacity 0.15s;
+  }
+  .add-btn:active { opacity: 0.7; }
+  .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Recap step */
+  .recap-card {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    padding: 18px;
+    border: 0.5px solid var(--separator);
+    margin-bottom: 12px;
+  }
+  .recap-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .recap-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .recap-row:first-child { padding-top: 0; }
+  .recap-check {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--green);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .recap-check svg { width: 16px; height: 16px; }
+  .recap-text {
+    font-size: 15px;
+    color: var(--label);
+    letter-spacing: -0.012em;
+  }
+  .recap-text strong { font-weight: 600; }
+
+  /* Sticky footer */
+  .footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, var(--bg) 70%, transparent);
+    padding: 16px 22px max(20px, env(safe-area-inset-bottom));
+    z-index: 10;
+  }
+  .footer-inner {
+    max-width: 460px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .next-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: white;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.30);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s;
+  }
+  .next-btn:active { transform: scale(0.97); }
+  .next-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .skip-btn {
+    text-align: center;
+    color: var(--blue);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px;
+    background: none;
+  }
+  .back-btn {
+    color: var(--blue);
+    font-size: 17px;
+    padding: 8px 4px 8px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+  }
+  .back-btn:active { opacity: 0.5; }
+  .back-btn svg { width: 18px; height: 18px; }
+
+  /* Desktop */
+  @media (min-width: 900px) {
+    .container { max-width: 520px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="progress">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="progress-dot" id="dot-3"></div>
+  </div>
+
+  <!-- ═══ STEP 1 — Prestations ═══ -->
+  <div class="step active" id="step-1">
+    <div class="step-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <div class="step-eyebrow">Étape 1 sur 3</div>
+    <h1 class="step-title">Vos prestations</h1>
+    <p class="step-sub">Ajoutez les coupes et services que vous proposez. Vous pourrez en ajouter ou modifier plus tard.</p>
+
+    <div class="items" id="prestations-list">
+      <div class="empty-list">Ajoutez votre première prestation ci-dessous</div>
+    </div>
+
+    <div class="add-form">
+      <input type="text" id="prest-nom" class="add-input" placeholder="Ex : Coupe homme" autocomplete="off" />
+      <div class="add-form-row">
+        <input type="number" id="prest-duree" class="add-input" placeholder="Durée (min)" inputmode="numeric" />
+        <input type="number" id="prest-prix" class="add-input" placeholder="Prix (€)" inputmode="decimal" step="0.5" />
+      </div>
+      <button class="add-btn" onclick="addPrestation()">+ Ajouter cette prestation</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2 — Barbiers ═══ -->
+  <div class="step" id="step-2">
+    <button class="back-btn" onclick="goToStep(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div class="step-icon" style="margin-top: 14px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="step-eyebrow">Étape 2 sur 3</div>
+    <h1 class="step-title">Votre équipe</h1>
+    <p class="step-sub">Ajoutez les barbiers de votre salon. Si vous travaillez seul, ajoutez juste votre prénom.</p>
+
+    <div class="items" id="barbiers-list">
+      <div class="empty-list">Ajoutez votre premier barbier ci-dessous</div>
+    </div>
+
+    <div class="add-form">
+      <input type="text" id="barb-prenom" class="add-input" placeholder="Prénom (ex : Karim)" autocomplete="off" />
+      <input type="text" id="barb-dispo" class="add-input" placeholder="Disponibilité (ex : Lun–Sam)" autocomplete="off" />
+      <button class="add-btn" onclick="addBarbier()">+ Ajouter ce barbier</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3 — Recap ═══ -->
+  <div class="step" id="step-3">
+    <button class="back-btn" onclick="goToStep(2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div class="step-icon" style="margin-top: 14px;">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
+    </div>
+    <div class="step-eyebrow">Étape 3 sur 3</div>
+    <h1 class="step-title">Tout est prêt !</h1>
+    <p class="step-sub">Votre Frizz est configuré. Voici un récapitulatif.</p>
+
+    <div class="recap-card" id="recap-card">
+      <div class="recap-row">
+        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="recap-text"><strong id="recap-prest-count">0</strong> prestation<span id="recap-prest-s"></span> ajoutée<span id="recap-prest-s2"></span></div>
+      </div>
+      <div class="recap-row">
+        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="recap-text"><strong id="recap-barb-count">0</strong> barbier<span id="recap-barb-s"></span></div>
+      </div>
+      <div class="recap-row">
+        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="recap-text">Synchro Google Calendar disponible</div>
+      </div>
+    </div>
+
+    <p style="text-align: center; font-size: 13px; color: var(--label-tertiary); padding: 8px 16px; line-height: 1.5;">
+      Prochaine étape : activer Frizz sur votre numéro depuis l'app.
+    </p>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-inner">
+    <button class="next-btn" id="nextBtn" onclick="onNext()">Continuer</button>
+    <button class="skip-btn" id="skipBtn" onclick="skipStep()">Passer cette étape</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentStep = 1;
+let salonId = null;
+let prestations = []; // { id, nom, duree, prix }
+let barbiers = []; // { id, prenom, dispo }
+
+// ─── Auth check + load salon ───
+(async () => {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) {
+    window.location.href = 'landing.html';
+    return;
+  }
+  // Get user's salon
+  const { data: salon } = await supa
+    .from('frizz_ai_salons')
+    .select('id, onboarded')
+    .eq('user_id', session.user.id)
+    .limit(1).single();
+  if (!salon) {
+    window.location.href = 'index.html';
+    return;
+  }
+  salonId = salon.id;
+  // If already onboarded, skip
+  if (salon.onboarded) {
+    window.location.href = 'index.html';
+    return;
+  }
+  // Load any already-saved prestations/barbiers (resume)
+  const { data: pres } = await supa.from('frizz_ai_prestations').select('*').eq('salon_id', salonId).order('ordre');
+  const { data: barb } = await supa.from('frizz_ai_barbiers').select('*').eq('salon_id', salonId).order('ordre');
+  prestations = (pres || []).map(p => ({ id: p.id, nom: p.nom, duree: p.duree_minutes, prix: p.prix_centimes / 100 }));
+  barbiers = (barb || []).map(b => ({ id: b.id, prenom: b.prenom, dispo: b.disponibilite || '' }));
+  renderPrestations();
+  renderBarbiers();
+  updateUI();
+})();
+
+// ─── Step navigation ───
+function goToStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.progress-dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 <= n);
+  });
+  updateUI();
+  window.scrollTo(0, 0);
+}
+
+function updateUI() {
+  const skip = document.getElementById('skipBtn');
+  const next = document.getElementById('nextBtn');
+  if (currentStep === 1) {
+    skip.style.display = prestations.length === 0 ? 'block' : 'none';
+    next.textContent = prestations.length === 0 ? 'Continuer' : `Continuer (${prestations.length})`;
+    next.disabled = false;
+  } else if (currentStep === 2) {
+    skip.style.display = barbiers.length === 0 ? 'block' : 'none';
+    next.textContent = barbiers.length === 0 ? 'Continuer' : `Continuer (${barbiers.length})`;
+    next.disabled = false;
+  } else if (currentStep === 3) {
+    skip.style.display = 'none';
+    next.textContent = 'Accéder à mon app Frizz';
+    next.disabled = false;
+    updateRecap();
+  }
+}
+
+function updateRecap() {
+  const pCount = prestations.length;
+  const bCount = barbiers.length;
+  document.getElementById('recap-prest-count').textContent = pCount;
+  document.getElementById('recap-barb-count').textContent = bCount;
+  document.getElementById('recap-prest-s').textContent = pCount > 1 ? 's' : '';
+  document.getElementById('recap-prest-s2').textContent = pCount > 1 ? 's' : '';
+  document.getElementById('recap-barb-s').textContent = bCount > 1 ? 's' : '';
+}
+
+async function onNext() {
+  if (currentStep < 3) {
+    goToStep(currentStep + 1);
+  } else {
+    // Mark salon as onboarded and go to app
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('nextBtn').textContent = 'Chargement…';
+    try {
+      await supa.from('frizz_ai_salons').update({ onboarded: true }).eq('id', salonId);
+    } catch(e) { console.error(e); }
+    window.location.href = 'index.html';
+  }
+}
+
+function skipStep() {
+  if (currentStep < 3) goToStep(currentStep + 1);
+}
+
+// ─── Prestations ───
+async function addPrestation() {
+  const nom = document.getElementById('prest-nom').value.trim();
+  const duree = parseInt(document.getElementById('prest-duree').value, 10);
+  const prix = parseFloat(document.getElementById('prest-prix').value);
+  if (!nom) { document.getElementById('prest-nom').focus(); return; }
+  if (!duree || duree < 1) { document.getElementById('prest-duree').focus(); return; }
+  if (isNaN(prix) || prix < 0) { document.getElementById('prest-prix').focus(); return; }
+  try {
+    const { data, error } = await supa.from('frizz_ai_prestations').insert({
+      salon_id: salonId,
+      nom, duree_minutes: duree,
+      prix_centimes: Math.round(prix * 100),
+      ordre: prestations.length,
+    }).select().single();
+    if (error) throw error;
+    prestations.push({ id: data.id, nom, duree, prix });
+    document.getElementById('prest-nom').value = '';
+    document.getElementById('prest-duree').value = '';
+    document.getElementById('prest-prix').value = '';
+    document.getElementById('prest-nom').focus();
+    renderPrestations();
+    updateUI();
+  } catch (err) {
+    console.error(err);
+    alert('Erreur : ' + err.message);
+  }
+}
+
+async function removePrestation(id) {
+  try {
+    await supa.from('frizz_ai_prestations').delete().eq('id', id);
+    prestations = prestations.filter(p => p.id !== id);
+    renderPrestations();
+    updateUI();
+  } catch (err) { console.error(err); }
+}
+
+function renderPrestations() {
+  const list = document.getElementById('prestations-list');
+  if (prestations.length === 0) {
+    list.innerHTML = '<div class="empty-list">Ajoutez votre première prestation ci-dessous</div>';
+    return;
+  }
+  list.innerHTML = prestations.map(p => `
+    <div class="item">
+      <div class="item-main">
+        <div class="item-title">${escapeHtml(p.nom)}</div>
+        <div class="item-sub">${p.duree} min</div>
+      </div>
+      <div class="item-price">${p.prix.toFixed(2).replace(/\.00$/,'')} €</div>
+      <button class="item-remove" onclick="removePrestation('${p.id}')" aria-label="Supprimer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+// ─── Barbiers ───
+async function addBarbier() {
+  const prenom = document.getElementById('barb-prenom').value.trim();
+  const dispo = document.getElementById('barb-dispo').value.trim();
+  if (!prenom) { document.getElementById('barb-prenom').focus(); return; }
+  try {
+    const { data, error } = await supa.from('frizz_ai_barbiers').insert({
+      salon_id: salonId, prenom, disponibilite: dispo || null, ordre: barbiers.length,
+    }).select().single();
+    if (error) throw error;
+    barbiers.push({ id: data.id, prenom, dispo });
+    document.getElementById('barb-prenom').value = '';
+    document.getElementById('barb-dispo').value = '';
+    document.getElementById('barb-prenom').focus();
+    renderBarbiers();
+    updateUI();
+  } catch (err) {
+    console.error(err);
+    alert('Erreur : ' + err.message);
+  }
+}
+
+async function removeBarbier(id) {
+  try {
+    await supa.from('frizz_ai_barbiers').delete().eq('id', id);
+    barbiers = barbiers.filter(b => b.id !== id);
+    renderBarbiers();
+    updateUI();
+  } catch (err) { console.error(err); }
+}
+
+function renderBarbiers() {
+  const list = document.getElementById('barbiers-list');
+  if (barbiers.length === 0) {
+    list.innerHTML = '<div class="empty-list">Ajoutez votre premier barbier ci-dessous</div>';
+    return;
+  }
+  list.innerHTML = barbiers.map(b => `
+    <div class="item">
+      <div class="item-main">
+        <div class="item-title">${escapeHtml(b.prenom)}</div>
+        ${b.dispo ? `<div class="item-sub">${escapeHtml(b.dispo)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="removeBarbier('${b.id}')" aria-label="Supprimer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+// Allow Enter key to submit
+document.getElementById('prest-prix').addEventListener('keydown', e => { if (e.key === 'Enter') addPrestation(); });
+document.getElementById('barb-dispo').addEventListener('keydown', e => { if (e.key === 'Enter') addBarbier(); });
+document.getElementById('barb-prenom').addEventListener('keydown', e => { if (e.key === 'Enter' && document.activeElement === e.target) document.getElementById('barb-dispo').focus(); });
+</script>
+</body>
+</html>

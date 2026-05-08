@@ -1687,6 +1687,38 @@
   <button class="modal-cancel" onclick="closeCalendarSheet()">Fermer</button>
 </div>
 
+<!-- ═══ DISPO EDIT MODAL ═══════════════════════════════ -->
+<div class="modal-backdrop" id="dispoBackdrop"></div>
+<div class="modal-sheet" id="dispoSheet" style="bottom: 8px; max-width: 460px;">
+  <div class="modal-header">
+    <div class="modal-title" id="dispoModalTitle" style="font-size: 18px; font-weight: 600; color: var(--label);">Modifier</div>
+  </div>
+  <div style="padding: 6px 16px 16px;">
+    <div class="cell" style="background: var(--bg-secondary); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 0.5px solid var(--separator); display: flex; align-items: center;">
+      <div class="cell-main" style="flex: 1;">
+        <div class="cell-title" style="font-size: 16px; font-weight: 500;">Salon ouvert</div>
+      </div>
+      <div class="ios-toggle" id="dispoOpenToggle" onclick="toggleDispoOpen()"></div>
+    </div>
+
+    <div id="dispoTimeFields" style="background: var(--bg-secondary); border-radius: 12px; padding: 4px 16px; margin-bottom: 14px; border: 0.5px solid var(--separator);">
+      <div style="display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--separator);">
+        <div style="flex: 1; font-size: 16px; color: var(--label); letter-spacing: -0.012em;">Ouverture</div>
+        <input type="time" id="dispoStart" style="background: var(--fill); border: none; border-radius: 8px; padding: 6px 10px; font-size: 16px; color: var(--label); outline: none; font-family: inherit; min-width: 100px; text-align: center;" />
+      </div>
+      <div style="display: flex; align-items: center; padding: 12px 0;">
+        <div style="flex: 1; font-size: 16px; color: var(--label); letter-spacing: -0.012em;">Fermeture</div>
+        <input type="time" id="dispoEnd" style="background: var(--fill); border: none; border-radius: 8px; padding: 6px 10px; font-size: 16px; color: var(--label); outline: none; font-family: inherit; min-width: 100px; text-align: center;" />
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button onclick="closeDispoEdit()" style="flex: 1; padding: 13px; background: var(--bg-secondary); color: var(--label); border-radius: 12px; font-size: 16px; font-weight: 600; letter-spacing: -0.018em; border: 0.5px solid var(--separator);">Annuler</button>
+      <button onclick="saveDispoEdit()" style="flex: 1; padding: 13px; background: var(--blue); color: white; border-radius: 12px; font-size: 16px; font-weight: 600; letter-spacing: -0.018em; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.30);">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ ACTIVATE GUIDE ═════════════════════════════════ -->
 <div class="modal-backdrop" id="guideBackdrop"></div>
 <div class="modal-sheet" id="guideSheet" style="bottom: 8px; max-width: 460px;">
@@ -1973,11 +2005,7 @@
   </div>
 
   <div class="section-header">Disponibilité</div>
-  <div class="group">
-    <div class="cell"><div class="cell-main"><div class="cell-title">Lundi – Vendredi</div></div><span class="cell-value">10:00 – 20:00</span></div>
-    <div class="cell"><div class="cell-main"><div class="cell-title">Samedi</div></div><span class="cell-value">09:00 – 19:00</span></div>
-    <div class="cell"><div class="cell-main"><div class="cell-title">Dimanche</div></div><span class="cell-value danger">Fermé</span></div>
-  </div>
+  <div class="group" id="disposList"></div>
 
   <div class="section-header">Barbiers</div>
   <div class="group" id="barbiersList">
@@ -2364,7 +2392,104 @@ function renderConfigLists() {
         <div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div>
       </button>`;
   }
+
+  // Dispos
+  renderDispos();
 }
+
+function renderDispos() {
+  const list = document.getElementById('disposList');
+  if (!list) return;
+  const dispos = (currentSalon && currentSalon.dispos) || DEFAULT_DISPOS;
+  // Order: Mon-Sun (lundi=1 ... dimanche=0)
+  const orderedKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const orderedNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  list.innerHTML = orderedKeys.map((key, i) => {
+    const day = dispos[key] || { open: false };
+    const name = orderedNames[i];
+    const valueHtml = day.open
+      ? `<span class="cell-value">${day.start} – ${day.end}</span>`
+      : `<span class="cell-value danger">Fermé</span>`;
+    return `<button class="cell" onclick="openDispoEdit('${key}')">
+      <div class="cell-main"><div class="cell-title">${name}</div></div>
+      ${valueHtml}
+      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`;
+  }).join('');
+}
+
+let editingDispoKey = null;
+function openDispoEdit(dayKey) {
+  if (!currentSalon) return;
+  editingDispoKey = dayKey;
+  const dispos = currentSalon.dispos || DEFAULT_DISPOS;
+  const day = dispos[dayKey] || { open: true, start: '10:00', end: '20:00' };
+  const dayNamesByKey = { monday: 'Lundi', tuesday: 'Mardi', wednesday: 'Mercredi', thursday: 'Jeudi', friday: 'Vendredi', saturday: 'Samedi', sunday: 'Dimanche' };
+  document.getElementById('dispoModalTitle').textContent = dayNamesByKey[dayKey];
+  document.getElementById('dispoStart').value = day.start || '10:00';
+  document.getElementById('dispoEnd').value = day.end || '20:00';
+  const toggle = document.getElementById('dispoOpenToggle');
+  const fields = document.getElementById('dispoTimeFields');
+  if (day.open) {
+    toggle.classList.add('active');
+    fields.style.opacity = '1';
+    fields.style.pointerEvents = 'auto';
+  } else {
+    toggle.classList.remove('active');
+    fields.style.opacity = '0.4';
+    fields.style.pointerEvents = 'none';
+  }
+  document.getElementById('dispoBackdrop').classList.add('open');
+  document.getElementById('dispoSheet').classList.add('open');
+}
+
+function toggleDispoOpen() {
+  const toggle = document.getElementById('dispoOpenToggle');
+  const fields = document.getElementById('dispoTimeFields');
+  toggle.classList.toggle('active');
+  const isOpen = toggle.classList.contains('active');
+  fields.style.opacity = isOpen ? '1' : '0.4';
+  fields.style.pointerEvents = isOpen ? 'auto' : 'none';
+}
+
+function closeDispoEdit() {
+  document.getElementById('dispoBackdrop').classList.remove('open');
+  document.getElementById('dispoSheet').classList.remove('open');
+  editingDispoKey = null;
+}
+
+async function saveDispoEdit() {
+  if (!editingDispoKey || !currentSalon) {
+    closeDispoEdit();
+    return;
+  }
+  const isOpen = document.getElementById('dispoOpenToggle').classList.contains('active');
+  const start = document.getElementById('dispoStart').value || '10:00';
+  const end = document.getElementById('dispoEnd').value || '20:00';
+
+  if (isOpen && start >= end) {
+    showToast("L'heure d'ouverture doit être avant la fermeture");
+    return;
+  }
+
+  const newDispos = { ...(currentSalon.dispos || DEFAULT_DISPOS) };
+  newDispos[editingDispoKey] = { open: isOpen, start, end };
+
+  try {
+    const { error } = await supa.from('frizz_ai_salons').update({ dispos: newDispos }).eq('id', currentSalon.id);
+    if (error) throw error;
+    currentSalon.dispos = newDispos;
+    closeDispoEdit();
+    renderDispos();
+    renderAgenda(); // Refresh agenda with new hours
+    showToast('Disponibilité enregistrée');
+  } catch (err) {
+    console.error(err);
+    showToast('Erreur lors de la sauvegarde');
+  }
+}
+
+document.getElementById('dispoBackdrop').addEventListener('click', closeDispoEdit);
 
 function escapeHtml(s) {
   if (s == null) return '';
@@ -2978,17 +3103,33 @@ function renderFilterSegmented() {
 let agendaSelectedDate = null; // Date object representing currently viewed day
 let agendaNowLineTimer = null;
 
-// Salon hours per weekday (0 = Sunday, 6 = Saturday)
-// For now hard-coded; later read from Réglages
-const SALON_HOURS = {
-  0: null,             // Dimanche : fermé
-  1: { start: 10, end: 20 },  // Lundi
-  2: { start: 10, end: 20 },  // Mardi
-  3: { start: 10, end: 20 },  // Mercredi
-  4: { start: 10, end: 20 },  // Jeudi
-  5: { start: 10, end: 20 },  // Vendredi
-  6: { start: 9, end: 19 },   // Samedi
+// Map JS day index (0=Sun) to dispos JSON key
+const DAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const DAY_NAMES_FULL = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+
+// Default dispos if salon hasn't loaded yet
+const DEFAULT_DISPOS = {
+  monday:    { open: true,  start: '10:00', end: '20:00' },
+  tuesday:   { open: true,  start: '10:00', end: '20:00' },
+  wednesday: { open: true,  start: '10:00', end: '20:00' },
+  thursday:  { open: true,  start: '10:00', end: '20:00' },
+  friday:    { open: true,  start: '10:00', end: '20:00' },
+  saturday:  { open: true,  start: '09:00', end: '19:00' },
+  sunday:    { open: false, start: '10:00', end: '18:00' },
 };
+
+// Returns {start: hourNum, end: hourNum} or null if closed
+function getHoursForDay(dayOfWeek) {
+  const dispos = (currentSalon && currentSalon.dispos) || DEFAULT_DISPOS;
+  const dayKey = DAY_KEYS[dayOfWeek];
+  const day = dispos[dayKey];
+  if (!day || !day.open) return null;
+  const startH = parseInt(day.start.split(':')[0], 10);
+  const endH = parseInt(day.end.split(':')[0], 10);
+  // If end has minutes (e.g. 20:30), round up to next hour for grid
+  const endMin = parseInt((day.end.split(':')[1] || '0'), 10);
+  return { start: startH, end: endMin > 0 ? endH + 1 : endH };
+}
 
 function startOfDay(d) {
   const x = new Date(d);
@@ -3025,7 +3166,7 @@ function renderDayStrip() {
     const isToday = sameDay(d, today);
     const isSelected = sameDay(d, agendaSelectedDate);
     const dayOfWeek = d.getDay();
-    const closed = !SALON_HOURS[dayOfWeek];
+    const closed = !getHoursForDay(dayOfWeek);
     const dayShort = d.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).toUpperCase().replace('.', '');
     const dayNum = d.getDate();
     const cls = ['day-cell'];
@@ -3081,7 +3222,7 @@ function renderAgendaGrid() {
   if (!grid || !empty) return;
 
   const dayOfWeek = agendaSelectedDate.getDay();
-  const hours = SALON_HOURS[dayOfWeek];
+  const hours = getHoursForDay(dayOfWeek);
 
   // Salon closed today
   if (!hours) {

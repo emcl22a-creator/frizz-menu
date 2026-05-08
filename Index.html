@@ -1044,6 +1044,102 @@
     .onb-desc { font-size: 15px; }
   }
 
+  /* ─── ADD ITEM MODAL ─────────────────────────────────── */
+  .add-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 220;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .add-modal-backdrop.open { opacity: 1; pointer-events: auto; }
+  .add-modal {
+    position: fixed;
+    left: 8px; right: 8px;
+    bottom: 8px;
+    background: rgba(245, 245, 247, 0.95);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border-radius: 18px;
+    z-index: 221;
+    transform: translateY(120%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding-bottom: env(safe-area-inset-bottom);
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .add-modal.open { transform: translateY(0); }
+  .add-modal-header {
+    padding: 18px 20px 8px;
+    text-align: center;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .add-modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.022em;
+  }
+  .add-modal-body {
+    padding: 14px 16px;
+  }
+  .add-field {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--separator);
+  }
+  .add-field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .add-field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    padding: 0;
+  }
+  .add-field input::placeholder { color: var(--label-tertiary); }
+  .add-modal-actions {
+    padding: 4px 16px 16px;
+    display: flex;
+    gap: 8px;
+  }
+  .add-btn-secondary, .add-btn-primary {
+    flex: 1;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    transition: transform 0.2s, opacity 0.15s;
+  }
+  .add-btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--label);
+    border: 0.5px solid var(--separator);
+  }
+  .add-btn-primary {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  }
+  .add-btn-primary:active { transform: scale(0.97); }
+  .add-btn-secondary:active { opacity: 0.5; }
+
   /* ─── DETAIL PANEL (slide-in iOS push) ───────────────── */
   .detail-panel {
     position: fixed;
@@ -1479,6 +1575,19 @@
   </button>
 </header>
 
+<!-- ═══ ADD ITEM MODAL ═════════════════════════════════ -->
+<div class="add-modal-backdrop" id="addModalBackdrop"></div>
+<div class="add-modal" id="addModal">
+  <div class="add-modal-header">
+    <div class="add-modal-title" id="addModalTitle">Ajouter</div>
+  </div>
+  <div class="add-modal-body" id="addModalBody"></div>
+  <div class="add-modal-actions">
+    <button class="add-btn-secondary" onclick="closeAddModal()">Annuler</button>
+    <button class="add-btn-primary" onclick="confirmAddModal()">Ajouter</button>
+  </div>
+</div>
+
 <!-- ═══ TOAST ══════════════════════════════════════════ -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1555,12 +1664,12 @@
 <div class="page active" id="page-stats">
   <div class="large-title-block">
     <h1 class="large-title">Bonjour Mehdi <span class="wave">👋</span></h1>
-    <p class="large-title-sub">Jeudi 7 mai · 92 appels cette semaine</p>
+    <p class="large-title-sub">Jeudi 7 mai · 18 appels aujourd'hui</p>
   </div>
 
   <div class="hero-card">
     <div class="hero-label">Chiffre capturé · 30j</div>
-    <div class="hero-value"><span data-counter="8940">0</span><span class="currency">€</span></div>
+    <div class="hero-value"><span data-counter="384">0</span><span class="currency">€</span></div>
     <div class="hero-delta">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
       24% vs mois précédent
@@ -1570,18 +1679,18 @@
   <div class="duo">
     <div class="duo-card">
       <div class="duo-label">Appels traités</div>
-      <div class="duo-value"><span data-counter="412">0</span></div>
+      <div class="duo-value"><span data-counter="18">0</span></div>
     </div>
     <div class="duo-card">
       <div class="duo-label">Conversion</div>
-      <div class="duo-value"><span data-counter="73">0</span><span class="unit">%</span></div>
+      <div class="duo-value"><span data-counter="78">0</span><span class="unit">%</span></div>
     </div>
   </div>
 
   <div class="segmented" role="tablist">
-    <button class="seg active">Jour</button>
-    <button class="seg">Semaine</button>
-    <button class="seg">Mois</button>
+    <button class="seg stats-period-pill active" data-period="day" onclick="setPeriod('day')">Jour</button>
+    <button class="seg stats-period-pill" data-period="week" onclick="setPeriod('week')">Semaine</button>
+    <button class="seg stats-period-pill" data-period="month" onclick="setPeriod('month')">Mois</button>
   </div>
 
   <div class="chart-card">
@@ -1675,13 +1784,13 @@
 
   <div class="section-header">Prestations &amp; tarifs</div>
   <div class="group">
-    <button class="cell"><div class="cell-main"><div class="cell-title">Coupe homme</div><div class="cell-subtitle">30 min</div></div><span class="cell-value">28 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Coupe + barbe</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">40 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Barbe seule</div><div class="cell-subtitle">20 min</div></div><span class="cell-value">20 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Rasage traditionnel</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">35 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Coupe enfant</div><div class="cell-subtitle">25 min</div></div><span class="cell-value">22 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Shape / contour</div><div class="cell-subtitle">15 min</div></div><span class="cell-value">12 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe homme</div><div class="cell-subtitle">30 min</div></div><span class="cell-value">28 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe + barbe</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">40 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Barbe seule</div><div class="cell-subtitle">20 min</div></div><span class="cell-value">20 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Rasage traditionnel</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">35 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe enfant</div><div class="cell-subtitle">25 min</div></div><span class="cell-value">22 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Shape / contour</div><div class="cell-subtitle">15 min</div></div><span class="cell-value">12 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="openAddModal('prestation')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
   <div class="section-header">Disponibilité</div>
@@ -1693,10 +1802,10 @@
 
   <div class="section-header">Barbiers</div>
   <div class="group">
-    <button class="cell"><div class="cell-main"><div class="cell-title">Mehdi</div></div><span class="cell-value">Lun–Ven</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Yacine</div></div><span class="cell-value">Mar–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title">Sami</div></div><span class="cell-value">Jeu–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Mehdi</div></div><span class="cell-value">Lun–Ven</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Yacine</div></div><span class="cell-value">Mar–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Sami</div></div><span class="cell-value">Jeu–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="cell" onclick="openAddModal('barbier')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
   <div class="section-header">Aide</div>
@@ -1832,8 +1941,8 @@ document.getElementById('shopBtn').addEventListener('click', openModal);
 document.getElementById('modalBackdrop').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 document.getElementById('modalAdd').addEventListener('click', () => {
-  alert('Fonctionnalité à venir');
   closeModal();
+  setTimeout(() => openAddModal('salon'), 300);
 });
 
 const calls = [
@@ -1974,6 +2083,64 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset.page));
 });
 
+/* ─── Add item modal ───────────────────────────────────── */
+let currentAddType = null;
+
+function openAddModal(type) {
+  currentAddType = type;
+  const config = {
+    prestation: {
+      title: 'Nouvelle prestation',
+      fields: [
+        { label: 'Nom', placeholder: 'Ex : Coloration', id: 'add-name' },
+        { label: 'Durée', placeholder: 'Ex : 30 min', id: 'add-duration' },
+        { label: 'Prix', placeholder: 'Ex : 35 €', id: 'add-price' },
+      ],
+      success: 'Prestation ajoutée'
+    },
+    barbier: {
+      title: 'Nouveau barbier',
+      fields: [
+        { label: 'Prénom', placeholder: 'Ex : Karim', id: 'add-name' },
+        { label: 'Disponibilité', placeholder: 'Ex : Lun–Sam', id: 'add-availability' },
+      ],
+      success: 'Barbier ajouté'
+    },
+    salon: {
+      title: 'Nouveau salon',
+      fields: [
+        { label: 'Nom du salon', placeholder: 'Ex : Cut Studio Marais', id: 'add-name' },
+        { label: 'Adresse', placeholder: 'Ex : Paris 4e', id: 'add-address' },
+      ],
+      success: 'Salon ajouté'
+    },
+  };
+  const cfg = config[type];
+  document.getElementById('addModalTitle').textContent = cfg.title;
+  document.getElementById('addModalBody').innerHTML = cfg.fields.map(f => `
+    <div class="add-field">
+      <div class="add-field-label">${f.label}</div>
+      <input type="text" id="${f.id}" placeholder="${f.placeholder}" autocomplete="off" />
+    </div>
+  `).join('');
+  document.getElementById('addModalBackdrop').classList.add('open');
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(() => {
+    const first = document.querySelector('#addModalBody input');
+    if (first) first.focus();
+  }, 350);
+}
+function closeAddModal() {
+  document.getElementById('addModalBackdrop').classList.remove('open');
+  document.getElementById('addModal').classList.remove('open');
+}
+function confirmAddModal() {
+  const successMap = { prestation: 'Prestation ajoutée', barbier: 'Barbier ajouté', salon: 'Salon ajouté' };
+  closeAddModal();
+  showToast(successMap[currentAddType] || 'Ajouté');
+}
+document.getElementById('addModalBackdrop').addEventListener('click', closeAddModal);
+
 /* ─── Toast ─── */
 let toastTimer;
 function showToast(text) {
@@ -2109,6 +2276,43 @@ document.querySelectorAll('.period-pill').forEach(pill => {
   });
 });
 
+/* ─── Period segmented control on stats page ─── */
+const periodData = {
+  day: {
+    revenue: 384, calls: 18, conversion: 78,
+    chart: [2, 4, 6, 8, 12, 18, 30, 45, 38, 22, 28, 42, 35, 18, 8, 2],
+    label: "Aujourd'hui · 18 appels"
+  },
+  week: {
+    revenue: 2240, calls: 92, conversion: 73,
+    chart: [18, 28, 35, 50, 60, 70, 100, 88, 55, 72, 80, 64, 30, 12, 5, 2],
+    label: "Cette semaine · 92 appels"
+  },
+  month: {
+    revenue: 8940, calls: 412, conversion: 75,
+    chart: [25, 40, 55, 70, 85, 90, 100, 95, 70, 80, 88, 75, 45, 25, 12, 5],
+    label: "Ce mois · 412 appels"
+  }
+};
+let currentPeriod = 'day';
+function setPeriod(period) {
+  currentPeriod = period;
+  const data = periodData[period];
+  document.querySelectorAll('.stats-period-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.period === period);
+  });
+  // Update sub-title
+  const sub = document.querySelector('#page-stats .large-title-sub');
+  if (sub) sub.textContent = `Jeudi 7 mai · ${data.calls} appels ${period === 'day' ? "aujourd'hui" : period === 'week' ? 'cette semaine' : 'ce mois'}`;
+  // Update counters
+  document.querySelector('.hero-value [data-counter]').setAttribute('data-counter', data.revenue);
+  document.querySelectorAll('.duo-value [data-counter]')[0].setAttribute('data-counter', data.calls);
+  document.querySelectorAll('.duo-value [data-counter]')[1].setAttribute('data-counter', data.conversion);
+  animateCounters();
+  // Update chart
+  renderChartWithData(data.chart);
+}
+
 function animateCounters() {
   document.querySelectorAll('[data-counter]').forEach(el => {
     const target = parseInt(el.dataset.counter, 10);
@@ -2134,6 +2338,7 @@ document.querySelectorAll('.segmented .seg').forEach(seg => {
 function setVoice(name) {
   document.querySelectorAll('.voice-check').forEach(c => c.style.opacity = '0');
   document.querySelector(`.voice-check[data-voice="${name}"]`).style.opacity = '1';
+  showToast(`Voix ${name} sélectionnée`);
 }
 
 function renderRecent() {
@@ -2196,6 +2401,15 @@ function renderAgenda() {
 function renderChart() {
   const max = Math.max(...peakData);
   document.getElementById('chart-bars').innerHTML = peakData.map(v => {
+    const h = (v / max) * 100;
+    const isPeak = v === max;
+    return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;
+  }).join('');
+}
+
+function renderChartWithData(data) {
+  const max = Math.max(...data);
+  document.getElementById('chart-bars').innerHTML = data.map(v => {
     const h = (v / max) * 100;
     const isPeak = v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;

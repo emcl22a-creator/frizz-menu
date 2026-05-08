@@ -759,18 +759,25 @@
     display: none;
     flex-direction: column;
     overflow: hidden;
+    padding-top: env(safe-area-inset-top);
   }
   .onboarding.open { display: flex; }
 
   .onb-skip {
     position: absolute;
-    top: 16px; right: 22px;
+    top: max(16px, env(safe-area-inset-top));
+    right: 16px;
     color: var(--label-secondary);
     font-size: 15px;
     font-weight: 500;
     letter-spacing: -0.01em;
     z-index: 5;
-    padding: 8px 12px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 999px;
+    border: 0.5px solid var(--separator);
     transition: opacity 0.15s;
   }
   .onb-skip:active { opacity: 0.5; }
@@ -794,6 +801,8 @@
     justify-content: center;
     padding: 40px 28px 20px;
     text-align: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .onb-visual {
@@ -915,7 +924,7 @@
   .onb-pricing {
     background: var(--bg-secondary);
     border-radius: 18px;
-    padding: 22px 24px;
+    padding: 18px 22px;
     border: 0.5px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
     width: 100%;
@@ -929,58 +938,46 @@
     letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--blue);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .onb-pricing-price {
-    font-size: 64px;
+    font-size: 52px;
     font-weight: 600;
     letter-spacing: -0.04em;
     line-height: 1;
     color: var(--label);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     display: block;
     white-space: nowrap;
   }
   .onb-pricing-unit {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--label-secondary);
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     letter-spacing: -0.005em;
   }
   .onb-pricing-old {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--label-tertiary);
     text-decoration: line-through;
-    margin-bottom: 4px;
-  }
-  .onb-pricing-promo {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 4px 10px;
-    background: rgba(255, 59, 48, 0.10);
-    color: var(--red);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    border-radius: 999px;
+    margin-bottom: 2px;
   }
   .onb-pricing-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     text-align: left;
-    margin-top: 18px;
-    padding-top: 18px;
+    margin-top: 14px;
+    padding-top: 14px;
     border-top: 0.5px solid var(--separator);
   }
   .onb-pricing-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--label);
     letter-spacing: -0.012em;
   }
@@ -1413,13 +1410,12 @@
 
       <!-- STEP 4 — Pricing -->
       <div class="onb-step">
-        <div class="onb-visual" style="height: auto; margin-bottom: 28px;">
+        <div class="onb-visual" style="height: auto; margin-bottom: 22px;">
           <div class="onb-pricing">
             <div class="onb-pricing-tag">Frizz Pro</div>
             <div class="onb-pricing-old">99 €/mois</div>
             <div class="onb-pricing-price">49 €</div>
             <div class="onb-pricing-unit">par mois</div>
-            <div class="onb-pricing-promo">Offre de lancement</div>
             <div class="onb-pricing-list">
               <div class="onb-pricing-row">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1444,9 +1440,9 @@
             </div>
           </div>
         </div>
-        <div class="onb-eyebrow">14 jours offerts</div>
-        <h2 class="onb-title">Essayez gratuitement</h2>
-        <p class="onb-desc">Aucune carte bancaire requise. Annulez en un tap.</p>
+        <div class="onb-eyebrow" style="margin-bottom: 8px;">14 jours offerts</div>
+        <h2 class="onb-title" style="font-size: 26px; margin-bottom: 8px;">Essayez gratuitement</h2>
+        <p class="onb-desc" style="font-size: 14px;">Aucune carte bancaire requise. Annulez en un tap.</p>
       </div>
 
     </div>

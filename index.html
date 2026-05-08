@@ -776,300 +776,6 @@
   }
   .modal-cancel:active { background: var(--fill-tertiary); }
 
-  /* ─── ONBOARDING ─────────────────────────────────────── */
-  .onboarding {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    z-index: 250;
-    display: none;
-    flex-direction: column;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-top: env(safe-area-inset-top);
-  }
-  .onboarding.open { display: flex; }
-
-  .onb-skip {
-    position: absolute;
-    top: max(16px, env(safe-area-inset-top));
-    right: 16px;
-    color: var(--label-secondary);
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    z-index: 5;
-    padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 999px;
-    border: 0.5px solid var(--separator);
-    transition: opacity 0.15s;
-  }
-  .onb-skip:active { opacity: 0.5; }
-
-  .onb-stage {
-    flex: 0 1 auto;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    min-height: 0;
-  }
-  .onb-track {
-    display: flex;
-    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .onb-step {
-    flex: 0 0 100vw;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 28px 28px 4px;
-    text-align: center;
-  }
-
-  .onb-visual {
-    width: 100%;
-    max-width: 360px;
-    height: 280px;
-    margin: 0 auto 32px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .onb-icon-bg {
-    width: 140px; height: 140px;
-    border-radius: 38px;
-    background: linear-gradient(135deg, #5AC8FA 0%, #007AFF 50%, #0040DD 100%);
-    box-shadow:
-      0 20px 50px rgba(0, 122, 255, 0.40),
-      0 8px 20px rgba(0, 122, 255, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    transform: scale(0);
-    animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
-  .onb-icon-bg svg { width: 70px; height: 70px; }
-  @keyframes iconPop {
-    to { transform: scale(1); }
-  }
-
-  /* Floating mock UI elements behind the icon */
-  .onb-mock-card {
-    position: absolute;
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    border: 0.5px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--label);
-    opacity: 0;
-    animation: floatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
-  }
-  .onb-mock-card.tl { top: 10%; left: -4%; transform: rotate(-6deg); }
-  .onb-mock-card.tr { top: 16%; right: -4%; transform: rotate(7deg); }
-  .onb-mock-card.bl { bottom: 14%; left: 2%; transform: rotate(5deg); }
-  .onb-mock-card.br { bottom: 8%; right: 0%; transform: rotate(-5deg); }
-  @keyframes floatIn {
-    from { opacity: 0; transform: translateY(20px) rotate(0deg); }
-    to { opacity: 1; }
-  }
-  .onb-mock-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    flex-shrink: 0;
-  }
-  .onb-mock-dot.blue { background: var(--blue); }
-  .onb-mock-dot.orange { background: var(--orange); }
-  .onb-mock-dot.red { background: var(--red); }
-
-  .onb-eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 10px;
-    opacity: 0;
-    animation: fadeUpStep 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
-  }
-  .onb-title {
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    color: var(--label);
-    margin-bottom: 14px;
-    max-width: 16ch;
-    opacity: 0;
-    animation: fadeUpStep 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-  }
-  .onb-desc {
-    font-size: 16px;
-    color: var(--label-secondary);
-    line-height: 1.45;
-    max-width: 32ch;
-    letter-spacing: -0.012em;
-    opacity: 0;
-    animation: fadeUpStep 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
-  }
-  @keyframes fadeUpStep {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Step 4 — Activate confirmation */
-  .onb-checkmark {
-    width: 96px; height: 96px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #34C759 0%, #248A3D 100%);
-    box-shadow: 0 16px 40px rgba(52, 199, 89, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    display: flex; align-items: center; justify-content: center;
-    color: white;
-    transform: scale(0);
-    animation: iconPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
-  }
-  .onb-checkmark svg { width: 48px; height: 48px; stroke-width: 3.5; }
-
-  /* Pricing card on step 3 */
-  .onb-pricing {
-    background: var(--bg-secondary);
-    border-radius: 18px;
-    padding: 18px 22px;
-    border: 0.5px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
-    width: 100%;
-    max-width: 320px;
-    opacity: 0;
-    animation: fadeUpStep 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-  }
-  .onb-pricing-tag {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 4px;
-  }
-  .onb-pricing-price {
-    font-size: 52px;
-    font-weight: 600;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    color: var(--label);
-    margin-bottom: 2px;
-    display: block;
-    white-space: nowrap;
-  }
-  .onb-pricing-unit {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    margin-bottom: 2px;
-    letter-spacing: -0.005em;
-  }
-  .onb-pricing-old {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--label-tertiary);
-    text-decoration: line-through;
-    margin-bottom: 2px;
-  }
-  .onb-pricing-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 0.5px solid var(--separator);
-  }
-  .onb-pricing-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13.5px;
-    color: var(--label);
-    letter-spacing: -0.012em;
-  }
-  .onb-pricing-row svg {
-    width: 14px; height: 14px;
-    color: var(--green);
-    flex-shrink: 0;
-  }
-
-  /* Footer with dots + button */
-  .onb-footer {
-    padding: 20px 22px calc(28px + env(safe-area-inset-bottom));
-  }
-  .onb-dots {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 22px;
-  }
-  .onb-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--label-quaternary);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .onb-dot.active {
-    background: var(--blue);
-    width: 22px;
-    border-radius: 4px;
-  }
-  .onb-cta {
-    width: 100%;
-    padding: 15px;
-    background: var(--blue);
-    color: white;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.018em;
-    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.35);
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .onb-cta:active { transform: scale(0.97); }
-  .onb-cta-secondary {
-    width: 100%;
-    padding: 15px;
-    background: transparent;
-    color: var(--blue);
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: -0.018em;
-    margin-top: 8px;
-    transition: opacity 0.15s;
-  }
-  .onb-cta-secondary:active { opacity: 0.5; }
-
-  @media (max-height: 700px) {
-    .onb-step { padding: 28px 28px 12px; }
-    .onb-visual { height: 220px; margin-bottom: 22px; }
-    .onb-icon-bg { width: 110px; height: 110px; border-radius: 30px; }
-    .onb-icon-bg svg { width: 56px; height: 56px; }
-    .onb-title { font-size: 26px; }
-    .onb-desc { font-size: 15px; }
-  }
-
   /* ─── iOS TOGGLE ─────────────────────────────────────── */
   .ios-toggle {
     position: relative;
@@ -1696,109 +1402,6 @@
 </head>
 <body>
 
-<!-- ═══ ONBOARDING ═════════════════════════════════════ -->
-<div class="onboarding" id="onboarding">
-
-  <div class="onb-stage">
-    <div class="onb-track" id="onbTrack">
-
-      <!-- STEP 1 — Welcome -->
-      <div class="onb-step">
-        <div class="onb-visual">
-          <div class="onb-mock-card tl"><div class="onb-mock-dot blue"></div>Karim · 14h</div>
-          <div class="onb-mock-card tr"><div class="onb-mock-dot"></div>Antoine · 17h</div>
-          <div class="onb-mock-card bl"><div class="onb-mock-dot orange"></div>+24% · 30j</div>
-          <div class="onb-mock-card br"><div class="onb-mock-dot blue"></div>Mohamed · 11h</div>
-          <div class="onb-icon-bg">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
-          </div>
-        </div>
-        <div class="onb-eyebrow">Bienvenue</div>
-        <h2 class="onb-title">Frizz prend vos appels.<br/>Vous coupez en paix.</h2>
-        <p class="onb-desc">Une IA qui répond au téléphone à votre place, prend les rendez-vous, et vous résume tout en français.</p>
-      </div>
-
-      <!-- STEP 2 — How it works -->
-      <div class="onb-step">
-        <div class="onb-visual">
-          <div class="onb-icon-bg" style="background: linear-gradient(135deg, #FF9F0A 0%, #FF6B00 100%); box-shadow: 0 20px 50px rgba(255, 159, 10, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.4);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-          </div>
-        </div>
-        <div class="onb-eyebrow">Étape 1</div>
-        <h2 class="onb-title">Vos appels sont redirigés vers Frizz</h2>
-        <p class="onb-desc">Quand vous coupez ou quand le salon est fermé, vos appels arrivent sur Frizz. Pas de menu vocal — une vraie conversation.</p>
-      </div>
-
-      <!-- STEP 3 — AI handles it -->
-      <div class="onb-step">
-        <div class="onb-visual">
-          <div class="onb-mock-card tl" style="left: 4%; top: 14%; transform: rotate(-4deg);">
-            <div class="onb-mock-dot blue"></div>Karim a réservé 14h
-          </div>
-          <div class="onb-mock-card br" style="bottom: 14%; right: 2%; transform: rotate(4deg);">
-            <div class="onb-mock-dot"></div>Acompte payé · 10€
-          </div>
-          <div class="onb-icon-bg" style="background: linear-gradient(135deg, #BF5AF2 0%, #5856D6 100%); box-shadow: 0 20px 50px rgba(175, 82, 222, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.4);">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
-          </div>
-        </div>
-        <div class="onb-eyebrow">Étape 2</div>
-        <h2 class="onb-title">Frizz prend le RDV à votre place</h2>
-        <p class="onb-desc">Vérifie votre agenda, demande un acompte si client à risque, et confirme. Vous recevez juste une notification.</p>
-      </div>
-
-      <!-- STEP 4 — Pricing -->
-      <div class="onb-step">
-        <div class="onb-visual" style="height: auto; margin-bottom: 22px;">
-          <div class="onb-pricing">
-            <div class="onb-pricing-tag">Frizz Pro</div>
-            <div class="onb-pricing-old">99 €/mois</div>
-            <div class="onb-pricing-price">49 €</div>
-            <div class="onb-pricing-unit">par mois</div>
-            <div class="onb-pricing-list">
-              <div class="onb-pricing-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Appels illimités
-              </div>
-              <div class="onb-pricing-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Prise de RDV automatique
-              </div>
-              <div class="onb-pricing-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Acomptes anti no-show
-              </div>
-              <div class="onb-pricing-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Résumés &amp; statistiques
-              </div>
-              <div class="onb-pricing-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Sans engagement
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="onb-eyebrow" style="margin-bottom: 8px;">14 jours offerts</div>
-        <h2 class="onb-title" style="font-size: 26px; margin-bottom: 8px;">Essayez gratuitement</h2>
-        <p class="onb-desc" style="font-size: 14px;">Aucune carte bancaire requise. Annulez en un tap.</p>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="onb-footer">
-    <div class="onb-dots" id="onbDots">
-      <div class="onb-dot active"></div>
-      <div class="onb-dot"></div>
-      <div class="onb-dot"></div>
-      <div class="onb-dot"></div>
-    </div>
-    <button class="onb-cta" id="onbCta" onclick="onbNext()">Continuer</button>
-    <button class="onb-cta-secondary" id="onbBack" onclick="onbPrev()" style="display: none;">Précédent</button>
-  </div>
-</div>
 
 <header class="topbar">
   <div class="frizz-logo">
@@ -1834,6 +1437,71 @@
     <div class="push-title" id="pushTitle">Nouveau rendez-vous</div>
     <div class="push-body" id="pushBody">Karim B. — Coupe + barbe vendredi 14h</div>
   </div>
+</div>
+
+<!-- ═══ CALENDAR SYNC SHEET ════════════════════════════ -->
+<div class="modal-backdrop" id="calBackdrop"></div>
+<div class="modal-sheet" id="calSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
+  <div class="modal-header">
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);">Synchroniser votre agenda</div>
+  </div>
+
+  <div style="padding: 0 16px 8px;">
+    <p style="font-size: 14px; color: var(--label-secondary); line-height: 1.45; padding: 4px 4px 14px;">
+      Vos RDV pris par Frizz apparaîtront automatiquement dans votre Google Calendar, Apple Calendar ou Outlook. Comme ça, tout est centralisé au même endroit.
+    </p>
+
+    <button onclick="openGoogleCalendarSubscribe()" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 8px; border: 0.5px solid var(--separator); text-align: left; transition: background 0.15s;">
+      <div style="width: 36px; height: 36px; border-radius: 8px; background: white; border: 0.5px solid var(--separator); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;">
+        <svg viewBox="0 0 48 48" style="width: 24px; height: 24px;"><path fill="#fff" d="M37 12H11a1 1 0 0 0-1 1v22a1 1 0 0 0 1 1h26a1 1 0 0 0 1-1V13a1 1 0 0 0-1-1z"/><path fill="#1A73E8" d="M22.319 27.301c-.51-.345-.864-.847-1.058-1.508l1.495-.616c.108.413.298.733.568.961.269.227.595.34.978.34.391 0 .729-.119 1.012-.357.282-.238.424-.541.424-.91 0-.378-.149-.685-.447-.92-.298-.236-.673-.354-1.121-.354h-.864v-1.481h.776c.385 0 .709-.105.974-.314.265-.209.397-.495.397-.86 0-.323-.118-.582-.353-.778-.235-.197-.534-.295-.896-.295-.354 0-.634.094-.842.282-.208.187-.358.421-.451.7l-1.481-.616a3.4 3.4 0 0 1 .66-.953c.295-.297.674-.535 1.137-.711.463-.177.984-.265 1.561-.265.624 0 1.182.119 1.674.357.491.238.876.564 1.156.974.279.412.418.872.418 1.378 0 .517-.124.957-.371 1.319a2.92 2.92 0 0 1-.913.857V24c.483.193.866.487 1.151.882.285.394.428.86.428 1.394 0 .536-.137 1.014-.41 1.434-.273.42-.65.751-1.131.989-.482.238-1.024.357-1.624.357-.694.006-1.336-.166-1.846-.512zM31 22.061l-1.689 1.221-.846-1.281 3.025-2.181h1.162v10.18H31v-7.939z"/><path fill="#EA4335" d="M37 12 26 24l8.5 5.7L46 18z" transform="rotate(0 36 24)"/><path fill="#34A853" d="M10 36h27v-9.5L23 36z"/><path fill="#4285F4" d="M11 36h26V13H11z" opacity=".0"/><path fill="#1A73E8" d="M37 12H11a1 1 0 0 0-1 1v22a1 1 0 0 0 1 1h26a1 1 0 0 0 1-1V13a1 1 0 0 0-1-1zm0 23H11V13h26v22z"/><path fill="#FBBC04" d="M11 36V13h-1a1 1 0 0 0-1 1v21a1 1 0 0 0 1 1h1z"/></svg>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 500; color: var(--label); letter-spacing: -0.012em;">Google Calendar</div>
+        <div style="font-size: 12px; color: var(--label-secondary);">Recommandé · le plus simple</div>
+      </div>
+      <svg style="width: 11px; height: 11px; color: var(--label-tertiary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <button onclick="openAppleCalendarSubscribe()" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 8px; border: 0.5px solid var(--separator); text-align: left; transition: background 0.15s;">
+      <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg viewBox="0 0 24 24" style="width: 22px; height: 22px;" fill="white"><rect x="3" y="5" width="18" height="16" rx="2" fill="white"/><rect x="3" y="5" width="18" height="4" rx="2" fill="rgba(255,255,255,0.3)"/><text x="12" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="#FF3B30" font-family="-apple-system, sans-serif">31</text></svg>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 500; color: var(--label); letter-spacing: -0.012em;">Apple Calendar</div>
+        <div style="font-size: 12px; color: var(--label-secondary);">iPhone, iPad, Mac</div>
+      </div>
+      <svg style="width: 11px; height: 11px; color: var(--label-tertiary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <button onclick="openOutlookCalendarSubscribe()" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 14px; border: 0.5px solid var(--separator); text-align: left; transition: background 0.15s;">
+      <div style="width: 36px; height: 36px; border-radius: 8px; background: #0078D4; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg viewBox="0 0 24 24" style="width: 22px; height: 22px;" fill="white"><path d="M7.5 4 H19 a1 1 0 0 1 1 1 v14 a1 1 0 0 1 -1 1 H7.5 V4z" opacity="0.5"/><rect x="2" y="6" width="11" height="12" rx="1" fill="white"/><text x="7.5" y="14.5" text-anchor="middle" font-size="7" font-weight="700" fill="#0078D4" font-family="sans-serif">O</text></svg>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 500; color: var(--label); letter-spacing: -0.012em;">Outlook</div>
+        <div style="font-size: 12px; color: var(--label-secondary);">Microsoft 365 · Outlook.com</div>
+      </div>
+      <svg style="width: 11px; height: 11px; color: var(--label-tertiary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <div style="background: var(--bg-secondary); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; border: 0.5px solid var(--separator);">
+      <div style="font-size: 11px; font-weight: 600; color: var(--label-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;">Lien iCal · pour autres apps</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="text" id="icalLinkInput" readonly value="https://api.frizz-instant.com/ical/loading…" style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; font-size: 13px; color: var(--label); letter-spacing: -0.005em; padding: 0; font-family: ui-monospace, monospace;" />
+        <button onclick="copyIcalLink()" style="padding: 6px 12px; background: var(--blue); color: white; font-size: 13px; font-weight: 600; border-radius: 8px; flex-shrink: 0;">Copier</button>
+      </div>
+    </div>
+
+    <details style="background: var(--bg-secondary); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; border: 0.5px solid var(--separator);">
+      <summary style="font-size: 14px; font-weight: 500; color: var(--label); cursor: pointer; letter-spacing: -0.012em;">Comment ça marche ?</summary>
+      <div style="font-size: 13px; color: var(--label-secondary); line-height: 1.5; margin-top: 10px; letter-spacing: -0.005em;">
+        Quand un client appelle votre salon, Frizz prend le RDV. Ce RDV apparaît automatiquement dans votre Google Calendar (ou Apple/Outlook) en quelques minutes. Plus besoin de noter à la main, plus de RDV oubliés.<br/><br/>
+        <strong style="color: var(--label);">À savoir :</strong> la synchronisation se fait toutes les 15 min environ. C'est en lecture seule : modifier un RDV depuis votre calendrier ne le change pas dans Frizz (faites-le depuis l'app Frizz).
+      </div>
+    </details>
+  </div>
+
+  <button class="modal-cancel" onclick="closeCalendarSheet()">Fermer</button>
 </div>
 
 <!-- ═══ ACTIVATE GUIDE ═════════════════════════════════ -->
@@ -2126,6 +1794,20 @@
     <button class="cell" onclick="openAddModal('barbier')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
+  <div class="section-header">Calendrier</div>
+  <div class="group">
+    <button class="cell" onclick="openCalendarSheet()">
+      <div class="cell-icon-wrap blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="cell-main">
+        <div class="cell-title">Synchroniser avec mon agenda</div>
+        <div class="cell-subtitle">Google Calendar · Apple Calendar · Outlook</div>
+      </div>
+      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
   <div class="section-header">Aide</div>
   <div class="group">
     <button class="cell" onclick="openActivateGuide()">
@@ -2133,13 +1815,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
       </div>
       <div class="cell-main"><div class="cell-title">Activer Frizz sur mon numéro</div></div>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <button class="cell" onclick="showOnboarding()">
-      <div class="cell-icon-wrap blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="cell-main"><div class="cell-title">Revoir la présentation</div></div>
       <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
     <button class="cell" onclick="showToast('Support disponible 7j/7')">
@@ -2191,12 +1866,17 @@ supa.auth.getSession().then(({ data: { session } }) => {
   if (!session) {
     window.location.href = 'landing.html';
   } else {
-    // Load user's salon name into header
-    supa.from('frizz_ai_salons').select('nom').eq('user_id', session.user.id).limit(1).single()
+    // Load user's salon name + ID into header & ical token
+    supa.from('frizz_ai_salons').select('id, nom').eq('user_id', session.user.id).limit(1).single()
       .then(({ data }) => {
-        if (data && data.nom) {
-          const el = document.getElementById('shopName');
-          if (el) el.textContent = data.nom;
+        if (data) {
+          if (data.nom) {
+            const el = document.getElementById('shopName');
+            if (el) el.textContent = data.nom;
+          }
+          if (data.id) {
+            salonIcalToken = data.id;
+          }
         }
       });
   }
@@ -2232,70 +1912,10 @@ function onPushTap() {
 }
 function startPushSchedule() {
   pushQueue.forEach(n => {
-    setTimeout(() => {
-      // Don't show push during onboarding
-      if (!document.getElementById('onboarding').classList.contains('open')) {
-        showPush(n);
-      }
-    }, n.delay);
+    setTimeout(() => showPush(n), n.delay);
   });
 }
-// Start once onboarding done OR if onboarding not shown
 setTimeout(startPushSchedule, 4000);
-
-/* ─── Onboarding ───────────────────────────────────────── */
-let onbStep = 0;
-const onbTotal = 4;
-
-function showOnboarding() {
-  onbStep = 0;
-  updateOnb();
-  document.getElementById('onboarding').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function skipOnboarding() {
-  document.getElementById('onboarding').classList.remove('open');
-  document.body.style.overflow = '';
-  try { localStorage.setItem('frizz_onb_done', '1'); } catch(e) {}
-}
-function onbNext() {
-  if (onbStep < onbTotal - 1) {
-    onbStep++;
-    updateOnb();
-    const step = document.querySelectorAll('.onb-step')[onbStep];
-    step.querySelectorAll('.onb-icon-bg, .onb-eyebrow, .onb-title, .onb-desc, .onb-mock-card, .onb-pricing').forEach(el => {
-      el.style.animation = 'none';
-      void el.offsetWidth;
-      el.style.animation = '';
-    });
-  } else {
-    skipOnboarding();
-    showToast('Bienvenue chez Frizz');
-  }
-}
-function onbPrev() {
-  if (onbStep > 0) {
-    onbStep--;
-    updateOnb();
-  }
-}
-function updateOnb() {
-  document.getElementById('onbTrack').style.transform = `translateX(-${onbStep * 100}vw)`;
-  document.querySelectorAll('.onb-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === onbStep);
-  });
-  const cta = document.getElementById('onbCta');
-  const back = document.getElementById('onbBack');
-  cta.textContent = onbStep === onbTotal - 1 ? "Commencer l'essai gratuit" : 'Continuer';
-  back.style.display = onbStep > 0 ? 'block' : 'none';
-}
-
-try {
-  if (!localStorage.getItem('frizz_onb_done')) {
-    setTimeout(showOnboarding, 200);
-  }
-} catch(e) {}
-
 /* ─── Shop picker ──────────────────────────────────────── */
 const shops = [
   { id: 1, name: "Cut Studio", city: "Paris 11e", initials: "CS", active: true },
@@ -2477,6 +2097,79 @@ function navigate(pageId) {
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset.page));
 });
+
+/* ─── Calendar sync sheet ──────────────────────────────── */
+let salonIcalToken = null; // Will be set after Supabase loads salon
+
+function getIcalUrl() {
+  // Once Supabase salon is loaded, this returns the real URL
+  // For now, returns a placeholder that the edge function will handle
+  if (!salonIcalToken) return 'https://api.frizz-instant.com/ical/loading…';
+  return `https://api.frizz-instant.com/ical/${salonIcalToken}.ics`;
+}
+
+/* ─── Calendar sync sheet ─────────────────────────────── */
+let currentSalonId = null;
+
+function getIcalUrl() {
+  const id = currentSalonId || 'demo';
+  return `https://api.frizz-instant.com/ical/${id}/calendar.ics`;
+}
+
+function openCalendarSheet() {
+  // Try to load real salon ID from session
+  if (typeof supa !== 'undefined' && !currentSalonId) {
+    supa.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        supa.from('frizz_ai_salons').select('id').eq('user_id', session.user.id).limit(1).single()
+          .then(({ data }) => {
+            if (data && data.id) {
+              currentSalonId = data.id;
+              document.getElementById('icalLinkInput').value = getIcalUrl();
+            }
+          });
+      }
+    });
+  }
+  document.getElementById('icalLinkInput').value = getIcalUrl();
+  document.getElementById('calBackdrop').classList.add('open');
+  document.getElementById('calSheet').classList.add('open');
+}
+function closeCalendarSheet() {
+  document.getElementById('calBackdrop').classList.remove('open');
+  document.getElementById('calSheet').classList.remove('open');
+}
+document.getElementById('calBackdrop').addEventListener('click', closeCalendarSheet);
+
+function copyIcalLink() {
+  const input = document.getElementById('icalLinkInput');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  try {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(input.value);
+    } else {
+      document.execCommand('copy');
+    }
+    showToast('Lien copié');
+  } catch (e) {
+    showToast('Sélectionné · copiez avec Cmd+C');
+  }
+}
+
+function openGoogleCalendarSubscribe() {
+  const url = encodeURIComponent(getIcalUrl());
+  window.open(`https://calendar.google.com/calendar/r?cid=${url}`, '_blank');
+}
+function openAppleCalendarSubscribe() {
+  // webcal:// triggers Apple Calendar subscription on iOS/Mac
+  const url = getIcalUrl().replace(/^https?:/, 'webcal:');
+  window.location.href = url;
+}
+function openOutlookCalendarSubscribe() {
+  const url = getIcalUrl().replace(/^https?:/, 'webcal:');
+  window.open(`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(url)}&name=Frizz`, '_blank');
+}
 
 /* ─── Activate guide ───────────────────────────────────── */
 function openActivateGuide() {

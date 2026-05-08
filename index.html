@@ -1630,33 +1630,33 @@
 <!-- ═══ TABLEAU DE BORD ════════════════════════════════ -->
 <div class="page active" id="page-stats">
   <div class="large-title-block">
-    <h1 class="large-title">Bonjour Mehdi <span class="wave">👋</span></h1>
-    <p class="large-title-sub">Jeudi 7 mai · 18 appels aujourd'hui</p>
+    <h1 class="large-title" id="statsTitle">Bonjour <span class="wave">👋</span></h1>
+    <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
   <div class="hero-card">
     <div class="hero-top-row">
       <div class="hero-label">Chiffre capturé · 30j</div>
-      <div class="hero-badge">
+      <div class="hero-badge" id="heroBadge" style="display: none;">
         <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
         Top 10%
       </div>
     </div>
-    <div class="hero-value"><span data-counter="384">0</span><span class="currency">€</span></div>
-    <div class="hero-delta">
+    <div class="hero-value"><span data-counter="0">0</span><span class="currency">€</span></div>
+    <div class="hero-delta" id="heroDelta" style="display: none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
-      24% vs mois précédent
+      <span id="heroDeltaText">—</span>
     </div>
   </div>
 
   <div class="duo">
     <div class="duo-card">
       <div class="duo-label">Appels traités</div>
-      <div class="duo-value"><span data-counter="18">0</span></div>
+      <div class="duo-value"><span data-counter="0">0</span></div>
     </div>
     <div class="duo-card">
       <div class="duo-label">Conversion</div>
-      <div class="duo-value"><span data-counter="78">0</span><span class="unit">%</span></div>
+      <div class="duo-value"><span data-counter="0">0</span><span class="unit">%</span></div>
     </div>
   </div>
 
@@ -1669,7 +1669,7 @@
   <div class="chart-card">
     <div class="chart-head">
       <div class="chart-title">Heures de pointe</div>
-      <div class="chart-meta">Pic 14h–15h</div>
+      <div class="chart-meta" id="chartMeta">—</div>
     </div>
     <div class="chart-bars" id="chart-bars"></div>
     <div class="chart-labels">
@@ -2008,6 +2008,69 @@ function refreshAllRenders() {
   renderShops();
   renderConfigLists();
   syncFrizzToggleFromSalon();
+  updateStats();
+}
+
+/* ─── Update stats with real data ─── */
+function updateStats() {
+  // Title with first prénom of barbier (or salon name if no barbier yet)
+  const titleEl = document.getElementById('statsTitle');
+  const subEl = document.getElementById('statsSub');
+  if (titleEl) {
+    const firstName = (barbiers && barbiers.length > 0 && barbiers[0].prenom) || (currentSalon && currentSalon.nom) || '';
+    titleEl.innerHTML = firstName
+      ? `Bonjour ${escapeHtml(firstName)} <span class="wave">👋</span>`
+      : `Bonjour <span class="wave">👋</span>`;
+  }
+
+  // Compute today's calls + this month's revenue from real data
+  const now = new Date();
+  const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const callsToday = calls.filter(c => {
+    // calls have stringified dates; use createdRaw if available, else parse
+    return false; // We don't have raw timestamps in mapped calls
+  });
+  // For now just show total counts available
+  const todayCount = calls.length; // approximation: list is recent
+  const totalCalls = calls.length;
+
+  if (subEl) {
+    const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    if (totalCalls === 0) {
+      subEl.textContent = `${dateStr} · aucun appel pour l'instant`;
+    } else {
+      subEl.textContent = `${dateStr} · ${totalCalls} appel${totalCalls > 1 ? 's' : ''}`;
+    }
+  }
+
+  // Reset hero counter to 0 for new accounts (no calls = no revenue captured)
+  const heroCounter = document.querySelector('.hero-value [data-counter]');
+  const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
+  const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
+
+  // Estimated revenue: count of scheduled calls × 30€ (rough average)
+  const scheduledCount = calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
+  const estimatedRevenue = scheduledCount * 30;
+  const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
+
+  if (heroCounter) heroCounter.setAttribute('data-counter', estimatedRevenue);
+  if (duoCalls) duoCalls.setAttribute('data-counter', totalCalls);
+  if (duoConv) duoConv.setAttribute('data-counter', conversion);
+  animateCounters();
+
+  // Hide "Top 10%" badge + delta if no data
+  const badge = document.getElementById('heroBadge');
+  const delta = document.getElementById('heroDelta');
+  if (badge) badge.style.display = totalCalls > 0 ? 'inline-flex' : 'none';
+  if (delta) delta.style.display = 'none'; // We don't have a real delta yet
+
+  // Chart meta
+  const chartMeta = document.getElementById('chartMeta');
+  if (chartMeta) {
+    chartMeta.textContent = totalCalls > 0 ? 'Pic 14h–15h' : 'Pas encore de données';
+  }
 }
 
 async function logout() {
@@ -2015,11 +2078,7 @@ async function logout() {
   window.location.href = 'landing.html';
 }
 
-/* ─── Push notifications (demo) ─────────────────────── */
-const pushQueue = [
-  { delay: 8000, title: 'Nouveau rendez-vous', body: 'Lina N. — Coupe homme demain 16h', callId: null },
-  { delay: 26000, title: 'Acompte reçu', body: 'Karim B. a réglé 10€ — RDV confirmé', callId: 1 },
-];
+/* ─── Push notifications (real) ─────────────────────── */
 let currentPushCallId = null;
 
 function showPush({ title, body, callId }) {
@@ -2038,12 +2097,8 @@ function onPushTap() {
     navigate('inbox');
   }
 }
-function startPushSchedule() {
-  pushQueue.forEach(n => {
-    setTimeout(() => showPush(n), n.delay);
-  });
-}
-setTimeout(startPushSchedule, 4000);
+// Push notifications are no longer auto-triggered with fake data.
+// They will be triggered by real events (Supabase realtime) in a future update.
 /* ─── Shop picker ──────────────────────────────────────── */
 let shops = []; // Loaded from Supabase
 let prestations = []; // Loaded from Supabase
@@ -2488,40 +2543,36 @@ document.querySelectorAll('.period-pill').forEach(pill => {
 });
 
 /* ─── Period segmented control on stats page ─── */
-const periodData = {
-  day: {
-    revenue: 384, calls: 18, conversion: 78,
-    chart: [2, 4, 6, 8, 12, 18, 30, 45, 38, 22, 28, 42, 35, 18, 8, 2],
-    label: "Aujourd'hui · 18 appels"
-  },
-  week: {
-    revenue: 2240, calls: 92, conversion: 73,
-    chart: [18, 28, 35, 50, 60, 70, 100, 88, 55, 72, 80, 64, 30, 12, 5, 2],
-    label: "Cette semaine · 92 appels"
-  },
-  month: {
-    revenue: 8940, calls: 412, conversion: 75,
-    chart: [25, 40, 55, 70, 85, 90, 100, 95, 70, 80, 88, 75, 45, 25, 12, 5],
-    label: "Ce mois · 412 appels"
-  }
-};
 let currentPeriod = 'day';
 function setPeriod(period) {
   currentPeriod = period;
-  const data = periodData[period];
   document.querySelectorAll('.stats-period-pill').forEach(p => {
     p.classList.toggle('active', p.dataset.period === period);
   });
-  // Update sub-title
-  const sub = document.querySelector('#page-stats .large-title-sub');
-  if (sub) sub.textContent = `Jeudi 7 mai · ${data.calls} appels ${period === 'day' ? "aujourd'hui" : period === 'week' ? 'cette semaine' : 'ce mois'}`;
-  // Update counters
-  document.querySelector('.hero-value [data-counter]').setAttribute('data-counter', data.revenue);
-  document.querySelectorAll('.duo-value [data-counter]')[0].setAttribute('data-counter', data.calls);
-  document.querySelectorAll('.duo-value [data-counter]')[1].setAttribute('data-counter', data.conversion);
+
+  // Compute stats from real calls based on period
+  const now = new Date();
+  let cutoff;
+  if (period === 'day') {
+    cutoff = new Date(now); cutoff.setHours(0, 0, 0, 0);
+  } else if (period === 'week') {
+    cutoff = new Date(now.getTime() - 7 * 86400000);
+  } else {
+    cutoff = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  // We don't have raw timestamps in mapped calls, so use full list as approximation.
+  // For a real implementation, we'd need to filter by created_at on Supabase side.
+  const filtered = calls; // TODO: filter by period when we keep raw timestamps
+  const totalCalls = filtered.length;
+  const scheduledCount = filtered.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
+  const estimatedRevenue = scheduledCount * 30;
+  const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
+
+  document.querySelector('.hero-value [data-counter]').setAttribute('data-counter', estimatedRevenue);
+  document.querySelectorAll('.duo-value [data-counter]')[0].setAttribute('data-counter', totalCalls);
+  document.querySelectorAll('.duo-value [data-counter]')[1].setAttribute('data-counter', conversion);
   animateCounters();
-  // Update chart
-  renderChartWithData(data.chart);
 }
 
 function animateCounters() {

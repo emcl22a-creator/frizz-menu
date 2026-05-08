@@ -433,8 +433,8 @@ form.addEventListener('submit', async (e) => {
       });
     if (salonError) throw salonError;
 
-    // 3. Rediriger vers l'app
-    window.location.href = 'index.html';
+    // 3. Rediriger vers la page d'onboarding
+    window.location.href = 'setup.html';
   } catch (err) {
     setLoading(false);
     let msg = err.message || 'Une erreur est survenue';
@@ -450,8 +450,18 @@ form.addEventListener('submit', async (e) => {
 });
 
 // Si déjà connecté, rediriger
-supa.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = 'index.html';
+supa.auth.getSession().then(async ({ data: { session } }) => {
+  if (!session) return;
+  const { data: salon } = await supa
+    .from('frizz_ai_salons')
+    .select('onboarded')
+    .eq('user_id', session.user.id)
+    .limit(1).single();
+  if (salon && salon.onboarded === false) {
+    window.location.href = 'setup.html';
+  } else {
+    window.location.href = 'index.html';
+  }
 });
 </script>
 </body>

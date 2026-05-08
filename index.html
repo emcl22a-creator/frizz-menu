@@ -1918,23 +1918,6 @@ async function loadAllData() {
       loadRdv(),
     ]);
 
-    // 4. If everything is empty for this salon, seed demo data so user sees something
-    const { count: appelsCount } = await supa
-      .from('frizz_ai_appels')
-      .select('*', { count: 'exact', head: true })
-      .eq('salon_id', currentSalon.id);
-
-    if (appelsCount === 0 && calls.length === 0) {
-      await seedDemoData();
-      // Reload after seeding
-      await Promise.all([
-        loadPrestations(),
-        loadBarbiers(),
-        loadAppels(),
-        loadRdv(),
-      ]);
-    }
-
     dataLoaded = true;
     refreshAllRenders();
   } catch (err) {
@@ -2010,82 +1993,6 @@ async function loadRdv() {
       color: r.statut === 'a_confirmer' ? 'urgent' : 'scheduled',
     };
   });
-}
-
-async function seedDemoData() {
-  const sId = currentSalon.id;
-  // Insert prestations
-  await supa.from('frizz_ai_prestations').insert([
-    { salon_id: sId, nom: 'Coupe homme', duree_minutes: 30, prix_centimes: 2800, ordre: 0 },
-    { salon_id: sId, nom: 'Coupe + barbe', duree_minutes: 45, prix_centimes: 4000, ordre: 1 },
-    { salon_id: sId, nom: 'Barbe seule', duree_minutes: 20, prix_centimes: 2000, ordre: 2 },
-    { salon_id: sId, nom: 'Rasage traditionnel', duree_minutes: 45, prix_centimes: 3500, ordre: 3 },
-  ]);
-  // Insert barbiers
-  const { data: insertedBarbiers } = await supa.from('frizz_ai_barbiers').insert([
-    { salon_id: sId, prenom: 'Mehdi', disponibilite: 'Lun-Ven', ordre: 0 },
-    { salon_id: sId, prenom: 'Yacine', disponibilite: 'Mar-Sam', ordre: 1 },
-  ]).select();
-
-  // Insert demo calls
-  const now = new Date();
-  await supa.from('frizz_ai_appels').insert([
-    {
-      salon_id: sId, nom_client: 'Karim B.', numero_client: '06 12 34 56 78',
-      criticite: 'urgent',
-      resume: "Karim a déjà annulé 2 fois. Frizz a demandé un acompte de 10€ avant de confirmer.",
-      transcription: [
-        { who: 'ai', text: 'Bonjour, Frizz à votre écoute. Comment puis-je vous aider ?' },
-        { who: 'client', text: "Salut, c'est Karim. Je voudrais un rendez-vous demain pour une coupe + barbe." },
-        { who: 'ai', text: "J'ai un créneau à 14h avec Mehdi, ça vous irait ?" },
-        { who: 'client', text: 'Parfait.' },
-        { who: 'ai', text: 'Pour confirmer, on demande un acompte de 10€. Vous recevrez un SMS.' },
-        { who: 'client', text: 'OK je règle.' },
-      ],
-      created_at: new Date(now.getTime() - 30 * 60 * 1000).toISOString(),
-    },
-    {
-      salon_id: sId, nom_client: 'Antoine D.', numero_client: '07 88 99 11 22',
-      criticite: 'urgent',
-      resume: 'Premier appel, demande un fade demain. À toi de choisir le barbier.',
-      transcription: [
-        { who: 'ai', text: 'Bonjour, Frizz pour votre salon. Que puis-je faire pour vous ?' },
-        { who: 'client', text: 'Je voudrais un fade pour demain.' },
-        { who: 'ai', text: "C'est votre première fois ?" },
-        { who: 'client', text: 'Oui.' },
-        { who: 'ai', text: "J'ai 17h disponible. Vous serez prévenu par SMS." },
-      ],
-      created_at: new Date(now.getTime() - 90 * 60 * 1000).toISOString(),
-    },
-    {
-      salon_id: sId, nom_client: 'Mohamed L.', numero_client: '06 55 44 33 22',
-      criticite: 'scheduled',
-      resume: 'Client habitué, créneau samedi 11h confirmé sans friction.',
-      transcription: [
-        { who: 'ai', text: 'Bonjour, Frizz pour votre salon.' },
-        { who: 'client', text: "C'est Mohamed. Comme d'habitude samedi 11h ?" },
-        { who: 'ai', text: 'Bien sûr Mohamed. Coupe + barbe avec Mehdi, 11h samedi. À samedi.' },
-      ],
-      created_at: new Date(now.getTime() - 3 * 3600 * 1000).toISOString(),
-    },
-  ]);
-
-  // Insert demo RDV
-  if (insertedBarbiers && insertedBarbiers.length > 0) {
-    const tomorrow9 = new Date();
-    tomorrow9.setDate(tomorrow9.getDate() + 1);
-    tomorrow9.setHours(9, 0, 0, 0);
-    const tomorrow11 = new Date(tomorrow9);
-    tomorrow11.setHours(11, 0);
-    const tomorrow15 = new Date(tomorrow9);
-    tomorrow15.setHours(15, 0);
-
-    await supa.from('frizz_ai_rdv').insert([
-      { salon_id: sId, barbier_id: insertedBarbiers[0].id, client_nom: 'Adam S.', date_heure: tomorrow9.toISOString(), statut: 'confirme' },
-      { salon_id: sId, barbier_id: insertedBarbiers[0].id, client_nom: 'Mohamed L.', date_heure: tomorrow11.toISOString(), statut: 'confirme' },
-      { salon_id: sId, barbier_id: insertedBarbiers[1].id, client_nom: 'Antoine D.', date_heure: tomorrow15.toISOString(), statut: 'a_confirmer' },
-    ]);
-  }
 }
 
 function refreshAllRenders() {

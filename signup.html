@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="color-scheme" content="light">
+<title>Créer un compte · Frizz</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F2F2F7;
+    --bg-secondary: #FFFFFF;
+    --label: #000000;
+    --label-secondary: rgba(60, 60, 67, 0.60);
+    --label-tertiary: rgba(60, 60, 67, 0.30);
+    --separator: rgba(60, 60, 67, 0.18);
+    --blue: #007AFF;
+    --red: #FF3B30;
+    --green: #34C759;
+    --fill: rgba(120, 120, 128, 0.20);
+  }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--label);
+    font-size: 17px;
+    line-height: 1.4;
+    letter-spacing: -0.022em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(80% 60% at 50% -10%, rgba(0, 122, 255, 0.08) 0%, transparent 55%);
+  }
+  button, input { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
+  input { cursor: text; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    padding: 16px 16px 8px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--blue);
+    font-size: 17px;
+    padding: 4px 8px 4px 0;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .back-btn:active { opacity: 0.5; }
+  .back-btn svg { width: 18px; height: 18px; }
+
+  .container {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 12px 22px max(32px, env(safe-area-inset-bottom));
+  }
+
+  .header { padding: 16px 0 28px; }
+  .logo {
+    width: 48px; height: 48px;
+    margin-bottom: 22px;
+    filter: drop-shadow(0 4px 12px rgba(0, 122, 255, 0.30));
+  }
+  .title {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.030em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--label-secondary);
+    letter-spacing: -0.012em;
+  }
+
+  .form { margin-top: 8px; }
+  .field {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--separator);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.14);
+  }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    padding: 0;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder { color: var(--label-tertiary); }
+
+  .error {
+    color: var(--red);
+    font-size: 14px;
+    margin: 4px 6px 12px;
+    letter-spacing: -0.005em;
+    display: none;
+  }
+  .error.show { display: block; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: white;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.30);
+    margin-top: 12px;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s;
+  }
+  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+  .submit-btn .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .submit-btn.loading .spinner { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .legal {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--label-tertiary);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+  }
+  .legal a { color: var(--blue); text-decoration: none; }
+
+  .login-link {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 15px;
+    color: var(--label-secondary);
+  }
+  .login-link a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="landing.html" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Retour
+  </a>
+</nav>
+
+<div class="container">
+  <div class="header">
+    <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0040DD"/>
+          <stop offset="50%" stop-color="#007AFF"/>
+          <stop offset="100%" stop-color="#5AC8FA"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#grad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+    </svg>
+    <h1 class="title">Créer un compte</h1>
+    <p class="subtitle">14 jours d'essai gratuit · sans carte bancaire</p>
+  </div>
+
+  <form class="form" id="signupForm" autocomplete="on">
+    <div class="field">
+      <label class="field-label" for="salonNom">Nom du salon</label>
+      <input type="text" id="salonNom" placeholder="Ex : Cut Studio Paris 11e" required autocomplete="organization" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="email">Email</label>
+      <input type="email" id="email" placeholder="vous@salon.fr" required autocomplete="email" inputmode="email" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="password">Mot de passe</label>
+      <input type="password" id="password" placeholder="6 caractères minimum" required autocomplete="new-password" minlength="6" />
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span class="spinner"></span>
+      <span class="btn-text">Créer mon compte</span>
+    </button>
+
+    <div class="legal">
+      En créant un compte, vous acceptez nos <a href="#">conditions d'utilisation</a> et notre <a href="#">politique de confidentialité</a>.
+    </div>
+  </form>
+
+  <div class="login-link">
+    Vous avez déjà un compte ? <a href="login.html">Se connecter</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const form = document.getElementById('signupForm');
+const errorEl = document.getElementById('errorMsg');
+const btn = document.getElementById('submitBtn');
+const btnText = btn.querySelector('.btn-text');
+
+function showError(msg) {
+  errorEl.textContent = msg;
+  errorEl.classList.add('show');
+}
+function hideError() {
+  errorEl.classList.remove('show');
+}
+function setLoading(loading) {
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+  btnText.textContent = loading ? 'Création en cours…' : 'Créer mon compte';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideError();
+  const salonNom = document.getElementById('salonNom').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!salonNom || !email || !password) {
+    showError('Tous les champs sont obligatoires');
+    return;
+  }
+  if (password.length < 6) {
+    showError('Le mot de passe doit faire au moins 6 caractères');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // 1. Créer le compte Auth
+    const { data: authData, error: authError } = await supa.auth.signUp({
+      email,
+      password,
+    });
+    if (authError) throw authError;
+    if (!authData.user) throw new Error('Erreur lors de la création du compte');
+
+    // 2. Créer le salon associé
+    const { error: salonError } = await supa
+      .from('frizz_ai_salons')
+      .insert({
+        user_id: authData.user.id,
+        nom: salonNom,
+        actif: true,
+      });
+    if (salonError) throw salonError;
+
+    // 3. Rediriger vers l'app
+    window.location.href = 'index.html';
+  } catch (err) {
+    setLoading(false);
+    let msg = err.message || 'Une erreur est survenue';
+    if (msg.includes('already registered') || msg.includes('already been registered')) {
+      msg = 'Cet email a déjà un compte. Connectez-vous à la place.';
+    } else if (msg.includes('invalid email') || msg.includes('Invalid email')) {
+      msg = 'Cet email n\'est pas valide';
+    } else if (msg.includes('Password should be')) {
+      msg = 'Le mot de passe doit faire au moins 6 caractères';
+    }
+    showError(msg);
+  }
+});
+
+// Si déjà connecté, rediriger
+supa.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>

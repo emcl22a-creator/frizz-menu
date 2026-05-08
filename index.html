@@ -1769,13 +1769,7 @@
   </div>
 
   <div class="section-header">Prestations &amp; tarifs</div>
-  <div class="group">
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe homme</div><div class="cell-subtitle">30 min</div></div><span class="cell-value">28 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe + barbe</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">40 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Barbe seule</div><div class="cell-subtitle">20 min</div></div><span class="cell-value">20 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Rasage traditionnel</div><div class="cell-subtitle">45 min</div></div><span class="cell-value">35 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Coupe enfant</div><div class="cell-subtitle">25 min</div></div><span class="cell-value">22 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Shape / contour</div><div class="cell-subtitle">15 min</div></div><span class="cell-value">12 €</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+  <div class="group" id="prestationsList">
     <button class="cell" onclick="openAddModal('prestation')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
@@ -1787,10 +1781,7 @@
   </div>
 
   <div class="section-header">Barbiers</div>
-  <div class="group">
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Mehdi</div></div><span class="cell-value">Lun–Ven</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Yacine</div></div><span class="cell-value">Mar–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="cell" onclick="showToast('Édition à venir')"><div class="cell-main"><div class="cell-title">Sami</div></div><span class="cell-value">Jeu–Sam</span><svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></button>
+  <div class="group" id="barbiersList">
     <button class="cell" onclick="openAddModal('barbier')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
@@ -1861,26 +1852,250 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Redirect to landing if not logged in
+// ═══════════════════════════════════════════════════════════
+// AUTH GUARD + LOAD DATA FROM SUPABASE
+// ═══════════════════════════════════════════════════════════
+
+let currentUser = null;
+let currentSalon = null;
+let dataLoaded = false;
+
 supa.auth.getSession().then(({ data: { session } }) => {
   if (!session) {
     window.location.href = 'landing.html';
-  } else {
-    // Load user's salon name + ID into header & ical token
-    supa.from('frizz_ai_salons').select('id, nom').eq('user_id', session.user.id).limit(1).single()
-      .then(({ data }) => {
-        if (data) {
-          if (data.nom) {
-            const el = document.getElementById('shopName');
-            if (el) el.textContent = data.nom;
-          }
-          if (data.id) {
-            salonIcalToken = data.id;
-          }
-        }
-      });
+    return;
   }
+  currentUser = session.user;
+  loadAllData();
 });
+
+async function loadAllData() {
+  try {
+    // 1. Load all user's salons
+    const { data: userSalons, error: salonsErr } = await supa
+      .from('frizz_ai_salons')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: true });
+    if (salonsErr) throw salonsErr;
+
+    if (!userSalons || userSalons.length === 0) {
+      // Should not happen (signup creates one), but just in case:
+      const { data: newSalon } = await supa
+        .from('frizz_ai_salons')
+        .insert({ user_id: currentUser.id, nom: 'Mon salon', actif: true })
+        .select()
+        .single();
+      userSalons.push(newSalon);
+    }
+
+    // Set current salon = first one (or last active in localStorage if any)
+    let activeId = null;
+    try { activeId = localStorage.getItem('frizz_current_salon'); } catch(e) {}
+    currentSalon = userSalons.find(s => s.id === activeId) || userSalons[0];
+
+    // Update topbar
+    document.getElementById('shopName').textContent = currentSalon.nom;
+
+    // Update shops array for picker
+    shops = userSalons.map((s, i) => ({
+      id: s.id,
+      name: s.nom,
+      city: s.ville || '',
+      initials: s.nom.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'S',
+      active: s.id === currentSalon.id,
+    }));
+    renderShops();
+
+    // 2. Update ical token
+    salonIcalToken = currentSalon.id;
+
+    // 3. Load prestations / barbiers / appels / rdv for current salon
+    await Promise.all([
+      loadPrestations(),
+      loadBarbiers(),
+      loadAppels(),
+      loadRdv(),
+    ]);
+
+    // 4. If everything is empty for this salon, seed demo data so user sees something
+    const { count: appelsCount } = await supa
+      .from('frizz_ai_appels')
+      .select('*', { count: 'exact', head: true })
+      .eq('salon_id', currentSalon.id);
+
+    if (appelsCount === 0 && calls.length === 0) {
+      await seedDemoData();
+      // Reload after seeding
+      await Promise.all([
+        loadPrestations(),
+        loadBarbiers(),
+        loadAppels(),
+        loadRdv(),
+      ]);
+    }
+
+    dataLoaded = true;
+    refreshAllRenders();
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    showToast('Erreur de chargement des données');
+  }
+}
+
+async function loadPrestations() {
+  const { data } = await supa
+    .from('frizz_ai_prestations')
+    .select('*')
+    .eq('salon_id', currentSalon.id)
+    .order('ordre', { ascending: true });
+  prestations = data || [];
+}
+
+async function loadBarbiers() {
+  const { data } = await supa
+    .from('frizz_ai_barbiers')
+    .select('*')
+    .eq('salon_id', currentSalon.id)
+    .order('ordre', { ascending: true });
+  barbiers = data || [];
+}
+
+async function loadAppels() {
+  const { data } = await supa
+    .from('frizz_ai_appels')
+    .select('*')
+    .eq('salon_id', currentSalon.id)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  // Map DB shape to UI shape
+  calls = (data || []).map((row, idx) => {
+    const d = new Date(row.created_at);
+    const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · ' + time;
+    return {
+      id: row.id,
+      time, date: dateStr, duration: '—',
+      name: row.nom_client || 'Inconnu',
+      phone: row.numero_client || '—',
+      prestation: '—',
+      criticity: row.criticite || 'scheduled',
+      price: '—',
+      booking: { tag: '—', when: '—', service: '—', duration: '—', price: '—', deposit: '—' },
+      summary: row.resume || '',
+      transcript: row.transcription || [],
+    };
+  });
+}
+
+async function loadRdv() {
+  const { data } = await supa
+    .from('frizz_ai_rdv')
+    .select('*, frizz_ai_barbiers(prenom), frizz_ai_prestations(nom)')
+    .eq('salon_id', currentSalon.id)
+    .order('date_heure', { ascending: true });
+
+  // Map RDV to slots format
+  slots = (data || []).map(r => {
+    const d = new Date(r.date_heure);
+    const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const barber = r.frizz_ai_barbiers?.prenom || '—';
+    const prest = r.frizz_ai_prestations?.nom || 'RDV';
+    return {
+      time,
+      type: 'intervention',
+      title: `${r.client_nom || 'Client'} — ${prest}`,
+      barber,
+      color: r.statut === 'a_confirmer' ? 'urgent' : 'scheduled',
+    };
+  });
+}
+
+async function seedDemoData() {
+  const sId = currentSalon.id;
+  // Insert prestations
+  await supa.from('frizz_ai_prestations').insert([
+    { salon_id: sId, nom: 'Coupe homme', duree_minutes: 30, prix_centimes: 2800, ordre: 0 },
+    { salon_id: sId, nom: 'Coupe + barbe', duree_minutes: 45, prix_centimes: 4000, ordre: 1 },
+    { salon_id: sId, nom: 'Barbe seule', duree_minutes: 20, prix_centimes: 2000, ordre: 2 },
+    { salon_id: sId, nom: 'Rasage traditionnel', duree_minutes: 45, prix_centimes: 3500, ordre: 3 },
+  ]);
+  // Insert barbiers
+  const { data: insertedBarbiers } = await supa.from('frizz_ai_barbiers').insert([
+    { salon_id: sId, prenom: 'Mehdi', disponibilite: 'Lun-Ven', ordre: 0 },
+    { salon_id: sId, prenom: 'Yacine', disponibilite: 'Mar-Sam', ordre: 1 },
+  ]).select();
+
+  // Insert demo calls
+  const now = new Date();
+  await supa.from('frizz_ai_appels').insert([
+    {
+      salon_id: sId, nom_client: 'Karim B.', numero_client: '06 12 34 56 78',
+      criticite: 'urgent',
+      resume: "Karim a déjà annulé 2 fois. Frizz a demandé un acompte de 10€ avant de confirmer.",
+      transcription: [
+        { who: 'ai', text: 'Bonjour, Frizz à votre écoute. Comment puis-je vous aider ?' },
+        { who: 'client', text: "Salut, c'est Karim. Je voudrais un rendez-vous demain pour une coupe + barbe." },
+        { who: 'ai', text: "J'ai un créneau à 14h avec Mehdi, ça vous irait ?" },
+        { who: 'client', text: 'Parfait.' },
+        { who: 'ai', text: 'Pour confirmer, on demande un acompte de 10€. Vous recevrez un SMS.' },
+        { who: 'client', text: 'OK je règle.' },
+      ],
+      created_at: new Date(now.getTime() - 30 * 60 * 1000).toISOString(),
+    },
+    {
+      salon_id: sId, nom_client: 'Antoine D.', numero_client: '07 88 99 11 22',
+      criticite: 'urgent',
+      resume: 'Premier appel, demande un fade demain. À toi de choisir le barbier.',
+      transcription: [
+        { who: 'ai', text: 'Bonjour, Frizz pour votre salon. Que puis-je faire pour vous ?' },
+        { who: 'client', text: 'Je voudrais un fade pour demain.' },
+        { who: 'ai', text: "C'est votre première fois ?" },
+        { who: 'client', text: 'Oui.' },
+        { who: 'ai', text: "J'ai 17h disponible. Vous serez prévenu par SMS." },
+      ],
+      created_at: new Date(now.getTime() - 90 * 60 * 1000).toISOString(),
+    },
+    {
+      salon_id: sId, nom_client: 'Mohamed L.', numero_client: '06 55 44 33 22',
+      criticite: 'scheduled',
+      resume: 'Client habitué, créneau samedi 11h confirmé sans friction.',
+      transcription: [
+        { who: 'ai', text: 'Bonjour, Frizz pour votre salon.' },
+        { who: 'client', text: "C'est Mohamed. Comme d'habitude samedi 11h ?" },
+        { who: 'ai', text: 'Bien sûr Mohamed. Coupe + barbe avec Mehdi, 11h samedi. À samedi.' },
+      ],
+      created_at: new Date(now.getTime() - 3 * 3600 * 1000).toISOString(),
+    },
+  ]);
+
+  // Insert demo RDV
+  if (insertedBarbiers && insertedBarbiers.length > 0) {
+    const tomorrow9 = new Date();
+    tomorrow9.setDate(tomorrow9.getDate() + 1);
+    tomorrow9.setHours(9, 0, 0, 0);
+    const tomorrow11 = new Date(tomorrow9);
+    tomorrow11.setHours(11, 0);
+    const tomorrow15 = new Date(tomorrow9);
+    tomorrow15.setHours(15, 0);
+
+    await supa.from('frizz_ai_rdv').insert([
+      { salon_id: sId, barbier_id: insertedBarbiers[0].id, client_nom: 'Adam S.', date_heure: tomorrow9.toISOString(), statut: 'confirme' },
+      { salon_id: sId, barbier_id: insertedBarbiers[0].id, client_nom: 'Mohamed L.', date_heure: tomorrow11.toISOString(), statut: 'confirme' },
+      { salon_id: sId, barbier_id: insertedBarbiers[1].id, client_nom: 'Antoine D.', date_heure: tomorrow15.toISOString(), statut: 'a_confirmer' },
+    ]);
+  }
+}
+
+function refreshAllRenders() {
+  renderRecent();
+  renderInbox();
+  renderAgenda();
+  renderShops();
+  renderConfigLists();
+  syncFrizzToggleFromSalon();
+}
 
 async function logout() {
   await supa.auth.signOut();
@@ -1917,32 +2132,77 @@ function startPushSchedule() {
 }
 setTimeout(startPushSchedule, 4000);
 /* ─── Shop picker ──────────────────────────────────────── */
-const shops = [
-  { id: 1, name: "Cut Studio", city: "Paris 11e", initials: "CS", active: true },
-  { id: 2, name: "Cut Studio Bastille", city: "Paris 12e", initials: "CB" },
-  { id: 3, name: "Cut Studio Belleville", city: "Paris 20e", initials: "CV" },
-];
+let shops = []; // Loaded from Supabase
+let prestations = []; // Loaded from Supabase
+let barbiers = []; // Loaded from Supabase
 
 function renderShops() {
-  document.getElementById('shopList').innerHTML = shops.map(s => `
+  const list = document.getElementById('shopList');
+  if (!list) return;
+  list.innerHTML = shops.map(s => `
     <button class="modal-cell ${s.active ? 'active' : ''}" data-shop-id="${s.id}">
       <div class="modal-shop-icon">${s.initials}</div>
       <div class="modal-shop-info">
         <div class="modal-shop-name">${s.name}</div>
-        <div class="modal-shop-meta">${s.city}</div>
+        <div class="modal-shop-meta">${s.city || ''}</div>
       </div>
       <svg class="modal-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
     </button>`).join('');
   document.querySelectorAll('.modal-cell').forEach(cell => {
-    cell.addEventListener('click', () => {
-      const id = parseInt(cell.dataset.shopId, 10);
+    cell.addEventListener('click', async () => {
+      const id = cell.dataset.shopId;
       shops.forEach(s => s.active = s.id === id);
       const shop = shops.find(s => s.id === id);
       document.getElementById('shopName').textContent = shop.name;
-      renderShops();
+      // Switch active salon
+      try { localStorage.setItem('frizz_current_salon', id); } catch(e) {}
       closeModal();
+      // Reload data for new salon
+      currentSalon = { id, nom: shop.name };
+      salonIcalToken = id;
+      await Promise.all([loadPrestations(), loadBarbiers(), loadAppels(), loadRdv()]);
+      refreshAllRenders();
     });
   });
+}
+
+function renderConfigLists() {
+  // Prestations
+  const presEl = document.getElementById('prestationsList');
+  if (presEl) {
+    const rows = prestations.map(p => `
+      <button class="cell" onclick="showToast('Édition à venir')">
+        <div class="cell-main">
+          <div class="cell-title">${escapeHtml(p.nom)}</div>
+          <div class="cell-subtitle">${p.duree_minutes} min</div>
+        </div>
+        <span class="cell-value">${(p.prix_centimes / 100).toFixed(0)} €</span>
+        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>`).join('');
+    presEl.innerHTML = rows + `
+      <button class="cell" onclick="openAddModal('prestation')">
+        <div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div>
+      </button>`;
+  }
+  // Barbiers
+  const barbEl = document.getElementById('barbiersList');
+  if (barbEl) {
+    const rows = barbiers.map(b => `
+      <button class="cell" onclick="showToast('Édition à venir')">
+        <div class="cell-main"><div class="cell-title">${escapeHtml(b.prenom)}</div></div>
+        <span class="cell-value">${escapeHtml(b.disponibilite || '')}</span>
+        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>`).join('');
+    barbEl.innerHTML = rows + `
+      <button class="cell" onclick="openAddModal('barbier')">
+        <div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div>
+      </button>`;
+  }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 function openModal() {
   document.getElementById('modalBackdrop').classList.add('open');
@@ -1960,130 +2220,9 @@ document.getElementById('modalAdd').addEventListener('click', () => {
   setTimeout(() => openAddModal('salon'), 300);
 });
 
-const calls = [
-  {
-    id: 1, time: "15:42", duration: "2:08", date: "Jeudi 7 mai · 15:42",
-    name: "Karim B.", phone: "06 12 34 56 78", prestation: "Coupe + barbe · Mehdi",
-    criticity: "urgent", price: "40€",
-    booking: { tag: "À confirmer · Acompte requis", when: "Vendredi 8 mai · 14h00", service: "Coupe + barbe avec Mehdi", duration: "45 min", price: "40 €", deposit: "10 € (2 no-shows précédents)" },
-    summary: "Karim a déjà annulé 2 fois sans prévenir. Frizz a demandé un acompte de 10€ avant de confirmer. À valider une fois l'acompte reçu.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz à votre écoute pour Cut Studio. Comment puis-je vous aider ?" },
-      { who: "client", text: "Salut, c'est Karim. Je voudrais un rendez-vous demain après-midi pour une coupe et la barbe." },
-      { who: "ai", text: "Bien sûr Karim. J'ai un créneau à 14h avec Mehdi, ça vous irait ?" },
-      { who: "client", text: "Parfait, à 14h c'est bon." },
-      { who: "ai", text: "Je vois que vous avez deux rendez-vous manqués récents. Pour confirmer celui-ci, on demande un acompte de 10 euros par lien. Vous recevrez un SMS dans une minute." },
-      { who: "client", text: "Pas de souci, je règle." },
-      { who: "ai", text: "Merci Karim. Le rendez-vous sera confirmé dès réception. À demain 14h." },
-    ]
-  },
-  {
-    id: 2, time: "14:18", duration: "1:54", date: "Jeudi 7 mai · 14:18",
-    name: "Antoine D.", phone: "07 88 99 11 22", prestation: "Fade · à choisir",
-    criticity: "urgent", price: "28-35€",
-    booking: { tag: "Premier client · à valider", when: "Vendredi 8 mai · 17h00", service: "Fade (barbier à confirmer)", duration: "30-45 min", price: "28-35 €", deposit: "—" },
-    summary: "Premier appel, demande un fade. Pas sûr du barbier. Mehdi ou Yacine peuvent le prendre — à toi de trancher.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio. Que puis-je faire pour vous ?" },
-      { who: "client", text: "Bonjour, je voudrais un fade pour demain si possible." },
-      { who: "ai", text: "Avec plaisir. C'est votre première fois chez nous ?" },
-      { who: "client", text: "Oui, on m'a recommandé." },
-      { who: "ai", text: "Parfait. J'ai 17h disponible avec Mehdi ou Yacine. Vous avez une préférence ?" },
-      { who: "client", text: "Aucune, le premier dispo." },
-      { who: "ai", text: "Très bien, je note 17h. Mehdi ou Yacine vous confirmera. Vous serez prévenu par SMS." },
-    ]
-  },
-  {
-    id: 3, time: "13:32", duration: "1:24", date: "Jeudi 7 mai · 13:32",
-    name: "Mohamed L.", phone: "06 55 44 33 22", prestation: "Coupe + barbe · Mehdi",
-    criticity: "scheduled", price: "40€",
-    booking: { tag: "Confirmé", when: "Samedi 9 mai · 11h00", service: "Coupe + barbe avec Mehdi", duration: "45 min", price: "40 €", deposit: "—" },
-    summary: "Client habitué, prend toujours le même créneau samedi matin. RDV confirmé sans friction.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "Salut, c'est Mohamed. Comme d'habitude samedi 11h ?" },
-      { who: "ai", text: "Bien sûr Mohamed, je note. Coupe et barbe avec Mehdi, 11h samedi." },
-      { who: "client", text: "Top, merci." },
-      { who: "ai", text: "À samedi." },
-    ]
-  },
-  {
-    id: 4, time: "12:47", duration: "1:12", date: "Jeudi 7 mai · 12:47",
-    name: "Lucas M.", phone: "07 12 23 34 45", prestation: "Coupe enfant · Yacine",
-    criticity: "scheduled", price: "22€",
-    booking: { tag: "Confirmé", when: "Mercredi 13 mai · 16h30", service: "Coupe enfant avec Yacine", duration: "25 min", price: "22 €", deposit: "—" },
-    summary: "Maman appelle pour son fils de 7 ans. RDV mercredi après-midi avec Yacine (habitué aux enfants).",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "Bonjour, je voudrais un rendez-vous pour mon fils de 7 ans." },
-      { who: "ai", text: "Avec plaisir. J'ai mercredi 16h30 avec Yacine, qui s'occupe très bien des enfants. Ça convient ?" },
-      { who: "client", text: "Mercredi parfait." },
-      { who: "ai", text: "C'est noté, mercredi 16h30 pour Lucas avec Yacine." },
-    ]
-  },
-  {
-    id: 5, time: "11:15", duration: "0:48", date: "Jeudi 7 mai · 11:15",
-    name: "Yanis R.", phone: "06 33 22 11 00", prestation: "Barbe seule · Sami",
-    criticity: "scheduled", price: "20€",
-    booking: { tag: "Confirmé", when: "Jeudi 7 mai · 18h30", service: "Barbe seule avec Sami", duration: "20 min", price: "20 €", deposit: "—" },
-    summary: "Appel rapide, RDV pour ce soir même. Créneau 18h30 dispo avec Sami.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "Vous avez de la place pour une barbe ce soir ?" },
-      { who: "ai", text: "Oui, 18h30 avec Sami, ça vous va ?" },
-      { who: "client", text: "Parfait." },
-      { who: "ai", text: "Noté pour 18h30, à tout à l'heure." },
-    ]
-  },
-  {
-    id: 6, time: "10:23", duration: "0:42", date: "Jeudi 7 mai · 10:23",
-    name: "Hors zone", phone: "06 78 90 12 34", prestation: "Demande adresse",
-    criticity: "out", price: "—",
-    booking: null,
-    summary: "Demande de renseignements. Frizz a donné l'adresse et les horaires. Pas de RDV pris.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "Vous êtes où exactement ?" },
-      { who: "ai", text: "Au 24 rue Oberkampf, Paris 11e. Ouvert du lundi au samedi." },
-      { who: "client", text: "OK merci, je vais voir." },
-    ]
-  },
-  {
-    id: 7, time: "09:51", duration: "0:18", date: "Jeudi 7 mai · 09:51",
-    name: "Démarchage", phone: "01 80 90 12 34", prestation: "Vente assurance",
-    criticity: "spam", price: "—",
-    booking: null,
-    summary: "Démarchage commercial pour une assurance pro. Frizz a poliment décliné et raccroché.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "Bonjour, je vous appelle de la part de votre assurance pro pour un nouvel offre…" },
-      { who: "ai", text: "Désolé, nous ne sommes pas intéressés par les démarchages. Bonne journée." },
-    ]
-  },
-  {
-    id: 8, time: "09:14", duration: "1:02", date: "Jeudi 7 mai · 09:14",
-    name: "Adam S.", phone: "07 99 88 77 66", prestation: "Coupe homme · Mehdi",
-    criticity: "scheduled", price: "28€",
-    booking: { tag: "Confirmé", when: "Jeudi 7 mai · 09h00", service: "Coupe homme avec Mehdi", duration: "30 min", price: "28 €", deposit: "—" },
-    summary: "Premier RDV de la journée, RAS. Adam a confirmé sa venue.",
-    transcript: [
-      { who: "ai", text: "Bonjour, Frizz pour Cut Studio." },
-      { who: "client", text: "C'est Adam, je voulais juste confirmer que je viens à 9h." },
-      { who: "ai", text: "Parfait Adam, c'est bien noté. À tout à l'heure." },
-    ]
-  },
-];
+let calls = []; // Loaded from Supabase
 const cMap = { urgent: "Urgent", scheduled: "Confirmé", out: "Hors zone", spam: "Filtré" };
-const slots = [
-  { time: "09:00", type: "intervention", title: "Adam S. — Coupe homme", barber: "Mehdi", color: "scheduled" },
-  { time: "10:00", type: "intervention", title: "Yanis R. — Barbe seule", barber: "Sami", color: "scheduled" },
-  { time: "10:45", type: "pause", title: "Pause" },
-  { time: "11:00", type: "intervention", title: "Mohamed L. — Coupe + barbe", barber: "Mehdi", color: "scheduled" },
-  { time: "12:30", type: "pause", title: "Déjeuner" },
-  { time: "13:30", type: "intervention", title: "Lucas M. — Coupe enfant", barber: "Yacine", color: "scheduled" },
-  { time: "15:00", type: "intervention", title: "Antoine D. — Fade", barber: "Yacine", color: "urgent" },
-  { time: "17:30", type: "intervention", title: "Hugo P. — Coupe + barbe", barber: "Mehdi", color: "scheduled" },
-];
+let slots = []; // Loaded from Supabase
 const peakData = [18, 28, 35, 50, 60, 70, 100, 88, 55, 72, 80, 64, 30, 12, 5, 2];
 
 function navigate(pageId) {
@@ -2243,10 +2382,60 @@ function closeAddModal() {
     document.querySelector('.add-modal-actions').style.display = '';
   }, 400);
 }
-function confirmAddModal() {
-  const successMap = { prestation: 'Prestation ajoutée', barbier: 'Barbier ajouté', salon: 'Salon ajouté' };
-  closeAddModal();
-  showToast(successMap[currentAddType] || 'Ajouté');
+async function confirmAddModal() {
+  if (!currentSalon) {
+    showToast('Salon non chargé');
+    return;
+  }
+  try {
+    if (currentAddType === 'prestation') {
+      const nom = document.getElementById('add-name')?.value.trim();
+      const dureeStr = document.getElementById('add-duration')?.value.trim() || '';
+      const prixStr = document.getElementById('add-price')?.value.trim() || '';
+      const duree = parseInt(dureeStr.replace(/\D/g, ''), 10) || 30;
+      const prix = parseFloat(prixStr.replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+      if (!nom) { showToast('Nom requis'); return; }
+      const { error } = await supa.from('frizz_ai_prestations').insert({
+        salon_id: currentSalon.id,
+        nom, duree_minutes: duree,
+        prix_centimes: Math.round(prix * 100),
+        ordre: prestations.length,
+      });
+      if (error) throw error;
+      await loadPrestations();
+      renderConfigLists();
+      closeAddModal();
+      showToast('Prestation ajoutée');
+    } else if (currentAddType === 'barbier') {
+      const prenom = document.getElementById('add-name')?.value.trim();
+      const dispo = document.getElementById('add-availability')?.value.trim() || '';
+      if (!prenom) { showToast('Prénom requis'); return; }
+      const { error } = await supa.from('frizz_ai_barbiers').insert({
+        salon_id: currentSalon.id,
+        prenom, disponibilite: dispo, ordre: barbiers.length,
+      });
+      if (error) throw error;
+      await loadBarbiers();
+      renderConfigLists();
+      closeAddModal();
+      showToast('Barbier ajouté');
+    } else if (currentAddType === 'salon') {
+      const nom = document.getElementById('add-name')?.value.trim();
+      const ville = document.getElementById('add-address')?.value.trim() || '';
+      if (!nom) { showToast('Nom du salon requis'); return; }
+      const { data, error } = await supa.from('frizz_ai_salons').insert({
+        user_id: currentUser.id, nom, ville, actif: true,
+      }).select().single();
+      if (error) throw error;
+      // Add to shops list and switch to it
+      shops.push({ id: data.id, name: data.nom, city: data.ville || '', initials: data.nom.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(), active: false });
+      closeAddModal();
+      showToast('Salon ajouté');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast(err.message || 'Erreur');
+  }
 }
 document.getElementById('addModalBackdrop').addEventListener('click', closeAddModal);
 
@@ -2452,7 +2641,7 @@ function setVoice(name) {
 
 /* ─── Frizz on/off toggle ─── */
 let frizzActive = true;
-function toggleFrizz() {
+async function toggleFrizz() {
   frizzActive = !frizzActive;
   const toggle = document.getElementById('frizzToggle');
   const icon = document.getElementById('frizzIcon');
@@ -2472,6 +2661,26 @@ function toggleFrizz() {
     subtitle.textContent = 'Désactivé';
     showToast('Frizz désactivé');
   }
+  // Persist to DB
+  if (currentSalon) {
+    try {
+      await supa.from('frizz_ai_salons').update({ actif: frizzActive }).eq('id', currentSalon.id);
+    } catch (e) { console.error(e); }
+  }
+}
+
+function syncFrizzToggleFromSalon() {
+  if (!currentSalon) return;
+  frizzActive = currentSalon.actif !== false;
+  const toggle = document.getElementById('frizzToggle');
+  const icon = document.getElementById('frizzIcon');
+  const subtitle = document.getElementById('frizzSubtitle');
+  if (!toggle) return;
+  toggle.classList.toggle('active', frizzActive);
+  icon.classList.toggle('active', frizzActive);
+  icon.classList.toggle('inactive', !frizzActive);
+  subtitle.classList.toggle('active', frizzActive);
+  subtitle.textContent = frizzActive ? 'Actif · répond à vos appels' : 'Désactivé';
 }
 
 function attachSwipeHandlers() {
@@ -2519,18 +2728,21 @@ function attachSwipeHandlers() {
   }, { capture: true });
 }
 
-function archiveCall(id) {
+async function archiveCall(id) {
   const idx = calls.findIndex(c => c.id === id);
   if (idx >= 0) calls.splice(idx, 1);
   renderInbox();
   renderRecent();
+  // Soft archive: just delete for now (could add a `archived` column later)
+  try { await supa.from('frizz_ai_appels').delete().eq('id', id); } catch(e) {}
   showToast('Appel archivé');
 }
-function deleteCall(id) {
+async function deleteCall(id) {
   const idx = calls.findIndex(c => c.id === id);
   if (idx >= 0) calls.splice(idx, 1);
   renderInbox();
   renderRecent();
+  try { await supa.from('frizz_ai_appels').delete().eq('id', id); } catch(e) {}
   showToast('Appel supprimé');
 }
 

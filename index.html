@@ -2270,12 +2270,6 @@
 
   <!-- ═══ FRIZZ PRO PREMIUM CARD ════════════════════════ -->
   <div class="pro-card" id="proCard" onclick="onProCardTap()">
-    <span class="pro-sparkle"></span>
-    <span class="pro-sparkle"></span>
-    <span class="pro-sparkle"></span>
-    <span class="pro-sparkle"></span>
-    <span class="pro-sparkle"></span>
-
     <div class="pro-header">
       <div class="pro-badge" id="proBadge">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
@@ -2776,7 +2770,21 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─── Frizz Pro premium card ─────────────────────────── */
 function syncProCard() {
   if (!currentSalon) return;
-  const status = currentSalon.subscription_status || 'inactive';
+  let status = currentSalon.subscription_status || 'inactive';
+
+  // Auto-expire le trial si dépassé
+  let daysLeft = null;
+  if (status === 'trialing' && currentSalon.trial_end) {
+    const end = new Date(currentSalon.trial_end);
+    const now = new Date();
+    const msLeft = end.getTime() - now.getTime();
+    if (msLeft <= 0) {
+      status = 'inactive'; // trial expiré
+    } else {
+      daysLeft = Math.ceil(msLeft / (24 * 3600 * 1000));
+    }
+  }
+
   const card = document.getElementById('proCard');
   const badge = document.getElementById('proBadgeText');
   const title = document.getElementById('proTitle');
@@ -2786,13 +2794,21 @@ function syncProCard() {
   const ctaSub = document.getElementById('proCtaSub');
   if (!card) return;
 
-  if (status === 'trialing' || status === 'active') {
+  if (status === 'trialing') {
     card.classList.add('active');
-    badge.textContent = status === 'trialing' ? 'Essai en cours' : 'Frizz Pro actif';
-    title.innerHTML = status === 'trialing' ? 'Votre essai<br>14 jours' : 'Frizz Pro<br>actif';
-    subtitle.textContent = status === 'trialing'
-      ? 'Profitez de toutes les fonctionnalités, sans engagement.'
-      : 'Merci ! Frizz prend les appels et les RDV pour vous.';
+    badge.textContent = 'Essai en cours';
+    title.innerHTML = daysLeft === 1
+      ? `Dernier jour<br>d'essai`
+      : `${daysLeft} jours<br>d'essai restants`;
+    subtitle.textContent = 'Profitez de toutes les fonctionnalités. Sans engagement.';
+    if (priceRow) priceRow.style.display = 'none';
+    cta.textContent = 'Activer mon abonnement';
+    ctaSub.textContent = '49€/mois après l\'essai · annulation libre';
+  } else if (status === 'active') {
+    card.classList.add('active');
+    badge.textContent = 'Frizz Pro actif';
+    title.innerHTML = 'Frizz Pro<br>actif';
+    subtitle.textContent = 'Merci ! Frizz prend les appels et les RDV pour vous.';
     if (priceRow) priceRow.style.display = 'none';
     cta.textContent = 'Gérer mon abonnement';
     ctaSub.textContent = 'Modifier · facturation · annuler';
@@ -2802,8 +2818,8 @@ function syncProCard() {
     title.innerHTML = "L'IA qui répond<br>à vos appels 24/7";
     subtitle.textContent = 'Ne ratez plus jamais un client. Frizz prend le relais quand vous coupez.';
     if (priceRow) priceRow.style.display = 'flex';
-    cta.textContent = 'Essayer 14 jours gratuits';
-    ctaSub.textContent = 'Sans carte requise · annulation libre';
+    cta.textContent = 'S\'abonner maintenant';
+    ctaSub.textContent = '49€/mois · annulation libre';
   }
 }
 
@@ -2817,10 +2833,14 @@ async function onProCtaClick() {
     showToast('Salon non chargé');
     return;
   }
-  const status = currentSalon.subscription_status || 'inactive';
+  let status = currentSalon.subscription_status || 'inactive';
+  // Si trial expiré, on traite comme inactive
+  if (status === 'trialing' && currentSalon.trial_end) {
+    if (new Date(currentSalon.trial_end).getTime() <= Date.now()) status = 'inactive';
+  }
 
   try {
-    if (status === 'active' || status === 'trialing') {
+    if (status === 'active') {
       // Open Stripe billing portal
       showToast('Ouverture du portail…');
       const { data, error } = await supa.functions.invoke('stripe-billing-portal', {
@@ -2833,13 +2853,14 @@ async function onProCtaClick() {
         showToast('URL portail manquante');
       }
     } else {
-      // Start checkout (14d trial)
+      // Trial déjà commencé au signup → checkout sans trial supplémentaire
+      // (trialing OU inactive → on pousse vers la facturation Stripe)
       showToast('Création de la session…');
       const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
         body: {
           salon_id: currentSalon.id,
           plan: 'frizz_pro_monthly',
-          trial_days: 14,
+          trial_days: 0, // L'essai a déjà eu lieu côté Frizz
           success_url: window.location.origin + window.location.pathname + '?paid=1',
           cancel_url: window.location.href,
         },

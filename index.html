@@ -2028,6 +2028,68 @@
 
 
 <!-- ═══ DESKTOP SIDEBAR (visible ≥1024px) ════════════════ -->
+<!-- ═══ PAYWALL OVERLAY (plein écran si trial expiré) ════ -->
+<div id="paywallOverlay" style="display: none; position: fixed; inset: 0; z-index: 9999; background: var(--bg); overflow-y: auto;">
+  <div style="max-width: 460px; margin: 0 auto; min-height: 100vh; padding: 40px 24px max(48px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+
+    <!-- Logo orange arrondi -->
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 72px; height: 72px; border-radius: 18px; margin-bottom: 28px; filter: drop-shadow(0 8px 24px rgba(255, 149, 0, 0.40));">
+      <defs>
+        <linearGradient id="pwGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FFB347"/>
+          <stop offset="100%" stop-color="#FF7A00"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#pwGrad)"/>
+      <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+    </svg>
+
+    <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.030em; line-height: 1.15; text-align: center; margin-bottom: 12px; color: var(--label);">Votre essai gratuit<br>est terminé</h1>
+
+    <p style="font-size: 15px; color: var(--label-secondary); text-align: center; line-height: 1.45; max-width: 360px; margin-bottom: 28px; letter-spacing: -0.012em;">
+      Pour continuer à profiter de Frizz et ne plus jamais rater un appel, abonnez-vous à Frizz Pro.
+    </p>
+
+    <!-- Card prix -->
+    <div style="background: var(--bg-secondary); border: 0.5px solid var(--separator); border-radius: 18px; padding: 22px; width: 100%; max-width: 360px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);">
+      <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px;">
+        <span style="font-size: 38px; font-weight: 700; letter-spacing: -0.04em; color: var(--label);">49</span>
+        <span style="font-size: 15px; font-weight: 500; color: var(--label-secondary);">€/mois</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px;">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
+          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 149, 0, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Réponse 24h/24, 7j/7
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
+          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 149, 0, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Prise de RDV automatique
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
+          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 149, 0, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Annulation libre, à tout moment
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA principal -->
+    <button id="paywallSubscribeBtn" onclick="onPaywallSubscribe()" style="width: 100%; max-width: 360px; padding: 16px 20px; background: var(--blue); color: white; font-size: 17px; font-weight: 600; letter-spacing: -0.018em; border-radius: 14px; box-shadow: 0 8px 20px rgba(255, 149, 0, 0.30); margin-bottom: 12px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);">
+      S'abonner maintenant
+    </button>
+
+    <button onclick="onPaywallLogout()" style="font-size: 14px; color: var(--label-secondary); padding: 8px 12px; background: none;">
+      Me déconnecter
+    </button>
+  </div>
+</div>
+
+
 <aside class="desktop-sidebar" id="desktopSidebar">
   <div class="ds-logo-row">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="border-radius: 8px;">
@@ -2417,7 +2479,7 @@
 
   <div class="duo">
     <div class="duo-card">
-      <div class="duo-label">Appels pris</div>
+      <div class="duo-label">Nouveaux clients</div>
       <div class="duo-value"><span data-counter="0">0</span></div>
     </div>
     <div class="duo-card">
@@ -2708,6 +2770,12 @@ async function loadAllData() {
     try { activeId = localStorage.getItem('frizz_current_salon'); } catch(e) {}
     currentSalon = userSalons.find(s => s.id === activeId) || userSalons[0];
 
+    // ─── Vérification paywall (trial expiré + non abonné = blocage) ───
+    if (!checkSubscriptionAccess(currentSalon)) {
+      showPaywall();
+      return; // Arrête le loadAllData → pas d'autres chargements
+    }
+
     // Update topbar
     document.getElementById('shopName').textContent = currentSalon.nom;
     // Update desktop sidebar shop name
@@ -2733,6 +2801,7 @@ async function loadAllData() {
       loadBarbiers(),
       loadAppels(),
       loadRdv(),
+      loadNewClientsCount(),
     ]);
 
     dataLoaded = true;
@@ -2790,6 +2859,110 @@ async function loadAppels() {
 }
 
 let rdvRaw = []; // Full RDV data with raw timestamps + barbier_id
+let newClientsThisMonth = 0; // Calculé par loadNewClientsCount()
+
+/* ─── Paywall : vérifie si l'utilisateur peut accéder à l'app ─── */
+function checkSubscriptionAccess(salon) {
+  if (!salon) return false;
+  const status = salon.subscription_status || 'inactive';
+  // Statuts payants OK
+  if (status === 'active') return true;
+  // Trial valide tant que trial_end > now
+  if (status === 'trialing') {
+    if (!salon.trial_end) return false; // pas de date = considéré expiré (sécurité)
+    const end = new Date(salon.trial_end);
+    return end.getTime() > Date.now();
+  }
+  // 'inactive', 'canceled', 'past_due', 'unpaid' → bloqué
+  return false;
+}
+
+function showPaywall() {
+  const overlay = document.getElementById('paywallOverlay');
+  if (overlay) overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function hidePaywall() {
+  const overlay = document.getElementById('paywallOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function onPaywallSubscribe() {
+  if (!currentSalon) return;
+  const btn = document.getElementById('paywallSubscribeBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Création de la session…'; }
+  try {
+    const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
+      body: {
+        salon_id: currentSalon.id,
+        plan: 'frizz_pro_monthly',
+        trial_days: 0, // L'essai a déjà eu lieu
+        success_url: window.location.origin + window.location.pathname + '?paid=1',
+        cancel_url: window.location.href,
+      },
+    });
+    if (error) throw error;
+    if (data && data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error('URL Stripe manquante');
+    }
+  } catch (e) {
+    console.error('Paywall subscribe error', e);
+    if (btn) { btn.disabled = false; btn.textContent = "S'abonner maintenant"; }
+    alert("Erreur · " + (e.message || 'inconnue'));
+  }
+}
+
+async function onPaywallLogout() {
+  await supa.auth.signOut();
+  window.location.href = 'landing.html';
+}
+
+async function loadNewClientsCount() {
+  if (!currentSalon) { newClientsThisMonth = 0; return; }
+  try {
+    // Récupère tous les numéros + dates depuis appels et RDV
+    const [appelsRes, rdvsRes] = await Promise.all([
+      supa.from('frizz_ai_appels')
+        .select('numero_client, created_at')
+        .eq('salon_id', currentSalon.id)
+        .not('numero_client', 'is', null),
+      supa.from('frizz_ai_rdv')
+        .select('client_telephone, date_heure')
+        .eq('salon_id', currentSalon.id)
+        .not('client_telephone', 'is', null),
+    ]);
+
+    // Map: numero -> first_seen (date la plus ancienne pour ce numéro)
+    const firstSeen = new Map();
+    const addObs = (numRaw, dateStr) => {
+      if (!numRaw) return;
+      const num = String(numRaw).replace(/\s+/g, '').trim();
+      if (!num) return;
+      const d = new Date(dateStr);
+      if (isNaN(d)) return;
+      const existing = firstSeen.get(num);
+      if (!existing || d < existing) firstSeen.set(num, d);
+    };
+    (appelsRes.data || []).forEach(a => addObs(a.numero_client, a.created_at));
+    (rdvsRes.data || []).forEach(r => addObs(r.client_telephone, r.date_heure));
+
+    // Compter ceux dont first_seen est dans le mois en cours
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    let count = 0;
+    for (const d of firstSeen.values()) {
+      if (d >= monthStart) count++;
+    }
+    newClientsThisMonth = count;
+  } catch (e) {
+    console.error('loadNewClientsCount', e);
+    newClientsThisMonth = 0;
+  }
+}
 
 async function loadRdv() {
   const { data } = await supa
@@ -2867,12 +3040,12 @@ function updateStats() {
     }
   }
 
-  // Duo cards: appels traités + conversion
+  // Duo cards: Nouveaux clients (mois) + Conversion
   const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
   const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
   const scheduledCount = calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
-  if (duoCalls) duoCalls.setAttribute('data-counter', totalCalls);
+  if (duoCalls) duoCalls.setAttribute('data-counter', newClientsThisMonth);
   if (duoConv) duoConv.setAttribute('data-counter', conversion);
   animateCounters();
 
@@ -3785,17 +3958,16 @@ function setPeriod(period) {
     cutoff = new Date(now.getFullYear(), now.getMonth(), 1);
   }
 
-  // We don't have raw timestamps in mapped calls, so use full list as approximation.
-  // For a real implementation, we'd need to filter by created_at on Supabase side.
+  // Pour la duo-card on garde nouveaux clients (toujours sur le mois) + conversion (sur la période)
   const filtered = calls; // TODO: filter by period when we keep raw timestamps
   const totalCalls = filtered.length;
   const scheduledCount = filtered.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
-  const estimatedRevenue = scheduledCount * 30;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
 
-  document.querySelector('.hero-value [data-counter]').setAttribute('data-counter', estimatedRevenue);
-  document.querySelectorAll('.duo-value [data-counter]')[0].setAttribute('data-counter', totalCalls);
-  document.querySelectorAll('.duo-value [data-counter]')[1].setAttribute('data-counter', conversion);
+  const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
+  const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
+  if (duoCalls) duoCalls.setAttribute('data-counter', newClientsThisMonth);
+  if (duoConv) duoConv.setAttribute('data-counter', conversion);
   animateCounters();
 }
 

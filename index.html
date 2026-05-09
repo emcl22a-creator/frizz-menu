@@ -2643,10 +2643,24 @@ function updateStats() {
   if (duoConv) duoConv.setAttribute('data-counter', conversion);
   animateCounters();
 
+  // Chart "Heures de pointe" : compter les RDV par heure (8h-23h)
+  const buckets = new Array(16).fill(0);
+  validRdv.forEach(r => {
+    const h = r.dateObj.getHours();
+    if (h >= 8 && h <= 23) buckets[h - 8]++;
+  });
+  renderChartWithData(buckets);
+
   // Chart meta
   const chartMeta = document.getElementById('chartMeta');
   if (chartMeta) {
-    chartMeta.textContent = totalCalls > 0 ? 'Pic 14h–15h' : 'Pas encore de données';
+    if (validRdv.length === 0) {
+      chartMeta.textContent = 'Pas encore de données';
+    } else {
+      const peakIdx = buckets.indexOf(Math.max(...buckets));
+      const peakHour = peakIdx + 8;
+      chartMeta.textContent = `Pic ${peakHour}h–${peakHour + 1}h`;
+    }
   }
 
   // Sync profile inputs and pro card state
@@ -3040,7 +3054,7 @@ document.getElementById('modalAdd').addEventListener('click', () => {
 
 let calls = []; // Loaded from Supabase
 const cMap = { urgent: "Urgent", scheduled: "Confirmé", out: "Hors zone", spam: "Filtré" };
-const peakData = [18, 28, 35, 50, 60, 70, 100, 88, 55, 72, 80, 64, 30, 12, 5, 2];
+const peakData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 8h à 23h, recalculé depuis rdvRaw
 
 function navigate(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -3918,19 +3932,21 @@ function callClient() { closeAddModal(); showToast('Appel en cours…'); }
 function cancelSlot() { closeAddModal(); showToast('RDV annulé'); }
 
 function renderChart() {
-  const max = Math.max(...peakData);
+  const max = Math.max(...peakData, 1); // évite division par 0
+  const total = peakData.reduce((a, b) => a + b, 0);
   document.getElementById('chart-bars').innerHTML = peakData.map(v => {
-    const h = (v / max) * 100;
-    const isPeak = v === max;
+    const h = total === 0 ? 0 : (v / max) * 100;
+    const isPeak = total > 0 && v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;
   }).join('');
 }
 
 function renderChartWithData(data) {
-  const max = Math.max(...data);
+  const max = Math.max(...data, 1);
+  const total = data.reduce((a, b) => a + b, 0);
   document.getElementById('chart-bars').innerHTML = data.map(v => {
-    const h = (v / max) * 100;
-    const isPeak = v === max;
+    const h = total === 0 ? 0 : (v / max) * 100;
+    const isPeak = total > 0 && v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;
   }).join('');
 }

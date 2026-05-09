@@ -179,13 +179,19 @@
   .group {
     margin: 0 16px;
     background: var(--bg-secondary);
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     border: 0.5px solid rgba(0, 0, 0, 0.08);
     box-shadow:
       0 6px 16px rgba(0, 0, 0, 0.06),
       0 2px 4px rgba(0, 0, 0, 0.04);
   }
+  /* Liste inbox : coins encore plus arrondis pour effet card */
+  #inbox-rows {
+    border-radius: 18px;
+  }
+  #inbox-rows .swipe-row:first-child .cell { border-top-left-radius: 18px; border-top-right-radius: 18px; }
+  #inbox-rows .swipe-row:last-child .cell { border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; }
   .group + .section-header { padding-top: 24px; }
 
   .cell {
@@ -2119,10 +2125,10 @@
         <input class="profile-input-field" id="barberEditDispo" type="text" placeholder="Ex : Lun-Ven 10-19h" />
       </div>
     </div>
-    <div style="padding: 16px;">
-      <button class="modal-cancel" style="width: 100%; background: var(--blue); color: white; padding: 14px; border-radius: 14px; font-size: 17px; font-weight: 600;" onclick="saveBarberEdit()">Enregistrer</button>
-      <button class="modal-cancel" style="width: 100%; color: var(--red); margin-top: 8px; padding: 14px; font-size: 17px; font-weight: 500;" onclick="deleteBarberEdit()">Supprimer ce coiffeur</button>
-      <button class="modal-cancel" style="width: 100%; color: var(--label-secondary); margin-top: 4px; padding: 12px; font-size: 15px;" onclick="closeBarberEdit()">Annuler</button>
+    <div style="padding: 16px; display: flex; gap: 8px;">
+      <button class="modal-cancel" style="flex: 1; color: var(--label-secondary); padding: 12px 8px; font-size: 14px; font-weight: 500; background: var(--fill-tertiary); border-radius: 12px;" onclick="closeBarberEdit()">Annuler</button>
+      <button class="modal-cancel" style="flex: 1; color: var(--red); padding: 12px 8px; font-size: 14px; font-weight: 500; background: rgba(255, 59, 48, 0.10); border-radius: 12px;" onclick="deleteBarberEdit()">Supprimer</button>
+      <button class="modal-cancel" style="flex: 1.4; background: var(--blue); color: white; padding: 12px 8px; border-radius: 12px; font-size: 14px; font-weight: 600;" onclick="saveBarberEdit()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -2406,9 +2412,6 @@
       <span class="chart-label">23</span>
     </div>
   </div>
-
-  <div class="section-header" id="aConfirmerHeader" style="display:none;">À confirmer</div>
-  <div class="group" id="aConfirmerList" style="display:none;"></div>
 
   <div class="section-header">Activité aujourd'hui</div>
   <div class="group" id="recent-list"></div>

@@ -427,9 +427,9 @@
     position: absolute;
     inset: -50%;
     background:
-      radial-gradient(circle at 20% 30%, rgba(175, 82, 222, 0.55) 0%, transparent 35%),
+      radial-gradient(circle at 20% 30%, rgba(102, 178, 255, 0.50) 0%, transparent 35%),
       radial-gradient(circle at 80% 20%, rgba(0, 122, 255, 0.55) 0%, transparent 35%),
-      radial-gradient(circle at 50% 80%, rgba(255, 65, 130, 0.45) 0%, transparent 35%);
+      radial-gradient(circle at 50% 80%, rgba(64, 156, 255, 0.45) 0%, transparent 35%);
     animation: proOrbsFloat 14s ease-in-out infinite;
     z-index: -1;
     filter: blur(8px);
@@ -439,7 +439,7 @@
     33% { transform: translate(8%, -6%) rotate(120deg); }
     66% { transform: translate(-6%, 8%) rotate(240deg); }
   }
-  /* Shimmer pass */
+  /* Shimmer pass — DÉSACTIVÉ
   .pro-card::after {
     content: '';
     position: absolute;
@@ -453,6 +453,7 @@
     0%, 100% { left: -100%; }
     50% { left: 200%; }
   }
+  */
   .pro-sparkle {
     position: absolute;
     width: 6px; height: 6px;
@@ -2170,7 +2171,7 @@
     </div>
     <div class="trio-sep"></div>
     <div class="trio-cell">
-      <div class="trio-label">Cette semaine</div>
+      <div class="trio-label">Semaine</div>
       <div class="trio-value" id="trioWeek">0</div>
       <div class="trio-sub">RDV</div>
     </div>
@@ -2389,23 +2390,11 @@
   <div class="section-header">Compte</div>
   <div class="group">
     <div class="profile-input-row">
-      <label class="profile-input-label">Prénom</label>
-      <input class="profile-input-field" id="profilePrenom" type="text" placeholder="Votre prénom" autocomplete="given-name" onchange="saveProfile()" />
-    </div>
-    <div class="profile-input-row">
-      <label class="profile-input-label">Nom</label>
-      <input class="profile-input-field" id="profileNom" type="text" placeholder="Votre nom" autocomplete="family-name" onchange="saveProfile()" />
-    </div>
-    <div class="profile-input-row">
-      <label class="profile-input-label">Téléphone</label>
-      <input class="profile-input-field" id="profileTelephone" type="tel" placeholder="06 12 34 56 78" autocomplete="tel" onchange="saveProfile()" />
-    </div>
-    <div class="profile-input-row">
       <label class="profile-input-label">Email</label>
       <input class="profile-input-field" id="profileEmail" type="email" placeholder="email@exemple.com" autocomplete="email" onchange="saveProfile()" />
     </div>
   </div>
-  <div class="group">
+  <div class="group" style="margin-top: 36px;">
     <button class="cell" onclick="logout()">
       <div class="cell-main"><div class="cell-title" style="color: var(--red);">Se déconnecter</div></div>
     </button>
@@ -2603,11 +2592,10 @@ function updateStats() {
   const titleEl = document.getElementById('statsTitle');
   const subEl = document.getElementById('statsSub');
   if (titleEl) {
-    // Prefer profile prenom, then first barbier, then salon name
-    const profilePrenom = (currentSalon && currentSalon.patron_prenom) || '';
+    // Prénom préféré : premier barbier, sinon nom du salon
     const firstBarber = (barbiers && barbiers.length > 0 && barbiers[0].prenom) || '';
     const salonName = (currentSalon && currentSalon.nom) || '';
-    const firstName = profilePrenom || firstBarber || salonName;
+    const firstName = firstBarber || salonName;
     titleEl.innerHTML = firstName
       ? `Bonjour ${escapeHtml(firstName)} <span class="wave">👋</span>`
       : `Bonjour <span class="wave">👋</span>`;
@@ -2671,11 +2659,11 @@ let profileSaveTimer = null;
 
 function syncProfileForm() {
   if (!currentSalon) return;
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-  set('profilePrenom', currentSalon.patron_prenom);
-  set('profileNom', currentSalon.patron_nom);
-  set('profileTelephone', currentSalon.patron_telephone);
-  set('profileEmail', currentSalon.patron_email);
+  const emailEl = document.getElementById('profileEmail');
+  if (emailEl) {
+    // Préfère l'email enregistré dans le salon, sinon celui du compte auth
+    emailEl.value = currentSalon.patron_email || (currentUser && currentUser.email) || '';
+  }
 }
 
 async function saveProfile() {
@@ -2683,22 +2671,21 @@ async function saveProfile() {
   // Debounce 400ms
   clearTimeout(profileSaveTimer);
   profileSaveTimer = setTimeout(async () => {
-    const get = id => (document.getElementById(id) || {}).value || '';
-    const payload = {
-      patron_prenom: get('profilePrenom').trim(),
-      patron_nom: get('profileNom').trim(),
-      patron_telephone: get('profileTelephone').trim(),
-      patron_email: get('profileEmail').trim(),
-    };
-    const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', currentSalon.id);
+    const emailEl = document.getElementById('profileEmail');
+    const email = (emailEl && emailEl.value || '').trim();
+    if (!email) {
+      showToast('Email requis');
+      return;
+    }
+    const { error } = await supa.from('frizz_ai_salons')
+      .update({ patron_email: email })
+      .eq('id', currentSalon.id);
     if (error) {
       showToast('Erreur de sauvegarde');
       console.error('saveProfile', error);
     } else {
-      Object.assign(currentSalon, payload);
-      showToast('Profil enregistré');
-      // Update title if prenom changed
-      updateStats();
+      currentSalon.patron_email = email;
+      showToast('Email enregistré');
     }
   }, 400);
 }

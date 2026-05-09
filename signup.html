@@ -423,13 +423,17 @@ form.addEventListener('submit', async (e) => {
     if (authError) throw authError;
     if (!authData.user) throw new Error('Erreur lors de la création du compte');
 
-    // 2. Créer le salon associé
+    // 2. Créer le salon associé avec essai 14 jours actif
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 14);
     const { error: salonError } = await supa
       .from('frizz_ai_salons')
       .insert({
         user_id: authData.user.id,
         nom: salonNom,
         actif: true,
+        subscription_status: 'trialing',
+        trial_end: trialEnd.toISOString(),
       });
     if (salonError) throw salonError;
 

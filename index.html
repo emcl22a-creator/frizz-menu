@@ -1848,15 +1848,163 @@
   }
   .toast svg { width: 14px; height: 14px; color: var(--green); }
 
-  /* ─── DESKTOP ────────────────────────────────────────── */
-  @media (min-width: 768px) {
+  /* ─── DESKTOP SIDEBAR (caché par défaut sur mobile) ─── */
+  .desktop-sidebar { display: none; }
+  .desktop-only { display: none; }
+
+  /* ─── TABLET (768-1023px) — centrer le contenu ───────── */
+  @media (min-width: 768px) and (max-width: 1023px) {
     body { background: var(--bg); }
     .topbar, .large-title-block { max-width: 720px; margin-left: auto; margin-right: auto; }
-    .group, .hero-card, .duo, .segmented, .chart-card, .agenda, .search-bar { max-width: 688px; margin-left: auto; margin-right: auto; }
+    .group, .hero-card, .duo, .trio-card, .pro-card, .segmented, .chart-card, .agenda, .search-bar { max-width: 688px; margin-left: auto; margin-right: auto; }
     .duo { padding: 0 16px; max-width: 720px; }
     .large-title { font-size: 40px; }
     .hero-value { font-size: 76px; }
   }
+
+  /* ─── DESKTOP (≥1024px) — sidebar + contenu centré ──── */
+  @media (min-width: 1024px) {
+    body {
+      background: var(--bg);
+      padding-left: 240px;
+    }
+
+    /* La topbar mobile n'apparaît plus (logo+selector sont dans la sidebar) */
+    .topbar { display: none !important; }
+
+    /* Tabbar du bas masqué : on utilise la sidebar à la place */
+    .tabbar { display: none !important; }
+
+    /* Sidebar visible */
+    .desktop-sidebar {
+      display: flex !important;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 240px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: saturate(180%) blur(40px);
+      -webkit-backdrop-filter: saturate(180%) blur(40px);
+      border-right: 0.5px solid var(--separator);
+      padding: 24px 14px 18px;
+      z-index: 100;
+    }
+    .ds-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px 18px;
+    }
+    .ds-logo-row svg { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 3px 8px rgba(0,122,255,0.30)); }
+    .ds-logo-text {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--label);
+    }
+    .ds-shop-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--fill-tertiary);
+      border-radius: 10px;
+      width: 100%;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--label);
+      letter-spacing: -0.012em;
+      transition: background 0.15s;
+    }
+    .ds-shop-btn:hover { background: var(--fill-secondary); }
+    .ds-shop-btn svg { width: 11px; height: 11px; color: var(--label-secondary); margin-left: auto; }
+    .ds-shop-name {
+      flex: 1;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ds-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 22px;
+    }
+    .ds-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--label);
+      letter-spacing: -0.012em;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-align: left;
+      width: 100%;
+      position: relative;
+    }
+    .ds-nav-btn svg { width: 19px; height: 19px; flex-shrink: 0; color: var(--label-secondary); }
+    .ds-nav-btn:hover { background: var(--fill-tertiary); }
+    .ds-nav-btn.active {
+      background: var(--blue);
+      color: white;
+      font-weight: 600;
+    }
+    .ds-nav-btn.active svg { color: white; }
+    .ds-nav-btn .ds-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ds-nav-btn.active .ds-badge {
+      background: rgba(255,255,255,0.30);
+    }
+    .ds-spacer { flex: 1; }
+    .ds-footer {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--label-tertiary);
+      letter-spacing: -0.005em;
+    }
+
+    /* Contenu : centré dans une colonne large */
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding-top: 14px;
+      padding-bottom: 60px !important;
+    }
+    .large-title-block { padding: 14px 22px 18px; max-width: 920px; margin: 0 auto; }
+    .large-title { font-size: 38px; }
+
+    /* Cards : un peu plus aérées sur PC */
+    .group, .hero-card, .duo, .trio-card, .segmented, .chart-card, .agenda, .search-bar {
+      max-width: 100%;
+      margin-left: 22px;
+      margin-right: 22px;
+    }
+    .pro-card { margin-left: 22px; margin-right: 22px; }
+    .duo { padding: 0 22px; max-width: 100%; }
+    .hero-value { font-size: 76px; }
+    .trio-value { font-size: 42px; }
+
+    /* L'agenda peut profiter de plus de largeur */
+    .agenda-grid { min-width: 0; }
+  }
+
 
   @media (max-width: 380px) {
     .large-title { font-size: 30px; }
@@ -1865,6 +2013,49 @@
 </style>
 </head>
 <body>
+
+
+<!-- ═══ DESKTOP SIDEBAR (visible ≥1024px) ════════════════ -->
+<aside class="desktop-sidebar" id="desktopSidebar">
+  <div class="ds-logo-row">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="dsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0040DD"/>
+          <stop offset="50%" stop-color="#007AFF"/>
+          <stop offset="100%" stop-color="#5AC8FA"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#dsGrad)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+    </svg>
+    <span class="ds-logo-text">Frizz</span>
+  </div>
+  <button class="ds-shop-btn" id="dsShopBtn">
+    <span class="ds-shop-name" id="dsShopName">Mon salon</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <nav class="ds-nav">
+    <button class="ds-nav-btn active" data-page="stats" onclick="navigate('stats')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Stats
+    </button>
+    <button class="ds-nav-btn" data-page="inbox" onclick="navigate('inbox')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+      Réception
+      <span class="ds-badge" id="dsInboxBadge" style="display:none;">0</span>
+    </button>
+    <button class="ds-nav-btn" data-page="agenda" onclick="navigate('agenda')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Agenda
+    </button>
+    <button class="ds-nav-btn" data-page="config" onclick="navigate('config')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Réglages
+    </button>
+  </nav>
+  <div class="ds-spacer"></div>
+  <div class="ds-footer">© Frizz · v1</div>
+</aside>
 
 
 <header class="topbar">
@@ -2403,7 +2594,7 @@
   <button class="tab-btn" data-page="inbox">
     <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
     Réception
-    <span class="badge">7</span>
+    <span class="badge" id="tabbarInboxBadge" style="display:none;">0</span>
   </button>
   <button class="tab-btn" data-page="agenda">
     <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -2472,6 +2663,9 @@ async function loadAllData() {
 
     // Update topbar
     document.getElementById('shopName').textContent = currentSalon.nom;
+    // Update desktop sidebar shop name
+    const dsShopName = document.getElementById('dsShopName');
+    if (dsShopName) dsShopName.textContent = currentSalon.nom;
 
     // Update shops array for picker
     shops = userSalons.map((s, i) => ({
@@ -2655,6 +2849,19 @@ function updateStats() {
       const peakHour = peakIdx + 8;
       chartMeta.textContent = `Pic ${peakHour}h–${peakHour + 1}h`;
     }
+  }
+
+  // Sync inbox badge (tabbar + sidebar)
+  const inboxCount = calls.length;
+  const tabBadge = document.getElementById('tabbarInboxBadge');
+  const dsBadge = document.getElementById('dsInboxBadge');
+  if (tabBadge) {
+    tabBadge.textContent = inboxCount;
+    tabBadge.style.display = inboxCount > 0 ? 'flex' : 'none';
+  }
+  if (dsBadge) {
+    dsBadge.textContent = inboxCount;
+    dsBadge.style.display = inboxCount > 0 ? 'flex' : 'none';
   }
 
   // Sync profile inputs and pro card state
@@ -2927,6 +3134,8 @@ function renderShops() {
       shops.forEach(s => s.active = s.id === id);
       const shop = shops.find(s => s.id === id);
       document.getElementById('shopName').textContent = shop.name;
+      const dsShopName2 = document.getElementById('dsShopName');
+      if (dsShopName2) dsShopName2.textContent = shop.name;
       // Switch active salon
       try { localStorage.setItem('frizz_current_salon', id); } catch(e) {}
       closeModal();
@@ -3066,6 +3275,8 @@ function closeModal() {
   document.getElementById('modalSheet').classList.remove('open');
 }
 document.getElementById('shopBtn').addEventListener('click', openModal);
+const dsShopBtnEl = document.getElementById('dsShopBtn');
+if (dsShopBtnEl) dsShopBtnEl.addEventListener('click', openModal);
 document.getElementById('modalBackdrop').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 document.getElementById('modalAdd').addEventListener('click', () => {
@@ -3081,7 +3292,12 @@ function navigate(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.tab-btn[data-page="${pageId}"]`).classList.add('active');
+  const tab = document.querySelector(`.tab-btn[data-page="${pageId}"]`);
+  if (tab) tab.classList.add('active');
+  // Sync desktop sidebar
+  document.querySelectorAll('.ds-nav-btn').forEach(b => b.classList.remove('active'));
+  const dsBtn = document.querySelector(`.ds-nav-btn[data-page="${pageId}"]`);
+  if (dsBtn) dsBtn.classList.add('active');
   window.scrollTo(0, 0);
   if (pageId === 'stats') setTimeout(animateCounters, 100);
 }

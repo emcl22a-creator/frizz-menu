@@ -345,6 +345,286 @@
   }
   .hero-delta svg { width: 11px; height: 11px; }
 
+  /* ─── TRIO STAT CARD (Aujourd'hui · Semaine · Mois) ───── */
+  .trio-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    margin: 14px 16px 0;
+    padding: 22px 14px;
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(0, 122, 255, 0.06) 0%, transparent 55%),
+      radial-gradient(100% 80% at 100% 100%, rgba(175, 82, 222, 0.04) 0%, transparent 55%),
+      var(--bg-secondary);
+    border-radius: 18px;
+    border: 0.5px solid rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.08),
+      0 4px 8px rgba(0, 0, 0, 0.04),
+      0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    overflow: hidden;
+  }
+  .trio-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+  }
+  .trio-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .trio-value {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--label);
+    margin: 4px 0 2px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .trio-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label-tertiary);
+    letter-spacing: 0.02em;
+  }
+  .trio-sep {
+    width: 0.5px;
+    height: 56%;
+    background: var(--separator);
+    align-self: center;
+  }
+
+  /* ─── FRIZZ PRO HERO CARD (Apple-style premium) ──────── */
+  .pro-card {
+    position: relative;
+    margin: 4px 16px 0;
+    padding: 28px 24px 26px;
+    border-radius: 22px;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    box-shadow:
+      0 20px 50px rgba(15, 52, 96, 0.32),
+      0 8px 16px rgba(0, 0, 0, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.10) inset,
+      0 0 0 0.5px rgba(255, 255, 255, 0.06) inset;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .pro-card:active { transform: scale(0.985); }
+  /* Animated gradient orbs */
+  .pro-card::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(175, 82, 222, 0.55) 0%, transparent 35%),
+      radial-gradient(circle at 80% 20%, rgba(0, 122, 255, 0.55) 0%, transparent 35%),
+      radial-gradient(circle at 50% 80%, rgba(255, 65, 130, 0.45) 0%, transparent 35%);
+    animation: proOrbsFloat 14s ease-in-out infinite;
+    z-index: -1;
+    filter: blur(8px);
+  }
+  @keyframes proOrbsFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(8%, -6%) rotate(120deg); }
+    66% { transform: translate(-6%, 8%) rotate(240deg); }
+  }
+  /* Shimmer pass */
+  .pro-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+    animation: proShimmer 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes proShimmer {
+    0%, 100% { left: -100%; }
+    50% { left: 200%; }
+  }
+  .pro-sparkle {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px rgba(255,255,255,0.7);
+    animation: proSparkle 3.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .pro-sparkle:nth-child(1) { top: 18%; left: 12%; animation-delay: 0s; }
+  .pro-sparkle:nth-child(2) { top: 28%; right: 18%; animation-delay: 0.7s; width: 4px; height: 4px; }
+  .pro-sparkle:nth-child(3) { bottom: 30%; left: 22%; animation-delay: 1.4s; width: 5px; height: 5px; }
+  .pro-sparkle:nth-child(4) { bottom: 22%; right: 14%; animation-delay: 2.1s; width: 4px; height: 4px; }
+  .pro-sparkle:nth-child(5) { top: 50%; left: 48%; animation-delay: 2.8s; width: 3px; height: 3px; }
+  @keyframes proSparkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .pro-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255, 255, 255, 0.20);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: white;
+  }
+  .pro-badge svg { width: 11px; height: 11px; }
+  .pro-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #ffffff 0%, #d8e8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .pro-subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.70);
+    letter-spacing: -0.005em;
+    margin-bottom: 18px;
+  }
+  .pro-features {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 22px;
+  }
+  .pro-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .pro-feature-icon {
+    width: 22px; height: 22px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.40), rgba(52, 199, 89, 0.20));
+    border: 0.5px solid rgba(52, 199, 89, 0.50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pro-feature-icon svg { width: 12px; height: 12px; color: #34C759; }
+  .pro-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .pro-price {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: white;
+    line-height: 1;
+  }
+  .pro-price-unit {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+  }
+  .pro-cta {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    background: white;
+    color: #0a0a1f;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: 14px;
+    border: none;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+  }
+  .pro-cta:active { transform: scale(0.97); }
+  .pro-cta-sub {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 10px;
+    letter-spacing: -0.005em;
+  }
+  /* Active state */
+  .pro-card.active {
+    background: linear-gradient(135deg, #0d3a1f 0%, #0a2818 50%, #052010 100%);
+    box-shadow:
+      0 20px 50px rgba(13, 58, 31, 0.32),
+      0 8px 16px rgba(0, 0, 0, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.10) inset,
+      0 0 0 0.5px rgba(52, 199, 89, 0.20) inset;
+  }
+  .pro-card.active::before {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(52, 199, 89, 0.55) 0%, transparent 35%),
+      radial-gradient(circle at 80% 70%, rgba(48, 209, 88, 0.45) 0%, transparent 35%);
+  }
+
+  /* ─── PROFIL FORM (Compte) ──────────────────────────────  */
+  .profile-input-row {
+    display: flex;
+    align-items: center;
+    padding: 11px 16px;
+    border-bottom: 0.5px solid var(--separator);
+    gap: 12px;
+    background: var(--bg-secondary);
+  }
+  .profile-input-row:last-child { border-bottom: none; }
+  .profile-input-label {
+    font-size: 17px;
+    color: var(--label);
+    font-weight: 400;
+    flex-shrink: 0;
+    width: 96px;
+  }
+  .profile-input-field {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 17px;
+    color: var(--label);
+    text-align: right;
+    letter-spacing: -0.022em;
+  }
+  .profile-input-field::placeholder { color: var(--label-tertiary); }
+
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
     display: grid;
@@ -1618,7 +1898,40 @@
       <span class="push-time">à l'instant</span>
     </div>
     <div class="push-title" id="pushTitle">Nouveau rendez-vous</div>
-    <div class="push-body" id="pushBody">Karim B. — Coupe + barbe vendredi 14h</div>
+    <div class="push-body" id="pushBody">—</div>
+  </div>
+</div>
+
+<!-- ═══ BARBER EDIT SHEET ═════════════════════════════ -->
+<div class="modal-backdrop" id="barberEditBackdrop"></div>
+<div class="modal-sheet" id="barberEditSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
+  <div class="modal-header">
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="barberEditTitle">Modifier le barbier</div>
+  </div>
+  <div style="padding: 0 0 8px;">
+    <div class="group" style="margin: 0 16px;">
+      <div class="profile-input-row">
+        <label class="profile-input-label">Prénom</label>
+        <input class="profile-input-field" id="barberEditPrenom" type="text" placeholder="Ex : Yacine" />
+      </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Téléphone</label>
+        <input class="profile-input-field" id="barberEditTelephone" type="tel" placeholder="06 12 34 56 78" />
+      </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Email</label>
+        <input class="profile-input-field" id="barberEditEmail" type="email" placeholder="email@exemple.com" />
+      </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Disponibilité</label>
+        <input class="profile-input-field" id="barberEditDispo" type="text" placeholder="Ex : Lun-Ven 10-19h" />
+      </div>
+    </div>
+    <div style="padding: 16px;">
+      <button class="modal-cancel" style="width: 100%; background: var(--blue); color: white; padding: 14px; border-radius: 14px; font-size: 17px; font-weight: 600;" onclick="saveBarberEdit()">Enregistrer</button>
+      <button class="modal-cancel" style="width: 100%; color: var(--red); margin-top: 8px; padding: 14px; font-size: 17px; font-weight: 500;" onclick="deleteBarberEdit()">Supprimer ce barbier</button>
+      <button class="modal-cancel" style="width: 100%; color: var(--label-secondary); margin-top: 4px; padding: 12px; font-size: 15px;" onclick="closeBarberEdit()">Annuler</button>
+    </div>
   </div>
 </div>
 
@@ -1849,18 +2162,23 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <div class="hero-card">
-    <div class="hero-top-row">
-      <div class="hero-label">Chiffre capturé · 30j</div>
-      <div class="hero-badge" id="heroBadge" style="display: none;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
-        Top 10%
-      </div>
+  <div class="trio-card">
+    <div class="trio-cell">
+      <div class="trio-label">Aujourd'hui</div>
+      <div class="trio-value" id="trioToday">0</div>
+      <div class="trio-sub">RDV</div>
     </div>
-    <div class="hero-value"><span data-counter="0">0</span><span class="currency">€</span></div>
-    <div class="hero-delta" id="heroDelta" style="display: none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
-      <span id="heroDeltaText">—</span>
+    <div class="trio-sep"></div>
+    <div class="trio-cell">
+      <div class="trio-label">Cette semaine</div>
+      <div class="trio-value" id="trioWeek">0</div>
+      <div class="trio-sub">RDV</div>
+    </div>
+    <div class="trio-sep"></div>
+    <div class="trio-cell">
+      <div class="trio-label">Ce mois</div>
+      <div class="trio-value" id="trioMonth">0</div>
+      <div class="trio-sub">RDV</div>
     </div>
   </div>
 
@@ -1897,29 +2215,8 @@
     </div>
   </div>
 
-  <div class="section-header">À confirmer</div>
-  <div class="group">
-    <button class="cell" onclick="openDetail(1)">
-      <div class="cell-icon-wrap orange">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="cell-main">
-        <div class="cell-title">Karim B.</div>
-        <div class="cell-subtitle">Acompte 10€ · vendredi 14h</div>
-      </div>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <button class="cell" onclick="openDetail(2)">
-      <div class="cell-icon-wrap blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
-      <div class="cell-main">
-        <div class="cell-title">Antoine D.</div>
-        <div class="cell-subtitle">Premier client · demain 17h</div>
-      </div>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-  </div>
+  <div class="section-header" id="aConfirmerHeader" style="display:none;">À confirmer</div>
+  <div class="group" id="aConfirmerList" style="display:none;"></div>
 
   <div class="section-header">Activité aujourd'hui</div>
   <div class="group" id="recent-list"></div>
@@ -1970,7 +2267,57 @@
     <h1 class="large-title">Réglages</h1>
   </div>
 
-  <div class="group" style="margin-top: 4px;">
+  <!-- ═══ FRIZZ PRO PREMIUM CARD ════════════════════════ -->
+  <div class="pro-card" id="proCard" onclick="onProCardTap()">
+    <span class="pro-sparkle"></span>
+    <span class="pro-sparkle"></span>
+    <span class="pro-sparkle"></span>
+    <span class="pro-sparkle"></span>
+    <span class="pro-sparkle"></span>
+
+    <div class="pro-header">
+      <div class="pro-badge" id="proBadge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
+        <span id="proBadgeText">Frizz Pro</span>
+      </div>
+    </div>
+
+    <div class="pro-title" id="proTitle">L'IA qui répond<br>à vos appels 24/7</div>
+    <div class="pro-subtitle" id="proSubtitle">Ne ratez plus jamais un client. Frizz prend le relais quand vous coupez.</div>
+
+    <div class="pro-features" id="proFeatures">
+      <div class="pro-feature">
+        <div class="pro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        Réponse 24h/24, 7j/7
+      </div>
+      <div class="pro-feature">
+        <div class="pro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        Prise de RDV automatique
+      </div>
+      <div class="pro-feature">
+        <div class="pro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        Voix naturelle française
+      </div>
+    </div>
+
+    <div class="pro-price-row" id="proPriceRow">
+      <span class="pro-price">49</span>
+      <span class="pro-price-unit">€/mois</span>
+    </div>
+
+    <button class="pro-cta" id="proCta" onclick="event.stopPropagation(); onProCtaClick()">
+      Essayer 14 jours gratuits
+    </button>
+    <div class="pro-cta-sub" id="proCtaSub">Sans carte requise · annulation libre</div>
+  </div>
+
+  <div class="group" style="margin-top: 18px;">
     <div class="cell frizz-status-cell">
       <div class="frizz-status-icon active" id="frizzIcon">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
@@ -1997,11 +2344,6 @@
       <div class="cell-main"><div class="cell-title">Sarah</div></div>
       <svg class="cell-chevron voice-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--blue); width: 14px; height: 14px; opacity: 0;" data-voice="Sarah"><polyline points="20 6 9 17 4 12"/></svg>
     </button>
-  </div>
-
-  <div class="section-header">Prestations &amp; tarifs</div>
-  <div class="group" id="prestationsList">
-    <button class="cell" onclick="openAddModal('prestation')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
   <div class="section-header">Disponibilité</div>
@@ -2045,6 +2387,24 @@
   </div>
 
   <div class="section-header">Compte</div>
+  <div class="group">
+    <div class="profile-input-row">
+      <label class="profile-input-label">Prénom</label>
+      <input class="profile-input-field" id="profilePrenom" type="text" placeholder="Votre prénom" autocomplete="given-name" onchange="saveProfile()" />
+    </div>
+    <div class="profile-input-row">
+      <label class="profile-input-label">Nom</label>
+      <input class="profile-input-field" id="profileNom" type="text" placeholder="Votre nom" autocomplete="family-name" onchange="saveProfile()" />
+    </div>
+    <div class="profile-input-row">
+      <label class="profile-input-label">Téléphone</label>
+      <input class="profile-input-field" id="profileTelephone" type="tel" placeholder="06 12 34 56 78" autocomplete="tel" onchange="saveProfile()" />
+    </div>
+    <div class="profile-input-row">
+      <label class="profile-input-label">Email</label>
+      <input class="profile-input-field" id="profileEmail" type="email" placeholder="email@exemple.com" autocomplete="email" onchange="saveProfile()" />
+    </div>
+  </div>
   <div class="group">
     <button class="cell" onclick="logout()">
       <div class="cell-main"><div class="cell-title" style="color: var(--red);">Se déconnecter</div></div>
@@ -2243,25 +2603,40 @@ function updateStats() {
   const titleEl = document.getElementById('statsTitle');
   const subEl = document.getElementById('statsSub');
   if (titleEl) {
-    const firstName = (barbiers && barbiers.length > 0 && barbiers[0].prenom) || (currentSalon && currentSalon.nom) || '';
+    // Prefer profile prenom, then first barbier, then salon name
+    const profilePrenom = (currentSalon && currentSalon.patron_prenom) || '';
+    const firstBarber = (barbiers && barbiers.length > 0 && barbiers[0].prenom) || '';
+    const salonName = (currentSalon && currentSalon.nom) || '';
+    const firstName = profilePrenom || firstBarber || salonName;
     titleEl.innerHTML = firstName
       ? `Bonjour ${escapeHtml(firstName)} <span class="wave">👋</span>`
       : `Bonjour <span class="wave">👋</span>`;
   }
 
-  // Compute today's calls + this month's revenue from real data
   const now = new Date();
   const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+  // Week starts Monday
+  const dayOfWeek = (now.getDay() + 6) % 7; // 0=Mon … 6=Sun
+  const weekStart = new Date(todayStart);
+  weekStart.setDate(todayStart.getDate() - dayOfWeek);
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const callsToday = calls.filter(c => {
-    // calls have stringified dates; use createdRaw if available, else parse
-    return false; // We don't have raw timestamps in mapped calls
-  });
-  // For now just show total counts available
-  const todayCount = calls.length; // approximation: list is recent
-  const totalCalls = calls.length;
+  // Count RDV in each window (only confirmed/a_confirmer, exclude cancelled)
+  const rdvList = (typeof rdvRaw !== 'undefined' && rdvRaw) ? rdvRaw : [];
+  const validRdv = rdvList.filter(r => r.statut !== 'annule');
+  const todayCount = validRdv.filter(r => r.dateObj >= todayStart && r.dateObj < new Date(todayStart.getTime() + 24*3600*1000)).length;
+  const weekCount = validRdv.filter(r => r.dateObj >= weekStart).length;
+  const monthCount = validRdv.filter(r => r.dateObj >= monthStart).length;
 
+  const trioToday = document.getElementById('trioToday');
+  const trioWeek = document.getElementById('trioWeek');
+  const trioMonth = document.getElementById('trioMonth');
+  if (trioToday) trioToday.textContent = todayCount;
+  if (trioWeek) trioWeek.textContent = weekCount;
+  if (trioMonth) trioMonth.textContent = monthCount;
+
+  // Subtitle
+  const totalCalls = calls.length;
   if (subEl) {
     const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
     if (totalCalls === 0) {
@@ -2271,31 +2646,213 @@ function updateStats() {
     }
   }
 
-  // Reset hero counter to 0 for new accounts (no calls = no revenue captured)
-  const heroCounter = document.querySelector('.hero-value [data-counter]');
+  // Duo cards: appels traités + conversion
   const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
   const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
-
-  // Estimated revenue: count of scheduled calls × 30€ (rough average)
   const scheduledCount = calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
-  const estimatedRevenue = scheduledCount * 30;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
-
-  if (heroCounter) heroCounter.setAttribute('data-counter', estimatedRevenue);
   if (duoCalls) duoCalls.setAttribute('data-counter', totalCalls);
   if (duoConv) duoConv.setAttribute('data-counter', conversion);
   animateCounters();
-
-  // Hide "Top 10%" badge + delta if no data
-  const badge = document.getElementById('heroBadge');
-  const delta = document.getElementById('heroDelta');
-  if (badge) badge.style.display = totalCalls > 0 ? 'inline-flex' : 'none';
-  if (delta) delta.style.display = 'none'; // We don't have a real delta yet
 
   // Chart meta
   const chartMeta = document.getElementById('chartMeta');
   if (chartMeta) {
     chartMeta.textContent = totalCalls > 0 ? 'Pic 14h–15h' : 'Pas encore de données';
+  }
+
+  // Sync profile inputs and pro card state
+  syncProfileForm();
+  syncProCard();
+}
+
+/* ─── Profil patron (section Compte) ─────────────────── */
+let profileSaveTimer = null;
+
+function syncProfileForm() {
+  if (!currentSalon) return;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('profilePrenom', currentSalon.patron_prenom);
+  set('profileNom', currentSalon.patron_nom);
+  set('profileTelephone', currentSalon.patron_telephone);
+  set('profileEmail', currentSalon.patron_email);
+}
+
+async function saveProfile() {
+  if (!currentSalon) return;
+  // Debounce 400ms
+  clearTimeout(profileSaveTimer);
+  profileSaveTimer = setTimeout(async () => {
+    const get = id => (document.getElementById(id) || {}).value || '';
+    const payload = {
+      patron_prenom: get('profilePrenom').trim(),
+      patron_nom: get('profileNom').trim(),
+      patron_telephone: get('profileTelephone').trim(),
+      patron_email: get('profileEmail').trim(),
+    };
+    const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', currentSalon.id);
+    if (error) {
+      showToast('Erreur de sauvegarde');
+      console.error('saveProfile', error);
+    } else {
+      Object.assign(currentSalon, payload);
+      showToast('Profil enregistré');
+      // Update title if prenom changed
+      updateStats();
+    }
+  }, 400);
+}
+
+/* ─── Barber edit sheet ──────────────────────────────── */
+let editingBarberId = null;
+
+function openBarberEdit(barberId) {
+  const b = (barbiers || []).find(x => x.id === barberId);
+  if (!b) return;
+  editingBarberId = barberId;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('barberEditPrenom', b.prenom);
+  set('barberEditTelephone', b.telephone);
+  set('barberEditEmail', b.email);
+  set('barberEditDispo', b.disponibilite);
+  document.getElementById('barberEditTitle').textContent = `Modifier ${b.prenom || 'le barbier'}`;
+  document.getElementById('barberEditBackdrop').classList.add('open');
+  document.getElementById('barberEditSheet').classList.add('open');
+}
+
+function closeBarberEdit() {
+  document.getElementById('barberEditBackdrop').classList.remove('open');
+  document.getElementById('barberEditSheet').classList.remove('open');
+  editingBarberId = null;
+}
+
+async function saveBarberEdit() {
+  if (!editingBarberId) return;
+  const get = id => (document.getElementById(id) || {}).value || '';
+  const prenom = get('barberEditPrenom').trim();
+  if (!prenom) {
+    showToast('Le prénom est requis');
+    return;
+  }
+  const payload = {
+    prenom,
+    telephone: get('barberEditTelephone').trim() || null,
+    email: get('barberEditEmail').trim() || null,
+    disponibilite: get('barberEditDispo').trim() || null,
+  };
+  const { error } = await supa.from('frizz_ai_barbiers').update(payload).eq('id', editingBarberId);
+  if (error) {
+    showToast('Erreur · ' + error.message);
+    console.error('saveBarberEdit', error);
+    return;
+  }
+  showToast('Enregistré');
+  await loadBarbiers();
+  renderConfigLists();
+  closeBarberEdit();
+}
+
+async function deleteBarberEdit() {
+  if (!editingBarberId) return;
+  if (!confirm('Supprimer ce barbier ? Les RDV existants ne seront pas supprimés.')) return;
+  const { error } = await supa.from('frizz_ai_barbiers').delete().eq('id', editingBarberId);
+  if (error) {
+    showToast('Erreur · ' + error.message);
+    return;
+  }
+  showToast('Barbier supprimé');
+  await loadBarbiers();
+  renderConfigLists();
+  closeBarberEdit();
+}
+
+/* Backdrop close */
+document.addEventListener('DOMContentLoaded', () => {
+  const beb = document.getElementById('barberEditBackdrop');
+  if (beb) beb.addEventListener('click', closeBarberEdit);
+});
+
+/* ─── Frizz Pro premium card ─────────────────────────── */
+function syncProCard() {
+  if (!currentSalon) return;
+  const status = currentSalon.subscription_status || 'inactive';
+  const card = document.getElementById('proCard');
+  const badge = document.getElementById('proBadgeText');
+  const title = document.getElementById('proTitle');
+  const subtitle = document.getElementById('proSubtitle');
+  const priceRow = document.getElementById('proPriceRow');
+  const cta = document.getElementById('proCta');
+  const ctaSub = document.getElementById('proCtaSub');
+  if (!card) return;
+
+  if (status === 'trialing' || status === 'active') {
+    card.classList.add('active');
+    badge.textContent = status === 'trialing' ? 'Essai en cours' : 'Frizz Pro actif';
+    title.innerHTML = status === 'trialing' ? 'Votre essai<br>14 jours' : 'Frizz Pro<br>actif';
+    subtitle.textContent = status === 'trialing'
+      ? 'Profitez de toutes les fonctionnalités, sans engagement.'
+      : 'Merci ! Frizz prend les appels et les RDV pour vous.';
+    if (priceRow) priceRow.style.display = 'none';
+    cta.textContent = 'Gérer mon abonnement';
+    ctaSub.textContent = 'Modifier · facturation · annuler';
+  } else {
+    card.classList.remove('active');
+    badge.textContent = 'Frizz Pro';
+    title.innerHTML = "L'IA qui répond<br>à vos appels 24/7";
+    subtitle.textContent = 'Ne ratez plus jamais un client. Frizz prend le relais quand vous coupez.';
+    if (priceRow) priceRow.style.display = 'flex';
+    cta.textContent = 'Essayer 14 jours gratuits';
+    ctaSub.textContent = 'Sans carte requise · annulation libre';
+  }
+}
+
+function onProCardTap() {
+  // Tap on card = same as CTA
+  onProCtaClick();
+}
+
+async function onProCtaClick() {
+  if (!currentSalon) {
+    showToast('Salon non chargé');
+    return;
+  }
+  const status = currentSalon.subscription_status || 'inactive';
+
+  try {
+    if (status === 'active' || status === 'trialing') {
+      // Open Stripe billing portal
+      showToast('Ouverture du portail…');
+      const { data, error } = await supa.functions.invoke('stripe-billing-portal', {
+        body: { salon_id: currentSalon.id },
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        window.location.href = data.url;
+      } else {
+        showToast('URL portail manquante');
+      }
+    } else {
+      // Start checkout (14d trial)
+      showToast('Création de la session…');
+      const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
+        body: {
+          salon_id: currentSalon.id,
+          plan: 'frizz_pro_monthly',
+          trial_days: 14,
+          success_url: window.location.origin + window.location.pathname + '?paid=1',
+          cancel_url: window.location.href,
+        },
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        window.location.href = data.url;
+      } else {
+        showToast('URL Stripe manquante');
+      }
+    }
+  } catch (e) {
+    console.error('Pro CTA error', e);
+    showToast('Erreur · ' + (e.message || 'inconnue'));
   }
 }
 
@@ -2361,28 +2918,11 @@ function renderShops() {
 }
 
 function renderConfigLists() {
-  // Prestations
-  const presEl = document.getElementById('prestationsList');
-  if (presEl) {
-    const rows = prestations.map(p => `
-      <button class="cell" onclick="showToast('Édition à venir')">
-        <div class="cell-main">
-          <div class="cell-title">${escapeHtml(p.nom)}</div>
-          <div class="cell-subtitle">${p.duree_minutes} min</div>
-        </div>
-        <span class="cell-value">${(p.prix_centimes / 100).toFixed(0)} €</span>
-        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>`).join('');
-    presEl.innerHTML = rows + `
-      <button class="cell" onclick="openAddModal('prestation')">
-        <div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div>
-      </button>`;
-  }
   // Barbiers
   const barbEl = document.getElementById('barbiersList');
   if (barbEl) {
     const rows = barbiers.map(b => `
-      <button class="cell" onclick="showToast('Édition à venir')">
+      <button class="cell" onclick="openBarberEdit('${b.id}')">
         <div class="cell-main"><div class="cell-title">${escapeHtml(b.prenom)}</div></div>
         <span class="cell-value">${escapeHtml(b.disponibilite || '')}</span>
         <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>

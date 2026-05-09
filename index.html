@@ -1907,7 +1907,7 @@
 <div class="modal-backdrop" id="barberEditBackdrop"></div>
 <div class="modal-sheet" id="barberEditSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
   <div class="modal-header">
-    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="barberEditTitle">Modifier le barbier</div>
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="barberEditTitle">Modifier le coiffeur</div>
   </div>
   <div style="padding: 0 0 8px;">
     <div class="group" style="margin: 0 16px;">
@@ -1930,7 +1930,7 @@
     </div>
     <div style="padding: 16px;">
       <button class="modal-cancel" style="width: 100%; background: var(--blue); color: white; padding: 14px; border-radius: 14px; font-size: 17px; font-weight: 600;" onclick="saveBarberEdit()">Enregistrer</button>
-      <button class="modal-cancel" style="width: 100%; color: var(--red); margin-top: 8px; padding: 14px; font-size: 17px; font-weight: 500;" onclick="deleteBarberEdit()">Supprimer ce barbier</button>
+      <button class="modal-cancel" style="width: 100%; color: var(--red); margin-top: 8px; padding: 14px; font-size: 17px; font-weight: 500;" onclick="deleteBarberEdit()">Supprimer ce coiffeur</button>
       <button class="modal-cancel" style="width: 100%; color: var(--label-secondary); margin-top: 4px; padding: 12px; font-size: 15px;" onclick="closeBarberEdit()">Annuler</button>
     </div>
   </div>
@@ -2177,7 +2177,7 @@
     </div>
     <div class="trio-sep"></div>
     <div class="trio-cell">
-      <div class="trio-label">Ce mois</div>
+      <div class="trio-label">Mois</div>
       <div class="trio-value" id="trioMonth">0</div>
       <div class="trio-sub">RDV</div>
     </div>
@@ -2350,7 +2350,7 @@
   <div class="section-header">Disponibilité</div>
   <div class="group" id="disposList"></div>
 
-  <div class="section-header">Barbiers</div>
+  <div class="section-header">Coiffeurs</div>
   <div class="group" id="barbiersList">
     <button class="cell" onclick="openAddModal('barbier')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
@@ -2702,7 +2702,7 @@ function openBarberEdit(barberId) {
   set('barberEditTelephone', b.telephone);
   set('barberEditEmail', b.email);
   set('barberEditDispo', b.disponibilite);
-  document.getElementById('barberEditTitle').textContent = `Modifier ${b.prenom || 'le barbier'}`;
+  document.getElementById('barberEditTitle').textContent = `Modifier ${b.prenom || 'le coiffeur'}`;
   document.getElementById('barberEditBackdrop').classList.add('open');
   document.getElementById('barberEditSheet').classList.add('open');
 }
@@ -2741,13 +2741,13 @@ async function saveBarberEdit() {
 
 async function deleteBarberEdit() {
   if (!editingBarberId) return;
-  if (!confirm('Supprimer ce barbier ? Les RDV existants ne seront pas supprimés.')) return;
+  if (!confirm('Supprimer ce coiffeur ? Les RDV existants ne seront pas supprimés.')) return;
   const { error } = await supa.from('frizz_ai_barbiers').delete().eq('id', editingBarberId);
   if (error) {
     showToast('Erreur · ' + error.message);
     return;
   }
-  showToast('Barbier supprimé');
+  showToast('Coiffeur supprimé');
   await loadBarbiers();
   renderConfigLists();
   closeBarberEdit();
@@ -3137,12 +3137,12 @@ function openAddModal(type) {
       success: 'Prestation ajoutée'
     },
     barbier: {
-      title: 'Nouveau barbier',
+      title: 'Nouveau coiffeur',
       fields: [
         { label: 'Prénom', placeholder: 'Ex : Karim', id: 'add-name' },
         { label: 'Disponibilité', placeholder: 'Ex : Lun–Sam', id: 'add-availability' },
       ],
-      success: 'Barbier ajouté'
+      success: 'Coiffeur ajouté'
     },
     salon: {
       title: 'Nouveau salon',
@@ -3212,7 +3212,7 @@ async function confirmAddModal() {
       await loadBarbiers();
       renderConfigLists();
       closeAddModal();
-      showToast('Barbier ajouté');
+      showToast('Coiffeur ajouté');
     } else if (currentAddType === 'salon') {
       const nom = document.getElementById('add-name')?.value.trim();
       const ville = document.getElementById('add-address')?.value.trim() || '';
@@ -3768,7 +3768,7 @@ function renderAgendaGrid() {
     empty.innerHTML = `
       <div class="agenda-empty-title">Aucun barbier configuré</div>
       <div class="agenda-empty-desc">Ajoutez vos barbiers dans Réglages pour voir l'agenda.</div>
-      <button class="agenda-empty-cta" onclick="navigate('config')">Ajouter un barbier</button>`;
+      <button class="agenda-empty-cta" onclick="navigate('config')">Ajouter un coiffeur</button>`;
     return;
   }
 

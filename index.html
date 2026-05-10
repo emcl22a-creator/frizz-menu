@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F2F2F7">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="color-scheme" content="light">
-<title>Frizz · Cut Studio</title>
+<title>Frizz · Mon restaurant</title>
 <style>
   /* ════════════════════════════════════════════════════════════════
      iOS DARK MODE · System tokens · SF Pro · Pure black
@@ -2104,10 +2104,9 @@
     </svg>
     <span class="ds-logo-text">Frizz</span>
   </div>
-  <button class="ds-shop-btn" id="dsShopBtn">
-    <span class="ds-shop-name" id="dsShopName">Mon salon</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
+  <div class="ds-shop-btn" id="dsShopBtn" style="cursor: default;">
+    <span class="ds-shop-name" id="dsShopName">Mon restaurant</span>
+  </div>
   <nav class="ds-nav">
     <button class="ds-nav-btn active" data-page="stats" onclick="navigate('stats')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -2145,10 +2144,9 @@
       <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
     </svg>
   </div>
-  <button class="commerce-selector" id="shopBtn">
-    <span id="shopName">Cut Studio</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
+  <div class="commerce-selector" id="shopBtn" style="cursor: default;">
+    <span id="shopName">Mon restaurant</span>
+  </div>
 </header>
 
 <!-- ═══ PUSH NOTIFICATION ══════════════════════════════ -->
@@ -2172,13 +2170,13 @@
 <div class="modal-backdrop" id="prestEditBackdrop"></div>
 <div class="modal-sheet" id="prestEditSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
   <div class="modal-header">
-    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="prestEditTitle">Modifier la prestation</div>
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="prestEditTitle">Modifier le service</div>
   </div>
   <div style="padding: 0 0 8px;">
     <div class="group" style="margin: 0 16px;">
       <div class="profile-input-row">
         <label class="profile-input-label">Nom</label>
-        <input class="profile-input-field" id="prestEditNom" type="text" placeholder="Ex : Coupe homme" />
+        <input class="profile-input-field" id="prestEditNom" type="text" placeholder="Ex : Service midi" />
       </div>
       <div class="profile-input-row">
         <label class="profile-input-label">Durée</label>
@@ -2201,7 +2199,7 @@
 <div class="modal-backdrop" id="barberEditBackdrop"></div>
 <div class="modal-sheet" id="barberEditSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
   <div class="modal-header">
-    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="barberEditTitle">Modifier le coiffeur</div>
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="barberEditTitle">Modifier le membre</div>
   </div>
   <div style="padding: 0 0 8px;">
     <div class="group" style="margin: 0 16px;">
@@ -2569,7 +2567,7 @@
     </div>
 
     <div class="pro-title" id="proTitle">L'IA qui répond<br>à vos appels 24/7</div>
-    <div class="pro-subtitle" id="proSubtitle">Ne ratez plus jamais un client. Frizz prend le relais quand vous coupez.</div>
+    <div class="pro-subtitle" id="proSubtitle">Ne ratez plus jamais un appel. Frizz prend le relais pendant le service.</div>
 
     <div class="pro-features" id="proFeatures">
       <div class="pro-feature">
@@ -2632,16 +2630,16 @@
     </button>
   </div>
 
-  <div class="section-header">Prestations &amp; tarifs</div>
-  <div class="group" id="prestationsList">
+  <div class="section-header" style="display:none">Prestations &amp; tarifs</div>
+  <div class="group" id="prestationsList" style="display:none">
     <button class="cell" onclick="openAddModal('prestation')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
-  <div class="section-header">Disponibilité</div>
-  <div class="group" id="disposList"></div>
+  <div class="section-header" style="display:none">Disponibilité</div>
+  <div class="group" id="disposList" style="display:none"></div>
 
-  <div class="section-header">Coiffeurs</div>
-  <div class="group" id="barbiersList">
+  <div class="section-header" style="display:none">Coiffeurs</div>
+  <div class="group" id="barbiersList" style="display:none">
     <button class="cell" onclick="openAddModal('barbier')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
   </div>
 
@@ -2753,7 +2751,7 @@ async function loadAllData() {
       // Should not happen (signup creates one), but just in case:
       const { data: newSalon } = await supa
         .from('frizz_ai_salons')
-        .insert({ user_id: currentUser.id, nom: 'Mon salon', actif: true })
+        .insert({ user_id: currentUser.id, nom: 'Mon restaurant', actif: true })
         .select()
         .single();
       userSalons.push(newSalon);
@@ -3155,7 +3153,7 @@ function openPrestEdit(prestId) {
   set('prestEditNom', p.nom);
   set('prestEditDuree', p.duree_minutes);
   set('prestEditPrix', (p.prix_centimes / 100).toFixed(2).replace(/\.00$/, ''));
-  document.getElementById('prestEditTitle').textContent = `Modifier ${p.nom || 'la prestation'}`;
+  document.getElementById('prestEditTitle').textContent = `Modifier ${p.nom || 'le service'}`;
   document.getElementById('prestEditBackdrop').classList.add('open');
   document.getElementById('prestEditSheet').classList.add('open');
 }
@@ -3197,7 +3195,7 @@ async function deletePrestEdit() {
   if (!confirm('Supprimer cette prestation ?')) return;
   const { error } = await supa.from('frizz_ai_prestations').delete().eq('id', editingPrestId);
   if (error) { showToast('Erreur · ' + error.message); return; }
-  showToast('Prestation supprimée');
+  showToast('Service supprimé');
   await loadPrestations();
   renderConfigLists();
   closePrestEdit();
@@ -3220,7 +3218,7 @@ function openBarberEdit(barberId) {
   set('barberEditTelephone', b.telephone);
   set('barberEditEmail', b.email);
   set('barberEditDispo', b.disponibilite);
-  document.getElementById('barberEditTitle').textContent = `Modifier ${b.prenom || 'le coiffeur'}`;
+  document.getElementById('barberEditTitle').textContent = `Modifier ${b.prenom || 'le membre'}`;
   document.getElementById('barberEditBackdrop').classList.add('open');
   document.getElementById('barberEditSheet').classList.add('open');
 }
@@ -3265,7 +3263,7 @@ async function deleteBarberEdit() {
     showToast('Erreur · ' + error.message);
     return;
   }
-  showToast('Coiffeur supprimé');
+  showToast('Membre supprimé');
   await loadBarbiers();
   renderConfigLists();
   closeBarberEdit();
@@ -3326,7 +3324,7 @@ function syncProCard() {
     card.classList.remove('active');
     badge.textContent = 'Frizz Pro';
     title.innerHTML = "L'IA qui répond<br>à vos appels 24/7";
-    subtitle.textContent = 'Ne ratez plus jamais un client. Frizz prend le relais quand vous coupez.';
+    subtitle.textContent = 'Ne ratez plus jamais un appel. Frizz prend le relais pendant le service.';
     if (priceRow) priceRow.style.display = 'flex';
     cta.textContent = 'S\'abonner maintenant';
     ctaSub.textContent = '49€/mois · annulation libre';
@@ -3594,9 +3592,10 @@ function closeModal() {
   document.getElementById('modalBackdrop').classList.remove('open');
   document.getElementById('modalSheet').classList.remove('open');
 }
-document.getElementById('shopBtn').addEventListener('click', openModal);
-const dsShopBtnEl = document.getElementById('dsShopBtn');
-if (dsShopBtnEl) dsShopBtnEl.addEventListener('click', openModal);
+// Switch salon désactivé : on ne supporte qu'1 restaurant par compte
+// document.getElementById('shopBtn').addEventListener('click', openModal);
+// const dsShopBtnEl = document.getElementById('dsShopBtn');
+// if (dsShopBtnEl) dsShopBtnEl.addEventListener('click', openModal);
 document.getElementById('modalBackdrop').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 document.getElementById('modalAdd').addEventListener('click', () => {
@@ -3708,12 +3707,12 @@ function openAddModal(type) {
       success: 'Prestation ajoutée'
     },
     barbier: {
-      title: 'Nouveau coiffeur',
+      title: 'Nouveau membre',
       fields: [
         { label: 'Prénom', placeholder: 'Ex : Karim', id: 'add-name' },
         { label: 'Disponibilité', placeholder: 'Ex : Lun–Sam', id: 'add-availability' },
       ],
-      success: 'Coiffeur ajouté'
+      success: 'Membre ajouté'
     },
     salon: {
       title: 'Nouveau salon',
@@ -3783,7 +3782,7 @@ async function confirmAddModal() {
       await loadBarbiers();
       renderConfigLists();
       closeAddModal();
-      showToast('Coiffeur ajouté');
+      showToast('Membre ajouté');
     } else if (currentAddType === 'salon') {
       const nom = document.getElementById('add-name')?.value.trim();
       const ville = document.getElementById('add-address')?.value.trim() || '';
@@ -4338,7 +4337,7 @@ function renderAgendaGrid() {
     empty.innerHTML = `
       <div class="agenda-empty-title">Aucun barbier configuré</div>
       <div class="agenda-empty-desc">Ajoutez vos barbiers dans Réglages pour voir l'agenda.</div>
-      <button class="agenda-empty-cta" onclick="navigate('config')">Ajouter un coiffeur</button>`;
+      <button class="agenda-empty-cta" onclick="navigate('config')">Configurer mes horaires</button>`;
     return;
   }
 

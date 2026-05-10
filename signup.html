@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F2F2F7">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="color-scheme" content="light">
-<title>Créer un compte · Frizz</title>
+<title>Se connecter · Frizz</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -18,8 +18,6 @@
     --separator: rgba(60, 60, 67, 0.18);
     --blue: #FF9500;
     --red: #FF3B30;
-    --green: #34C759;
-    --fill: rgba(120, 120, 128, 0.20);
   }
   html, body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
@@ -70,10 +68,10 @@
 
   .marketing-col { display: none; }
 
-  .header { padding: 16px 0 28px; }
+  .header { padding: 20px 0 32px; text-align: center; }
   .logo {
-    width: 48px; height: 48px;
-    margin-bottom: 22px;
+    width: 56px; height: 56px;
+    margin-bottom: 24px;
     filter: drop-shadow(0 4px 12px rgba(255, 149, 0, 0.30));
   }
   .title {
@@ -94,7 +92,7 @@
     body::before {
       background:
         radial-gradient(60% 50% at 25% 20%, rgba(255, 149, 0, 0.10) 0%, transparent 55%),
-        radial-gradient(50% 40% at 90% 10%, rgba(175, 82, 222, 0.06) 0%, transparent 60%);
+        radial-gradient(50% 40% at 90% 10%, rgba(255, 184, 77, 0.06) 0%, transparent 60%);
     }
     .nav {
       max-width: 1200px;
@@ -110,9 +108,7 @@
       align-items: center;
       min-height: calc(100vh - 80px);
     }
-    .marketing-col {
-      display: block;
-    }
+    .marketing-col { display: block; }
     .marketing-logo {
       width: 96px; height: 96px;
       margin-bottom: 32px;
@@ -131,31 +127,8 @@
       color: var(--label-secondary);
       line-height: 1.5;
       max-width: 38ch;
-      margin-bottom: 32px;
       letter-spacing: -0.012em;
     }
-    .feature-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .feature-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 16px;
-      color: var(--label);
-      letter-spacing: -0.012em;
-    }
-    .feature-check {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: var(--green);
-      color: white;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .feature-check svg { width: 13px; height: 13px; }
 
     .container {
       max-width: 100%;
@@ -169,7 +142,7 @@
       border: 0.5px solid var(--separator);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
     }
-    .header { padding: 0 0 24px; }
+    .header { padding: 0 0 24px; text-align: left; }
     .logo { display: none; }
     .title { font-size: 26px; }
   }
@@ -235,10 +208,7 @@
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s;
   }
   .submit-btn:active { transform: scale(0.97); }
-  .submit-btn:disabled {
-    opacity: 0.5;
-    cursor: wait;
-  }
+  .submit-btn:disabled { opacity: 0.5; cursor: wait; }
   .submit-btn .spinner {
     display: none;
     width: 16px; height: 16px;
@@ -252,23 +222,24 @@
   .submit-btn.loading .spinner { display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .legal {
+  .forgot {
     text-align: center;
     margin-top: 14px;
-    font-size: 12px;
-    color: var(--label-tertiary);
-    line-height: 1.45;
-    letter-spacing: -0.005em;
+    font-size: 14px;
   }
-  .legal a { color: var(--blue); text-decoration: none; }
+  .forgot a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
 
-  .login-link {
+  .signup-link {
     text-align: center;
-    margin-top: 22px;
+    margin-top: 28px;
     font-size: 15px;
     color: var(--label-secondary);
   }
-  .login-link a {
+  .signup-link a {
     color: var(--blue);
     text-decoration: none;
     font-weight: 500;
@@ -287,7 +258,7 @@
 <div class="page-wrap">
 
   <div class="marketing-col">
-    <svg class="marketing-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <svg class="marketing-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="border-radius: 18px;">
       <defs>
         <linearGradient id="mgrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#FFB347"/>
@@ -297,32 +268,14 @@
       <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#mgrad)"/>
       <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
     </svg>
-    <h1 class="marketing-title">L'agent IA qui répond à vos appels</h1>
-    <p class="marketing-sub">Vos appels manqués deviennent des rendez-vous. Frizz prend la conversation à votre place et synchronise tout dans votre Google ou Apple Calendar.</p>
-    <div class="feature-list">
-      <div class="feature-row">
-        <div class="feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Appels illimités · 14 jours offerts
-      </div>
-      <div class="feature-row">
-        <div class="feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Synchro Google Calendar · Apple Calendar · Outlook
-      </div>
-      <div class="feature-row">
-        <div class="feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Acomptes anti no-show
-      </div>
-      <div class="feature-row">
-        <div class="feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Sans engagement · annulez en un tap
-      </div>
-    </div>
+    <h1 class="marketing-title">Heureux de vous revoir</h1>
+    <p class="marketing-sub">Connectez-vous à votre compte Frizz pour retrouver vos réservations, vos appels et vos statistiques.</p>
   </div>
 
   <div class="container">
     <div class="form-card">
       <div class="header">
-        <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="border-radius: 12px;">
           <defs>
             <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#FFB347"/>
@@ -332,40 +285,35 @@
           <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#grad)"/>
           <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
         </svg>
-        <h1 class="title">Créer un compte</h1>
-        <p class="subtitle">14 jours d'essai gratuit · sans carte bancaire</p>
+        <h1 class="title">Bon retour</h1>
+        <p class="subtitle">Connectez-vous à votre compte Frizz</p>
       </div>
 
-      <form class="form" id="signupForm" autocomplete="on">
-        <div class="field">
-          <label class="field-label" for="salonNom">Nom du salon</label>
-          <input type="text" id="salonNom" placeholder="Ex : Cut Studio Paris 11e" required autocomplete="organization" />
-        </div>
-
+      <form class="form" id="loginForm" autocomplete="on">
         <div class="field">
           <label class="field-label" for="email">Email</label>
-          <input type="email" id="email" placeholder="vous@salon.fr" required autocomplete="email" inputmode="email" />
+          <input type="email" id="email" placeholder="vous@restaurant.fr" required autocomplete="email" inputmode="email" />
         </div>
 
         <div class="field">
           <label class="field-label" for="password">Mot de passe</label>
-          <input type="password" id="password" placeholder="6 caractères minimum" required autocomplete="new-password" minlength="6" />
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
         </div>
 
         <div class="error" id="errorMsg"></div>
 
         <button type="submit" class="submit-btn" id="submitBtn">
           <span class="spinner"></span>
-          <span class="btn-text">Créer mon compte</span>
+          <span class="btn-text">Se connecter</span>
         </button>
 
-        <div class="legal">
-          En créant un compte, vous acceptez nos <a href="#">conditions d'utilisation</a> et notre <a href="#">politique de confidentialité</a>.
+        <div class="forgot">
+          <a href="#" onclick="forgotPassword(event)">Mot de passe oublié ?</a>
         </div>
       </form>
 
-      <div class="login-link">
-        Vous avez déjà un compte ? <a href="login.html">Se connecter</a>
+      <div class="signup-link">
+        Pas encore de compte ? <a href="signup.html">Créer un compte</a>
       </div>
     </div>
   </div>
@@ -378,7 +326,7 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const form = document.getElementById('signupForm');
+const form = document.getElementById('loginForm');
 const errorEl = document.getElementById('errorMsg');
 const btn = document.getElementById('submitBtn');
 const btnText = btn.querySelector('.btn-text');
@@ -393,65 +341,62 @@ function hideError() {
 function setLoading(loading) {
   btn.disabled = loading;
   btn.classList.toggle('loading', loading);
-  btnText.textContent = loading ? 'Création en cours…' : 'Créer mon compte';
+  btnText.textContent = loading ? 'Connexion…' : 'Se connecter';
 }
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   hideError();
-  const salonNom = document.getElementById('salonNom').value.trim();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
-  if (!salonNom || !email || !password) {
-    showError('Tous les champs sont obligatoires');
+  if (!email || !password) {
+    showError('Email et mot de passe requis');
     return;
   }
-  if (password.length < 6) {
-    showError('Le mot de passe doit faire au moins 6 caractères');
-    return;
-  }
-
   setLoading(true);
-
   try {
-    // 1. Créer le compte Auth
-    const { data: authData, error: authError } = await supa.auth.signUp({
-      email,
-      password,
-    });
-    if (authError) throw authError;
-    if (!authData.user) throw new Error('Erreur lors de la création du compte');
-
-    // 2. Créer le salon associé avec essai 14 jours actif
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 14);
-    const { error: salonError } = await supa
+    const { data, error } = await supa.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    // Check if onboarded
+    const { data: salon } = await supa
       .from('frizz_ai_salons')
-      .insert({
-        user_id: authData.user.id,
-        nom: salonNom,
-        actif: true,
-        subscription_status: 'trialing',
-        trial_end: trialEnd.toISOString(),
-      });
-    if (salonError) throw salonError;
-
-    // 3. Rediriger vers la page d'onboarding
-    window.location.href = 'setup.html';
+      .select('onboarded')
+      .eq('user_id', data.user.id)
+      .limit(1).single();
+    if (salon && salon.onboarded === false) {
+      window.location.href = 'setup.html';
+    } else {
+      window.location.href = 'index.html';
+    }
   } catch (err) {
     setLoading(false);
-    let msg = err.message || 'Une erreur est survenue';
-    if (msg.includes('already registered') || msg.includes('already been registered')) {
-      msg = 'Cet email a déjà un compte. Connectez-vous à la place.';
-    } else if (msg.includes('invalid email') || msg.includes('Invalid email')) {
-      msg = 'Cet email n\'est pas valide';
-    } else if (msg.includes('Password should be')) {
-      msg = 'Le mot de passe doit faire au moins 6 caractères';
+    let msg = err.message || 'Erreur de connexion';
+    if (msg.includes('Invalid login credentials')) {
+      msg = 'Email ou mot de passe incorrect';
+    } else if (msg.includes('Email not confirmed')) {
+      msg = 'Email pas encore confirmé. Vérifiez vos emails.';
     }
     showError(msg);
   }
 });
+
+async function forgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showError('Entrez votre email d\'abord');
+    return;
+  }
+  hideError();
+  try {
+    const { error } = await supa.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+    alert('Un email de réinitialisation vous a été envoyé.');
+  } catch (err) {
+    showError(err.message || 'Erreur lors de l\'envoi');
+  }
+}
 
 // Si déjà connecté, rediriger
 supa.auth.getSession().then(async ({ data: { session } }) => {

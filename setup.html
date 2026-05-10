@@ -2,428 +2,380 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F2F2F7">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="color-scheme" content="light">
-<title>Configurer mon salon · Frizz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Configuration · Frizz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #F2F2F7;
-    --bg-secondary: #FFFFFF;
-    --label: #000000;
-    --label-secondary: rgba(60, 60, 67, 0.60);
-    --label-tertiary: rgba(60, 60, 67, 0.30);
-    --separator: rgba(60, 60, 67, 0.18);
-    --blue: #FF9500;
-    --red: #FF3B30;
-    --green: #34C759;
-    --fill: rgba(120, 120, 128, 0.20);
-  }
-  html, body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--label);
-    font-size: 17px;
-    line-height: 1.4;
-    letter-spacing: -0.022em;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(80% 60% at 50% -10%, rgba(255, 149, 0, 0.08) 0%, transparent 55%);
-  }
-  button, input { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
-  input { cursor: text; }
+:root {
+  --orange: #FF9500;
+  --orange-light: #FFB347;
+  --orange-dark: #C2410C;
+  --orange-bg: #FFF4E6;
+  --bg: #FAFAFA;
+  --bg-secondary: #FFFFFF;
+  --text: #1C1C1E;
+  --text-secondary: #6E6E73;
+  --text-tertiary: #AEAEB2;
+  --separator: #D1D1D6;
+  --green: #34C759;
+  --red: #FF3B30;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
 
-  .container {
-    max-width: 460px;
-    margin: 0 auto;
-    padding: max(20px, env(safe-area-inset-top)) 22px max(120px, env(safe-area-inset-bottom));
-    min-height: 100vh;
-  }
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 20px 100px;
+}
 
-  /* Progress dots */
-  .progress {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    padding: 10px 0 28px;
-  }
-  .progress-dot {
-    width: 22px; height: 5px;
-    border-radius: 99px;
-    background: var(--label-tertiary);
-    transition: background 0.3s, width 0.3s;
-  }
-  .progress-dot.active {
-    background: var(--blue);
-    width: 32px;
-  }
+/* ─── HEADER ─── */
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.logo {
+  width: 40px; height: 40px;
+  background: var(--orange); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo svg { width: 24px; height: 24px; fill: white; }
+.brand { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
 
-  /* Step (only one shows at a time) */
-  .step { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .step.active { display: block; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* ─── PROGRESS ─── */
+.progress {
+  display: flex; gap: 8px; margin-bottom: 28px;
+}
+.progress-step {
+  flex: 1; height: 4px; background: var(--separator); border-radius: 2px;
+  transition: background .3s;
+}
+.progress-step.active { background: var(--orange); }
+.progress-step.done { background: var(--orange); }
 
-  .step-icon {
-    width: 64px; height: 64px;
-    margin: 0 auto 22px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #FDBA74 0%, #FF9500 50%, #C2410C 100%);
-    box-shadow: 0 12px 28px rgba(255, 149, 0, 0.30);
-    display: flex; align-items: center; justify-content: center;
-    color: white;
-  }
-  .step-icon svg { width: 32px; height: 32px; }
+/* ─── STEPS ─── */
+.step { display: none; animation: fadeIn .3s; }
+.step.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .step-eyebrow {
-    text-align: center;
-    color: var(--blue);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .step-title {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.030em;
-    line-height: 1.1;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .step-sub {
-    font-size: 15px;
-    color: var(--label-secondary);
-    text-align: center;
-    margin-bottom: 22px;
-    letter-spacing: -0.012em;
-    max-width: 36ch;
-    margin-left: auto;
-    margin-right: auto;
-  }
+.step-number {
+  font-size: 13px; font-weight: 600; color: var(--orange);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+}
+.step-title {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.6px;
+  line-height: 1.2; margin-bottom: 8px;
+}
+.step-subtitle {
+  font-size: 15px; color: var(--text-secondary); margin-bottom: 28px;
+  line-height: 1.5;
+}
 
-  /* Items list */
-  .items {
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    border: 0.5px solid var(--separator);
-    margin-bottom: 14px;
-    overflow: hidden;
-  }
-  .item {
-    display: flex;
-    align-items: center;
-    padding: 12px 14px;
-    border-bottom: 0.5px solid var(--separator);
-    gap: 10px;
-  }
-  .item:last-child { border-bottom: none; }
-  .item-main { flex: 1; min-width: 0; }
-  .item-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--label);
-    letter-spacing: -0.012em;
-  }
-  .item-sub {
-    font-size: 13px;
-    color: var(--label-secondary);
-    margin-top: 1px;
-  }
-  .item-price {
-    font-size: 15px;
-    color: var(--label-secondary);
-    font-weight: 500;
-  }
-  .item-remove {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: var(--fill);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--label-secondary);
-    flex-shrink: 0;
-    transition: background 0.15s;
-  }
-  .item-remove:active { background: var(--red); color: white; }
-  .item-remove svg { width: 14px; height: 14px; }
+/* ─── FORM ─── */
+.field { margin-bottom: 16px; }
+.field-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field-input, .field-select {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg-secondary); border: 1px solid var(--separator);
+  border-radius: 12px; font-size: 16px; font-family: inherit; color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+  -webkit-appearance: none; appearance: none;
+}
+.field-input:focus, .field-select:focus {
+  outline: none; border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255,149,0,.12);
+}
+.field-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236E6E73' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  padding-right: 40px;
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+.field-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; }
 
-  .empty-list {
-    padding: 28px 16px;
-    text-align: center;
-    font-size: 14px;
-    color: var(--label-tertiary);
-    letter-spacing: -0.005em;
-  }
+/* ─── HORAIRES ─── */
+.day-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.day-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0;
+}
+.day-name { font-size: 15px; font-weight: 600; }
+.day-toggle {
+  position: relative; width: 48px; height: 28px;
+  background: var(--separator); border-radius: 14px;
+  cursor: pointer; transition: background .2s; flex-shrink: 0;
+}
+.day-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 24px; height: 24px; background: white; border-radius: 50%;
+  transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.day-card.open .day-toggle { background: var(--orange); }
+.day-card.open .day-toggle::after { transform: translateX(20px); }
+.day-services { display: none; margin-top: 14px; }
+.day-card.open .day-services { display: block; }
+.service-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.service-row:last-child { margin-bottom: 0; }
+.service-checkbox {
+  width: 20px; height: 20px; border: 2px solid var(--separator);
+  border-radius: 6px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.service-checkbox.checked {
+  background: var(--orange); border-color: var(--orange);
+}
+.service-checkbox.checked::after {
+  content: '✓'; color: white; font-size: 13px; font-weight: 700;
+}
+.service-label { font-size: 14px; font-weight: 500; min-width: 50px; }
+.time-input {
+  flex: 1; padding: 8px 10px; font-size: 14px;
+  background: var(--bg); border: 1px solid var(--separator); border-radius: 8px;
+  font-family: inherit; min-width: 0;
+}
+.time-input:focus { outline: none; border-color: var(--orange); }
+.time-input:disabled { opacity: .4; }
+.time-arrow { color: var(--text-tertiary); font-size: 12px; flex-shrink: 0; }
 
-  /* Add form */
-  .add-form {
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    padding: 14px;
-    border: 0.5px solid var(--separator);
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .add-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .add-input {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 11px 12px;
-    border: 0.5px solid transparent;
-    font-size: 15px;
-    color: var(--label);
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s, background 0.2s;
-    -webkit-appearance: none;
-  }
-  .add-input:focus {
-    background: white;
-    border-color: var(--blue);
-  }
-  .add-input::placeholder { color: var(--label-tertiary); }
-  .add-btn {
-    background: var(--blue);
-    color: white;
-    padding: 11px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.012em;
-    transition: opacity 0.15s;
-  }
-  .add-btn:active { opacity: 0.7; }
-  .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* ─── RÉCAP ─── */
+.recap-card {
+  background: var(--bg-secondary); border: 1px solid var(--separator);
+  border-radius: 14px; padding: 18px; margin-bottom: 12px;
+}
+.recap-title {
+  font-size: 12px; font-weight: 600; color: var(--orange);
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
+}
+.recap-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 6px 0; gap: 12px;
+}
+.recap-key { font-size: 14px; color: var(--text-secondary); flex-shrink: 0; }
+.recap-value {
+  font-size: 14px; font-weight: 500; color: var(--text);
+  text-align: right; word-break: break-word;
+}
 
-  /* Recap step */
-  .recap-card {
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    padding: 18px;
-    border: 0.5px solid var(--separator);
-    margin-bottom: 12px;
-  }
-  .recap-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 0.5px solid var(--separator);
-  }
-  .recap-row:last-child { border-bottom: none; padding-bottom: 0; }
-  .recap-row:first-child { padding-top: 0; }
-  .recap-check {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--green);
-    color: white;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .recap-check svg { width: 16px; height: 16px; }
-  .recap-text {
-    font-size: 15px;
-    color: var(--label);
-    letter-spacing: -0.012em;
-  }
-  .recap-text strong { font-weight: 600; }
+/* ─── ACTIONS ─── */
+.actions {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 30%, var(--bg) 100%);
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex; gap: 10px; justify-content: center;
+}
+.actions-inner { width: 100%; max-width: 520px; display: flex; gap: 10px; }
+.btn {
+  flex: 1; padding: 16px;
+  border: none; border-radius: 14px; font-size: 16px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all .15s;
+}
+.btn-primary { background: var(--orange); color: white; }
+.btn-primary:hover { background: var(--orange-dark); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn-secondary {
+  background: var(--bg-secondary); color: var(--text);
+  border: 1px solid var(--separator);
+}
+.btn-secondary:hover { background: var(--separator); }
 
-  /* Sticky footer */
-  .footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, var(--bg) 70%, transparent);
-    padding: 16px 22px max(20px, env(safe-area-inset-bottom));
-    z-index: 10;
-  }
-  .footer-inner {
-    max-width: 460px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .next-btn {
-    width: 100%;
-    padding: 15px;
-    background: var(--blue);
-    color: white;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.018em;
-    box-shadow: 0 8px 20px rgba(255, 149, 0, 0.30);
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s;
-  }
-  .next-btn:active { transform: scale(0.97); }
-  .next-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-  .skip-btn {
-    text-align: center;
-    color: var(--blue);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 10px;
-    background: none;
-  }
-  .back-btn {
-    color: var(--blue);
-    font-size: 17px;
-    padding: 8px 4px 8px 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: none;
-  }
-  .back-btn:active { opacity: 0.5; }
-  .back-btn svg { width: 18px; height: 18px; }
+/* ─── LOADING ─── */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: white;
+  border-radius: 50%; animation: spin .6s linear infinite;
+  vertical-align: -3px; margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Desktop */
-  @media (min-width: 900px) {
-    .container { max-width: 520px; }
-  }
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: white; padding: 12px 20px;
+  border-radius: 12px; font-size: 14px; font-weight: 500;
+  z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .2s;
+  max-width: 90%;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: var(--red); }
+.toast.success { background: var(--green); }
 </style>
 </head>
 <body>
 
+<div id="toast" class="toast"></div>
+
 <div class="container">
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5z"/></svg>
+    </div>
+    <div class="brand">Frizz</div>
+  </div>
+
   <div class="progress">
-    <div class="progress-dot active" id="dot-1"></div>
-    <div class="progress-dot" id="dot-2"></div>
-    <div class="progress-dot" id="dot-3"></div>
-    <div class="progress-dot" id="dot-4"></div>
+    <div class="progress-step active" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
   </div>
 
-  <!-- ═══ STEP 1 — Vos infos ═══ -->
-  <div class="step active" id="step-1">
-    <div class="step-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </div>
-    <div class="step-eyebrow">Étape 1 sur 4</div>
-    <h1 class="step-title">À propos de vous</h1>
-    <p class="step-sub">Quelques infos pour configurer votre Frizz dès maintenant. Vous pourrez tout modifier plus tard.</p>
+  <!-- ═══ ÉTAPE 1 : VOS INFOS ═══ -->
+  <div class="step active" id="step1">
+    <div class="step-number">Étape 1 sur 4</div>
+    <h1 class="step-title">Vos informations</h1>
+    <p class="step-subtitle">On commence par vous. Ces infos restent privées et servent à personnaliser votre tableau de bord.</p>
 
-    <div class="add-form">
-      <input type="text" id="profile-prenom" class="add-input" placeholder="Votre prénom (ex : Karim)" autocomplete="given-name" />
-      <input type="tel" id="salon-telephone" class="add-input" placeholder="Téléphone du salon (ex : 06 12 34 56 78)" autocomplete="tel" inputmode="tel" />
-      <input type="text" id="salon-adresse" class="add-input" placeholder="Adresse (ex : 12 rue de la République)" autocomplete="street-address" />
-      <input type="text" id="salon-ville" class="add-input" placeholder="Ville (ex : Bâle)" autocomplete="address-level2" />
-    </div>
-  </div>
-
-  <!-- ═══ STEP 2 — Prestations ═══ -->
-  <div class="step" id="step-2">
-    <button class="back-btn" onclick="goToStep(1)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Retour
-    </button>
-    <div class="step-icon" style="margin-top: 14px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-    </div>
-    <div class="step-eyebrow">Étape 2 sur 4</div>
-    <h1 class="step-title">Vos prestations</h1>
-    <p class="step-sub">Ajoutez les coupes et services que vous proposez. Vous pourrez en ajouter ou modifier plus tard.</p>
-
-    <div class="items" id="prestations-list">
-      <div class="empty-list">Ajoutez votre première prestation ci-dessous</div>
-    </div>
-
-    <div class="add-form">
-      <input type="text" id="prest-nom" class="add-input" placeholder="Ex : Coupe homme" autocomplete="off" />
-      <div class="add-form-row">
-        <input type="number" id="prest-duree" class="add-input" placeholder="Durée (min)" inputmode="numeric" />
-        <input type="number" id="prest-prix" class="add-input" placeholder="Prix (€)" inputmode="decimal" step="0.5" />
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Prénom</label>
+        <input type="text" class="field-input" id="patron_prenom" placeholder="Marie">
       </div>
-      <button class="add-btn" onclick="addPrestation()">+ Ajouter cette prestation</button>
+      <div class="field">
+        <label class="field-label">Nom</label>
+        <input type="text" class="field-input" id="patron_nom" placeholder="Dupont">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Téléphone perso</label>
+      <input type="tel" class="field-input" id="patron_telephone" placeholder="06 12 34 56 78">
+    </div>
+
+    <div class="field">
+      <label class="field-label">Email</label>
+      <input type="email" class="field-input" id="patron_email" placeholder="marie@bistrotdupont.fr">
     </div>
   </div>
 
-  <!-- ═══ STEP 3 — Coiffeurs ═══ -->
-  <div class="step" id="step-3">
-    <button class="back-btn" onclick="goToStep(2)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Retour
-    </button>
-    <div class="step-icon" style="margin-top: 14px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    </div>
-    <div class="step-eyebrow">Étape 3 sur 4</div>
-    <h1 class="step-title">Votre équipe</h1>
-    <p class="step-sub">Ajoutez les coiffeurs de votre salon. Si vous travaillez seul, ajoutez juste votre prénom.</p>
+  <!-- ═══ ÉTAPE 2 : VOTRE RESTAURANT ═══ -->
+  <div class="step" id="step2">
+    <div class="step-number">Étape 2 sur 4</div>
+    <h1 class="step-title">Votre restaurant</h1>
+    <p class="step-subtitle">Quelques infos pour que Frizz comprenne votre établissement.</p>
 
-    <div class="items" id="barbiers-list">
-      <div class="empty-list">Ajoutez votre premier coiffeur ci-dessous</div>
+    <div class="field">
+      <label class="field-label">Nom du restaurant</label>
+      <input type="text" class="field-input" id="resto_nom" placeholder="Le Bistrot Dupont">
     </div>
 
-    <div class="add-form">
-      <input type="text" id="barb-prenom" class="add-input" placeholder="Prénom (ex : Karim)" autocomplete="off" />
-      <input type="tel" id="barb-tel" class="add-input" placeholder="Téléphone (optionnel)" autocomplete="off" inputmode="tel" />
-      <input type="email" id="barb-email" class="add-input" placeholder="Email (optionnel)" autocomplete="off" inputmode="email" />
-      <input type="text" id="barb-dispo" class="add-input" placeholder="Disponibilité (ex : Lun–Sam)" autocomplete="off" />
-      <button class="add-btn" onclick="addBarbier()">+ Ajouter ce coiffeur</button>
+    <div class="field">
+      <label class="field-label">Adresse</label>
+      <input type="text" class="field-input" id="resto_adresse" placeholder="12 rue de la Paix">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Code postal</label>
+        <input type="text" class="field-input" id="resto_cp" placeholder="68000">
+      </div>
+      <div class="field">
+        <label class="field-label">Ville</label>
+        <input type="text" class="field-input" id="resto_ville" placeholder="Mulhouse">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Téléphone du restaurant</label>
+      <input type="tel" class="field-input" id="resto_telephone" placeholder="03 89 12 34 56">
+      <div class="field-hint">C'est ce numéro que Frizz va remplacer pour décrocher</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Type de cuisine</label>
+      <select class="field-select" id="resto_type">
+        <option value="">Choisir…</option>
+        <option value="francaise">Française traditionnelle</option>
+        <option value="bistrot">Bistrot / Brasserie</option>
+        <option value="italien">Italien / Pizzeria</option>
+        <option value="asiatique">Asiatique (japonais, thaï, chinois, vietnamien)</option>
+        <option value="mediterraneen">Méditerranéen (libanais, grec, turc)</option>
+        <option value="burger">Burger / Street food</option>
+        <option value="gastronomique">Gastronomique</option>
+        <option value="vegetarien">Végétarien / Vegan</option>
+        <option value="autre">Autre</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Couverts (capacité)</label>
+        <input type="number" class="field-input" id="resto_couverts" placeholder="50" min="1" max="500">
+        <div class="field-hint">Total de places assises</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Ticket moyen (€)</label>
+        <input type="number" class="field-input" id="resto_ticket" placeholder="45" min="10" max="500">
+        <div class="field-hint">Pour calcul ROI no-shows</div>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ STEP 4 — Récap ═══ -->
-  <div class="step" id="step-4">
-    <button class="back-btn" onclick="goToStep(3)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Retour
-    </button>
-    <div class="step-icon" style="margin-top: 14px;">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/></svg>
-    </div>
-    <div class="step-eyebrow">Étape 4 sur 4</div>
-    <h1 class="step-title">Tout est prêt !</h1>
-    <p class="step-sub">Votre Frizz est configuré. Voici un récapitulatif.</p>
+  <!-- ═══ ÉTAPE 3 : HORAIRES ═══ -->
+  <div class="step" id="step3">
+    <div class="step-number">Étape 3 sur 4</div>
+    <h1 class="step-title">Horaires de service</h1>
+    <p class="step-subtitle">Activez les jours d'ouverture et précisez vos services.</p>
 
-    <div class="recap-card" id="recap-card">
-      <div class="recap-row">
-        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="recap-text">Profil <strong id="recap-profile-name">—</strong></div>
-      </div>
-      <div class="recap-row">
-        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="recap-text"><strong id="recap-prest-count">0</strong> prestation<span id="recap-prest-s"></span> ajoutée<span id="recap-prest-s2"></span></div>
-      </div>
-      <div class="recap-row">
-        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="recap-text"><strong id="recap-barb-count">0</strong> coiffeur<span id="recap-barb-s"></span></div>
-      </div>
-      <div class="recap-row">
-        <div class="recap-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="recap-text">Synchro Google Calendar disponible</div>
-      </div>
+    <div id="days-container"></div>
+  </div>
+
+  <!-- ═══ ÉTAPE 4 : RÉCAP ═══ -->
+  <div class="step" id="step4">
+    <div class="step-number">Étape 4 sur 4</div>
+    <h1 class="step-title" id="recap-greeting">Tout est prêt !</h1>
+    <p class="step-subtitle">Vérifiez vos infos avant de lancer Frizz.</p>
+
+    <div class="recap-card">
+      <div class="recap-title">Vous</div>
+      <div class="recap-row"><span class="recap-key">Prénom</span><span class="recap-value" id="r-prenom"></span></div>
+      <div class="recap-row"><span class="recap-key">Nom</span><span class="recap-value" id="r-nom"></span></div>
+      <div class="recap-row"><span class="recap-key">Téléphone</span><span class="recap-value" id="r-tel"></span></div>
+      <div class="recap-row"><span class="recap-key">Email</span><span class="recap-value" id="r-email"></span></div>
     </div>
 
-    <p style="text-align: center; font-size: 13px; color: var(--label-tertiary); padding: 8px 16px; line-height: 1.5;">
-      Prochaine étape : activer Frizz sur votre numéro depuis l'app.
-    </p>
+    <div class="recap-card">
+      <div class="recap-title">Votre restaurant</div>
+      <div class="recap-row"><span class="recap-key">Nom</span><span class="recap-value" id="r-resto-nom"></span></div>
+      <div class="recap-row"><span class="recap-key">Adresse</span><span class="recap-value" id="r-resto-adresse"></span></div>
+      <div class="recap-row"><span class="recap-key">Téléphone</span><span class="recap-value" id="r-resto-tel"></span></div>
+      <div class="recap-row"><span class="recap-key">Type</span><span class="recap-value" id="r-resto-type"></span></div>
+      <div class="recap-row"><span class="recap-key">Couverts</span><span class="recap-value" id="r-resto-couverts"></span></div>
+      <div class="recap-row"><span class="recap-key">Ticket moyen</span><span class="recap-value" id="r-resto-ticket"></span></div>
+    </div>
+
+    <div class="recap-card">
+      <div class="recap-title">Horaires de service</div>
+      <div id="r-horaires"></div>
+    </div>
   </div>
 </div>
 
-<div class="footer">
-  <div class="footer-inner">
-    <button class="next-btn" id="nextBtn" onclick="onNext()">Continuer</button>
-    <button class="skip-btn" id="skipBtn" onclick="skipStep()">Passer cette étape</button>
+<!-- ═══ NAVIGATION ═══ -->
+<div class="actions">
+  <div class="actions-inner">
+    <button class="btn btn-secondary" id="btn-prev" style="display:none">Précédent</button>
+    <button class="btn btn-primary" id="btn-next">Continuer</button>
   </div>
 </div>
 
@@ -433,269 +385,294 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ─── ÉTAT ──────────────────────────────────────────
 let currentStep = 1;
 let salonId = null;
-let prestations = []; // { id, nom, duree, prix }
-let barbiers = []; // { id, prenom, dispo }
+let userId = null;
 
-// ─── Auth check + load salon ───
-(async () => {
-  const { data: { session } } = await supa.auth.getSession();
-  if (!session) {
-    window.location.href = 'landing.html';
-    return;
-  }
-  // Get user's salon (avec toutes les colonnes pour resume)
-  const { data: salon } = await supa
-    .from('frizz_ai_salons')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .limit(1).single();
-  if (!salon) {
-    window.location.href = 'index.html';
-    return;
-  }
-  salonId = salon.id;
-  // If already onboarded, skip
-  if (salon.onboarded) {
-    window.location.href = 'index.html';
-    return;
-  }
-  // Pré-remplir step 1 si l'utilisateur revient
-  if (salon.patron_prenom) document.getElementById('profile-prenom').value = salon.patron_prenom;
-  if (salon.telephone) document.getElementById('salon-telephone').value = salon.telephone;
-  if (salon.adresse) document.getElementById('salon-adresse').value = salon.adresse;
-  if (salon.ville) document.getElementById('salon-ville').value = salon.ville;
-  // Load any already-saved prestations/barbiers (resume)
-  const { data: pres } = await supa.from('frizz_ai_prestations').select('*').eq('salon_id', salonId).order('ordre');
-  const { data: barb } = await supa.from('frizz_ai_barbiers').select('*').eq('salon_id', salonId).order('ordre');
-  prestations = (pres || []).map(p => ({ id: p.id, nom: p.nom, duree: p.duree_minutes, prix: p.prix_centimes / 100 }));
-  barbiers = (barb || []).map(b => ({ id: b.id, prenom: b.prenom, dispo: b.disponibilite || '', tel: b.telephone || '', email: b.email || '' }));
-  renderPrestations();
-  renderBarbiers();
-  updateUI();
-})();
+const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const JOURS_API = [1, 2, 3, 4, 5, 6, 0]; // jour_semaine en DB
 
-// ─── Step navigation ───
+// État des horaires : pour chaque jour, les services
+const horaires = JOURS.map((nom, i) => ({
+  nom,
+  jourApi: JOURS_API[i],
+  ouvert: i < 5, // Lundi-Vendredi par défaut
+  midi: { actif: i < 6, ouverture: '12:00', fermeture: '14:30' },
+  soir: { actif: i < 6, ouverture: '19:00', fermeture: '22:30' }
+}));
+
+// ─── HELPERS ───────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast ' + type, 2800);
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+// ─── INIT ──────────────────────────────────────────
+async function init() {
+  const { data: { user } } = await supa.auth.getUser();
+  if (!user) { window.location.href = 'login.html'; return; }
+  userId = user.id;
+
+  // Récupérer le salon (déjà créé au signup)
+  const { data: salons } = await supa.from('frizz_ai_salons')
+    .select('*').eq('user_id', userId).limit(1);
+  if (salons && salons.length) {
+    salonId = salons[0].id;
+    // Pré-remplir si déjà saisi
+    if (salons[0].patron_prenom) document.getElementById('patron_prenom').value = salons[0].patron_prenom;
+    if (salons[0].patron_nom) document.getElementById('patron_nom').value = salons[0].patron_nom;
+    if (salons[0].patron_telephone) document.getElementById('patron_telephone').value = salons[0].patron_telephone;
+    if (salons[0].patron_email) document.getElementById('patron_email').value = salons[0].patron_email;
+  }
+  if (!document.getElementById('patron_email').value) {
+    document.getElementById('patron_email').value = user.email || '';
+  }
+
+  renderHoraires();
+}
+
+// ─── HORAIRES UI ───────────────────────────────────
+function renderHoraires() {
+  const container = document.getElementById('days-container');
+  container.innerHTML = horaires.map((h, idx) => `
+    <div class="day-card ${h.ouvert ? 'open' : ''}" data-idx="${idx}">
+      <div class="day-header">
+        <div class="day-name">${h.nom}</div>
+        <div class="day-toggle" onclick="toggleDay(${idx})"></div>
+      </div>
+      <div class="day-services">
+        <div class="service-row">
+          <div class="service-checkbox ${h.midi.actif ? 'checked' : ''}" onclick="toggleService(${idx},'midi')"></div>
+          <div class="service-label">Midi</div>
+          <input type="time" class="time-input" value="${h.midi.ouverture}" 
+                 ${h.midi.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'midi','ouverture',this.value)">
+          <span class="time-arrow">→</span>
+          <input type="time" class="time-input" value="${h.midi.fermeture}" 
+                 ${h.midi.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'midi','fermeture',this.value)">
+        </div>
+        <div class="service-row">
+          <div class="service-checkbox ${h.soir.actif ? 'checked' : ''}" onclick="toggleService(${idx},'soir')"></div>
+          <div class="service-label">Soir</div>
+          <input type="time" class="time-input" value="${h.soir.ouverture}" 
+                 ${h.soir.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'soir','ouverture',this.value)">
+          <span class="time-arrow">→</span>
+          <input type="time" class="time-input" value="${h.soir.fermeture}" 
+                 ${h.soir.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'soir','fermeture',this.value)">
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDay(idx) {
+  horaires[idx].ouvert = !horaires[idx].ouvert;
+  renderHoraires();
+}
+function toggleService(idx, service) {
+  horaires[idx][service].actif = !horaires[idx][service].actif;
+  renderHoraires();
+}
+function updateTime(idx, service, key, value) {
+  horaires[idx][service][key] = value;
+}
+window.toggleDay = toggleDay;
+window.toggleService = toggleService;
+window.updateTime = updateTime;
+
+// ─── NAVIGATION ────────────────────────────────────
 function goToStep(n) {
-  currentStep = n;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step-' + n).classList.add('active');
-  document.querySelectorAll('.progress-dot').forEach((d, i) => {
-    d.classList.toggle('active', i + 1 <= n);
-  });
-  updateUI();
-  window.scrollTo(0, 0);
-}
+  document.getElementById('step' + n).classList.add('active');
+  currentStep = n;
 
-function updateUI() {
-  const skip = document.getElementById('skipBtn');
-  const next = document.getElementById('nextBtn');
-  if (currentStep === 1) {
-    // Step Vos infos : pas de skip, on incite à remplir
-    skip.style.display = 'none';
-    next.textContent = 'Continuer';
-    next.disabled = false;
-  } else if (currentStep === 2) {
-    skip.style.display = prestations.length === 0 ? 'block' : 'none';
-    next.textContent = prestations.length === 0 ? 'Continuer' : `Continuer (${prestations.length})`;
-    next.disabled = false;
-  } else if (currentStep === 3) {
-    skip.style.display = barbiers.length === 0 ? 'block' : 'none';
-    next.textContent = barbiers.length === 0 ? 'Continuer' : `Continuer (${barbiers.length})`;
-    next.disabled = false;
-  } else if (currentStep === 4) {
-    skip.style.display = 'none';
-    next.textContent = 'Accéder à mon app Frizz';
-    next.disabled = false;
-    updateRecap();
+  // Progress bar
+  for (let i = 1; i <= 4; i++) {
+    const ps = document.getElementById('ps' + i);
+    ps.classList.remove('active', 'done');
+    if (i < n) ps.classList.add('done');
+    else if (i === n) ps.classList.add('active');
   }
+
+  // Boutons
+  document.getElementById('btn-prev').style.display = n === 1 ? 'none' : 'block';
+  document.getElementById('btn-next').textContent = n === 4 ? 'Lancer mon Frizz' : 'Continuer';
+
+  if (n === 4) renderRecap();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function updateRecap() {
-  const pCount = prestations.length;
-  const bCount = barbiers.length;
-  document.getElementById('recap-prest-count').textContent = pCount;
-  document.getElementById('recap-barb-count').textContent = bCount;
-  document.getElementById('recap-prest-s').textContent = pCount > 1 ? 's' : '';
-  document.getElementById('recap-prest-s2').textContent = pCount > 1 ? 's' : '';
-  document.getElementById('recap-barb-s').textContent = bCount > 1 ? 's' : '';
-  // Profil name dans le récap
-  const prenom = (document.getElementById('profile-prenom') || {}).value || '';
-  const recapName = document.getElementById('recap-profile-name');
-  if (recapName) recapName.textContent = prenom.trim() || 'configuré';
+// ─── VALIDATION ────────────────────────────────────
+function validateStep1() {
+  const prenom = val('patron_prenom');
+  const nom = val('patron_nom');
+  const tel = val('patron_telephone');
+  const email = val('patron_email');
+  if (!prenom || !nom) { showToast('Prénom et nom requis', 'error'); return false; }
+  if (!tel) { showToast('Téléphone requis', 'error'); return false; }
+  if (!email || !email.includes('@')) { showToast('Email invalide', 'error'); return false; }
+  return true;
+}
+function validateStep2() {
+  if (!val('resto_nom')) { showToast('Nom du restaurant requis', 'error'); return false; }
+  if (!val('resto_adresse')) { showToast('Adresse requise', 'error'); return false; }
+  if (!val('resto_ville')) { showToast('Ville requise', 'error'); return false; }
+  if (!val('resto_telephone')) { showToast('Téléphone du resto requis', 'error'); return false; }
+  if (!val('resto_type')) { showToast('Type de cuisine requis', 'error'); return false; }
+  const couverts = parseInt(val('resto_couverts'));
+  if (!couverts || couverts < 1) { showToast('Nb de couverts requis', 'error'); return false; }
+  const ticket = parseInt(val('resto_ticket'));
+  if (!ticket || ticket < 10) { showToast('Ticket moyen requis', 'error'); return false; }
+  return true;
+}
+function validateStep3() {
+  const auMoinsUnJour = horaires.some(h => h.ouvert && (h.midi.actif || h.soir.actif));
+  if (!auMoinsUnJour) { showToast('Au moins un service par semaine', 'error'); return false; }
+  return true;
 }
 
-async function saveProfileStep() {
-  const get = id => (document.getElementById(id) || {}).value || '';
+// ─── SAUVEGARDE ────────────────────────────────────
+async function saveStep1() {
   const payload = {
-    patron_prenom: get('profile-prenom').trim() || null,
-    telephone: get('salon-telephone').trim() || null,
-    adresse: get('salon-adresse').trim() || null,
-    ville: get('salon-ville').trim() || null,
+    patron_prenom: val('patron_prenom'),
+    patron_nom: val('patron_nom'),
+    patron_telephone: val('patron_telephone'),
+    patron_email: val('patron_email')
   };
   const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', salonId);
-  if (error) {
-    console.error('saveProfileStep', error);
-    alert('Erreur sauvegarde profil : ' + error.message);
-    return false;
+  if (error) { showToast('Erreur sauvegarde', 'error'); return false; }
+  return true;
+}
+async function saveStep2() {
+  const typeMap = {
+    francaise: 'Française traditionnelle', bistrot: 'Bistrot / Brasserie',
+    italien: 'Italien / Pizzeria', asiatique: 'Asiatique',
+    mediterraneen: 'Méditerranéen', burger: 'Burger / Street food',
+    gastronomique: 'Gastronomique', vegetarien: 'Végétarien / Vegan', autre: 'Autre'
+  };
+  const payload = {
+    nom: val('resto_nom'),
+    adresse: val('resto_adresse') + (val('resto_cp') ? ', ' + val('resto_cp') : ''),
+    ville: val('resto_ville'),
+    telephone: val('resto_telephone'),
+    type_etablissement: 'restaurant',
+    type_cuisine: typeMap[val('resto_type')] || val('resto_type'),
+    capacite_couverts: parseInt(val('resto_couverts')),
+    ticket_moyen: parseInt(val('resto_ticket'))
+  };
+  const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', salonId);
+  if (error) { showToast('Erreur sauvegarde', 'error'); return false; }
+  return true;
+}
+async function saveStep3() {
+  // Supprimer les horaires existants pour ce salon
+  await supa.from('frizz_ai_horaires_service').delete().eq('salon_id', salonId);
+  // Insérer les nouveaux
+  const inserts = [];
+  for (const h of horaires) {
+    if (!h.ouvert) continue;
+    if (h.midi.actif) {
+      inserts.push({
+        salon_id: salonId, jour_semaine: h.jourApi, service: 'midi',
+        heure_ouverture: h.midi.ouverture, heure_fermeture: h.midi.fermeture, ferme: false
+      });
+    }
+    if (h.soir.actif) {
+      inserts.push({
+        salon_id: salonId, jour_semaine: h.jourApi, service: 'soir',
+        heure_ouverture: h.soir.ouverture, heure_fermeture: h.soir.fermeture, ferme: false
+      });
+    }
+  }
+  if (inserts.length) {
+    const { error } = await supa.from('frizz_ai_horaires_service').insert(inserts);
+    if (error) { console.error(error); showToast('Erreur horaires : ' + error.message, 'error'); return false; }
   }
   return true;
 }
 
-async function onNext() {
-  // Step 1 : sauvegarder le profil avant de passer à step 2
-  if (currentStep === 1) {
-    document.getElementById('nextBtn').disabled = true;
-    const ok = await saveProfileStep();
-    document.getElementById('nextBtn').disabled = false;
-    if (!ok) return;
-    goToStep(2);
-    return;
-  }
-  if (currentStep < 4) {
-    goToStep(currentStep + 1);
-  } else {
-    // Mark salon as onboarded and go to app
-    document.getElementById('nextBtn').disabled = true;
-    document.getElementById('nextBtn').textContent = 'Chargement…';
-    try {
-      await supa.from('frizz_ai_salons').update({ onboarded: true }).eq('id', salonId);
-    } catch(e) { console.error(e); }
-    window.location.href = 'index.html';
-  }
+// ─── RÉCAP ─────────────────────────────────────────
+function renderRecap() {
+  document.getElementById('recap-greeting').textContent = 'Tout est prêt, ' + val('patron_prenom') + ' !';
+  document.getElementById('r-prenom').textContent = val('patron_prenom');
+  document.getElementById('r-nom').textContent = val('patron_nom');
+  document.getElementById('r-tel').textContent = val('patron_telephone');
+  document.getElementById('r-email').textContent = val('patron_email');
+
+  document.getElementById('r-resto-nom').textContent = val('resto_nom');
+  const adr = val('resto_adresse') + (val('resto_cp') ? ', ' + val('resto_cp') : '') + ' ' + val('resto_ville');
+  document.getElementById('r-resto-adresse').textContent = adr;
+  document.getElementById('r-resto-tel').textContent = val('resto_telephone');
+  const typeLabels = {
+    francaise: 'Française traditionnelle', bistrot: 'Bistrot / Brasserie',
+    italien: 'Italien / Pizzeria', asiatique: 'Asiatique',
+    mediterraneen: 'Méditerranéen', burger: 'Burger / Street food',
+    gastronomique: 'Gastronomique', vegetarien: 'Végétarien / Vegan', autre: 'Autre'
+  };
+  document.getElementById('r-resto-type').textContent = typeLabels[val('resto_type')] || '—';
+  document.getElementById('r-resto-couverts').textContent = val('resto_couverts') + ' places';
+  document.getElementById('r-resto-ticket').textContent = val('resto_ticket') + ' €';
+
+  const horairesHtml = horaires.map(h => {
+    if (!h.ouvert) return `<div class="recap-row"><span class="recap-key">${h.nom}</span><span class="recap-value" style="color:var(--text-tertiary)">Fermé</span></div>`;
+    const services = [];
+    if (h.midi.actif) services.push(`Midi ${h.midi.ouverture}-${h.midi.fermeture}`);
+    if (h.soir.actif) services.push(`Soir ${h.soir.ouverture}-${h.soir.fermeture}`);
+    return `<div class="recap-row"><span class="recap-key">${h.nom}</span><span class="recap-value">${services.join(' · ') || '—'}</span></div>`;
+  }).join('');
+  document.getElementById('r-horaires').innerHTML = horairesHtml;
 }
 
-function skipStep() {
-  if (currentStep < 4) goToStep(currentStep + 1);
-}
+// ─── HANDLERS ──────────────────────────────────────
+document.getElementById('btn-next').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-next');
+  const original = btn.textContent;
+  btn.disabled = true;
 
-// ─── Prestations ───
-async function addPrestation() {
-  const nom = document.getElementById('prest-nom').value.trim();
-  const duree = parseInt(document.getElementById('prest-duree').value, 10);
-  const prix = parseFloat(document.getElementById('prest-prix').value);
-  if (!nom) { document.getElementById('prest-nom').focus(); return; }
-  if (!duree || duree < 1) { document.getElementById('prest-duree').focus(); return; }
-  if (isNaN(prix) || prix < 0) { document.getElementById('prest-prix').focus(); return; }
   try {
-    const { data, error } = await supa.from('frizz_ai_prestations').insert({
-      salon_id: salonId,
-      nom, duree_minutes: duree,
-      prix_centimes: Math.round(prix * 100),
-      ordre: prestations.length,
-    }).select().single();
-    if (error) throw error;
-    prestations.push({ id: data.id, nom, duree, prix });
-    document.getElementById('prest-nom').value = '';
-    document.getElementById('prest-duree').value = '';
-    document.getElementById('prest-prix').value = '';
-    document.getElementById('prest-nom').focus();
-    renderPrestations();
-    updateUI();
-  } catch (err) {
-    console.error(err);
-    alert('Erreur : ' + err.message);
+    if (currentStep === 1) {
+      if (!validateStep1()) return;
+      btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
+      if (!(await saveStep1())) return;
+      goToStep(2);
+    } else if (currentStep === 2) {
+      if (!validateStep2()) return;
+      btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
+      if (!(await saveStep2())) return;
+      goToStep(3);
+    } else if (currentStep === 3) {
+      if (!validateStep3()) return;
+      btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
+      if (!(await saveStep3())) return;
+      goToStep(4);
+    } else if (currentStep === 4) {
+      btn.innerHTML = '<span class="spinner"></span>Lancement…';
+      const { error } = await supa.from('frizz_ai_salons').update({ onboarded: true }).eq('id', salonId);
+      if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
+      showToast('C\'est parti !', 'success');
+      setTimeout(() => window.location.href = 'index.html', 800);
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
   }
-}
+});
 
-async function removePrestation(id) {
-  try {
-    await supa.from('frizz_ai_prestations').delete().eq('id', id);
-    prestations = prestations.filter(p => p.id !== id);
-    renderPrestations();
-    updateUI();
-  } catch (err) { console.error(err); }
-}
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (currentStep > 1) goToStep(currentStep - 1);
+});
 
-function renderPrestations() {
-  const list = document.getElementById('prestations-list');
-  if (prestations.length === 0) {
-    list.innerHTML = '<div class="empty-list">Ajoutez votre première prestation ci-dessous</div>';
-    return;
-  }
-  list.innerHTML = prestations.map(p => `
-    <div class="item">
-      <div class="item-main">
-        <div class="item-title">${escapeHtml(p.nom)}</div>
-        <div class="item-sub">${p.duree} min</div>
-      </div>
-      <div class="item-price">${p.prix.toFixed(2).replace(/\.00$/,'')} €</div>
-      <button class="item-remove" onclick="removePrestation('${p.id}')" aria-label="Supprimer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  `).join('');
-}
-
-// ─── Barbiers ───
-async function addBarbier() {
-  const prenom = document.getElementById('barb-prenom').value.trim();
-  const dispo = document.getElementById('barb-dispo').value.trim();
-  const tel = document.getElementById('barb-tel').value.trim();
-  const email = document.getElementById('barb-email').value.trim();
-  if (!prenom) { document.getElementById('barb-prenom').focus(); return; }
-  try {
-    const { data, error } = await supa.from('frizz_ai_barbiers').insert({
-      salon_id: salonId,
-      prenom,
-      disponibilite: dispo || null,
-      telephone: tel || null,
-      email: email || null,
-      ordre: barbiers.length,
-    }).select().single();
-    if (error) throw error;
-    barbiers.push({ id: data.id, prenom, dispo, tel, email });
-    document.getElementById('barb-prenom').value = '';
-    document.getElementById('barb-tel').value = '';
-    document.getElementById('barb-email').value = '';
-    document.getElementById('barb-dispo').value = '';
-    document.getElementById('barb-prenom').focus();
-    renderBarbiers();
-    updateUI();
-  } catch (err) {
-    console.error(err);
-    alert('Erreur : ' + err.message);
-  }
-}
-
-async function removeBarbier(id) {
-  try {
-    await supa.from('frizz_ai_barbiers').delete().eq('id', id);
-    barbiers = barbiers.filter(b => b.id !== id);
-    renderBarbiers();
-    updateUI();
-  } catch (err) { console.error(err); }
-}
-
-function renderBarbiers() {
-  const list = document.getElementById('barbiers-list');
-  if (barbiers.length === 0) {
-    list.innerHTML = '<div class="empty-list">Ajoutez votre premier coiffeur ci-dessous</div>';
-    return;
-  }
-  list.innerHTML = barbiers.map(b => `
-    <div class="item">
-      <div class="item-main">
-        <div class="item-title">${escapeHtml(b.prenom)}</div>
-        ${b.dispo ? `<div class="item-sub">${escapeHtml(b.dispo)}</div>` : ''}
-      </div>
-      <button class="item-remove" onclick="removeBarbier('${b.id}')" aria-label="Supprimer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(s) {
-  if (s == null) return '';
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-}
-
-// Allow Enter key to submit
-document.getElementById('prest-prix').addEventListener('keydown', e => { if (e.key === 'Enter') addPrestation(); });
-document.getElementById('barb-dispo').addEventListener('keydown', e => { if (e.key === 'Enter') addBarbier(); });
-document.getElementById('barb-prenom').addEventListener('keydown', e => { if (e.key === 'Enter' && document.activeElement === e.target) document.getElementById('barb-dispo').focus(); });
+// ─── DÉMARRAGE ─────────────────────────────────────
+init();
 </script>
+
 </body>
 </html>

@@ -638,6 +638,38 @@
   }
   .profile-input-field::placeholder { color: var(--label-tertiary); }
 
+  /* ─── MODAL INPUT (label en haut, champ en bas, plus visible) ─── */
+  .modal-input-row {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--separator);
+    gap: 4px;
+    background: var(--bg-secondary);
+  }
+  .modal-input-row:last-child { border-bottom: none; }
+  .modal-input-label {
+    font-size: 12px;
+    color: var(--label-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .modal-input-field {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 17px;
+    color: var(--label);
+    letter-spacing: -0.022em;
+    padding: 2px 0;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .modal-input-field::placeholder { color: var(--label-tertiary); }
+
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
     display: grid;
@@ -1487,12 +1519,19 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    transition: transform 0.15s;
     z-index: 50;
   }
   .resa-fab svg { width: 18px; height: 18px; }
-  .resa-fab:active { transform: translateX(-50%) scale(0.96); }
+  .resa-fab:active { transform: translateX(-50%) scale(0.96); transition: transform 0.12s; }
   body.page-agenda-active .resa-fab { display: inline-flex; }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .resa-fab {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .resa-fab:active { transform: translateX(-50%) scale(0.96); transition: transform 0.12s; }
+  }
 
   @media (min-width: 1024px) {
     .resa-fab {
@@ -1501,7 +1540,7 @@
       right: 32px;
       transform: none;
     }
-    .resa-fab:active { transform: scale(0.96); }
+    .resa-fab:active { transform: scale(0.96); transition: transform 0.12s; }
   }
 
   /* ─── PUSH NOTIFICATION BANNER ───────────────────────── */
@@ -2618,8 +2657,8 @@
 
   <div class="duo">
     <div class="duo-card">
-      <div class="duo-label">Couverts ce mois</div>
-      <div class="duo-value"><span data-counter="0">0</span></div>
+      <div class="duo-label">Temps gagné ce mois</div>
+      <div class="duo-value"><span id="tempsGagneVal" data-counter="0">0</span><span class="unit" id="tempsGagneUnit">h</span></div>
     </div>
     <div class="duo-card">
       <div class="duo-label">No-shows évités</div>
@@ -2698,39 +2737,39 @@
 <!-- ═══ MODALE NOUVELLE RÉSERVATION ═══ -->
 <div class="modal-backdrop" id="resaModalBackdrop"></div>
 <div class="modal-sheet" id="resaModalSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
-  <div class="modal-header">
-    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="resaModalTitle">Nouvelle réservation</div>
+  <div class="modal-header" style="padding-top: 20px; padding-bottom: 14px;">
+    <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em;" id="resaModalTitle">Nouvelle réservation</div>
   </div>
   <div style="padding: 0 0 8px;">
-    <div class="group" style="margin: 0 16px;">
-      <div class="profile-input-row">
-        <label class="profile-input-label">Nom du client</label>
-        <input class="profile-input-field" id="resaClientNom" type="text" placeholder="Ex : M. Dupont" />
+    <div class="group" style="margin: 0 16px; border-radius: 14px; overflow: hidden;">
+      <div class="modal-input-row">
+        <label class="modal-input-label">Nom du client</label>
+        <input class="modal-input-field" id="resaClientNom" type="text" placeholder="M. Dupont" />
       </div>
-      <div class="profile-input-row">
-        <label class="profile-input-label">Téléphone</label>
-        <input class="profile-input-field" id="resaClientTel" type="tel" placeholder="06 12 34 56 78" />
+      <div class="modal-input-row">
+        <label class="modal-input-label">Téléphone</label>
+        <input class="modal-input-field" id="resaClientTel" type="tel" placeholder="06 12 34 56 78" />
       </div>
-      <div class="profile-input-row">
-        <label class="profile-input-label">Date</label>
-        <input class="profile-input-field" id="resaDate" type="date" />
+      <div class="modal-input-row">
+        <label class="modal-input-label">Date</label>
+        <input class="modal-input-field" id="resaDate" type="date" />
       </div>
-      <div class="profile-input-row">
-        <label class="profile-input-label">Heure</label>
-        <input class="profile-input-field" id="resaHeure" type="time" />
+      <div class="modal-input-row">
+        <label class="modal-input-label">Heure</label>
+        <input class="modal-input-field" id="resaHeure" type="time" />
       </div>
-      <div class="profile-input-row">
-        <label class="profile-input-label">Couverts</label>
-        <input class="profile-input-field" id="resaCouverts" type="number" inputmode="numeric" min="1" max="50" placeholder="2" />
+      <div class="modal-input-row">
+        <label class="modal-input-label">Couverts</label>
+        <input class="modal-input-field" id="resaCouverts" type="number" inputmode="numeric" min="1" max="50" placeholder="2" />
       </div>
-      <div class="profile-input-row">
-        <label class="profile-input-label">Notes</label>
-        <input class="profile-input-field" id="resaNotes" type="text" placeholder="Allergies, anniversaire…" />
+      <div class="modal-input-row">
+        <label class="modal-input-label">Notes (optionnel)</label>
+        <input class="modal-input-field" id="resaNotes" type="text" placeholder="Allergies, anniversaire…" />
       </div>
     </div>
     <div style="padding: 16px; display: flex; gap: 8px;">
-      <button class="modal-cancel" style="flex: 1; color: var(--label-secondary); padding: 12px 8px; font-size: 14px; font-weight: 500; background: var(--fill-tertiary); border-radius: 12px;" id="resaModalCancel">Annuler</button>
-      <button class="modal-cancel" style="flex: 1.4; background: var(--blue); color: white; padding: 12px 8px; border-radius: 12px; font-size: 14px; font-weight: 600;" id="resaModalSave">Enregistrer</button>
+      <button class="modal-cancel" style="flex: 1; color: var(--label-secondary); padding: 14px 8px; font-size: 15px; font-weight: 500; background: var(--fill-tertiary); border-radius: 12px;" id="resaModalCancel">Annuler</button>
+      <button class="modal-cancel" style="flex: 1.4; background: var(--blue); color: white; padding: 14px 8px; border-radius: 12px; font-size: 15px; font-weight: 600;" id="resaModalSave">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -2738,8 +2777,8 @@
 <!-- ═══ MODALE DÉTAIL/ACTIONS ═══ -->
 <div class="modal-backdrop" id="resaDetailBackdrop"></div>
 <div class="modal-sheet" id="resaDetailSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
-  <div class="modal-header">
-    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="resaDetailTitle">Réservation</div>
+  <div class="modal-header" style="padding-top: 20px; padding-bottom: 14px;">
+    <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em;" id="resaDetailTitle">Réservation</div>
   </div>
   <div style="padding: 0 0 8px;">
     <div id="resaDetailContent" style="padding: 0 16px 16px;"></div>
@@ -3101,13 +3140,14 @@ async function loadAllData() {
     // 2. Update ical token
     salonIcalToken = currentSalon.id;
 
-    // 3. Load prestations / barbiers / appels / rdv for current salon
+    // 3. Load prestations / barbiers / appels / rdv / résas for current salon
     await Promise.all([
       loadPrestations(),
       loadBarbiers(),
       loadAppels(),
       loadRdv(),
       loadNewClientsCount(),
+      loadResas(),
     ]);
 
     dataLoaded = true;
@@ -5096,6 +5136,39 @@ async function loadResas() {
   resasCache = data || [];
   renderResas();
   updateResaSubtitle();
+  updateTempsGagne();
+}
+
+function updateTempsGagne() {
+  // Compter les résas du mois en cours (hors annulées)
+  const now = new Date();
+  const monthStr = now.toISOString().slice(0, 7); // "YYYY-MM"
+  const resasMois = resasCache.filter(r =>
+    r.date_reservation && r.date_reservation.startsWith(monthStr) && r.statut !== 'annulee'
+  );
+
+  // Estimation : 2 min par résa + 50% d'appels qui n'aboutissent pas
+  // Donc 2 × 1.5 = 3 min / résa
+  const minutes = resasMois.length * 3;
+
+  const valEl = document.getElementById('tempsGagneVal');
+  const unitEl = document.getElementById('tempsGagneUnit');
+  if (!valEl || !unitEl) return;
+
+  let val, unit;
+  if (minutes < 60) {
+    val = minutes;
+    unit = 'min';
+  } else {
+    // En heures avec 1 décimale si < 10h, entier sinon
+    const hours = minutes / 60;
+    val = hours < 10 ? hours.toFixed(1).replace('.', ',') : Math.round(hours);
+    unit = 'h';
+  }
+
+  valEl.textContent = val;
+  valEl.setAttribute('data-counter', val);
+  unitEl.textContent = unit;
 }
 
 function updateResaSubtitle() {

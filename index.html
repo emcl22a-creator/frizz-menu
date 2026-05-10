@@ -665,10 +665,23 @@
     letter-spacing: -0.022em;
     padding: 2px 0;
     font-family: inherit;
+    text-align: left;
     -webkit-appearance: none;
     appearance: none;
   }
   .modal-input-field::placeholder { color: var(--label-tertiary); }
+  /* Fix iOS Safari : inputs date/time sont centrés par défaut, on force à gauche */
+  .modal-input-field[type="date"],
+  .modal-input-field[type="time"] {
+    text-align: left;
+    -webkit-text-align: left;
+    display: block;
+    min-height: 22px;
+  }
+  .modal-input-field[type="date"]::-webkit-date-and-time-value,
+  .modal-input-field[type="time"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
 
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
@@ -1503,8 +1516,12 @@
   .resa-fab {
     position: fixed;
     bottom: calc(100px + env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: -moz-fit-content;
+    width: fit-content;
     background: var(--blue);
     color: white;
     border: none;
@@ -1522,25 +1539,16 @@
     z-index: 50;
   }
   .resa-fab svg { width: 18px; height: 18px; }
-  .resa-fab:active { transform: translateX(-50%) scale(0.96); transition: transform 0.12s; }
+  .resa-fab:active { transform: scale(0.96); transition: transform 0.12s; }
   body.page-agenda-active .resa-fab { display: inline-flex; }
-
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .resa-fab {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .resa-fab:active { transform: translateX(-50%) scale(0.96); transition: transform 0.12s; }
-  }
 
   @media (min-width: 1024px) {
     .resa-fab {
       bottom: 32px;
       left: auto;
       right: 32px;
-      transform: none;
+      margin: 0;
     }
-    .resa-fab:active { transform: scale(0.96); transition: transform 0.12s; }
   }
 
   /* ─── PUSH NOTIFICATION BANNER ───────────────────────── */

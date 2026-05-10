@@ -2697,56 +2697,92 @@
 
 <!-- ═══ MODALE NOUVELLE RÉSERVATION ═══ -->
 <div class="modal-backdrop" id="resaModalBackdrop"></div>
-<div class="modal-sheet" id="resaModalSheet">
-  <div class="modal-handle"></div>
-  <div class="modal-title" id="resaModalTitle">Nouvelle réservation</div>
-
-  <div style="padding: 0 4px;">
-    <div class="profile-input-wrap" style="margin-bottom: 12px;">
-      <label class="profile-input-label">Nom du client</label>
-      <input class="profile-input-field" id="resaClientNom" type="text" placeholder="Ex : M. Dupont" />
-    </div>
-
-    <div class="profile-input-wrap" style="margin-bottom: 12px;">
-      <label class="profile-input-label">Téléphone</label>
-      <input class="profile-input-field" id="resaClientTel" type="tel" placeholder="06 12 34 56 78" />
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-      <div class="profile-input-wrap">
+<div class="modal-sheet" id="resaModalSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
+  <div class="modal-header">
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="resaModalTitle">Nouvelle réservation</div>
+  </div>
+  <div style="padding: 0 0 8px;">
+    <div class="group" style="margin: 0 16px;">
+      <div class="profile-input-row">
+        <label class="profile-input-label">Nom du client</label>
+        <input class="profile-input-field" id="resaClientNom" type="text" placeholder="Ex : M. Dupont" />
+      </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Téléphone</label>
+        <input class="profile-input-field" id="resaClientTel" type="tel" placeholder="06 12 34 56 78" />
+      </div>
+      <div class="profile-input-row">
         <label class="profile-input-label">Date</label>
         <input class="profile-input-field" id="resaDate" type="date" />
       </div>
-      <div class="profile-input-wrap">
+      <div class="profile-input-row">
         <label class="profile-input-label">Heure</label>
         <input class="profile-input-field" id="resaHeure" type="time" />
       </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Couverts</label>
+        <input class="profile-input-field" id="resaCouverts" type="number" inputmode="numeric" min="1" max="50" placeholder="2" />
+      </div>
+      <div class="profile-input-row">
+        <label class="profile-input-label">Notes</label>
+        <input class="profile-input-field" id="resaNotes" type="text" placeholder="Allergies, anniversaire…" />
+      </div>
     </div>
-
-    <div class="profile-input-wrap" style="margin-bottom: 12px;">
-      <label class="profile-input-label">Couverts</label>
-      <input class="profile-input-field" id="resaCouverts" type="number" min="1" max="50" placeholder="2" />
+    <div style="padding: 16px; display: flex; gap: 8px;">
+      <button class="modal-cancel" style="flex: 1; color: var(--label-secondary); padding: 12px 8px; font-size: 14px; font-weight: 500; background: var(--fill-tertiary); border-radius: 12px;" id="resaModalCancel">Annuler</button>
+      <button class="modal-cancel" style="flex: 1.4; background: var(--blue); color: white; padding: 12px 8px; border-radius: 12px; font-size: 14px; font-weight: 600;" id="resaModalSave">Enregistrer</button>
     </div>
-
-    <div class="profile-input-wrap" style="margin-bottom: 16px;">
-      <label class="profile-input-label">Notes (optionnel)</label>
-      <input class="profile-input-field" id="resaNotes" type="text" placeholder="Allergies, anniversaire…" />
-    </div>
-  </div>
-
-  <div style="display: flex; gap: 10px; padding: 0 4px;">
-    <button class="modal-btn modal-btn-secondary" id="resaModalCancel">Annuler</button>
-    <button class="modal-btn modal-btn-primary" id="resaModalSave">Enregistrer</button>
   </div>
 </div>
 
 <!-- ═══ MODALE DÉTAIL/ACTIONS ═══ -->
 <div class="modal-backdrop" id="resaDetailBackdrop"></div>
-<div class="modal-sheet" id="resaDetailSheet">
-  <div class="modal-handle"></div>
-  <div class="modal-title" id="resaDetailTitle">Réservation</div>
-  <div id="resaDetailContent" style="padding: 0 4px; margin-bottom: 16px;"></div>
-  <div id="resaDetailActions" style="display: flex; flex-direction: column; gap: 8px; padding: 0 4px;"></div>
+<div class="modal-sheet" id="resaDetailSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
+  <div class="modal-header">
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="resaDetailTitle">Réservation</div>
+  </div>
+  <div style="padding: 0 0 8px;">
+    <div id="resaDetailContent" style="padding: 0 16px 16px;"></div>
+    <div id="resaDetailActions" style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px;"></div>
+  </div>
+</div>
+
+<!-- ═══ MODALE ÉDITION HORAIRES ═══ -->
+<div class="modal-backdrop" id="horaireEditBackdrop"></div>
+<div class="modal-sheet" id="horaireEditSheet" style="bottom: 8px; max-width: 460px; max-height: 92vh; overflow-y: auto;">
+  <div class="modal-header">
+    <div class="modal-title" style="font-size: 18px; font-weight: 600; color: var(--label);" id="horaireEditTitle">Lundi</div>
+  </div>
+  <div style="padding: 0 0 8px;">
+    <div class="group" style="margin: 0 16px;">
+      <div class="profile-input-row" style="align-items: center;">
+        <label class="profile-input-label" style="flex: 1;">Service midi</label>
+        <input type="checkbox" id="horaireMidiToggle" style="width: 22px; height: 22px; accent-color: var(--blue);" />
+      </div>
+      <div class="profile-input-row" style="align-items: center; gap: 8px;">
+        <label class="profile-input-label" style="min-width: 60px;">Ouverture</label>
+        <input type="time" id="horaireMidiOuv" class="profile-input-field" style="flex: 1;" />
+        <span style="color: var(--label-tertiary);">→</span>
+        <input type="time" id="horaireMidiFerm" class="profile-input-field" style="flex: 1;" />
+      </div>
+    </div>
+    <div class="group" style="margin: 12px 16px;">
+      <div class="profile-input-row" style="align-items: center;">
+        <label class="profile-input-label" style="flex: 1;">Service soir</label>
+        <input type="checkbox" id="horaireSoirToggle" style="width: 22px; height: 22px; accent-color: var(--blue);" />
+      </div>
+      <div class="profile-input-row" style="align-items: center; gap: 8px;">
+        <label class="profile-input-label" style="min-width: 60px;">Ouverture</label>
+        <input type="time" id="horaireSoirOuv" class="profile-input-field" style="flex: 1;" />
+        <span style="color: var(--label-tertiary);">→</span>
+        <input type="time" id="horaireSoirFerm" class="profile-input-field" style="flex: 1;" />
+      </div>
+    </div>
+    <div style="padding: 16px; display: flex; gap: 8px;">
+      <button class="modal-cancel" style="flex: 1; color: var(--label-secondary); padding: 12px 8px; font-size: 14px; font-weight: 500; background: var(--fill-tertiary); border-radius: 12px;" onclick="closeHoraireEdit()">Annuler</button>
+      <button class="modal-cancel" style="flex: 1.4; background: var(--blue); color: white; padding: 12px 8px; border-radius: 12px; font-size: 14px; font-weight: 600;" onclick="saveHoraireEdit()">Enregistrer</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ RÉGLAGES ═══════════════════════════════════════ -->
@@ -2873,8 +2909,20 @@
     </div>
     <div class="cell" style="cursor: default;">
       <div class="cell-main">
-        <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Capacité (couverts)</div>
-        <input type="number" id="restoCouvertsInput" placeholder="50" min="1" max="500" style="width: 100%; border: none; outline: none; background: transparent; font-size: 16px; padding: 4px 0; color: var(--label);" />
+        <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Couverts à l'intérieur</div>
+        <input type="number" id="restoCouvertsIntInput" placeholder="40" min="0" max="500" style="width: 100%; border: none; outline: none; background: transparent; font-size: 16px; padding: 4px 0; color: var(--label);" />
+      </div>
+    </div>
+    <div class="cell" style="cursor: default;">
+      <div class="cell-main">
+        <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Couverts en terrasse / extérieur</div>
+        <input type="number" id="restoCouvertsExtInput" placeholder="20" min="0" max="500" style="width: 100%; border: none; outline: none; background: transparent; font-size: 16px; padding: 4px 0; color: var(--label);" />
+      </div>
+    </div>
+    <div class="cell" style="cursor: default; background: var(--fill-tertiary, rgba(0,0,0,0.03));">
+      <div class="cell-main">
+        <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Capacité totale</div>
+        <div id="restoCouvertsTotalDisplay" style="font-size: 16px; padding: 4px 0; color: var(--label); font-weight: 600;">0 couverts</div>
       </div>
     </div>
     <div class="cell" style="cursor: default;">
@@ -2923,20 +2971,16 @@
 
   <div class="section-header">Aide</div>
   <div class="group">
-    <button class="cell" onclick="openActivateGuide()">
-      <div class="cell-icon-wrap purple">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-      </div>
-      <div class="cell-main"><div class="cell-title">Activer Frizz sur mon numéro</div></div>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <button class="cell" onclick="showToast('Support disponible 7j/7')">
+    <a class="cell" href="mailto:contact.frizz.box@gmail.com?subject=Support%20Frizz" style="text-decoration: none; color: inherit;">
       <div class="cell-icon-wrap green">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
       </div>
-      <div class="cell-main"><div class="cell-title">Contacter le support</div></div>
+      <div class="cell-main">
+        <div class="cell-title">Contacter le support</div>
+        <div class="cell-subtitle">contact.frizz.box@gmail.com</div>
+      </div>
       <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
+    </a>
   </div>
 
   <div class="section-header">Compte</div>
@@ -4809,6 +4853,16 @@ function debouncedSave(field, value) {
   }, 600);
 }
 
+function updateCouvertsTotal() {
+  const intEl = document.getElementById('restoCouvertsIntInput');
+  const extEl = document.getElementById('restoCouvertsExtInput');
+  const total = (parseInt(intEl?.value) || 0) + (parseInt(extEl?.value) || 0);
+  const display = document.getElementById('restoCouvertsTotalDisplay');
+  if (display) display.textContent = `${total} couvert${total !== 1 ? 's' : ''}`;
+  // Sauvegarder le total dans capacite_couverts
+  debouncedSave('capacite_couverts', total > 0 ? total : null);
+}
+
 function bindRestoFields() {
   const map = {
     restoNomInput: 'nom',
@@ -4816,7 +4870,8 @@ function bindRestoFields() {
     restoAdresseInput: 'adresse',
     restoVilleInput: 'ville',
     restoTypeInput: 'type_cuisine',
-    restoCouvertsInput: 'capacite_couverts',
+    restoCouvertsIntInput: 'capacite_interieur',
+    restoCouvertsExtInput: 'capacite_exterieur',
     restoTicketInput: 'ticket_moyen',
   };
   for (const [id, field] of Object.entries(map)) {
@@ -4824,15 +4879,22 @@ function bindRestoFields() {
     if (!el) continue;
     el.addEventListener('input', e => {
       let v = e.target.value;
-      if (field === 'capacite_couverts' || field === 'ticket_moyen') {
+      if (field === 'capacite_interieur' || field === 'capacite_exterieur' || field === 'ticket_moyen') {
         v = parseInt(v) || null;
       }
       debouncedSave(field, v);
+      // Si c'est un champ couvert, recalculer le total
+      if (field === 'capacite_interieur' || field === 'capacite_exterieur') {
+        updateCouvertsTotal();
+      }
     });
     el.addEventListener('change', e => {
       let v = e.target.value;
-      if (field === 'capacite_couverts' || field === 'ticket_moyen') v = parseInt(v) || null;
+      if (field === 'capacite_interieur' || field === 'capacite_exterieur' || field === 'ticket_moyen') v = parseInt(v) || null;
       debouncedSave(field, v);
+      if (field === 'capacite_interieur' || field === 'capacite_exterieur') {
+        updateCouvertsTotal();
+      }
     });
   }
 }
@@ -4845,8 +4907,10 @@ function fillRestoFields() {
   set('restoAdresseInput', currentSalon.adresse);
   set('restoVilleInput', currentSalon.ville);
   set('restoTypeInput', currentSalon.type_cuisine);
-  set('restoCouvertsInput', currentSalon.capacite_couverts);
+  set('restoCouvertsIntInput', currentSalon.capacite_interieur);
+  set('restoCouvertsExtInput', currentSalon.capacite_exterieur);
   set('restoTicketInput', currentSalon.ticket_moyen);
+  updateCouvertsTotal();
 }
 
 async function loadHoraires() {
@@ -4856,6 +4920,7 @@ async function loadHoraires() {
     .select('*')
     .eq('salon_id', currentSalon.id);
   if (error) { console.error('loadHoraires:', error); return; }
+  window._horairesData = data || [];
   renderHoraires(data || []);
 }
 
@@ -4875,33 +4940,108 @@ function renderHoraires(rows) {
   const html = order.map(dow => {
     const services = (byJour[dow] || []).filter(s => !s.ferme);
     const label = JOURS_LABELS[dow];
+    let valueHtml;
     if (!services.length) {
-      return `<div class="cell" style="cursor: default;">
-        <div class="cell-main">
-          <div class="cell-title">${label}</div>
-          <div class="cell-subtitle" style="color: var(--label-tertiary);">Fermé</div>
-        </div>
-      </div>`;
+      valueHtml = `<span class="cell-value danger">Fermé</span>`;
+    } else {
+      const txt = services
+        .sort((a, b) => (a.service === 'midi' ? -1 : 1))
+        .map(s => {
+          const ouv = (s.heure_ouverture || '').slice(0, 5);
+          const ferm = (s.heure_fermeture || '').slice(0, 5);
+          const tag = s.service === 'midi' ? 'Midi' : 'Soir';
+          return `${tag} ${ouv}–${ferm}`;
+        })
+        .join(' · ');
+      valueHtml = `<span class="cell-value">${txt}</span>`;
     }
-    const txt = services
-      .sort((a, b) => (a.service === 'midi' ? -1 : 1))
-      .map(s => {
-        const ouv = (s.heure_ouverture || '').slice(0, 5);
-        const ferm = (s.heure_fermeture || '').slice(0, 5);
-        const tag = s.service === 'midi' ? 'Midi' : 'Soir';
-        return `${tag} ${ouv}–${ferm}`;
-      })
-      .join(' · ');
-    return `<div class="cell" style="cursor: default;">
-      <div class="cell-main">
-        <div class="cell-title">${label}</div>
-        <div class="cell-subtitle">${txt}</div>
-      </div>
-    </div>`;
+    return `<button class="cell" onclick="openHoraireEdit(${dow})">
+      <div class="cell-main"><div class="cell-title">${label}</div></div>
+      ${valueHtml}
+      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`;
   }).join('');
 
   list.innerHTML = html;
 }
+
+let editingHoraireDow = null;
+
+function openHoraireEdit(dow) {
+  editingHoraireDow = dow;
+  const services = (window._horairesData || []).filter(s => s.jour_semaine === dow && !s.ferme);
+  const midi = services.find(s => s.service === 'midi');
+  const soir = services.find(s => s.service === 'soir');
+
+  document.getElementById('horaireEditTitle').textContent = JOURS_LABELS[dow];
+
+  // Midi
+  document.getElementById('horaireMidiToggle').checked = !!midi;
+  document.getElementById('horaireMidiOuv').value = midi ? (midi.heure_ouverture || '').slice(0, 5) : '12:00';
+  document.getElementById('horaireMidiFerm').value = midi ? (midi.heure_fermeture || '').slice(0, 5) : '14:30';
+
+  // Soir
+  document.getElementById('horaireSoirToggle').checked = !!soir;
+  document.getElementById('horaireSoirOuv').value = soir ? (soir.heure_ouverture || '').slice(0, 5) : '19:00';
+  document.getElementById('horaireSoirFerm').value = soir ? (soir.heure_fermeture || '').slice(0, 5) : '22:30';
+
+  document.getElementById('horaireEditBackdrop').classList.add('open');
+  document.getElementById('horaireEditSheet').classList.add('open');
+}
+
+function closeHoraireEdit() {
+  document.getElementById('horaireEditBackdrop').classList.remove('open');
+  document.getElementById('horaireEditSheet').classList.remove('open');
+}
+
+async function saveHoraireEdit() {
+  if (editingHoraireDow === null || !currentSalon) return;
+  const dow = editingHoraireDow;
+
+  const midiActif = document.getElementById('horaireMidiToggle').checked;
+  const soirActif = document.getElementById('horaireSoirToggle').checked;
+
+  // Supprimer toutes les lignes pour ce jour
+  await supa.from('frizz_ai_horaires_service')
+    .delete()
+    .eq('salon_id', currentSalon.id)
+    .eq('jour_semaine', dow);
+
+  // Réinsérer les actifs
+  const inserts = [];
+  if (midiActif) {
+    inserts.push({
+      salon_id: currentSalon.id,
+      jour_semaine: dow,
+      service: 'midi',
+      heure_ouverture: document.getElementById('horaireMidiOuv').value,
+      heure_fermeture: document.getElementById('horaireMidiFerm').value,
+      ferme: false,
+    });
+  }
+  if (soirActif) {
+    inserts.push({
+      salon_id: currentSalon.id,
+      jour_semaine: dow,
+      service: 'soir',
+      heure_ouverture: document.getElementById('horaireSoirOuv').value,
+      heure_fermeture: document.getElementById('horaireSoirFerm').value,
+      ferme: false,
+    });
+  }
+  if (inserts.length) {
+    const { error } = await supa.from('frizz_ai_horaires_service').insert(inserts);
+    if (error) { showToast('Erreur : ' + error.message); return; }
+  }
+
+  showToast('Horaires enregistrés');
+  closeHoraireEdit();
+  await loadHoraires();
+}
+
+window.openHoraireEdit = openHoraireEdit;
+window.closeHoraireEdit = closeHoraireEdit;
+window.saveHoraireEdit = saveHoraireEdit;
 
 // Hook : remplir les champs + horaires quand l'utilisateur ouvre Réglages
 const _origNavigate = window.navigate;
@@ -5164,15 +5304,16 @@ function openResaDetail(id) {
 
   // Actions selon statut
   const actions = document.getElementById('resaDetailActions');
+  const baseBtn = 'width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;';
   let html = '';
   if (r.statut === 'confirmee') {
-    html += `<button class="modal-btn modal-btn-primary" onclick="markResaStatus('${id}', 'honoree')" style="background: #34C759;">✓ Marquer honorée</button>`;
-    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'no_show')" style="background: rgba(255,59,48,0.10); color: #D70015;">⚠ Marquer no-show</button>`;
-    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'annulee')" style="background: var(--fill); color: var(--label);">Annuler la réservation</button>`;
+    html += `<button onclick="markResaStatus('${id}', 'honoree')" style="${baseBtn} background: #34C759; color: white;">✓ Marquer honorée</button>`;
+    html += `<button onclick="markResaStatus('${id}', 'no_show')" style="${baseBtn} background: rgba(255,59,48,0.10); color: #D70015;">⚠ Marquer no-show</button>`;
+    html += `<button onclick="markResaStatus('${id}', 'annulee')" style="${baseBtn} background: var(--fill); color: var(--label);">Annuler la réservation</button>`;
   } else if (r.statut === 'honoree' || r.statut === 'no_show' || r.statut === 'annulee') {
-    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'confirmee')" style="background: var(--fill); color: var(--label);">↺ Remettre en confirmée</button>`;
+    html += `<button onclick="markResaStatus('${id}', 'confirmee')" style="${baseBtn} background: var(--fill); color: var(--label);">↺ Remettre en confirmée</button>`;
   }
-  html += `<button class="modal-btn modal-btn-secondary" onclick="closeResaDetail()">Fermer</button>`;
+  html += `<button onclick="closeResaDetail()" style="${baseBtn} background: var(--fill-tertiary); color: var(--label-secondary);">Fermer</button>`;
   actions.innerHTML = html;
 
   document.getElementById('resaDetailBackdrop').classList.add('open');

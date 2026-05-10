@@ -59,6 +59,40 @@
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ─── EFFET ORANGE EN ARRIÈRE-PLAN (orbes flous, style SaaS premium) ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    right: -100px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(255, 149, 0, 0.18) 0%, rgba(255, 149, 0, 0.08) 40%, transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px;
+    left: -120px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(255, 122, 0, 0.14) 0%, rgba(255, 122, 0, 0.06) 40%, transparent 70%);
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+  }
+  /* Tous les contenus passent au-dessus des orbes (sauf modales qui ont déjà leur z-index) */
+  .page, .topbar, .tabbar {
+    position: relative;
+    z-index: 1;
   }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
   input { font-family: inherit; color: inherit; }
@@ -3671,7 +3705,7 @@ function syncProCard() {
   } else if (status === 'active') {
     card.classList.add('active');
     badge.textContent = 'Frizz Pro actif';
-    title.innerHTML = 'Frizz Pro<br>actif';
+    title.innerHTML = '';
     subtitle.textContent = 'Merci ! Frizz prend les appels et les réservations pour vous.';
     if (priceRow) priceRow.style.display = 'none';
     cta.textContent = 'Gérer mon abonnement';

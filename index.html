@@ -1363,6 +1363,126 @@
   }
   .empty-cta:active { transform: scale(0.96); }
 
+  /* ─── PAGE RÉSERVATIONS (RESTO) ──────────────────────── */
+  .resa-card {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--separator);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.12s, background 0.12s;
+  }
+  .resa-card:hover { background: rgba(0,0,0,0.02); }
+  .resa-card:active { transform: scale(0.98); }
+
+  .resa-time {
+    flex-shrink: 0;
+    width: 56px;
+    text-align: center;
+    padding-right: 12px;
+    border-right: 0.5px solid var(--separator);
+  }
+  .resa-time-h {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .resa-time-day {
+    font-size: 11px;
+    color: var(--label-secondary);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .resa-info { flex: 1; min-width: 0; }
+  .resa-info-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .resa-info-meta {
+    font-size: 13px;
+    color: var(--label-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .resa-info-meta svg { width: 12px; height: 12px; opacity: 0.7; }
+
+  .resa-status {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .resa-status.confirmee { background: rgba(0, 122, 255, 0.10); color: #007AFF; }
+  .resa-status.honoree { background: rgba(52, 199, 89, 0.12); color: #248A3D; }
+  .resa-status.no_show { background: rgba(255, 59, 48, 0.10); color: #D70015; }
+  .resa-status.annulee { background: rgba(142, 142, 147, 0.14); color: var(--label-secondary); }
+
+  .resa-day-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 4px 8px;
+    margin-top: 8px;
+  }
+  .resa-day-header:first-child { margin-top: 0; }
+
+  /* Bouton flottant "+ Nouvelle résa" */
+  .resa-fab {
+    position: fixed;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow: 0 10px 24px rgba(255, 149, 0, 0.32);
+    display: none;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    z-index: 50;
+  }
+  .resa-fab svg { width: 18px; height: 18px; }
+  .resa-fab:active { transform: translateX(-50%) scale(0.96); }
+  body.page-agenda-active .resa-fab { display: inline-flex; }
+
+  @media (min-width: 1024px) {
+    .resa-fab {
+      bottom: 32px;
+      left: auto;
+      right: 32px;
+      transform: none;
+    }
+    .resa-fab:active { transform: scale(0.96); }
+  }
+
   /* ─── PUSH NOTIFICATION BANNER ───────────────────────── */
   .push-banner {
     position: fixed;
@@ -2530,25 +2650,82 @@
 <div class="page" id="page-agenda">
   <div class="large-title-block">
     <h1 class="large-title">Réservations</h1>
-    <p class="large-title-sub" id="agendaSub">—</p>
+    <p class="large-title-sub" id="resaSub">—</p>
   </div>
 
-  <!-- Day strip -->
-  <div class="day-strip" id="dayStrip"></div>
+  <!-- Filtres période -->
+  <div class="segmented" role="tablist" style="margin-bottom: 16px;">
+    <button class="seg resa-filter active" data-filter="today" onclick="setResaFilter('today')">Aujourd'hui</button>
+    <button class="seg resa-filter" data-filter="week" onclick="setResaFilter('week')">Semaine</button>
+    <button class="seg resa-filter" data-filter="upcoming" onclick="setResaFilter('upcoming')">À venir</button>
+    <button class="seg resa-filter" data-filter="past" onclick="setResaFilter('past')">Passées</button>
+  </div>
 
-  <!-- Today button (when not on today) -->
-  <button class="today-btn" id="todayBtn" onclick="goToToday()" style="display: none;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    Aujourd'hui
+  <!-- Liste des réservations -->
+  <div id="resaList"></div>
+
+  <!-- Empty state -->
+  <div id="resaEmpty" class="agenda-empty" style="display: none;"></div>
+
+  <!-- Bouton flottant "Nouvelle réservation" -->
+  <button class="resa-fab" id="resaFab" onclick="openNewResaModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span>Nouvelle réservation</span>
   </button>
+</div>
 
-  <!-- Agenda grid (vertical hours × columns of barbiers) -->
-  <div class="agenda-grid-wrap">
-    <div class="agenda-grid" id="agendaGrid"></div>
+<!-- ═══ MODALE NOUVELLE RÉSERVATION ═══ -->
+<div class="modal-backdrop" id="resaModalBackdrop"></div>
+<div class="modal-sheet" id="resaModalSheet">
+  <div class="modal-handle"></div>
+  <div class="modal-title" id="resaModalTitle">Nouvelle réservation</div>
+
+  <div style="padding: 0 4px;">
+    <div class="profile-input-wrap" style="margin-bottom: 12px;">
+      <label class="profile-input-label">Nom du client</label>
+      <input class="profile-input-field" id="resaClientNom" type="text" placeholder="Ex : M. Dupont" />
+    </div>
+
+    <div class="profile-input-wrap" style="margin-bottom: 12px;">
+      <label class="profile-input-label">Téléphone</label>
+      <input class="profile-input-field" id="resaClientTel" type="tel" placeholder="06 12 34 56 78" />
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+      <div class="profile-input-wrap">
+        <label class="profile-input-label">Date</label>
+        <input class="profile-input-field" id="resaDate" type="date" />
+      </div>
+      <div class="profile-input-wrap">
+        <label class="profile-input-label">Heure</label>
+        <input class="profile-input-field" id="resaHeure" type="time" />
+      </div>
+    </div>
+
+    <div class="profile-input-wrap" style="margin-bottom: 12px;">
+      <label class="profile-input-label">Couverts</label>
+      <input class="profile-input-field" id="resaCouverts" type="number" min="1" max="50" placeholder="2" />
+    </div>
+
+    <div class="profile-input-wrap" style="margin-bottom: 16px;">
+      <label class="profile-input-label">Notes (optionnel)</label>
+      <input class="profile-input-field" id="resaNotes" type="text" placeholder="Allergies, anniversaire…" />
+    </div>
   </div>
 
-  <!-- Empty state shown when salon is closed or no barbiers -->
-  <div id="agendaEmpty" class="agenda-empty" style="display: none;"></div>
+  <div style="display: flex; gap: 10px; padding: 0 4px;">
+    <button class="modal-btn modal-btn-secondary" id="resaModalCancel">Annuler</button>
+    <button class="modal-btn modal-btn-primary" id="resaModalSave">Enregistrer</button>
+  </div>
+</div>
+
+<!-- ═══ MODALE DÉTAIL/ACTIONS ═══ -->
+<div class="modal-backdrop" id="resaDetailBackdrop"></div>
+<div class="modal-sheet" id="resaDetailSheet">
+  <div class="modal-handle"></div>
+  <div class="modal-title" id="resaDetailTitle">Réservation</div>
+  <div id="resaDetailContent" style="padding: 0 4px; margin-bottom: 16px;"></div>
+  <div id="resaDetailActions" style="display: flex; flex-direction: column; gap: 8px; padding: 0 4px;"></div>
 </div>
 
 <!-- ═══ RÉGLAGES ═══════════════════════════════════════ -->
@@ -3685,6 +3862,14 @@ function navigate(pageId) {
   if (dsBtn) dsBtn.classList.add('active');
   window.scrollTo(0, 0);
   if (pageId === 'stats') setTimeout(animateCounters, 100);
+
+  // Toggle body class pour FAB et autres
+  document.body.classList.toggle('page-agenda-active', pageId === 'agenda');
+
+  // Charger les réservations quand on arrive sur la page
+  if (pageId === 'agenda') {
+    loadResas();
+  }
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset.page));
@@ -4714,6 +4899,289 @@ document.addEventListener('DOMContentLoaded', bindRestoFields);
 // Et aussi après que les données sont chargées (si user déjà sur config)
 const _origLoadAll = window.loadAllData;
 // (les fields seront remplis quand on navigue vers config)
+
+/* ═══════════════════════════════════════════════════════
+   ═══ PAGE RÉSERVATIONS RESTO                            ═══
+   ═══════════════════════════════════════════════════════ */
+
+let currentResaFilter = 'today';
+let resasCache = [];
+let editingResaId = null;
+
+const STATUTS_LABELS = {
+  confirmee: 'Confirmée',
+  honoree: 'Honorée',
+  no_show: 'No-show',
+  annulee: 'Annulée',
+};
+
+function setResaFilter(filter) {
+  currentResaFilter = filter;
+  document.querySelectorAll('.resa-filter').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+  renderResas();
+}
+
+async function loadResas() {
+  if (!currentSalon) return;
+  const { data, error } = await supa
+    .from('frizz_ai_reservations')
+    .select('*')
+    .eq('salon_id', currentSalon.id)
+    .order('date_reservation', { ascending: true })
+    .order('heure_reservation', { ascending: true });
+  if (error) { console.error('loadResas:', error); return; }
+  resasCache = data || [];
+  renderResas();
+  updateResaSubtitle();
+}
+
+function updateResaSubtitle() {
+  const today = new Date().toISOString().slice(0, 10);
+  const todayCount = resasCache.filter(r => r.date_reservation === today && r.statut !== 'annulee').length;
+  const todayCouverts = resasCache
+    .filter(r => r.date_reservation === today && r.statut !== 'annulee')
+    .reduce((sum, r) => sum + (r.nb_couverts || 0), 0);
+  const sub = document.getElementById('resaSub');
+  if (todayCount === 0) {
+    sub.textContent = "Aucune réservation aujourd'hui";
+  } else {
+    sub.textContent = `${todayCount} réservation${todayCount > 1 ? 's' : ''} · ${todayCouverts} couvert${todayCouverts > 1 ? 's' : ''} aujourd'hui`;
+  }
+}
+
+function filterResas(resas, filter) {
+  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // Monday
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  const startStr = startOfWeek.toISOString().slice(0, 10);
+  const endStr = endOfWeek.toISOString().slice(0, 10);
+
+  switch (filter) {
+    case 'today':
+      return resas.filter(r => r.date_reservation === today);
+    case 'week':
+      return resas.filter(r => r.date_reservation >= startStr && r.date_reservation <= endStr);
+    case 'upcoming':
+      return resas.filter(r => r.date_reservation >= today && r.statut !== 'annulee' && r.statut !== 'honoree' && r.statut !== 'no_show');
+    case 'past':
+      return resas.filter(r => r.date_reservation < today || r.statut === 'honoree' || r.statut === 'no_show');
+    default:
+      return resas;
+  }
+}
+
+function formatDateLong(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function renderResas() {
+  const list = document.getElementById('resaList');
+  const empty = document.getElementById('resaEmpty');
+  if (!list || !empty) return;
+
+  const filtered = filterResas(resasCache, currentResaFilter);
+
+  if (!filtered.length) {
+    list.innerHTML = '';
+    list.style.display = 'none';
+    empty.style.display = 'block';
+    const messages = {
+      today: { title: 'Aucune réservation aujourd\'hui', desc: 'Quand un client appellera, Frizz prendra la réservation et elle apparaîtra ici.' },
+      week: { title: 'Aucune réservation cette semaine', desc: 'La semaine est encore calme.' },
+      upcoming: { title: 'Aucune réservation à venir', desc: 'Quand un client appellera, sa réservation apparaîtra ici.' },
+      past: { title: 'Aucune réservation passée', desc: 'L\'historique de vos réservations apparaîtra ici.' },
+    };
+    const m = messages[currentResaFilter] || messages.today;
+    empty.innerHTML = `
+      <div class="agenda-empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="agenda-empty-title">${m.title}</div>
+      <div class="agenda-empty-desc">${m.desc}</div>
+    `;
+    return;
+  }
+
+  empty.style.display = 'none';
+  list.style.display = 'block';
+
+  // Group by date
+  const byDate = {};
+  for (const r of filtered) {
+    if (!byDate[r.date_reservation]) byDate[r.date_reservation] = [];
+    byDate[r.date_reservation].push(r);
+  }
+  const sortedDates = Object.keys(byDate).sort();
+
+  list.innerHTML = sortedDates.map(date => {
+    const cards = byDate[date].map(r => {
+      const heure = (r.heure_reservation || '').slice(0, 5);
+      const statutClass = r.statut || 'confirmee';
+      const statutLabel = STATUTS_LABELS[statutClass] || 'Confirmée';
+      const meta = [];
+      meta.push(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> ${r.nb_couverts || 0} couvert${(r.nb_couverts || 0) > 1 ? 's' : ''}`);
+      if (r.client_telephone) meta.push(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> ${escapeHtml(r.client_telephone)}`);
+      const day = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3);
+      return `<div class="resa-card" onclick="openResaDetail('${r.id}')">
+        <div class="resa-time">
+          <div class="resa-time-h">${heure}</div>
+          <div class="resa-time-day">${day}</div>
+        </div>
+        <div class="resa-info">
+          <div class="resa-info-name">${escapeHtml(r.client_nom || 'Client anonyme')}</div>
+          <div class="resa-info-meta">${meta.join(' · ')}</div>
+        </div>
+        <div class="resa-status ${statutClass}">${statutLabel}</div>
+      </div>`;
+    }).join('');
+    const dayHeader = currentResaFilter !== 'today' ? `<div class="resa-day-header">${formatDateLong(date)}</div>` : '';
+    return dayHeader + cards;
+  }).join('');
+}
+
+/* ─── MODALE NOUVELLE RÉSERVATION ─── */
+function openNewResaModal() {
+  editingResaId = null;
+  document.getElementById('resaModalTitle').textContent = 'Nouvelle réservation';
+  document.getElementById('resaClientNom').value = '';
+  document.getElementById('resaClientTel').value = '';
+  document.getElementById('resaDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('resaHeure').value = '20:00';
+  document.getElementById('resaCouverts').value = 2;
+  document.getElementById('resaNotes').value = '';
+  document.getElementById('resaModalBackdrop').classList.add('open');
+  document.getElementById('resaModalSheet').classList.add('open');
+}
+
+function closeNewResaModal() {
+  document.getElementById('resaModalBackdrop').classList.remove('open');
+  document.getElementById('resaModalSheet').classList.remove('open');
+}
+
+document.getElementById('resaModalBackdrop').addEventListener('click', closeNewResaModal);
+document.getElementById('resaModalCancel').addEventListener('click', closeNewResaModal);
+
+document.getElementById('resaModalSave').addEventListener('click', async () => {
+  const nom = document.getElementById('resaClientNom').value.trim();
+  const tel = document.getElementById('resaClientTel').value.trim();
+  const date = document.getElementById('resaDate').value;
+  const heure = document.getElementById('resaHeure').value;
+  const couverts = parseInt(document.getElementById('resaCouverts').value);
+  const notes = document.getElementById('resaNotes').value.trim();
+
+  if (!nom) { showToast('Nom du client requis'); return; }
+  if (!date || !heure) { showToast('Date et heure requises'); return; }
+  if (!couverts || couverts < 1) { showToast('Nombre de couverts requis'); return; }
+
+  const payload = {
+    salon_id: currentSalon.id,
+    client_nom: nom,
+    client_telephone: tel || null,
+    date_reservation: date,
+    heure_reservation: heure,
+    nb_couverts: couverts,
+    notes: notes || null,
+    statut: 'confirmee',
+    source: 'manuel',
+    service: parseInt(heure.split(':')[0]) < 17 ? 'midi' : 'soir',
+  };
+
+  let result;
+  if (editingResaId) {
+    result = await supa.from('frizz_ai_reservations').update(payload).eq('id', editingResaId);
+  } else {
+    result = await supa.from('frizz_ai_reservations').insert(payload);
+  }
+  if (result.error) {
+    console.error(result.error);
+    showToast('Erreur : ' + result.error.message);
+    return;
+  }
+  showToast(editingResaId ? 'Réservation modifiée' : 'Réservation ajoutée');
+  closeNewResaModal();
+  await loadResas();
+});
+
+/* ─── MODALE DÉTAIL ─── */
+function openResaDetail(id) {
+  const r = resasCache.find(x => x.id === id);
+  if (!r) return;
+  editingResaId = id;
+
+  const heure = (r.heure_reservation || '').slice(0, 5);
+  const date = formatDateLong(r.date_reservation);
+
+  document.getElementById('resaDetailTitle').textContent = r.client_nom || 'Réservation';
+
+  const content = document.getElementById('resaDetailContent');
+  content.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--label);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        ${date} à ${heure}
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--label);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        ${r.nb_couverts} couvert${r.nb_couverts > 1 ? 's' : ''}
+      </div>
+      ${r.client_telephone ? `<div style="display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--label);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        <a href="tel:${escapeHtml(r.client_telephone)}" style="color: var(--blue); text-decoration: none;">${escapeHtml(r.client_telephone)}</a>
+      </div>` : ''}
+      ${r.notes ? `<div style="font-size: 14px; color: var(--label-secondary); padding: 10px; background: var(--bg); border-radius: 10px; margin-top: 4px;">📝 ${escapeHtml(r.notes)}</div>` : ''}
+      <div style="display: inline-flex; align-self: flex-start; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px;" class="resa-status ${r.statut}">
+        ${STATUTS_LABELS[r.statut] || 'Confirmée'}
+      </div>
+    </div>
+  `;
+
+  // Actions selon statut
+  const actions = document.getElementById('resaDetailActions');
+  let html = '';
+  if (r.statut === 'confirmee') {
+    html += `<button class="modal-btn modal-btn-primary" onclick="markResaStatus('${id}', 'honoree')" style="background: #34C759;">✓ Marquer honorée</button>`;
+    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'no_show')" style="background: rgba(255,59,48,0.10); color: #D70015;">⚠ Marquer no-show</button>`;
+    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'annulee')" style="background: var(--fill); color: var(--label);">Annuler la réservation</button>`;
+  } else if (r.statut === 'honoree' || r.statut === 'no_show' || r.statut === 'annulee') {
+    html += `<button class="modal-btn" onclick="markResaStatus('${id}', 'confirmee')" style="background: var(--fill); color: var(--label);">↺ Remettre en confirmée</button>`;
+  }
+  html += `<button class="modal-btn modal-btn-secondary" onclick="closeResaDetail()">Fermer</button>`;
+  actions.innerHTML = html;
+
+  document.getElementById('resaDetailBackdrop').classList.add('open');
+  document.getElementById('resaDetailSheet').classList.add('open');
+}
+
+function closeResaDetail() {
+  document.getElementById('resaDetailBackdrop').classList.remove('open');
+  document.getElementById('resaDetailSheet').classList.remove('open');
+}
+
+document.getElementById('resaDetailBackdrop').addEventListener('click', closeResaDetail);
+
+async function markResaStatus(id, statut) {
+  const { error } = await supa
+    .from('frizz_ai_reservations')
+    .update({ statut })
+    .eq('id', id);
+  if (error) { showToast('Erreur : ' + error.message); return; }
+  const labels = { honoree: 'Honorée', no_show: 'Marquée no-show', annulee: 'Annulée', confirmee: 'Réactivée' };
+  showToast(labels[statut] || 'Mise à jour');
+  closeResaDetail();
+  await loadResas();
+}
+
+window.openResaDetail = openResaDetail;
+window.closeResaDetail = closeResaDetail;
+window.markResaStatus = markResaStatus;
+window.openNewResaModal = openNewResaModal;
+window.setResaFilter = setResaFilter;
 </script>
 </body>
 </html>

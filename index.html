@@ -4982,18 +4982,23 @@ function renderHoraires(rows) {
     const label = JOURS_LABELS[dow];
     let valueHtml;
     if (!services.length) {
-      valueHtml = `<span class="cell-value danger">Fermé</span>`;
+      valueHtml = `<span class="cell-value danger" style="text-align: right; flex-shrink: 0;">Fermé</span>`;
     } else {
-      const txt = services
-        .sort((a, b) => (a.service === 'midi' ? -1 : 1))
-        .map(s => {
-          const ouv = (s.heure_ouverture || '').slice(0, 5);
-          const ferm = (s.heure_fermeture || '').slice(0, 5);
-          const tag = s.service === 'midi' ? 'Midi' : 'Soir';
-          return `${tag} ${ouv}–${ferm}`;
-        })
-        .join(' · ');
-      valueHtml = `<span class="cell-value">${txt}</span>`;
+      // Affichage court : "Midi 12h-14h30 · Soir 19h-22h30" (peut être long)
+      // On affiche un résumé selon les services ouverts
+      const hasMidi = services.some(s => s.service === 'midi');
+      const hasSoir = services.some(s => s.service === 'soir');
+      let summary;
+      if (hasMidi && hasSoir) {
+        summary = 'Midi + Soir';
+      } else if (hasMidi) {
+        const m = services.find(s => s.service === 'midi');
+        summary = `Midi ${(m.heure_ouverture || '').slice(0, 5)}`;
+      } else {
+        const s = services.find(s => s.service === 'soir');
+        summary = `Soir ${(s.heure_ouverture || '').slice(0, 5)}`;
+      }
+      valueHtml = `<span class="cell-value" style="text-align: right; flex-shrink: 0; font-size: 15px;">${summary}</span>`;
     }
     return `<button class="cell" onclick="openHoraireEdit(${dow})">
       <div class="cell-main"><div class="cell-title">${label}</div></div>

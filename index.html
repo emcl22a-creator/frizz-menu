@@ -922,6 +922,102 @@
     text-align: left;
   }
 
+  /* VOICE PICKER (Réglages, Voix IA) */
+  .voice-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0 16px;
+  }
+  .voice-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow:
+      0 4px 12px rgba(255, 149, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+  .voice-card:active { transform: scale(0.98); }
+  .voice-card.selected {
+    border-color: var(--blue);
+    box-shadow:
+      0 0 0 2px var(--blue),
+      0 6px 16px rgba(255, 149, 0, 0.16);
+  }
+  .voice-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+  .voice-info { flex: 1; min-width: 0; }
+  .voice-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .voice-desc {
+    font-size: 13px;
+    color: var(--label-secondary);
+    margin-top: 2px;
+  }
+  .voice-play {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(255, 149, 0, 0.12);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+    transition: transform 0.12s, background 0.12s;
+  }
+  .voice-play svg { width: 14px; height: 14px; margin-left: 2px; }
+  .voice-play:hover { background: rgba(255, 149, 0, 0.2); }
+  .voice-play:active { transform: scale(0.92); }
+  .voice-play.playing {
+    background: var(--blue);
+    color: white;
+  }
+  .voice-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .voice-check svg { width: 12px; height: 12px; }
+  .voice-card.selected .voice-check { display: flex; }
+  .voice-card.selected .voice-play { right: 36px; }
+
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
     display: grid;
@@ -3233,6 +3329,57 @@
     </div>
   </div>
 
+  <div class="section-header">Voix de l'assistant IA</div>
+  <div class="voice-grid" id="voiceGrid">
+    <button class="voice-card" data-voice="camille" onclick="selectVoice('camille')">
+      <div class="voice-avatar" style="background: linear-gradient(135deg, #FFB347 0%, #FF7A00 100%);">
+        <span>C</span>
+      </div>
+      <div class="voice-info">
+        <div class="voice-name">Camille</div>
+        <div class="voice-desc">Douce, féminine</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('camille');" aria-label="Écouter Camille">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    </button>
+
+    <button class="voice-card" data-voice="audrey" onclick="selectVoice('audrey')">
+      <div class="voice-avatar" style="background: linear-gradient(135deg, #FF7A00 0%, #D70015 100%);">
+        <span>A</span>
+      </div>
+      <div class="voice-info">
+        <div class="voice-name">Audrey</div>
+        <div class="voice-desc">Mature, pro</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('audrey');" aria-label="Écouter Audrey">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    </button>
+
+    <button class="voice-card" data-voice="julien" onclick="selectVoice('julien')">
+      <div class="voice-avatar" style="background: linear-gradient(135deg, #FFD970 0%, #FF9500 100%);">
+        <span>J</span>
+      </div>
+      <div class="voice-info">
+        <div class="voice-name">Julien</div>
+        <div class="voice-desc">Masculine, chaleureuse</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('julien');" aria-label="Écouter Julien">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    </button>
+  </div>
+
   <div class="section-header" style="display:none">Prestations &amp; tarifs</div>
   <div class="group" id="prestationsList" style="display:none">
     <button class="cell" onclick="openAddModal('prestation')"><div class="cell-main"><div class="cell-title" style="color: var(--blue);">Ajouter</div></div></button>
@@ -5343,7 +5490,54 @@ window.openHoraireEdit = openHoraireEdit;
 window.closeHoraireEdit = closeHoraireEdit;
 window.saveHoraireEdit = saveHoraireEdit;
 
-// Hook : remplir les champs + horaires quand l'utilisateur ouvre Réglages
+/* VOIX DE L'ASSISTANT IA */
+const VOICES_META = {
+  camille: { name: 'Camille', desc: 'Douce, féminine' },
+  audrey: { name: 'Audrey', desc: 'Mature, pro' },
+  julien: { name: 'Julien', desc: 'Masculine, chaleureuse' },
+};
+let currentVoice = 'camille';
+let currentAudio = null;
+
+function selectVoice(voiceId) {
+  if (!VOICES_META[voiceId]) return;
+  currentVoice = voiceId;
+  document.querySelectorAll('.voice-card').forEach(card => {
+    card.classList.toggle('selected', card.dataset.voice === voiceId);
+  });
+  if (typeof debouncedSave === 'function') {
+    debouncedSave('voix_ia', voiceId);
+  }
+  showToast(`Voix ${VOICES_META[voiceId].name} sélectionnée`);
+}
+
+function playVoiceSample(voiceId) {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+    document.querySelectorAll('.voice-play').forEach(p => p.classList.remove('playing'));
+  }
+  showToast(`Aperçu de ${VOICES_META[voiceId].name} bientôt disponible`);
+  const card = document.querySelector(`.voice-card[data-voice="${voiceId}"]`);
+  const playBtn = card?.querySelector('.voice-play');
+  if (playBtn) {
+    playBtn.classList.add('playing');
+    setTimeout(() => playBtn.classList.remove('playing'), 1500);
+  }
+}
+
+function loadVoixIA() {
+  if (!currentSalon) return;
+  const v = currentSalon.voix_ia || 'camille';
+  currentVoice = v;
+  document.querySelectorAll('.voice-card').forEach(card => {
+    card.classList.toggle('selected', card.dataset.voice === v);
+  });
+}
+
+window.selectVoice = selectVoice;
+window.playVoiceSample = playVoiceSample;
+
 const _origNavigate = window.navigate;
 if (typeof _origNavigate === 'function') {
   window.navigate = function(pageId) {
@@ -5351,6 +5545,7 @@ if (typeof _origNavigate === 'function') {
     if (pageId === 'config') {
       fillRestoFields();
       loadHoraires();
+      loadVoixIA();
     }
   };
 }

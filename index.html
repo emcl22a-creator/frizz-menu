@@ -5557,23 +5557,44 @@ window.saveHoraireEdit = saveHoraireEdit;
 
 /* VOIX DE L'ASSISTANT IA */
 const VOICES_META = {
-  camille: { name: 'Camille', desc: 'Douce, féminine', sampleUrl: '/samples/camille.mp3', tts: { gender: 'female', pitch: 1.1, rate: 0.95 } },
-  audrey: { name: 'Audrey', desc: 'Mature, pro', sampleUrl: '/samples/audrey.mp3', tts: { gender: 'female', pitch: 0.95, rate: 1.0 } },
-  julien: { name: 'Julien', desc: 'Masculine, chaleureuse', sampleUrl: '/samples/julien.mp3', tts: { gender: 'male', pitch: 1.0, rate: 0.95 } },
+  camille: {
+    name: 'Camille',
+    desc: 'Douce, féminine',
+    sampleUrl: '/samples/camille.mp3',
+    tts: { gender: 'female', pitch: 1.1, rate: 0.95 },
+    vapiAssistantId: 'acd48588-3003-46b0-aec4-be9d3a615ae2',
+  },
+  audrey: {
+    name: 'Audrey',
+    desc: 'Mature, pro',
+    sampleUrl: '/samples/audrey.mp3',
+    tts: { gender: 'female', pitch: 0.95, rate: 1.0 },
+    vapiAssistantId: '13b8001d-4914-489b-bbc6-e4b5dd20a7fb',
+  },
+  julien: {
+    name: 'Julien',
+    desc: 'Masculine, chaleureuse',
+    sampleUrl: '/samples/julien.mp3',
+    tts: { gender: 'male', pitch: 1.0, rate: 0.95 },
+    vapiAssistantId: '0ea6af84-0128-4233-b0d9-3f032782d61b',
+  },
 };
 let currentVoice = 'camille';
 let currentAudio = null;
 
 function selectVoice(voiceId) {
-  if (!VOICES_META[voiceId]) return;
+  const meta = VOICES_META[voiceId];
+  if (!meta) return;
   currentVoice = voiceId;
   document.querySelectorAll('.voice-card').forEach(card => {
     card.classList.toggle('selected', card.dataset.voice === voiceId);
   });
   if (typeof debouncedSave === 'function') {
+    // Sauve la préférence + l'ID Vapi correspondant
     debouncedSave('voix_ia', voiceId);
+    debouncedSave('vapi_assistant_id', meta.vapiAssistantId);
   }
-  showToast(`Voix ${VOICES_META[voiceId].name} sélectionnée`);
+  showToast(`Voix ${meta.name} sélectionnée`);
 }
 
 function stopAllVoiceSamples() {

@@ -161,248 +161,296 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     ✨ GLASS PREMIUM 3D — Style Arc/Raycast, le plus vendeur
-     Cartes avec dégradé interne, reflet de lumière, inner glow
+     🍎 GLASS APPLE VISION PRO / iOS 26 — Effet volume 3D
+     Vraie plaque de verre épaisse :
+     - Top edge highlight (reflet)
+     - Bottom edge dark (profondeur)
+     - Refraction radiale (centre lumineux)
+     - Multiple inner shadows pour épaisseur
      ═══════════════════════════════════════════════════════════ */
 
-  /* Groupes principaux (cartes, listes Réglages) */
+  /* Groupes principaux */
   .group {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 12%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.12) inset,
-      0 -1px 0 rgba(255, 255, 255, 0.02) inset,
-      0 0 0 1px rgba(0, 0, 0, 0.20),
-      0 16px 40px rgba(0, 0, 0, 0.50),
-      0 4px 8px rgba(0, 0, 0, 0.30);
+      0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 8px 24px rgba(0, 0, 0, 0.36),
+      0 16px 48px rgba(0, 0, 0, 0.28),
+      0 2px 4px rgba(0, 0, 0, 0.20);
     position: relative;
+    isolation: isolate;
   }
   .group::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 12%;
-    right: 12%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.30) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
     pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
-  /* Hero card (stat principale) */
+  /* Hero card */
   .hero-card {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 15%),
-      radial-gradient(120% 80% at 20% 0%, rgba(10, 132, 255, 0.14) 0%, transparent 50%),
-      radial-gradient(100% 80% at 100% 100%, rgba(100, 210, 255, 0.08) 0%, transparent 50%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.92) 100%) !important;
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.14) 0%, transparent 40%),
+      radial-gradient(120% 100% at 20% 0%, rgba(10, 132, 255, 0.16) 0%, transparent 50%),
+      radial-gradient(100% 80% at 100% 100%, rgba(100, 210, 255, 0.10) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.14) inset,
-      0 0 0 1px rgba(10, 132, 255, 0.06) inset,
-      0 -1px 0 rgba(255, 255, 255, 0.02) inset,
-      0 16px 40px rgba(0, 0, 0, 0.50),
-      0 4px 12px rgba(10, 132, 255, 0.08);
+      0 1px 0 0 rgba(255, 255, 255, 0.26) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.06) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 8px 24px rgba(0, 0, 0, 0.36),
+      0 16px 48px rgba(0, 0, 0, 0.28),
+      0 4px 12px rgba(10, 132, 255, 0.10);
     position: relative;
+    isolation: isolate;
   }
   .hero-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.40) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
     pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
-  /* Cards stats (duo / trio) */
+  /* Duo / trio cards */
   .duo-card, .trio-card {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 14%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.12) inset,
-      0 12px 32px rgba(0, 0, 0, 0.40),
-      0 2px 6px rgba(0, 0, 0, 0.20);
+      0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 8px 24px rgba(0, 0, 0, 0.36),
+      0 2px 4px rgba(0, 0, 0, 0.20);
     position: relative;
+    isolation: isolate;
   }
   .duo-card::before, .trio-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 15%;
-    right: 15%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.28) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
     pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
   /* Chart card */
   .chart-card {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 14%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.12) inset,
-      0 12px 32px rgba(0, 0, 0, 0.40);
+      0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 8px 24px rgba(0, 0, 0, 0.36);
     position: relative;
+    isolation: isolate;
   }
   .chart-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 15%;
-    right: 15%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.28) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
     pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
-  /* Segmented control (filtres) */
+  /* Segmented */
   .segmented {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 20%),
-      linear-gradient(180deg, rgba(40, 40, 44, 0.85) 0%, rgba(24, 24, 28, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(50, 54, 64, 0.60) 0%, rgba(28, 32, 40, 0.70) 100%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.10) inset,
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.25) inset,
       0 4px 12px rgba(0, 0, 0, 0.24);
   }
 
   /* Search bar */
   .search-bar {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 20%),
-      linear-gradient(180deg, rgba(40, 40, 44, 0.85) 0%, rgba(24, 24, 28, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.10) inset;
+      radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(50, 54, 64, 0.60) 0%, rgba(28, 32, 40, 0.70) 100%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.20) inset;
   }
 
-  /* Tabbar (nav du bas) */
+  /* Tabbar */
   .tabbar {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 30%),
-      linear-gradient(180deg, rgba(18, 18, 22, 0.92) 0%, rgba(8, 8, 12, 0.96) 100%) !important;
-    -webkit-backdrop-filter: blur(28px);
-    backdrop-filter: blur(28px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(30, 34, 42, 0.78) 0%, rgba(12, 14, 18, 0.88) 100%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    backdrop-filter: blur(40px) saturate(200%);
+    border-top: 0.5px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.06) inset,
-      0 -4px 24px rgba(0, 0, 0, 0.60);
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -4px 32px rgba(0, 0, 0, 0.50);
   }
 
-  /* Topbar — pas de glass (laisser transparent pour bien voir le logo) */
+  /* Topbar */
   .topbar {
     background: transparent !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
 
-  /* Cards réservations - effet 3D au hover */
+  /* Cards réservations */
   .resa-card {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 15%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%) !important;
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.10) inset,
-      0 8px 20px rgba(0, 0, 0, 0.32),
-      0 2px 4px rgba(0, 0, 0, 0.20);
-    transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1),
-                box-shadow 0.18s ease,
-                border-color 0.18s ease;
+      0 1px 0 0 rgba(255, 255, 255, 0.20) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.28) inset,
+      0 6px 18px rgba(0, 0, 0, 0.32),
+      0 2px 4px rgba(0, 0, 0, 0.18);
+    transition: transform 0.22s cubic-bezier(0.32, 0.72, 0.42, 1),
+                box-shadow 0.22s ease,
+                border-color 0.22s ease;
     position: relative;
+    isolation: isolate;
   }
   .resa-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 12%;
-    right: 12%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
     pointer-events: none;
     border-radius: inherit;
+    z-index: -1;
   }
   .resa-card:hover {
-    border-color: rgba(10, 132, 255, 0.30);
-    transform: translateY(-1px);
+    border-color: rgba(10, 132, 255, 0.40);
+    transform: translateY(-2px) scale(1.002);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.14) inset,
-      0 12px 28px rgba(0, 0, 0, 0.40),
-      0 0 24px rgba(10, 132, 255, 0.12);
+      0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
+      1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
+      -1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 12px 32px rgba(0, 0, 0, 0.40),
+      0 0 40px rgba(10, 132, 255, 0.16);
   }
 
-  /* Modales (sheets) */
+  /* Modales */
   .modal-sheet {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 8%),
-      linear-gradient(180deg, rgba(32, 32, 36, 0.96) 0%, rgba(18, 18, 22, 0.98) 100%) !important;
-    -webkit-backdrop-filter: blur(40px);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+      radial-gradient(ellipse 120% 40% at 50% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(44, 48, 60, 0.85) 0%, rgba(20, 24, 32, 0.92) 100%) !important;
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    backdrop-filter: blur(60px) saturate(200%);
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.14) inset,
-      0 -20px 60px rgba(0, 0, 0, 0.60);
+      0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.06) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 -20px 80px rgba(0, 0, 0, 0.60),
+      0 0 1px rgba(255, 255, 255, 0.10);
+    position: relative;
+    isolation: isolate;
+  }
+  .modal-sheet::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
   /* Modal inputs */
   .modal-input-row {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 30%),
-      rgba(44, 44, 50, 0.70) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+      radial-gradient(ellipse 100% 80% at 50% -30%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+      rgba(60, 64, 76, 0.50) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.10) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.20) inset;
   }
 
-  /* Cellules dans les groupes */
-  .group .cell {
-    background: transparent !important;
-  }
-
-  /* Hover/active states pour les cells dans le glass */
-  .cell:hover, button.cell:hover {
-    background: rgba(255, 255, 255, 0.04) !important;
-  }
-  .cell:active, button.cell:active {
-    background: rgba(255, 255, 255, 0.08) !important;
-  }
+  /* Cells */
+  .group .cell { background: transparent !important; }
+  .cell:hover, button.cell:hover { background: rgba(255, 255, 255, 0.05) !important; }
+  .cell:active, button.cell:active { background: rgba(255, 255, 255, 0.10) !important; }
 
   /* Push banner */
   .push-banner {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 15%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.92) 0%, rgba(14, 14, 18, 0.96) 100%) !important;
-    -webkit-backdrop-filter: blur(28px);
-    backdrop-filter: blur(28px);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.78) 0%, rgba(20, 24, 32, 0.88) 100%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.12) inset,
+      0 1px 0 0 rgba(255, 255, 255, 0.24) inset,
       0 12px 32px rgba(0, 0, 0, 0.40);
+    position: relative;
+    isolation: isolate;
+  }
+  .push-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
 
   /* Toast */
   .toast {
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    backdrop-filter: blur(40px) saturate(200%);
   }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
   input { font-family: inherit; color: inherit; }
@@ -1168,53 +1216,60 @@
     gap: 14px;
     padding: 14px 16px;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 15%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
     border-radius: 14px;
     cursor: pointer;
     text-align: left;
-    transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1),
-                box-shadow 0.18s ease,
-                border-color 0.18s ease;
+    transition: transform 0.22s cubic-bezier(0.32, 0.72, 0.42, 1),
+                box-shadow 0.22s ease,
+                border-color 0.22s ease;
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.10) inset,
-      0 8px 20px rgba(0, 0, 0, 0.32);
-    overflow: hidden;
+      0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
+      0 8px 20px rgba(0, 0, 0, 0.36);
+    isolation: isolate;
   }
   .voice-card::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 12%;
-    right: 12%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
     pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
   }
   .voice-card:hover {
-    border-color: rgba(10, 132, 255, 0.30);
-    transform: translateY(-1px);
+    border-color: rgba(10, 132, 255, 0.40);
+    transform: translateY(-2px) scale(1.002);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.14) inset,
+      0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
+      1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
+      -1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
       0 12px 28px rgba(0, 0, 0, 0.40),
-      0 0 24px rgba(10, 132, 255, 0.12);
+      0 0 32px rgba(10, 132, 255, 0.18);
   }
   .voice-card:active { transform: scale(0.99) translateY(0); }
   .voice-card.selected {
     border-color: var(--blue);
     background:
-      linear-gradient(180deg, rgba(10, 132, 255, 0.10) 0%, rgba(10, 132, 255, 0) 30%),
-      linear-gradient(180deg, rgba(28, 28, 32, 0.85) 0%, rgba(14, 14, 18, 0.90) 100%);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(10, 132, 255, 0.16) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.16) inset,
+      0 1px 0 0 rgba(255, 255, 255, 0.30) inset,
       0 0 0 1px var(--blue),
-      0 0 32px rgba(10, 132, 255, 0.24),
-      0 12px 28px rgba(0, 0, 0, 0.40);
+      1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
+      -1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
+      0 0 40px rgba(10, 132, 255, 0.28),
+      0 12px 32px rgba(0, 0, 0, 0.40);
   }
-  .voice-card:active { transform: scale(0.98); }
   .voice-card.selected {
     border-color: var(--blue);
     box-shadow:

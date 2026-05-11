@@ -934,7 +934,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 12px 14px;
+    padding: 14px 16px;
     background: rgba(255, 255, 255, 0.55);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
@@ -954,31 +954,12 @@
       0 0 0 2px var(--blue),
       0 6px 16px rgba(255, 149, 0, 0.16);
   }
-  .voice-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  }
   .voice-info { flex: 1; min-width: 0; }
   .voice-name {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--label);
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-  }
-  .voice-desc {
-    font-size: 13px;
-    color: var(--label-secondary);
-    margin-top: 2px;
+    letter-spacing: -0.022em;
   }
   .voice-play {
     width: 36px;
@@ -1001,10 +982,8 @@
     background: var(--blue);
     color: white;
   }
+  .voice-play.playing svg { margin-left: 0; }
   .voice-check {
-    position: absolute;
-    top: 10px;
-    right: 10px;
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -1013,10 +992,10 @@
     display: none;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
   .voice-check svg { width: 12px; height: 12px; }
   .voice-card.selected .voice-check { display: flex; }
-  .voice-card.selected .voice-play { right: 36px; }
 
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
@@ -3236,18 +3215,41 @@
   </div>
 
   <div class="section-header">Voix de l'agent</div>
-  <div class="group">
-    <button class="cell" onclick="setVoice('Lina')">
-      <div class="cell-main"><div class="cell-title">Lina</div></div>
-      <svg class="cell-chevron voice-check active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--blue); width: 14px; height: 14px;" data-voice="Lina"><polyline points="20 6 9 17 4 12"/></svg>
+  <div class="voice-grid" id="voiceGrid">
+    <button class="voice-card" data-voice="camille" onclick="selectVoice('camille')">
+      <div class="voice-info">
+        <div class="voice-name">Camille</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('camille');" aria-label="Écouter Camille">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
     </button>
-    <button class="cell" onclick="setVoice('Marc')">
-      <div class="cell-main"><div class="cell-title">Marc</div></div>
-      <svg class="cell-chevron voice-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--blue); width: 14px; height: 14px; opacity: 0;" data-voice="Marc"><polyline points="20 6 9 17 4 12"/></svg>
+
+    <button class="voice-card" data-voice="audrey" onclick="selectVoice('audrey')">
+      <div class="voice-info">
+        <div class="voice-name">Audrey</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('audrey');" aria-label="Écouter Audrey">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
     </button>
-    <button class="cell" onclick="setVoice('Sarah')">
-      <div class="cell-main"><div class="cell-title">Sarah</div></div>
-      <svg class="cell-chevron voice-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--blue); width: 14px; height: 14px; opacity: 0;" data-voice="Sarah"><polyline points="20 6 9 17 4 12"/></svg>
+
+    <button class="voice-card" data-voice="julien" onclick="selectVoice('julien')">
+      <div class="voice-info">
+        <div class="voice-name">Julien</div>
+      </div>
+      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('julien');" aria-label="Écouter Julien">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="voice-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
     </button>
   </div>
 
@@ -3329,55 +3331,118 @@
     </div>
   </div>
 
-  <div class="section-header">Voix de l'assistant IA</div>
-  <div class="voice-grid" id="voiceGrid">
-    <button class="voice-card" data-voice="camille" onclick="selectVoice('camille')">
-      <div class="voice-avatar" style="background: linear-gradient(135deg, #FFB347 0%, #FF7A00 100%);">
-        <span>C</span>
+  <div class="section-header">Téléphone Frizz</div>
+  <div id="phoneFrizzWrap">
+    <!-- État 1: pas abonné -->
+    <div class="group" id="phoneStateLocked" style="display:none">
+      <div class="cell" style="cursor: default; padding: 16px;">
+        <div class="cell-icon-wrap blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="cell-main">
+          <div class="cell-title">Activez Frizz Pro pour obtenir votre numéro</div>
+          <div class="cell-subtitle">L'IA décroche les appels 24/7 à votre place</div>
+        </div>
       </div>
-      <div class="voice-info">
-        <div class="voice-name">Camille</div>
-        <div class="voice-desc">Douce, féminine</div>
-      </div>
-      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('camille');" aria-label="Écouter Camille">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <button class="cell" style="border-top: 0.5px solid var(--separator);" onclick="onProCardTap()">
+        <div class="cell-main">
+          <div class="cell-title" style="color: var(--blue); font-weight: 600;">Découvrir Frizz Pro · 99€/mois</div>
+        </div>
+        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-    </button>
+    </div>
 
-    <button class="voice-card" data-voice="audrey" onclick="selectVoice('audrey')">
-      <div class="voice-avatar" style="background: linear-gradient(135deg, #FF7A00 0%, #D70015 100%);">
-        <span>A</span>
+    <!-- État 2: abonné mais numéro pas encore attribué -->
+    <div class="group" id="phoneStatePending" style="display:none">
+      <div class="cell" style="cursor: default; padding: 16px;">
+        <div class="cell-icon-wrap" style="background: rgba(255, 149, 0, 0.15);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="cell-main">
+          <div class="cell-title">Attribution en cours</div>
+          <div class="cell-subtitle">Votre numéro sera prêt sous 24h ouvrées</div>
+        </div>
       </div>
-      <div class="voice-info">
-        <div class="voice-name">Audrey</div>
-        <div class="voice-desc">Mature, pro</div>
+      <div class="cell" style="cursor: default; padding: 14px 16px; border-top: 0.5px solid var(--separator);">
+        <div class="cell-main">
+          <div class="cell-subtitle">Nous vous enverrons un email dès qu'il est prêt à utiliser.</div>
+        </div>
       </div>
-      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('audrey');" aria-label="Écouter Audrey">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-      <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-    </button>
+    </div>
 
-    <button class="voice-card" data-voice="julien" onclick="selectVoice('julien')">
-      <div class="voice-avatar" style="background: linear-gradient(135deg, #FFD970 0%, #FF9500 100%);">
-        <span>J</span>
+    <!-- État 3: numéro attribué -->
+    <div class="group" id="phoneStateActive" style="display:none">
+      <div class="cell" style="cursor: default; padding: 16px;">
+        <div class="cell-icon-wrap" style="background: rgba(52, 199, 89, 0.15);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="cell-main">
+          <div class="cell-subtitle" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--label-secondary); font-weight: 600;">Votre numéro Frizz</div>
+          <div id="phoneFrizzNumber" style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-top: 4px; font-variant-numeric: tabular-nums;">09 70 12 34 56</div>
+        </div>
+        <button onclick="copyFrizzNumber()" style="padding: 8px 12px; background: rgba(255, 149, 0, 0.12); color: var(--blue); border-radius: 999px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; flex-shrink: 0;">Copier</button>
       </div>
-      <div class="voice-info">
-        <div class="voice-name">Julien</div>
-        <div class="voice-desc">Masculine, chaleureuse</div>
-      </div>
-      <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('julien');" aria-label="Écouter Julien">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <button class="cell" style="border-top: 0.5px solid var(--separator);" onclick="openRenvoiTuto()">
+        <div class="cell-icon-wrap blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div class="cell-main">
+          <div class="cell-title">Comment activer le renvoi d'appel</div>
+          <div class="cell-subtitle">Tutoriel rapide · 30 secondes</div>
+        </div>
+        <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+  </div>
+
+  <!-- Modale tutoriel renvoi d'appel -->
+  <div class="modal-backdrop" id="renvoiTutoBackdrop"></div>
+  <div class="modal-sheet" id="renvoiTutoSheet" style="bottom: 8px; max-width: 480px; max-height: 92vh; overflow-y: auto;">
+    <div class="modal-header" style="padding-top: 20px; padding-bottom: 14px;">
+      <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em;">Activer le renvoi d'appel</div>
+    </div>
+    <div style="padding: 0 20px 20px; color: var(--label); line-height: 1.5;">
+      <p style="margin: 0 0 16px; color: var(--label-secondary);">En 3 étapes simples sur votre téléphone fixe :</p>
+
+      <div style="background: rgba(255, 149, 0, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 0.5px solid rgba(255, 149, 0, 0.2);">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">Décrochez votre téléphone</div>
+            <div style="color: var(--label-secondary); font-size: 14px;">Sur la ligne fixe du restaurant.</div>
+          </div>
+        </div>
       </div>
-    </button>
+
+      <div style="background: rgba(255, 149, 0, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 0.5px solid rgba(255, 149, 0, 0.2);">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; margin-bottom: 4px;">Composez ce code :</div>
+            <div style="background: var(--bg); border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 18px; font-weight: 700; color: var(--blue); text-align: center; margin-top: 6px;" id="renvoiCode">**21*0970123456#</div>
+            <div style="color: var(--label-secondary); font-size: 13px; margin-top: 6px;">Puis appuyez sur "Appel" ou décrochez le combiné.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: rgba(255, 149, 0, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; border: 0.5px solid rgba(255, 149, 0, 0.2);">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">C'est tout !</div>
+            <div style="color: var(--label-secondary); font-size: 14px;">Vous entendez un bip de confirmation. Désormais, Frizz décroche tous vos appels.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: rgba(0, 122, 255, 0.06); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--label-secondary);">
+          <strong style="color: var(--label);">Pour désactiver</strong> à tout moment : composez <code style="background: var(--bg); padding: 2px 6px; border-radius: 4px;">##21#</code> sur votre téléphone fixe.
+        </div>
+      </div>
+
+      <button class="modal-cancel" style="width: 100%; background: var(--blue); color: white; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; border: none;" onclick="closeRenvoiTuto()">J'ai compris</button>
+    </div>
   </div>
 
   <div class="section-header" style="display:none">Prestations &amp; tarifs</div>
@@ -5492,9 +5557,9 @@ window.saveHoraireEdit = saveHoraireEdit;
 
 /* VOIX DE L'ASSISTANT IA */
 const VOICES_META = {
-  camille: { name: 'Camille', desc: 'Douce, féminine' },
-  audrey: { name: 'Audrey', desc: 'Mature, pro' },
-  julien: { name: 'Julien', desc: 'Masculine, chaleureuse' },
+  camille: { name: 'Camille', desc: 'Douce, féminine', sampleUrl: '/samples/camille.mp3', tts: { gender: 'female', pitch: 1.1, rate: 0.95 } },
+  audrey: { name: 'Audrey', desc: 'Mature, pro', sampleUrl: '/samples/audrey.mp3', tts: { gender: 'female', pitch: 0.95, rate: 1.0 } },
+  julien: { name: 'Julien', desc: 'Masculine, chaleureuse', sampleUrl: '/samples/julien.mp3', tts: { gender: 'male', pitch: 1.0, rate: 0.95 } },
 };
 let currentVoice = 'camille';
 let currentAudio = null;
@@ -5511,19 +5576,90 @@ function selectVoice(voiceId) {
   showToast(`Voix ${VOICES_META[voiceId].name} sélectionnée`);
 }
 
-function playVoiceSample(voiceId) {
+function stopAllVoiceSamples() {
+  // Stop audio HTML5
   if (currentAudio) {
-    currentAudio.pause();
+    try { currentAudio.pause(); } catch(e) {}
     currentAudio = null;
-    document.querySelectorAll('.voice-play').forEach(p => p.classList.remove('playing'));
   }
-  showToast(`Aperçu de ${VOICES_META[voiceId].name} bientôt disponible`);
+  // Stop Web Speech
+  if (window.speechSynthesis) {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
+  }
+  // Reset les boutons play
+  document.querySelectorAll('.voice-play').forEach(p => p.classList.remove('playing'));
+}
+
+function playVoiceSample(voiceId) {
+  const meta = VOICES_META[voiceId];
+  if (!meta) return;
+
+  stopAllVoiceSamples();
+
   const card = document.querySelector(`.voice-card[data-voice="${voiceId}"]`);
   const playBtn = card?.querySelector('.voice-play');
-  if (playBtn) {
-    playBtn.classList.add('playing');
-    setTimeout(() => playBtn.classList.remove('playing'), 1500);
-  }
+  if (playBtn) playBtn.classList.add('playing');
+
+  const sampleText = `Bonjour, je suis ${meta.name}, l'assistant vocal du restaurant. Comment puis-je vous aider ?`;
+
+  // Essayer d'abord un fichier MP3 hébergé (à uploader plus tard)
+  // Si échec, fallback sur Web Speech API
+  const tryAudio = new Audio(meta.sampleUrl);
+  let usedFallback = false;
+
+  const useFallback = () => {
+    if (usedFallback) return;
+    usedFallback = true;
+    if (!window.speechSynthesis) {
+      showToast('Lecture audio non supportée');
+      if (playBtn) playBtn.classList.remove('playing');
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(sampleText);
+    utter.lang = 'fr-FR';
+    utter.pitch = meta.tts.pitch;
+    utter.rate = meta.tts.rate;
+    // Choisir une voix française si possible
+    const voices = window.speechSynthesis.getVoices();
+    const frVoices = voices.filter(v => v.lang.startsWith('fr'));
+    if (frVoices.length) {
+      // Tenter de matcher gender selon la voix
+      const wantedGender = meta.tts.gender;
+      const match = frVoices.find(v => {
+        const name = v.name.toLowerCase();
+        if (wantedGender === 'female') return /(amélie|amelie|virginie|audrey|marie|sophie|female|femme)/.test(name);
+        return /(thomas|nicolas|paul|antoine|julien|male|homme)/.test(name);
+      });
+      utter.voice = match || frVoices[0];
+    }
+    utter.onend = () => {
+      if (playBtn) playBtn.classList.remove('playing');
+    };
+    utter.onerror = () => {
+      if (playBtn) playBtn.classList.remove('playing');
+      showToast('Erreur de lecture');
+    };
+    window.speechSynthesis.speak(utter);
+  };
+
+  tryAudio.addEventListener('canplaythrough', () => {
+    if (usedFallback) return;
+    currentAudio = tryAudio;
+    tryAudio.play().catch(() => useFallback());
+  }, { once: true });
+
+  tryAudio.addEventListener('ended', () => {
+    if (playBtn) playBtn.classList.remove('playing');
+  });
+
+  tryAudio.addEventListener('error', () => {
+    useFallback();
+  });
+
+  // Timeout : si le fichier ne charge pas en 1s, fallback
+  setTimeout(() => {
+    if (tryAudio.readyState === 0) useFallback();
+  }, 1000);
 }
 
 function loadVoixIA() {
@@ -5538,6 +5674,69 @@ function loadVoixIA() {
 window.selectVoice = selectVoice;
 window.playVoiceSample = playVoiceSample;
 
+/* TÉLÉPHONE FRIZZ - 3 ÉTATS */
+function loadPhoneFrizz() {
+  if (!currentSalon) return;
+  const status = currentSalon.subscription_status || 'inactive';
+  const numero = currentSalon.numero_frizz; // null = pas encore attribué
+  
+  const locked = document.getElementById('phoneStateLocked');
+  const pending = document.getElementById('phoneStatePending');
+  const active = document.getElementById('phoneStateActive');
+  if (!locked || !pending || !active) return;
+
+  locked.style.display = 'none';
+  pending.style.display = 'none';
+  active.style.display = 'none';
+
+  if (status !== 'active') {
+    // État 1 : pas abonné
+    locked.style.display = '';
+  } else if (!numero) {
+    // État 2 : abonné mais numéro pas encore attribué
+    pending.style.display = '';
+  } else {
+    // État 3 : numéro attribué
+    active.style.display = '';
+    const numEl = document.getElementById('phoneFrizzNumber');
+    if (numEl) numEl.textContent = formatPhoneFR(numero);
+    // Mettre à jour le code de renvoi dans la modale tutoriel
+    const codeEl = document.getElementById('renvoiCode');
+    if (codeEl) codeEl.textContent = `**21*${numero.replace(/\s/g, '')}#`;
+  }
+}
+
+function formatPhoneFR(num) {
+  // Formatte "0970123456" en "09 70 12 34 56"
+  const clean = (num || '').replace(/\s/g, '').replace(/^\+33/, '0');
+  if (clean.length !== 10) return num;
+  return clean.match(/.{1,2}/g).join(' ');
+}
+
+function copyFrizzNumber() {
+  if (!currentSalon || !currentSalon.numero_frizz) return;
+  const num = formatPhoneFR(currentSalon.numero_frizz);
+  navigator.clipboard.writeText(num).then(() => {
+    showToast('Numéro copié');
+  }).catch(() => {
+    showToast('Impossible de copier');
+  });
+}
+
+function openRenvoiTuto() {
+  document.getElementById('renvoiTutoBackdrop').classList.add('open');
+  document.getElementById('renvoiTutoSheet').classList.add('open');
+}
+
+function closeRenvoiTuto() {
+  document.getElementById('renvoiTutoBackdrop').classList.remove('open');
+  document.getElementById('renvoiTutoSheet').classList.remove('open');
+}
+
+window.copyFrizzNumber = copyFrizzNumber;
+window.openRenvoiTuto = openRenvoiTuto;
+window.closeRenvoiTuto = closeRenvoiTuto;
+
 const _origNavigate = window.navigate;
 if (typeof _origNavigate === 'function') {
   window.navigate = function(pageId) {
@@ -5546,6 +5745,7 @@ if (typeof _origNavigate === 'function') {
       fillRestoFields();
       loadHoraires();
       loadVoixIA();
+      loadPhoneFrizz();
     }
   };
 }

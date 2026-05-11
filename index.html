@@ -14,43 +14,43 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    /* iOS System Backgrounds (Light) */
-    --bg: #F2F2F7;
-    --bg-secondary: #FFFFFF;
-    --bg-tertiary: #F2F2F7;
-    --bg-grouped: #F2F2F7;
-    --bg-grouped-secondary: #FFFFFF;
+    /* iOS System Backgrounds (Dark) */
+    --bg: #000000;
+    --bg-secondary: #1C1C1E;
+    --bg-tertiary: #2C2C2E;
+    --bg-grouped: #000000;
+    --bg-grouped-secondary: #1C1C1E;
 
-    /* iOS Labels (Light) */
-    --label: #000000;
-    --label-secondary: rgba(60, 60, 67, 0.60);
-    --label-tertiary: rgba(60, 60, 67, 0.30);
-    --label-quaternary: rgba(60, 60, 67, 0.18);
+    /* iOS Labels (Dark) */
+    --label: #FFFFFF;
+    --label-secondary: rgba(235, 235, 245, 0.60);
+    --label-tertiary: rgba(235, 235, 245, 0.30);
+    --label-quaternary: rgba(235, 235, 245, 0.18);
 
-    /* iOS Separators */
-    --separator: rgba(60, 60, 67, 0.18);
-    --separator-opaque: #C6C6C8;
+    /* iOS Separators (Dark) */
+    --separator: rgba(84, 84, 88, 0.45);
+    --separator-opaque: #38383A;
 
-    /* iOS System Colors (Light variants) */
+    /* iOS System Colors (Dark variants) */
     --blue: #FF9500;
-    --green: #34C759;
-    --orange: #FF9500;
-    --red: #FF3B30;
-    --yellow: #FFCC00;
-    --purple: #AF52DE;
+    --green: #30D158;
+    --orange: #FF9F0A;
+    --red: #FF453A;
+    --yellow: #FFD60A;
+    --purple: #BF5AF2;
 
-    /* iOS Fill */
-    --fill: rgba(120, 120, 128, 0.20);
-    --fill-secondary: rgba(120, 120, 128, 0.16);
-    --fill-tertiary: rgba(118, 118, 128, 0.12);
-    --fill-quaternary: rgba(116, 116, 128, 0.08);
+    /* iOS Fill (Dark) */
+    --fill: rgba(120, 120, 128, 0.36);
+    --fill-secondary: rgba(120, 120, 128, 0.32);
+    --fill-tertiary: rgba(118, 118, 128, 0.24);
+    --fill-quaternary: rgba(118, 118, 128, 0.18);
 
-    --tabbar-bg: rgba(255, 255, 255, 0.78);
+    --tabbar-bg: rgba(20, 20, 22, 0.78);
   }
 
   html, body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
-    background: var(--bg);
+    background: #000000;
     color: var(--label);
     font-size: 17px;
     line-height: 1.35;
@@ -58,11 +58,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    color-scheme: dark;
     overflow-x: hidden;
     position: relative;
   }
 
-  /* ─── EFFET ORANGE EN ARRIÈRE-PLAN (ambiance premium SaaS) ─── */
+  /* ─── EFFET ORANGE EN ARRIÈRE-PLAN (ambiance premium SaaS, dark mode) ─── */
   body::before {
     content: '';
     position: fixed;
@@ -71,8 +72,8 @@
     width: 520px;
     height: 520px;
     background: 
-      radial-gradient(circle at 30% 30%, rgba(255, 149, 0, 0.32) 0%, rgba(255, 149, 0, 0.16) 35%, transparent 65%);
-    filter: blur(50px);
+      radial-gradient(circle at 30% 30%, rgba(255, 149, 0, 0.45) 0%, rgba(255, 149, 0, 0.22) 35%, transparent 65%);
+    filter: blur(60px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -86,8 +87,8 @@
     width: 480px;
     height: 480px;
     background: 
-      radial-gradient(circle at 70% 70%, rgba(255, 122, 0, 0.28) 0%, rgba(255, 122, 0, 0.12) 35%, transparent 65%);
-    filter: blur(60px);
+      radial-gradient(circle at 70% 70%, rgba(255, 122, 0, 0.40) 0%, rgba(255, 122, 0, 0.18) 35%, transparent 65%);
+    filter: blur(70px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -103,8 +104,8 @@
     width: 360px;
     height: 360px;
     background: 
-      radial-gradient(circle, rgba(255, 179, 71, 0.22) 0%, rgba(255, 179, 71, 0.08) 40%, transparent 70%);
-    filter: blur(70px);
+      radial-gradient(circle, rgba(255, 179, 71, 0.30) 0%, rgba(255, 179, 71, 0.12) 40%, transparent 70%);
+    filter: blur(80px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -118,8 +119,8 @@
     width: 320px;
     height: 320px;
     background: 
-      radial-gradient(circle, rgba(255, 200, 100, 0.18) 0%, rgba(255, 165, 50, 0.08) 40%, transparent 70%);
-    filter: blur(80px);
+      radial-gradient(circle, rgba(255, 200, 100, 0.26) 0%, rgba(255, 165, 50, 0.12) 40%, transparent 70%);
+    filter: blur(90px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -160,86 +161,82 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     ✨ GLASSMORPHISM — Effet verre dépoli sur tous les éléments
+     ✨ GLASSMORPHISM DARK — Effet verre dépoli adapté au mode sombre
      ═══════════════════════════════════════════════════════════ */
 
   /* Groupes principaux (cartes, listes Réglages) */
   .group {
-    background: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(28, 28, 30, 0.72) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 8px 24px rgba(255, 149, 0, 0.06),
-      0 2px 6px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      0 8px 24px rgba(0, 0, 0, 0.32),
+      0 2px 6px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   /* Hero card (stat principale) */
   .hero-card {
     background:
-      radial-gradient(120% 80% at 0% 0%, rgba(255, 149, 0, 0.10) 0%, transparent 55%),
-      radial-gradient(100% 80% at 100% 100%, rgba(175, 82, 222, 0.06) 0%, transparent 55%),
-      rgba(255, 255, 255, 0.55) !important;
+      radial-gradient(120% 80% at 0% 0%, rgba(255, 149, 0, 0.18) 0%, transparent 55%),
+      radial-gradient(100% 80% at 100% 100%, rgba(175, 82, 222, 0.12) 0%, transparent 55%),
+      rgba(28, 28, 30, 0.72) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 8px 24px rgba(255, 149, 0, 0.08),
-      0 2px 6px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      0 8px 24px rgba(255, 149, 0, 0.10),
+      0 2px 6px rgba(0, 0, 0, 0.30),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* Cards stats (duo / trio) */
   .duo-card, .trio-card {
-    background: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(28, 28, 30, 0.72) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 8px 24px rgba(255, 149, 0, 0.06),
-      0 2px 6px rgba(0, 0, 0, 0.04);
+      0 8px 24px rgba(0, 0, 0, 0.32),
+      0 2px 6px rgba(0, 0, 0, 0.24);
   }
 
   /* Chart card */
   .chart-card {
-    background: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(28, 28, 30, 0.72) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 8px 24px rgba(255, 149, 0, 0.06),
-      0 2px 6px rgba(0, 0, 0, 0.04);
+      0 8px 24px rgba(0, 0, 0, 0.32),
+      0 2px 6px rgba(0, 0, 0, 0.24);
   }
 
   /* Segmented control (filtres) */
   .segmented {
-    background: rgba(255, 255, 255, 0.45) !important;
+    background: rgba(44, 44, 46, 0.65) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.6);
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
   }
 
   /* Search bar */
   .search-bar {
-    background: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(44, 44, 46, 0.65) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
   }
 
   /* Tabbar (nav du bas) */
   .tabbar {
-    background: rgba(255, 255, 255, 0.65) !important;
+    background: rgba(20, 20, 22, 0.85) !important;
     -webkit-backdrop-filter: blur(28px) saturate(200%);
     backdrop-filter: blur(28px) saturate(200%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border-top: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 -2px 16px rgba(0, 0, 0, 0.04),
-      0 -1px 0 rgba(255, 255, 255, 0.5) inset;
+      0 -2px 16px rgba(0, 0, 0, 0.40);
   }
 
   /* Topbar — pas de glass (laisser transparent pour bien voir le logo) */
@@ -251,26 +248,26 @@
 
   /* Cards réservations */
   .resa-card {
-    background: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(28, 28, 30, 0.72) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 4px 14px rgba(255, 149, 0, 0.05),
-      0 1px 3px rgba(0, 0, 0, 0.03);
+      0 4px 14px rgba(0, 0, 0, 0.24),
+      0 1px 3px rgba(0, 0, 0, 0.18);
   }
 
   /* Modales (sheets) */
   .modal-sheet {
-    background: rgba(255, 255, 255, 0.85) !important;
+    background: rgba(28, 28, 30, 0.95) !important;
     -webkit-backdrop-filter: blur(40px) saturate(180%);
     backdrop-filter: blur(40px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.8);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
   }
 
-  /* Modal inputs : background plus opaque pour rester lisibles dans le glass */
+  /* Modal inputs : background pour rester lisibles dans le glass */
   .modal-input-row {
-    background: rgba(255, 255, 255, 0.4) !important;
+    background: rgba(44, 44, 46, 0.6) !important;
   }
 
   /* Cellules dans les groupes */
@@ -280,18 +277,18 @@
 
   /* Hover/active states pour les cells dans le glass */
   .cell:hover, button.cell:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
   }
   .cell:active, button.cell:active {
-    background: rgba(255, 255, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
 
   /* Push banner */
   .push-banner {
-    background: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(28, 28, 30, 0.85) !important;
     -webkit-backdrop-filter: blur(28px) saturate(200%);
     backdrop-filter: blur(28px) saturate(200%);
-    border: 0.5px solid rgba(255, 255, 255, 0.8);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
   }
 
   /* Toast */
@@ -1062,17 +1059,17 @@
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(28, 28, 30, 0.72);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
     cursor: pointer;
     text-align: left;
     transition: transform 0.12s, box-shadow 0.12s;
     box-shadow:
-      0 4px 12px rgba(255, 149, 0, 0.04),
-      0 1px 3px rgba(0, 0, 0, 0.03);
+      0 4px 12px rgba(0, 0, 0, 0.24),
+      0 1px 3px rgba(0, 0, 0, 0.18);
   }
   .voice-card:active { transform: scale(0.98); }
   .voice-card.selected {
@@ -3574,7 +3571,7 @@
           <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
           <div style="flex: 1;">
             <div style="font-weight: 600; margin-bottom: 4px;">Tapez ce code exactement :</div>
-            <div style="background: var(--bg); border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 18px; font-weight: 700; color: var(--blue); text-align: center; margin-top: 6px;" id="renvoiCode">**21*0970123456#</div>
+            <div style="background: rgba(255, 149, 0, 0.10); border: 0.5px solid rgba(255, 149, 0, 0.30); border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 18px; font-weight: 700; color: #FF9F0A; text-align: center; margin-top: 6px;" id="renvoiCode">**21*0970123456#</div>
             <div style="color: var(--label-secondary); font-size: 13px; margin-top: 6px;">Comme si vous composiez un numéro. Puis appuyez sur la touche d'appel (vert).</div>
           </div>
         </div>
@@ -3592,7 +3589,7 @@
 
       <div style="background: rgba(0, 122, 255, 0.06); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
         <div style="font-size: 13px; color: var(--label-secondary);">
-          <strong style="color: var(--label);">Pour reprendre vos appels vous-même</strong> (par exemple le dimanche soir) : composez <code style="background: var(--bg); padding: 2px 6px; border-radius: 4px;">##21#</code> sur le même téléphone.
+          <strong style="color: var(--label);">Pour reprendre vos appels vous-même</strong> (par exemple le dimanche soir) : composez <code style="background: rgba(255, 255, 255, 0.10); padding: 2px 6px; border-radius: 4px;">##21#</code> sur le même téléphone.
         </div>
       </div>
 

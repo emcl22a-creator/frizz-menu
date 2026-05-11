@@ -363,18 +363,18 @@
   /* ─── PAGE & LARGE TITLE ─────────────────────────────── */
   .page { display: none; padding-bottom: 110px; }
   .page.active { display: block; }
-  .page.active > * {
+  body.first-load .page.active > * {
     animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
-  .page.active > *:nth-child(1) { animation-delay: 0.04s; }
-  .page.active > *:nth-child(2) { animation-delay: 0.10s; }
-  .page.active > *:nth-child(3) { animation-delay: 0.16s; }
-  .page.active > *:nth-child(4) { animation-delay: 0.22s; }
-  .page.active > *:nth-child(5) { animation-delay: 0.28s; }
-  .page.active > *:nth-child(6) { animation-delay: 0.34s; }
-  .page.active > *:nth-child(7) { animation-delay: 0.40s; }
-  .page.active > *:nth-child(8) { animation-delay: 0.46s; }
-  .page.active > *:nth-child(9) { animation-delay: 0.52s; }
+  body.first-load .page.active > *:nth-child(1) { animation-delay: 0.04s; }
+  body.first-load .page.active > *:nth-child(2) { animation-delay: 0.10s; }
+  body.first-load .page.active > *:nth-child(3) { animation-delay: 0.16s; }
+  body.first-load .page.active > *:nth-child(4) { animation-delay: 0.22s; }
+  body.first-load .page.active > *:nth-child(5) { animation-delay: 0.28s; }
+  body.first-load .page.active > *:nth-child(6) { animation-delay: 0.34s; }
+  body.first-load .page.active > *:nth-child(7) { animation-delay: 0.40s; }
+  body.first-load .page.active > *:nth-child(8) { animation-delay: 0.46s; }
+  body.first-load .page.active > *:nth-child(9) { animation-delay: 0.52s; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -919,18 +919,18 @@
     animation: proBadgePulse 2.4s ease-in-out infinite;
   }
 
-  /* Bounce subtil sur les cards de résa au chargement */
+  /* Bounce subtil sur les cards de résa au chargement (uniquement 1ère apparition) */
   @keyframes resaCardEnter {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .resa-card { animation: resaCardEnter 0.32s cubic-bezier(0.32, 0.72, 0.42, 1) backwards; }
-  .resa-card:nth-child(1) { animation-delay: 0ms; }
-  .resa-card:nth-child(2) { animation-delay: 40ms; }
-  .resa-card:nth-child(3) { animation-delay: 80ms; }
-  .resa-card:nth-child(4) { animation-delay: 120ms; }
-  .resa-card:nth-child(5) { animation-delay: 160ms; }
-  .resa-card:nth-child(n+6) { animation-delay: 200ms; }
+  body.first-load .resa-card { animation: resaCardEnter 0.32s cubic-bezier(0.32, 0.72, 0.42, 1) backwards; }
+  body.first-load .resa-card:nth-child(1) { animation-delay: 0ms; }
+  body.first-load .resa-card:nth-child(2) { animation-delay: 40ms; }
+  body.first-load .resa-card:nth-child(3) { animation-delay: 80ms; }
+  body.first-load .resa-card:nth-child(4) { animation-delay: 120ms; }
+  body.first-load .resa-card:nth-child(5) { animation-delay: 160ms; }
+  body.first-load .resa-card:nth-child(n+6) { animation-delay: 200ms; }
 
   /* Shimmer doré sur les KPI au refresh */
   @keyframes kpiShimmer {
@@ -982,7 +982,7 @@
     padding: 11px 16px;
     border-bottom: 0.5px solid var(--separator);
     gap: 12px;
-    background: var(--bg-secondary);
+    background: transparent;
   }
   .profile-input-row:last-child { border-bottom: none; }
   .profile-input-label {
@@ -3542,8 +3542,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         </div>
         <div class="cell-main">
-          <div class="cell-title">Comment activer le renvoi d'appel</div>
-          <div class="cell-subtitle">Tutoriel rapide · 30 secondes</div>
+          <div class="cell-title">Faire sonner Frizz sur mon téléphone</div>
+          <div class="cell-subtitle">Configuration en 30 secondes</div>
         </div>
         <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
@@ -3554,17 +3554,17 @@
   <div class="modal-backdrop" id="renvoiTutoBackdrop"></div>
   <div class="modal-sheet" id="renvoiTutoSheet" style="bottom: 8px; max-width: 480px; max-height: 92vh; overflow-y: auto;">
     <div class="modal-header" style="padding-top: 20px; padding-bottom: 14px;">
-      <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em;">Activer le renvoi d'appel</div>
+      <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em;">Faire sonner Frizz sur mon téléphone</div>
     </div>
     <div style="padding: 0 20px 20px; color: var(--label); line-height: 1.5;">
-      <p style="margin: 0 0 16px; color: var(--label-secondary);">En 3 étapes simples sur votre téléphone fixe :</p>
+      <p style="margin: 0 0 16px; color: var(--label-secondary); font-size: 14px;">Quand un client appelle votre restaurant, l'appel arrivera automatiquement chez Frizz qui répondra à votre place. Voici comment activer cette redirection sur votre téléphone fixe :</p>
 
       <div style="background: rgba(255, 149, 0, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 0.5px solid rgba(255, 149, 0, 0.2);">
         <div style="display: flex; gap: 12px; align-items: flex-start;">
           <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
           <div>
-            <div style="font-weight: 600; margin-bottom: 4px;">Décrochez votre téléphone</div>
-            <div style="color: var(--label-secondary); font-size: 14px;">Sur la ligne fixe du restaurant.</div>
+            <div style="font-weight: 600; margin-bottom: 4px;">Prenez le téléphone du restaurant</div>
+            <div style="color: var(--label-secondary); font-size: 14px;">Sur le téléphone fixe que vos clients appellent habituellement.</div>
           </div>
         </div>
       </div>
@@ -3573,9 +3573,9 @@
         <div style="display: flex; gap: 12px; align-items: flex-start;">
           <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
           <div style="flex: 1;">
-            <div style="font-weight: 600; margin-bottom: 4px;">Composez ce code :</div>
+            <div style="font-weight: 600; margin-bottom: 4px;">Tapez ce code exactement :</div>
             <div style="background: var(--bg); border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 18px; font-weight: 700; color: var(--blue); text-align: center; margin-top: 6px;" id="renvoiCode">**21*0970123456#</div>
-            <div style="color: var(--label-secondary); font-size: 13px; margin-top: 6px;">Puis appuyez sur "Appel" ou décrochez le combiné.</div>
+            <div style="color: var(--label-secondary); font-size: 13px; margin-top: 6px;">Comme si vous composiez un numéro. Puis appuyez sur la touche d'appel (vert).</div>
           </div>
         </div>
       </div>
@@ -3584,15 +3584,15 @@
         <div style="display: flex; gap: 12px; align-items: flex-start;">
           <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
           <div>
-            <div style="font-weight: 600; margin-bottom: 4px;">C'est tout !</div>
-            <div style="color: var(--label-secondary); font-size: 14px;">Vous entendez un bip de confirmation. Désormais, Frizz décroche tous vos appels.</div>
+            <div style="font-weight: 600; margin-bottom: 4px;">Vous entendez un bip de confirmation</div>
+            <div style="color: var(--label-secondary); font-size: 14px;">C'est fait ! Tous les appels reçus seront maintenant pris par Frizz. Vos clients ne voient aucune différence.</div>
           </div>
         </div>
       </div>
 
       <div style="background: rgba(0, 122, 255, 0.06); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
         <div style="font-size: 13px; color: var(--label-secondary);">
-          <strong style="color: var(--label);">Pour désactiver</strong> à tout moment : composez <code style="background: var(--bg); padding: 2px 6px; border-radius: 4px;">##21#</code> sur votre téléphone fixe.
+          <strong style="color: var(--label);">Pour reprendre vos appels vous-même</strong> (par exemple le dimanche soir) : composez <code style="background: var(--bg); padding: 2px 6px; border-radius: 4px;">##21#</code> sur le même téléphone.
         </div>
       </div>
 
@@ -3615,13 +3615,13 @@
 
   <div class="section-header">Calendrier</div>
   <div class="group">
-    <button class="cell" onclick="openCalendarSheet()">
+    <button class="cell" onclick="showToast('Synchronisation calendrier disponible bientôt')">
       <div class="cell-icon-wrap blue">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
       <div class="cell-main">
         <div class="cell-title">Synchroniser avec mon agenda</div>
-        <div class="cell-subtitle">Google Calendar · Apple Calendar · Outlook</div>
+        <div class="cell-subtitle">Google Calendar · Apple · Outlook · <span style="color: var(--blue); font-weight: 600;">Bientôt</span></div>
       </div>
       <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
@@ -4171,6 +4171,10 @@ async function deletePrestEdit() {
 document.addEventListener('DOMContentLoaded', () => {
   const peb = document.getElementById('prestEditBackdrop');
   if (peb) peb.addEventListener('click', closePrestEdit);
+
+  // Marqueur "first-load" pour activer les animations une seule fois
+  document.body.classList.add('first-load');
+  setTimeout(() => document.body.classList.remove('first-load'), 3000);
 });
 
 /* ─── Barber edit sheet ──────────────────────────────── */
@@ -5001,9 +5005,23 @@ function setPeriod(period) {
   animateCounters();
 }
 
-function animateCounters() {
+let _countersAnimatedThisSession = false;
+
+function animateCounters(force = false) {
+  // Si déjà animé pendant cette session et pas forcé, juste afficher les valeurs sans animation
+  if (_countersAnimatedThisSession && !force) {
+    document.querySelectorAll('[data-counter]').forEach(el => {
+      const target = parseInt(el.dataset.counter, 10);
+      // Garde le formatage non-numérique (comme "0" reste "0", "3" reste "3", etc.)
+      if (!Number.isFinite(target)) return;
+      el.textContent = target.toLocaleString('fr-FR');
+    });
+    return;
+  }
+  _countersAnimatedThisSession = true;
   document.querySelectorAll('[data-counter]').forEach(el => {
     const target = parseInt(el.dataset.counter, 10);
+    if (!Number.isFinite(target)) return;
     const duration = 1100;
     const start = performance.now();
     function step(now) {
@@ -5819,6 +5837,15 @@ function stopAllVoiceSamples() {
   document.querySelectorAll('.voice-play').forEach(p => p.classList.remove('playing'));
 }
 
+// Précharger les voix Web Speech dès que possible
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  // Trigger le chargement asynchrone (les voix arrivent via l'événement voiceschanged)
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.addEventListener?.('voiceschanged', () => {
+    window._speechVoicesReady = true;
+  });
+}
+
 function playVoiceSample(voiceId) {
   const meta = VOICES_META[voiceId];
   if (!meta) return;
@@ -5829,66 +5856,53 @@ function playVoiceSample(voiceId) {
   const playBtn = card?.querySelector('.voice-play');
   if (playBtn) playBtn.classList.add('playing');
 
-  const sampleText = `Bonjour, je suis ${meta.name}, l'assistant vocal du restaurant. Comment puis-je vous aider ?`;
+  const sampleText = `Bonjour, je suis ${meta.name}, l'assistante vocale du restaurant Le Bistrot du Marché.`;
 
-  // Essayer d'abord un fichier MP3 hébergé (à uploader plus tard)
-  // Si échec, fallback sur Web Speech API
-  const tryAudio = new Audio(meta.sampleUrl);
-  let usedFallback = false;
+  if (!window.speechSynthesis) {
+    showToast('Lecture audio non supportée par ce navigateur');
+    if (playBtn) playBtn.classList.remove('playing');
+    return;
+  }
 
-  const useFallback = () => {
-    if (usedFallback) return;
-    usedFallback = true;
-    if (!window.speechSynthesis) {
-      showToast('Lecture audio non supportée');
-      if (playBtn) playBtn.classList.remove('playing');
-      return;
-    }
+  // Sur certains navigateurs il faut un cancel avant un speak pour relancer
+  try { window.speechSynthesis.cancel(); } catch(e) {}
+
+  const speak = () => {
     const utter = new SpeechSynthesisUtterance(sampleText);
     utter.lang = 'fr-FR';
     utter.pitch = meta.tts.pitch;
     utter.rate = meta.tts.rate;
-    // Choisir une voix française si possible
+
+    // Choisir une voix française
     const voices = window.speechSynthesis.getVoices();
-    const frVoices = voices.filter(v => v.lang.startsWith('fr'));
+    const frVoices = voices.filter(v => v.lang && v.lang.startsWith('fr'));
     if (frVoices.length) {
-      // Tenter de matcher gender selon la voix
       const wantedGender = meta.tts.gender;
       const match = frVoices.find(v => {
-        const name = v.name.toLowerCase();
-        if (wantedGender === 'female') return /(amélie|amelie|virginie|audrey|marie|sophie|female|femme)/.test(name);
+        const name = (v.name || '').toLowerCase();
+        if (wantedGender === 'female') return /(amélie|amelie|virginie|audrey|marie|sophie|camille|female|femme)/.test(name);
         return /(thomas|nicolas|paul|antoine|julien|male|homme)/.test(name);
       });
       utter.voice = match || frVoices[0];
     }
+
     utter.onend = () => {
       if (playBtn) playBtn.classList.remove('playing');
     };
-    utter.onerror = () => {
+    utter.onerror = (e) => {
+      console.warn('speech error', e);
       if (playBtn) playBtn.classList.remove('playing');
-      showToast('Erreur de lecture');
     };
+
     window.speechSynthesis.speak(utter);
   };
 
-  tryAudio.addEventListener('canplaythrough', () => {
-    if (usedFallback) return;
-    currentAudio = tryAudio;
-    tryAudio.play().catch(() => useFallback());
-  }, { once: true });
-
-  tryAudio.addEventListener('ended', () => {
-    if (playBtn) playBtn.classList.remove('playing');
-  });
-
-  tryAudio.addEventListener('error', () => {
-    useFallback();
-  });
-
-  // Timeout : si le fichier ne charge pas en 1s, fallback
-  setTimeout(() => {
-    if (tryAudio.readyState === 0) useFallback();
-  }, 1000);
+  // Si pas de voix encore chargées, attendre un cycle
+  if (window.speechSynthesis.getVoices().length === 0) {
+    setTimeout(speak, 200);
+  } else {
+    speak();
+  }
 }
 
 function loadVoixIA() {

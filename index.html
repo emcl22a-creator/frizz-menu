@@ -302,17 +302,13 @@
       0 4px 12px rgba(0, 0, 0, 0.24);
   }
 
-  /* Search bar */
+  /* Search bar wrapper - transparent (glass appliqué sur l'input directement) */
   .search-bar {
-    background:
-      radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(50, 54, 64, 0.60) 0%, rgba(28, 32, 40, 0.70) 100%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.12);
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
-      0 -1px 0 0 rgba(0, 0, 0, 0.20) inset;
+    background: transparent !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   /* Tabbar */
@@ -1571,20 +1567,30 @@
   }
   .search-bar input {
     width: 100%;
-    padding: 10px 14px 10px 36px;
-    background: var(--bg-secondary);
-    border: 0.5px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
+    padding: 12px 14px 12px 38px;
+    background:
+      radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(50, 54, 64, 0.60) 0%, rgba(28, 32, 40, 0.70) 100%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
     font-size: 16px;
     color: var(--label);
     outline: none;
     letter-spacing: -0.022em;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.20) inset,
+      0 4px 12px rgba(0, 0, 0, 0.24);
     transition: all 0.2s;
   }
   .search-bar input:focus {
     border-color: var(--blue);
-    box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.20) inset,
+      0 0 0 3px rgba(10, 132, 255, 0.20),
+      0 4px 16px rgba(10, 132, 255, 0.20);
   }
   .search-bar input::placeholder { color: var(--label-tertiary); }
   .search-icon {
@@ -2919,22 +2925,96 @@
       padding-top: 14px;
       padding-bottom: 60px !important;
     }
-    .large-title-block { padding: 14px 22px 18px; max-width: 920px; margin: 0 auto; }
+    .large-title-block { padding: 14px 22px 18px; max-width: 1280px; margin: 0 auto; }
     .large-title { font-size: 38px; }
 
-    /* Cards : un peu plus aérées sur PC */
-    .group, .hero-card, .duo, .trio-card, .segmented, .chart-card, .agenda, .search-bar {
-      max-width: 100%;
-      margin-left: 22px;
-      margin-right: 22px;
+    /* Cards : un peu plus aérées sur PC, centrées dans une zone plus large */
+    .group, .hero-card, .trio-card, .segmented, .agenda, .search-bar {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 22px;
+      padding-right: 22px;
+      box-sizing: border-box;
     }
-    .pro-card { margin-left: 22px; margin-right: 22px; }
-    .duo { padding: 0 22px; max-width: 100%; }
+    /* Pour les groupes avec un fond glass : on ajuste padding interne */
+    .group { padding-left: 0; padding-right: 0; }
+    .group, .hero-card, .trio-card, .segmented, .chart-card, .agenda, .search-bar, .pro-card {
+      width: calc(100% - 44px);
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .duo {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 22px;
+      padding-right: 22px;
+      box-sizing: border-box;
+      gap: 14px;
+    }
+    .pro-card { margin-left: auto; margin-right: auto; }
     .hero-value { font-size: 76px; }
     .trio-value { font-size: 42px; }
 
     /* L'agenda peut profiter de plus de largeur */
     .agenda-grid { min-width: 0; }
+
+    /* ═══ PAGE STATS — Layout grid 2 colonnes pour mieux exploiter l'espace ═══ */
+    #page-stats {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 8px;
+    }
+    /* Le titre prend toute la largeur */
+    #page-stats .large-title-block {
+      max-width: 100%;
+      padding: 14px 22px 24px;
+    }
+    /* Hero/trio : pleine largeur */
+    #page-stats .trio-card {
+      width: auto;
+      max-width: none;
+      margin-left: 22px;
+      margin-right: 22px;
+    }
+    /* Duo card élargi : occupe toute la largeur sur PC, mais avec gap plus grand */
+    #page-stats .duo {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .duo-card {
+      padding: 22px 24px;
+      min-height: 96px;
+    }
+    .duo-label { font-size: 14px; letter-spacing: -0.01em; }
+    .duo-value { font-size: 32px; }
+
+    /* Segmented bouton plus aéré */
+    #page-stats .segmented {
+      margin-top: 18px;
+      margin-bottom: 4px;
+    }
+    /* Chart card élargi */
+    #page-stats .chart-card {
+      padding: 24px 28px;
+      min-height: 240px;
+    }
+    /* Activité aujourd'hui : on lui donne du peps */
+    #page-stats .section-header {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 24px 22px 8px;
+      font-size: 14px;
+      letter-spacing: 0.6px;
+    }
+    #page-stats #recent-list {
+      margin-left: 22px;
+      margin-right: 22px;
+    }
   }
 
 

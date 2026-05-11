@@ -242,11 +242,11 @@
       0 -1px 0 rgba(255, 255, 255, 0.5) inset;
   }
 
-  /* Topbar */
+  /* Topbar — pas de glass (laisser transparent pour bien voir le logo) */
   .topbar {
-    background: rgba(255, 255, 255, 0.55) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
+    background: transparent !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   /* Cards réservations */
@@ -3638,13 +3638,13 @@ function updateStats() {
     }
   }
 
-  // Duo cards: Nouveaux clients (mois) + Conversion
-  const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
-  const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
+  // Duo cards: Card 1 = Temps gagné (géré par updateTempsGagne), Card 2 = No-shows évités
+  // On ne touche PAS au 1er duo-value (tempsGagneVal), il est géré par updateTempsGagne()
+  const allDuoCounters = document.querySelectorAll('.duo-value [data-counter]');
+  const duoNoShow = allDuoCounters[1]; // 2e card = No-shows évités
   const scheduledCount = calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
-  if (duoCalls) duoCalls.setAttribute('data-counter', newClientsThisMonth);
-  if (duoConv) duoConv.setAttribute('data-counter', conversion);
+  if (duoNoShow) duoNoShow.setAttribute('data-counter', conversion);
   animateCounters();
 
   // Chart "Heures de pointe" : compter les RDV par heure (8h-23h)
@@ -4218,7 +4218,12 @@ function navigate(pageId) {
   const dsBtn = document.querySelector(`.ds-nav-btn[data-page="${pageId}"]`);
   if (dsBtn) dsBtn.classList.add('active');
   window.scrollTo(0, 0);
-  if (pageId === 'stats') setTimeout(animateCounters, 100);
+  if (pageId === 'stats') {
+    setTimeout(() => {
+      if (typeof updateTempsGagne === 'function') updateTempsGagne();
+      animateCounters();
+    }, 100);
+  }
 
   // Toggle body class pour FAB et autres
   document.body.classList.toggle('page-agenda-active', pageId === 'agenda');
@@ -4571,10 +4576,8 @@ function setPeriod(period) {
   const scheduledCount = filtered.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
 
-  const duoCalls = document.querySelectorAll('.duo-value [data-counter]')[0];
-  const duoConv = document.querySelectorAll('.duo-value [data-counter]')[1];
-  if (duoCalls) duoCalls.setAttribute('data-counter', newClientsThisMonth);
-  if (duoConv) duoConv.setAttribute('data-counter', conversion);
+  const duoNoShow = document.querySelectorAll('.duo-value [data-counter]')[1];
+  if (duoNoShow) duoNoShow.setAttribute('data-counter', conversion);
   animateCounters();
 }
 
@@ -5426,6 +5429,11 @@ function updateTempsGagne() {
   valEl.textContent = val;
   valEl.setAttribute('data-counter', val);
   unitEl.textContent = unit;
+
+  // Re-animer le counter pour qu'il prenne la nouvelle valeur si on est sur Stats
+  if (typeof animateCounters === 'function') {
+    requestAnimationFrame(() => animateCounters());
+  }
 }
 
 function updateResaSubtitle() {

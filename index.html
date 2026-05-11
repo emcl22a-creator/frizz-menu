@@ -6193,24 +6193,42 @@ function playVoiceSample(voiceId) {
   const playBtn = card?.querySelector('.voice-play');
   if (playBtn) playBtn.classList.add('playing');
 
-  const sampleText = `Bonjour, je suis ${meta.name}, l'assistante vocale du restaurant Le Bistrot du Marché.`;
+  // 1. PRIORITÉ : essayer le vrai MP3 ElevenLabs (uploadé dans /samples/)
+  const audio = new Audio(`samples/${voiceId}.mp3`);
+  currentAudio = audio;
 
-  if (!window.speechSynthesis) {
-    showToast('Lecture audio non supportée par ce navigateur');
+  audio.addEventListener('ended', () => {
+    if (playBtn) playBtn.classList.remove('playing');
+    currentAudio = null;
+  });
+
+  audio.addEventListener('error', () => {
+    // Si le MP3 n'existe pas (ex: pas encore uploadé), fallback sur Web Speech API
+    console.log(`Sample MP3 introuvable pour ${voiceId}, fallback synthèse navigateur`);
+    fallbackWebSpeech(voiceId, playBtn);
+  });
+
+  audio.play().catch(err => {
+    console.warn('Audio play failed:', err);
+    fallbackWebSpeech(voiceId, playBtn);
+  });
+}
+
+function fallbackWebSpeech(voiceId, playBtn) {
+  const meta = VOICES_META[voiceId];
+  if (!meta || !window.speechSynthesis) {
     if (playBtn) playBtn.classList.remove('playing');
     return;
   }
 
-  // Sur certains navigateurs il faut un cancel avant un speak pour relancer
   try { window.speechSynthesis.cancel(); } catch(e) {}
 
+  const sampleText = `Bonjour, je suis ${meta.name}, l'assistante vocale du restaurant.`;
   const speak = () => {
     const utter = new SpeechSynthesisUtterance(sampleText);
     utter.lang = 'fr-FR';
     utter.pitch = meta.tts.pitch;
     utter.rate = meta.tts.rate;
-
-    // Choisir une voix française
     const voices = window.speechSynthesis.getVoices();
     const frVoices = voices.filter(v => v.lang && v.lang.startsWith('fr'));
     if (frVoices.length) {
@@ -6222,19 +6240,11 @@ function playVoiceSample(voiceId) {
       });
       utter.voice = match || frVoices[0];
     }
-
-    utter.onend = () => {
-      if (playBtn) playBtn.classList.remove('playing');
-    };
-    utter.onerror = (e) => {
-      console.warn('speech error', e);
-      if (playBtn) playBtn.classList.remove('playing');
-    };
-
+    utter.onend = () => { if (playBtn) playBtn.classList.remove('playing'); };
+    utter.onerror = () => { if (playBtn) playBtn.classList.remove('playing'); };
     window.speechSynthesis.speak(utter);
   };
 
-  // Si pas de voix encore chargées, attendre un cycle
   if (window.speechSynthesis.getVoices().length === 0) {
     setTimeout(speak, 200);
   } else {

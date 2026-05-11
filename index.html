@@ -833,6 +833,68 @@
     margin-top: 10px;
     letter-spacing: -0.005em;
   }
+
+  /* ─── PRO STATS LIVE (quand abonné) ───────────────────── */
+  .pro-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .pro-stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .pro-stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 184, 77, 0.18);
+    color: #FFB84D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pro-stat-icon svg { width: 16px; height: 16px; }
+  .pro-stat-content { flex: 1; min-width: 0; }
+  .pro-stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .pro-stat-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+  }
+  .pro-next-payment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .pro-next-payment svg { width: 14px; height: 14px; flex-shrink: 0; color: rgba(255, 184, 77, 0.8); }
+  .pro-next-payment strong { color: white; font-weight: 600; }
+
   /* Active state */
   .pro-card.active {
     background: linear-gradient(135deg, #4a2200 0%, #6b3000 50%, #8a3d00 100%);
@@ -846,6 +908,71 @@
     background:
       radial-gradient(circle at 20% 30%, rgba(255, 184, 77, 0.60) 0%, transparent 35%),
       radial-gradient(circle at 80% 70%, rgba(255, 149, 0, 0.55) 0%, transparent 35%);
+  }
+
+  /* Pulse animation sur le badge Pro actif */
+  @keyframes proBadgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 184, 77, 0.40); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 184, 77, 0); }
+  }
+  .pro-card.active .pro-badge {
+    animation: proBadgePulse 2.4s ease-in-out infinite;
+  }
+
+  /* Bounce subtil sur les cards de résa au chargement */
+  @keyframes resaCardEnter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .resa-card { animation: resaCardEnter 0.32s cubic-bezier(0.32, 0.72, 0.42, 1) backwards; }
+  .resa-card:nth-child(1) { animation-delay: 0ms; }
+  .resa-card:nth-child(2) { animation-delay: 40ms; }
+  .resa-card:nth-child(3) { animation-delay: 80ms; }
+  .resa-card:nth-child(4) { animation-delay: 120ms; }
+  .resa-card:nth-child(5) { animation-delay: 160ms; }
+  .resa-card:nth-child(n+6) { animation-delay: 200ms; }
+
+  /* Shimmer doré sur les KPI au refresh */
+  @keyframes kpiShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .kpi-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 149, 0, 0.16) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: kpiShimmer 1.4s ease-in-out;
+  }
+
+  /* Bouton statut résa : effet check animé */
+  @keyframes checkBounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .resa-status-honoree-pulse {
+    animation: checkBounce 0.4s cubic-bezier(0.32, 0.72, 0.42, 1);
+  }
+
+  /* CONFETTIS */
+  .confetti-piece {
+    position: fixed;
+    top: -20px;
+    width: 8px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    to {
+      transform: translateY(105vh) rotate(720deg);
+      opacity: 0;
+    }
   }
 
   /* ─── PROFIL FORM (Compte) ──────────────────────────────  */
@@ -3169,6 +3296,28 @@
     <div class="pro-title" id="proTitle">L'IA qui répond<br>à vos appels 24/7</div>
     <div class="pro-subtitle" id="proSubtitle">Ne ratez plus jamais un appel. Frizz prend le relais pendant le service.</div>
 
+    <!-- Stats live (visibles quand abonnement actif) -->
+    <div class="pro-stats" id="proStats" style="display:none;">
+      <div class="pro-stat">
+        <div class="pro-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="pro-stat-content">
+          <div class="pro-stat-value" id="proStatCalls">0</div>
+          <div class="pro-stat-label">Appels traités</div>
+        </div>
+      </div>
+      <div class="pro-stat">
+        <div class="pro-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="pro-stat-content">
+          <div class="pro-stat-value" id="proStatResas">0</div>
+          <div class="pro-stat-label">Réservations ce mois</div>
+        </div>
+      </div>
+    </div>
+
     <div class="pro-features" id="proFeatures">
       <div class="pro-feature">
         <div class="pro-feature-icon">
@@ -3188,6 +3337,12 @@
         </div>
         Voix naturelle française
       </div>
+    </div>
+
+    <!-- Date prochain paiement (visible quand abonnement actif) -->
+    <div class="pro-next-payment" id="proNextPayment" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Prochain paiement : <strong id="proNextPaymentDate">—</strong></span>
     </div>
 
     <div class="pro-price-row" id="proPriceRow">
@@ -4114,6 +4269,10 @@ function syncProCard() {
   const ctaSub = document.getElementById('proCtaSub');
   if (!card) return;
 
+  const proStats = document.getElementById('proStats');
+  const proNextPayment = document.getElementById('proNextPayment');
+  const proFeatures = document.getElementById('proFeatures');
+
   if (status === 'trialing') {
     card.classList.add('active');
     badge.textContent = 'Essai en cours';
@@ -4124,6 +4283,9 @@ function syncProCard() {
     if (priceRow) priceRow.style.display = 'none';
     cta.textContent = 'Activer mon abonnement';
     ctaSub.textContent = '99€/mois après l\'essai · annulation libre';
+    if (proStats) proStats.style.display = 'none';
+    if (proNextPayment) proNextPayment.style.display = 'none';
+    if (proFeatures) proFeatures.style.display = '';
   } else if (status === 'active') {
     card.classList.add('active');
     badge.textContent = 'Frizz Pro actif';
@@ -4132,6 +4294,12 @@ function syncProCard() {
     if (priceRow) priceRow.style.display = 'none';
     cta.textContent = 'Gérer mon abonnement';
     ctaSub.textContent = 'Modifier · facturation · annuler';
+    // Afficher stats + next payment, masquer features
+    if (proStats) proStats.style.display = 'grid';
+    if (proNextPayment) proNextPayment.style.display = 'flex';
+    if (proFeatures) proFeatures.style.display = 'none';
+    // Remplir les stats
+    updateProStats();
   } else {
     card.classList.remove('active');
     badge.textContent = 'Frizz Pro';
@@ -4140,6 +4308,46 @@ function syncProCard() {
     if (priceRow) priceRow.style.display = 'flex';
     cta.textContent = 'S\'abonner maintenant';
     ctaSub.textContent = '99€/mois · annulation libre';
+    if (proStats) proStats.style.display = 'none';
+    if (proNextPayment) proNextPayment.style.display = 'none';
+    if (proFeatures) proFeatures.style.display = '';
+  }
+}
+
+function updateProStats() {
+  // Calculer les vrais chiffres
+  const callsEl = document.getElementById('proStatCalls');
+  const resasEl = document.getElementById('proStatResas');
+  const nextPayEl = document.getElementById('proNextPaymentDate');
+
+  // Appels traités ce mois (depuis frizz_ai_appels)
+  if (callsEl) {
+    const now = new Date();
+    const monthStr = now.toISOString().slice(0, 7);
+    const callsCount = (window.callsRaw || []).filter(c => {
+      const d = c.created_at || c.date || '';
+      return d.startsWith(monthStr);
+    }).length;
+    callsEl.textContent = callsCount;
+  }
+
+  // Réservations ce mois (depuis resasCache)
+  if (resasEl) {
+    const now = new Date();
+    const monthStr = now.toISOString().slice(0, 7);
+    const cache = window.resasCache || [];
+    const count = cache.filter(r =>
+      r.date_reservation && r.date_reservation.startsWith(monthStr) && r.statut !== 'annulee'
+    ).length;
+    resasEl.textContent = count;
+  }
+
+  // Prochain paiement : 1er du mois prochain
+  if (nextPayEl) {
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    nextPayEl.textContent = `1er ${months[nextMonth.getMonth()]}`;
   }
 }
 
@@ -6008,6 +6216,10 @@ document.getElementById('resaModalSave').addEventListener('click', async () => {
   };
 
   let result;
+  const wasFirstResaToday = resasCache.filter(r =>
+    r.date_reservation === new Date().toISOString().slice(0, 10) && r.statut !== 'annulee'
+  ).length === 0;
+
   if (editingResaId) {
     result = await supa.from('frizz_ai_reservations').update(payload).eq('id', editingResaId);
   } else {
@@ -6021,7 +6233,33 @@ document.getElementById('resaModalSave').addEventListener('click', async () => {
   showToast(editingResaId ? 'Réservation modifiée' : 'Réservation ajoutée');
   closeNewResaModal();
   await loadResas();
+
+  // Confettis si c'était la 1ère résa du jour (uniquement à la création, pas à la modif)
+  if (!editingResaId && wasFirstResaToday) {
+    launchConfetti();
+  }
 });
+
+function launchConfetti() {
+  const colors = ['#FF9500', '#FF7A00', '#FFB347', '#FFC864', '#FFD970', '#FF6B00'];
+  const count = 60;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (1.8 + Math.random() * 1.4) + 's';
+    piece.style.animationDelay = (Math.random() * 0.4) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    piece.style.borderRadius = Math.random() > 0.5 ? '2px' : '50%';
+    piece.style.width = (6 + Math.random() * 6) + 'px';
+    piece.style.height = (10 + Math.random() * 8) + 'px';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+window.launchConfetti = launchConfetti;
+
 
 /* ─── MODALE DÉTAIL ─── */
 function openResaDetail(id) {
@@ -6091,6 +6329,19 @@ async function markResaStatus(id, statut) {
   showToast(labels[statut] || 'Mise à jour');
   closeResaDetail();
   await loadResas();
+
+  // Animation check sur la card de la résa honorée
+  if (statut === 'honoree') {
+    setTimeout(() => {
+      const cards = document.querySelectorAll('.resa-card');
+      cards.forEach(card => {
+        if (card.onclick && card.onclick.toString().includes(id)) {
+          card.classList.add('resa-status-honoree-pulse');
+          setTimeout(() => card.classList.remove('resa-status-honoree-pulse'), 600);
+        }
+      });
+    }, 100);
+  }
 }
 
 window.openResaDetail = openResaDetail;

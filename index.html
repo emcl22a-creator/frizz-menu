@@ -1209,6 +1209,13 @@
     gap: 8px;
     margin: 0 16px;
   }
+  /* VOICE PICKER (Réglages, Voix IA) - style premium Apple Music */
+  .voice-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0 16px;
+  }
   .voice-card {
     position: relative;
     display: flex;
@@ -1221,7 +1228,7 @@
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     backdrop-filter: blur(30px) saturate(180%);
     border: 0.5px solid rgba(255, 255, 255, 0.14);
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
     text-align: left;
     transition: transform 0.22s cubic-bezier(0.32, 0.72, 0.42, 1),
@@ -1260,63 +1267,147 @@
   .voice-card.selected {
     border-color: var(--blue);
     background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(10, 132, 255, 0.16) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(10, 132, 255, 0.20) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(20, 30, 50, 0.65) 0%, rgba(10, 20, 35, 0.75) 100%);
     box-shadow:
       0 1px 0 0 rgba(255, 255, 255, 0.30) inset,
-      0 0 0 1px var(--blue),
+      0 0 0 1.5px var(--blue),
       1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
       -1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
-      0 0 40px rgba(10, 132, 255, 0.28),
+      0 0 40px rgba(10, 132, 255, 0.32),
       0 12px 32px rgba(0, 0, 0, 0.40);
   }
-  .voice-card.selected {
-    border-color: var(--blue);
+
+  /* Avatar circulaire avec initiale */
+  .voice-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
     box-shadow:
-      0 0 0 2px var(--blue),
-      0 6px 16px rgba(10, 132, 255, 0.16);
+      0 1px 0 0 rgba(255, 255, 255, 0.25) inset,
+      0 4px 12px rgba(0, 0, 0, 0.36),
+      0 0 0 1px rgba(255, 255, 255, 0.10);
+    position: relative;
   }
-  .voice-info { flex: 1; min-width: 0; }
+  .voice-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .voice-avatar.camille {
+    background: linear-gradient(135deg, #4FC3F7 0%, #1976D2 100%);
+  }
+  .voice-avatar.audrey {
+    background: linear-gradient(135deg, #7E57C2 0%, #283593 100%);
+  }
+  .voice-avatar.julien {
+    background: linear-gradient(135deg, #26A69A 0%, #00695C 100%);
+  }
+
+  /* Bloc info nom + description */
+  .voice-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
   .voice-name {
     font-size: 17px;
     font-weight: 600;
-    color: var(--label);
+    color: white;
     letter-spacing: -0.022em;
+    line-height: 1.1;
   }
+  .voice-desc {
+    font-size: 13px;
+    color: rgba(235, 235, 245, 0.55);
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+
+  /* Bouton play premium */
   .voice-play {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    background: rgba(10, 132, 255, 0.12);
-    color: var(--blue);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.20) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(10, 132, 255, 0.20) 0%, rgba(10, 132, 255, 0.10) 100%);
+    color: #0A84FF;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: none;
+    border: 0.5px solid rgba(10, 132, 255, 0.30);
     flex-shrink: 0;
-    transition: transform 0.12s, background 0.12s;
+    transition: all 0.18s cubic-bezier(0.32, 0.72, 0.42, 1);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.15) inset,
+      0 2px 6px rgba(0, 0, 0, 0.20);
   }
-  .voice-play svg { width: 14px; height: 14px; margin-left: 2px; }
-  .voice-play:hover { background: rgba(10, 132, 255, 0.2); }
+  .voice-play svg { width: 16px; height: 16px; margin-left: 2px; }
+  .voice-play:hover {
+    transform: scale(1.08);
+    background:
+      radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(10, 132, 255, 0.30) 0%, rgba(10, 132, 255, 0.18) 100%);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.20) inset,
+      0 4px 12px rgba(10, 132, 255, 0.30);
+  }
   .voice-play:active { transform: scale(0.92); }
   .voice-play.playing {
-    background: var(--blue);
+    background:
+      radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.30) 0%, transparent 50%),
+      linear-gradient(180deg, #0A84FF 0%, #0066CC 100%);
     color: white;
+    border-color: var(--blue);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.40) inset,
+      0 0 24px rgba(10, 132, 255, 0.50),
+      0 4px 12px rgba(0, 0, 0, 0.24);
+    animation: voicePlayPulse 1.4s ease-in-out infinite;
   }
-  .voice-play.playing svg { margin-left: 0; }
+  @keyframes voicePlayPulse {
+    0%, 100% { box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.40) inset,
+      0 0 24px rgba(10, 132, 255, 0.50),
+      0 4px 12px rgba(0, 0, 0, 0.24); }
+    50% { box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
+      0 0 36px rgba(10, 132, 255, 0.75),
+      0 4px 16px rgba(0, 0, 0, 0.30); }
+  }
+
+  /* Check (sélectionné) */
   .voice-check {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: var(--blue);
+    background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
     color: white;
     display: none;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.25) inset,
+      0 0 12px rgba(10, 132, 255, 0.40),
+      0 2px 4px rgba(0, 0, 0, 0.30);
   }
-  .voice-check svg { width: 12px; height: 12px; }
+  .voice-check svg { width: 13px; height: 13px; stroke-width: 3.5; }
   .voice-card.selected .voice-check { display: flex; }
 
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
@@ -3567,38 +3658,44 @@
   <div class="section-header">Voix de l'agent</div>
   <div class="voice-grid" id="voiceGrid">
     <button class="voice-card" data-voice="camille" onclick="selectVoice('camille')">
+      <div class="voice-avatar camille">C</div>
       <div class="voice-info">
         <div class="voice-name">Camille</div>
+        <div class="voice-desc">Voix féminine douce</div>
       </div>
       <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('camille');" aria-label="Écouter Camille">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
       <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
     </button>
 
     <button class="voice-card" data-voice="audrey" onclick="selectVoice('audrey')">
+      <div class="voice-avatar audrey">A</div>
       <div class="voice-info">
         <div class="voice-name">Audrey</div>
+        <div class="voice-desc">Voix féminine professionnelle</div>
       </div>
       <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('audrey');" aria-label="Écouter Audrey">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
       <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
     </button>
 
     <button class="voice-card" data-voice="julien" onclick="selectVoice('julien')">
+      <div class="voice-avatar julien">J</div>
       <div class="voice-info">
         <div class="voice-name">Julien</div>
+        <div class="voice-desc">Voix masculine chaleureuse</div>
       </div>
       <button class="voice-play" onclick="event.stopPropagation(); playVoiceSample('julien');" aria-label="Écouter Julien">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
       <div class="voice-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
     </button>
   </div>

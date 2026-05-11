@@ -2795,19 +2795,24 @@
     /* Tabbar du bas masqué : on utilise la sidebar à la place */
     .tabbar { display: none !important; }
 
-    /* Sidebar visible */
+    /* Sidebar visible - Dark glass cohérent avec le reste de l'app */
     .desktop-sidebar {
       display: flex !important;
       flex-direction: column;
       position: fixed;
       top: 0; left: 0; bottom: 0;
       width: 240px;
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: saturate(180%) blur(40px);
-      -webkit-backdrop-filter: saturate(180%) blur(40px);
-      border-right: 0.5px solid var(--separator);
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(30, 34, 42, 0.78) 0%, rgba(12, 14, 18, 0.88) 100%);
+      backdrop-filter: saturate(200%) blur(40px);
+      -webkit-backdrop-filter: saturate(200%) blur(40px);
+      border-right: 0.5px solid rgba(255, 255, 255, 0.10);
       padding: 24px 14px 18px;
       z-index: 100;
+      box-shadow:
+        1px 0 0 0 rgba(255, 255, 255, 0.06) inset,
+        4px 0 24px rgba(0, 0, 0, 0.40);
     }
     .ds-logo-row {
       display: flex;
@@ -2827,16 +2832,20 @@
       align-items: center;
       gap: 8px;
       padding: 9px 12px;
-      background: var(--fill-tertiary);
+      background: rgba(255, 255, 255, 0.06);
+      border: 0.5px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
       width: 100%;
       font-size: 14px;
       font-weight: 600;
       color: var(--label);
       letter-spacing: -0.012em;
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .ds-shop-btn:hover { background: var(--fill-secondary); }
+    .ds-shop-btn:hover {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
     .ds-shop-btn svg { width: 11px; height: 11px; color: var(--label-secondary); margin-left: auto; }
     .ds-shop-name {
       flex: 1;
@@ -2868,11 +2877,14 @@
       position: relative;
     }
     .ds-nav-btn svg { width: 19px; height: 19px; flex-shrink: 0; color: var(--label-secondary); }
-    .ds-nav-btn:hover { background: var(--fill-tertiary); }
+    .ds-nav-btn:hover { background: rgba(255, 255, 255, 0.06); }
     .ds-nav-btn.active {
-      background: var(--blue);
+      background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
       color: white;
       font-weight: 600;
+      box-shadow:
+        0 1px 0 0 rgba(255, 255, 255, 0.25) inset,
+        0 4px 12px rgba(10, 132, 255, 0.30);
     }
     .ds-nav-btn.active svg { color: white; }
     .ds-nav-btn .ds-badge {
@@ -2907,104 +2919,67 @@
       padding-top: 14px;
       padding-bottom: 60px !important;
     }
-    .large-title-block { padding: 14px 22px 18px; max-width: 1280px; margin: 0 auto; }
+
+    /* ═══ LARGEUR UNIFORME — Toutes les pages ont la même largeur sur PC ═══ */
+    /* Largeur cible : 960px (lisible et cohérent comme la page Réglages) */
+    .large-title-block {
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 14px 22px 18px;
+    }
     .large-title { font-size: 38px; }
 
-    /* Cards : un peu plus aérées sur PC, centrées dans une zone plus large */
-    .group, .hero-card, .trio-card, .segmented, .agenda {
-      max-width: 1280px;
+    /* Toutes les cards : centrées dans 960px avec marges latérales */
+    .group, .hero-card, .trio-card, .segmented, .chart-card, .agenda, .pro-card {
+      max-width: calc(960px - 44px);
+      width: calc(100% - 44px);
       margin-left: auto;
       margin-right: auto;
-      padding-left: 22px;
-      padding-right: 22px;
       box-sizing: border-box;
     }
-    /* Search bar : centrée mais SANS padding (pour l'icône qui est position: absolute) */
+    .group { padding-left: 0; padding-right: 0; }
+
+    /* Search bar : même largeur */
     .search-bar {
-      max-width: calc(1280px - 44px);
+      max-width: calc(960px - 44px);
+      width: calc(100% - 44px);
       margin-left: auto !important;
       margin-right: auto !important;
-      width: calc(100% - 44px);
       box-sizing: border-box;
     }
-    /* Pour les groupes avec un fond glass : on ajuste padding interne */
-    .group { padding-left: 0; padding-right: 0; }
-    .group, .hero-card, .trio-card, .segmented, .chart-card, .agenda, .pro-card {
-      width: calc(100% - 44px);
-      max-width: 1280px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+
+    /* Duo : grid 2 colonnes centrée */
     .duo {
-      max-width: 1280px;
+      max-width: 960px;
+      width: 100%;
       margin-left: auto;
       margin-right: auto;
       padding-left: 22px;
       padding-right: 22px;
       box-sizing: border-box;
-      gap: 14px;
+      gap: 12px;
     }
-    .pro-card { margin-left: auto; margin-right: auto; }
-    .hero-value { font-size: 76px; }
-    .trio-value { font-size: 42px; }
 
-    /* L'agenda peut profiter de plus de largeur */
-    .agenda-grid { min-width: 0; }
-
-    /* ═══ PAGE STATS — Layout grid 2 colonnes pour mieux exploiter l'espace ═══ */
-    #page-stats {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding-top: 8px;
-    }
-    /* Le titre prend toute la largeur */
-    #page-stats .large-title-block {
-      max-width: 100%;
-      padding: 14px 22px 24px;
-    }
-    /* Hero/trio : pleine largeur */
-    #page-stats .trio-card {
-      width: auto;
-      max-width: none;
-      margin-left: 22px;
-      margin-right: 22px;
-    }
-    /* Duo card élargi : occupe toute la largeur sur PC, mais avec gap plus grand */
-    #page-stats .duo {
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .duo-card {
-      padding: 22px 24px;
-      min-height: 96px;
-    }
-    .duo-label { font-size: 14px; letter-spacing: -0.01em; }
-    .duo-value { font-size: 32px; }
-
-    /* Segmented bouton plus aéré */
-    #page-stats .segmented {
-      margin-top: 18px;
-      margin-bottom: 4px;
-    }
-    /* Chart card élargi */
-    #page-stats .chart-card {
-      padding: 24px 28px;
-      min-height: 240px;
-    }
-    /* Activité aujourd'hui : on lui donne du peps */
-    #page-stats .section-header {
-      max-width: 1280px;
+    /* Section headers : alignés avec les cards */
+    .section-header {
+      max-width: 960px;
       margin-left: auto;
       margin-right: auto;
       padding: 24px 22px 8px;
-      font-size: 14px;
-      letter-spacing: 0.6px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
     }
-    #page-stats #recent-list {
-      margin-left: 22px;
-      margin-right: 22px;
-    }
+
+    /* Tailles plus impactantes */
+    .hero-value { font-size: 76px; }
+    .trio-value { font-size: 42px; }
+    .duo-card { padding: 18px 20px; }
+    .duo-label { font-size: 14px; letter-spacing: -0.01em; }
+    .duo-value { font-size: 32px; }
+
+    /* L'agenda peut profiter de plus de largeur */
+    .agenda-grid { min-width: 0; }
   }
 
 

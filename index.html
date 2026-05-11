@@ -1205,85 +1205,60 @@
     gap: 8px;
     margin: 0 16px;
   }
-  /* VOICE PICKER (Réglages, Voix IA) - style premium Apple Music */
-  .voice-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: 0 16px;
+  /* VOICE PICKER (Réglages, Voix IA) - 1 case avec 3 lignes séparées */
+  .voice-group {
+    overflow: hidden;
+    border-radius: 16px;
   }
-  .voice-card {
+  .voice-row {
     position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.14);
-    border-radius: 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.10);
     cursor: pointer;
     text-align: left;
-    transition: transform 0.22s cubic-bezier(0.32, 0.72, 0.42, 1),
-                box-shadow 0.22s ease,
-                border-color 0.22s ease;
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
-      1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
-      -1px 0 0 0 rgba(255, 255, 255, 0.04) inset,
-      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
-      0 8px 20px rgba(0, 0, 0, 0.36);
-    isolation: isolate;
+    width: 100%;
+    transition: background 0.15s ease;
   }
-  .voice-card::after {
+  .voice-row:last-child {
+    border-bottom: none;
+  }
+  .voice-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .voice-row:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .voice-row.selected {
+    background:
+      radial-gradient(ellipse 120% 100% at 50% 50%, rgba(10, 132, 255, 0.18) 0%, transparent 70%),
+      rgba(10, 132, 255, 0.06);
+  }
+  .voice-row.selected::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
-    pointer-events: none;
-    border-radius: inherit;
-    z-index: -1;
-  }
-  .voice-card:hover {
-    border-color: rgba(10, 132, 255, 0.40);
-    transform: translateY(-2px) scale(1.002);
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
-      1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
-      -1px 0 0 0 rgba(10, 132, 255, 0.10) inset,
-      0 -1px 0 0 rgba(0, 0, 0, 0.30) inset,
-      0 12px 28px rgba(0, 0, 0, 0.40),
-      0 0 32px rgba(10, 132, 255, 0.18);
-  }
-  .voice-card:active { transform: scale(0.99) translateY(0); }
-  .voice-card.selected {
-    border-color: var(--blue);
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(10, 132, 255, 0.20) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(20, 30, 50, 0.65) 0%, rgba(10, 20, 35, 0.75) 100%);
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.30) inset,
-      0 0 0 1.5px var(--blue),
-      1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
-      -1px 0 0 0 rgba(10, 132, 255, 0.20) inset,
-      0 0 40px rgba(10, 132, 255, 0.32),
-      0 12px 32px rgba(0, 0, 0, 0.40);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--blue);
+    box-shadow: 0 0 12px rgba(10, 132, 255, 0.60);
   }
 
   /* Avatar circulaire avec initiale */
   .voice-avatar {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     flex-shrink: 0;
     letter-spacing: -0.02em;
@@ -1335,8 +1310,8 @@
 
   /* Bouton play premium */
   .voice-play {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background:
       radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.20) 0%, transparent 50%),
@@ -1353,7 +1328,7 @@
       0 1px 0 0 rgba(255, 255, 255, 0.15) inset,
       0 2px 6px rgba(0, 0, 0, 0.20);
   }
-  .voice-play svg { width: 16px; height: 16px; margin-left: 2px; }
+  .voice-play svg { width: 15px; height: 15px; margin-left: 2px; }
   .voice-play:hover {
     transform: scale(1.08);
     background:
@@ -1404,7 +1379,7 @@
       0 2px 4px rgba(0, 0, 0, 0.30);
   }
   .voice-check svg { width: 13px; height: 13px; stroke-width: 3.5; }
-  .voice-card.selected .voice-check { display: flex; }
+  .voice-row.selected .voice-check { display: flex; }
 
   /* ─── DUAL STAT CARDS ────────────────────────────────── */
   .duo {
@@ -1564,9 +1539,11 @@
   .search-bar {
     margin: 4px 16px 12px;
     position: relative;
+    display: block;
   }
   .search-bar input {
     width: 100%;
+    box-sizing: border-box;
     padding: 12px 14px 12px 38px;
     background:
       radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
@@ -1595,9 +1572,14 @@
   .search-bar input::placeholder { color: var(--label-tertiary); }
   .search-icon {
     position: absolute;
-    left: 12px; top: 50%; transform: translateY(-50%);
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--label-tertiary);
-    width: 14px; height: 14px;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 1;
   }
 
   /* ─── AGENDA ─────────────────────────────────────────── */
@@ -2929,7 +2911,7 @@
     .large-title { font-size: 38px; }
 
     /* Cards : un peu plus aérées sur PC, centrées dans une zone plus large */
-    .group, .hero-card, .trio-card, .segmented, .agenda, .search-bar {
+    .group, .hero-card, .trio-card, .segmented, .agenda {
       max-width: 1280px;
       margin-left: auto;
       margin-right: auto;
@@ -2937,9 +2919,17 @@
       padding-right: 22px;
       box-sizing: border-box;
     }
+    /* Search bar : centrée mais SANS padding (pour l'icône qui est position: absolute) */
+    .search-bar {
+      max-width: calc(1280px - 44px);
+      margin-left: auto !important;
+      margin-right: auto !important;
+      width: calc(100% - 44px);
+      box-sizing: border-box;
+    }
     /* Pour les groupes avec un fond glass : on ajuste padding interne */
     .group { padding-left: 0; padding-right: 0; }
-    .group, .hero-card, .trio-card, .segmented, .chart-card, .agenda, .search-bar, .pro-card {
+    .group, .hero-card, .trio-card, .segmented, .chart-card, .agenda, .pro-card {
       width: calc(100% - 44px);
       max-width: 1280px;
       margin-left: auto;
@@ -3736,8 +3726,8 @@
   </div>
 
   <div class="section-header">Voix de l'agent</div>
-  <div class="voice-grid" id="voiceGrid">
-    <button class="voice-card" data-voice="camille" onclick="selectVoice('camille')">
+  <div class="group voice-group" id="voiceGroup">
+    <button class="voice-row" data-voice="camille" onclick="selectVoice('camille')">
       <div class="voice-avatar camille">C</div>
       <div class="voice-info">
         <div class="voice-name">Camille</div>
@@ -3751,7 +3741,7 @@
       </div>
     </button>
 
-    <button class="voice-card" data-voice="audrey" onclick="selectVoice('audrey')">
+    <button class="voice-row" data-voice="audrey" onclick="selectVoice('audrey')">
       <div class="voice-avatar audrey">A</div>
       <div class="voice-info">
         <div class="voice-name">Audrey</div>
@@ -3765,7 +3755,7 @@
       </div>
     </button>
 
-    <button class="voice-card" data-voice="julien" onclick="selectVoice('julien')">
+    <button class="voice-row" data-voice="julien" onclick="selectVoice('julien')">
       <div class="voice-avatar julien">J</div>
       <div class="voice-info">
         <div class="voice-name">Julien</div>
@@ -6184,7 +6174,7 @@ function selectVoice(voiceId) {
   const meta = VOICES_META[voiceId];
   if (!meta) return;
   currentVoice = voiceId;
-  document.querySelectorAll('.voice-card').forEach(card => {
+  document.querySelectorAll('.voice-row').forEach(card => {
     card.classList.toggle('selected', card.dataset.voice === voiceId);
   });
   if (typeof debouncedSave === 'function') {
@@ -6224,7 +6214,7 @@ function playVoiceSample(voiceId) {
 
   stopAllVoiceSamples();
 
-  const card = document.querySelector(`.voice-card[data-voice="${voiceId}"]`);
+  const card = document.querySelector(`.voice-row[data-voice="${voiceId}"]`);
   const playBtn = card?.querySelector('.voice-play');
   if (playBtn) playBtn.classList.add('playing');
 
@@ -6281,7 +6271,7 @@ function loadVoixIA() {
   if (!currentSalon) return;
   const v = currentSalon.voix_ia || 'camille';
   currentVoice = v;
-  document.querySelectorAll('.voice-card').forEach(card => {
+  document.querySelectorAll('.voice-row').forEach(card => {
     card.classList.toggle('selected', card.dataset.voice === v);
   });
 }

@@ -189,67 +189,21 @@
       0 1px 3px rgba(0, 0, 0, 0.06) !important;
   }
 
-  /* ═══ 🔥 EFFET PRO-CARD POUR LES GROUPES DE LA PAGE RÉGLAGES ═══ */
-  /* Tous les .group de la page Réglages héritent des animations de la pro-card */
+  /* ═══ Animations RETIRÉES pour la page Réglages ═══
+     (avant : orbes flottantes + sparkles sur tous les groupes)
+     Désormais : aucun effet visuel sur les éléments de Réglages */
   #page-config .group,
   #page-config .pro-card {
-    position: relative !important;
-    overflow: hidden !important;
-    isolation: isolate !important;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
   }
-
-  /* Orbes bleues animées en arrière-plan (subtile sur fond blanc) */
   #page-config .group::before,
-  #page-config .pro-card::before {
-    content: '' !important;
-    display: block !important;
-    position: absolute !important;
-    inset: -50% !important;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(0, 122, 255, 0.10) 0%, transparent 35%),
-      radial-gradient(circle at 80% 20%, rgba(100, 210, 255, 0.10) 0%, transparent 35%),
-      radial-gradient(circle at 50% 80%, rgba(0, 122, 255, 0.08) 0%, transparent 35%) !important;
-    animation: proOrbsFloat 14s ease-in-out infinite !important;
-    z-index: -1 !important;
-    filter: blur(8px) !important;
-    pointer-events: none !important;
-    border-radius: 0 !important;
-  }
-
-  /* Petits scintillements bleus sur les groupes Réglages */
+  #page-config .pro-card::before,
   #page-config .group::after,
   #page-config .pro-card::after {
-    content: '';
-    position: absolute;
-    top: 30%; left: 80%;
-    width: 4px; height: 4px;
-    background: rgba(0, 122, 255, 0.50);
-    border-radius: 50%;
-    box-shadow:
-      0 0 8px 2px rgba(0, 122, 255, 0.30),
-      -120px 80px 0 -1px rgba(0, 122, 255, 0.40),
-      -120px 80px 6px 0px rgba(0, 122, 255, 0.25);
-    animation: proSparkleSubtle 3.5s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  @keyframes proSparkleSubtle {
-    0%, 100% { opacity: 0; transform: scale(0.5); }
-    50% { opacity: 1; transform: scale(1.2); }
-  }
-
-  /* Effet tactile : scale au tap (comme pro-card) */
-  #page-config .group:active {
-    transform: scale(0.992) !important;
-  }
-
-  /* Reactiver les orbes flottantes au cas où elles seraient cachées */
-  @keyframes proOrbsFloat {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(8%, -6%) rotate(120deg); }
-    66% { transform: translate(-6%, 8%) rotate(240deg); }
+    display: none !important;
+    animation: none !important;
   }
 
   /* Forcer le texte blanc dans pro-card devient noir en light */
@@ -3652,7 +3606,6 @@
   body .chart-card,
   body .group,
   body .hero-card,
-  body .pro-card,
   body .next-reservation-card,
   body .ring-card,
   body .trend-card,
@@ -3684,6 +3637,92 @@
       0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
       0 4px 12px rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* ═══ 🔥 PRO-CARD : Gradient bleu → bleu clair animé ═════ */
+  body .pro-card,
+  body #page-config .pro-card {
+    background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 50%, #64D2FF 100%) !important;
+    background-size: 200% 200% !important;
+    background-image: linear-gradient(135deg, #007AFF 0%, #5AC8FA 50%, #64D2FF 100%) !important;
+    animation: proCardGradientShift 8s ease-in-out infinite !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.30) inset,
+      0 12px 32px rgba(0, 122, 255, 0.32),
+      0 4px 12px rgba(0, 122, 255, 0.20) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    color: white !important;
+  }
+  @keyframes proCardGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  /* Tous textes de la pro-card en blanc */
+  body .pro-card,
+  body .pro-card *,
+  body #page-config .pro-card,
+  body #page-config .pro-card * {
+    color: white !important;
+  }
+  body .pro-card::before,
+  body .pro-card::after,
+  body #page-config .pro-card::before,
+  body #page-config .pro-card::after {
+    display: none !important;
+  }
+  /* Bouton "Gérer mon abonnement" : blanc avec texte bleu (contraste élevé) */
+  body .pro-card .pro-cta,
+  body #page-config .pro-card .pro-cta {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: var(--blue) !important;
+    border: none !important;
+  }
+  body .pro-card .pro-cta * {
+    color: var(--blue) !important;
+  }
+
+  /* ═══ 🔥 VOIX DE L'AGENT : texte noir en light mode ════ */
+  body .voice-name {
+    color: var(--label) !important;
+  }
+  body .voice-desc {
+    color: var(--label-secondary) !important;
+  }
+
+  /* ═══ 🔥 RING CARD (Taux de remplissage) : couleurs inversées ═══ */
+  /* Fond noir, texte blanc */
+  body .ring-card {
+    background: #000000 !important;
+    background-image: none !important;
+    animation: none !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.10) inset,
+      0 12px 32px rgba(0, 0, 0, 0.24),
+      0 4px 12px rgba(0, 0, 0, 0.16) !important;
+    color: white !important;
+    overflow: hidden;
+  }
+  body .ring-card .ring-card-header {
+    color: rgba(255, 255, 255, 0.60) !important;
+  }
+  body .ring-card .ring-percent {
+    color: white !important;
+  }
+  body .ring-card .ring-percent-unit {
+    color: rgba(255, 255, 255, 0.60) !important;
+  }
+  body .ring-card .ring-label-sub {
+    color: rgba(255, 255, 255, 0.60) !important;
+  }
+  /* L'anneau : cercle de fond sombre, cercle de progression bleu Frizz */
+  body .ring-card .ring-bg {
+    stroke: rgba(255, 255, 255, 0.12) !important;
+  }
+  body .ring-card .ring-fg {
+    stroke: #5AC8FA !important;
   }
 
   /* Toutes les pages : ne plus afficher les ::before Liquid Glass dark qui éclaircissent abusivement */

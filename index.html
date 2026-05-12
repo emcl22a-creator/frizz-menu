@@ -189,6 +189,69 @@
       0 1px 3px rgba(0, 0, 0, 0.06) !important;
   }
 
+  /* ═══ 🔥 EFFET PRO-CARD POUR LES GROUPES DE LA PAGE RÉGLAGES ═══ */
+  /* Tous les .group de la page Réglages héritent des animations de la pro-card */
+  #page-config .group,
+  #page-config .pro-card {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+
+  /* Orbes bleues animées en arrière-plan (subtile sur fond blanc) */
+  #page-config .group::before,
+  #page-config .pro-card::before {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    inset: -50% !important;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(0, 122, 255, 0.10) 0%, transparent 35%),
+      radial-gradient(circle at 80% 20%, rgba(100, 210, 255, 0.10) 0%, transparent 35%),
+      radial-gradient(circle at 50% 80%, rgba(0, 122, 255, 0.08) 0%, transparent 35%) !important;
+    animation: proOrbsFloat 14s ease-in-out infinite !important;
+    z-index: -1 !important;
+    filter: blur(8px) !important;
+    pointer-events: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Petits scintillements bleus sur les groupes Réglages */
+  #page-config .group::after,
+  #page-config .pro-card::after {
+    content: '';
+    position: absolute;
+    top: 30%; left: 80%;
+    width: 4px; height: 4px;
+    background: rgba(0, 122, 255, 0.50);
+    border-radius: 50%;
+    box-shadow:
+      0 0 8px 2px rgba(0, 122, 255, 0.30),
+      -120px 80px 0 -1px rgba(0, 122, 255, 0.40),
+      -120px 80px 6px 0px rgba(0, 122, 255, 0.25);
+    animation: proSparkleSubtle 3.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes proSparkleSubtle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Effet tactile : scale au tap (comme pro-card) */
+  #page-config .group:active {
+    transform: scale(0.992) !important;
+  }
+
+  /* Reactiver les orbes flottantes au cas où elles seraient cachées */
+  @keyframes proOrbsFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(8%, -6%) rotate(120deg); }
+    66% { transform: translate(-6%, 8%) rotate(240deg); }
+  }
+
   /* Forcer le texte blanc dans pro-card devient noir en light */
   .pro-card, .pro-card * {
     color: var(--label) !important;
@@ -199,9 +262,10 @@
     color: white !important;
   }
 
-  /* Désactive les ::before des Liquid Glass qui pondèrent la lumière en blanc */
-  .group::before, .hero-card::before, .duo-card::before, .trio-card::before,
-  .chart-card::before, .pro-card::before, .next-reservation-card::before {
+  /* Désactive les ::before des Liquid Glass qui pondèrent la lumière en blanc (sauf page-settings où on les utilise) */
+  .group:not(#page-config .group)::before,
+  .hero-card::before, .duo-card::before, .trio-card::before,
+  .chart-card::before, .next-reservation-card::before {
     display: none !important;
   }
 

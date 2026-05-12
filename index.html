@@ -3181,8 +3181,8 @@
     <!-- Card prix -->
     <div style="background: var(--bg-secondary); border: 0.5px solid var(--separator); border-radius: 18px; padding: 22px; width: 100%; max-width: 360px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);">
       <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px;">
-        <span style="font-size: 38px; font-weight: 700; letter-spacing: -0.04em; color: var(--label);">99</span>
-        <span style="font-size: 15px; font-weight: 500; color: var(--label-secondary);">€/mois</span>
+        <span id="paywallPriceAmount" style="font-size: 38px; font-weight: 700; letter-spacing: -0.04em; color: var(--label);">69</span>
+        <span id="paywallPriceUnit" style="font-size: 15px; font-weight: 500; color: var(--label-secondary);">€/mois</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px;">
         <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
@@ -4350,6 +4350,8 @@ function checkSubscriptionAccess(salon) {
 }
 
 function showPaywall() {
+  // Met à jour le prix selon le pays du salon avant d'afficher
+  if (typeof refreshProPrice === 'function') refreshProPrice();
   const overlay = document.getElementById('paywallOverlay');
   if (overlay) overlay.style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -6199,6 +6201,12 @@ function refreshProPrice() {
   if (amtEl) amtEl.textContent = amount;
   const unitEl = document.getElementById('proPriceUnit');
   if (unitEl) unitEl.textContent = currency + '/mois';
+
+  // Prix dans le paywall (overlay plein écran)
+  const pwAmt = document.getElementById('paywallPriceAmount');
+  if (pwAmt) pwAmt.textContent = amount;
+  const pwUnit = document.getElementById('paywallPriceUnit');
+  if (pwUnit) pwUnit.textContent = currency + '/mois';
 }
 
 async function loadHoraires() {

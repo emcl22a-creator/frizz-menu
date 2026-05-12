@@ -172,16 +172,31 @@
   /* Override : tous les composants "glass" deviennent cards blanches Apple */
   .group, .hero-card, .duo-card, .trio-card, .chart-card, .pro-card,
   .agenda, .search-bar, .cell, .reservation-card, .inbox-row,
-  .next-reservation-card, .ring-card, .trend-card, .heatmap-card {
-    background: rgba(255, 255, 255, 0.85) !important;
+  .next-reservation-card, .ring-card, .trend-card, .heatmap-card,
+  .voice-card, .voice-row, .resa-card, .voice-picker, .voice-option,
+  .voice-card-active, .agenda-day, .reservation-row, .modal-content,
+  .wizard-modal, .renvoi-modal, .pro-status-card {
+    background: rgba(255, 255, 255, 0.90) !important;
+    background-image: none !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
     border: 0.5px solid rgba(0, 0, 0, 0.06) !important;
     border-radius: 16px !important;
+    color: var(--label) !important;
     box-shadow:
       0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
       0 4px 12px rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Forcer le texte blanc dans pro-card devient noir en light */
+  .pro-card, .pro-card * {
+    color: var(--label) !important;
+  }
+  /* Sauf les badges et icônes spécifiquement colorés */
+  .pro-card .pro-cta, .pro-card .pro-cta *,
+  .pro-card .badge, .pro-card .badge * {
+    color: white !important;
   }
 
   /* Désactive les ::before des Liquid Glass qui pondèrent la lumière en blanc */
@@ -193,6 +208,21 @@
   /* Séparateurs du trio plus subtils en light */
   .trio-sep {
     background: rgba(60, 60, 67, 0.18) !important;
+  }
+
+  /* Voice picker (Camille/Audrey/Julien) - cells claires */
+  .voice-card, .voice-row, .voice-option {
+    background: rgba(255, 255, 255, 0.90) !important;
+    color: var(--label) !important;
+  }
+  .voice-card.active, .voice-row.active, .voice-option.selected {
+    background: rgba(0, 122, 255, 0.10) !important;
+    border-color: var(--blue) !important;
+  }
+
+  /* Toutes les chips, pills, badges textes restent lisibles */
+  .pill, .badge, .chip {
+    color: inherit;
   }
 
   /* Tabbar : verre clair iOS, pas sombre */

@@ -3945,13 +3945,13 @@
 
   <div class="section-header">Calendrier</div>
   <div class="group">
-    <button class="cell" onclick="showToast('Synchronisation calendrier disponible bientôt')">
+    <button class="cell" onclick="openIcalModal()">
       <div class="cell-icon-wrap blue">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
       <div class="cell-main">
         <div class="cell-title">Synchroniser avec mon agenda</div>
-        <div class="cell-subtitle">Google Calendar · Apple · Outlook · <span style="color: var(--blue); font-weight: 600;">Bientôt</span></div>
+        <div class="cell-subtitle">Google Calendar · Apple · Outlook</div>
       </div>
       <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
@@ -5010,18 +5010,23 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 /* ─── Calendar sync sheet ──────────────────────────────── */
-let salonIcalToken = null; // Set to current salon UUID after Supabase loads
-
 function getIcalUrl() {
-  if (!salonIcalToken) return SUPABASE_URL + '/functions/v1/ical?salon=loading';
-  return `${SUPABASE_URL}/functions/v1/ical?salon=${salonIcalToken}`;
+  if (!currentSalon || !currentSalon.id || !currentSalon.ical_token) {
+    return SUPABASE_URL + '/functions/v1/ical_export?salon_id=loading';
+  }
+  return `${SUPABASE_URL}/functions/v1/ical_export?salon_id=${currentSalon.id}&token=${currentSalon.ical_token}`;
 }
 
-function openCalendarSheet() {
+function openIcalModal() {
+  if (!currentSalon || !currentSalon.ical_token) {
+    showToast('Chargement en cours, réessayez');
+    return;
+  }
   document.getElementById('icalLinkInput').value = getIcalUrl();
   document.getElementById('calBackdrop').classList.add('open');
   document.getElementById('calSheet').classList.add('open');
 }
+function openCalendarSheet() { openIcalModal(); }
 function closeCalendarSheet() {
   document.getElementById('calBackdrop').classList.remove('open');
   document.getElementById('calSheet').classList.remove('open');
@@ -5030,7 +5035,7 @@ document.getElementById('calBackdrop').addEventListener('click', closeCalendarSh
 
 function copyIcalLink() {
   const input = document.getElementById('icalLinkInput');
-  input.value = getIcalUrl(); // refresh in case salon was just loaded
+  input.value = getIcalUrl();
   input.select();
   input.setSelectionRange(0, 99999);
   try {
@@ -5050,7 +5055,6 @@ function openGoogleCalendarSubscribe() {
   window.open(`https://calendar.google.com/calendar/r?cid=${url}`, '_blank');
 }
 function openAppleCalendarSubscribe() {
-  // webcal:// triggers Apple Calendar subscription on iOS/Mac
   const url = getIcalUrl().replace(/^https?:/, 'webcal:');
   window.location.href = url;
 }
@@ -5058,6 +5062,8 @@ function openOutlookCalendarSubscribe() {
   const url = getIcalUrl().replace(/^https?:/, 'webcal:');
   window.open(`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(url)}&name=Frizz`, '_blank');
 }
+
+window.openIcalModal = openIcalModal;
 
 /* ─── Activate guide ───────────────────────────────────── */
 function openActivateGuide() {

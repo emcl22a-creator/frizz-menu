@@ -3845,9 +3845,9 @@
     </div>
 
     <button class="pro-cta" id="proCta" onclick="event.stopPropagation(); onProCtaClick()">
-      Essayer 14 jours gratuits
+      S'abonner maintenant
     </button>
-    <div class="pro-cta-sub" id="proCtaSub">Sans carte requise · annulation libre</div>
+    <div class="pro-cta-sub" id="proCtaSub">Sans engagement · annulation à tout moment</div>
   </div>
 
   <div class="group" style="margin-top: 18px;">
@@ -4343,14 +4343,8 @@ let newClientsThisMonth = 0; // Calculé par loadNewClientsCount()
 function checkSubscriptionAccess(salon) {
   if (!salon) return false;
   const status = salon.subscription_status || 'inactive';
-  // Statuts payants OK
-  if (status === 'active') return true;
-  // Trial valide tant que trial_end > now
-  if (status === 'trialing') {
-    if (!salon.trial_end) return false; // pas de date = considéré expiré (sécurité)
-    const end = new Date(salon.trial_end);
-    return end.getTime() > Date.now();
-  }
+  // Statuts payants OK (active inclut les abonnements Stripe en cours)
+  if (status === 'active' || status === 'trialing') return true;
   // 'inactive', 'canceled', 'past_due', 'unpaid' → bloqué
   return false;
 }
@@ -4769,19 +4763,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function syncProCard() {
   if (!currentSalon) return;
   let status = currentSalon.subscription_status || 'inactive';
-
-  // Auto-expire le trial si dépassé
-  let daysLeft = null;
-  if (status === 'trialing' && currentSalon.trial_end) {
-    const end = new Date(currentSalon.trial_end);
-    const now = new Date();
-    const msLeft = end.getTime() - now.getTime();
-    if (msLeft <= 0) {
-      status = 'inactive'; // trial expiré
-    } else {
-      daysLeft = Math.ceil(msLeft / (24 * 3600 * 1000));
-    }
-  }
+  // 'trialing' n'existe plus côté Frizz, mais Stripe peut le renvoyer pour ses propres essais
+  // Si tu vois trialing, on traite comme active (l'utilisateur a accès)
 
   const card = document.getElementById('proCard');
   const badge = document.getElementById('proBadgeText');
@@ -4796,20 +4779,7 @@ function syncProCard() {
   const proNextPayment = document.getElementById('proNextPayment');
   const proFeatures = document.getElementById('proFeatures');
 
-  if (status === 'trialing') {
-    card.classList.add('active');
-    badge.textContent = 'Essai en cours';
-    title.innerHTML = daysLeft === 1
-      ? `Dernier jour<br>d'essai`
-      : `${daysLeft} jours<br>d'essai restants`;
-    subtitle.textContent = 'Profitez de toutes les fonctionnalités. Sans engagement.';
-    if (priceRow) priceRow.style.display = 'none';
-    cta.textContent = 'Activer mon abonnement';
-    ctaSub.textContent = getProPrice().display + '/mois après l\'essai · annulation libre';
-    if (proStats) proStats.style.display = 'none';
-    if (proNextPayment) proNextPayment.style.display = 'none';
-    if (proFeatures) proFeatures.style.display = '';
-  } else if (status === 'active') {
+  if (status === 'active' || status === 'trialing') {
     card.classList.add('active');
     badge.textContent = 'Frizz Pro actif';
     title.innerHTML = '';
@@ -4830,7 +4800,7 @@ function syncProCard() {
     subtitle.textContent = 'Ne ratez plus jamais un appel. Frizz prend le relais pendant le service.';
     if (priceRow) priceRow.style.display = 'flex';
     cta.textContent = 'S\'abonner maintenant';
-    ctaSub.textContent = getProPrice().display + '/mois · annulation libre';
+    ctaSub.textContent = getProPrice().display + '/mois · sans engagement';
     if (proStats) proStats.style.display = 'none';
     if (proNextPayment) proNextPayment.style.display = 'none';
     if (proFeatures) proFeatures.style.display = '';

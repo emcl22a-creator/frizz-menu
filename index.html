@@ -454,6 +454,33 @@
     border-radius: inherit;
   }
 
+  /* Pays toggle (Réglages) */
+  .pays-toggle {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: var(--label);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.32, 0.72, 0.42, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pays-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  .pays-toggle.active {
+    background: linear-gradient(180deg, rgba(10, 132, 255, 0.20) 0%, rgba(10, 132, 255, 0.06) 100%);
+    border-color: var(--blue);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 0 0 1px var(--blue),
+      0 0 16px rgba(10, 132, 255, 0.20);
+    font-weight: 600;
+  }
   /* Toast */
   .toast {
     -webkit-backdrop-filter: blur(40px) saturate(200%);
@@ -3840,8 +3867,8 @@
     </div>
 
     <div class="pro-price-row" id="proPriceRow">
-      <span class="pro-price">99</span>
-      <span class="pro-price-unit">€/mois</span>
+      <span class="pro-price" id="proPriceAmount">69</span>
+      <span class="pro-price-unit" id="proPriceUnit">€/mois</span>
     </div>
 
     <button class="pro-cta" id="proCta" onclick="event.stopPropagation(); onProCtaClick()">
@@ -3936,6 +3963,15 @@
     </div>
     <div class="cell" style="cursor: default;">
       <div class="cell-main">
+        <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Pays</div>
+        <div style="display: flex; gap: 8px; padding-top: 6px;">
+          <button id="paysFR" onclick="selectPays('FR')" type="button" class="pays-toggle">🇫🇷 France</button>
+          <button id="paysCH" onclick="selectPays('CH')" type="button" class="pays-toggle">🇨🇭 Suisse</button>
+        </div>
+      </div>
+    </div>
+    <div class="cell" style="cursor: default;">
+      <div class="cell-main">
         <div class="cell-subtitle" style="color: var(--label-secondary); font-size: 13px;">Type de cuisine</div>
         <select id="restoTypeInput" style="width: 100%; border: none; outline: none; background: transparent; font-size: 16px; padding: 4px 0; color: var(--label); -webkit-appearance: none; appearance: none;">
           <option value="">Choisir…</option>
@@ -4001,7 +4037,7 @@
       </div>
       <button class="cell" style="border-top: 0.5px solid var(--separator);" onclick="onProCardTap()">
         <div class="cell-main">
-          <div class="cell-title" style="color: var(--blue); font-weight: 600;">Découvrir Frizz Pro · 99€/mois</div>
+          <div class="cell-title" style="color: var(--blue); font-weight: 600;"><span data-pro-price data-pro-price-template="Découvrir Frizz Pro · {price}/mois">Découvrir Frizz Pro · 69 €/mois</span></div>
         </div>
         <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
@@ -4805,7 +4841,7 @@ function syncProCard() {
     subtitle.textContent = 'Profitez de toutes les fonctionnalités. Sans engagement.';
     if (priceRow) priceRow.style.display = 'none';
     cta.textContent = 'Activer mon abonnement';
-    ctaSub.textContent = '99€/mois après l\'essai · annulation libre';
+    ctaSub.textContent = getProPrice().display + '/mois après l\'essai · annulation libre';
     if (proStats) proStats.style.display = 'none';
     if (proNextPayment) proNextPayment.style.display = 'none';
     if (proFeatures) proFeatures.style.display = '';
@@ -4830,11 +4866,13 @@ function syncProCard() {
     subtitle.textContent = 'Ne ratez plus jamais un appel. Frizz prend le relais pendant le service.';
     if (priceRow) priceRow.style.display = 'flex';
     cta.textContent = 'S\'abonner maintenant';
-    ctaSub.textContent = '99€/mois · annulation libre';
+    ctaSub.textContent = getProPrice().display + '/mois · annulation libre';
     if (proStats) proStats.style.display = 'none';
     if (proNextPayment) proNextPayment.style.display = 'none';
     if (proFeatures) proFeatures.style.display = '';
   }
+  // Refresh tous les autres affichages de prix
+  if (typeof refreshProPrice === 'function') refreshProPrice();
 }
 
 function updateProStats() {
@@ -6195,6 +6233,60 @@ function fillRestoFields() {
   set('restoCouvertsExtInput', currentSalon.capacite_exterieur);
   set('restoTicketInput', currentSalon.ticket_moyen);
   updateCouvertsTotal();
+  // Pays : sync les toggles UI
+  syncPaysToggle();
+  // Refresh affichage prix dans pro-card
+  if (typeof refreshProPrice === 'function') refreshProPrice();
+}
+
+function syncPaysToggle() {
+  const pays = (currentSalon && currentSalon.pays) || 'FR';
+  const fr = document.getElementById('paysFR');
+  const ch = document.getElementById('paysCH');
+  if (fr) fr.classList.toggle('active', pays === 'FR');
+  if (ch) ch.classList.toggle('active', pays === 'CH');
+}
+
+async function selectPays(pays) {
+  if (!currentSalon || currentSalon.pays === pays) {
+    syncPaysToggle();
+    return;
+  }
+  currentSalon.pays = pays;
+  syncPaysToggle();
+  refreshProPrice();
+  try {
+    const { error } = await supa.from('frizz_ai_salons').update({ pays }).eq('id', currentSalon.id);
+    if (error) throw error;
+    showToast(pays === 'CH' ? 'Pays : Suisse — 99 CHF/mois' : 'Pays : France — 69 €/mois');
+  } catch (err) {
+    showToast('Erreur, réessayez');
+    console.error(err);
+  }
+}
+window.selectPays = selectPays;
+
+// Helper : prix selon le pays
+function getProPrice() {
+  const pays = (currentSalon && currentSalon.pays) || 'FR';
+  if (pays === 'CH') return { amount: '99', currency: 'CHF', display: '99 CHF' };
+  return { amount: '69', currency: '€', display: '69 €' };
+}
+
+function refreshProPrice() {
+  const { display, amount, currency } = getProPrice();
+
+  // CTA "Découvrir Frizz Pro" et autres textes avec attribut data-pro-price
+  document.querySelectorAll('[data-pro-price]').forEach(el => {
+    const tpl = el.getAttribute('data-pro-price-template') || '{price}/mois';
+    el.textContent = tpl.replace('{price}', display);
+  });
+
+  // Gros prix dans la card Pro
+  const amtEl = document.getElementById('proPriceAmount');
+  if (amtEl) amtEl.textContent = amount;
+  const unitEl = document.getElementById('proPriceUnit');
+  if (unitEl) unitEl.textContent = currency + '/mois';
 }
 
 async function loadHoraires() {

@@ -382,8 +382,6 @@ form.addEventListener('submit', async (e) => {
     if (authError) throw authError;
     if (!authData.user) throw new Error('Erreur lors de la création du compte');
 
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 14);
     const { error: salonError } = await supa
       .from('frizz_ai_salons')
       .insert({
@@ -391,8 +389,8 @@ form.addEventListener('submit', async (e) => {
         nom: salonNom,
         pays: selectedCountry,
         actif: true,
-        subscription_status: 'trialing',
-        trial_end: trialEnd.toISOString(),
+        subscription_status: 'inactive',
+        trial_end: null,
       });
     if (salonError) throw salonError;
 

@@ -222,6 +222,39 @@
   }
   .footer a { color: var(--blue); font-weight: 600; }
   .footer a:hover { opacity: 0.7; }
+
+  /* Country selector */
+  .country-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 12px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    color: var(--label);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.32, 0.72, 0.42, 1);
+    text-align: left;
+  }
+  .country-btn:hover {
+    border-color: rgba(10, 132, 255, 0.30);
+    transform: translateY(-1px);
+  }
+  .country-btn.country-active {
+    border-color: var(--blue);
+    background:
+      linear-gradient(180deg, rgba(10,132,255,0.16) 0%, rgba(10,132,255,0.04) 100%);
+    box-shadow:
+      0 1px 0 0 rgba(255,255,255,0.20) inset,
+      0 0 0 1px var(--blue),
+      0 0 16px rgba(10,132,255,0.20);
+  }
 </style>
 </head>
 <body>
@@ -264,6 +297,27 @@
   <form id="signupForm" novalidate>
     <div class="error-msg" id="errorMsg"></div>
 
+    <!-- Sélecteur pays -->
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-size: 13px; color: var(--label-secondary); margin-bottom: 8px; letter-spacing: -0.005em; padding-left: 4px;">Votre restaurant est en :</label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button type="button" id="countryFR" onclick="selectCountry('FR')" class="country-btn country-active">
+          <span style="font-size: 24px;">🇫🇷</span>
+          <div>
+            <div style="font-weight: 600; font-size: 15px;">France</div>
+            <div style="font-size: 12px; opacity: 0.7;">69 €/mois</div>
+          </div>
+        </button>
+        <button type="button" id="countryCH" onclick="selectCountry('CH')" class="country-btn">
+          <span style="font-size: 24px;">🇨🇭</span>
+          <div>
+            <div style="font-weight: 600; font-size: 15px;">Suisse</div>
+            <div style="font-size: 12px; opacity: 0.7;">99 CHF/mois</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="input-row">
         <input type="text" id="salonNom" placeholder="Nom du restaurant" autocomplete="organization" required>
@@ -300,6 +354,16 @@ const errorEl = document.getElementById('errorMsg');
 const btn = document.getElementById('submitBtn');
 const btnText = btn.querySelector('.btn-text');
 
+// Pays sélectionné par défaut
+let selectedCountry = 'FR';
+
+function selectCountry(country) {
+  selectedCountry = country;
+  document.getElementById('countryFR').classList.toggle('country-active', country === 'FR');
+  document.getElementById('countryCH').classList.toggle('country-active', country === 'CH');
+}
+window.selectCountry = selectCountry;
+
 function showError(msg) { errorEl.textContent = msg; errorEl.classList.add('show'); }
 function hideError() { errorEl.classList.remove('show'); }
 function setLoading(loading) {
@@ -331,6 +395,7 @@ form.addEventListener('submit', async (e) => {
       .insert({
         user_id: authData.user.id,
         nom: salonNom,
+        pays: selectedCountry,
         actif: true,
         subscription_status: 'trialing',
         trial_end: trialEnd.toISOString(),

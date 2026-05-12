@@ -582,6 +582,19 @@
     margin-bottom: 16px;
     line-height: 1.45;
   }
+
+  /* Renvoi modal : positionnée pour ne pas être cachée par la tabbar mobile */
+  .renvoi-modal {
+    bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 100px - env(safe-area-inset-bottom)) !important;
+  }
+  /* Sur desktop (sidebar au lieu de tabbar), revenir à position classique */
+  @media (min-width: 1024px) {
+    .renvoi-modal {
+      bottom: 20px !important;
+      max-height: calc(92vh) !important;
+    }
+  }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
   input { font-family: inherit; color: inherit; }
 
@@ -4015,7 +4028,7 @@
 
   <!-- Modale wizard renvoi d'appel -->
   <div class="modal-backdrop" id="renvoiTutoBackdrop"></div>
-  <div class="modal-sheet" id="renvoiTutoSheet" style="bottom: 8px; max-width: 520px; max-height: 92vh; display: flex; flex-direction: column;">
+  <div class="modal-sheet renvoi-modal" id="renvoiTutoSheet" style="max-width: 520px; display: flex; flex-direction: column;">
     <div class="modal-header" style="padding: 18px 56px 14px 20px; flex-shrink: 0; position: relative;">
       <button id="renvoiBackBtn" onclick="renvoiWizardBack()" aria-label="Retour" style="display: none; position: absolute; top: 14px; left: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.10); border: none; color: var(--label); cursor: pointer; align-items: center; justify-content: center; transition: background 0.15s; -webkit-tap-highlight-color: transparent;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polyline points="15 18 9 12 15 6"/></svg>
@@ -4026,7 +4039,7 @@
       </button>
     </div>
 
-    <div id="renvoiWizardBody" style="padding: 0 20px calc(20px + env(safe-area-inset-bottom)); color: var(--label); line-height: 1.5; overflow-y: auto; flex: 1;">
+    <div id="renvoiWizardBody" style="padding: 0 20px calc(40px + env(safe-area-inset-bottom)); color: var(--label); line-height: 1.5; overflow-y: auto; flex: 1;">
 
       <!-- ÉTAPE 1 : Choix du type de téléphone -->
       <div id="renvoi-step-1" class="renvoi-step">
@@ -6496,7 +6509,9 @@ function getFrizzNumberForWizard() {
 }
 
 function openRenvoiTuto() {
-  // Reset au step 1
+  // Reset titre et état
+  document.getElementById('renvoiTitle').textContent = 'Activer Frizz sur votre téléphone';
+  _renvoiState = { phoneType: null, subChoice: null };
   renvoiShowStep(1);
   document.getElementById('renvoiTutoBackdrop').classList.add('open');
   document.getElementById('renvoiTutoSheet').classList.add('open');

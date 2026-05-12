@@ -4389,14 +4389,8 @@ async function onPaywallSubscribe() {
   const btn = document.getElementById('paywallSubscribeBtn');
   if (btn) { btn.disabled = true; btn.textContent = 'Création de la session…'; }
   try {
-    const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
-      body: {
-        salon_id: currentSalon.id,
-        plan: 'frizz_pro_monthly',
-        trial_days: 0, // L'essai a déjà eu lieu
-        success_url: window.location.origin + window.location.pathname + '?paid=1',
-        cancel_url: window.location.href,
-      },
+    const { data, error } = await supa.functions.invoke('create_checkout_session', {
+      body: { salon_id: currentSalon.id },
     });
     if (error) throw error;
     if (data && data.url) {

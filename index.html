@@ -3642,6 +3642,96 @@
     .large-title { font-size: 30px; }
     .hero-value { font-size: 48px; }
   }
+
+  /* ═══════════════════════════════════════════════════════════
+     🌞 LIGHT MODE — Force blanc final (override absolu)
+     Évalué en dernier pour battre les autres règles
+     ═══════════════════════════════════════════════════════════ */
+  body .trio-card,
+  body .duo-card,
+  body .chart-card,
+  body .group,
+  body .hero-card,
+  body .pro-card,
+  body .next-reservation-card,
+  body .ring-card,
+  body .trend-card,
+  body .heatmap-card,
+  body .reservation-card,
+  body .reservation-row,
+  body .resa-card,
+  body .resa-row,
+  body .inbox-row,
+  body .agenda,
+  body .agenda-day,
+  body .cell,
+  body .voice-card,
+  body .voice-row,
+  body .voice-option,
+  body .voice-picker,
+  body .modal-content,
+  body .wizard-modal,
+  body .renvoi-modal,
+  body .pro-status-card,
+  body .segmented {
+    background: rgba(255, 255, 255, 0.92) !important;
+    background-image: none !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 0.5px solid rgba(0, 0, 0, 0.06) !important;
+    color: var(--label) !important;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Toutes les pages : ne plus afficher les ::before Liquid Glass dark qui éclaircissent abusivement */
+  body #page-stats .group::before,
+  body #page-stats .hero-card::before,
+  body #page-stats .duo-card::before,
+  body #page-stats .trio-card::before,
+  body #page-stats .chart-card::before,
+  body #page-stats .next-reservation-card::before,
+  body #page-agenda .group::before,
+  body #page-agenda .reservation-card::before,
+  body #page-agenda .agenda::before,
+  body #page-inbox .group::before,
+  body #page-inbox .inbox-row::before,
+  body #page-inbox .cell::before {
+    display: none !important;
+    background: none !important;
+  }
+
+  /* Forcer texte noir partout dans pages Stats, Agenda, Inbox */
+  body #page-stats, body #page-stats *:not(.btn-primary):not(.pro-cta):not(.badge):not(.pill):not(button.cell-primary):not(#paywallSubscribeBtn),
+  body #page-agenda, body #page-agenda *:not(.btn-primary):not(.pro-cta):not(.badge):not(.pill):not(button.cell-primary),
+  body #page-inbox, body #page-inbox *:not(.btn-primary):not(.pro-cta):not(.badge):not(.pill):not(button.cell-primary) {
+    color: var(--label);
+  }
+
+  /* Le bouton bleu doit rester blanc dessus */
+  body .btn-primary,
+  body .pro-cta,
+  body button.cell-primary,
+  body #paywallSubscribeBtn {
+    background: var(--blue) !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Segmented control en light : cellule active blanche, fond gris */
+  body .segmented {
+    background: rgba(118, 118, 128, 0.12) !important;
+    border: none !important;
+  }
+  body .segmented .seg {
+    color: var(--label) !important;
+  }
+  body .segmented .seg.active {
+    background: #FFFFFF !important;
+    color: var(--label) !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  }
 </style>
 </head>
 <body>

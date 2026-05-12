@@ -3716,36 +3716,12 @@
   }
 
   /* ═══ 🔥 ANIMATIONS D'ENTRÉE DE PAGE ════════════════════════ */
-  /* La page entière fade in d'un coup */
+  /* Fade + slide léger sur la page entière, sans cascade enfants
+     (évite tout flicker sur les pages avec beaucoup d'éléments) */
   .page.active {
     animation: pageEnter 0.35s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
   }
   @keyframes pageEnter {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Cascade subtile sur les enfants pour donner du rythme,
-     mais synchronisée pour que tout finisse en même temps */
-  .page.active > * {
-    animation: pageChildEnter 0.40s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
-  }
-  .page.active > *:nth-child(1) { animation-delay: 0.00s; }
-  .page.active > *:nth-child(2) { animation-delay: 0.02s; }
-  .page.active > *:nth-child(3) { animation-delay: 0.04s; }
-  .page.active > *:nth-child(4) { animation-delay: 0.06s; }
-  .page.active > *:nth-child(5) { animation-delay: 0.08s; }
-  .page.active > *:nth-child(6) { animation-delay: 0.10s; }
-  .page.active > *:nth-child(7) { animation-delay: 0.10s; }
-  .page.active > *:nth-child(8) { animation-delay: 0.10s; }
-  .page.active > *:nth-child(n+9) { animation-delay: 0.10s; }
-  @keyframes pageChildEnter {
     from {
       opacity: 0;
       transform: translateY(8px);
@@ -3758,7 +3734,7 @@
 
   /* Respect des préférences accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .page.active, .page.active > * {
+    .page.active {
       animation: none !important;
     }
   }

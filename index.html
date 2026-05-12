@@ -4887,48 +4887,55 @@ async function onProCtaClick() {
     return;
   }
   let status = currentSalon.subscription_status || 'inactive';
-  // Si trial expiré, on traite comme inactive
-  if (status === 'trialing' && currentSalon.trial_end) {
-    if (new Date(currentSalon.trial_end).getTime() <= Date.now()) status = 'inactive';
-  }
 
   try {
-    if (status === 'active') {
-      // Open Stripe billing portal
-      showToast('Ouverture du portail…');
-      const { data, error } = await supa.functions.invoke('stripe-billing-portal', {
-        body: { salon_id: currentSalon.id },
-      });
-      if (error) throw error;
-      if (data && data.url) {
-        window.location.href = data.url;
-      } else {
-        showToast('URL portail manquante');
-      }
+    if (status === 'active' || status === 'trialing') {
+      // Abonnement actif : on ouvrira le billing portal Stripe plus tard
+      // Pour l'instant, message simple
+      showToast('Votre abonnement est actif. Pour le gérer, contactez le support.');
+      return;
+    }
+
+    // Sinon : créer une session de paiement Stripe Checkout
+    showToast('Redirection vers Stripe…');
+    const { data, error } = await supa.functions.invoke('create_checkout_session', {
+      body: { salon_id: currentSalon.id },
+    });
+    if (error) throw error;
+    if (data && data.url) {
+      // Redirection vers Stripe Checkout
+      window.location.href = data.url;
     } else {
-      // Trial déjà commencé au signup → checkout sans trial supplémentaire
-      // (trialing OU inactive → on pousse vers la facturation Stripe)
-      showToast('Création de la session…');
-      const { data, error } = await supa.functions.invoke('stripe-create-checkout', {
-        body: {
-          salon_id: currentSalon.id,
-          plan: 'frizz_pro_monthly',
-          trial_days: 0, // L'essai a déjà eu lieu côté Frizz
-          success_url: window.location.origin + window.location.pathname + '?paid=1',
-          cancel_url: window.location.href,
-        },
-      });
-      if (error) throw error;
-      if (data && data.url) {
-        window.location.href = data.url;
-      } else {
-        showToast('URL Stripe manquante');
-      }
+      showToast('URL Stripe manquante');
     }
   } catch (e) {
     console.error('Pro CTA error', e);
     showToast('Erreur · ' + (e.message || 'inconnue'));
   }
+}
+
+// Gérer le retour de Stripe après paiement
+function handleStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const stripeResult = params.get('stripe');
+  if (stripeResult === 'success') {
+    showToast('Paiement réussi ! Activation en cours…');
+    // Nettoyer l'URL
+    window.history.replaceState({}, '', window.location.pathname);
+    // Recharger les données salon après quelques secondes (le temps que le webhook arrive)
+    setTimeout(() => {
+      if (typeof loadAllData === 'function') loadAllData();
+    }, 3000);
+  } else if (stripeResult === 'cancelled') {
+    showToast('Paiement annulé');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+}
+// Appeler au chargement de la page
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', handleStripeReturn);
+} else {
+  handleStripeReturn();
 }
 
 async function logout() {

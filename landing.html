@@ -27,64 +27,43 @@
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
   }
 
-  /* Effet bleu en arrière-plan : halo + 3 orbes animées */
-  .bg-effect {
+  /* HALO BLEU DOUX EN HAUT — bien marqué */
+  body::before {
+    content: '';
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70vh;
     z-index: 0;
     pointer-events: none;
-    overflow: hidden;
-    background: radial-gradient(80% 60% at 50% 0%, rgba(10, 132, 255, 0.35) 0%, transparent 60%);
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 0%, rgba(10, 132, 255, 0.55) 0%, rgba(10, 132, 255, 0.20) 35%, transparent 65%);
   }
 
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
+  /* Second halo plus large et plus diffus pour ajouter de la profondeur */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 0;
     pointer-events: none;
-    opacity: 0.70;
+    background:
+      radial-gradient(ellipse 120% 50% at 50% -10%, rgba(100, 210, 255, 0.18) 0%, transparent 60%);
   }
-  .orb-1 {
-    width: 480px; height: 480px;
-    top: -100px; left: -160px;
-    background: radial-gradient(circle, #0A84FF 0%, transparent 70%);
-    animation: float1 16s ease-in-out infinite;
-  }
-  .orb-2 {
-    width: 520px; height: 520px;
-    bottom: -180px; right: -180px;
-    background: radial-gradient(circle, #64D2FF 0%, transparent 70%);
-    animation: float2 20s ease-in-out infinite;
-  }
-  .orb-3 {
-    width: 380px; height: 380px;
-    top: 40%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(100, 210, 255, 0.50) 0%, transparent 70%);
-    animation: float3 24s ease-in-out infinite;
-  }
-  @keyframes float1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(80px, 60px) scale(1.1); }
-  }
-  @keyframes float2 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-60px, -80px) scale(0.95); }
-  }
-  @keyframes float3 {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-30%, -60%) scale(1.15); }
-  }
-
-  /* Le contenu au-dessus des orbes */
-  .container { position: relative; z-index: 1; }
 
   button, a { font-family: inherit; cursor: pointer; }
   a { text-decoration: none; color: inherit; }
 
   .container {
+    position: relative;
+    z-index: 1;
     max-width: 460px;
     min-height: 100vh;
     margin: 0 auto;
@@ -106,7 +85,7 @@
     justify-content: center;
     box-shadow:
       0 1px 0 0 rgba(255, 255, 255, 0.20) inset,
-      0 12px 40px rgba(10, 132, 255, 0.40);
+      0 12px 40px rgba(10, 132, 255, 0.50);
   }
   .logo svg {
     width: 60px;
@@ -187,13 +166,6 @@
 </style>
 </head>
 <body>
-
-<!-- Effet bleu en arrière-plan -->
-<div class="bg-effect">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
 
 <div class="container">
 

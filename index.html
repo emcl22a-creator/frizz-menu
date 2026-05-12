@@ -1584,6 +1584,316 @@
     color: var(--label-secondary);
   }
 
+  /* ═══ 🔥 NOUVEAU : Card Prochaine Réservation ════════════ */
+  .next-reservation-card {
+    margin: 14px 16px 0;
+    padding: 18px 20px;
+    background:
+      radial-gradient(ellipse 100% 70% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(10, 132, 255, 0.30);
+    border-radius: 18px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.10) inset,
+      0 8px 24px rgba(0, 0, 0, 0.20),
+      0 0 30px rgba(10, 132, 255, 0.12);
+    position: relative;
+    overflow: hidden;
+    animation: cascade-in 0.6s ease-out 0.05s backwards;
+  }
+  .next-reservation-card::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 20%; right: 20%; height: 60%;
+    background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .next-reservation-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .next-reservation-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(10, 132, 255, 0.30) 0%, rgba(10, 132, 255, 0.10) 100%);
+    border: 1px solid rgba(10, 132, 255, 0.40);
+    color: var(--blue, #0A84FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.30);
+  }
+  .next-reservation-icon svg { width: 22px; height: 22px; }
+  .next-reservation-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(10, 132, 255, 0.90);
+    margin-bottom: 3px;
+  }
+  .next-reservation-when {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    color: var(--label, #FFFFFF);
+    line-height: 1.2;
+  }
+  .next-reservation-body {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 1;
+  }
+  .next-resv-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    color: var(--label, #FFFFFF);
+    margin-bottom: 4px;
+  }
+  .next-resv-meta {
+    font-size: 14px;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    letter-spacing: -0.010em;
+  }
+  .next-resv-dot { margin: 0 6px; opacity: 0.4; }
+
+  /* ═══ 🔥 NOUVEAU : Anneau Apple Watch ════════════════════ */
+  .ring-card {
+    padding: 18px 16px 16px;
+    background: var(--bg-secondary, #1C1C1E);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 6px 18px rgba(0, 0, 0, 0.30);
+    text-align: center;
+    animation: cascade-in 0.6s ease-out 0.15s backwards;
+  }
+  .ring-card-header {
+    font-size: 12px;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    letter-spacing: -0.005em;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .ring-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 130px;
+    margin: 0 auto;
+  }
+  .ring-svg {
+    width: 100%; height: 100%;
+    transform: rotate(-90deg);
+  }
+  .ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 10;
+  }
+  .ring-fg {
+    fill: none;
+    stroke: url(#ringGradient);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.32, 0.72, 0.42, 1);
+    filter: drop-shadow(0 0 6px rgba(10, 132, 255, 0.50));
+  }
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+  .ring-percent {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--label, #FFFFFF);
+  }
+  .ring-percent-unit {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    margin-left: 1px;
+  }
+  .ring-label-sub {
+    font-size: 11px;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    letter-spacing: -0.005em;
+  }
+
+  /* ═══ 🔥 NOUVEAU : Card Tendance ═════════════════════════ */
+  .trend-card {
+    padding: 18px 16px 0;
+    background: var(--bg-secondary, #1C1C1E);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 6px 18px rgba(0, 0, 0, 0.30);
+    display: flex;
+    flex-direction: column;
+    animation: cascade-in 0.6s ease-out 0.2s backwards;
+    overflow: hidden;
+  }
+  .trend-header {
+    font-size: 12px;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    letter-spacing: -0.005em;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .trend-big {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .trend-arrow {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    color: #30D158;
+    transition: color 0.3s;
+  }
+  .trend-arrow.down { color: #FF453A; transform: scaleY(-1); display: inline-block; }
+  .trend-arrow.neutral { color: var(--label-secondary, rgba(235, 235, 245, 0.60)); }
+  .trend-percent {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--label, #FFFFFF);
+  }
+  .trend-sub {
+    font-size: 11px;
+    color: var(--label-secondary, rgba(235, 235, 245, 0.60));
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .trend-spark {
+    margin: 0 -16px -1px;
+    height: 36px;
+  }
+  .trend-spark-svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+
+  /* ═══ 🔥 NOUVEAU : Heatmap hebdomadaire ══════════════════ */
+  .heatmap-card {
+    margin: 14px 16px 0;
+    padding: 18px 20px 14px;
+    background: var(--bg-secondary, #1C1C1E);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 6px 18px rgba(0, 0, 0, 0.30);
+    animation: cascade-in 0.6s ease-out 0.35s backwards;
+  }
+  .heatmap-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .heatmap-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    color: var(--label, #FFFFFF);
+  }
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .heatmap-legend-label {
+    font-size: 10px;
+    color: var(--label-tertiary, rgba(235, 235, 245, 0.30));
+    margin: 0 2px;
+    letter-spacing: -0.005em;
+  }
+  .heatmap-legend-square {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    background: #0A84FF;
+  }
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .heatmap-col {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: rgba(10, 132, 255, 0.10);
+    transition: opacity 0.3s, transform 0.2s;
+    cursor: default;
+  }
+  .heatmap-cell:hover {
+    transform: scale(1.4);
+    z-index: 2;
+    position: relative;
+  }
+  .heatmap-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .heatmap-days span {
+    font-size: 10px;
+    color: var(--label-tertiary, rgba(235, 235, 245, 0.30));
+    text-align: center;
+    letter-spacing: -0.005em;
+  }
+
+  /* ═══ Gradient pour le ring (injecté dans SVG) ═══════════ */
+
+  /* ═══ Animation cascade pour entrée de la page ═══════════ */
+  @keyframes cascade-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page-stats .trio-card { animation: cascade-in 0.6s ease-out 0.1s backwards; }
+  .page-stats .duo { animation: cascade-in 0.6s ease-out 0.25s backwards; }
+  .page-stats .segmented { animation: cascade-in 0.6s ease-out 0.3s backwards; }
+  .page-stats .chart-card { animation: cascade-in 0.6s ease-out 0.32s backwards; }
+  .page-stats .section-header { animation: cascade-in 0.6s ease-out 0.40s backwards; }
+
+  /* ═══ Pulse subtil pour highlight l'attention ═══════════ */
+  @keyframes ring-pulse {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(10, 132, 255, 0.50)); }
+    50% { filter: drop-shadow(0 0 12px rgba(10, 132, 255, 0.80)); }
+  }
+
   /* ─── SEGMENTED CONTROL (iOS native) ─────────────────── */
   .segmented {
     margin: 14px 16px 0;
@@ -3604,6 +3914,27 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
+  <!-- ───── 🔥 NOUVEAU : Card "Prochaine réservation" ───── -->
+  <div class="next-reservation-card" id="nextReservationCard">
+    <div class="next-reservation-header">
+      <div class="next-reservation-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <div>
+        <div class="next-reservation-eyebrow">Prochaine réservation</div>
+        <div class="next-reservation-when" id="nextResvWhen">Aucune à venir</div>
+      </div>
+    </div>
+    <div class="next-reservation-body" id="nextResvBody" style="display:none">
+      <div class="next-resv-name" id="nextResvName">—</div>
+      <div class="next-resv-meta">
+        <span id="nextResvCovers">—</span>
+        <span class="next-resv-dot">·</span>
+        <span id="nextResvPhone">—</span>
+      </div>
+    </div>
+  </div>
+
   <div class="trio-card">
     <div class="trio-cell">
       <div class="trio-label">Aujourd'hui</div>
@@ -3621,6 +3952,49 @@
       <div class="trio-label">Mois</div>
       <div class="trio-value" id="trioMonth">0</div>
       <div class="trio-sub">Réservations</div>
+    </div>
+  </div>
+
+  <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
+  <div class="duo">
+    <div class="ring-card">
+      <div class="ring-card-header">Taux de remplissage</div>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120" class="ring-svg">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#64D2FF"/>
+              <stop offset="100%" stop-color="#0A84FF"/>
+            </linearGradient>
+          </defs>
+          <circle cx="60" cy="60" r="50" class="ring-bg"/>
+          <circle cx="60" cy="60" r="50" class="ring-fg" id="ringFg" style="stroke-dasharray:314.16;stroke-dashoffset:314.16"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-percent" id="ringPercent">0<span class="ring-percent-unit">%</span></div>
+          <div class="ring-label-sub">ce mois</div>
+        </div>
+      </div>
+    </div>
+    <div class="trend-card">
+      <div class="trend-header">vs mois dernier</div>
+      <div class="trend-big" id="trendBig">
+        <span class="trend-arrow" id="trendArrow">↑</span>
+        <span class="trend-percent" id="trendPercent">0%</span>
+      </div>
+      <div class="trend-sub" id="trendSub">aucune donnée précédente</div>
+      <div class="trend-spark">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="trend-spark-svg">
+          <path id="trendSparkPath" d="M0,20 L25,18 L50,15 L75,10 L100,5" fill="none" stroke="#30D158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="trendSparkArea" d="M0,20 L25,18 L50,15 L75,10 L100,5 L100,30 L0,30 Z" fill="url(#trendGradient)" opacity="0.3"/>
+          <defs>
+            <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#30D158"/>
+              <stop offset="100%" stop-color="#30D158" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
     </div>
   </div>
 
@@ -3654,6 +4028,27 @@
       <span class="chart-label">17</span>
       <span class="chart-label">20</span>
       <span class="chart-label">23</span>
+    </div>
+  </div>
+
+  <!-- ───── 🔥 NOUVEAU : Heatmap hebdomadaire ───── -->
+  <div class="heatmap-card">
+    <div class="heatmap-head">
+      <div class="heatmap-title">Activité de la semaine</div>
+      <div class="heatmap-legend">
+        <span class="heatmap-legend-label">Calme</span>
+        <span class="heatmap-legend-square" style="opacity:0.15"></span>
+        <span class="heatmap-legend-square" style="opacity:0.40"></span>
+        <span class="heatmap-legend-square" style="opacity:0.65"></span>
+        <span class="heatmap-legend-square" style="opacity:1"></span>
+        <span class="heatmap-legend-label">Pic</span>
+      </div>
+    </div>
+    <div class="heatmap-grid" id="heatmapGrid">
+      <!-- Rempli dynamiquement par JS -->
+    </div>
+    <div class="heatmap-days">
+      <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
     </div>
   </div>
 
@@ -4557,6 +4952,13 @@ function updateStats() {
       chartMeta.textContent = `Pic ${peakHour}h–${peakHour + 1}h`;
     }
   }
+
+  // ───── 🔥 NOUVEAUX WIDGETS ─────────────────────────────
+  updateNextReservation(validRdv);
+  updateFillingRing(validRdv);
+  updateTrend(validRdv);
+  updateHeatmap(validRdv);
+  // ────────────────────────────────────────────────────────
 
   // Sync inbox badge (tabbar + sidebar)
   const inboxCount = calls.length;
@@ -6099,6 +6501,206 @@ function renderChartWithData(data) {
     const h = total === 0 ? 0 : (v / max) * 100;
     const isPeak = total > 0 && v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;
+  }).join('');
+}
+
+// ═══ 🔥 WIDGET : Prochaine réservation ═══════════════════
+function updateNextReservation(validRdv) {
+  const whenEl = document.getElementById('nextResvWhen');
+  const bodyEl = document.getElementById('nextResvBody');
+  const nameEl = document.getElementById('nextResvName');
+  const coversEl = document.getElementById('nextResvCovers');
+  const phoneEl = document.getElementById('nextResvPhone');
+  if (!whenEl) return;
+
+  const now = new Date();
+  const future = (validRdv || [])
+    .filter(r => r.dateObj && r.dateObj.getTime() > now.getTime())
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+
+  if (future.length === 0) {
+    whenEl.textContent = 'Aucune à venir';
+    if (bodyEl) bodyEl.style.display = 'none';
+    return;
+  }
+
+  const next = future[0];
+  const d = next.dateObj;
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+  // "dans 2h" / "demain à 20h" / "vendredi 15 mai à 20h30"
+  const diffMs = d.getTime() - now.getTime();
+  const diffH = Math.round(diffMs / 3600000);
+  const diffMin = Math.round(diffMs / 60000);
+  const sameDay = d.toDateString() === now.toDateString();
+  const tmw = new Date(now); tmw.setDate(tmw.getDate() + 1);
+  const sameTmw = d.toDateString() === tmw.toDateString();
+  const hh = d.getHours();
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const timeStr = mm === '00' ? `${hh}h` : `${hh}h${mm}`;
+
+  let label;
+  if (diffMin < 60) label = `dans ${diffMin} min · ${timeStr}`;
+  else if (sameDay) label = `aujourd'hui à ${timeStr}`;
+  else if (sameTmw) label = `demain à ${timeStr}`;
+  else label = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} · ${timeStr}`;
+
+  whenEl.textContent = label;
+
+  if (bodyEl) bodyEl.style.display = '';
+  if (nameEl) nameEl.textContent = next.client_nom || next.nom || 'Client';
+  if (coversEl) {
+    const c = next.nb_couverts || next.couverts || next.covers;
+    coversEl.textContent = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
+  }
+  if (phoneEl) phoneEl.textContent = next.client_telephone || next.telephone || '';
+}
+
+// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage) ══
+function updateFillingRing(validRdv) {
+  const ringFg = document.getElementById('ringFg');
+  const percentEl = document.getElementById('ringPercent');
+  if (!ringFg || !percentEl) return;
+
+  // Calcul : nb résa ce mois / capacité estimée mensuelle
+  // Capacité estimée = 2 services/jour × 25 couverts × 28 jours = 1400 couverts/mois
+  // (très approximatif, à raffiner quand on a la capa réelle du resto)
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisMonth = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= firstDay.getTime() && r.dateObj.getTime() <= now.getTime());
+  const couversCeMois = thisMonth.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+
+  // Capacité du resto (depuis currentSalon ou défaut 25)
+  const capa = (currentSalon && currentSalon.capacite) ? currentSalon.capacite : 25;
+  const joursEcoules = now.getDate();
+  const capaJusquAujourdhui = capa * 2 * joursEcoules; // 2 services/jour
+  const taux = capaJusquAujourdhui > 0 ? Math.min(100, Math.round((couversCeMois / capaJusquAujourdhui) * 100)) : 0;
+
+  // Animation de l'anneau
+  const circumference = 314.16; // 2 × π × 50
+  const offset = circumference - (taux / 100) * circumference;
+  setTimeout(() => {
+    ringFg.style.strokeDashoffset = offset;
+  }, 100);
+
+  // Animation du compteur %
+  animatePercent(percentEl, taux);
+}
+
+function animatePercent(el, target) {
+  const duration = 1500;
+  const start = performance.now();
+  function tick(now) {
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(target * eased);
+    el.innerHTML = current + '<span class="ring-percent-unit">%</span>';
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ═══ 🔥 WIDGET : Tendance vs mois dernier ════════════════
+function updateTrend(validRdv) {
+  const arrowEl = document.getElementById('trendArrow');
+  const percentEl = document.getElementById('trendPercent');
+  const subEl = document.getElementById('trendSub');
+  const pathEl = document.getElementById('trendSparkPath');
+  const areaEl = document.getElementById('trendSparkArea');
+  if (!arrowEl || !percentEl) return;
+
+  const now = new Date();
+  const firstThis = new Date(now.getFullYear(), now.getMonth(), 1);
+  const firstLast = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+  // Sur la même portion du mois (pour comparer équitable)
+  const day = now.getDate();
+  const lastMonthCutoff = new Date(now.getFullYear(), now.getMonth() - 1, day);
+
+  const thisMonthCount = (validRdv || []).filter(r => r.dateObj && r.dateObj >= firstThis && r.dateObj <= now).length;
+  const lastMonthCount = (validRdv || []).filter(r => r.dateObj && r.dateObj >= firstLast && r.dateObj <= lastMonthCutoff).length;
+
+  let pct = 0;
+  let direction = 'neutral';
+  let sub = '—';
+
+  if (lastMonthCount === 0 && thisMonthCount === 0) {
+    sub = 'aucune donnée précédente';
+  } else if (lastMonthCount === 0) {
+    pct = 100;
+    direction = 'up';
+    sub = `${thisMonthCount} résa ce mois (rien le mois dernier)`;
+  } else {
+    pct = Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
+    if (pct > 0) direction = 'up';
+    else if (pct < 0) direction = 'down';
+    else direction = 'neutral';
+    sub = `${thisMonthCount} ce mois · ${lastMonthCount} mois dernier`;
+  }
+
+  arrowEl.className = 'trend-arrow ' + direction;
+  arrowEl.textContent = direction === 'down' ? '↑' : direction === 'up' ? '↑' : '→';
+  // (le CSS scaleY(-1) renverse l'arrow pour 'down')
+
+  percentEl.textContent = (pct >= 0 ? '+' : '') + pct + '%';
+  if (subEl) subEl.textContent = sub;
+
+  // Couleurs sparkline
+  if (pathEl && areaEl) {
+    const color = direction === 'down' ? '#FF453A' : direction === 'up' ? '#30D158' : '#8E8E93';
+    pathEl.setAttribute('stroke', color);
+    // Mise à jour gradient (changer le stop-color du gradient)
+    const grad = document.querySelector('#trendGradient stop:first-child');
+    if (grad) grad.setAttribute('stop-color', color);
+    const grad2 = document.querySelector('#trendGradient stop:last-child');
+    if (grad2) grad2.setAttribute('stop-color', color);
+    // Inverser le path si tendance baisse
+    if (direction === 'down') {
+      pathEl.setAttribute('d', 'M0,5 L25,8 L50,12 L75,18 L100,22');
+      areaEl.setAttribute('d', 'M0,5 L25,8 L50,12 L75,18 L100,22 L100,30 L0,30 Z');
+    } else {
+      pathEl.setAttribute('d', 'M0,20 L25,18 L50,15 L75,10 L100,5');
+      areaEl.setAttribute('d', 'M0,20 L25,18 L50,15 L75,10 L100,5 L100,30 L0,30 Z');
+    }
+  }
+}
+
+// ═══ 🔥 WIDGET : Heatmap hebdomadaire 7j × 6 créneaux ════
+function updateHeatmap(validRdv) {
+  const grid = document.getElementById('heatmapGrid');
+  if (!grid) return;
+
+  // 7 jours (lun→dim) × 6 créneaux (8-11, 11-14, 14-17, 17-20, 20-23, 23-2)
+  const matrix = Array.from({ length: 7 }, () => Array(6).fill(0));
+
+  // Compter les résas par (jour de semaine, créneau)
+  (validRdv || []).forEach(r => {
+    if (!r.dateObj) return;
+    let day = r.dateObj.getDay(); // 0=dim, 1=lun, ...
+    day = (day + 6) % 7; // convertir en 0=lun, 6=dim
+    const h = r.dateObj.getHours();
+    let slot;
+    if (h >= 8 && h < 11) slot = 0;
+    else if (h >= 11 && h < 14) slot = 1;
+    else if (h >= 14 && h < 17) slot = 2;
+    else if (h >= 17 && h < 20) slot = 3;
+    else if (h >= 20 && h < 23) slot = 4;
+    else slot = 5;
+    matrix[day][slot]++;
+  });
+
+  // Valeur max pour normaliser opacités
+  const max = Math.max(1, ...matrix.flat());
+
+  // Génère le HTML : 7 colonnes (jours) × 6 lignes (créneaux)
+  grid.innerHTML = matrix.map((dayCols, dayIdx) => {
+    const cells = dayCols.map((val, slotIdx) => {
+      const intensity = val === 0 ? 0.10 : Math.min(1, 0.15 + (val / max) * 0.85);
+      return `<div class="heatmap-cell" style="opacity:${intensity}" title="${val} résa"></div>`;
+    }).join('');
+    return `<div class="heatmap-col">${cells}</div>`;
   }).join('');
 }
 

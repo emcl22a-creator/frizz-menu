@@ -3157,63 +3157,84 @@
 
 <!-- ═══ DESKTOP SIDEBAR (visible ≥1024px) ════════════════ -->
 <!-- ═══ PAYWALL OVERLAY (plein écran si non abonné) ════ -->
-<div id="paywallOverlay" style="display: none; position: fixed; inset: 0; z-index: 9999; background: var(--bg); overflow-y: auto;">
-  <div style="max-width: 460px; margin: 0 auto; min-height: 100vh; padding: 40px 24px max(48px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+<div id="paywallOverlay" style="display: none; position: fixed; inset: 0; z-index: 9999; background: #000000; overflow-y: auto;">
 
-    <!-- Logo orange arrondi -->
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 72px; height: 72px; border-radius: 18px; margin-bottom: 28px; filter: drop-shadow(0 8px 24px rgba(10, 132, 255, 0.40));">
-      <defs>
-        <linearGradient id="pwGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#64D2FF"/>
-          <stop offset="100%" stop-color="#0066CC"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#pwGrad)"/>
-      <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
-    </svg>
+  <!-- Halo bleu doux en arrière-plan -->
+  <div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 90% 70% at 50% 0%, rgba(10, 132, 255, 0.45) 0%, rgba(10, 132, 255, 0.15) 35%, transparent 65%);"></div>
+  <div style="position: fixed; top: 0; left: 0; right: 0; height: 100vh; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 120% 50% at 50% -10%, rgba(100, 210, 255, 0.18) 0%, transparent 60%);"></div>
 
-    <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.030em; line-height: 1.15; text-align: center; margin-bottom: 12px; color: var(--label);">Activez Frizz Pro<br>pour commencer</h1>
+  <div style="position: relative; z-index: 1; max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 60px 28px max(40px, env(safe-area-inset-bottom)); display: flex; flex-direction: column;">
 
-    <p style="font-size: 15px; color: var(--label-secondary); text-align: center; line-height: 1.45; max-width: 360px; margin-bottom: 28px; letter-spacing: -0.012em;">
-      Abonnez-vous à Frizz Pro pour profiter de votre agent IA qui décroche à votre place et prend vos réservations 24h/24.
+    <!-- Logo Frizz grand format -->
+    <div style="width: 100px; height: 100px; margin: 0 auto 36px; border-radius: 24px; background: linear-gradient(180deg, #64D2FF 0%, #0066CC 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.20) inset, 0 12px 40px rgba(10, 132, 255, 0.50);">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));">
+        <path fill="white" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
+      </svg>
+    </div>
+
+    <!-- Titre -->
+    <h1 style="font-size: 36px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.05; text-align: center; margin-bottom: 18px; color: #FFFFFF;">
+      Activez Frizz Pro<br>pour commencer
+    </h1>
+
+    <!-- Sous-titre -->
+    <p style="font-size: 17px; color: rgba(235, 235, 245, 0.60); text-align: center; line-height: 1.45; letter-spacing: -0.015em; margin-bottom: 36px;">
+      Frizz décroche 24/7 et prend les réservations. Pour les restaurants qui ne veulent plus rater un seul client au téléphone.
     </p>
 
     <!-- Card prix -->
-    <div style="background: var(--bg-secondary); border: 0.5px solid var(--separator); border-radius: 18px; padding: 22px; width: 100%; max-width: 360px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);">
-      <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px;">
-        <span id="paywallPriceAmount" style="font-size: 38px; font-weight: 700; letter-spacing: -0.04em; color: var(--label);">69</span>
-        <span id="paywallPriceUnit" style="font-size: 15px; font-weight: 500; color: var(--label-secondary);">€/mois</span>
+    <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 20px; padding: 26px 22px; width: 100%; margin-bottom: 24px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.10) inset, 0 12px 40px rgba(0, 0, 0, 0.30);">
+
+      <!-- Prix -->
+      <div style="display: flex; align-items: baseline; justify-content: center; gap: 8px; margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <span id="paywallPriceAmount" style="font-size: 56px; font-weight: 700; letter-spacing: -0.045em; color: #FFFFFF; line-height: 1;">69</span>
+        <span id="paywallPriceUnit" style="font-size: 18px; font-weight: 500; color: rgba(235, 235, 245, 0.60);">€/mois</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px;">
-        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
-          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(10, 132, 255, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+
+      <!-- Features -->
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: #FFFFFF; letter-spacing: -0.010em;">
+          <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(10, 132, 255, 0.20); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 13px; height: 13px;" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          Réponse 24h/24, 7j/7
+          Agent IA disponible 24h/24
         </div>
-        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
-          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(10, 132, 255, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: #FFFFFF; letter-spacing: -0.010em;">
+          <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(10, 132, 255, 0.20); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 13px; height: 13px;" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          Réservations 24/7 par téléphone
+          Réservations illimitées
         </div>
-        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--label);">
-          <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(10, 132, 255, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 11px; height: 11px;"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: #FFFFFF; letter-spacing: -0.010em;">
+          <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(10, 132, 255, 0.20); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 13px; height: 13px;" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          Annulation libre, à tout moment
+          Numéro Frizz dédié inclus
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: #FFFFFF; letter-spacing: -0.010em;">
+          <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(10, 132, 255, 0.20); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="3.5" style="width: 13px; height: 13px;" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Annulation à tout moment
         </div>
       </div>
     </div>
 
-    <!-- CTA principal -->
-    <button id="paywallSubscribeBtn" onclick="onPaywallSubscribe()" style="width: 100%; max-width: 360px; padding: 16px 20px; background: var(--blue); color: white; font-size: 17px; font-weight: 600; letter-spacing: -0.018em; border-radius: 14px; box-shadow: 0 8px 20px rgba(10, 132, 255, 0.30); margin-bottom: 12px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);">
-      S'abonner maintenant
-    </button>
+    <!-- Bloc CTA en bas -->
+    <div style="margin-top: auto;">
+      <button id="paywallSubscribeBtn" onclick="onPaywallSubscribe()" style="width: 100%; padding: 17px; background: #0A84FF; color: white; font-size: 17px; font-weight: 600; letter-spacing: -0.018em; border-radius: 14px; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(10, 132, 255, 0.40); transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1);" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">
+        S'abonner maintenant
+      </button>
 
-    <button onclick="onPaywallLogout()" style="font-size: 14px; color: var(--label-secondary); padding: 8px 12px; background: none;">
-      Me déconnecter
-    </button>
+      <div style="text-align: center; font-size: 13px; color: rgba(235, 235, 245, 0.30); margin-top: 14px; letter-spacing: -0.005em;">
+        Sans engagement · Annulation à tout moment
+      </div>
+
+      <button onclick="onPaywallLogout()" style="margin: 24px auto 0; display: block; font-size: 14px; color: rgba(235, 235, 245, 0.45); padding: 8px 12px; background: none; border: none; cursor: pointer;">
+        Me déconnecter
+      </button>
+    </div>
+
   </div>
 </div>
 

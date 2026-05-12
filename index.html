@@ -3716,39 +3716,14 @@
   }
 
   /* ═══ 🔥 ANIMATIONS D'ENTRÉE DE PAGE ════════════════════════ */
-  /* Quand une page devient active, animation slide + fade */
+  /* Fade léger sur la page entière, pas de cascade qui crée du flicker */
   .page.active {
-    animation: pageEnter 0.45s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
+    animation: pageEnter 0.35s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
   }
   @keyframes pageEnter {
     from {
       opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Les enfants principaux apparaissent en cascade légère */
-  .page.active > * {
-    animation: pageChildEnter 0.55s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
-  }
-  .page.active > *:nth-child(1) { animation-delay: 0.05s; }
-  .page.active > *:nth-child(2) { animation-delay: 0.10s; }
-  .page.active > *:nth-child(3) { animation-delay: 0.15s; }
-  .page.active > *:nth-child(4) { animation-delay: 0.20s; }
-  .page.active > *:nth-child(5) { animation-delay: 0.25s; }
-  .page.active > *:nth-child(6) { animation-delay: 0.30s; }
-  .page.active > *:nth-child(7) { animation-delay: 0.35s; }
-  .page.active > *:nth-child(8) { animation-delay: 0.40s; }
-  .page.active > *:nth-child(9) { animation-delay: 0.45s; }
-  .page.active > *:nth-child(10) { animation-delay: 0.50s; }
-  @keyframes pageChildEnter {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
+      transform: translateY(6px);
     }
     to {
       opacity: 1;
@@ -3758,7 +3733,7 @@
 
   /* Respect des préférences accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .page.active, .page.active > * {
+    .page.active {
       animation: none !important;
     }
   }

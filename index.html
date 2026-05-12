@@ -448,6 +448,140 @@
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     backdrop-filter: blur(40px) saturate(200%);
   }
+
+  /* ─── WIZARD RENVOI D'APPEL ─── */
+  .wizard-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, rgba(40, 44, 56, 0.55) 0%, rgba(20, 24, 32, 0.65) 100%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1), border-color 0.18s, box-shadow 0.18s;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.20) inset,
+      0 6px 16px rgba(0, 0, 0, 0.24);
+    color: var(--label);
+  }
+  .wizard-option:hover {
+    border-color: rgba(10, 132, 255, 0.40);
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.24) inset,
+      0 8px 20px rgba(0, 0, 0, 0.32),
+      0 0 24px rgba(10, 132, 255, 0.14);
+  }
+  .wizard-option:active { transform: scale(0.99) translateY(0); }
+  .wizard-option-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(10, 132, 255, 0.12);
+    color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .wizard-option-info { flex: 1; min-width: 0; }
+  .wizard-option-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .wizard-option-desc {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .wizard-option-arrow {
+    width: 11px; height: 11px;
+    color: var(--label-tertiary);
+    flex-shrink: 0;
+  }
+
+  /* Étape instructions */
+  .wizard-step-instructions {
+    background: rgba(10, 132, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 0.5px solid rgba(10, 132, 255, 0.2);
+  }
+  .wizard-step-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .wizard-step-num {
+    width: 26px; height: 26px;
+    background: var(--blue);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(10, 132, 255, 0.30);
+  }
+  .wizard-step-title { font-weight: 600; margin-bottom: 4px; color: var(--label); font-size: 14px; }
+  .wizard-step-desc { color: var(--label-secondary); font-size: 13px; line-height: 1.45; }
+  .wizard-code-box {
+    background: rgba(10, 132, 255, 0.10);
+    border: 0.5px solid rgba(10, 132, 255, 0.30);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0A84FF;
+    text-align: center;
+    margin: 8px 0;
+    word-break: break-all;
+  }
+  .wizard-info-box {
+    background: rgba(0, 122, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.45;
+  }
+  .wizard-warning {
+    background: rgba(255, 159, 10, 0.08);
+    border: 0.5px solid rgba(255, 159, 10, 0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.45;
+  }
+  .wizard-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--label);
+    margin: 4px 0 8px;
+    letter-spacing: -0.022em;
+  }
+  .wizard-section-sub {
+    font-size: 14px;
+    color: var(--label-secondary);
+    margin-bottom: 16px;
+    line-height: 1.45;
+  }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
   input { font-family: inherit; color: inherit; }
 
@@ -3879,53 +4013,79 @@
     </div>
   </div>
 
-  <!-- Modale tutoriel renvoi d'appel -->
+  <!-- Modale wizard renvoi d'appel -->
   <div class="modal-backdrop" id="renvoiTutoBackdrop"></div>
-  <div class="modal-sheet" id="renvoiTutoSheet" style="bottom: 8px; max-width: 480px; max-height: 92vh; display: flex; flex-direction: column;">
+  <div class="modal-sheet" id="renvoiTutoSheet" style="bottom: 8px; max-width: 520px; max-height: 92vh; display: flex; flex-direction: column;">
     <div class="modal-header" style="padding: 18px 56px 14px 20px; flex-shrink: 0; position: relative;">
-      <div class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em; text-align: left; line-height: 1.2;">Faire sonner Frizz sur mon téléphone</div>
-      <button onclick="closeRenvoiTuto()" aria-label="Fermer" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.10); border: none; color: var(--label); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; -webkit-tap-highlight-color: transparent;" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.10)'">
+      <button id="renvoiBackBtn" onclick="renvoiWizardBack()" aria-label="Retour" style="display: none; position: absolute; top: 14px; left: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.10); border: none; color: var(--label); cursor: pointer; align-items: center; justify-content: center; transition: background 0.15s; -webkit-tap-highlight-color: transparent;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div id="renvoiTitle" class="modal-title" style="font-size: 22px; font-weight: 700; color: var(--label); letter-spacing: -0.02em; text-align: left; line-height: 1.2; padding-left: 0;">Activer Frizz sur votre téléphone</div>
+      <button onclick="closeRenvoiTuto()" aria-label="Fermer" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.10); border: none; color: var(--label); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; -webkit-tap-highlight-color: transparent;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div style="padding: 0 20px calc(20px + env(safe-area-inset-bottom)); color: var(--label); line-height: 1.5; overflow-y: auto; flex: 1;">
-      <p style="margin: 0 0 16px; color: var(--label-secondary); font-size: 14px;">Quand un client appelle votre restaurant, l'appel arrivera automatiquement chez Frizz qui répondra à votre place. Voici comment activer cette redirection sur votre téléphone fixe :</p>
 
-      <div style="background: rgba(10, 132, 255, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 0.5px solid rgba(10, 132, 255, 0.2);">
-        <div style="display: flex; gap: 12px; align-items: flex-start;">
-          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-          <div>
-            <div style="font-weight: 600; margin-bottom: 4px;">Prenez le téléphone du restaurant</div>
-            <div style="color: var(--label-secondary); font-size: 14px;">Sur le téléphone fixe que vos clients appellent habituellement.</div>
+    <div id="renvoiWizardBody" style="padding: 0 20px calc(20px + env(safe-area-inset-bottom)); color: var(--label); line-height: 1.5; overflow-y: auto; flex: 1;">
+
+      <!-- ÉTAPE 1 : Choix du type de téléphone -->
+      <div id="renvoi-step-1" class="renvoi-step">
+        <p style="margin: 0 0 18px; color: var(--label-secondary); font-size: 15px;">Frizz va décrocher à votre place. Pour ça, on doit rediriger vos appels vers son numéro. Première étape : quel téléphone utilisez-vous au restaurant ?</p>
+
+        <button class="wizard-option" onclick="renvoiPickPhone('mobile')">
+          <div class="wizard-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <div class="wizard-option-info">
+            <div class="wizard-option-title">Mobile (iPhone / Android)</div>
+            <div class="wizard-option-desc">Vous prenez les appels sur votre téléphone portable</div>
           </div>
-        </div>
+          <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="wizard-option" onclick="renvoiPickPhone('box')">
+          <div class="wizard-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/></svg></div>
+          <div class="wizard-option-info">
+            <div class="wizard-option-title">Fixe branché sur ma box Internet</div>
+            <div class="wizard-option-desc">Freebox, Livebox, Bbox, SFR Box… (le plus courant)</div>
+          </div>
+          <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="wizard-option" onclick="renvoiPickPhone('analog')">
+          <div class="wizard-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="wizard-option-info">
+            <div class="wizard-option-title">Fixe analogique (prise murale T)</div>
+            <div class="wizard-option-desc">Ancienne ligne France Télécom, sans box</div>
+          </div>
+          <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="wizard-option" onclick="renvoiPickPhone('pabx')">
+          <div class="wizard-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/><line x1="9" y1="15" x2="9.01" y2="15"/><line x1="15" y1="15" x2="15.01" y2="15"/></svg></div>
+          <div class="wizard-option-info">
+            <div class="wizard-option-title">Standard téléphonique pro (PABX)</div>
+            <div class="wizard-option-desc">Système avec plusieurs lignes / accueil</div>
+          </div>
+          <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="wizard-option" onclick="renvoiPickPhone('unknown')">
+          <div class="wizard-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="wizard-option-info">
+            <div class="wizard-option-title">Je ne sais pas</div>
+            <div class="wizard-option-desc">On va vous aider à identifier votre installation</div>
+          </div>
+          <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
 
-      <div style="background: rgba(10, 132, 255, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 0.5px solid rgba(10, 132, 255, 0.2);">
-        <div style="display: flex; gap: 12px; align-items: flex-start;">
-          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-          <div style="flex: 1;">
-            <div style="font-weight: 600; margin-bottom: 4px;">Tapez ce code exactement :</div>
-            <div style="background: rgba(10, 132, 255, 0.10); border: 0.5px solid rgba(10, 132, 255, 0.30); border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 18px; font-weight: 700; color: #0A84FF; text-align: center; margin-top: 6px;" id="renvoiCode">**21*0970123456#</div>
-            <div style="color: var(--label-secondary); font-size: 13px; margin-top: 6px;">Comme si vous composiez un numéro. Puis appuyez sur la touche d'appel (vert).</div>
-          </div>
-        </div>
+      <!-- ÉTAPE 2 : Sous-choix (opérateur mobile OU type de box) -->
+      <div id="renvoi-step-2" class="renvoi-step" style="display: none;">
+        <!-- Contenu généré dynamiquement -->
       </div>
 
-      <div style="background: rgba(10, 132, 255, 0.08); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; border: 0.5px solid rgba(10, 132, 255, 0.2);">
-        <div style="display: flex; gap: 12px; align-items: flex-start;">
-          <div style="width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-          <div>
-            <div style="font-weight: 600; margin-bottom: 4px;">Vous entendez un bip de confirmation</div>
-            <div style="color: var(--label-secondary); font-size: 14px;">C'est fait ! Tous les appels reçus seront maintenant pris par Frizz. Vos clients ne voient aucune différence.</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="background: rgba(0, 122, 255, 0.06); border-radius: 12px; padding: 12px 14px;">
-        <div style="font-size: 13px; color: var(--label-secondary);">
-          <strong style="color: var(--label);">Pour reprendre vos appels vous-même</strong> (par exemple le dimanche soir) : composez <code style="background: rgba(255, 255, 255, 0.10); padding: 2px 6px; border-radius: 4px;">##21#</code> sur le même téléphone.
-        </div>
+      <!-- ÉTAPE 3 : Instructions détaillées -->
+      <div id="renvoi-step-3" class="renvoi-step" style="display: none;">
+        <!-- Contenu généré dynamiquement -->
       </div>
     </div>
   </div>
@@ -6330,7 +6490,14 @@ function copyFrizzNumber() {
   });
 }
 
+function getFrizzNumberForWizard() {
+  const num = (currentSalon && currentSalon.numero_frizz) || '09 70 12 34 56';
+  return num.replace(/\s+/g, '');
+}
+
 function openRenvoiTuto() {
+  // Reset au step 1
+  renvoiShowStep(1);
   document.getElementById('renvoiTutoBackdrop').classList.add('open');
   document.getElementById('renvoiTutoSheet').classList.add('open');
 }
@@ -6340,9 +6507,350 @@ function closeRenvoiTuto() {
   document.getElementById('renvoiTutoSheet').classList.remove('open');
 }
 
-window.copyFrizzNumber = copyFrizzNumber;
+let _renvoiState = { phoneType: null, subChoice: null };
+
+function renvoiShowStep(n) {
+  document.querySelectorAll('.renvoi-step').forEach(el => el.style.display = 'none');
+  document.getElementById('renvoi-step-' + n).style.display = 'block';
+  // Back button visible si step > 1
+  document.getElementById('renvoiBackBtn').style.display = n > 1 ? 'flex' : 'none';
+  // Padding-left du titre si back visible
+  document.getElementById('renvoiTitle').style.paddingLeft = n > 1 ? '44px' : '0';
+  // Scroll en haut
+  document.getElementById('renvoiWizardBody').scrollTop = 0;
+}
+
+function renvoiWizardBack() {
+  // Toujours retour au step 1
+  _renvoiState = { phoneType: null, subChoice: null };
+  document.getElementById('renvoiTitle').textContent = 'Activer Frizz sur votre téléphone';
+  renvoiShowStep(1);
+}
+
+function renvoiPickPhone(type) {
+  _renvoiState.phoneType = type;
+
+  // Mobile et analogique → directement step 3 (instructions)
+  if (type === 'mobile' || type === 'analog') {
+    renvoiShowSubChoiceMobile(type);
+    return;
+  }
+
+  // Box → afficher choix de box
+  if (type === 'box') {
+    renvoiShowBoxChoice();
+    return;
+  }
+
+  // PABX → message direct
+  if (type === 'pabx') {
+    renvoiShowPabx();
+    return;
+  }
+
+  // Unknown → aide à identifier
+  if (type === 'unknown') {
+    renvoiShowUnknown();
+    return;
+  }
+}
+
+function renvoiShowSubChoiceMobile(type) {
+  // Step 2 : choix de l'opérateur (utile pour mobile uniquement)
+  if (type === 'analog') {
+    // Pas besoin d'opérateur pour analogique
+    renvoiShowInstructions('analog', null);
+    return;
+  }
+  const step2 = document.getElementById('renvoi-step-2');
+  step2.innerHTML = `
+    <div class="wizard-section-title">Quel opérateur mobile ?</div>
+    <p class="wizard-section-sub">Le code à taper est le même pour tous, mais certains opérateurs ont des particularités.</p>
+    <button class="wizard-option" onclick="renvoiShowInstructions('mobile', 'orange')">
+      <div class="wizard-option-icon" style="background: rgba(255, 121, 0, 0.15); color: #FF7900;">O</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Orange</div><div class="wizard-option-desc">y compris Sosh</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('mobile', 'sfr')">
+      <div class="wizard-option-icon" style="background: rgba(232, 0, 32, 0.15); color: #E80020;">S</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">SFR</div><div class="wizard-option-desc">y compris RED</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('mobile', 'free')">
+      <div class="wizard-option-icon" style="background: rgba(204, 0, 0, 0.15); color: #CC0000;">F</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Free Mobile</div><div class="wizard-option-desc"></div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('mobile', 'bouygues')">
+      <div class="wizard-option-icon" style="background: rgba(0, 150, 215, 0.15); color: #0096D7;">B</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Bouygues Telecom</div><div class="wizard-option-desc">y compris B&You</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('mobile', 'other')">
+      <div class="wizard-option-icon">?</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Autre opérateur</div><div class="wizard-option-desc">MVNO, étranger, etc.</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  `;
+  document.getElementById('renvoiTitle').textContent = 'Téléphone mobile';
+  renvoiShowStep(2);
+}
+
+function renvoiShowBoxChoice() {
+  const step2 = document.getElementById('renvoi-step-2');
+  step2.innerHTML = `
+    <div class="wizard-section-title">Quelle box Internet ?</div>
+    <p class="wizard-section-sub">Le renvoi se configure dans l'interface admin de votre box. Chaque opérateur a la sienne.</p>
+    <button class="wizard-option" onclick="renvoiShowInstructions('box', 'freebox')">
+      <div class="wizard-option-icon" style="background: rgba(204, 0, 0, 0.15); color: #CC0000;">F</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Freebox</div><div class="wizard-option-desc">Free</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('box', 'livebox')">
+      <div class="wizard-option-icon" style="background: rgba(255, 121, 0, 0.15); color: #FF7900;">L</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Livebox</div><div class="wizard-option-desc">Orange / Sosh</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('box', 'bbox')">
+      <div class="wizard-option-icon" style="background: rgba(0, 150, 215, 0.15); color: #0096D7;">B</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Bbox</div><div class="wizard-option-desc">Bouygues</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('box', 'sfrbox')">
+      <div class="wizard-option-icon" style="background: rgba(232, 0, 32, 0.15); color: #E80020;">S</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Box SFR</div><div class="wizard-option-desc">SFR / RED</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="wizard-option" onclick="renvoiShowInstructions('box', 'other')">
+      <div class="wizard-option-icon">?</div>
+      <div class="wizard-option-info"><div class="wizard-option-title">Autre box</div><div class="wizard-option-desc">Box pro, opérateur alternatif…</div></div>
+      <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  `;
+  document.getElementById('renvoiTitle').textContent = 'Téléphone sur box Internet';
+  renvoiShowStep(2);
+}
+
+function renvoiShowPabx() {
+  const step2 = document.getElementById('renvoi-step-2');
+  step2.innerHTML = `
+    <div class="wizard-section-title">Standard téléphonique professionnel</div>
+    <p class="wizard-section-sub">Les standards pro (PABX, IPBX) ont chacun leur propre interface de configuration. Le principe reste le même : activer un <strong>renvoi inconditionnel</strong> vers votre numéro Frizz.</p>
+
+    <div class="wizard-step-instructions">
+      <div class="wizard-step-row">
+        <div class="wizard-step-num">1</div>
+        <div>
+          <div class="wizard-step-title">Numéro Frizz à utiliser</div>
+          <div class="wizard-code-box">${getFrizzNumberForWizard()}</div>
+          <button onclick="copyFrizzNumber()" style="width: 100%; background: var(--blue); color: white; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; margin-top: 4px;">Copier le numéro</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-warning">
+      <strong style="color: var(--label);">⚙️ Configuration recommandée</strong><br/>
+      Dans votre interface PABX (3CX, Yealink, Alcatel, Avaya, etc.), cherchez :
+      <ul style="padding-left: 18px; margin: 6px 0;">
+        <li>"Call Forward" / "Renvoi d'appel"</li>
+        <li>"Unconditional" / "Inconditionnel" / "Toujours"</li>
+        <li>Saisir le numéro Frizz comme destination</li>
+      </ul>
+    </div>
+
+    <div class="wizard-info-box">
+      💬 <strong style="color: var(--label);">Besoin d'aide ?</strong> Écrivez-nous à <a href="mailto:contact.frizz.box@gmail.com" style="color: var(--blue); font-weight: 600;">contact.frizz.box@gmail.com</a> en précisant le modèle de votre standard, nous vous accompagnerons pour la configuration.
+    </div>
+  `;
+  document.getElementById('renvoiTitle').textContent = 'Standard pro';
+  renvoiShowStep(2);
+}
+
+function renvoiShowUnknown() {
+  const step2 = document.getElementById('renvoi-step-2');
+  step2.innerHTML = `
+    <div class="wizard-section-title">Identifions votre installation</div>
+    <p class="wizard-section-sub">Quelques questions pour trouver le bon tutoriel :</p>
+
+    <div class="wizard-step-instructions">
+      <div class="wizard-step-row">
+        <div class="wizard-step-num">1</div>
+        <div>
+          <div class="wizard-step-title">Votre téléphone tient dans la main ?</div>
+          <div class="wizard-step-desc">→ C'est un <strong>mobile</strong></div>
+          <button class="wizard-option" style="margin-top: 8px;" onclick="renvoiPickPhone('mobile')">
+            <div class="wizard-option-info"><div class="wizard-option-title">Oui, mobile</div></div>
+            <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-step-instructions">
+      <div class="wizard-step-row">
+        <div class="wizard-step-num">2</div>
+        <div>
+          <div class="wizard-step-title">Téléphone fixe ?</div>
+          <div class="wizard-step-desc">Regardez où il est branché :</div>
+          <button class="wizard-option" style="margin-top: 8px;" onclick="renvoiPickPhone('box')">
+            <div class="wizard-option-info"><div class="wizard-option-title">Sur une boîte avec lumières (box)</div><div class="wizard-option-desc">Freebox, Livebox, Bbox, SFR Box</div></div>
+            <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="wizard-option" style="margin-top: 6px;" onclick="renvoiPickPhone('analog')">
+            <div class="wizard-option-info"><div class="wizard-option-title">Sur une prise murale en T</div><div class="wizard-option-desc">Ancienne ligne France Télécom</div></div>
+            <svg class="wizard-option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-info-box">
+      💬 Toujours bloqué ? Écrivez-nous à <a href="mailto:contact.frizz.box@gmail.com" style="color: var(--blue); font-weight: 600;">contact.frizz.box@gmail.com</a> avec une photo de votre installation.
+    </div>
+  `;
+  document.getElementById('renvoiTitle').textContent = 'Identifier mon téléphone';
+  renvoiShowStep(2);
+}
+
+function renvoiShowInstructions(type, sub) {
+  _renvoiState.subChoice = sub;
+  const num = getFrizzNumberForWizard();
+  const code = `**21*${num}#`;
+  const step3 = document.getElementById('renvoi-step-3');
+
+  let title = '';
+  let intro = '';
+  let steps = [];
+
+  if (type === 'mobile') {
+    const opLabels = { orange: 'Orange', sfr: 'SFR', free: 'Free', bouygues: 'Bouygues', other: 'votre mobile' };
+    title = `Activer Frizz sur ${opLabels[sub] || 'votre mobile'}`;
+    intro = 'C\'est le cas le plus simple. Vous allez taper un code sur votre téléphone, puis lancer l\'appel comme si vous appeliez quelqu\'un.';
+    steps = [
+      { title: 'Ouvrez le clavier de téléphone', desc: 'Comme pour composer un numéro.' },
+      { title: 'Tapez ce code exactement :', code: code, desc: 'Les étoiles, le numéro, le dièse. Sans espace.' },
+      { title: 'Appuyez sur la touche d\'appel (verte)', desc: 'Comme si vous lanciez un appel normal.' },
+      { title: 'Un message confirme l\'activation', desc: '"Renvoi inconditionnel activé" ou similaire. C\'est fait !' }
+    ];
+  } else if (type === 'analog') {
+    title = 'Activer Frizz sur votre fixe analogique';
+    intro = 'Sur un téléphone classique branché sur la prise murale.';
+    steps = [
+      { title: 'Décrochez le combiné', desc: 'Comme pour passer un appel.' },
+      { title: 'Tapez ce code sur les touches :', code: code, desc: 'Les étoiles, le numéro, le dièse.' },
+      { title: 'Attendez le bip de confirmation', desc: 'Puis raccrochez. C\'est activé.' }
+    ];
+  } else if (type === 'box' && sub === 'freebox') {
+    title = 'Configurer le renvoi sur Freebox';
+    intro = 'Le renvoi se fait depuis l\'interface admin de votre Freebox.';
+    steps = [
+      { title: 'Allez sur l\'interface Freebox', desc: 'Depuis un appareil connecté au WiFi Freebox, ouvrez :', link: 'http://mafreebox.freebox.fr' },
+      { title: 'Connectez-vous', desc: 'Avec le mot de passe Freebox (au dos de la box ou dans votre espace abonné Free).' },
+      { title: 'Menu Téléphonie → Renvoi d\'appels', desc: 'Cliquez sur l\'icône téléphone, puis "Renvoi d\'appels".' },
+      { title: 'Activez le "Renvoi inconditionnel"', desc: 'Cochez la case et entrez le numéro Frizz :', code: num },
+      { title: 'Enregistrez', desc: 'C\'est fait. Tous les appels seront automatiquement transférés à Frizz.' }
+    ];
+  } else if (type === 'box' && sub === 'livebox') {
+    title = 'Configurer le renvoi sur Livebox';
+    intro = 'Depuis l\'interface admin de votre Livebox.';
+    steps = [
+      { title: 'Allez sur l\'interface Livebox', desc: 'Depuis un appareil connecté au WiFi Livebox, ouvrez :', link: 'http://livebox' },
+      { title: 'Connectez-vous', desc: 'Mot de passe au dos de la Livebox (clé de sécurité ou "mot de passe administrateur").' },
+      { title: 'Menu Téléphonie', desc: 'Cliquez sur "Téléphone" ou "Configuration avancée" → "Téléphonie".' },
+      { title: 'Trouvez "Transfert d\'appel"', desc: 'Choisissez "Transfert systématique" ou "Renvoi inconditionnel".' },
+      { title: 'Entrez le numéro Frizz et validez', desc: '', code: num }
+    ];
+  } else if (type === 'box' && sub === 'bbox') {
+    title = 'Configurer le renvoi sur Bbox';
+    intro = 'Depuis l\'interface admin de votre Bbox.';
+    steps = [
+      { title: 'Allez sur l\'interface Bbox', desc: 'Depuis un appareil connecté à votre Bbox :', link: 'http://mabbox.bytel.fr' },
+      { title: 'Connectez-vous', desc: 'Identifiants au dos de la Bbox.' },
+      { title: 'Menu "Téléphonie" → "Services"', desc: 'Trouvez la section "Renvoi d\'appel".' },
+      { title: 'Activez le renvoi inconditionnel', desc: 'Et saisissez le numéro Frizz :', code: num },
+      { title: 'Validez', desc: 'C\'est en place.' }
+    ];
+  } else if (type === 'box' && sub === 'sfrbox') {
+    title = 'Configurer le renvoi sur Box SFR';
+    intro = 'Le renvoi se configure depuis votre Espace Client SFR ou directement sur la box.';
+    steps = [
+      { title: 'Connectez-vous à votre Espace Client SFR', desc: 'Sur :', link: 'https://espace-client.sfr.fr' },
+      { title: 'Allez dans "Mon offre" → "Téléphonie fixe"', desc: 'Puis "Gestion de mes services".' },
+      { title: 'Activez le "Renvoi d\'appel inconditionnel"', desc: 'Avec le numéro Frizz :', code: num },
+      { title: 'Validez', desc: 'C\'est activé.' }
+    ];
+  } else if (type === 'box' && sub === 'other') {
+    title = 'Configurer le renvoi sur votre box';
+    intro = 'Chaque box a sa propre interface, mais le principe est le même.';
+    steps = [
+      { title: 'Trouvez l\'adresse admin de votre box', desc: 'Souvent au dos de la box, ou tapez "192.168.1.1" dans votre navigateur.' },
+      { title: 'Connectez-vous', desc: 'Identifiants généralement au dos de la box.' },
+      { title: 'Cherchez "Téléphonie" ou "Téléphone"', desc: 'Puis "Renvoi d\'appel" ou "Transfert d\'appel".' },
+      { title: 'Activez le renvoi inconditionnel', desc: 'Et saisissez le numéro Frizz :', code: num }
+    ];
+  }
+
+  let html = `
+    <div class="wizard-section-title">${title}</div>
+    <p class="wizard-section-sub">${intro}</p>
+  `;
+
+  steps.forEach((s, i) => {
+    html += `
+      <div class="wizard-step-instructions">
+        <div class="wizard-step-row">
+          <div class="wizard-step-num">${i + 1}</div>
+          <div style="flex: 1;">
+            <div class="wizard-step-title">${s.title}</div>
+            <div class="wizard-step-desc">${s.desc || ''}</div>
+            ${s.link ? `<a href="${s.link}" target="_blank" style="display: inline-block; margin-top: 6px; color: var(--blue); font-weight: 600; font-size: 13px; word-break: break-all;">${s.link}</a>` : ''}
+            ${s.code ? `<div class="wizard-code-box">${s.code}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  // Bouton copier le numéro (sauf mobile/analog où c'est dans le code complet)
+  if (type === 'box') {
+    html += `<button onclick="copyFrizzNumber()" style="width: 100%; background: var(--blue); color: white; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; margin: 8px 0 6px;">Copier le numéro Frizz</button>`;
+  }
+
+  // Désactivation
+  if (type === 'mobile' || type === 'analog') {
+    html += `
+      <div class="wizard-info-box">
+        <strong style="color: var(--label);">Pour reprendre les appels vous-même</strong><br/>
+        Tapez <code style="background: rgba(255, 255, 255, 0.10); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, monospace;">##21#</code> sur le même téléphone et lancez l'appel. Le renvoi se désactive.
+      </div>
+    `;
+  } else if (type === 'box') {
+    html += `
+      <div class="wizard-info-box">
+        <strong style="color: var(--label);">Pour reprendre les appels vous-même</strong><br/>
+        Retournez dans l'interface de votre box et décochez "Renvoi inconditionnel".
+      </div>
+    `;
+  }
+
+  // Aide si bloqué
+  html += `
+    <div class="wizard-warning">
+      <strong style="color: var(--label);">Bloqué ?</strong> Écrivez-nous à <a href="mailto:contact.frizz.box@gmail.com" style="color: var(--blue); font-weight: 600;">contact.frizz.box@gmail.com</a>, on vous aide.
+    </div>
+  `;
+
+  step3.innerHTML = html;
+  document.getElementById('renvoiTitle').textContent = title;
+  renvoiShowStep(3);
+}
+
 window.openRenvoiTuto = openRenvoiTuto;
 window.closeRenvoiTuto = closeRenvoiTuto;
+window.renvoiPickPhone = renvoiPickPhone;
+window.renvoiWizardBack = renvoiWizardBack;
+window.renvoiShowInstructions = renvoiShowInstructions;
+window.copyFrizzNumber = copyFrizzNumber;
 
 const _origNavigate = window.navigate;
 if (typeof _origNavigate === 'function') {

@@ -67,16 +67,16 @@
     position: relative;
   }
 
-  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (intense, dark mode) ─── */
+  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (subtil, dark mode) ─── */
   body::before {
     content: '';
     position: fixed;
     top: -150px;
     right: -120px;
-    width: 620px;
-    height: 620px;
+    width: 560px;
+    height: 560px;
     background:
-      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.55) 0%, rgba(10, 132, 255, 0.25) 35%, transparent 65%);
+      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.35) 0%, rgba(10, 132, 255, 0.16) 35%, transparent 65%);
     filter: blur(50px);
     pointer-events: none;
     z-index: 0;
@@ -88,10 +88,10 @@
     position: fixed;
     bottom: -180px;
     left: -150px;
-    width: 580px;
-    height: 580px;
+    width: 520px;
+    height: 520px;
     background:
-      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.48) 0%, rgba(0, 122, 204, 0.22) 35%, transparent 65%);
+      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.30) 0%, rgba(0, 122, 204, 0.14) 35%, transparent 65%);
     filter: blur(60px);
     pointer-events: none;
     z-index: 0;
@@ -102,12 +102,12 @@
   html::before {
     content: '';
     position: fixed;
-    top: 25%;
-    left: -100px;
-    width: 440px;
-    height: 440px;
+    top: 30%;
+    left: -80px;
+    width: 380px;
+    height: 380px;
     background:
-      radial-gradient(circle, rgba(100, 210, 255, 0.38) 0%, rgba(100, 210, 255, 0.16) 40%, transparent 70%);
+      radial-gradient(circle, rgba(100, 210, 255, 0.22) 0%, rgba(100, 210, 255, 0.10) 40%, transparent 70%);
     filter: blur(70px);
     pointer-events: none;
     z-index: 0;
@@ -117,17 +117,24 @@
   html::after {
     content: '';
     position: fixed;
-    top: 55%;
-    right: -120px;
-    width: 400px;
-    height: 400px;
+    top: 50%;
+    right: -100px;
+    width: 340px;
+    height: 340px;
     background:
-      radial-gradient(circle, rgba(125, 211, 252, 0.34) 0%, rgba(56, 189, 248, 0.16) 40%, transparent 70%);
+      radial-gradient(circle, rgba(125, 211, 252, 0.20) 0%, rgba(56, 189, 248, 0.10) 40%, transparent 70%);
     filter: blur(80px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
     animation: floatOrb4 30s ease-in-out infinite;
+  }
+
+  /* Point bleu central en haut de l'écran (extra glow) */
+  body {
+    background:
+      radial-gradient(circle 320px at 50% -40px, rgba(10, 132, 255, 0.50) 0%, rgba(10, 132, 255, 0.20) 40%, transparent 75%),
+      #000000;
   }
 
   /* Animations douces des orbes (mouvement organique) */
@@ -7108,15 +7115,38 @@ async function deleteCall(id) {
 function renderRecent() {
   const el = document.getElementById('recent-list');
   if (!el) return;
-  el.innerHTML = calls.slice(0, 6).map(c => `
-    <button class="cell" onclick="openDetail(${c.id})">
-      <div class="cell-main">
-        <div class="cell-title">${c.name}</div>
-        <div class="cell-subtitle">${c.time} · ${c.prestation}</div>
+
+  // Utilise les vraies réservations du jour depuis Supabase
+  const cache = (typeof resasCache !== 'undefined' && resasCache) ? resasCache : [];
+  const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const todayResv = cache
+    .filter(r => r.date_reservation === todayStr && r.statut !== 'annulee')
+    .sort((a, b) => (a.heure_reservation || '').localeCompare(b.heure_reservation || ''));
+
+  if (todayResv.length === 0) {
+    el.innerHTML = `
+      <div style="padding: 24px 20px; text-align: center; color: var(--label-secondary); font-size: 14px;">
+        Aucune réservation aujourd'hui
       </div>
-      <span class="pill ${c.criticity}">${cMap[c.criticity]}</span>
-      <svg class="cell-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>`).join('');
+    `;
+    return;
+  }
+
+  el.innerHTML = todayResv.map(r => {
+    const time = (r.heure_reservation || '').slice(0, 5);
+    const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
+    const c = r.nb_couverts || r.couverts;
+    const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
+    const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
+    return `
+      <div class="cell" style="cursor: default;">
+        <div class="cell-main">
+          <div class="cell-title">${name}</div>
+          <div class="cell-subtitle">${time} · ${meta}${phone ? ' · ' + phone : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 let currentFilter = 'all';
@@ -8679,6 +8709,7 @@ async function loadResas() {
   renderResas();
   updateResaSubtitle();
   updateTempsGagne();
+  renderRecent();
   if (typeof updateStats === 'function') updateStats();
 }
 

@@ -2131,10 +2131,10 @@
     display: block;
   }
 
-  /* ═══ 🔥 NOUVEAU : Heatmap hebdo (light) ═════════════════ */
+  /* ═══ Card Activité semaine (light) ═════════════════ */
   .heatmap-card {
     margin: 14px 16px 0;
-    padding: 18px 20px 14px;
+    padding: 0;
     background: rgba(255, 255, 255, 0.85);
     border: 0.5px solid rgba(0, 0, 0, 0.08);
     border-radius: 16px;
@@ -2142,7 +2142,6 @@
       0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
       0 4px 12px rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.06);
-    /* cascade retirée */
   }
   .heatmap-head {
     display: flex;
@@ -4387,6 +4386,84 @@
     color: var(--label-secondary);
     font-size: 15px;
   }
+  /* ═══ Mini graphique en barres - Activité de la semaine ═══ */
+  .weekbar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 12px;
+  }
+  .weekbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.018em;
+  }
+  .weekbar-total {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.010em;
+  }
+  .weekbar-chart {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    align-items: end;
+    padding: 0 18px;
+    height: 120px;
+  }
+  .weekbar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    position: relative;
+  }
+  .weekbar-bar {
+    width: 100%;
+    background: linear-gradient(180deg, #5AC8FA 0%, #007AFF 100%);
+    border-radius: 6px 6px 2px 2px;
+    min-height: 4px;
+    transition: height 0.6s cubic-bezier(0.32, 0.72, 0.42, 1);
+    box-shadow: 0 0 12px rgba(10, 132, 255, 0.30);
+  }
+  .weekbar-bar.today {
+    background: linear-gradient(180deg, #64D2FF 0%, #0A84FF 100%);
+    box-shadow: 0 0 16px rgba(10, 132, 255, 0.50);
+  }
+  .weekbar-bar.empty {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+  .weekbar-value {
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.010em;
+  }
+  .weekbar-value.zero { color: var(--label-tertiary); font-weight: 400; }
+  .weekbar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 8px 18px 16px;
+    text-align: center;
+  }
+  .weekbar-days span {
+    font-size: 11px;
+    color: var(--label-secondary);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .weekbar-days span.today {
+    color: var(--blue);
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
@@ -4947,21 +5024,14 @@
 
   <!-- ───── 🔥 NOUVEAU : Heatmap hebdomadaire ───── -->
   <div class="heatmap-card">
-    <div class="heatmap-head">
-      <div class="heatmap-title">Activité de la semaine</div>
-      <div class="heatmap-legend">
-        <span class="heatmap-legend-label">Calme</span>
-        <span class="heatmap-legend-square" style="opacity:0.15"></span>
-        <span class="heatmap-legend-square" style="opacity:0.40"></span>
-        <span class="heatmap-legend-square" style="opacity:0.65"></span>
-        <span class="heatmap-legend-square" style="opacity:1"></span>
-        <span class="heatmap-legend-label">Pic</span>
-      </div>
+    <div class="weekbar-head">
+      <div class="weekbar-title">Activité de la semaine</div>
+      <div class="weekbar-total" id="weekbarTotal">—</div>
     </div>
-    <div class="heatmap-grid" id="heatmapGrid">
+    <div class="weekbar-chart" id="weekbarChart">
       <!-- Rempli dynamiquement par JS -->
     </div>
-    <div class="heatmap-days">
+    <div class="weekbar-days">
       <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
     </div>
   </div>
@@ -7801,39 +7871,55 @@ function updateTrend(validRdv) {
 
 // ═══ 🔥 WIDGET : Heatmap hebdomadaire 7j × 6 créneaux ════
 function updateHeatmap(validRdv) {
-  const grid = document.getElementById('heatmapGrid');
-  if (!grid) return;
+  // Maintenant : graphique en barres par jour de la semaine
+  const chart = document.getElementById('weekbarChart');
+  const days = document.getElementById('weekbarTotal');
+  if (!chart) return;
 
-  // 7 jours (lun→dim) × 6 créneaux (8-11, 11-14, 14-17, 17-20, 20-23, 23-2)
-  const matrix = Array.from({ length: 7 }, () => Array(6).fill(0));
+  // Calculer le lundi de la semaine en cours
+  const now = new Date();
+  const dow = (now.getDay() + 6) % 7; // 0 = lundi
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow);
+  const nextMonday = new Date(monday); nextMonday.setDate(nextMonday.getDate() + 7);
+  const todayIdx = dow; // 0..6
 
-  // Compter les résas par (jour de semaine, créneau)
+  // 7 jours (lun→dim)
+  const counts = new Array(7).fill(0);
   (validRdv || []).forEach(r => {
     if (!r.dateObj) return;
+    if (r.dateObj < monday || r.dateObj >= nextMonday) return;
     let day = r.dateObj.getDay(); // 0=dim, 1=lun, ...
-    day = (day + 6) % 7; // convertir en 0=lun, 6=dim
-    const h = r.dateObj.getHours();
-    let slot;
-    if (h >= 8 && h < 11) slot = 0;
-    else if (h >= 11 && h < 14) slot = 1;
-    else if (h >= 14 && h < 17) slot = 2;
-    else if (h >= 17 && h < 20) slot = 3;
-    else if (h >= 20 && h < 23) slot = 4;
-    else slot = 5;
-    matrix[day][slot]++;
+    day = (day + 6) % 7; // 0=lun
+    counts[day]++;
   });
 
-  // Valeur max pour normaliser opacités
-  const max = Math.max(1, ...matrix.flat());
+  const max = Math.max(1, ...counts);
+  const total = counts.reduce((a, b) => a + b, 0);
 
-  // Génère le HTML : 7 colonnes (jours) × 6 lignes (créneaux)
-  grid.innerHTML = matrix.map((dayCols, dayIdx) => {
-    const cells = dayCols.map((val, slotIdx) => {
-      const intensity = val === 0 ? 0.10 : Math.min(1, 0.15 + (val / max) * 0.85);
-      return `<div class="heatmap-cell" style="opacity:${intensity}" title="${val} résa"></div>`;
-    }).join('');
-    return `<div class="heatmap-col">${cells}</div>`;
+  // Total affiché
+  const totalEl = document.getElementById('weekbarTotal');
+  if (totalEl) {
+    totalEl.textContent = total === 0
+      ? 'Aucune cette semaine'
+      : `${total} réservation${total > 1 ? 's' : ''} cette semaine`;
+  }
+
+  // Générer les barres
+  chart.innerHTML = counts.map((val, i) => {
+    const heightPct = val === 0 ? 0 : Math.max(8, (val / max) * 100);
+    const isToday = i === todayIdx;
+    const isEmpty = val === 0;
+    return `
+      <div class="weekbar-col">
+        <span class="weekbar-value${val === 0 ? ' zero' : ''}">${val}</span>
+        <div class="weekbar-bar${isToday ? ' today' : ''}${isEmpty ? ' empty' : ''}" style="height:${heightPct}%"></div>
+      </div>
+    `;
   }).join('');
+
+  // Mettre en surbrillance le label du jour actuel
+  const daysEl = document.querySelectorAll('.weekbar-days span');
+  daysEl.forEach((el, i) => el.classList.toggle('today', i === todayIdx));
 }
 
 renderRecent();

@@ -2,439 +2,254 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Configuration · Frizz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #000000;
-    --bg-secondary: #1C1C1E;
-    --label: #FFFFFF;
-    --label-secondary: rgba(235, 235, 245, 0.60);
-    --label-tertiary: rgba(235, 235, 245, 0.30);
-    --separator: rgba(84, 84, 88, 0.45);
-    --blue: #0A84FF;
-    --red: #FF453A;
-    --green: #30D158;
-  }
-  html, body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
-    background: #000000;
-    color: var(--label);
-    font-size: 17px;
-    line-height: 1.4;
-    letter-spacing: -0.022em;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    color-scheme: dark;
-    overflow-x: hidden;
-    position: relative;
-    padding-bottom: 110px;
-  }
-  body::before {
-    content: ''; position: fixed; top: -150px; right: -120px;
-    width: 520px; height: 520px;
-    background: radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.45) 0%, rgba(10, 132, 255, 0.22) 35%, transparent 65%);
-    filter: blur(60px); pointer-events: none; z-index: 0; border-radius: 50%;
-    animation: floatOrb1 18s ease-in-out infinite;
-  }
-  body::after {
-    content: ''; position: fixed; bottom: -180px; left: -150px;
-    width: 480px; height: 480px;
-    background: radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.40) 0%, rgba(0, 122, 204, 0.18) 35%, transparent 65%);
-    filter: blur(70px); pointer-events: none; z-index: 0; border-radius: 50%;
-    animation: floatOrb2 22s ease-in-out infinite;
-  }
-  html::before {
-    content: ''; position: fixed; top: 30%; left: -80px;
-    width: 360px; height: 360px;
-    background: radial-gradient(circle, rgba(100, 210, 255, 0.30) 0%, rgba(100, 210, 255, 0.12) 40%, transparent 70%);
-    filter: blur(80px); pointer-events: none; z-index: 0; border-radius: 50%;
-    animation: floatOrb3 26s ease-in-out infinite;
-  }
-  @keyframes floatOrb1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-30px,40px) scale(1.08);} }
-  @keyframes floatOrb2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,-30px) scale(1.10);} }
-  @keyframes floatOrb3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(50px,30px) scale(1.12);} }
-  @media (prefers-reduced-motion: reduce) { body::before, body::after, html::before { animation: none; } }
+:root {
+  --blue: #007AFF;
+  --blue-light: #5AC8FA;
+  --blue-dark: #0051D5;
+  --blue-bg: #E5F1FF;
+  --bg: #F2F2F7;
+  --bg-secondary: #FFFFFF;
+  --text: #1C1C1E;
+  --text-secondary: #6E6E73;
+  --text-tertiary: #AEAEB2;
+  --separator: #D1D1D6;
+  --green: #34C759;
+  --red: #FF3B30;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: -150px; right: -120px;
+  width: 520px; height: 520px;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 122, 255, 0.18) 0%, rgba(0, 122, 255, 0.09) 35%, transparent 65%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -180px; left: -150px;
+  width: 480px; height: 480px;
+  background: radial-gradient(circle at 70% 70%, rgba(0, 100, 200, 0.16) 0%, rgba(0, 100, 200, 0.07) 35%, transparent 65%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.container { position: relative; z-index: 1; }
 
-  button, a, input, select { font-family: inherit; color: inherit; }
-  button { border: none; background: none; cursor: pointer; padding: 0; }
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 20px 100px;
+}
 
-  /* ─── LAYOUT ─── */
-  .container {
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 24px 20px 0;
-    position: relative;
-    z-index: 1;
-  }
-  .top-bar {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 24px;
-  }
-  .logo {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    filter: drop-shadow(0 4px 12px rgba(10, 132, 255, 0.40));
-  }
-  .brand {
-    font-size: 18px; font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--label);
-  }
+/* ─── HEADER ─── */
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.logo {
+  width: 48px; height: 48px;
+  display: block;
+}
+.brand { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
 
-  /* ─── PROGRESS BAR ─── */
-  .progress {
-    display: flex; gap: 6px;
-    margin-bottom: 32px;
-  }
-  .progress-step {
-    flex: 1; height: 4px;
-    background: rgba(255, 255, 255, 0.10);
-    border-radius: 2px;
-    transition: background 0.3s;
-  }
-  .progress-step.active { background: var(--blue); box-shadow: 0 0 8px rgba(10, 132, 255, 0.50); }
-  .progress-step.done { background: var(--blue); }
+/* ─── PROGRESS ─── */
+.progress {
+  display: flex; gap: 8px; margin-bottom: 28px;
+}
+.progress-step {
+  flex: 1; height: 4px; background: var(--separator); border-radius: 2px;
+  transition: background .3s;
+}
+.progress-step.active { background: var(--blue); }
+.progress-step.done { background: var(--blue); }
 
-  /* ─── STEP ─── */
-  .step { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .step.active { display: block; }
-  @keyframes fadeIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+/* ─── STEPS ─── */
+.step { display: none; animation: fadeIn .3s; }
+.step.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .step-number {
-    font-size: 13px;
-    color: var(--blue);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 8px;
-  }
-  .step-title {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.030em;
-    line-height: 1.1;
-    margin-bottom: 8px;
-    color: var(--label);
-  }
-  .step-subtitle {
-    font-size: 15px;
-    color: var(--label-secondary);
-    line-height: 1.45;
-    margin-bottom: 28px;
-    letter-spacing: -0.012em;
-  }
+.step-number {
+  font-size: 13px; font-weight: 600; color: var(--blue);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+}
+.step-title {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.6px;
+  line-height: 1.2; margin-bottom: 8px;
+}
+.step-subtitle {
+  font-size: 15px; color: var(--text-secondary); margin-bottom: 28px;
+  line-height: 1.5;
+}
 
-  /* ─── FIELDS ─── */
-  .field { margin-bottom: 16px; }
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 0;
-  }
-  .field-row .field { margin-bottom: 16px; }
-  .field-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    margin-bottom: 6px;
-    letter-spacing: -0.005em;
-  }
-  .field-input, .field-select {
-    width: 100%;
-    background:
-      radial-gradient(ellipse 100% 100% at 50% -50%, rgba(255,255,255,0.10) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(50,54,64,0.60) 0%, rgba(28,32,40,0.70) 100%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
-    border: 0.5px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 16px;
-    color: var(--label);
-    outline: none;
-    letter-spacing: -0.018em;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.18) inset, 0 -1px 0 0 rgba(0,0,0,0.20) inset, 0 4px 12px rgba(0,0,0,0.24);
-    transition: border-color 0.18s, box-shadow 0.18s;
-  }
-  .field-input::placeholder { color: var(--label-tertiary); }
-  .field-input:focus, .field-select:focus {
-    border-color: var(--blue);
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.20) inset, 0 0 0 3px rgba(10,132,255,0.20), 0 4px 16px rgba(10,132,255,0.20);
-  }
-  .field-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(235,235,245,0.6)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 14px center; background-size: 14px; padding-right: 38px; }
-  .field-select option { background: #1C1C1E; color: white; }
-  .field-hint {
-    font-size: 12px;
-    color: var(--label-tertiary);
-    margin-top: 6px;
-    letter-spacing: -0.005em;
-  }
+/* ─── FORM ─── */
+.field { margin-bottom: 16px; }
+.field-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field-input, .field-select {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg-secondary); border: 1px solid var(--separator);
+  border-radius: 12px; font-size: 16px; font-family: inherit; color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+  -webkit-appearance: none; appearance: none;
+}
+.field-input:focus, .field-select:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(255,149,0,.12);
+}
+.field-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236E6E73' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  padding-right: 40px;
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+.field-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; }
 
-  /* ─── HORAIRES (day cards) ─── */
-  .day-card {
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255,255,255,0.10) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40,44,56,0.55) 0%, rgba(20,24,32,0.65) 100%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 0.5px solid rgba(255,255,255,0.14);
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.22) inset, 0 -1px 0 0 rgba(0,0,0,0.30) inset, 0 8px 24px rgba(0,0,0,0.30);
-    position: relative;
-    isolation: isolate;
-    transition: border-color 0.18s;
-  }
-  .day-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-    pointer-events: none; border-radius: inherit; z-index: -1;
-  }
-  .day-card.open { border-color: rgba(10, 132, 255, 0.30); }
+/* ─── HORAIRES ─── */
+.day-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.day-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0;
+}
+.day-name { font-size: 15px; font-weight: 600; }
+.day-toggle {
+  position: relative; width: 48px; height: 28px;
+  background: var(--separator); border-radius: 14px;
+  cursor: pointer; transition: background .2s; flex-shrink: 0;
+}
+.day-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 24px; height: 24px; background: white; border-radius: 50%;
+  transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.day-card.open .day-toggle { background: var(--blue); }
+.day-card.open .day-toggle::after { transform: translateX(20px); }
+.day-services { display: none; margin-top: 14px; }
+.day-card.open .day-services { display: block; }
+.service-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.service-row:last-child { margin-bottom: 0; }
+.service-checkbox {
+  width: 20px; height: 20px; border: 2px solid var(--separator);
+  border-radius: 6px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.service-checkbox.checked {
+  background: var(--blue); border-color: var(--blue);
+}
+.service-checkbox.checked::after {
+  content: '✓'; color: white; font-size: 13px; font-weight: 700;
+}
+.service-label { font-size: 14px; font-weight: 500; min-width: 50px; }
+.time-input {
+  flex: 1; padding: 8px 10px; font-size: 14px;
+  background: var(--bg); border: 1px solid var(--separator); border-radius: 8px;
+  font-family: inherit; min-width: 0;
+}
+.time-input:focus { outline: none; border-color: var(--blue); }
+.time-input:disabled { opacity: .4; }
+.time-arrow { color: var(--text-tertiary); font-size: 12px; flex-shrink: 0; }
 
-  .day-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .day-name {
-    font-size: 17px; font-weight: 600;
-    letter-spacing: -0.022em;
-    color: var(--label);
-  }
-  .day-toggle {
-    width: 44px; height: 26px;
-    background: rgba(255, 255, 255, 0.10);
-    border-radius: 13px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .day-toggle::after {
-    content: '';
-    position: absolute;
-    top: 2px; left: 2px;
-    width: 22px; height: 22px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 0.2s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.30);
-  }
-  .day-card.open .day-toggle {
-    background: var(--blue);
-  }
-  .day-card.open .day-toggle::after {
-    transform: translateX(18px);
-  }
+/* ─── RÉCAP ─── */
+.recap-card {
+  background: var(--bg-secondary); border: 1px solid var(--separator);
+  border-radius: 14px; padding: 18px; margin-bottom: 12px;
+}
+.recap-title {
+  font-size: 12px; font-weight: 600; color: var(--blue);
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
+}
+.recap-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 6px 0; gap: 12px;
+}
+.recap-key { font-size: 14px; color: var(--text-secondary); flex-shrink: 0; }
+.recap-value {
+  font-size: 14px; font-weight: 500; color: var(--text);
+  text-align: right; word-break: break-word;
+}
 
-  .day-services {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    opacity: 0.4;
-    pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  .day-card.open .day-services {
-    opacity: 1;
-    pointer-events: auto;
-  }
+/* ─── ACTIONS ─── */
+.actions {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 30%, var(--bg) 100%);
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex; gap: 10px; justify-content: center;
+}
+.actions-inner { width: 100%; max-width: 520px; display: flex; gap: 10px; }
+.btn {
+  flex: 1; padding: 16px;
+  border: none; border-radius: 14px; font-size: 16px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all .15s;
+}
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn-secondary {
+  background: var(--bg-secondary); color: var(--text);
+  border: 1px solid var(--separator);
+}
+.btn-secondary:hover { background: var(--separator); }
 
-  .service-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .service-checkbox {
-    width: 22px; height: 22px;
-    border-radius: 6px;
-    border: 1.5px solid rgba(255, 255, 255, 0.30);
-    background: transparent;
-    cursor: pointer;
-    flex-shrink: 0;
-    position: relative;
-    transition: all 0.18s;
-  }
-  .service-checkbox.checked {
-    background: var(--blue);
-    border-color: var(--blue);
-    box-shadow: 0 0 12px rgba(10, 132, 255, 0.40);
-  }
-  .service-checkbox.checked::after {
-    content: '';
-    position: absolute;
-    left: 6px; top: 2px;
-    width: 6px; height: 11px;
-    border: solid white;
-    border-width: 0 2.5px 2.5px 0;
-    transform: rotate(45deg);
-  }
-  .service-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--label);
-    width: 38px;
-    flex-shrink: 0;
-  }
-  .time-input {
-    background: rgba(255, 255, 255, 0.08);
-    border: 0.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 14px;
-    color: var(--label);
-    outline: none;
-    color-scheme: dark;
-    width: 90px;
-  }
-  .time-input:focus { border-color: var(--blue); }
-  .time-input:disabled { opacity: 0.4; }
-  .time-arrow {
-    font-size: 14px;
-    color: var(--label-tertiary);
-  }
+/* ─── LOADING ─── */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: white;
+  border-radius: 50%; animation: spin .6s linear infinite;
+  vertical-align: -3px; margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ─── RECAP ─── */
-  .recap-card {
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255,255,255,0.10) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40,44,56,0.55) 0%, rgba(20,24,32,0.65) 100%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 0.5px solid rgba(255,255,255,0.14);
-    border-radius: 14px;
-    padding: 18px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.22) inset, 0 -1px 0 0 rgba(0,0,0,0.30) inset, 0 8px 24px rgba(0,0,0,0.30);
-    position: relative;
-    isolation: isolate;
-  }
-  .recap-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-    pointer-events: none; border-radius: inherit; z-index: -1;
-  }
-  .recap-title {
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--blue);
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .recap-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0;
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
-    font-size: 14px;
-  }
-  .recap-row:last-child { border-bottom: none; }
-  .recap-key { color: var(--label-secondary); }
-  .recap-value { color: var(--label); font-weight: 500; }
-
-  /* ─── ACTIONS BAR (sticky bottom) ─── */
-  .actions {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background:
-      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(30, 34, 42, 0.85) 0%, rgba(12, 14, 18, 0.95) 100%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    backdrop-filter: blur(40px) saturate(200%);
-    border-top: 0.5px solid rgba(255, 255, 255, 0.10);
-    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
-    z-index: 100;
-  }
-  .actions-inner {
-    max-width: 520px;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-  }
-  .btn {
-    flex: 1;
-    padding: 15px 22px;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.018em;
-    cursor: pointer;
-    transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1), box-shadow 0.18s ease;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
-    color: white;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.25) inset, 0 6px 18px rgba(10,132,255,0.35), 0 2px 6px rgba(0,0,0,0.20);
-  }
-  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 1px 0 0 rgba(255,255,255,0.30) inset, 0 10px 26px rgba(10,132,255,0.50); }
-  .btn-primary:active:not(:disabled) { transform: scale(0.98); }
-  .btn-primary:disabled { opacity: 0.7; cursor: wait; }
-  .btn-secondary {
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255,255,255,0.10) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40,44,56,0.55) 0%, rgba(20,24,32,0.65) 100%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 0.5px solid rgba(255,255,255,0.14);
-    color: var(--label);
-  }
-  .btn-secondary:hover { transform: translateY(-1px); border-color: rgba(10, 132, 255, 0.40); }
-  .btn-secondary:active { transform: scale(0.98); }
-
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.30);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ─── TOAST ─── */
-  .toast {
-    position: fixed;
-    top: 24px; left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background: rgba(40, 44, 56, 0.92);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 0.5px solid rgba(255, 255, 255, 0.15);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 1000;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.40);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { background: rgba(255, 69, 58, 0.95); border-color: rgba(255, 69, 58, 0.40); }
-  .toast.success { background: rgba(48, 209, 88, 0.95); border-color: rgba(48, 209, 88, 0.40); }
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: white; padding: 12px 20px;
+  border-radius: 12px; font-size: 14px; font-weight: 500;
+  z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .2s;
+  max-width: 90%;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: var(--red); }
+.toast.success { background: var(--green); }
 </style>
 </head>
 <body>
 
-<div class="toast" id="toast"></div>
+<div id="toast" class="toast"></div>
 
 <div class="container">
-  <div class="top-bar">
-    <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#64D2FF"/>
-          <stop offset="100%" stop-color="#0066CC"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#grad)"/>
-      <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
-    </svg>
+  <div class="header">
+    <img src="https://i.ibb.co/J0QgS0Q/IMG-4003.png" alt="Frizz" class="logo"/>
     <div class="brand">Frizz</div>
   </div>
 
@@ -445,7 +260,7 @@
     <div class="progress-step" id="ps4"></div>
   </div>
 
-  <!-- ═══ ÉTAPE 1 ═══ -->
+  <!-- ═══ ÉTAPE 1 : VOS INFOS ═══ -->
   <div class="step active" id="step1">
     <div class="step-number">Étape 1 sur 4</div>
     <h1 class="step-title">Vos informations</h1>
@@ -473,7 +288,7 @@
     </div>
   </div>
 
-  <!-- ═══ ÉTAPE 2 ═══ -->
+  <!-- ═══ ÉTAPE 2 : VOTRE RESTAURANT ═══ -->
   <div class="step" id="step2">
     <div class="step-number">Étape 2 sur 4</div>
     <h1 class="step-title">Votre restaurant</h1>
@@ -536,7 +351,7 @@
     </div>
   </div>
 
-  <!-- ═══ ÉTAPE 3 ═══ -->
+  <!-- ═══ ÉTAPE 3 : HORAIRES ═══ -->
   <div class="step" id="step3">
     <div class="step-number">Étape 3 sur 4</div>
     <h1 class="step-title">Horaires de service</h1>
@@ -545,7 +360,7 @@
     <div id="days-container"></div>
   </div>
 
-  <!-- ═══ ÉTAPE 4 ═══ -->
+  <!-- ═══ ÉTAPE 4 : RÉCAP ═══ -->
   <div class="step" id="step4">
     <div class="step-number">Étape 4 sur 4</div>
     <h1 class="step-title" id="recap-greeting">Tout est prêt !</h1>
@@ -576,6 +391,7 @@
   </div>
 </div>
 
+<!-- ═══ NAVIGATION ═══ -->
 <div class="actions">
   <div class="actions-inner">
     <button class="btn btn-secondary" id="btn-prev" style="display:none">Précédent</button>
@@ -589,21 +405,24 @@ const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
 const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ─── ÉTAT ──────────────────────────────────────────
 let currentStep = 1;
 let salonId = null;
 let userId = null;
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-const JOURS_API = [1, 2, 3, 4, 5, 6, 0];
+const JOURS_API = [1, 2, 3, 4, 5, 6, 0]; // jour_semaine en DB
 
+// État des horaires : pour chaque jour, les services
 const horaires = JOURS.map((nom, i) => ({
   nom,
   jourApi: JOURS_API[i],
-  ouvert: i < 5,
+  ouvert: i < 5, // Lundi-Vendredi par défaut
   midi: { actif: i < 6, ouverture: '12:00', fermeture: '14:30' },
   soir: { actif: i < 6, ouverture: '19:00', fermeture: '22:30' }
 }));
 
+// ─── HELPERS ───────────────────────────────────────
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -613,15 +432,18 @@ function showToast(msg, type = '') {
 
 function val(id) { return document.getElementById(id).value.trim(); }
 
+// ─── INIT ──────────────────────────────────────────
 async function init() {
   const { data: { user } } = await supa.auth.getUser();
   if (!user) { window.location.href = 'login.html'; return; }
   userId = user.id;
 
+  // Récupérer le salon (déjà créé au signup)
   const { data: salons } = await supa.from('frizz_ai_salons')
     .select('*').eq('user_id', userId).limit(1);
   if (salons && salons.length) {
     salonId = salons[0].id;
+    // Pré-remplir si déjà saisi
     if (salons[0].patron_prenom) document.getElementById('patron_prenom').value = salons[0].patron_prenom;
     if (salons[0].patron_nom) document.getElementById('patron_nom').value = salons[0].patron_nom;
     if (salons[0].patron_telephone) document.getElementById('patron_telephone').value = salons[0].patron_telephone;
@@ -634,6 +456,7 @@ async function init() {
   renderHoraires();
 }
 
+// ─── HORAIRES UI ───────────────────────────────────
 function renderHoraires() {
   const container = document.getElementById('days-container');
   container.innerHTML = horaires.map((h, idx) => `
@@ -646,23 +469,23 @@ function renderHoraires() {
         <div class="service-row">
           <div class="service-checkbox ${h.midi.actif ? 'checked' : ''}" onclick="toggleService(${idx},'midi')"></div>
           <div class="service-label">Midi</div>
-          <input type="time" class="time-input" value="${h.midi.ouverture}"
-                 ${h.midi.actif ? '' : 'disabled'}
+          <input type="time" class="time-input" value="${h.midi.ouverture}" 
+                 ${h.midi.actif ? '' : 'disabled'} 
                  onchange="updateTime(${idx},'midi','ouverture',this.value)">
           <span class="time-arrow">→</span>
-          <input type="time" class="time-input" value="${h.midi.fermeture}"
-                 ${h.midi.actif ? '' : 'disabled'}
+          <input type="time" class="time-input" value="${h.midi.fermeture}" 
+                 ${h.midi.actif ? '' : 'disabled'} 
                  onchange="updateTime(${idx},'midi','fermeture',this.value)">
         </div>
         <div class="service-row">
           <div class="service-checkbox ${h.soir.actif ? 'checked' : ''}" onclick="toggleService(${idx},'soir')"></div>
           <div class="service-label">Soir</div>
-          <input type="time" class="time-input" value="${h.soir.ouverture}"
-                 ${h.soir.actif ? '' : 'disabled'}
+          <input type="time" class="time-input" value="${h.soir.ouverture}" 
+                 ${h.soir.actif ? '' : 'disabled'} 
                  onchange="updateTime(${idx},'soir','ouverture',this.value)">
           <span class="time-arrow">→</span>
-          <input type="time" class="time-input" value="${h.soir.fermeture}"
-                 ${h.soir.actif ? '' : 'disabled'}
+          <input type="time" class="time-input" value="${h.soir.fermeture}" 
+                 ${h.soir.actif ? '' : 'disabled'} 
                  onchange="updateTime(${idx},'soir','fermeture',this.value)">
         </div>
       </div>
@@ -685,11 +508,13 @@ window.toggleDay = toggleDay;
 window.toggleService = toggleService;
 window.updateTime = updateTime;
 
+// ─── NAVIGATION ────────────────────────────────────
 function goToStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById('step' + n).classList.add('active');
   currentStep = n;
 
+  // Progress bar
   for (let i = 1; i <= 4; i++) {
     const ps = document.getElementById('ps' + i);
     ps.classList.remove('active', 'done');
@@ -697,6 +522,7 @@ function goToStep(n) {
     else if (i === n) ps.classList.add('active');
   }
 
+  // Boutons
   document.getElementById('btn-prev').style.display = n === 1 ? 'none' : 'block';
   document.getElementById('btn-next').textContent = n === 4 ? 'Lancer mon Frizz' : 'Continuer';
 
@@ -704,6 +530,7 @@ function goToStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ─── VALIDATION ────────────────────────────────────
 function validateStep1() {
   const prenom = val('patron_prenom');
   const nom = val('patron_nom');
@@ -732,6 +559,7 @@ function validateStep3() {
   return true;
 }
 
+// ─── SAUVEGARDE ────────────────────────────────────
 async function saveStep1() {
   const payload = {
     patron_prenom: val('patron_prenom'),
@@ -765,7 +593,9 @@ async function saveStep2() {
   return true;
 }
 async function saveStep3() {
+  // Supprimer les horaires existants pour ce salon
   await supa.from('frizz_ai_horaires_service').delete().eq('salon_id', salonId);
+  // Insérer les nouveaux
   const inserts = [];
   for (const h of horaires) {
     if (!h.ouvert) continue;
@@ -789,6 +619,7 @@ async function saveStep3() {
   return true;
 }
 
+// ─── RÉCAP ─────────────────────────────────────────
 function renderRecap() {
   document.getElementById('recap-greeting').textContent = 'Tout est prêt, ' + val('patron_prenom') + ' !';
   document.getElementById('r-prenom').textContent = val('patron_prenom');
@@ -811,7 +642,7 @@ function renderRecap() {
   document.getElementById('r-resto-ticket').textContent = val('resto_ticket') + ' €';
 
   const horairesHtml = horaires.map(h => {
-    if (!h.ouvert) return `<div class="recap-row"><span class="recap-key">${h.nom}</span><span class="recap-value" style="color:var(--label-tertiary)">Fermé</span></div>`;
+    if (!h.ouvert) return `<div class="recap-row"><span class="recap-key">${h.nom}</span><span class="recap-value" style="color:var(--text-tertiary)">Fermé</span></div>`;
     const services = [];
     if (h.midi.actif) services.push(`Midi ${h.midi.ouverture}-${h.midi.fermeture}`);
     if (h.soir.actif) services.push(`Soir ${h.soir.ouverture}-${h.soir.fermeture}`);
@@ -820,6 +651,7 @@ function renderRecap() {
   document.getElementById('r-horaires').innerHTML = horairesHtml;
 }
 
+// ─── HANDLERS ──────────────────────────────────────
 document.getElementById('btn-next').addEventListener('click', async () => {
   const btn = document.getElementById('btn-next');
   const original = btn.textContent;
@@ -845,7 +677,7 @@ document.getElementById('btn-next').addEventListener('click', async () => {
       btn.innerHTML = '<span class="spinner"></span>Lancement…';
       const { error } = await supa.from('frizz_ai_salons').update({ onboarded: true }).eq('id', salonId);
       if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
-      showToast("C'est parti !", 'success');
+      showToast('C\'est parti !', 'success');
       setTimeout(() => window.location.href = 'index.html', 800);
     }
   } finally {
@@ -858,6 +690,7 @@ document.getElementById('btn-prev').addEventListener('click', () => {
   if (currentStep > 1) goToStep(currentStep - 1);
 });
 
+// ─── DÉMARRAGE ─────────────────────────────────────
 init();
 </script>
 

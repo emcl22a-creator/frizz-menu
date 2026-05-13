@@ -5019,8 +5019,7 @@
     <div class="resv-all-list" id="resvAllList"></div>
   </div>
 
-  <div class="section-header">Activité aujourd'hui</div>
-  <div class="group" id="recent-list"></div>
+  <div class="group" id="recent-list" style="display:none"></div>
 </div>
 
 <!-- ═══ RÉCEPTION ══════════════════════════════════════ -->
@@ -7616,24 +7615,25 @@ function updateNextReservation(validRdv) {
   if (!listEl) return;
 
   const now = new Date();
-  const future = (validRdv || [])
-    .filter(r => r.dateObj && r.dateObj.getTime() > now.getTime())
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+
+  // Toutes les résa du jour, triées par heure
+  const todayResv = (validRdv || [])
+    .filter(r => r.dateObj && r.dateObj.getTime() >= todayStart.getTime() && r.dateObj.getTime() < tomorrowStart.getTime())
     .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
 
-  if (future.length === 0) {
-    listEl.innerHTML = '<div class="next-resv-empty-msg">Aucune réservation à venir</div>';
+  if (todayResv.length === 0) {
+    listEl.innerHTML = '<div class="next-resv-empty-msg">Aucune réservation aujourd\'hui</div>';
     return;
   }
 
-  const top3 = future.slice(0, 3);
-  listEl.innerHTML = top3.map(r => {
+  listEl.innerHTML = todayResv.map(r => {
     const { dayLabel, hourStr } = _formatResvDayHour(r.dateObj, now);
     const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
     const c = r.nb_couverts || r.couverts;
     const tableLabel = c ? `Table de ${c}` : 'Réservation';
     const title = `${tableLabel} · ${name}`;
-    const isToday = dayLabel === 'Auj.';
-    const dayPrefix = isToday ? '' : `<span class="next-resv-row-end-day">${dayLabel}</span>`;
     return `
       <div class="next-resv-row">
         <div class="next-resv-row-body">
@@ -7642,7 +7642,7 @@ function updateNextReservation(validRdv) {
             <div class="next-resv-row-meta">Réservation confirmée par IA</div>
           </div>
           <div class="next-resv-row-end">
-            ${dayPrefix}${hourStr}
+            ${hourStr}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>

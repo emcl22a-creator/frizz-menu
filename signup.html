@@ -3,54 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#F2F2F7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="color-scheme" content="light">
 <title>Créer un compte · Frizz</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #000000;
-    --bg-secondary: #1C1C1E;
-    --label: #FFFFFF;
-    --label-secondary: rgba(235, 235, 245, 0.60);
-    --label-tertiary: rgba(235, 235, 245, 0.30);
-    --separator: rgba(84, 84, 88, 0.45);
-    --blue: #0A84FF;
-    --red: #FF453A;
-    --green: #30D158;
+    --bg: #F2F2F7;
+    --bg-secondary: #FFFFFF;
+    --label: #000000;
+    --label-secondary: rgba(60, 60, 67, 0.60);
+    --label-tertiary: rgba(60, 60, 67, 0.30);
+    --separator: rgba(60, 60, 67, 0.18);
+    --blue: #007AFF;
+    --red: #FF3B30;
+    --green: #34C759;
   }
   html, body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
-    background: #000000;
+    background: var(--bg);
     color: var(--label);
     font-size: 17px;
     line-height: 1.4;
     letter-spacing: -0.022em;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
-    color-scheme: dark;
+    color-scheme: light;
     overflow-x: hidden;
     position: relative;
   }
   body::before {
     content: ''; position: fixed; top: -150px; right: -120px;
     width: 520px; height: 520px;
-    background: radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.45) 0%, rgba(10, 132, 255, 0.22) 35%, transparent 65%);
+    background: radial-gradient(circle at 30% 30%, rgba(0, 122, 255, 0.18) 0%, rgba(0, 122, 255, 0.09) 35%, transparent 65%);
     filter: blur(60px); pointer-events: none; z-index: 0; border-radius: 50%;
     animation: floatOrb1 18s ease-in-out infinite;
   }
   body::after {
     content: ''; position: fixed; bottom: -180px; left: -150px;
     width: 480px; height: 480px;
-    background: radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.40) 0%, rgba(0, 122, 204, 0.18) 35%, transparent 65%);
+    background: radial-gradient(circle at 70% 70%, rgba(0, 100, 200, 0.16) 0%, rgba(0, 100, 200, 0.07) 35%, transparent 65%);
     filter: blur(70px); pointer-events: none; z-index: 0; border-radius: 50%;
     animation: floatOrb2 22s ease-in-out infinite;
   }
   html::before {
     content: ''; position: fixed; top: 30%; left: -80px;
     width: 360px; height: 360px;
-    background: radial-gradient(circle, rgba(100, 210, 255, 0.30) 0%, rgba(100, 210, 255, 0.12) 40%, transparent 70%);
+    background: radial-gradient(circle, rgba(100, 210, 255, 0.14) 0%, rgba(100, 210, 255, 0.06) 40%, transparent 70%);
     filter: blur(80px); pointer-events: none; z-index: 0; border-radius: 50%;
     animation: floatOrb3 26s ease-in-out infinite;
   }
@@ -115,26 +115,22 @@
   form { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards; }
 
   .form-group {
-    background:
-      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255,255,255,0.10) 0%, transparent 40%),
-      linear-gradient(180deg, rgba(40,44,56,0.55) 0%, rgba(20,24,32,0.65) 100%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 0.5px solid rgba(255,255,255,0.14);
+    background: rgba(255, 255, 255, 0.90);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
     border-radius: 14px;
     overflow: hidden;
     margin-bottom: 12px;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.22) inset, 0 -1px 0 0 rgba(0,0,0,0.30) inset, 0 8px 24px rgba(0,0,0,0.30);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.06);
     position: relative;
-    isolation: isolate;
   }
-  .form-group::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-    pointer-events: none; border-radius: inherit; z-index: -1;
-  }
+  .form-group::before { display: none; }
   .input-row { display: flex; align-items: center; padding: 0 16px; }
-  .input-row:not(:last-child) { border-bottom: 0.5px solid rgba(255,255,255,0.10); }
+  .input-row:not(:last-child) { border-bottom: 0.5px solid rgba(60, 60, 67, 0.12); }
   .input-row input {
     flex: 1;
     background: transparent;
@@ -156,20 +152,20 @@
 
   .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
+    background: #007AFF;
     color: white;
     padding: 16px 22px;
     border-radius: 14px;
     font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.018em;
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.25) inset, 0 8px 24px rgba(10,132,255,0.35), 0 2px 6px rgba(0,0,0,0.20);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.30), 0 2px 6px rgba(0, 0, 0, 0.04);
     transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1), box-shadow 0.18s ease;
     display: flex; align-items: center; justify-content: center; gap: 10px;
   }
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.30) inset, 0 12px 32px rgba(10,132,255,0.50), 0 2px 6px rgba(0,0,0,0.20);
+    box-shadow: 0 12px 32px rgba(0, 122, 255, 0.40), 0 2px 6px rgba(0, 0, 0, 0.04);
   }
   .submit-btn:active:not(:disabled) { transform: scale(0.98); }
   .submit-btn:disabled { opacity: 0.7; cursor: wait; }
@@ -200,9 +196,14 @@
   .benefits {
     margin: 18px 0 22px;
     padding: 14px 16px;
-    background: rgba(48, 209, 88, 0.08);
-    border: 0.5px solid rgba(48, 209, 88, 0.25);
+    background: rgba(255, 255, 255, 0.90);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
     border-radius: 12px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
+      0 4px 12px rgba(0, 0, 0, 0.04);
     animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s backwards;
   }
   .benefit-row {
@@ -230,11 +231,10 @@
     justify-content: center;
     gap: 10px;
     padding: 14px 12px;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-    -webkit-backdrop-filter: blur(12px) saturate(140%);
-    backdrop-filter: blur(12px) saturate(140%);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.90);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.08);
     border-radius: 14px;
     color: var(--label);
     font-family: inherit;
@@ -243,17 +243,15 @@
     text-align: left;
   }
   .country-btn:hover {
-    border-color: rgba(10, 132, 255, 0.30);
+    border-color: rgba(0, 122, 255, 0.40);
     transform: translateY(-1px);
   }
   .country-btn.country-active {
     border-color: var(--blue);
-    background:
-      linear-gradient(180deg, rgba(10,132,255,0.16) 0%, rgba(10,132,255,0.04) 100%);
+    background: rgba(0, 122, 255, 0.08);
     box-shadow:
-      0 1px 0 0 rgba(255,255,255,0.20) inset,
       0 0 0 1px var(--blue),
-      0 0 16px rgba(10,132,255,0.20);
+      0 0 16px rgba(0, 122, 255, 0.20);
   }
 </style>
 </head>
@@ -265,16 +263,7 @@
   </a>
 
   <div class="header">
-    <svg class="logo-mini" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="border-radius: 14px;">
-      <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#64D2FF"/>
-          <stop offset="100%" stop-color="#0066CC"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#grad)"/>
-      <path fill="white" transform="translate(4 4) scale(0.667)" d="M12 0 C12 8 12 10 14.5 11 C17 12 24 12 24 12 C24 12 17 12 14.5 13 C12 14 12 16 12 24 C12 16 12 14 9.5 13 C7 12 0 12 0 12 C0 12 7 12 9.5 11 C12 10 12 8 12 0 Z"/>
-    </svg>
+    <img class="logo-mini" src="https://i.ibb.co/J0QgS0Q/IMG-4003.png" alt="Frizz" style="width:88px;height:88px;display:block;margin:0 auto 20px;"/>
     <h1 class="title">Créer mon compte</h1>
     <p class="subtitle">Frizz décroche à votre place. 24h/24.</p>
   </div>

@@ -67,17 +67,17 @@
     position: relative;
   }
 
-  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (subtil, dark mode) ─── */
+  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (visible, dark mode) ─── */
   body::before {
     content: '';
     position: fixed;
     top: -150px;
     right: -120px;
-    width: 520px;
-    height: 520px;
+    width: 560px;
+    height: 560px;
     background:
-      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.22) 0%, rgba(10, 132, 255, 0.10) 35%, transparent 65%);
-    filter: blur(60px);
+      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.35) 0%, rgba(10, 132, 255, 0.16) 35%, transparent 65%);
+    filter: blur(50px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -88,11 +88,11 @@
     position: fixed;
     bottom: -180px;
     left: -150px;
-    width: 480px;
-    height: 480px;
+    width: 520px;
+    height: 520px;
     background:
-      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.18) 0%, rgba(0, 122, 204, 0.08) 35%, transparent 65%);
-    filter: blur(70px);
+      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.30) 0%, rgba(0, 122, 204, 0.14) 35%, transparent 65%);
+    filter: blur(60px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -104,11 +104,11 @@
     position: fixed;
     top: 30%;
     left: -80px;
-    width: 360px;
-    height: 360px;
+    width: 380px;
+    height: 380px;
     background:
-      radial-gradient(circle, rgba(100, 210, 255, 0.14) 0%, rgba(100, 210, 255, 0.06) 40%, transparent 70%);
-    filter: blur(80px);
+      radial-gradient(circle, rgba(100, 210, 255, 0.22) 0%, rgba(100, 210, 255, 0.10) 40%, transparent 70%);
+    filter: blur(70px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -119,11 +119,11 @@
     position: fixed;
     top: 50%;
     right: -100px;
-    width: 320px;
-    height: 320px;
+    width: 340px;
+    height: 340px;
     background:
-      radial-gradient(circle, rgba(125, 211, 252, 0.12) 0%, rgba(56, 189, 248, 0.06) 40%, transparent 70%);
-    filter: blur(90px);
+      radial-gradient(circle, rgba(125, 211, 252, 0.20) 0%, rgba(56, 189, 248, 0.10) 40%, transparent 70%);
+    filter: blur(80px);
     pointer-events: none;
     z-index: 0;
     border-radius: 50%;
@@ -4130,6 +4130,242 @@
       margin-right: 0 !important;
     }
   }
+  /* ═══ NOUVEAU : Card Prochaines Réservations (3 items) ════════════ */
+  .next-resvs-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 16px 18px 0;
+  }
+  .next-resvs-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.018em;
+  }
+  .next-resvs-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .next-resvs-more svg { width: 14px; height: 14px; }
+  .next-resvs-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0 18px 14px;
+  }
+  .next-resv-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+  }
+  .next-resv-row:first-child { border-top: none; padding-top: 4px; }
+  .next-resv-row-time {
+    flex-shrink: 0;
+    min-width: 64px;
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+  }
+  .next-resv-row-time-strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .next-resv-row-body { flex: 1; min-width: 0; }
+  .next-resv-row-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.018em;
+    line-height: 1.2;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .next-resv-row-meta {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.010em;
+  }
+  .next-resv-empty-msg {
+    text-align: center;
+    padding: 16px 0 4px;
+    font-size: 14px;
+    color: var(--label-secondary);
+  }
+
+  /* ═══ Popup Toutes les réservations ═════════════════════ */
+  .resv-all-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.60);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 9998;
+  }
+  .resv-all-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .resv-all-panel {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%) translateY(100%);
+    width: min(500px, 100vw);
+    max-height: 85vh;
+    background: rgba(28, 28, 30, 0.97);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.10);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 -16px 60px rgba(0, 0, 0, 0.50);
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    transition: transform 0.30s cubic-bezier(0.32, 0.72, 0.42, 1);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .resv-all-panel.show {
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (min-width: 600px) {
+    .resv-all-panel {
+      top: 50%;
+      bottom: auto;
+      transform: translate(-50%, -50%) scale(0.96);
+      opacity: 0;
+      max-height: 80vh;
+      border-radius: 18px;
+      border: 0.5px solid rgba(255, 255, 255, 0.10);
+      transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0.42, 1);
+    }
+    .resv-all-panel.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  .resv-all-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+  }
+  .resv-all-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.022em;
+  }
+  .resv-all-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.10);
+    color: var(--label);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .resv-all-close svg { width: 14px; height: 14px; }
+  .resv-all-filters {
+    display: flex;
+    gap: 6px;
+    padding: 14px 20px 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .resv-all-filter {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .resv-all-filter.active {
+    background: var(--blue);
+    color: white;
+  }
+  .resv-all-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 4px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .resv-all-row {
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .resv-all-row-time {
+    flex-shrink: 0;
+    text-align: center;
+    min-width: 56px;
+  }
+  .resv-all-row-time-day {
+    font-size: 11px;
+    color: var(--label-secondary);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .resv-all-row-time-hour {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.022em;
+  }
+  .resv-all-row-body { flex: 1; min-width: 0; }
+  .resv-all-row-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 2px;
+  }
+  .resv-all-row-meta {
+    font-size: 13px;
+    color: var(--label-secondary);
+  }
+  .resv-all-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--label-secondary);
+    font-size: 15px;
+  }
 </style>
 </head>
 <body>
@@ -4602,25 +4838,36 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <!-- ───── Card "Prochaine réservation" ───── -->
+  <!-- ───── Card "Prochaines réservations" (3 prochaines + popup) ───── -->
   <div class="next-reservation-card" id="nextReservationCard">
-    <div class="next-reservation-header">
-      <div class="next-reservation-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
-      </div>
-      <div>
-        <div class="next-reservation-eyebrow">Prochaine réservation</div>
-        <div class="next-reservation-when" id="nextResvWhen">Aucune à venir</div>
-      </div>
+    <div class="next-resvs-head">
+      <div class="next-resvs-title">Prochaines réservations</div>
+      <button class="next-resvs-more" onclick="openResvAllModal()" type="button">
+        Voir plus
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
-    <div class="next-reservation-body" id="nextResvBody" style="display:none">
-      <div class="next-resv-name" id="nextResvName">—</div>
-      <div class="next-resv-meta">
-        <span id="nextResvCovers">—</span>
-        <span class="next-resv-dot">·</span>
-        <span id="nextResvPhone">—</span>
-      </div>
+    <div class="next-resvs-list" id="nextResvsList">
+      <div class="next-resv-empty-msg">Aucune réservation à venir</div>
     </div>
+  </div>
+
+  <!-- ───── Popup "Toutes les réservations" ───── -->
+  <div class="resv-all-backdrop" id="resvAllBackdrop" onclick="closeResvAllModal()"></div>
+  <div class="resv-all-panel" id="resvAllPanel">
+    <div class="resv-all-head">
+      <div class="resv-all-title">Toutes les réservations</div>
+      <button class="resv-all-close" onclick="closeResvAllModal()" type="button" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="resv-all-filters">
+      <button class="resv-all-filter active" data-rfilter="today" onclick="setResvAllFilter('today')" type="button">Aujourd'hui</button>
+      <button class="resv-all-filter" data-rfilter="tomorrow" onclick="setResvAllFilter('tomorrow')" type="button">Demain</button>
+      <button class="resv-all-filter" data-rfilter="week" onclick="setResvAllFilter('week')" type="button">Semaine</button>
+      <button class="resv-all-filter" data-rfilter="month" onclick="setResvAllFilter('month')" type="button">Mois</button>
+    </div>
+    <div class="resv-all-list" id="resvAllList"></div>
   </div>
 
   <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
@@ -7251,13 +7498,25 @@ function renderChartWithData(data) {
 }
 
 // ═══ 🔥 WIDGET : Prochaine réservation ═══════════════════
+// Format date utility
+function _formatResvDayHour(d, now) {
+  const days = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
+  const sameDay = d.toDateString() === now.toDateString();
+  const tmw = new Date(now); tmw.setDate(tmw.getDate() + 1);
+  const sameTmw = d.toDateString() === tmw.toDateString();
+  const hh = d.getHours();
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const hourStr = mm === '00' ? `${hh}h` : `${hh}h${mm}`;
+  let dayLabel;
+  if (sameDay) dayLabel = "Auj.";
+  else if (sameTmw) dayLabel = "Demain";
+  else dayLabel = `${days[d.getDay()]} ${d.getDate()}`;
+  return { dayLabel, hourStr };
+}
+
 function updateNextReservation(validRdv) {
-  const whenEl = document.getElementById('nextResvWhen');
-  const bodyEl = document.getElementById('nextResvBody');
-  const nameEl = document.getElementById('nextResvName');
-  const coversEl = document.getElementById('nextResvCovers');
-  const phoneEl = document.getElementById('nextResvPhone');
-  if (!whenEl) return;
+  const listEl = document.getElementById('nextResvsList');
+  if (!listEl) return;
 
   const now = new Date();
   const future = (validRdv || [])
@@ -7265,40 +7524,118 @@ function updateNextReservation(validRdv) {
     .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
 
   if (future.length === 0) {
-    whenEl.textContent = 'Aucune à venir';
-    if (bodyEl) bodyEl.style.display = 'none';
+    listEl.innerHTML = '<div class="next-resv-empty-msg">Aucune réservation à venir</div>';
     return;
   }
 
-  const next = future[0];
-  const d = next.dateObj;
-  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-  const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  const top3 = future.slice(0, 3);
+  listEl.innerHTML = top3.map(r => {
+    const { dayLabel, hourStr } = _formatResvDayHour(r.dateObj, now);
+    const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
+    const c = r.nb_couverts || r.couverts;
+    const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
+    const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
+    return `
+      <div class="next-resv-row">
+        <div class="next-resv-row-time">
+          ${dayLabel}<span class="next-resv-row-time-strong">${hourStr}</span>
+        </div>
+        <div class="next-resv-row-body">
+          <div class="next-resv-row-name">${name}</div>
+          <div class="next-resv-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-  const diffMs = d.getTime() - now.getTime();
-  const diffMin = Math.round(diffMs / 60000);
-  const sameDay = d.toDateString() === now.toDateString();
-  const tmw = new Date(now); tmw.setDate(tmw.getDate() + 1);
-  const sameTmw = d.toDateString() === tmw.toDateString();
-  const hh = d.getHours();
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  const timeStr = mm === '00' ? `${hh}h` : `${hh}h${mm}`;
+// ═══ POPUP : Toutes les réservations avec filtres ════════════
+let _resvAllFilter = 'today';
+let _resvAllCache = [];
 
-  let label;
-  if (diffMin < 60) label = `dans ${diffMin} min · ${timeStr}`;
-  else if (sameDay) label = `aujourd'hui à ${timeStr}`;
-  else if (sameTmw) label = `demain à ${timeStr}`;
-  else label = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} · ${timeStr}`;
+function openResvAllModal() {
+  // Reconstituer la liste depuis resasCache (vraies résa Supabase)
+  _resvAllCache = (resasCache || [])
+    .filter(r => r.statut !== 'annulee' && r.date_reservation)
+    .map(r => {
+      const time = r.heure_reservation || '00:00:00';
+      return Object.assign({}, r, { _dateObj: new Date(`${r.date_reservation}T${time}`) });
+    })
+    .filter(r => !isNaN(r._dateObj.getTime()));
 
-  whenEl.textContent = label;
+  setResvAllFilter('today');
+  const bd = document.getElementById('resvAllBackdrop');
+  const panel = document.getElementById('resvAllPanel');
+  if (bd) bd.classList.add('show');
+  if (panel) panel.classList.add('show');
+}
 
-  if (bodyEl) bodyEl.style.display = '';
-  if (nameEl) nameEl.textContent = next.client_nom || next.nom || 'Client';
-  if (coversEl) {
-    const c = next.nb_couverts || next.couverts || next.covers;
-    coversEl.textContent = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
+function closeResvAllModal() {
+  const bd = document.getElementById('resvAllBackdrop');
+  const panel = document.getElementById('resvAllPanel');
+  if (bd) bd.classList.remove('show');
+  if (panel) panel.classList.remove('show');
+}
+
+function setResvAllFilter(filter) {
+  _resvAllFilter = filter;
+  document.querySelectorAll('.resv-all-filter').forEach(b => {
+    b.classList.toggle('active', b.dataset.rfilter === filter);
+  });
+  renderResvAllList();
+}
+
+function renderResvAllList() {
+  const listEl = document.getElementById('resvAllList');
+  if (!listEl) return;
+  const now = new Date();
+  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tmw0 = new Date(today0); tmw0.setDate(tmw0.getDate() + 1);
+  const day2 = new Date(today0); day2.setDate(day2.getDate() + 2);
+  const dow = (now.getDay() + 6) % 7;
+  const weekStart = new Date(today0); weekStart.setDate(weekStart.getDate() - dow);
+  const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 7);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  let filtered;
+  if (_resvAllFilter === 'today') {
+    filtered = _resvAllCache.filter(r => r._dateObj >= today0 && r._dateObj < tmw0);
+  } else if (_resvAllFilter === 'tomorrow') {
+    filtered = _resvAllCache.filter(r => r._dateObj >= tmw0 && r._dateObj < day2);
+  } else if (_resvAllFilter === 'week') {
+    filtered = _resvAllCache.filter(r => r._dateObj >= weekStart && r._dateObj < weekEnd);
+  } else if (_resvAllFilter === 'month') {
+    filtered = _resvAllCache.filter(r => r._dateObj >= monthStart && r._dateObj < monthEnd);
+  } else {
+    filtered = _resvAllCache;
   }
-  if (phoneEl) phoneEl.textContent = next.client_telephone || next.telephone || '';
+  filtered.sort((a, b) => a._dateObj.getTime() - b._dateObj.getTime());
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="resv-all-empty">Aucune réservation pour cette période</div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(r => {
+    const { dayLabel, hourStr } = _formatResvDayHour(r._dateObj, now);
+    const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
+    const c = r.nb_couverts || r.couverts;
+    const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
+    const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
+    return `
+      <div class="resv-all-row">
+        <div class="resv-all-row-time">
+          <div class="resv-all-row-time-day">${dayLabel}</div>
+          <div class="resv-all-row-time-hour">${hourStr}</div>
+        </div>
+        <div class="resv-all-row-body">
+          <div class="resv-all-row-name">${name}</div>
+          <div class="resv-all-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage du jour) ══

@@ -4473,7 +4473,7 @@
   body .next-reservation-card + .section-header {
     margin-top: 24px;
   }
-  /* ═══ Card Couverts (swipeable) ═══════════════ */
+  /* ═══ Card Couverts (swipeable Apple-style) ═══════════════ */
   .couverts-card {
     position: relative;
     overflow: hidden;
@@ -4481,20 +4481,31 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: pan-y;
+    padding: 0 !important;
   }
   .couverts-card.dragging { cursor: grabbing; }
+  .couverts-track {
+    display: flex;
+    width: 200%;
+    will-change: transform;
+    transform: translateX(0);
+  }
+  .couverts-track.snap {
+    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .couverts-page {
+    width: 50%;
+    flex-shrink: 0;
+    padding: 16px 16px 28px;
+    box-sizing: border-box;
+  }
   .couverts-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 14px 12px 12px;
-    min-height: 120px;
-    transition: opacity 0.18s, transform 0.18s;
-  }
-  .couverts-wrap.flip {
-    opacity: 0;
-    transform: scale(0.92);
+    padding: 10px 0 0;
+    min-height: 110px;
   }
   .couverts-value {
     font-size: 56px;
@@ -4511,7 +4522,7 @@
     letter-spacing: -0.010em;
     font-weight: 500;
   }
-  /* Indicateurs de pages (dots) */
+  /* Indicateurs de pages (dots Apple) */
   .couverts-dots {
     display: flex;
     gap: 6px;
@@ -4520,13 +4531,15 @@
     bottom: 10px;
     left: 0;
     right: 0;
+    z-index: 2;
   }
   .couverts-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.35);
-    transition: background 0.2s, width 0.2s;
+    transition: background 0.25s, width 0.25s;
+    cursor: pointer;
   }
   .couverts-dot.active {
     background: white;
@@ -5005,13 +5018,24 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <!-- ───── 🔥 Couverts aujourd'hui (swipeable) + Tendance ───── -->
+  <!-- ───── 🔥 Couverts (swipeable Apple-style) + Tendance ───── -->
   <div class="duo">
     <div class="ring-card couverts-card" id="couvertsCard">
-      <div class="ring-card-header" id="couvertsHeader">Couverts aujourd'hui</div>
-      <div class="couverts-wrap">
-        <div class="couverts-value" id="couvertsValue">0</div>
-        <div class="couverts-label">couverts prévus</div>
+      <div class="couverts-track" id="couvertsTrack">
+        <div class="couverts-page">
+          <div class="ring-card-header">Couverts aujourd'hui</div>
+          <div class="couverts-wrap">
+            <div class="couverts-value" id="couvertsValueToday">0</div>
+            <div class="couverts-label">couverts prévus</div>
+          </div>
+        </div>
+        <div class="couverts-page">
+          <div class="ring-card-header">Couverts demain</div>
+          <div class="couverts-wrap">
+            <div class="couverts-value" id="couvertsValueTomorrow">0</div>
+            <div class="couverts-label">couverts prévus</div>
+          </div>
+        </div>
       </div>
       <div class="couverts-dots">
         <span class="couverts-dot active" data-day="0"></span>
@@ -7812,128 +7836,163 @@ function renderResvAllList() {
   }).join('');
 }
 
-// ═══ 🔥 WIDGET : Couverts (swipeable Auj / Demain) ════════════
+// ═══ 🔥 WIDGET : Couverts (swipeable Apple-style) ════════════
 let _couvertsDay = 0; // 0 = aujourd'hui, 1 = demain
-let _couvertsValidRdv = []; // dernière liste connue (pour re-rendre lors du swipe)
+let _couvertsValidRdv = [];
 
 function updateFillingRing(validRdv) {
   _couvertsValidRdv = validRdv || [];
   renderCouvertsCard();
-  attachCouvertsSwipe(); // attach handlers (idempotent)
+  attachCouvertsSwipe();
 }
 
-function renderCouvertsCard() {
-  const valueEl = document.getElementById('couvertsValue');
-  const headerEl = document.getElementById('couvertsHeader');
-  const wrap = document.querySelector('.couverts-wrap');
-  if (!valueEl || !headerEl) return;
-
+function computeCouvertsForDay(dayOffset) {
   const now = new Date();
   const baseStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  baseStart.setDate(baseStart.getDate() + _couvertsDay);
+  baseStart.setDate(baseStart.getDate() + dayOffset);
   const endStart = new Date(baseStart); endStart.setDate(endStart.getDate() + 1);
-
   const dayResv = _couvertsValidRdv.filter(r =>
     r.dateObj && r.dateObj.getTime() >= baseStart.getTime() && r.dateObj.getTime() < endStart.getTime()
   );
-  const couverts = dayResv.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+  return dayResv.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+}
 
-  // Mettre à jour le titre selon le jour
-  headerEl.textContent = _couvertsDay === 0 ? "Couverts aujourd'hui" : "Couverts demain";
+function renderCouvertsCard() {
+  const todayEl = document.getElementById('couvertsValueToday');
+  const tomorrowEl = document.getElementById('couvertsValueTomorrow');
+  if (!todayEl || !tomorrowEl) return;
 
-  // Mettre à jour les dots
+  const todayCount = computeCouvertsForDay(0);
+  const tomorrowCount = computeCouvertsForDay(1);
+
+  animateCouvertsCount(todayEl, todayCount);
+  animateCouvertsCount(tomorrowEl, tomorrowCount);
+
+  // Position initiale du track selon _couvertsDay
+  const track = document.getElementById('couvertsTrack');
+  if (track) {
+    track.classList.add('snap');
+    track.style.transform = `translateX(${-_couvertsDay * 50}%)`;
+  }
+
+  updateDots();
+}
+
+function updateDots() {
   document.querySelectorAll('.couverts-dot').forEach((d, i) => {
     d.classList.toggle('active', i === _couvertsDay);
   });
-
-  // Petite animation de transition (flip)
-  if (wrap) {
-    wrap.classList.add('flip');
-    setTimeout(() => {
-      animateCouvertsCount(valueEl, couverts);
-      wrap.classList.remove('flip');
-    }, 150);
-  } else {
-    animateCouvertsCount(valueEl, couverts);
-  }
 }
 
 function setCouvertsDay(day) {
   if (day < 0 || day > 1) return;
-  if (day === _couvertsDay) return;
   _couvertsDay = day;
-  renderCouvertsCard();
+  const track = document.getElementById('couvertsTrack');
+  if (track) {
+    track.classList.add('snap');
+    track.style.transform = `translateX(${-_couvertsDay * 50}%)`;
+  }
+  updateDots();
 }
 
 let _couvertsHandlersAttached = false;
 function attachCouvertsSwipe() {
   if (_couvertsHandlersAttached) return;
   const card = document.getElementById('couvertsCard');
-  if (!card) return;
+  const track = document.getElementById('couvertsTrack');
+  if (!card || !track) return;
   _couvertsHandlersAttached = true;
 
-  let startX = 0, deltaX = 0, dragging = false;
+  let startX = 0, startY = 0, deltaX = 0;
+  let dragging = false;
+  let isHorizontal = null;
+  let cardWidth = 0;
 
-  // Touch (mobile)
-  card.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
+  function onStart(clientX, clientY) {
+    startX = clientX;
+    startY = clientY;
     deltaX = 0;
     dragging = true;
+    isHorizontal = null;
+    cardWidth = card.offsetWidth;
     card.classList.add('dragging');
-  }, { passive: true });
-  card.addEventListener('touchmove', (e) => {
+    track.classList.remove('snap'); // suivre le doigt sans animation
+  }
+
+  function onMove(clientX, clientY) {
     if (!dragging) return;
-    deltaX = e.touches[0].clientX - startX;
-  }, { passive: true });
-  card.addEventListener('touchend', () => {
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+    // Détecter direction au premier mouvement significatif
+    if (isHorizontal === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+      isHorizontal = Math.abs(dx) > Math.abs(dy);
+    }
+    if (!isHorizontal) return;
+    deltaX = dx;
+    // Résistance aux bords (effet Apple : ralentit quand on dépasse)
+    let effectiveDx = deltaX;
+    if (_couvertsDay === 0 && deltaX > 0) effectiveDx = deltaX * 0.3; // bord gauche
+    if (_couvertsDay === 1 && deltaX < 0) effectiveDx = deltaX * 0.3; // bord droit
+    const basePct = -_couvertsDay * 50;
+    const dragPct = (effectiveDx / cardWidth) * 50;
+    track.style.transform = `translateX(${basePct + dragPct}%)`;
+  }
+
+  function onEnd() {
     if (!dragging) return;
     dragging = false;
     card.classList.remove('dragging');
-    handleSwipeEnd(deltaX);
-  });
+    track.classList.add('snap');
+
+    if (!isHorizontal) {
+      // Pas un swipe horizontal, ne rien faire
+      track.style.transform = `translateX(${-_couvertsDay * 50}%)`;
+      return;
+    }
+
+    const THRESHOLD = cardWidth * 0.20; // 20% de la largeur = changement de page
+    if (deltaX < -THRESHOLD && _couvertsDay < 1) {
+      setCouvertsDay(_couvertsDay + 1);
+    } else if (deltaX > THRESHOLD && _couvertsDay > 0) {
+      setCouvertsDay(_couvertsDay - 1);
+    } else {
+      // Revenir à la page actuelle
+      track.style.transform = `translateX(${-_couvertsDay * 50}%)`;
+    }
+  }
+
+  // Touch (mobile)
+  card.addEventListener('touchstart', (e) => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  card.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  card.addEventListener('touchend', onEnd);
+  card.addEventListener('touchcancel', onEnd);
 
   // Souris (desktop)
   card.addEventListener('mousedown', (e) => {
-    startX = e.clientX;
-    deltaX = 0;
-    dragging = true;
-    card.classList.add('dragging');
+    onStart(e.clientX, e.clientY);
     e.preventDefault();
   });
-  window.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    deltaX = e.clientX - startX;
-  });
-  window.addEventListener('mouseup', () => {
-    if (!dragging) return;
-    dragging = false;
-    card.classList.remove('dragging');
-    handleSwipeEnd(deltaX);
-  });
+  window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', onEnd);
 
   // Clic sur les dots
   document.querySelectorAll('.couverts-dot').forEach((d, i) => {
-    d.addEventListener('click', () => setCouvertsDay(i));
+    d.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setCouvertsDay(i);
+    });
   });
-
-  function handleSwipeEnd(dx) {
-    const THRESHOLD = 40;
-    if (dx < -THRESHOLD) {
-      setCouvertsDay(_couvertsDay + 1); // swipe gauche → page suivante
-    } else if (dx > THRESHOLD) {
-      setCouvertsDay(_couvertsDay - 1); // swipe droite → page précédente
-    }
-  }
 }
 
 function animateCouvertsCount(el, target) {
-  const duration = 800;
+  const current = parseInt(el.textContent || '0', 10);
+  if (current === target) return;
+  const duration = 600;
   const start = performance.now();
   function tick(now) {
     const progress = Math.min(1, (now - start) / duration);
     const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(target * eased);
-    el.textContent = current;
+    el.textContent = Math.round(current + (target - current) * eased);
     if (progress < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);

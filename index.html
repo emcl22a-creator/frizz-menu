@@ -4407,7 +4407,7 @@
         </svg>
         <div class="ring-center">
           <div class="ring-percent" id="ringPercent">0<span class="ring-percent-unit">%</span></div>
-          <div class="ring-label-sub">ce mois</div>
+          <div class="ring-label-sub">cette semaine</div>
         </div>
       </div>
     </div>
@@ -6997,25 +6997,27 @@ function updateNextReservation(validRdv) {
   if (phoneEl) phoneEl.textContent = next.client_telephone || next.telephone || '';
 }
 
-// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage) ══
+// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage semaine) ══
 function updateFillingRing(validRdv) {
   const ringFg = document.getElementById('ringFg');
   const percentEl = document.getElementById('ringPercent');
   if (!ringFg || !percentEl) return;
 
-  // Calcul : nb résa ce mois / capacité estimée mensuelle
-  // Capacité estimée = 2 services/jour × 25 couverts × 28 jours = 1400 couverts/mois
-  // (très approximatif, à raffiner quand on a la capa réelle du resto)
+  // Calcul : nb couverts cette semaine / capacité de la semaine
+  // Semaine = lundi à aujourd'hui (inclus)
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const thisMonth = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= firstDay.getTime() && r.dateObj.getTime() <= now.getTime());
-  const couversCeMois = thisMonth.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+  const dayOfWeek = now.getDay(); // 0=dim, 1=lun, ..., 6=sam
+  const daysSinceMonday = (dayOfWeek + 6) % 7; // distance depuis lundi
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
+
+  const thisWeek = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= monday.getTime() && r.dateObj.getTime() <= now.getTime());
+  const couversCetteSemaine = thisWeek.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
 
   // Capacité du resto (depuis currentSalon ou défaut 25)
   const capa = (currentSalon && currentSalon.capacite) ? currentSalon.capacite : 25;
-  const joursEcoules = now.getDate();
-  const capaJusquAujourdhui = capa * 2 * joursEcoules; // 2 services/jour
-  const taux = capaJusquAujourdhui > 0 ? Math.min(100, Math.round((couversCeMois / capaJusquAujourdhui) * 100)) : 0;
+  const joursEcoulesSemaine = daysSinceMonday + 1; // du lundi à aujourd'hui inclus
+  const capaSemaine = capa * 2 * joursEcoulesSemaine; // 2 services/jour
+  const taux = capaSemaine > 0 ? Math.min(100, Math.round((couversCetteSemaine / capaSemaine) * 100)) : 0;
 
   // Animation de l'anneau
   const circumference = 314.16; // 2 × π × 50

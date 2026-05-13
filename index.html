@@ -6247,9 +6247,17 @@ async function onProCtaClick() {
 
   try {
     if (status === 'active' || status === 'trialing') {
-      // Abonnement actif : on ouvrira le billing portal Stripe plus tard
-      // Pour l'instant, message simple
-      showToast('Votre abonnement est actif. Pour le gérer, contactez le support.');
+      // Abonnement actif : ouvrir le Customer Portal Stripe
+      showToast('Ouverture du portail Stripe…');
+      const { data, error } = await supa.functions.invoke('create_customer_portal_session', {
+        body: { salon_id: currentSalon.id },
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        window.location.href = data.url;
+      } else {
+        showToast('URL portail Stripe manquante');
+      }
       return;
     }
 

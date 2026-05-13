@@ -4473,14 +4473,28 @@
   body .next-reservation-card + .section-header {
     margin-top: 24px;
   }
-  /* ═══ Card Couverts aujourd'hui ═══════════════ */
+  /* ═══ Card Couverts (swipeable) ═══════════════ */
+  .couverts-card {
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+  .couverts-card.dragging { cursor: grabbing; }
   .couverts-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 12px 18px;
-    min-height: 144px;
+    padding: 14px 12px 12px;
+    min-height: 120px;
+    transition: opacity 0.18s, transform 0.18s;
+  }
+  .couverts-wrap.flip {
+    opacity: 0;
+    transform: scale(0.92);
   }
   .couverts-value {
     font-size: 56px;
@@ -4496,6 +4510,25 @@
     color: rgba(255, 255, 255, 0.85);
     letter-spacing: -0.010em;
     font-weight: 500;
+  }
+  /* Indicateurs de pages (dots) */
+  .couverts-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding-bottom: 10px;
+  }
+  .couverts-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    transition: background 0.2s, width 0.2s;
+  }
+  .couverts-dot.active {
+    background: white;
+    width: 18px;
+    border-radius: 100px;
   }
 </style>
 </head>
@@ -4969,13 +5002,17 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <!-- ───── 🔥 Couverts aujourd'hui + Tendance ───── -->
+  <!-- ───── 🔥 Couverts aujourd'hui (swipeable) + Tendance ───── -->
   <div class="duo">
-    <div class="ring-card couverts-card">
-      <div class="ring-card-header">Couverts aujourd'hui</div>
+    <div class="ring-card couverts-card" id="couvertsCard">
+      <div class="ring-card-header" id="couvertsHeader">Couverts aujourd'hui</div>
       <div class="couverts-wrap">
         <div class="couverts-value" id="couvertsValue">0</div>
         <div class="couverts-label">couverts prévus</div>
+      </div>
+      <div class="couverts-dots">
+        <span class="couverts-dot active" data-day="0"></span>
+        <span class="couverts-dot" data-day="1"></span>
       </div>
     </div>
     <div class="trend-card">
@@ -7772,24 +7809,122 @@ function renderResvAllList() {
   }).join('');
 }
 
-// ═══ 🔥 WIDGET : Couverts aujourd'hui ════════════════════════
+// ═══ 🔥 WIDGET : Couverts (swipeable Auj / Demain) ════════════
+let _couvertsDay = 0; // 0 = aujourd'hui, 1 = demain
+let _couvertsValidRdv = []; // dernière liste connue (pour re-rendre lors du swipe)
+
 function updateFillingRing(validRdv) {
+  _couvertsValidRdv = validRdv || [];
+  renderCouvertsCard();
+  attachCouvertsSwipe(); // attach handlers (idempotent)
+}
+
+function renderCouvertsCard() {
   const valueEl = document.getElementById('couvertsValue');
-  if (!valueEl) return;
+  const headerEl = document.getElementById('couvertsHeader');
+  const wrap = document.querySelector('.couverts-wrap');
+  if (!valueEl || !headerEl) return;
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  const baseStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  baseStart.setDate(baseStart.getDate() + _couvertsDay);
+  const endStart = new Date(baseStart); endStart.setDate(endStart.getDate() + 1);
 
-  const today = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= todayStart.getTime() && r.dateObj.getTime() < tomorrowStart.getTime());
-  const couversAujourdhui = today.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+  const dayResv = _couvertsValidRdv.filter(r =>
+    r.dateObj && r.dateObj.getTime() >= baseStart.getTime() && r.dateObj.getTime() < endStart.getTime()
+  );
+  const couverts = dayResv.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
 
-  // Animation simple du compteur
-  animateCouvertsCount(valueEl, couversAujourdhui);
+  // Mettre à jour le titre selon le jour
+  headerEl.textContent = _couvertsDay === 0 ? "Couverts aujourd'hui" : "Couverts demain";
+
+  // Mettre à jour les dots
+  document.querySelectorAll('.couverts-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === _couvertsDay);
+  });
+
+  // Petite animation de transition (flip)
+  if (wrap) {
+    wrap.classList.add('flip');
+    setTimeout(() => {
+      animateCouvertsCount(valueEl, couverts);
+      wrap.classList.remove('flip');
+    }, 150);
+  } else {
+    animateCouvertsCount(valueEl, couverts);
+  }
+}
+
+function setCouvertsDay(day) {
+  if (day < 0 || day > 1) return;
+  if (day === _couvertsDay) return;
+  _couvertsDay = day;
+  renderCouvertsCard();
+}
+
+let _couvertsHandlersAttached = false;
+function attachCouvertsSwipe() {
+  if (_couvertsHandlersAttached) return;
+  const card = document.getElementById('couvertsCard');
+  if (!card) return;
+  _couvertsHandlersAttached = true;
+
+  let startX = 0, deltaX = 0, dragging = false;
+
+  // Touch (mobile)
+  card.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    deltaX = 0;
+    dragging = true;
+    card.classList.add('dragging');
+  }, { passive: true });
+  card.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    deltaX = e.touches[0].clientX - startX;
+  }, { passive: true });
+  card.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    card.classList.remove('dragging');
+    handleSwipeEnd(deltaX);
+  });
+
+  // Souris (desktop)
+  card.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    deltaX = 0;
+    dragging = true;
+    card.classList.add('dragging');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    deltaX = e.clientX - startX;
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    card.classList.remove('dragging');
+    handleSwipeEnd(deltaX);
+  });
+
+  // Clic sur les dots
+  document.querySelectorAll('.couverts-dot').forEach((d, i) => {
+    d.addEventListener('click', () => setCouvertsDay(i));
+  });
+
+  function handleSwipeEnd(dx) {
+    const THRESHOLD = 40;
+    if (dx < -THRESHOLD) {
+      setCouvertsDay(_couvertsDay + 1); // swipe gauche → page suivante
+    } else if (dx > THRESHOLD) {
+      setCouvertsDay(_couvertsDay - 1); // swipe droite → page précédente
+    }
+  }
 }
 
 function animateCouvertsCount(el, target) {
-  const duration = 1200;
+  const duration = 800;
   const start = performance.now();
   function tick(now) {
     const progress = Math.min(1, (now - start) / duration);

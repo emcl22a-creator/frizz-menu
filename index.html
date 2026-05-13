@@ -4465,26 +4465,6 @@
     </div>
   </div>
 
-  <div class="trio-card">
-    <div class="trio-cell">
-      <div class="trio-label">Aujourd'hui</div>
-      <div class="trio-value" id="trioToday">0</div>
-      <div class="trio-sub">Réservations</div>
-    </div>
-    <div class="trio-sep"></div>
-    <div class="trio-cell">
-      <div class="trio-label">Semaine</div>
-      <div class="trio-value" id="trioWeek">0</div>
-      <div class="trio-sub">Réservations</div>
-    </div>
-    <div class="trio-sep"></div>
-    <div class="trio-cell">
-      <div class="trio-label">Mois</div>
-      <div class="trio-value" id="trioMonth">0</div>
-      <div class="trio-sub">Réservations</div>
-    </div>
-  </div>
-
   <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
   <div class="duo">
     <div class="ring-card">
@@ -4502,7 +4482,7 @@
         </svg>
         <div class="ring-center">
           <div class="ring-percent" id="ringPercent">0<span class="ring-percent-unit">%</span></div>
-          <div class="ring-label-sub">cette semaine</div>
+          <div class="ring-label-sub">ce jour</div>
         </div>
       </div>
     </div>
@@ -7065,27 +7045,24 @@ function updateNextReservation(validRdv) {
   if (phoneEl) phoneEl.textContent = next.client_telephone || next.telephone || '';
 }
 
-// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage semaine) ══
+// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage du jour) ══
 function updateFillingRing(validRdv) {
   const ringFg = document.getElementById('ringFg');
   const percentEl = document.getElementById('ringPercent');
   if (!ringFg || !percentEl) return;
 
-  // Calcul : nb couverts cette semaine / capacité de la semaine
-  // Semaine = lundi à aujourd'hui (inclus)
+  // Calcul : nb couverts aujourd'hui / capacité du jour
   const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=dim, 1=lun, ..., 6=sam
-  const daysSinceMonday = (dayOfWeek + 6) % 7; // distance depuis lundi
-  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
 
-  const thisWeek = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= monday.getTime() && r.dateObj.getTime() <= now.getTime());
-  const couversCetteSemaine = thisWeek.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+  const today = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= todayStart.getTime() && r.dateObj.getTime() < tomorrowStart.getTime());
+  const couversAujourdhui = today.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
 
   // Capacité du resto (depuis currentSalon ou défaut 25)
   const capa = (currentSalon && currentSalon.capacite) ? currentSalon.capacite : 25;
-  const joursEcoulesSemaine = daysSinceMonday + 1; // du lundi à aujourd'hui inclus
-  const capaSemaine = capa * 2 * joursEcoulesSemaine; // 2 services/jour
-  const taux = capaSemaine > 0 ? Math.min(100, Math.round((couversCetteSemaine / capaSemaine) * 100)) : 0;
+  const capaJour = capa * 2; // 2 services/jour (midi + soir)
+  const taux = capaJour > 0 ? Math.min(100, Math.round((couversAujourdhui / capaJour) * 100)) : 0;
 
   // Animation de l'anneau
   const circumference = 314.16; // 2 × π × 50

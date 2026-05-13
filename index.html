@@ -67,7 +67,7 @@
     position: relative;
   }
 
-  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (ambiance premium SaaS, dark mode) ─── */
+  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (subtil, dark mode) ─── */
   body::before {
     content: '';
     position: fixed;
@@ -76,7 +76,7 @@
     width: 520px;
     height: 520px;
     background:
-      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.45) 0%, rgba(10, 132, 255, 0.22) 35%, transparent 65%);
+      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.22) 0%, rgba(10, 132, 255, 0.10) 35%, transparent 65%);
     filter: blur(60px);
     pointer-events: none;
     z-index: 0;
@@ -91,7 +91,7 @@
     width: 480px;
     height: 480px;
     background:
-      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.40) 0%, rgba(0, 122, 204, 0.18) 35%, transparent 65%);
+      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.18) 0%, rgba(0, 122, 204, 0.08) 35%, transparent 65%);
     filter: blur(70px);
     pointer-events: none;
     z-index: 0;
@@ -99,7 +99,6 @@
     animation: floatOrb2 22s ease-in-out infinite;
   }
 
-  /* Wrapper supplémentaire pour 2 orbes additionnels au centre */
   html::before {
     content: '';
     position: fixed;
@@ -108,7 +107,7 @@
     width: 360px;
     height: 360px;
     background:
-      radial-gradient(circle, rgba(100, 210, 255, 0.30) 0%, rgba(100, 210, 255, 0.12) 40%, transparent 70%);
+      radial-gradient(circle, rgba(100, 210, 255, 0.14) 0%, rgba(100, 210, 255, 0.06) 40%, transparent 70%);
     filter: blur(80px);
     pointer-events: none;
     z-index: 0;
@@ -123,7 +122,7 @@
     width: 320px;
     height: 320px;
     background:
-      radial-gradient(circle, rgba(125, 211, 252, 0.26) 0%, rgba(56, 189, 248, 0.12) 40%, transparent 70%);
+      radial-gradient(circle, rgba(125, 211, 252, 0.12) 0%, rgba(56, 189, 248, 0.06) 40%, transparent 70%);
     filter: blur(90px);
     pointer-events: none;
     z-index: 0;
@@ -834,13 +833,158 @@
   }
   .notif-dot {
     position: absolute;
-    top: 8px;
-    right: 9px;
-    width: 8px;
-    height: 8px;
-    background: var(--red);
+    top: 0;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #FF453A;
+    border-radius: 100px;
+    border: 2px solid #000;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 14px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    letter-spacing: -0.02em;
+    box-shadow: 0 0 12px rgba(255, 69, 58, 0.50);
+  }
+  .notif-dot.pulse {
+    animation: notifBadgePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes notifBadgePulse {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Panel notifications */
+  .notif-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 9998;
+  }
+  .notif-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .notif-panel {
+    position: fixed;
+    top: max(70px, calc(env(safe-area-inset-top) + 60px));
+    right: 12px;
+    width: min(380px, calc(100vw - 24px));
+    max-height: 70vh;
+    background: rgba(28, 28, 30, 0.95);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 24px 60px rgba(0, 0, 0, 0.50),
+      0 8px 16px rgba(0, 0, 0, 0.30);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0.42, 1);
+  }
+  .notif-panel.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .notif-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+  }
+  .notif-panel-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.022em;
+  }
+  .notif-panel-close {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    border: 2px solid #FFFFFF;
+    background: rgba(255, 255, 255, 0.10);
+    color: var(--label);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .notif-panel-close svg { width: 14px; height: 14px; }
+  .notif-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0;
+  }
+  .notif-empty {
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--label-secondary);
+    font-size: 14px;
+  }
+  .notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    animation: notifItemSlide 0.35s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
+  }
+  @keyframes notifItemSlide {
+    from { opacity: 0; transform: translateX(12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .notif-item-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0A84FF, #5AC8FA);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notif-item-icon svg { width: 18px; height: 18px; }
+  .notif-item-body { flex: 1; min-width: 0; }
+  .notif-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 2px;
+    letter-spacing: -0.018em;
+  }
+  .notif-item-sub {
+    font-size: 12px;
+    color: var(--label-secondary);
+    letter-spacing: -0.010em;
+  }
+  .notif-item-time {
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--label-tertiary);
+    letter-spacing: -0.005em;
   }
   .frizz-text {
     font-size: 22px;
@@ -4138,6 +4282,20 @@
   </div>
 </header>
 
+<!-- ═══ PANEL NOTIFICATIONS ══════════════════════════════ -->
+<div class="notif-backdrop" id="notifBackdrop" onclick="closeNotifications()"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-head">
+    <div class="notif-panel-title">Notifications</div>
+    <button class="notif-panel-close" onclick="closeNotifications()" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="notif-list" id="notifList">
+    <div class="notif-empty">Aucune notification pour l'instant</div>
+  </div>
+</div>
+
 <!-- ═══ PUSH NOTIFICATION ══════════════════════════════ -->
 <div class="push-banner" id="pushBanner" onclick="onPushTap()">
   <div class="push-icon">
@@ -6029,9 +6187,96 @@ const peakData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 8h à 23h,
 
 const _visitedPages = new Set();
 
+// ═══ NOTIFICATIONS ═══════════════════════════════════════
+let _notifications = []; // Liste des notifs (résa récentes)
+let _notifPreviousResvIds = new Set(); // Pour détecter les nouveautés
+
 function openNotifications() {
-  // Pour l'instant : juste un message. À enrichir plus tard avec un vrai panel
-  alert('Aucune nouvelle notification pour l\'instant.');
+  const panel = document.getElementById('notifPanel');
+  const backdrop = document.getElementById('notifBackdrop');
+  if (!panel || !backdrop) return;
+  panel.classList.add('show');
+  backdrop.classList.add('show');
+  // Reset le badge "+1"
+  const dot = document.getElementById('notifDot');
+  if (dot) {
+    dot.style.display = 'none';
+    dot.textContent = '';
+  }
+  renderNotifications();
+}
+
+function closeNotifications() {
+  const panel = document.getElementById('notifPanel');
+  const backdrop = document.getElementById('notifBackdrop');
+  if (panel) panel.classList.remove('show');
+  if (backdrop) backdrop.classList.remove('show');
+}
+
+function renderNotifications() {
+  const listEl = document.getElementById('notifList');
+  if (!listEl) return;
+  if (_notifications.length === 0) {
+    listEl.innerHTML = '<div class="notif-empty">Aucune notification pour l\'instant</div>';
+    return;
+  }
+  listEl.innerHTML = _notifications.map(n => `
+    <div class="notif-item">
+      <div class="notif-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z"/>
+        </svg>
+      </div>
+      <div class="notif-item-body">
+        <div class="notif-item-title">${n.title}</div>
+        <div class="notif-item-sub">${n.sub}</div>
+      </div>
+      <div class="notif-item-time">${n.time}</div>
+    </div>
+  `).join('');
+}
+
+// Ajoute une notif "+1" sur le bouton + ajoute à la liste
+function addNotificationBadge(resv) {
+  const dot = document.getElementById('notifDot');
+  if (!dot) return;
+  let n = parseInt(dot.textContent || '0', 10);
+  if (isNaN(n) || n < 1) n = 0;
+  n += 1;
+  dot.textContent = '+' + n;
+  dot.style.display = 'flex';
+  dot.classList.remove('pulse');
+  // Force reflow pour relancer l'animation
+  void dot.offsetWidth;
+  dot.classList.add('pulse');
+
+  // Ajouter à la liste des notifs
+  const name = resv.client_nom || resv.nom || 'Client';
+  const c = resv.nb_couverts || resv.couverts;
+  const time = (resv.heure_reservation || '').slice(0, 5);
+  const dateStr = resv.date_reservation || '';
+  _notifications.unshift({
+    title: `Nouvelle réservation : ${name}`,
+    sub: `${c ? c + ' couvert' + (c > 1 ? 's' : '') : 'Réservation'} · ${time}`,
+    time: dateStr ? new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : 'À l\'instant'
+  });
+  // Garde max 10 notifs
+  if (_notifications.length > 10) _notifications = _notifications.slice(0, 10);
+}
+
+// Détecte les nouvelles réservations à partir de resasCache
+function detectNewReservations() {
+  if (!resasCache || resasCache.length === 0) return;
+  const currentIds = new Set(resasCache.map(r => r.id));
+  // Première exécution : on initialise sans badge
+  if (_notifPreviousResvIds.size === 0) {
+    _notifPreviousResvIds = currentIds;
+    return;
+  }
+  // Détecter les nouveaux IDs
+  const newOnes = resasCache.filter(r => !_notifPreviousResvIds.has(r.id));
+  newOnes.forEach(r => addNotificationBadge(r));
+  _notifPreviousResvIds = currentIds;
 }
 
 function navigate(pageId) {
@@ -8061,6 +8306,7 @@ async function loadResas() {
     .order('heure_reservation', { ascending: true });
   if (error) { console.error('loadResas:', error); return; }
   resasCache = data || [];
+  detectNewReservations();
   renderResas();
   updateResaSubtitle();
   updateTempsGagne();

@@ -4165,33 +4165,27 @@
   .next-resv-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 0;
+    gap: 14px;
+    padding: 12px 0;
     border-top: 0.5px solid rgba(255, 255, 255, 0.06);
   }
   .next-resv-row:first-child { border-top: none; padding-top: 4px; }
-  .next-resv-row-time {
-    flex-shrink: 0;
-    min-width: 64px;
-    font-size: 13px;
-    color: var(--blue);
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.018em;
+  .next-resv-row-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
-  .next-resv-row-time-strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 700;
-  }
-  .next-resv-row-body { flex: 1; min-width: 0; }
+  .next-resv-row-text { flex: 1; min-width: 0; }
   .next-resv-row-name {
     font-size: 15px;
     font-weight: 600;
     color: var(--label);
     letter-spacing: -0.018em;
     line-height: 1.2;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -4200,6 +4194,33 @@
     font-size: 13px;
     color: var(--label-secondary);
     letter-spacing: -0.010em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .next-resv-row-end {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: -0.018em;
+    white-space: nowrap;
+  }
+  .next-resv-row-end svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.6;
+  }
+  .next-resv-row-end-day {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
   }
   .next-resv-empty-msg {
     text-align: center;
@@ -7535,14 +7556,20 @@ function updateNextReservation(validRdv) {
     const c = r.nb_couverts || r.couverts;
     const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
     const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
+    // Si demain ou autre jour, on préfixe l'heure avec le jour
+    const isToday = dayLabel === 'Auj.';
+    const dayPrefix = isToday ? '' : `<span class="next-resv-row-end-day">${dayLabel}</span>`;
     return `
       <div class="next-resv-row">
-        <div class="next-resv-row-time">
-          ${dayLabel}<span class="next-resv-row-time-strong">${hourStr}</span>
-        </div>
         <div class="next-resv-row-body">
-          <div class="next-resv-row-name">${name}</div>
-          <div class="next-resv-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+          <div class="next-resv-row-text">
+            <div class="next-resv-row-name">${name}</div>
+            <div class="next-resv-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+          </div>
+          <div class="next-resv-row-end">
+            ${dayPrefix}${hourStr}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
         </div>
       </div>
     `;

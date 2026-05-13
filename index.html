@@ -4449,6 +4449,30 @@
   body .next-reservation-card + .section-header {
     margin-top: 24px;
   }
+  /* ═══ Card Couverts aujourd'hui ═══════════════ */
+  .couverts-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px 18px;
+    min-height: 144px;
+  }
+  .couverts-value {
+    font-size: 56px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.040em;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
+  }
+  .couverts-label {
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: -0.010em;
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
@@ -4921,25 +4945,13 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
+  <!-- ───── 🔥 Couverts aujourd'hui + Tendance ───── -->
   <div class="duo">
-    <div class="ring-card">
-      <div class="ring-card-header">Capacité réservée</div>
-      <div class="ring-wrap">
-        <svg viewBox="0 0 120 120" class="ring-svg">
-          <defs>
-            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#64D2FF"/>
-              <stop offset="100%" stop-color="#0A84FF"/>
-            </linearGradient>
-          </defs>
-          <circle cx="60" cy="60" r="50" class="ring-bg"/>
-          <circle cx="60" cy="60" r="50" class="ring-fg" id="ringFg" style="stroke-dasharray:314.16;stroke-dashoffset:314.16"/>
-        </svg>
-        <div class="ring-center">
-          <div class="ring-percent" id="ringPercent">0<span class="ring-percent-unit">%</span></div>
-          <div class="ring-label-sub">aujourd'hui</div>
-        </div>
+    <div class="ring-card couverts-card">
+      <div class="ring-card-header">Couverts aujourd'hui</div>
+      <div class="couverts-wrap">
+        <div class="couverts-value" id="couvertsValue">0</div>
+        <div class="couverts-label">couverts prévus</div>
       </div>
     </div>
     <div class="trend-card">
@@ -7728,13 +7740,11 @@ function renderResvAllList() {
   }).join('');
 }
 
-// ═══ 🔥 WIDGET : Anneau Apple Watch (taux remplissage du jour) ══
+// ═══ 🔥 WIDGET : Couverts aujourd'hui ════════════════════════
 function updateFillingRing(validRdv) {
-  const ringFg = document.getElementById('ringFg');
-  const percentEl = document.getElementById('ringPercent');
-  if (!ringFg || !percentEl) return;
+  const valueEl = document.getElementById('couvertsValue');
+  if (!valueEl) return;
 
-  // Calcul : nb couverts aujourd'hui / capacité du jour
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
@@ -7742,20 +7752,21 @@ function updateFillingRing(validRdv) {
   const today = (validRdv || []).filter(r => r.dateObj && r.dateObj.getTime() >= todayStart.getTime() && r.dateObj.getTime() < tomorrowStart.getTime());
   const couversAujourdhui = today.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
 
-  // Capacité du resto (depuis currentSalon ou défaut 25)
-  const capa = (currentSalon && currentSalon.capacite) ? currentSalon.capacite : 25;
-  const capaJour = capa * 2; // 2 services/jour (midi + soir)
-  const taux = capaJour > 0 ? Math.min(100, Math.round((couversAujourdhui / capaJour) * 100)) : 0;
+  // Animation simple du compteur
+  animateCouvertsCount(valueEl, couversAujourdhui);
+}
 
-  // Animation de l'anneau
-  const circumference = 314.16; // 2 × π × 50
-  const offset = circumference - (taux / 100) * circumference;
-  setTimeout(() => {
-    ringFg.style.strokeDashoffset = offset;
-  }, 100);
-
-  // Animation du compteur %
-  animatePercent(percentEl, taux);
+function animateCouvertsCount(el, target) {
+  const duration = 1200;
+  const start = performance.now();
+  function tick(now) {
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(target * eased);
+    el.textContent = current;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 }
 
 function animatePercent(el, target) {

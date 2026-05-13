@@ -5582,10 +5582,21 @@ function updateStats() {
   // Chart "Heures de pointe" supprimé — buckets non utilisés
 
   // ───── 🔥 NOUVEAUX WIDGETS ─────────────────────────────
-  updateNextReservation(validRdv);
-  updateFillingRing(validRdv);
-  updateTrend(validRdv);
-  updateHeatmap(validRdv);
+  // On utilise resasCache (vraies réservations resto) au lieu de validRdv (anciennes RDV salon)
+  const realResv = (typeof resasCache !== 'undefined' && resasCache) ? resasCache : [];
+  const unifiedResv = realResv
+    .filter(r => r.statut !== 'annulee' && r.date_reservation)
+    .map(r => {
+      const time = r.heure_reservation || '00:00:00';
+      const dateObj = new Date(`${r.date_reservation}T${time}`);
+      return Object.assign({}, r, { dateObj });
+    })
+    .filter(r => !isNaN(r.dateObj.getTime()));
+
+  updateNextReservation(unifiedResv);
+  updateFillingRing(unifiedResv);
+  updateTrend(unifiedResv);
+  updateHeatmap(unifiedResv);
   // ────────────────────────────────────────────────────────
 
   // Sync inbox badge (tabbar + sidebar)
@@ -8310,6 +8321,7 @@ async function loadResas() {
   renderResas();
   updateResaSubtitle();
   updateTempsGagne();
+  if (typeof updateStats === 'function') updateStats();
 }
 
 function updateTempsGagne() {

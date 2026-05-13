@@ -67,16 +67,16 @@
     position: relative;
   }
 
-  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (visible, dark mode) ─── */
+  /* ─── EFFET BLEU EN ARRIÈRE-PLAN (intense, dark mode) ─── */
   body::before {
     content: '';
     position: fixed;
     top: -150px;
     right: -120px;
-    width: 560px;
-    height: 560px;
+    width: 620px;
+    height: 620px;
     background:
-      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.35) 0%, rgba(10, 132, 255, 0.16) 35%, transparent 65%);
+      radial-gradient(circle at 30% 30%, rgba(10, 132, 255, 0.55) 0%, rgba(10, 132, 255, 0.25) 35%, transparent 65%);
     filter: blur(50px);
     pointer-events: none;
     z-index: 0;
@@ -88,10 +88,10 @@
     position: fixed;
     bottom: -180px;
     left: -150px;
-    width: 520px;
-    height: 520px;
+    width: 580px;
+    height: 580px;
     background:
-      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.30) 0%, rgba(0, 122, 204, 0.14) 35%, transparent 65%);
+      radial-gradient(circle at 70% 70%, rgba(0, 122, 204, 0.48) 0%, rgba(0, 122, 204, 0.22) 35%, transparent 65%);
     filter: blur(60px);
     pointer-events: none;
     z-index: 0;
@@ -102,12 +102,12 @@
   html::before {
     content: '';
     position: fixed;
-    top: 30%;
-    left: -80px;
-    width: 380px;
-    height: 380px;
+    top: 25%;
+    left: -100px;
+    width: 440px;
+    height: 440px;
     background:
-      radial-gradient(circle, rgba(100, 210, 255, 0.22) 0%, rgba(100, 210, 255, 0.10) 40%, transparent 70%);
+      radial-gradient(circle, rgba(100, 210, 255, 0.38) 0%, rgba(100, 210, 255, 0.16) 40%, transparent 70%);
     filter: blur(70px);
     pointer-events: none;
     z-index: 0;
@@ -117,12 +117,12 @@
   html::after {
     content: '';
     position: fixed;
-    top: 50%;
-    right: -100px;
-    width: 340px;
-    height: 340px;
+    top: 55%;
+    right: -120px;
+    width: 400px;
+    height: 400px;
     background:
-      radial-gradient(circle, rgba(125, 211, 252, 0.20) 0%, rgba(56, 189, 248, 0.10) 40%, transparent 70%);
+      radial-gradient(circle, rgba(125, 211, 252, 0.34) 0%, rgba(56, 189, 248, 0.16) 40%, transparent 70%);
     filter: blur(80px);
     pointer-events: none;
     z-index: 0;
@@ -1936,7 +1936,7 @@
       0 1px 3px rgba(0, 0, 0, 0.04);
     position: relative;
     overflow: hidden;
-    animation: cascade-in 0.6s ease-out 0.05s backwards;
+    /* cascade retirée */
   }
   .next-reservation-card::before { display: none; }
   .next-reservation-header {
@@ -2006,7 +2006,7 @@
       0 4px 12px rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.06);
     text-align: center;
-    animation: cascade-in 0.6s ease-out 0.15s backwards;
+    /* cascade retirée */
   }
   .ring-card-header {
     font-size: 12px;
@@ -2078,7 +2078,7 @@
       0 1px 3px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    animation: cascade-in 0.6s ease-out 0.2s backwards;
+    /* cascade retirée */
     overflow: hidden;
   }
   .trend-header {
@@ -2136,7 +2136,7 @@
       0 1px 0 0 rgba(255, 255, 255, 0.50) inset,
       0 4px 12px rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.06);
-    animation: cascade-in 0.6s ease-out 0.35s backwards;
+    /* cascade retirée */
   }
   .heatmap-head {
     display: flex;
@@ -2209,11 +2209,8 @@
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .page-stats .trio-card { animation: cascade-in 0.6s ease-out 0.1s backwards; }
-  .page-stats .duo { animation: cascade-in 0.6s ease-out 0.25s backwards; }
-  .page-stats .segmented { animation: cascade-in 0.6s ease-out 0.3s backwards; }
-  .page-stats .chart-card { animation: cascade-in 0.6s ease-out 0.32s backwards; }
-  .page-stats .section-header { animation: cascade-in 0.6s ease-out 0.40s backwards; }
+  /* Cascade individuelle retirée — causait un flicker au démarrage.
+     Le fade global sur .page.active suffit. */
 
   /* ═══ Pulse subtil pour highlight l'attention ═══════════ */
   @keyframes ring-pulse {
@@ -3960,22 +3957,19 @@
   }
 
   /* ═══ 🔥 ANIMATIONS D'ENTRÉE DE PAGE ════════════════════════ */
-  /* Animation cascade-in (même que "vs mois dernier") sur les premiers enfants visibles.
-     On limite aux 4 premiers pour éviter le flicker sur les pages longues (Réglages). */
-  .page.active > *:nth-child(1),
-  .page.active > *:nth-child(2),
-  .page.active > *:nth-child(3),
-  .page.active > *:nth-child(4) {
-    animation: cascade-in 0.5s ease-out backwards;
+  /* Plus de cascade sur les enfants (créait un flicker au démarrage).
+     On garde uniquement un fade global sur la page qui s'active. */
+  .page.active {
+    animation: pageFadeIn 0.35s ease-out;
   }
-  .page.active > *:nth-child(1) { animation-delay: 0.00s; }
-  .page.active > *:nth-child(2) { animation-delay: 0.06s; }
-  .page.active > *:nth-child(3) { animation-delay: 0.12s; }
-  .page.active > *:nth-child(4) { animation-delay: 0.18s; }
+  @keyframes pageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
   /* Respect des préférences accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .page.active > * {
+    .page.active {
       animation: none !important;
     }
   }

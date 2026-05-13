@@ -5921,7 +5921,7 @@ function updateStats() {
 
   // ───── 🔥 NOUVEAUX WIDGETS ─────────────────────────────
   // On utilise resasCache (vraies réservations resto) au lieu de validRdv (anciennes RDV salon)
-  const realResv = (typeof resasCache !== 'undefined' && resasCache) ? resasCache : [];
+  const realResv = (window.resasCache && Array.isArray(window.resasCache)) ? window.resasCache : [];
   const unifiedResv = realResv
     .filter(r => r.statut !== 'annulee' && r.date_reservation)
     .map(r => {
@@ -7186,7 +7186,7 @@ function renderRecent() {
   if (!el) return;
 
   // Utilise les vraies réservations du jour depuis Supabase
-  const cache = (typeof resasCache !== 'undefined' && resasCache) ? resasCache : [];
+  const cache = (window.resasCache && Array.isArray(window.resasCache)) ? window.resasCache : [];
   const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const todayResv = cache
     .filter(r => r.date_reservation === todayStr && r.statut !== 'annulee')
@@ -8762,7 +8762,8 @@ const _origLoadAll = window.loadAllData;
    ═══════════════════════════════════════════════════════ */
 
 let currentResaFilter = 'today';
-let resasCache = [];
+var resasCache = []; // var pour éviter TDZ + accessible via window.resasCache
+window.resasCache = resasCache;
 let editingResaId = null;
 
 const STATUTS_LABELS = {
@@ -8790,6 +8791,7 @@ async function loadResas() {
     .order('heure_reservation', { ascending: true });
   if (error) { console.error('loadResas:', error); return; }
   resasCache = data || [];
+  window.resasCache = resasCache;
   detectNewReservations();
   renderResas();
   updateResaSubtitle();

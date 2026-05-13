@@ -4246,44 +4246,31 @@
   }
   .resv-all-panel {
     position: fixed;
+    top: 50%;
     left: 50%;
-    bottom: 0;
-    transform: translateX(-50%) translateY(100%);
-    width: min(500px, 100vw);
-    max-height: 85vh;
+    transform: translate(-50%, -50%) scale(0.96);
+    width: min(500px, calc(100vw - 24px));
+    max-height: 80vh;
     background: rgba(28, 28, 30, 0.97);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     backdrop-filter: blur(28px) saturate(180%);
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.10);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
     box-shadow:
       0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
-      0 -16px 60px rgba(0, 0, 0, 0.50);
+      0 24px 60px rgba(0, 0, 0, 0.60);
     display: flex;
     flex-direction: column;
     z-index: 9999;
-    transition: transform 0.30s cubic-bezier(0.32, 0.72, 0.42, 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0.42, 1);
     padding-bottom: env(safe-area-inset-bottom);
   }
   .resv-all-panel.show {
-    transform: translateX(-50%) translateY(0);
-  }
-  @media (min-width: 600px) {
-    .resv-all-panel {
-      top: 50%;
-      bottom: auto;
-      transform: translate(-50%, -50%) scale(0.96);
-      opacity: 0;
-      max-height: 80vh;
-      border-radius: 18px;
-      border: 0.5px solid rgba(255, 255, 255, 0.10);
-      transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0.42, 1);
-    }
-    .resv-all-panel.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
   }
   .resv-all-head {
     display: flex;
@@ -4391,7 +4378,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 18px 12px;
+    padding: 14px 18px 10px;
   }
   .weekbar-title {
     font-size: 15px;
@@ -4399,18 +4386,13 @@
     color: var(--label);
     letter-spacing: -0.018em;
   }
-  .weekbar-total {
-    font-size: 13px;
-    color: var(--label-secondary);
-    letter-spacing: -0.010em;
-  }
   .weekbar-chart {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 6px;
     align-items: end;
     padding: 0 18px;
-    height: 120px;
+    height: 56px;
   }
   .weekbar-col {
     display: flex;
@@ -4423,14 +4405,14 @@
   .weekbar-bar {
     width: 100%;
     background: linear-gradient(180deg, #5AC8FA 0%, #007AFF 100%);
-    border-radius: 6px 6px 2px 2px;
+    border-radius: 5px 5px 2px 2px;
     min-height: 4px;
     transition: height 0.6s cubic-bezier(0.32, 0.72, 0.42, 1);
-    box-shadow: 0 0 12px rgba(10, 132, 255, 0.30);
+    box-shadow: 0 0 10px rgba(10, 132, 255, 0.30);
   }
   .weekbar-bar.today {
     background: linear-gradient(180deg, #64D2FF 0%, #0A84FF 100%);
-    box-shadow: 0 0 16px rgba(10, 132, 255, 0.50);
+    box-shadow: 0 0 14px rgba(10, 132, 255, 0.50);
   }
   .weekbar-bar.empty {
     background: rgba(255, 255, 255, 0.08);
@@ -4439,8 +4421,8 @@
   .weekbar-value {
     position: absolute;
     bottom: 100%;
-    margin-bottom: 4px;
-    font-size: 11px;
+    margin-bottom: 2px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--label);
     letter-spacing: -0.010em;
@@ -4449,8 +4431,8 @@
   .weekbar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 8px 18px 16px;
+    gap: 6px;
+    padding: 6px 18px 14px;
     text-align: center;
   }
   .weekbar-days span {
@@ -4458,7 +4440,6 @@
     color: var(--label-secondary);
     font-weight: 500;
     letter-spacing: 0.02em;
-    text-transform: uppercase;
   }
   .weekbar-days span.today {
     color: var(--blue);
@@ -5025,14 +5006,13 @@
   <!-- ───── 🔥 NOUVEAU : Heatmap hebdomadaire ───── -->
   <div class="heatmap-card">
     <div class="weekbar-head">
-      <div class="weekbar-title">Activité de la semaine</div>
-      <div class="weekbar-total" id="weekbarTotal">—</div>
+      <div class="weekbar-title">Nbre de réservations de la semaine</div>
     </div>
     <div class="weekbar-chart" id="weekbarChart">
       <!-- Rempli dynamiquement par JS -->
     </div>
     <div class="weekbar-days">
-      <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+      <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
     </div>
   </div>
 
@@ -7894,15 +7874,6 @@ function updateHeatmap(validRdv) {
   });
 
   const max = Math.max(1, ...counts);
-  const total = counts.reduce((a, b) => a + b, 0);
-
-  // Total affiché
-  const totalEl = document.getElementById('weekbarTotal');
-  if (totalEl) {
-    totalEl.textContent = total === 0
-      ? 'Aucune cette semaine'
-      : `${total} réservation${total > 1 ? 's' : ''} cette semaine`;
-  }
 
   // Générer les barres
   chart.innerHTML = counts.map((val, i) => {

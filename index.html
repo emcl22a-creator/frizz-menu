@@ -4445,9 +4445,9 @@
     color: var(--blue);
     font-weight: 700;
   }
-  /* Plus d'espace entre la card "Prochaines réservations" et le duo qui suit */
-  body .next-reservation-card + .duo {
-    margin-top: 24px !important;
+  /* Espacement avant Activité aujourd'hui */
+  body .next-reservation-card + .section-header {
+    margin-top: 24px;
   }
 </style>
 </head>
@@ -4921,38 +4921,6 @@
     <p class="large-title-sub" id="statsSub">—</p>
   </div>
 
-  <!-- ───── Card "Prochaines réservations" (3 prochaines + popup) ───── -->
-  <div class="next-reservation-card" id="nextReservationCard">
-    <div class="next-resvs-head">
-      <div class="next-resvs-title">Réservations à venir</div>
-      <button class="next-resvs-more" onclick="openResvAllModal()" type="button">
-        Voir plus
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-    <div class="next-resvs-list" id="nextResvsList">
-      <div class="next-resv-empty-msg">Aucune réservation à venir</div>
-    </div>
-  </div>
-
-  <!-- ───── Popup "Toutes les réservations" ───── -->
-  <div class="resv-all-backdrop" id="resvAllBackdrop" onclick="closeResvAllModal()"></div>
-  <div class="resv-all-panel" id="resvAllPanel">
-    <div class="resv-all-head">
-      <div class="resv-all-title">Toutes les réservations</div>
-      <button class="resv-all-close" onclick="closeResvAllModal()" type="button" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="resv-all-filters">
-      <button class="resv-all-filter active" data-rfilter="today" onclick="setResvAllFilter('today')" type="button">Aujourd'hui</button>
-      <button class="resv-all-filter" data-rfilter="tomorrow" onclick="setResvAllFilter('tomorrow')" type="button">Demain</button>
-      <button class="resv-all-filter" data-rfilter="week" onclick="setResvAllFilter('week')" type="button">Semaine</button>
-      <button class="resv-all-filter" data-rfilter="month" onclick="setResvAllFilter('month')" type="button">Mois</button>
-    </div>
-    <div class="resv-all-list" id="resvAllList"></div>
-  </div>
-
   <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
   <div class="duo">
     <div class="ring-card">
@@ -5005,6 +4973,38 @@
       <div class="duo-label">No-shows évités</div>
       <div class="duo-value"><span data-counter="0">0</span></div>
     </div>
+  </div>
+
+  <!-- ───── Card "Prochaines réservations" (3 prochaines + popup) ───── -->
+  <div class="next-reservation-card" id="nextReservationCard">
+    <div class="next-resvs-head">
+      <div class="next-resvs-title">Réservations à venir</div>
+      <button class="next-resvs-more" onclick="openResvAllModal()" type="button">
+        Voir plus
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <div class="next-resvs-list" id="nextResvsList">
+      <div class="next-resv-empty-msg">Aucune réservation à venir</div>
+    </div>
+  </div>
+
+  <!-- ───── Popup "Toutes les réservations" ───── -->
+  <div class="resv-all-backdrop" id="resvAllBackdrop" onclick="closeResvAllModal()"></div>
+  <div class="resv-all-panel" id="resvAllPanel">
+    <div class="resv-all-head">
+      <div class="resv-all-title">Toutes les réservations</div>
+      <button class="resv-all-close" onclick="closeResvAllModal()" type="button" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="resv-all-filters">
+      <button class="resv-all-filter active" data-rfilter="today" onclick="setResvAllFilter('today')" type="button">Aujourd'hui</button>
+      <button class="resv-all-filter" data-rfilter="tomorrow" onclick="setResvAllFilter('tomorrow')" type="button">Demain</button>
+      <button class="resv-all-filter" data-rfilter="week" onclick="setResvAllFilter('week')" type="button">Semaine</button>
+      <button class="resv-all-filter" data-rfilter="month" onclick="setResvAllFilter('month')" type="button">Mois</button>
+    </div>
+    <div class="resv-all-list" id="resvAllList"></div>
   </div>
 
   <div class="section-header">Activité aujourd'hui</div>

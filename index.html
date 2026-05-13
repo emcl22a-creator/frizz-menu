@@ -3955,6 +3955,13 @@
   }
   /* ═══ 🔥 DESKTOP : centrer les cards (au lieu de tout étirer) ═══ */
   @media (min-width: 1024px) {
+    /* La page elle-même est centrée et limitée */
+    body .page {
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* Tous les enfants directs des pages ont la même largeur (100% du parent .page) */
     body .page > .group,
     body .page > .hero-card,
     body .page > .pro-card,
@@ -3965,21 +3972,19 @@
     body .page > .next-reservation-card,
     body .page > .segmented,
     body .page > .agenda,
-    body .page > .search-bar,
-    body .page > .section-header,
-    body .page > .large-title-block {
-      max-width: 800px !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-    }
-    /* Les duo doivent garder leur grid interne 2 colonnes */
-    body .page > .duo {
-      max-width: 800px !important;
+    body .page > .search-bar {
+      max-width: none !important;
+      margin-left: 23px !important;
+      margin-right: 23px !important;
     }
     /* Section-header alignée avec les cards */
-    body .page > .section-header {
+    body .page > .section-header,
+    body .page > .large-title-block {
       padding-left: 23px !important;
       padding-right: 23px !important;
+      max-width: none !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
   }
 </style>
@@ -4532,28 +4537,6 @@
     <div class="duo-card">
       <div class="duo-label">No-shows évités</div>
       <div class="duo-value"><span data-counter="0">0</span></div>
-    </div>
-  </div>
-
-  <div class="segmented" role="tablist">
-    <button class="seg stats-period-pill active" data-period="day" onclick="setPeriod('day')">Jour</button>
-    <button class="seg stats-period-pill" data-period="week" onclick="setPeriod('week')">Semaine</button>
-    <button class="seg stats-period-pill" data-period="month" onclick="setPeriod('month')">Mois</button>
-  </div>
-
-  <div class="chart-card">
-    <div class="chart-head">
-      <div class="chart-title">Heures de pointe</div>
-      <div class="chart-meta" id="chartMeta">—</div>
-    </div>
-    <div class="chart-bars" id="chart-bars"></div>
-    <div class="chart-labels">
-      <span class="chart-label">8</span>
-      <span class="chart-label">11</span>
-      <span class="chart-label">14</span>
-      <span class="chart-label">17</span>
-      <span class="chart-label">20</span>
-      <span class="chart-label">23</span>
     </div>
   </div>
 
@@ -5459,25 +5442,7 @@ function updateStats() {
   if (duoNoShow) duoNoShow.setAttribute('data-counter', conversion);
   animateCounters();
 
-  // Chart "Heures de pointe" : compter les RDV par heure (8h-23h)
-  const buckets = new Array(16).fill(0);
-  validRdv.forEach(r => {
-    const h = r.dateObj.getHours();
-    if (h >= 8 && h <= 23) buckets[h - 8]++;
-  });
-  renderChartWithData(buckets);
-
-  // Chart meta
-  const chartMeta = document.getElementById('chartMeta');
-  if (chartMeta) {
-    if (validRdv.length === 0) {
-      chartMeta.textContent = 'Pas encore de données';
-    } else {
-      const peakIdx = buckets.indexOf(Math.max(...buckets));
-      const peakHour = peakIdx + 8;
-      chartMeta.textContent = `Pic ${peakHour}h–${peakHour + 1}h`;
-    }
-  }
+  // Chart "Heures de pointe" supprimé — buckets non utilisés
 
   // ───── 🔥 NOUVEAUX WIDGETS ─────────────────────────────
   updateNextReservation(validRdv);
@@ -7025,9 +6990,11 @@ function callClient() { closeAddModal(); showToast('Appel en cours…'); }
 function cancelSlot() { closeAddModal(); showToast('Réservation annulée'); }
 
 function renderChart() {
+  const el = document.getElementById('chart-bars');
+  if (!el) return;
   const max = Math.max(...peakData, 1); // évite division par 0
   const total = peakData.reduce((a, b) => a + b, 0);
-  document.getElementById('chart-bars').innerHTML = peakData.map(v => {
+  el.innerHTML = peakData.map(v => {
     const h = total === 0 ? 0 : (v / max) * 100;
     const isPeak = total > 0 && v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;
@@ -7035,9 +7002,11 @@ function renderChart() {
 }
 
 function renderChartWithData(data) {
+  const el = document.getElementById('chart-bars');
+  if (!el) return;
   const max = Math.max(...data, 1);
   const total = data.reduce((a, b) => a + b, 0);
-  document.getElementById('chart-bars').innerHTML = data.map(v => {
+  el.innerHTML = data.map(v => {
     const h = total === 0 ? 0 : (v / max) * 100;
     const isPeak = total > 0 && v === max;
     return `<div class="chart-col"><div class="chart-bar-bg"><div class="chart-bar-fill ${isPeak ? 'peak' : ''}" style="height: ${h}%"></div></div></div>`;

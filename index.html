@@ -4924,7 +4924,7 @@
   <!-- ───── Card "Prochaines réservations" (3 prochaines + popup) ───── -->
   <div class="next-reservation-card" id="nextReservationCard">
     <div class="next-resvs-head">
-      <div class="next-resvs-title">Prochaines réservations</div>
+      <div class="next-resvs-title">Réservations à venir</div>
       <button class="next-resvs-more" onclick="openResvAllModal()" type="button">
         Voir plus
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -4956,7 +4956,7 @@
   <!-- ───── 🔥 NOUVEAU : Anneau Apple Watch + Tendance ───── -->
   <div class="duo">
     <div class="ring-card">
-      <div class="ring-card-header">Taux de remplissage</div>
+      <div class="ring-card-header">Capacité réservée</div>
       <div class="ring-wrap">
         <svg viewBox="0 0 120 120" class="ring-svg">
           <defs>
@@ -4970,7 +4970,7 @@
         </svg>
         <div class="ring-center">
           <div class="ring-percent" id="ringPercent">0<span class="ring-percent-unit">%</span></div>
-          <div class="ring-label-sub">ce jour</div>
+          <div class="ring-label-sub">aujourd'hui</div>
         </div>
       </div>
     </div>
@@ -7618,17 +7618,16 @@ function updateNextReservation(validRdv) {
     const { dayLabel, hourStr } = _formatResvDayHour(r.dateObj, now);
     const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
     const c = r.nb_couverts || r.couverts;
-    const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
-    const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
-    // Si demain ou autre jour, on préfixe l'heure avec le jour
+    const tableLabel = c ? `Table de ${c}` : 'Réservation';
+    const title = `${tableLabel} · ${name}`;
     const isToday = dayLabel === 'Auj.';
     const dayPrefix = isToday ? '' : `<span class="next-resv-row-end-day">${dayLabel}</span>`;
     return `
       <div class="next-resv-row">
         <div class="next-resv-row-body">
           <div class="next-resv-row-text">
-            <div class="next-resv-row-name">${name}</div>
-            <div class="next-resv-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+            <div class="next-resv-row-name">${title}</div>
+            <div class="next-resv-row-meta">Réservation confirmée par IA</div>
           </div>
           <div class="next-resv-row-end">
             ${dayPrefix}${hourStr}

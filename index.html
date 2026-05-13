@@ -3962,19 +3962,35 @@
   }
 
   /* ═══ 🔥 ANIMATIONS D'ENTRÉE DE PAGE ════════════════════════ */
-  /* Plus de cascade sur les enfants (créait un flicker au démarrage).
-     On garde uniquement un fade global sur la page qui s'active. */
+  /* Animation globale sur la page qui s'active */
   .page.active {
     animation: pageFadeIn 0.35s ease-out;
   }
   @keyframes pageFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cascade légère sur les éléments principaux de la page Stats uniquement */
+  #page-stats.active > .large-title-block,
+  #page-stats.active > .duo,
+  #page-stats.active > .next-reservation-card {
+    animation: statsItemSlide 0.5s cubic-bezier(0.32, 0.72, 0.42, 1) backwards;
+  }
+  #page-stats.active > .large-title-block { animation-delay: 0.05s; }
+  #page-stats.active > .duo:nth-of-type(1) { animation-delay: 0.12s; }
+  #page-stats.active > .duo:nth-of-type(2) { animation-delay: 0.18s; }
+  #page-stats.active > .next-reservation-card { animation-delay: 0.24s; }
+
+  @keyframes statsItemSlide {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Respect des préférences accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .page.active {
+    .page.active,
+    #page-stats.active > * {
       animation: none !important;
     }
   }

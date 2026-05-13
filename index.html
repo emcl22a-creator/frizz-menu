@@ -3646,6 +3646,55 @@
     .hero-value { font-size: 48px; }
   }
 
+  /* ═══ SPLASH SCREEN ═══════════════════════════════════════ */
+  .splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 50%, #64D2FF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease-out;
+  }
+  .splash-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    animation: splashFadeIn 0.4s ease-out;
+  }
+  .splash-logo {
+    width: 140px;
+    height: 140px;
+    display: block;
+    animation: splashLogoFloat 2.2s ease-in-out infinite;
+  }
+  .splash-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    animation: splashTextFadeIn 0.6s ease-out 0.2s backwards;
+  }
+  @keyframes splashFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes splashLogoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes splashTextFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   /* ═══════════════════════════════════════════════════════════
      🌞 LIGHT MODE — Force blanc final (override absolu)
      Évalué en dernier pour battre les autres règles
@@ -3904,6 +3953,14 @@
 </style>
 </head>
 <body>
+
+<!-- ═══ SPLASH SCREEN (écran de chargement) ════════════ -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-content">
+    <img src="https://i.ibb.co/J0QgS0Q/IMG-4003.png" alt="Frizz" class="splash-logo"/>
+    <div class="splash-text">Frizz</div>
+  </div>
+</div>
 
 
 <!-- ═══ DESKTOP SIDEBAR (visible ≥1024px) ════════════════ -->
@@ -5529,6 +5586,15 @@ async function deletePrestEdit() {
 document.addEventListener('DOMContentLoaded', () => {
   const peb = document.getElementById('prestEditBackdrop');
   if (peb) peb.addEventListener('click', closePrestEdit);
+
+  // Splash screen : disparaît au bout d'1.5s
+  const splash = document.getElementById('splashScreen');
+  if (splash) {
+    setTimeout(() => {
+      splash.classList.add('hide');
+      setTimeout(() => splash.remove(), 500);
+    }, 1500);
+  }
 
   // Stats est la page active par défaut, on la marque comme visitée
   if (typeof _visitedPages !== 'undefined') {

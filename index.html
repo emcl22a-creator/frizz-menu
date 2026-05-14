@@ -6123,7 +6123,8 @@ function updateStats() {
   // On ne touche PAS au 1er duo-value (tempsGagneVal), il est géré par updateTempsGagne()
   const allDuoCounters = document.querySelectorAll('.duo-value [data-counter]');
   const duoNoShow = allDuoCounters[1]; // 2e card = No-shows évités
-  const scheduledCount = calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length;
+  const totalCalls = (typeof calls !== 'undefined' && calls) ? calls.length : 0;
+  const scheduledCount = (typeof calls !== 'undefined' && calls) ? calls.filter(c => c.criticity === 'scheduled' || c.criticity === 'urgent').length : 0;
   const conversion = totalCalls > 0 ? Math.round((scheduledCount / totalCalls) * 100) : 0;
   if (duoNoShow) duoNoShow.setAttribute('data-counter', conversion);
   animateCounters();

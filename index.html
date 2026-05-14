@@ -9253,12 +9253,13 @@ async function loadResas() {
   if (error) { console.error('loadResas:', error); return; }
   resasCache = data || [];
   window.resasCache = resasCache;
-  detectNewReservations();
-  renderResas();
-  updateResaSubtitle();
-  updateTempsGagne();
-  renderRecent();
-  if (typeof updateStats === 'function') updateStats();
+  // Protéger chaque appel pour éviter qu'un crash ne fasse remonter l'erreur au Promise.all
+  try { detectNewReservations(); } catch (e) { console.error('detectNewReservations:', e); }
+  try { renderResas(); } catch (e) { console.error('renderResas:', e); }
+  try { updateResaSubtitle(); } catch (e) { console.error('updateResaSubtitle:', e); }
+  try { updateTempsGagne(); } catch (e) { console.error('updateTempsGagne:', e); }
+  try { renderRecent(); } catch (e) { console.error('renderRecent:', e); }
+  try { if (typeof updateStats === 'function') updateStats(); } catch (e) { console.error('updateStats:', e); }
 }
 
 function updateTempsGagne() {

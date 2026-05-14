@@ -1046,7 +1046,7 @@
   }
 
   .large-title-block {
-    padding: 32px 22px 18px;
+    padding: 18px 22px 10px;
   }
   .large-title {
     font-size: 34px;
@@ -5061,8 +5061,8 @@
 
   <div class="duo">
     <div class="duo-card">
-      <div class="duo-label">Temps gagné ce mois</div>
-      <div class="duo-value"><span id="tempsGagneVal" data-counter="0">0</span><span class="unit" id="tempsGagneUnit">h</span></div>
+      <div class="duo-label">Réservations ce mois</div>
+      <div class="duo-value"><span id="tempsGagneVal" data-counter="0">0</span><span class="unit" id="tempsGagneUnit"></span></div>
     </div>
     <div class="duo-card">
       <div class="duo-label">No-shows évités</div>
@@ -5972,14 +5972,15 @@ function updateStats() {
   if (trioWeek) trioWeek.textContent = weekCount;
   if (trioMonth) trioMonth.textContent = monthCount;
 
-  // Subtitle
-  const totalCalls = calls.length;
+  // Subtitle : nombre de résa aujourd'hui (vraies réservations resto)
   if (subEl) {
-    const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-    if (totalCalls === 0) {
-      subEl.textContent = `${dateStr} · aucun appel pour l'instant`;
+    const todayStr = now.toISOString().slice(0, 10);
+    const resasCacheLocal = (window.resasCache && Array.isArray(window.resasCache)) ? window.resasCache : [];
+    const todayResas = resasCacheLocal.filter(r => r.date_reservation === todayStr && r.statut !== 'annulee').length;
+    if (todayResas === 0) {
+      subEl.textContent = `Aucune réservation aujourd'hui`;
     } else {
-      subEl.textContent = `${dateStr} · ${totalCalls} appel${totalCalls > 1 ? 's' : ''}`;
+      subEl.textContent = `${todayResas} réservation${todayResas > 1 ? 's' : ''} aujourd'hui`;
     }
   }
 
@@ -9036,28 +9037,13 @@ function updateTempsGagne() {
     r.date_reservation && r.date_reservation.startsWith(monthStr) && r.statut !== 'annulee'
   );
 
-  // Estimation : 2 min par résa + 50% d'appels qui n'aboutissent pas
-  // Donc 2 × 1.5 = 3 min / résa
-  const minutes = resasMois.length * 3;
-
   const valEl = document.getElementById('tempsGagneVal');
   const unitEl = document.getElementById('tempsGagneUnit');
-  if (!valEl || !unitEl) return;
+  if (!valEl) return;
 
-  let val, unit;
-  if (minutes < 60) {
-    val = minutes;
-    unit = 'min';
-  } else {
-    // En heures avec 1 décimale si < 10h, entier sinon
-    const hours = minutes / 60;
-    val = hours < 10 ? hours.toFixed(1).replace('.', ',') : Math.round(hours);
-    unit = 'h';
-  }
-
-  valEl.textContent = val;
-  valEl.setAttribute('data-counter', val);
-  unitEl.textContent = unit;
+  valEl.textContent = resasMois.length;
+  valEl.setAttribute('data-counter', resasMois.length);
+  if (unitEl) unitEl.textContent = '';
 
   // Re-animer le counter pour qu'il prenne la nouvelle valeur si on est sur Stats
   if (typeof animateCounters === 'function') {

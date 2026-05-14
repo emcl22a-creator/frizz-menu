@@ -6805,6 +6805,8 @@ const PRO_LOCKED_SELECTORS = [
 ];
 
 function applyProGating() {
+  // DÉSACTIVÉ TEMPORAIREMENT pour debug
+  return;
   const pro = isProUser();
   document.querySelectorAll('.locked-feature').forEach(el => {
     el.classList.remove('locked-feature');
@@ -6820,19 +6822,8 @@ function applyProGating() {
   });
 }
 
-// Délégué global : si un élément verrouillé est cliqué, on intercepte
-document.addEventListener('click', function (e) {
-  if (isProUser()) return;
-  const locked = e.target.closest('.locked-feature');
-  if (locked) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    if (typeof onProCtaClick === 'function') {
-      onProCtaClick();
-    }
-  }
-}, true); // capture phase pour intercepter avant les onclick
+// Délégué global : DÉSACTIVÉ TEMPORAIREMENT pour éviter de bloquer le chargement
+// document.addEventListener('click', function (e) { ... });
 
 // ═══ 🎁 Welcome Pro Modal ════════════════════════════════
 function showWelcomePro() {
@@ -6847,17 +6838,16 @@ window.closeWelcomePro = closeWelcomePro;
 
 // À appeler quand on détecte que l'utilisateur vient de devenir Pro
 function checkProTransition() {
+  // DÉSACTIVÉ TEMPORAIREMENT pour debug
+  return;
   if (!currentSalon) return;
   const wasNotPro = localStorage.getItem('frizz_was_not_pro') === '1';
   const isPro = isProUser();
 
   if (!isPro) {
-    // Marque qu'il n'était pas pro
     localStorage.setItem('frizz_was_not_pro', '1');
   } else {
-    // Il est pro
     if (wasNotPro && !localStorage.getItem('frizz_welcomed_pro')) {
-      // Première fois qu'il devient pro → on montre la welcome
       showWelcomePro();
       localStorage.setItem('frizz_welcomed_pro', '1');
       localStorage.removeItem('frizz_was_not_pro');

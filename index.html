@@ -886,11 +886,11 @@
   }
   .notif-panel {
     position: fixed;
-    top: 50%;
+    top: max(70px, calc(env(safe-area-inset-top) + 60px));
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
+    transform: translateX(-50%) scale(0.96);
     width: min(500px, calc(100vw - 24px));
-    max-height: 80vh;
+    max-height: 70vh;
     background: rgba(28, 28, 30, 0.95);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     backdrop-filter: blur(28px) saturate(180%);
@@ -910,7 +910,7 @@
   }
   .notif-panel.show {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateX(-50%) scale(1);
     pointer-events: auto;
   }
   .notif-panel-head {
@@ -5879,17 +5879,18 @@ async function loadAllData() {
     salonIcalToken = currentSalon.id;
 
     // 3. Load prestations / barbiers / appels / rdv / résas for current salon
-    await Promise.all([
-      loadPrestations(),
-      loadBarbiers(),
-      loadAppels(),
-      loadRdv(),
-      loadNewClientsCount(),
-      loadResas(),
+    // Chaque fonction est protégée individuellement pour identifier celle qui plante
+    await Promise.allSettled([
+      loadPrestations().catch(e => { console.error('❌ loadPrestations:', e); throw e; }),
+      loadBarbiers().catch(e => { console.error('❌ loadBarbiers:', e); throw e; }),
+      loadAppels().catch(e => { console.error('❌ loadAppels:', e); throw e; }),
+      loadRdv().catch(e => { console.error('❌ loadRdv:', e); throw e; }),
+      loadNewClientsCount().catch(e => { console.error('❌ loadNewClientsCount:', e); throw e; }),
+      loadResas().catch(e => { console.error('❌ loadResas:', e); throw e; }),
     ]);
 
     dataLoaded = true;
-    refreshAllRenders();
+    try { refreshAllRenders(); } catch (e) { console.error('❌ refreshAllRenders:', e); }
   } catch (err) {
     console.error('Failed to load data:', err);
     showToast('Erreur de chargement des données');

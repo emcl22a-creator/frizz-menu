@@ -5853,11 +5853,9 @@ async function loadAllData() {
     try { activeId = localStorage.getItem('frizz_current_salon'); } catch(e) {}
     currentSalon = userSalons.find(s => s.id === activeId) || userSalons[0];
 
-    // ─── Vérification paywall (trial expiré + non abonné = blocage) ───
-    if (!checkSubscriptionAccess(currentSalon)) {
-      showPaywall();
-      return; // Arrête le loadAllData → pas d'autres chargements
-    }
+    // ─── Paywall désactivé : on laisse l'utilisateur accéder à toutes les pages
+    // Les fonctionnalités payantes sont bloquées au niveau des boutons individuels
+    // via le système locked-feature
 
     // Update topbar
     document.getElementById('shopName').textContent = currentSalon.nom;
@@ -6809,9 +6807,8 @@ const PRO_LOCKED_SELECTORS = [
 ];
 
 function applyProGating() {
-  // DÉSACTIVÉ TEMPORAIREMENT pour debug
-  return;
   const pro = isProUser();
+  // Nettoyer d'abord
   document.querySelectorAll('.locked-feature').forEach(el => {
     el.classList.remove('locked-feature');
   });
@@ -6820,14 +6817,28 @@ function applyProGating() {
 
   // Appliquer la classe locked sur tous les éléments matchés
   PRO_LOCKED_SELECTORS.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      el.classList.add('locked-feature');
-    });
+    try {
+      document.querySelectorAll(sel).forEach(el => {
+        el.classList.add('locked-feature');
+      });
+    } catch (e) {
+      console.error('Erreur gating sélecteur:', sel, e);
+    }
   });
 }
 
-// Délégué global : DÉSACTIVÉ TEMPORAIREMENT pour éviter de bloquer le chargement
-// document.addEventListener('click', function (e) { ... });
+// Délégué global : intercepter les clics sur les features verrouillées
+// On utilise la phase bubble (pas capture) pour ne pas bloquer les autres listeners
+document.addEventListener('click', function (e) {
+  if (isProUser()) return;
+  const locked = e.target.closest('.locked-feature');
+  if (!locked) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (typeof onProCtaClick === 'function') {
+    onProCtaClick();
+  }
+}, false);
 
 // ═══ 🎁 Welcome Pro Modal ════════════════════════════════
 function showWelcomePro() {
@@ -6842,20 +6853,22 @@ window.closeWelcomePro = closeWelcomePro;
 
 // À appeler quand on détecte que l'utilisateur vient de devenir Pro
 function checkProTransition() {
-  // DÉSACTIVÉ TEMPORAIREMENT pour debug
-  return;
   if (!currentSalon) return;
-  const wasNotPro = localStorage.getItem('frizz_was_not_pro') === '1';
-  const isPro = isProUser();
+  try {
+    const wasNotPro = localStorage.getItem('frizz_was_not_pro') === '1';
+    const isPro = isProUser();
 
-  if (!isPro) {
-    localStorage.setItem('frizz_was_not_pro', '1');
-  } else {
-    if (wasNotPro && !localStorage.getItem('frizz_welcomed_pro')) {
-      showWelcomePro();
-      localStorage.setItem('frizz_welcomed_pro', '1');
-      localStorage.removeItem('frizz_was_not_pro');
+    if (!isPro) {
+      localStorage.setItem('frizz_was_not_pro', '1');
+    } else {
+      if (wasNotPro && !localStorage.getItem('frizz_welcomed_pro')) {
+        showWelcomePro();
+        localStorage.setItem('frizz_welcomed_pro', '1');
+        localStorage.removeItem('frizz_was_not_pro');
+      }
     }
+  } catch (e) {
+    console.error('checkProTransition:', e);
   }
 }
 

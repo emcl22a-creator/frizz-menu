@@ -5155,17 +5155,17 @@
     <div class="ring-card couverts-card" id="couvertsCard">
       <div class="couverts-track" id="couvertsTrack">
         <div class="couverts-page">
-          <div class="ring-card-header">Couverts aujourd'hui</div>
+          <div class="ring-card-header">Couverts libres aujourd'hui</div>
           <div class="couverts-wrap">
             <div class="couverts-value" id="couvertsValueToday">0</div>
-            <div class="couverts-label">couverts prévus</div>
+            <div class="couverts-label">disponibles</div>
           </div>
         </div>
         <div class="couverts-page">
-          <div class="ring-card-header">Couverts demain</div>
+          <div class="ring-card-header">Couverts libres demain</div>
           <div class="couverts-wrap">
             <div class="couverts-value" id="couvertsValueTomorrow">0</div>
-            <div class="couverts-label">couverts prévus</div>
+            <div class="couverts-label">disponibles</div>
           </div>
         </div>
       </div>
@@ -8113,7 +8113,16 @@ function computeCouvertsForDay(dayOffset) {
   const dayResv = _couvertsValidRdv.filter(r =>
     r.dateObj && r.dateObj.getTime() >= baseStart.getTime() && r.dateObj.getTime() < endStart.getTime()
   );
-  return dayResv.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+  const reservedCount = dayResv.reduce((sum, r) => sum + (r.nb_couverts || r.couverts || 2), 0);
+
+  // Capacité totale du resto (depuis Supabase)
+  const capacite = (currentSalon && currentSalon.capacite_couverts) || 0;
+
+  // Couverts libres = capacité - réservés (jamais négatif)
+  if (capacite <= 0) {
+    return 0; // Si capacité non renseignée, on affiche 0
+  }
+  return Math.max(0, capacite - reservedCount);
 }
 
 function renderCouvertsCard() {

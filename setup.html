@@ -561,6 +561,21 @@ function validateStep3() {
 
 // ─── SAUVEGARDE ────────────────────────────────────
 async function saveStep1() {
+  // Si pas de salonId, créer le salon
+  if (!salonId) {
+    console.warn('Pas de salonId : création d\'un nouveau salon');
+    const { data: newSalon, error: createErr } = await supa.from('frizz_ai_salons')
+      .insert({ user_id: userId, nom: 'Mon restaurant' })
+      .select()
+      .single();
+    if (createErr) {
+      console.error('Erreur création salon:', createErr);
+      showToast('Erreur création salon : ' + createErr.message, 'error');
+      return false;
+    }
+    salonId = newSalon.id;
+  }
+
   const payload = {
     patron_prenom: val('patron_prenom'),
     patron_nom: val('patron_nom'),
@@ -568,7 +583,11 @@ async function saveStep1() {
     patron_email: val('patron_email')
   };
   const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', salonId);
-  if (error) { showToast('Erreur sauvegarde', 'error'); return false; }
+  if (error) {
+    console.error('saveStep1 error:', error);
+    showToast('Erreur sauvegarde : ' + error.message, 'error');
+    return false;
+  }
   return true;
 }
 async function saveStep2() {
@@ -589,7 +608,11 @@ async function saveStep2() {
     ticket_moyen: parseInt(val('resto_ticket'))
   };
   const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', salonId);
-  if (error) { showToast('Erreur sauvegarde', 'error'); return false; }
+  if (error) {
+    console.error('saveStep2 error:', error);
+    showToast('Erreur sauvegarde : ' + error.message, 'error');
+    return false;
+  }
   return true;
 }
 async function saveStep3() {

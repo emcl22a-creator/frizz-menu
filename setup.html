@@ -204,6 +204,7 @@ body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-are
   background: linear-gradient(180deg, transparent 0%, var(--bg) 30%, var(--bg) 100%);
   padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
   display: flex; gap: 10px; justify-content: center;
+  z-index: 100;
 }
 .actions-inner { width: 100%; max-width: 520px; display: flex; gap: 10px; }
 .btn {
@@ -676,33 +677,49 @@ function renderRecap() {
 
 // ─── HANDLERS ──────────────────────────────────────
 document.getElementById('btn-next').addEventListener('click', async () => {
+  console.log('▶ Clic Continuer — currentStep:', currentStep);
   const btn = document.getElementById('btn-next');
   const original = btn.textContent;
   btn.disabled = true;
 
   try {
     if (currentStep === 1) {
-      if (!validateStep1()) return;
+      console.log('  → validateStep1...');
+      if (!validateStep1()) { console.log('  ✗ validateStep1 failed'); return; }
+      console.log('  ✓ validateStep1 OK, saveStep1...');
       btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
-      if (!(await saveStep1())) return;
+      const ok = await saveStep1();
+      if (!ok) { console.log('  ✗ saveStep1 returned false'); return; }
+      console.log('  ✓ saveStep1 OK → goToStep(2)');
       goToStep(2);
     } else if (currentStep === 2) {
-      if (!validateStep2()) return;
+      console.log('  → validateStep2...');
+      if (!validateStep2()) { console.log('  ✗ validateStep2 failed'); return; }
       btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
-      if (!(await saveStep2())) return;
+      const ok = await saveStep2();
+      if (!ok) { console.log('  ✗ saveStep2 returned false'); return; }
       goToStep(3);
     } else if (currentStep === 3) {
-      if (!validateStep3()) return;
+      console.log('  → validateStep3...');
+      if (!validateStep3()) { console.log('  ✗ validateStep3 failed'); return; }
       btn.innerHTML = '<span class="spinner"></span>Sauvegarde…';
-      if (!(await saveStep3())) return;
+      const ok = await saveStep3();
+      if (!ok) { console.log('  ✗ saveStep3 returned false'); return; }
       goToStep(4);
     } else if (currentStep === 4) {
       btn.innerHTML = '<span class="spinner"></span>Lancement…';
       const { error } = await supa.from('frizz_ai_salons').update({ onboarded: true }).eq('id', salonId);
-      if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
+      if (error) {
+        console.error('Step 4 update onboarded:', error);
+        showToast('Erreur : ' + error.message, 'error');
+        return;
+      }
       showToast('C\'est parti !', 'success');
       setTimeout(() => window.location.href = 'index.html', 800);
     }
+  } catch (e) {
+    console.error('❌ Bouton Continuer crash:', e);
+    showToast('Erreur : ' + (e.message || 'inconnue'), 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = original;

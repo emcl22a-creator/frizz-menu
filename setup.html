@@ -419,6 +419,7 @@ const horaires = JOURS.map((nom, i) => ({
   nom,
   jourApi: JOURS_API[i],
   ouvert: i < 5, // Lundi-Vendredi par défaut
+  matin: { actif: false, ouverture: '07:00', fermeture: '10:30' },
   midi: { actif: i < 6, ouverture: '12:00', fermeture: '14:30' },
   soir: { actif: i < 6, ouverture: '19:00', fermeture: '22:30' }
 }));
@@ -467,6 +468,17 @@ function renderHoraires() {
         <div class="day-toggle" onclick="toggleDay(${idx})"></div>
       </div>
       <div class="day-services">
+        <div class="service-row">
+          <div class="service-checkbox ${h.matin.actif ? 'checked' : ''}" onclick="toggleService(${idx},'matin')"></div>
+          <div class="service-label">Matin</div>
+          <input type="time" class="time-input" value="${h.matin.ouverture}" 
+                 ${h.matin.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'matin','ouverture',this.value)">
+          <span class="time-arrow">→</span>
+          <input type="time" class="time-input" value="${h.matin.fermeture}" 
+                 ${h.matin.actif ? '' : 'disabled'} 
+                 onchange="updateTime(${idx},'matin','fermeture',this.value)">
+        </div>
         <div class="service-row">
           <div class="service-checkbox ${h.midi.actif ? 'checked' : ''}" onclick="toggleService(${idx},'midi')"></div>
           <div class="service-label">Midi</div>
@@ -555,7 +567,7 @@ function validateStep2() {
   return true;
 }
 function validateStep3() {
-  const auMoinsUnJour = horaires.some(h => h.ouvert && (h.midi.actif || h.soir.actif));
+  const auMoinsUnJour = horaires.some(h => h.ouvert && (h.matin.actif || h.midi.actif || h.soir.actif));
   if (!auMoinsUnJour) { showToast('Au moins un service par semaine', 'error'); return false; }
   return true;
 }
@@ -623,6 +635,12 @@ async function saveStep3() {
   const inserts = [];
   for (const h of horaires) {
     if (!h.ouvert) continue;
+    if (h.matin.actif) {
+      inserts.push({
+        salon_id: salonId, jour_semaine: h.jourApi, service: 'matin',
+        heure_ouverture: h.matin.ouverture, heure_fermeture: h.matin.fermeture, ferme: false
+      });
+    }
     if (h.midi.actif) {
       inserts.push({
         salon_id: salonId, jour_semaine: h.jourApi, service: 'midi',

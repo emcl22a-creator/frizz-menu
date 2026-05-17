@@ -4377,7 +4377,10 @@
   }
   .resv-all-list {
     overflow-y: auto;
-    flex: 1;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 4px 20px 24px;
     display: flex;
     flex-direction: column;
@@ -4391,7 +4394,12 @@
     gap: 14px;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s cubic-bezier(0.32, 0.72, 0.42, 1);
+    flex-shrink: 0;
   }
+  .resv-all-row:hover { background: rgba(255, 255, 255, 0.10); }
+  .resv-all-row:active { transform: scale(0.985); background: rgba(255, 255, 255, 0.12); }
   .resv-all-row-main {
     flex: 1;
     min-width: 0;
@@ -4581,6 +4589,105 @@
     width: 18px;
     border-radius: 100px;
   }
+  /* ═══ Modal actions réservation (depuis Voir plus) ═══ */
+  .resv-actions-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .resv-actions-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .resv-actions-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    width: min(460px, 100vw);
+    background: rgba(28, 28, 30, 0.97);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.60);
+    z-index: 10001;
+    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  .resv-actions-sheet.show {
+    transform: translate(-50%, 0);
+  }
+  .resv-actions-handle {
+    width: 40px; height: 5px;
+    background: rgba(255, 255, 255, 0.30);
+    border-radius: 100px;
+    margin: 10px auto 16px;
+  }
+  .resv-actions-head {
+    padding: 0 24px 18px;
+    text-align: center;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+  }
+  .resv-actions-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.022em;
+    margin-bottom: 4px;
+  }
+  .resv-actions-sub {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.60);
+    letter-spacing: -0.010em;
+  }
+  .resv-actions-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .resv-action-btn {
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.15s cubic-bezier(0.32, 0.72, 0.42, 1), background 0.2s;
+  }
+  .resv-action-btn:active { transform: scale(0.97); }
+  .resv-action-btn svg { width: 18px; height: 18px; }
+  .resv-action-modify {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 2px 10px rgba(10, 132, 255, 0.30);
+  }
+  .resv-action-modify:hover { background: #0070E0; }
+  .resv-action-cancel {
+    background: rgba(255, 69, 58, 0.18);
+    color: #FF453A;
+    border: 0.5px solid rgba(255, 69, 58, 0.40);
+  }
+  .resv-action-cancel:hover { background: rgba(255, 69, 58, 0.28); }
+  .resv-action-close {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    margin-top: 4px;
+  }
+  .resv-action-close:hover { background: rgba(255, 255, 255, 0.14); }
+
   /* ═══ 🔒 LOCKED FEATURE (utilisateur non abonné) ═══════════ */
   .locked-feature {
     opacity: 0.45;
@@ -5917,6 +6024,7 @@ async function loadAllData() {
       loadRdv().catch(e => { console.error('❌ loadRdv:', e); throw e; }),
       loadNewClientsCount().catch(e => { console.error('❌ loadNewClientsCount:', e); throw e; }),
       loadResas().catch(e => { console.error('❌ loadResas:', e); throw e; }),
+      loadEvents().catch(e => { console.error('❌ loadEvents:', e); throw e; }),
     ]);
 
     dataLoaded = true;
@@ -7599,37 +7707,36 @@ function renderInbox() {
   const container = document.getElementById('inbox-rows');
   if (!container) return;
 
-  // Récupérer les réservations annulées + modifiées par le client
-  const cache = (typeof resasCache !== 'undefined' && Array.isArray(resasCache)) ? resasCache : [];
-  let events = cache.filter(r =>
-    r.statut === 'annulee' || r.statut === 'modifiee' || r.modifiee_par_client === true || r.annulee_par_client === true
-  );
+  // Récupérer les événements (annulations/modifications par les clients)
+  const cache = (typeof eventsCache !== 'undefined' && Array.isArray(eventsCache)) ? eventsCache : [];
+  // resasCache pour enrichir avec les infos client/date de la résa originale
+  const resas = (typeof resasCache !== 'undefined' && Array.isArray(resasCache)) ? resasCache : [];
+  const resasById = {};
+  resas.forEach(r => { resasById[r.id] = r; });
 
-  // Tri par date de modification décroissante (plus récent en premier)
-  events.sort((a, b) => {
-    const da = new Date(a.updated_at || a.created_at || a.date_reservation || 0).getTime();
-    const db = new Date(b.updated_at || b.created_at || b.date_reservation || 0).getTime();
-    return db - da;
-  });
+  let events = cache.slice();
 
   // Filtre par recherche
   if (currentSearch) {
     const q = currentSearch.toLowerCase();
-    events = events.filter(r =>
-      (r.client_nom || '').toLowerCase().includes(q) ||
-      (r.client_telephone || '').toLowerCase().includes(q)
-    );
+    events = events.filter(e => {
+      const resa = resasById[e.reservation_id] || {};
+      return (
+        (e.client_nom || resa.client_nom || '').toLowerCase().includes(q) ||
+        (e.client_telephone || resa.client_telephone || '').toLowerCase().includes(q)
+      );
+    });
   }
 
   // Filtre par type
   if (currentFilter === 'cancelled') {
-    events = events.filter(r => r.statut === 'annulee' || r.annulee_par_client);
+    events = events.filter(e => e.type === 'cancelled');
   } else if (currentFilter === 'modified') {
-    events = events.filter(r => r.statut === 'modifiee' || r.modifiee_par_client);
+    events = events.filter(e => e.type === 'modified');
   }
 
   // Empty state global
-  if (cache.length === 0 || (events.length === 0 && currentFilter === 'all' && !currentSearch)) {
+  if (cache.length === 0 && currentFilter === 'all' && !currentSearch) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">
@@ -7657,25 +7764,45 @@ function renderInbox() {
     return;
   }
 
-  container.innerHTML = events.map(r => {
-    const name = (r.client_nom || 'Client').replace(/</g, '&lt;');
-    const isCancelled = r.statut === 'annulee' || r.annulee_par_client === true;
+  container.innerHTML = events.map(ev => {
+    const resa = resasById[ev.reservation_id] || {};
+    const name = (ev.client_nom || resa.client_nom || 'Client').replace(/</g, '&lt;');
+    const isCancelled = ev.type === 'cancelled';
     const badge = isCancelled
       ? `<span class="pill urgent">Annulé</span>`
       : `<span class="pill scheduled">Modifié</span>`;
-    const date = r.date_reservation
-      ? new Date(r.date_reservation).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+
+    // Date/heure de la réservation concernée
+    const dateRaw = ev.date_reservation || resa.date_reservation;
+    const date = dateRaw
+      ? new Date(dateRaw).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
       : '';
-    const heure = (r.heure_reservation || '').slice(0, 5);
-    const couverts = r.nb_couverts || r.couverts;
-    const meta = `${date}${heure ? ' · ' + heure : ''}${couverts ? ' · Table de ' + couverts : ''}`;
+    const heure = (ev.heure_reservation || resa.heure_reservation || '').slice(0, 5);
+    const couverts = ev.nb_couverts || resa.nb_couverts || resa.couverts;
+    const meta = [
+      date,
+      heure,
+      couverts ? `Table de ${couverts}` : ''
+    ].filter(Boolean).join(' · ');
+
+    // Quand l'événement a eu lieu (relatif)
+    const eventAt = ev.created_at ? new Date(ev.created_at) : null;
+    let timeAgo = '';
+    if (eventAt) {
+      const diff = Date.now() - eventAt.getTime();
+      const minutes = Math.round(diff / 60000);
+      if (minutes < 1) timeAgo = "à l'instant";
+      else if (minutes < 60) timeAgo = `il y a ${minutes} min`;
+      else if (minutes < 1440) timeAgo = `il y a ${Math.round(minutes / 60)}h`;
+      else timeAgo = `il y a ${Math.round(minutes / 1440)}j`;
+    }
 
     return `
       <div class="swipe-row">
         <button class="cell" type="button">
           <div class="cell-main">
             <div class="cell-title">${name}</div>
-            <div class="cell-subtitle">${meta}</div>
+            <div class="cell-subtitle">${meta}${timeAgo ? ' · ' + timeAgo : ''}</div>
           </div>
           ${badge}
         </button>
@@ -8118,6 +8245,97 @@ function openNewResaFromModal() {
 }
 window.openNewResaFromModal = openNewResaFromModal;
 
+// ═══ Actions sur une réservation (modifier / annuler) ═══════════
+let _resvActionsCurrentId = null;
+
+function openResvActions(resaId) {
+  if (!resaId) return;
+  const resa = (resasCache || []).find(r => r.id === resaId);
+  if (!resa) {
+    showToast('Réservation introuvable');
+    return;
+  }
+  _resvActionsCurrentId = resaId;
+
+  // Remplir le titre + sous-titre
+  const name = resa.client_nom || 'Client';
+  const date = resa.date_reservation
+    ? new Date(resa.date_reservation).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    : '';
+  const heure = (resa.heure_reservation || '').slice(0, 5);
+  const couverts = resa.nb_couverts || resa.couverts;
+  const sub = [date, heure, couverts ? `Table de ${couverts}` : ''].filter(Boolean).join(' · ');
+
+  const titleEl = document.getElementById('resvActionsTitle');
+  const subEl = document.getElementById('resvActionsSub');
+  if (titleEl) titleEl.textContent = name;
+  if (subEl) subEl.textContent = sub || '—';
+
+  document.getElementById('resvActionsBackdrop').classList.add('show');
+  document.getElementById('resvActionsSheet').classList.add('show');
+}
+window.openResvActions = openResvActions;
+
+function closeResvActions() {
+  document.getElementById('resvActionsBackdrop').classList.remove('show');
+  document.getElementById('resvActionsSheet').classList.remove('show');
+  _resvActionsCurrentId = null;
+}
+window.closeResvActions = closeResvActions;
+
+async function modifyResv() {
+  if (!_resvActionsCurrentId) return;
+  const resa = (resasCache || []).find(r => r.id === _resvActionsCurrentId);
+  if (!resa) { showToast('Réservation introuvable'); return; }
+
+  // Ferme la modal actions et la modal Voir plus, puis ouvre le formulaire d'édition
+  closeResvActions();
+  closeResvAllModal();
+  setTimeout(() => {
+    if (typeof openEditResaModal === 'function') {
+      openEditResaModal(resa);
+    } else {
+      showToast('Édition non disponible');
+    }
+  }, 300);
+}
+window.modifyResv = modifyResv;
+
+async function cancelResv() {
+  if (!_resvActionsCurrentId) return;
+  const resaId = _resvActionsCurrentId;
+  const confirmed = confirm('Êtes-vous sûr d\'annuler cette réservation ?');
+  if (!confirmed) return;
+
+  try {
+    const { error } = await supa
+      .from('frizz_ai_reservations')
+      .update({ statut: 'annulee' })
+      .eq('id', resaId);
+    if (error) throw error;
+    showToast('Réservation annulée');
+    closeResvActions();
+    // Recharger les résas pour refresh la liste
+    if (typeof loadResas === 'function') await loadResas();
+    // Refresh la modal "Voir plus" si elle est ouverte
+    if (typeof openResvAllModal === 'function') {
+      // On reconstruit la cache à partir de resasCache mis à jour
+      _resvAllCache = (resasCache || [])
+        .filter(r => r.statut !== 'annulee' && r.date_reservation)
+        .map(r => {
+          const time = r.heure_reservation || '00:00:00';
+          return Object.assign({}, r, { _dateObj: new Date(`${r.date_reservation}T${time}`) });
+        })
+        .filter(r => !isNaN(r._dateObj.getTime()));
+      renderResvAllList();
+    }
+  } catch (e) {
+    console.error('cancelResv:', e);
+    showToast('Erreur : ' + (e.message || 'annulation impossible'));
+  }
+}
+window.cancelResv = cancelResv;
+
 // Swipe down pour fermer la modale (style Apple bottom sheet)
 let _resvAllSwipeAttached = false;
 function attachResvAllSwipe() {
@@ -8224,7 +8442,7 @@ function renderResvAllList() {
     const c = r.nb_couverts || r.couverts;
     const meta = c ? `Table de ${c}` : 'Réservation';
     return `
-      <div class="resv-all-row">
+      <div class="resv-all-row" onclick="openResvActions('${r.id}')">
         <div class="resv-all-row-main">
           <div class="resv-all-row-name">${name}</div>
           <div class="resv-all-row-meta">${meta}</div>
@@ -9437,6 +9655,26 @@ async function loadResas() {
   try { if (typeof updateStats === 'function') updateStats(); } catch (e) { console.error('updateStats:', e); }
 }
 
+// ═══ Charger les événements (annulations/modifications par les clients) ═══
+let eventsCache = [];
+async function loadEvents() {
+  if (!currentSalon) return;
+  const { data, error } = await supa
+    .from('frizz_ai_reservation_events')
+    .select('*')
+    .eq('salon_id', currentSalon.id)
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error('loadEvents:', error);
+    eventsCache = [];
+    window.eventsCache = [];
+    return;
+  }
+  eventsCache = data || [];
+  window.eventsCache = eventsCache;
+  try { renderInbox(); } catch (e) { console.error('renderInbox after loadEvents:', e); }
+}
+
 function updateTempsGagne() {
   // Compter les résas du mois en cours (hors annulées)
   const now = new Date();
@@ -9580,6 +9818,22 @@ function openNewResaModal() {
   document.getElementById('resaModalBackdrop').classList.add('open');
   document.getElementById('resaModalSheet').classList.add('open');
 }
+
+// Ouvrir le modal de réservation en mode édition (pré-remplit les champs)
+function openEditResaModal(resa) {
+  if (!resa) return;
+  editingResaId = resa.id;
+  document.getElementById('resaModalTitle').textContent = 'Modifier la réservation';
+  document.getElementById('resaClientNom').value = resa.client_nom || '';
+  document.getElementById('resaClientTel').value = resa.client_telephone || '';
+  document.getElementById('resaDate').value = resa.date_reservation || '';
+  document.getElementById('resaHeure').value = (resa.heure_reservation || '').slice(0, 5);
+  document.getElementById('resaCouverts').value = resa.nb_couverts || resa.couverts || 2;
+  document.getElementById('resaNotes').value = resa.notes || resa.commentaire || '';
+  document.getElementById('resaModalBackdrop').classList.add('open');
+  document.getElementById('resaModalSheet').classList.add('open');
+}
+window.openEditResaModal = openEditResaModal;
 
 function closeNewResaModal() {
   document.getElementById('resaModalBackdrop').classList.remove('open');
@@ -9749,6 +10003,29 @@ window.markResaStatus = markResaStatus;
 window.openNewResaModal = openNewResaModal;
 window.setResaFilter = setResaFilter;
 </script>
+<!-- ═══ Modal actions sur une réservation (depuis Voir plus) ═══ -->
+<div class="resv-actions-backdrop" id="resvActionsBackdrop" onclick="closeResvActions()"></div>
+<div class="resv-actions-sheet" id="resvActionsSheet">
+  <div class="resv-actions-handle"></div>
+  <div class="resv-actions-head">
+    <div class="resv-actions-title" id="resvActionsTitle">Réservation</div>
+    <div class="resv-actions-sub" id="resvActionsSub">—</div>
+  </div>
+  <div class="resv-actions-body">
+    <button class="resv-action-btn resv-action-modify" onclick="modifyResv()" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Modifier la réservation
+    </button>
+    <button class="resv-action-btn resv-action-cancel" onclick="cancelResv()" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      Annuler la réservation
+    </button>
+    <button class="resv-action-btn resv-action-close" onclick="closeResvActions()" type="button">
+      Fermer
+    </button>
+  </div>
+</div>
+
 <!-- ═══ Welcome Pro Modal ═══════════════════════════════ -->
 <div class="welcome-pro-backdrop" id="welcomeProBackdrop">
   <div class="welcome-pro-card">

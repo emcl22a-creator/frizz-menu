@@ -6923,10 +6923,9 @@ function gateProClick(event) {
 
 // Sélecteurs des éléments à verrouiller (à mettre à jour si on en ajoute)
 const PRO_LOCKED_SELECTORS = [
-  // Bouton "Nouvelle réservation" page Réservations
-  '#newResaBtn',
+  // Bouton "Nouvelle réservation" page Réservations (le FAB seul)
   '.new-resa-fab',
-  '[onclick*="openNewResa"]',
+  '.resa-fab',
   // Toggle Frizz actif page Réglages
   '#frizzToggle',
   '.frizz-status-cell',
@@ -6938,12 +6937,6 @@ const PRO_LOCKED_SELECTORS = [
   // Édition Compte (prénom du patron, etc)
   '[onclick*="openCompteProfile"]',
   '[onclick*="openCompte"]',
-  // Cellules d'appels page Réception (cliquer pour voir le détail)
-  '#inbox-rows .cell',
-  '.inbox-row',
-  // Édition d'une cellule réservation existante
-  '.resa-row',
-  '.reservation-card',
 ];
 
 function applyProGating() {
@@ -7707,14 +7700,51 @@ function renderInbox() {
   const container = document.getElementById('inbox-rows');
   if (!container) return;
 
-  // Récupérer les événements (annulations/modifications par les clients)
-  const cache = (typeof eventsCache !== 'undefined' && Array.isArray(eventsCache)) ? eventsCache : [];
-  // resasCache pour enrichir avec les infos client/date de la résa originale
+  // Récupérer les événements depuis frizz_ai_reservation_events
+  const evCache = (typeof eventsCache !== 'undefined' && Array.isArray(eventsCache)) ? eventsCache : [];
+  // resasCache pour enrichir avec les infos de la résa originale
   const resas = (typeof resasCache !== 'undefined' && Array.isArray(resasCache)) ? resasCache : [];
   const resasById = {};
   resas.forEach(r => { resasById[r.id] = r; });
 
-  let events = cache.slice();
+  // Construire la liste d'événements unifiée
+  // 1. Tous les événements de la table events
+  let events = evCache.map(e => ({
+    id: e.id,
+    type: e.type, // 'cancelled' ou 'modified'
+    reservation_id: e.reservation_id,
+    created_at: e.created_at,
+    client_nom: e.client_nom,
+    client_telephone: e.client_telephone,
+    date_reservation: e.date_reservation,
+    heure_reservation: e.heure_reservation,
+    nb_couverts: e.nb_couverts,
+  }));
+
+  // 2. Fallback : résas annulées qui n'ont peut-être pas d'entry dans events
+  const eventResaIds = new Set(events.map(e => e.reservation_id));
+  resas.forEach(r => {
+    if (r.statut === 'annulee' && !eventResaIds.has(r.id)) {
+      events.push({
+        id: 'resa-' + r.id,
+        type: 'cancelled',
+        reservation_id: r.id,
+        created_at: r.updated_at || r.created_at,
+        client_nom: r.client_nom,
+        client_telephone: r.client_telephone,
+        date_reservation: r.date_reservation,
+        heure_reservation: r.heure_reservation,
+        nb_couverts: r.nb_couverts || r.couverts,
+      });
+    }
+  });
+
+  // Tri par date d'événement décroissante
+  events.sort((a, b) => {
+    const da = new Date(a.created_at || 0).getTime();
+    const db = new Date(b.created_at || 0).getTime();
+    return db - da;
+  });
 
   // Filtre par recherche
   if (currentSearch) {
@@ -7736,7 +7766,7 @@ function renderInbox() {
   }
 
   // Empty state global
-  if (cache.length === 0 && currentFilter === 'all' && !currentSearch) {
+  if (events.length === 0 && currentFilter === 'all' && !currentSearch) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">
@@ -7772,7 +7802,6 @@ function renderInbox() {
       ? `<span class="pill urgent">Annulé</span>`
       : `<span class="pill scheduled">Modifié</span>`;
 
-    // Date/heure de la réservation concernée
     const dateRaw = ev.date_reservation || resa.date_reservation;
     const date = dateRaw
       ? new Date(dateRaw).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
@@ -7785,11 +7814,9 @@ function renderInbox() {
       couverts ? `Table de ${couverts}` : ''
     ].filter(Boolean).join(' · ');
 
-    // Quand l'événement a eu lieu (relatif)
-    const eventAt = ev.created_at ? new Date(ev.created_at) : null;
     let timeAgo = '';
-    if (eventAt) {
-      const diff = Date.now() - eventAt.getTime();
+    if (ev.created_at) {
+      const diff = Date.now() - new Date(ev.created_at).getTime();
       const minutes = Math.round(diff / 60000);
       if (minutes < 1) timeAgo = "à l'instant";
       else if (minutes < 60) timeAgo = `il y a ${minutes} min`;
@@ -8288,16 +8315,14 @@ async function modifyResv() {
   const resa = (resasCache || []).find(r => r.id === _resvActionsCurrentId);
   if (!resa) { showToast('Réservation introuvable'); return; }
 
-  // Ferme la modal actions et la modal Voir plus, puis ouvre le formulaire d'édition
+  // Ferme uniquement le sheet des actions (laisse la modal Voir plus en arrière)
   closeResvActions();
-  closeResvAllModal();
-  setTimeout(() => {
-    if (typeof openEditResaModal === 'function') {
-      openEditResaModal(resa);
-    } else {
-      showToast('Édition non disponible');
-    }
-  }, 300);
+  // Ouvre directement le formulaire d'édition (le modal résa est en haut du DOM, indépendant)
+  if (typeof openEditResaModal === 'function') {
+    openEditResaModal(resa);
+  } else {
+    showToast('Édition non disponible');
+  }
 }
 window.modifyResv = modifyResv;
 

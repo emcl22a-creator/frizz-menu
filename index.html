@@ -4282,58 +4282,75 @@
   }
   .resv-all-panel {
     position: fixed;
-    top: 50%;
+    bottom: 0;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
-    width: min(500px, calc(100vw - 24px));
-    max-height: 80vh;
+    transform: translate(-50%, 0);
+    width: min(500px, 100vw);
+    max-height: 85vh;
+    height: 85vh;
     background: rgba(28, 28, 30, 0.97);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     backdrop-filter: blur(28px) saturate(180%);
     border: 0.5px solid rgba(255, 255, 255, 0.10);
-    border-radius: 18px;
+    border-radius: 18px 18px 0 0;
     box-shadow:
       0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
-      0 24px 60px rgba(0, 0, 0, 0.60);
+      0 -8px 40px rgba(0, 0, 0, 0.60);
     display: flex;
     flex-direction: column;
     z-index: 9999;
-    opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0.42, 1);
+    transform: translate(-50%, 100%);
+    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
     padding-bottom: env(safe-area-inset-bottom);
+    overflow: hidden;
   }
   .resv-all-panel.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
     pointer-events: auto;
+    transform: translate(-50%, 0);
   }
+  .resv-all-panel.dragging {
+    transition: none;
+  }
+  .resv-all-handle {
+    width: 40px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.30);
+    border-radius: 100px;
+    margin: 10px auto 4px;
+    flex-shrink: 0;
+    cursor: grab;
+  }
+  .resv-all-panel.dragging .resv-all-handle { cursor: grabbing; }
   .resv-all-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 20px 14px;
+    padding: 10px 20px 14px;
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
   }
   .resv-all-title {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--label);
     letter-spacing: -0.022em;
   }
-  .resv-all-close {
-    width: 28px;
-    height: 28px;
+  .resv-all-add {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.10);
-    color: var(--label);
+    background: var(--blue);
+    color: white;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(10, 132, 255, 0.40);
+    transition: transform 0.18s cubic-bezier(0.32, 0.72, 0.42, 1);
   }
-  .resv-all-close svg { width: 14px; height: 14px; }
+  .resv-all-add:active { transform: scale(0.92); }
+  .resv-all-add svg { width: 16px; height: 16px; }
   .resv-all-filters {
     display: flex;
     gap: 6px;
@@ -4373,35 +4390,41 @@
     display: flex;
     gap: 14px;
     align-items: center;
+    justify-content: space-between;
   }
-  .resv-all-row-time {
+  .resv-all-row-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .resv-all-row-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 3px;
+    letter-spacing: -0.020em;
+  }
+  .resv-all-row-meta {
+    font-size: 14px;
+    color: var(--label-secondary);
+    letter-spacing: -0.010em;
+  }
+  .resv-all-row-right {
     flex-shrink: 0;
-    text-align: center;
-    min-width: 56px;
+    text-align: right;
   }
-  .resv-all-row-time-day {
-    font-size: 11px;
+  .resv-all-row-day {
+    font-size: 12px;
     color: var(--label-secondary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.04em;
-  }
-  .resv-all-row-time-hour {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--blue);
-    letter-spacing: -0.022em;
-  }
-  .resv-all-row-body { flex: 1; min-width: 0; }
-  .resv-all-row-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--label);
     margin-bottom: 2px;
   }
-  .resv-all-row-meta {
-    font-size: 13px;
-    color: var(--label-secondary);
+  .resv-all-row-hour {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.020em;
   }
   .resv-all-empty {
     text-align: center;
@@ -5240,10 +5263,11 @@
   <!-- ───── Popup "Toutes les réservations" ───── -->
   <div class="resv-all-backdrop" id="resvAllBackdrop" onclick="closeResvAllModal()"></div>
   <div class="resv-all-panel" id="resvAllPanel">
+    <div class="resv-all-handle" id="resvAllHandle"></div>
     <div class="resv-all-head">
       <div class="resv-all-title">Toutes les réservations</div>
-      <button class="resv-all-close" onclick="closeResvAllModal()" type="button" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <button class="resv-all-add" onclick="openNewResaFromModal()" type="button" aria-label="Ajouter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
     </div>
     <div class="resv-all-filters">
@@ -8041,13 +8065,88 @@ function openResvAllModal() {
   const panel = document.getElementById('resvAllPanel');
   if (bd) bd.classList.add('show');
   if (panel) panel.classList.add('show');
+  attachResvAllSwipe(); // attache les handlers de swipe down (idempotent)
 }
 
 function closeResvAllModal() {
   const bd = document.getElementById('resvAllBackdrop');
   const panel = document.getElementById('resvAllPanel');
   if (bd) bd.classList.remove('show');
-  if (panel) panel.classList.remove('show');
+  if (panel) {
+    panel.classList.remove('show');
+    panel.style.transform = ''; // reset transform inline si swipe
+  }
+}
+
+// Ouvrir le formulaire de nouvelle réservation depuis la modal "Toutes"
+function openNewResaFromModal() {
+  closeResvAllModal();
+  setTimeout(() => {
+    if (typeof openNewResaModal === 'function') {
+      openNewResaModal();
+    }
+  }, 300);
+}
+window.openNewResaFromModal = openNewResaFromModal;
+
+// Swipe down pour fermer la modale (style Apple bottom sheet)
+let _resvAllSwipeAttached = false;
+function attachResvAllSwipe() {
+  if (_resvAllSwipeAttached) return;
+  const panel = document.getElementById('resvAllPanel');
+  const handle = document.getElementById('resvAllHandle');
+  if (!panel || !handle) return;
+  _resvAllSwipeAttached = true;
+
+  let startY = 0, deltaY = 0, dragging = false;
+  let panelHeight = 0;
+
+  function onStart(clientY) {
+    startY = clientY;
+    deltaY = 0;
+    dragging = true;
+    panelHeight = panel.offsetHeight;
+    panel.classList.add('dragging');
+  }
+  function onMove(clientY) {
+    if (!dragging) return;
+    deltaY = clientY - startY;
+    // Empêcher de tirer vers le HAUT (la modale est déjà au max)
+    if (deltaY < 0) deltaY = deltaY * 0.2; // léger effet élastique
+    panel.style.transform = `translate(-50%, ${deltaY}px)`;
+  }
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    panel.classList.remove('dragging');
+    const threshold = panelHeight * 0.30; // 30% de la hauteur pour fermer
+    if (deltaY > threshold) {
+      closeResvAllModal();
+    } else {
+      panel.style.transform = '';
+    }
+  }
+
+  // Touch (mobile) : sur la handle ET sur le head
+  ['touchstart', 'mousedown'].forEach(ev => {
+    handle.addEventListener(ev, (e) => {
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      onStart(clientY);
+      if (e.preventDefault && !e.touches) e.preventDefault();
+    }, ev === 'touchstart' ? { passive: true } : false);
+  });
+
+  ['touchmove', 'mousemove'].forEach(ev => {
+    window.addEventListener(ev, (e) => {
+      if (!dragging) return;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      onMove(clientY);
+    }, ev === 'touchmove' ? { passive: true } : false);
+  });
+
+  ['touchend', 'mouseup', 'touchcancel'].forEach(ev => {
+    window.addEventListener(ev, onEnd);
+  });
 }
 
 function setResvAllFilter(filter) {
@@ -8094,17 +8193,16 @@ function renderResvAllList() {
     const { dayLabel, hourStr } = _formatResvDayHour(r._dateObj, now);
     const name = (r.client_nom || r.nom || 'Client').replace(/</g, '&lt;');
     const c = r.nb_couverts || r.couverts;
-    const meta = c ? `${c} couvert${c > 1 ? 's' : ''}` : 'Réservation';
-    const phone = (r.client_telephone || r.telephone || '').replace(/</g, '&lt;');
+    const meta = c ? `Table de ${c}` : 'Réservation';
     return `
       <div class="resv-all-row">
-        <div class="resv-all-row-time">
-          <div class="resv-all-row-time-day">${dayLabel}</div>
-          <div class="resv-all-row-time-hour">${hourStr}</div>
-        </div>
-        <div class="resv-all-row-body">
+        <div class="resv-all-row-main">
           <div class="resv-all-row-name">${name}</div>
-          <div class="resv-all-row-meta">${meta}${phone ? ' · ' + phone : ''}</div>
+          <div class="resv-all-row-meta">${meta}</div>
+        </div>
+        <div class="resv-all-row-right">
+          <div class="resv-all-row-day">${dayLabel}</div>
+          <div class="resv-all-row-hour">${hourStr}</div>
         </div>
       </div>
     `;

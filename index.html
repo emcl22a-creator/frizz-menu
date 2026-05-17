@@ -5950,6 +5950,8 @@ const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let currentSalon = null;
+let eventsCache = [];
+let currentResaFilter = 'today';
 let dataLoaded = false;
 
 supa.auth.getSession().then(({ data: { session } }) => {
@@ -9640,7 +9642,7 @@ const _origLoadAll = window.loadAllData;
    ═══ PAGE RÉSERVATIONS RESTO                            ═══
    ═══════════════════════════════════════════════════════ */
 
-let currentResaFilter = 'today';
+// currentResaFilter déclaré plus haut (ligne ~5952)
 var resasCache = []; // var pour éviter TDZ + accessible via window.resasCache
 window.resasCache = resasCache;
 let editingResaId = null;
@@ -9681,22 +9683,28 @@ async function loadResas() {
 }
 
 // ═══ Charger les événements (annulations/modifications par les clients) ═══
-let eventsCache = [];
 async function loadEvents() {
   if (!currentSalon) return;
-  const { data, error } = await supa
-    .from('frizz_ai_reservation_events')
-    .select('*')
-    .eq('salon_id', currentSalon.id)
-    .order('created_at', { ascending: false });
-  if (error) {
-    console.error('loadEvents:', error);
+  try {
+    const { data, error } = await supa
+      .from('frizz_ai_reservation_events')
+      .select('*')
+      .eq('salon_id', currentSalon.id)
+      .order('created_at', { ascending: false });
+    if (error) {
+      // Table inexistante ou autre : on continue sans planter
+      console.warn('loadEvents (table peut-être absente):', error.message || error);
+      eventsCache = [];
+      window.eventsCache = [];
+      return;
+    }
+    eventsCache = data || [];
+    window.eventsCache = eventsCache;
+  } catch (e) {
+    console.warn('loadEvents catch:', e);
     eventsCache = [];
     window.eventsCache = [];
-    return;
   }
-  eventsCache = data || [];
-  window.eventsCache = eventsCache;
   try { renderInbox(); } catch (e) { console.error('renderInbox after loadEvents:', e); }
 }
 

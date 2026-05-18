@@ -131,31 +131,14 @@
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: linear-gradient(135deg, #4DA2FF 0%, #007AFF 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 17px;
-    letter-spacing: -0.5px;
-    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.30);
+    object-fit: contain;
+    display: block;
     margin: 0 auto 20px;
-    position: relative;
-  }
-  .not-connected-logo::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    height: 22px;
-    border-radius: 12px 12px 30px 30px / 12px 12px 16px 16px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
+    filter: drop-shadow(0 8px 20px rgba(0, 122, 255, 0.30));
   }
   .not-connected-title {
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 600;
     margin-bottom: 8px;
     letter-spacing: -0.5px;
   }
@@ -211,27 +194,9 @@
     width: 56px;
     height: 56px;
     border-radius: 14px;
-    background: linear-gradient(135deg, #4DA2FF 0%, #007AFF 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.5px;
-    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.30), 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    position: relative;
-  }
-  .logo::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    height: 18px;
-    border-radius: 10px 10px 30px 30px / 10px 10px 16px 16px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
-    pointer-events: none;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 8px 20px rgba(0, 122, 255, 0.30));
   }
   .bell-btn {
     width: 44px;
@@ -268,7 +233,7 @@
   }
   .greeting h1 {
     font-size: 36px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.04em;
     line-height: 1.05;
     color: var(--label);
@@ -336,7 +301,7 @@
   }
   .hero-number {
     font-size: 76px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -3px;
     line-height: 1;
     text-align: center;
@@ -392,7 +357,7 @@
     padding: 6px 12px;
     border-radius: 14px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.3px;
     margin-top: 10px;
     width: fit-content;
@@ -469,7 +434,7 @@
   }
   .stat-value {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--label);
     letter-spacing: -0.6px;
     line-height: 1.2;
@@ -495,7 +460,7 @@
   }
   .resa-header h2 {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.5px;
     color: var(--label);
   }
@@ -527,7 +492,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 15px;
     letter-spacing: -0.3px;
     flex-shrink: 0;
@@ -628,6 +593,148 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ═══ POPUP NOTIFICATIONS ═══ */
+  .notif-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .notif-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .notif-popup {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    width: calc(100% - 24px);
+    max-width: 406px;
+    margin-top: 12px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.05);
+    z-index: 91;
+    max-height: calc(100vh - 100px);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .notif-popup.visible {
+    transform: translate(-50%, 0);
+  }
+  .notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .notif-header h3 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: var(--label);
+  }
+  .notif-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(60, 60, 67, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-secondary);
+    transition: background 0.15s;
+  }
+  .notif-close:active { background: rgba(60, 60, 67, 0.18); }
+  .notif-close svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+  .notif-list {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+  }
+  .notif-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 20px;
+  }
+  .notif-row + .notif-row {
+    border-top: 0.5px solid var(--separator);
+  }
+  .notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .notif-icon.created { background: rgba(52, 199, 89, 0.10); color: var(--green); }
+  .notif-icon.modified { background: rgba(0, 122, 255, 0.10); color: var(--blue); }
+  .notif-icon.cancelled { background: rgba(255, 59, 48, 0.10); color: var(--red); }
+  .notif-icon svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+
+  .notif-content { flex: 1; min-width: 0; }
+  .notif-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+    line-height: 1.3;
+  }
+  .notif-subtitle {
+    font-size: 12px;
+    color: var(--label-secondary);
+    letter-spacing: -0.1px;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+  .notif-time {
+    font-size: 11px;
+    color: var(--label-tertiary);
+    letter-spacing: -0.1px;
+    margin-top: 3px;
+  }
+
+  .notif-empty {
+    padding: 36px 24px;
+    text-align: center;
+  }
+  .notif-empty-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+  }
+  .notif-empty-icon svg { width: 22px; height: 22px; stroke: var(--blue); stroke-width: 1.8; fill: none; }
+  .notif-empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 4px;
+  }
+  .notif-empty-text {
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.4;
+  }
+
   .hidden { display: none !important; }
 </style>
 </head>
@@ -639,7 +746,7 @@
 
 <div class="not-connected-screen hidden" id="notConnectedScreen">
   <div class="not-connected-card">
-    <div class="not-connected-logo">Frizz</div>
+    <img class="not-connected-logo" src="https://i.ibb.co/dTL1X10/sdfasfsd.png" alt="Frizz">
     <h1 class="not-connected-title">Vous n'êtes pas connecté</h1>
     <p class="not-connected-subtitle">Connectez-vous pour accéder à votre tableau de bord.</p>
     <a class="not-connected-btn" href="/login">Se connecter</a>
@@ -648,7 +755,7 @@
 
 <div class="app hidden" id="app">
   <div class="topbar">
-    <div class="logo">Frizz</div>
+    <img class="logo" src="https://i.ibb.co/dTL1X10/sdfasfsd.png" alt="Frizz">
     <button class="bell-btn" id="bellBtn" aria-label="Notifications">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
@@ -765,6 +872,21 @@
   </button>
 </nav>
 
+<!-- POPUP NOTIFICATIONS -->
+<div class="notif-backdrop" id="notifBackdrop"></div>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-header">
+    <h3>Activité du jour</h3>
+    <button class="notif-close" id="notifCloseBtn" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // CONFIG SUPABASE
@@ -774,6 +896,7 @@
 
   let currentUser = null;
   let currentSalon = null;
+  let allReservations = []; // stockage global pour la popup notifs
 
   const $ = (id) => document.getElementById(id);
   const show = (id) => $(id).classList.remove('hidden');
@@ -835,7 +958,9 @@
 
       if (resaErr) throw resaErr;
 
-      renderStats(reservations || []);
+      allReservations = reservations || [];
+      renderStats(allReservations);
+      updateBellDot();
       showApp();
     } catch (err) {
       console.error('Load error:', err);
@@ -945,9 +1070,6 @@
 
     // Liste résas à venir
     renderResaList(validResas, now);
-
-    // Bell dot
-    if (todayCount === 0) $('bellDot').style.display = 'none';
   }
 
   function renderResaList(validResas, now) {
@@ -1003,6 +1125,122 @@
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
+  // ═══ POPUP NOTIFICATIONS ═══
+  function getTodayActivity() {
+    // Réservations dont created_at est aujourd'hui
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
+
+    return allReservations
+      .filter(r => {
+        if (!r.created_at) return false;
+        const createdAt = new Date(r.created_at);
+        return createdAt >= todayStart && createdAt < todayEnd;
+      })
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // plus récent en haut
+  }
+
+  function updateBellDot() {
+    const activity = getTodayActivity();
+    const dot = $('bellDot');
+    if (activity.length > 0) {
+      dot.style.display = 'block';
+    } else {
+      dot.style.display = 'none';
+    }
+  }
+
+  function openNotifs() {
+    renderNotifs();
+    $('notifBackdrop').classList.add('visible');
+    $('notifPopup').classList.add('visible');
+  }
+
+  function closeNotifs() {
+    $('notifBackdrop').classList.remove('visible');
+    $('notifPopup').classList.remove('visible');
+  }
+
+  function renderNotifs() {
+    const activity = getTodayActivity();
+    const container = $('notifList');
+
+    if (activity.length === 0) {
+      container.innerHTML = `
+        <div class="notif-empty">
+          <div class="notif-empty-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="notif-empty-title">Tout est calme</div>
+          <div class="notif-empty-text">Aucune nouvelle activité aujourd'hui pour le moment.</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = activity.map(r => {
+      // Déterminer le type : créée / modifiée / annulée
+      const statut = r.statut || 'confirmee';
+      let type, icon, title;
+      if (statut === 'annulee' || statut === 'annule') {
+        type = 'cancelled';
+        icon = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke-linecap="round"/></svg>';
+        title = `Annulation de la résa de ${escapeHtml(r.client_nom || 'Client')}`;
+      } else if (statut === 'modifiee' || statut === 'modified') {
+        type = 'modified';
+        icon = '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        title = `Modification de la résa de ${escapeHtml(r.client_nom || 'Client')}`;
+      } else {
+        type = 'created';
+        icon = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        title = `Nouvelle résa de ${escapeHtml(r.client_nom || 'Client')}`;
+      }
+
+      // Détails de la réservation
+      const dateResa = formatResaDate(r.date_reservation);
+      const heureResa = formatHeure(r.heure_reservation);
+      const couverts = parseInt(r.nb_couverts) || '?';
+      const subtitle = `Table de ${couverts} · ${dateResa} à ${heureResa}`;
+
+      // Heure de création (relative)
+      const timeAgo = formatTimeAgo(r.created_at);
+
+      return `
+        <div class="notif-row">
+          <div class="notif-icon ${type}">${icon}</div>
+          <div class="notif-content">
+            <div class="notif-title">${title}</div>
+            <div class="notif-subtitle">${subtitle}</div>
+            <div class="notif-time">${timeAgo}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function formatResaDate(dateStr) {
+    if (!dateStr) return '?';
+    const [year, month, day] = dateStr.split('-');
+    const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    return `${parseInt(day)} ${months[parseInt(month) - 1]}`;
+  }
+
+  function formatTimeAgo(createdAt) {
+    const now = new Date();
+    const created = new Date(createdAt);
+    const diffMs = now - created;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMin / 60);
+
+    if (diffMin < 1) return 'À l\'instant';
+    if (diffMin < 60) return `Il y a ${diffMin} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    return created.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
   function formatHeure(timeStr) {
     if (!timeStr) return '';
     const [h, m] = timeStr.split(':');
@@ -1030,8 +1268,17 @@
   }
 
   // EVENT LISTENERS
-  $('voirPlusBtn').addEventListener('click', () => alert('Page Agenda à venir'));
-  $('bellBtn').addEventListener('click', () => alert('Notifications à venir'));
+  $('voirPlusBtn').addEventListener('click', () => {
+    // Scroll fluide vers la section "Réservations à venir"
+    document.querySelector('.resa-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('bellBtn').addEventListener('click', openNotifs);
+  $('notifCloseBtn').addEventListener('click', closeNotifs);
+  $('notifBackdrop').addEventListener('click', closeNotifs);
+  // Fermer popup avec Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeNotifs();
+  });
 
   document.addEventListener('DOMContentLoaded', checkSession);
   document.addEventListener('visibilitychange', () => {

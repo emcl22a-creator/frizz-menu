@@ -596,7 +596,7 @@
   }
 
   /* ═══ PAGE ACTIVITÉ ═══ */
-  .page { display: block; }
+  .page { display: block; position: relative; }
   .page.hidden { display: none !important; }
 
   /* Filtres pilules */
@@ -1378,6 +1378,310 @@
     line-height: 1.4;
   }
 
+  /* ═══ PAYWALL OVERLAY (sur pages Stats/Activité) ═══ */
+  .paywall-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+    background: rgba(242, 242, 247, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    animation: fadeIn 0.4s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .paywall-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #4DA2FF 0%, #007AFF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 28px rgba(0, 122, 255, 0.40), 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+  .paywall-icon svg {
+    width: 36px;
+    height: 36px;
+    stroke: white;
+    stroke-width: 1.8;
+    fill: none;
+  }
+  .paywall-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--label);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .paywall-subtitle {
+    font-size: 15px;
+    color: var(--label-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    max-width: 320px;
+  }
+  .paywall-features {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+    max-width: 320px;
+    width: 100%;
+    text-align: left;
+  }
+  .paywall-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .paywall-feature-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--green-light);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .paywall-feature-check svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 3;
+    fill: none;
+  }
+  .paywall-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    transition: transform 0.15s, opacity 0.15s;
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+  }
+  .paywall-btn:active { transform: scale(0.98); }
+  .paywall-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .paywall-price {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.1px;
+  }
+
+  /* ═══ MODALE D'ÉDITION IOS ═══ */
+  .edit-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    z-index: 110;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .edit-modal-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .edit-modal {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    padding: 8px 20px max(28px, env(safe-area-inset-bottom)) 20px;
+    z-index: 111;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+    visibility: hidden;
+  }
+  .edit-modal.visible {
+    transform: translate(-50%, 0);
+    visibility: visible;
+  }
+  .edit-modal-grabber {
+    width: 40px;
+    height: 5px;
+    border-radius: 100px;
+    background: rgba(60, 60, 67, 0.20);
+    margin: 0 auto 18px;
+  }
+  .edit-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+  }
+  .edit-modal-subtitle {
+    font-size: 13px;
+    color: var(--label-secondary);
+    margin-bottom: 18px;
+  }
+  .edit-modal-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--separator);
+    background: white;
+    font-size: 16px;
+    outline: none;
+    font-family: inherit;
+    color: var(--label);
+    transition: border-color 0.2s;
+    margin-bottom: 18px;
+  }
+  .edit-modal-input:focus {
+    border-color: var(--blue);
+  }
+  .edit-modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .edit-modal-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .edit-modal-btn:active { transform: scale(0.97); }
+  .edit-modal-btn-cancel {
+    background: rgba(60, 60, 67, 0.10);
+    color: var(--label);
+  }
+  .edit-modal-btn-save {
+    background: var(--blue);
+    color: white;
+  }
+  .edit-modal-btn-save:disabled { opacity: 0.5; }
+
+  /* Lignes éditables dans la page Réglages */
+  .settings-row.editable {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .settings-row.editable:active {
+    background: rgba(0, 122, 255, 0.05);
+  }
+  .settings-row.editable .settings-row-value {
+    color: var(--blue);
+  }
+  .settings-row-chevron {
+    width: 12px;
+    height: 12px;
+    stroke: var(--label-tertiary);
+    stroke-width: 2.4;
+    fill: none;
+    margin-left: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Section abonnement */
+  .subscription-card {
+    padding: 18px 16px;
+  }
+  .subscription-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    margin-bottom: 12px;
+  }
+  .subscription-status.active {
+    background: rgba(52, 199, 89, 0.12);
+    color: #1F7A3D;
+  }
+  .subscription-status.trialing {
+    background: rgba(255, 149, 0, 0.12);
+    color: #B25E00;
+  }
+  .subscription-status.inactive {
+    background: rgba(255, 59, 48, 0.12);
+    color: #C0392B;
+  }
+  .subscription-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .subscription-plan {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.4px;
+    margin-bottom: 2px;
+  }
+  .subscription-price {
+    font-size: 14px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-bottom: 16px;
+  }
+  .subscription-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: var(--blue);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    transition: transform 0.15s, opacity 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .subscription-btn:active { transform: scale(0.98); }
+  .subscription-btn:disabled { opacity: 0.6; }
+  .subscription-btn.secondary {
+    background: rgba(60, 60, 67, 0.08);
+    color: var(--label);
+  }
+  .subscription-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+  }
+
   .hidden { display: none !important; }
 </style>
 </head>
@@ -1532,6 +1836,27 @@
       <p class="subtitle">Gérez votre assistant et votre restaurant</p>
     </section>
 
+    <!-- Section : Abonnement -->
+    <div class="settings-section">
+      <div class="settings-section-title">Abonnement</div>
+      <div class="settings-section-card">
+        <div class="subscription-card">
+          <div class="subscription-status inactive" id="subscriptionStatusBadge">
+            <span class="subscription-status-dot"></span>
+            <span id="subscriptionStatusText">Inactif</span>
+          </div>
+          <div class="subscription-plan">Frizz Pro</div>
+          <div class="subscription-price" id="subscriptionPriceText">69 € / mois</div>
+          <button class="subscription-btn" id="subscriptionBtn">
+            <span id="subscriptionBtnText">S'abonner maintenant</span>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Section : Voix de l'assistant -->
     <div class="settings-section">
       <div class="settings-section-title">Voix de l'assistant</div>
@@ -1588,25 +1913,40 @@
     <div class="settings-section">
       <div class="settings-section-title">Mon restaurant</div>
       <div class="settings-section-card">
-        <div class="settings-row" id="settingsNom">
+        <div class="settings-row editable" data-field="nom" data-type="text" data-label="Nom du restaurant">
           <div class="settings-row-label">Nom</div>
           <div class="settings-row-value" id="settingsNomValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
-        <div class="settings-row">
+        <div class="settings-row editable" data-field="adresse" data-type="text" data-label="Adresse">
           <div class="settings-row-label">Adresse</div>
           <div class="settings-row-value" id="settingsAdresseValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
-        <div class="settings-row">
+        <div class="settings-row editable" data-field="ville" data-type="text" data-label="Ville">
           <div class="settings-row-label">Ville</div>
           <div class="settings-row-value" id="settingsVilleValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
-        <div class="settings-row">
+        <div class="settings-row editable" data-field="couverts_interieur" data-type="number" data-label="Capacité intérieur">
           <div class="settings-row-label">Capacité intérieur</div>
           <div class="settings-row-value" id="settingsCapaciteIntValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
-        <div class="settings-row">
+        <div class="settings-row editable" data-field="couverts_terrasse" data-type="number" data-label="Capacité terrasse">
           <div class="settings-row-label">Capacité terrasse</div>
           <div class="settings-row-value" id="settingsCapaciteExtValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -1675,6 +2015,61 @@
 
   </div><!-- /page-settings -->
 
+</div>
+
+<!-- ═══ PAYWALL OVERLAY (afficher sur Stats/Activité si non payé) ═══ -->
+<template id="paywallTemplate">
+  <div class="paywall-overlay">
+    <div class="paywall-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="11" width="18" height="11" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="paywall-title">Frizz Pro requis</div>
+    <div class="paywall-subtitle">Souscrivez pour débloquer toutes les fonctionnalités et laisser Audrey gérer vos appels.</div>
+    <div class="paywall-features">
+      <div class="paywall-feature">
+        <div class="paywall-feature-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span>Assistant vocal 24/7</span>
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span>Réservations illimitées</span>
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span>Tableau de bord temps réel</span>
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span>Vous gardez votre numéro</span>
+      </div>
+    </div>
+    <button class="paywall-btn paywall-btn-cta">Souscrire — 69 € / mois</button>
+    <div class="paywall-price">Sans engagement · Annulable à tout moment</div>
+  </div>
+</template>
+
+<!-- ═══ MODALE D'ÉDITION (iOS-style) ═══ -->
+<div class="edit-modal-backdrop" id="editModalBackdrop"></div>
+<div class="edit-modal" id="editModal">
+  <div class="edit-modal-grabber"></div>
+  <div class="edit-modal-title" id="editModalTitle">Modifier</div>
+  <div class="edit-modal-subtitle" id="editModalSubtitle">—</div>
+  <input type="text" class="edit-modal-input" id="editModalInput">
+  <div class="edit-modal-actions">
+    <button class="edit-modal-btn edit-modal-btn-cancel" id="editModalCancelBtn">Annuler</button>
+    <button class="edit-modal-btn edit-modal-btn-save" id="editModalSaveBtn">Enregistrer</button>
+  </div>
 </div>
 
 <nav class="tabbar hidden" id="tabbar">
@@ -1811,6 +2206,7 @@
       allReservations = reservations || [];
       renderStats(allReservations);
       updateBellDot();
+      applyPaywall();
       showApp();
     } catch (err) {
       console.error('Load error:', err);
@@ -2484,6 +2880,9 @@
     document.querySelectorAll('.voice-card').forEach(card => {
       card.classList.toggle('selected', card.dataset.voice === currentVoice);
     });
+
+    // Abonnement
+    renderSubscription();
   }
 
   async function selectVoice(voiceCode) {
@@ -2592,6 +2991,173 @@
     toast._timeout = setTimeout(() => toast.classList.remove('visible'), 2200);
   }
 
+  // ═══ ABONNEMENT ═══
+  function isSubscriptionActive() {
+    if (!currentSalon) return false;
+    const status = currentSalon.subscription_status;
+    return status === 'active' || status === 'trialing';
+  }
+
+  function renderSubscription() {
+    const badge = $('subscriptionStatusBadge');
+    const statusText = $('subscriptionStatusText');
+    const btnText = $('subscriptionBtnText');
+    if (!badge || !currentSalon) return;
+
+    const status = currentSalon.subscription_status || 'inactive';
+
+    badge.classList.remove('active', 'trialing', 'inactive');
+    if (status === 'active') {
+      badge.classList.add('active');
+      statusText.textContent = 'Actif';
+      btnText.textContent = 'Gérer mon abonnement';
+    } else if (status === 'trialing') {
+      badge.classList.add('trialing');
+      statusText.textContent = 'Essai gratuit';
+      btnText.textContent = 'Voir mon abonnement';
+    } else {
+      badge.classList.add('inactive');
+      statusText.textContent = 'Inactif';
+      btnText.textContent = 'S\'abonner maintenant';
+    }
+  }
+
+  async function handleSubscriptionClick() {
+    if (!currentSalon) return;
+    const btn = $('subscriptionBtn');
+    const originalText = $('subscriptionBtnText').textContent;
+    btn.disabled = true;
+    $('subscriptionBtnText').textContent = 'Chargement…';
+
+    try {
+      const { data: { session } } = await supa.auth.getSession();
+      if (!session) throw new Error('Session invalide');
+
+      // Si abonné → ouvrir le Customer Portal
+      // Si non abonné → ouvrir le Checkout
+      const isActive = isSubscriptionActive();
+      const endpoint = isActive ? 'create_customer_portal_session' : 'create_checkout_session';
+
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ salon_id: currentSalon.id }),
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err || `HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('URL manquante dans la réponse');
+      }
+    } catch (err) {
+      console.error('Erreur Stripe:', err);
+      showToast('⚠️ ' + (err.message || 'Erreur de paiement'));
+      btn.disabled = false;
+      $('subscriptionBtnText').textContent = originalText;
+    }
+  }
+
+  // ═══ PAYWALL ═══
+  function applyPaywall() {
+    const active = isSubscriptionActive();
+    const pagesToBlock = ['page-stats', 'page-activity'];
+
+    pagesToBlock.forEach(pageId => {
+      const page = document.getElementById(pageId);
+      if (!page) return;
+
+      // Retirer l'ancien overlay s'il existe
+      const oldOverlay = page.querySelector('.paywall-overlay');
+      if (oldOverlay) oldOverlay.remove();
+
+      if (!active) {
+        // Cloner le template et l'ajouter
+        const tpl = document.getElementById('paywallTemplate');
+        const overlay = tpl.content.cloneNode(true).querySelector('.paywall-overlay');
+        const cta = overlay.querySelector('.paywall-btn-cta');
+        cta.addEventListener('click', handleSubscriptionClick);
+        page.appendChild(overlay);
+      }
+    });
+  }
+
+  // ═══ MODALE D'ÉDITION (iOS-style) ═══
+  let editingField = null;
+  let editingType = 'text';
+
+  function openEditModal(field, type, label, currentValue) {
+    editingField = field;
+    editingType = type;
+    $('editModalTitle').textContent = label;
+    $('editModalSubtitle').textContent = `Modifier ${label.toLowerCase()}`;
+    const input = $('editModalInput');
+    input.type = type === 'number' ? 'number' : 'text';
+    input.value = currentValue || '';
+    input.min = type === 'number' ? '0' : '';
+    $('editModalBackdrop').classList.add('visible');
+    $('editModal').classList.add('visible');
+    setTimeout(() => input.focus(), 300);
+  }
+
+  function closeEditModal() {
+    $('editModalBackdrop').classList.remove('visible');
+    $('editModal').classList.remove('visible');
+    editingField = null;
+  }
+
+  async function saveEditModal() {
+    if (!editingField || !currentSalon) {
+      closeEditModal();
+      return;
+    }
+
+    const input = $('editModalInput');
+    let newValue = input.value.trim();
+
+    if (editingType === 'number') {
+      newValue = parseInt(newValue) || 0;
+      if (newValue < 0) newValue = 0;
+    }
+
+    if (newValue === '' && editingType === 'text') {
+      showToast('⚠️ Le champ ne peut pas être vide');
+      return;
+    }
+
+    const btn = $('editModalSaveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+
+    try {
+      const { error } = await supa
+        .from('frizz_ai_salons')
+        .update({ [editingField]: newValue })
+        .eq('id', currentSalon.id);
+      if (error) throw error;
+
+      currentSalon[editingField] = newValue;
+      renderSettings();
+      closeEditModal();
+      showToast('✓ Modifié');
+    } catch (err) {
+      console.error('Erreur update:', err);
+      showToast('⚠️ Erreur de sauvegarde');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  }
+
   // EVENT LISTENERS
   $('voirPlusBtn').addEventListener('click', openResaPopup);
   $('resaPopupCloseBtn').addEventListener('click', closeResaPopup);
@@ -2642,15 +3208,52 @@
       copyToClipboard(code);
     });
   });
+
+  // Page Réglages — Bouton abonnement
+  $('subscriptionBtn').addEventListener('click', handleSubscriptionClick);
+
+  // Page Réglages — Lignes éditables (Mon restaurant)
+  document.querySelectorAll('.settings-row.editable').forEach(row => {
+    row.addEventListener('click', () => {
+      const field = row.dataset.field;
+      const type = row.dataset.type || 'text';
+      const label = row.dataset.label || 'Modifier';
+      const currentValue = currentSalon ? (currentSalon[field] ?? '') : '';
+      openEditModal(field, type, label, currentValue);
+    });
+  });
+
+  // Modale d'édition
+  $('editModalCancelBtn').addEventListener('click', closeEditModal);
+  $('editModalSaveBtn').addEventListener('click', saveEditModal);
+  $('editModalBackdrop').addEventListener('click', closeEditModal);
+  $('editModalInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveEditModal();
+    if (e.key === 'Escape') closeEditModal();
+  });
   // Fermer popup avec Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeNotifs();
       closeResaPopup();
+      closeEditModal();
     }
   });
 
-  document.addEventListener('DOMContentLoaded', checkSession);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Gérer retour Stripe
+    const urlParams = new URLSearchParams(window.location.search);
+    const stripeStatus = urlParams.get('stripe');
+    if (stripeStatus === 'success') {
+      showToast('✓ Abonnement activé !');
+      // Nettoyer l'URL
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (stripeStatus === 'cancelled') {
+      showToast('Paiement annulé');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    checkSession();
+  });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && currentSalon) loadAppData();
   });

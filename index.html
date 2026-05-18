@@ -106,8 +106,8 @@
     padding-bottom: 100px;
   }
 
-  /* LOGIN SCREEN */
-  .login-screen {
+  /* SCREEN "NOT CONNECTED" */
+  .not-connected-screen {
     position: fixed;
     inset: 0;
     z-index: 100;
@@ -116,17 +116,18 @@
     justify-content: center;
     padding: 24px;
   }
-  .login-card {
+  .not-connected-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(24px) saturate(180%);
     border: 0.5px solid rgba(0, 0, 0, 0.06);
     border-radius: 24px;
-    padding: 32px 24px;
+    padding: 36px 28px;
     width: 100%;
     max-width: 380px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
   }
-  .login-logo {
+  .not-connected-logo {
     width: 64px;
     height: 64px;
     border-radius: 16px;
@@ -142,7 +143,7 @@
     margin: 0 auto 20px;
     position: relative;
   }
-  .login-logo::before {
+  .not-connected-logo::before {
     content: '';
     position: absolute;
     top: 5px;
@@ -152,42 +153,20 @@
     border-radius: 12px 12px 30px 30px / 12px 12px 16px 16px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
   }
-  .login-title {
-    font-size: 24px;
+  .not-connected-title {
+    font-size: 22px;
     font-weight: 800;
-    text-align: center;
-    margin-bottom: 4px;
-    letter-spacing: -0.6px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
   }
-  .login-subtitle {
+  .not-connected-subtitle {
     font-size: 15px;
     color: var(--label-secondary);
-    text-align: center;
     margin-bottom: 24px;
+    line-height: 1.4;
   }
-  .login-field { margin-bottom: 14px; }
-  .login-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--label-secondary);
-    margin-bottom: 6px;
+  .not-connected-btn {
     display: block;
-  }
-  .login-input {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--separator);
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .login-input:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.10);
-  }
-  .login-btn {
     width: 100%;
     padding: 14px;
     border-radius: 12px;
@@ -195,32 +174,10 @@
     color: white;
     font-size: 16px;
     font-weight: 600;
-    margin-top: 8px;
+    text-decoration: none;
     transition: opacity 0.15s, transform 0.15s;
   }
-  .login-btn:active { transform: scale(0.98); }
-  .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .login-error {
-    background: rgba(255, 59, 48, 0.10);
-    color: #C0392B;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    margin-bottom: 14px;
-    display: none;
-  }
-  .login-error.visible { display: block; }
-  .login-switch {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 14px;
-    color: var(--label-secondary);
-  }
-  .login-switch a {
-    color: var(--blue);
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .not-connected-btn:active { transform: scale(0.98); }
 
   /* SPLASH */
   .splash {
@@ -680,25 +637,12 @@
   <div class="splash-spinner"></div>
 </div>
 
-<div class="login-screen hidden" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">Frizz</div>
-    <h1 class="login-title">Bienvenue</h1>
-    <p class="login-subtitle" id="loginSubtitle">Connectez-vous à votre tableau de bord</p>
-    <div class="login-error" id="loginError"></div>
-    <div class="login-field">
-      <label class="login-label">Email</label>
-      <input type="email" class="login-input" id="loginEmail" placeholder="vous@restaurant.fr" autocomplete="email">
-    </div>
-    <div class="login-field">
-      <label class="login-label">Mot de passe</label>
-      <input type="password" class="login-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="login-btn" id="loginBtn">Se connecter</button>
-    <div class="login-switch">
-      <span id="loginSwitchText">Pas encore de compte ?</span>
-      <a id="loginSwitchLink">S'inscrire</a>
-    </div>
+<div class="not-connected-screen hidden" id="notConnectedScreen">
+  <div class="not-connected-card">
+    <div class="not-connected-logo">Frizz</div>
+    <h1 class="not-connected-title">Vous n'êtes pas connecté</h1>
+    <p class="not-connected-subtitle">Connectez-vous pour accéder à votre tableau de bord.</p>
+    <a class="not-connected-btn" href="/login">Se connecter</a>
   </div>
 </div>
 
@@ -830,7 +774,6 @@
 
   let currentUser = null;
   let currentSalon = null;
-  let authMode = 'login';
 
   const $ = (id) => document.getElementById(id);
   const show = (id) => $(id).classList.remove('hidden');
@@ -842,91 +785,22 @@
       currentUser = session.user;
       await loadAppData();
     } else {
-      showLogin();
+      showNotConnected();
     }
   }
 
-  function showLogin() {
+  function showNotConnected() {
     hide('splash');
     hide('app');
     hide('tabbar');
-    show('loginScreen');
+    show('notConnectedScreen');
   }
 
   function showApp() {
     hide('splash');
-    hide('loginScreen');
+    hide('notConnectedScreen');
     show('app');
     show('tabbar');
-  }
-
-  function toggleAuthMode() {
-    authMode = authMode === 'login' ? 'signup' : 'login';
-    if (authMode === 'login') {
-      $('loginSubtitle').textContent = 'Connectez-vous à votre tableau de bord';
-      $('loginBtn').textContent = 'Se connecter';
-      $('loginSwitchText').textContent = 'Pas encore de compte ?';
-      $('loginSwitchLink').textContent = "S'inscrire";
-    } else {
-      $('loginSubtitle').textContent = 'Créez votre compte restaurateur';
-      $('loginBtn').textContent = 'Créer mon compte';
-      $('loginSwitchText').textContent = 'Déjà un compte ?';
-      $('loginSwitchLink').textContent = 'Se connecter';
-    }
-    $('loginError').classList.remove('visible');
-  }
-
-  async function doAuth() {
-    const email = $('loginEmail').value.trim();
-    const password = $('loginPassword').value;
-    const errorEl = $('loginError');
-    const btn = $('loginBtn');
-
-    if (!email || !password) {
-      errorEl.textContent = 'Email et mot de passe requis.';
-      errorEl.style.background = 'rgba(255, 59, 48, 0.10)';
-      errorEl.style.color = '#C0392B';
-      errorEl.classList.add('visible');
-      return;
-    }
-    if (password.length < 6) {
-      errorEl.textContent = 'Le mot de passe doit faire au moins 6 caractères.';
-      errorEl.style.background = 'rgba(255, 59, 48, 0.10)';
-      errorEl.style.color = '#C0392B';
-      errorEl.classList.add('visible');
-      return;
-    }
-
-    errorEl.classList.remove('visible');
-    btn.disabled = true;
-    btn.textContent = authMode === 'login' ? 'Connexion…' : 'Création…';
-
-    try {
-      const fn = authMode === 'login' ? 'signInWithPassword' : 'signUp';
-      const { data, error } = await supa.auth[fn]({ email, password });
-      if (error) throw error;
-
-      if (authMode === 'signup' && !data.session) {
-        errorEl.textContent = 'Compte créé ! Vérifiez votre email pour le valider.';
-        errorEl.style.background = 'rgba(52, 199, 89, 0.10)';
-        errorEl.style.color = '#1F7A3D';
-        errorEl.classList.add('visible');
-        btn.disabled = false;
-        btn.textContent = 'Créer mon compte';
-        return;
-      }
-
-      currentUser = data.user;
-      await loadAppData();
-    } catch (err) {
-      console.error('Auth error:', err);
-      errorEl.textContent = err.message || 'Erreur de connexion.';
-      errorEl.style.background = 'rgba(255, 59, 48, 0.10)';
-      errorEl.style.color = '#C0392B';
-      errorEl.classList.add('visible');
-      btn.disabled = false;
-      btn.textContent = authMode === 'login' ? 'Se connecter' : 'Créer mon compte';
-    }
   }
 
   async function loadAppData() {
@@ -967,7 +841,7 @@
       console.error('Load error:', err);
       alert('Erreur de chargement : ' + (err.message || err));
       await supa.auth.signOut();
-      showLogin();
+      showNotConnected();
     }
   }
 
@@ -1156,9 +1030,6 @@
   }
 
   // EVENT LISTENERS
-  $('loginBtn').addEventListener('click', doAuth);
-  $('loginSwitchLink').addEventListener('click', toggleAuthMode);
-  $('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') doAuth(); });
   $('voirPlusBtn').addEventListener('click', () => alert('Page Agenda à venir'));
   $('bellBtn').addEventListener('click', () => alert('Notifications à venir'));
 

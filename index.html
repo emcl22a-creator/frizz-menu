@@ -610,19 +610,25 @@
   }
   .resa-popup {
     position: fixed;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100%;
+    max-width: 430px;
     z-index: 96;
     background: var(--bg);
-    transform: translateY(100%);
+    transform: translate(-50%, 100%);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
-    max-width: 430px;
-    margin: 0 auto;
     overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
   }
   .resa-popup.visible {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+    visibility: visible;
   }
   .resa-popup-header {
     display: flex;
@@ -769,9 +775,13 @@
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
+    pointer-events: none;
+    visibility: hidden;
   }
   .notif-popup.visible {
     transform: translate(-50%, 0);
+    pointer-events: auto;
+    visibility: visible;
   }
   .notif-header {
     display: flex;

@@ -300,9 +300,9 @@
     color: white;
   }
   .hero-number {
-    font-size: 76px;
+    font-size: 58px;
     font-weight: 600;
-    letter-spacing: -3px;
+    letter-spacing: -2px;
     line-height: 1;
     text-align: center;
     margin: -2px 0;
@@ -798,6 +798,290 @@
     line-height: 1.4;
   }
 
+  /* ═══ PAGE RÉGLAGES ═══ */
+  .settings-section {
+    padding: 0 20px;
+    margin-bottom: 24px;
+    animation: cascadeIn 0.5s ease-out backwards;
+  }
+  .settings-section:nth-child(2) { animation-delay: 0.05s; }
+  .settings-section:nth-child(3) { animation-delay: 0.10s; }
+  .settings-section:nth-child(4) { animation-delay: 0.15s; }
+  .settings-section:nth-child(5) { animation-delay: 0.20s; }
+
+  .settings-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 4px 10px;
+  }
+
+  .settings-section-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  /* Voice cards */
+  .voice-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 2px solid transparent;
+  }
+  .voice-card:active { background: rgba(0, 122, 255, 0.05); }
+  .voice-card + .voice-card { border-top: 0.5px solid var(--separator); }
+  .voice-card.selected {
+    background: rgba(0, 122, 255, 0.06);
+  }
+
+  .voice-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 24px;
+  }
+  .voice-female {
+    background: linear-gradient(135deg, rgba(255, 45, 85, 0.15), rgba(175, 82, 222, 0.15));
+  }
+  .voice-male {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.15), rgba(52, 199, 89, 0.15));
+  }
+
+  .voice-info { flex: 1; min-width: 0; }
+  .voice-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .voice-subtitle {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-top: 2px;
+  }
+
+  .voice-play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .voice-play-btn:active { transform: scale(0.92); }
+  .voice-play-btn.playing {
+    background: var(--blue);
+    color: white;
+  }
+  .voice-play-btn svg { width: 16px; height: 16px; }
+
+  .voice-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 4px;
+    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.35);
+  }
+  .voice-check svg { width: 14px; height: 14px; }
+  .voice-card.selected .voice-check { display: flex; }
+
+  /* Settings rows (infos resto) */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .settings-row + .settings-row { border-top: 0.5px solid var(--separator); }
+  .settings-row-label {
+    font-size: 14px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    flex-shrink: 0;
+  }
+  .settings-row-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Frizz number block */
+  .frizz-number-block {
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .frizz-number-label {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-bottom: 8px;
+  }
+  .frizz-number-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 12px;
+  }
+  .frizz-number-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    transition: transform 0.15s;
+  }
+  .frizz-number-copy:active { transform: scale(0.96); }
+  .frizz-number-copy svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  /* Help codes */
+  .settings-help-card { padding: 16px; }
+  .settings-help-intro {
+    font-size: 14px;
+    color: var(--label-secondary);
+    line-height: 1.5;
+    letter-spacing: -0.2px;
+    margin-bottom: 14px;
+  }
+  .settings-help-intro strong {
+    color: var(--label);
+    font-weight: 600;
+  }
+  .help-code-block {
+    background: rgba(60, 60, 67, 0.05);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .help-code-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .help-code-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    font-style: normal;
+  }
+  .help-code-icon.green { background: var(--green); }
+  .help-code-icon.red { background: var(--red); }
+  .help-code-icon.blue { background: var(--blue); font-family: serif; font-style: italic; }
+
+  .help-code-value {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: -0.2px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+    border: 0.5px solid var(--separator);
+  }
+  .help-code-copy {
+    align-self: flex-end;
+    padding: 4px 10px;
+    background: var(--blue);
+    color: white;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    transition: transform 0.15s;
+  }
+  .help-code-copy:active { transform: scale(0.95); }
+
+  .settings-help-tip {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(255, 149, 0, 0.08);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.5;
+    letter-spacing: -0.2px;
+  }
+  .settings-help-tip strong {
+    color: var(--label);
+    font-weight: 600;
+  }
+
+  /* Toast */
+  .settings-toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(28, 28, 30, 0.95);
+    backdrop-filter: blur(20px);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .settings-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   /* ═══ POPUP RÉSERVATIONS PLEIN ÉCRAN ═══ */
   .resa-popup-backdrop {
     position: fixed;
@@ -1196,7 +1480,7 @@
 
   <section class="resa-section">
     <div class="resa-header">
-      <h2>Réservations à venir</h2>
+      <h2>Réservations du jour</h2>
       <a class="voir-plus" id="voirPlusBtn">
         Voir plus
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1238,6 +1522,157 @@
 
   </div><!-- /page-activity -->
 
+  <!-- ═══ PAGE RÉGLAGES ═══ -->
+  <div class="page hidden" id="page-settings">
+
+    <section class="greeting">
+      <h1>Réglages</h1>
+      <p class="subtitle">Gérez votre assistant et votre restaurant</p>
+    </section>
+
+    <!-- Section : Voix de l'assistant -->
+    <div class="settings-section">
+      <div class="settings-section-title">Voix de l'assistant</div>
+      <div class="settings-section-card">
+
+        <div class="voice-card" data-voice="voix_feminine">
+          <div class="voice-avatar voice-female">👩</div>
+          <div class="voice-info">
+            <div class="voice-name">Audrey</div>
+            <div class="voice-subtitle">Voix féminine</div>
+          </div>
+          <button class="voice-play-btn" data-audio="audrey" aria-label="Écouter Audrey">
+            <svg class="voice-play-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+            </svg>
+            <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+              <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="voice-check">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="voice-card" data-voice="voix_masculine">
+          <div class="voice-avatar voice-male">🧑</div>
+          <div class="voice-info">
+            <div class="voice-name">Julien</div>
+            <div class="voice-subtitle">Voix masculine</div>
+          </div>
+          <button class="voice-play-btn" data-audio="julien" aria-label="Écouter Julien">
+            <svg class="voice-play-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+            </svg>
+            <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+              <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="voice-check">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section : Mon restaurant -->
+    <div class="settings-section">
+      <div class="settings-section-title">Mon restaurant</div>
+      <div class="settings-section-card">
+        <div class="settings-row" id="settingsNom">
+          <div class="settings-row-label">Nom</div>
+          <div class="settings-row-value" id="settingsNomValue">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">Adresse</div>
+          <div class="settings-row-value" id="settingsAdresseValue">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">Ville</div>
+          <div class="settings-row-value" id="settingsVilleValue">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">Capacité intérieur</div>
+          <div class="settings-row-value" id="settingsCapaciteIntValue">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">Capacité terrasse</div>
+          <div class="settings-row-value" id="settingsCapaciteExtValue">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section : Votre numéro Frizz -->
+    <div class="settings-section">
+      <div class="settings-section-title">Votre numéro Frizz</div>
+      <div class="settings-section-card">
+        <div class="frizz-number-block">
+          <div class="frizz-number-label">Numéro à utiliser pour le renvoi</div>
+          <div class="frizz-number-value" id="frizzNumberValue">+1 319 289 9858</div>
+          <button class="frizz-number-copy" id="frizzNumberCopyBtn">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span id="frizzNumberCopyText">Copier</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section : Aide renvoi d'appel -->
+    <div class="settings-section">
+      <div class="settings-section-title">Aide renvoi d'appel</div>
+      <div class="settings-section-card settings-help-card">
+        <div class="settings-help-intro">
+          Composez ces codes sur votre téléphone <strong>habituel</strong> pour activer / désactiver le renvoi vers Frizz :
+        </div>
+
+        <div class="help-code-block">
+          <div class="help-code-label">
+            <span class="help-code-icon green">✓</span>
+            Activer le renvoi vers Frizz
+          </div>
+          <div class="help-code-value" id="helpCodeActivate">**21*+13192899858#</div>
+          <button class="help-code-copy" data-copy="activate">Copier</button>
+        </div>
+
+        <div class="help-code-block">
+          <div class="help-code-label">
+            <span class="help-code-icon red">✕</span>
+            Désactiver le renvoi
+          </div>
+          <div class="help-code-value">##21#</div>
+          <button class="help-code-copy" data-copy="deactivate">Copier</button>
+        </div>
+
+        <div class="help-code-block">
+          <div class="help-code-label">
+            <span class="help-code-icon blue">i</span>
+            Vérifier l'état du renvoi
+          </div>
+          <div class="help-code-value">*#21#</div>
+          <button class="help-code-copy" data-copy="check">Copier</button>
+        </div>
+
+        <div class="settings-help-tip">
+          💡 <strong>Astuce :</strong> Appuyez sur Appeler ☎️ après avoir tapé le code. Compatible avec tous les opérateurs (Orange, SFR, Bouygues, Free, Sosh, RED).
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="settings-toast" id="settingsToast">✓ Copié !</div>
+
+  </div><!-- /page-settings -->
+
 </div>
 
 <nav class="tabbar hidden" id="tabbar">
@@ -1255,7 +1690,7 @@
     </svg>
     Activité
   </button>
-  <button class="tab" disabled style="opacity: 0.4;">
+  <button class="tab" data-page="settings">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -1487,12 +1922,14 @@
 
   function renderResaList(validResas, now) {
     const container = $('resaList');
-    const upcoming = validResas
-      .filter(r => r.dateObj > now)
-      .sort((a, b) => a.dateObj - b.dateObj)
-      .slice(0, 4);
+    // Toutes les résas d'aujourd'hui (statut non annulée déjà filtré dans validResas)
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
+    const todayResas = validResas
+      .filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd)
+      .sort((a, b) => a.dateObj - b.dateObj);
 
-    if (upcoming.length === 0) {
+    if (todayResas.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
           <svg viewBox="0 0 24 24">
@@ -1501,20 +1938,21 @@
             <line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
-          <div class="empty-text">Aucune réservation à venir</div>
+          <div class="empty-text">Aucune réservation aujourd'hui</div>
         </div>`;
       return;
     }
 
-    container.innerHTML = upcoming.map(r => {
+    container.innerHTML = todayResas.map(r => {
       const initials = getInitials(r.client_nom);
       const heure = formatHeure(r.heure_reservation);
       const color = avatarColorFor(r.client_nom || '');
+      const isPast = r.dateObj < now;
       const sourceText = (r.source === 'ia' || r.source === 'vapi')
-        ? 'Réservation confirmée par IA'
-        : 'Réservation confirmée';
+        ? (isPast ? 'Réservation honorée' : 'Réservation confirmée par IA')
+        : (isPast ? 'Réservation passée' : 'Réservation confirmée');
       return `
-        <div class="resa-row">
+        <div class="resa-row"${isPast ? ' style="opacity: 0.5;"' : ''}>
           <div class="avatar" style="background: ${color.bg}; color: ${color.fg};">${escapeHtml(initials)}</div>
           <div class="resa-info">
             <div class="resa-title">Table de ${parseInt(r.nb_couverts) || '?'} · ${escapeHtml(r.client_nom || 'Client')}</div>
@@ -1822,6 +2260,10 @@
     if (pageId === 'activity') {
       renderActivity();
     }
+    // Render le contenu si Réglages
+    if (pageId === 'settings') {
+      renderSettings();
+    }
     // Scroll en haut
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
@@ -2016,6 +2458,138 @@
     `;
   }
 
+  // ═══ PAGE RÉGLAGES ═══
+  // URLs des audios (à remplacer par les vraies URLs après upload)
+  const VOICE_AUDIOS = {
+    audrey: '', // À remplir avec l'URL de l'audio Audrey
+    julien: '', // À remplir avec l'URL de l'audio Julien
+  };
+  let currentAudio = null;
+  let currentPlayingBtn = null;
+
+  function renderSettings() {
+    if (!currentSalon) return;
+
+    // Infos restaurant
+    $('settingsNomValue').textContent = currentSalon.nom || '—';
+    $('settingsAdresseValue').textContent = currentSalon.adresse || '—';
+    $('settingsVilleValue').textContent = currentSalon.ville || '—';
+    $('settingsCapaciteIntValue').textContent = (currentSalon.couverts_interieur || 0) + ' couverts';
+    $('settingsCapaciteExtValue').textContent = (currentSalon.couverts_terrasse || 0) + ' couverts';
+
+    // Voix sélectionnée (défaut: voix_feminine si non définie)
+    const currentVoice = currentSalon.voix || 'voix_feminine';
+    document.querySelectorAll('.voice-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.voice === currentVoice);
+    });
+  }
+
+  async function selectVoice(voiceCode) {
+    if (!currentSalon) return;
+    if (currentSalon.voix === voiceCode) return; // déjà sélectionnée
+
+    // Update UI optimiste
+    document.querySelectorAll('.voice-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.voice === voiceCode);
+    });
+
+    // Save en base
+    try {
+      const { error } = await supa
+        .from('frizz_ai_salons')
+        .update({ voix: voiceCode })
+        .eq('id', currentSalon.id);
+      if (error) throw error;
+      currentSalon.voix = voiceCode;
+      showToast('✓ Voix mise à jour');
+    } catch (err) {
+      console.error('Erreur sauvegarde voix:', err);
+      showToast('⚠️ Erreur de sauvegarde');
+      // Revert UI
+      document.querySelectorAll('.voice-card').forEach(card => {
+        card.classList.toggle('selected', card.dataset.voice === (currentSalon.voix || 'voix_feminine'));
+      });
+    }
+  }
+
+  function playVoicePreview(audioKey, btnEl) {
+    // Stop current audio si déjà joué
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      if (currentPlayingBtn) {
+        currentPlayingBtn.classList.remove('playing');
+        currentPlayingBtn.querySelector('.voice-play-icon').classList.remove('hidden');
+        currentPlayingBtn.querySelector('.voice-pause-icon').classList.add('hidden');
+      }
+      const wasSame = currentPlayingBtn === btnEl;
+      currentAudio = null;
+      currentPlayingBtn = null;
+      if (wasSame) return; // toggle off
+    }
+
+    const url = VOICE_AUDIOS[audioKey];
+    if (!url) {
+      showToast('⚠️ Audio non disponible pour le moment');
+      return;
+    }
+
+    currentAudio = new Audio(url);
+    currentPlayingBtn = btnEl;
+    btnEl.classList.add('playing');
+    btnEl.querySelector('.voice-play-icon').classList.add('hidden');
+    btnEl.querySelector('.voice-pause-icon').classList.remove('hidden');
+
+    currentAudio.play().catch(err => {
+      console.error('Audio play error:', err);
+      showToast('⚠️ Erreur de lecture');
+      btnEl.classList.remove('playing');
+      btnEl.querySelector('.voice-play-icon').classList.remove('hidden');
+      btnEl.querySelector('.voice-pause-icon').classList.add('hidden');
+      currentAudio = null;
+      currentPlayingBtn = null;
+    });
+
+    currentAudio.onended = () => {
+      btnEl.classList.remove('playing');
+      btnEl.querySelector('.voice-play-icon').classList.remove('hidden');
+      btnEl.querySelector('.voice-pause-icon').classList.add('hidden');
+      currentAudio = null;
+      currentPlayingBtn = null;
+    };
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('✓ Copié !');
+      }).catch(() => copyFallback(text));
+    } else {
+      copyFallback(text);
+    }
+  }
+
+  function copyFallback(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('✓ Copié !'); }
+    catch (e) { showToast('⚠️ Erreur de copie'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const toast = $('settingsToast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('visible');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('visible'), 2200);
+  }
+
   // EVENT LISTENERS
   $('voirPlusBtn').addEventListener('click', openResaPopup);
   $('resaPopupCloseBtn').addEventListener('click', closeResaPopup);
@@ -2035,6 +2609,36 @@
   // Filtres page Activité
   document.querySelectorAll('.activity-filter-pill').forEach(pill => {
     pill.addEventListener('click', () => setActivityFilter(pill.dataset.filter));
+  });
+
+  // Page Réglages — Sélection de voix
+  document.querySelectorAll('.voice-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Si on a cliqué sur le bouton play, ne pas sélectionner la voix
+      if (e.target.closest('.voice-play-btn')) return;
+      selectVoice(card.dataset.voice);
+    });
+  });
+
+  // Page Réglages — Boutons play audio
+  document.querySelectorAll('.voice-play-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playVoicePreview(btn.dataset.audio, btn);
+    });
+  });
+
+  // Page Réglages — Copier numéro Frizz
+  $('frizzNumberCopyBtn').addEventListener('click', () => {
+    copyToClipboard($('frizzNumberValue').textContent);
+  });
+
+  // Page Réglages — Copier codes USSD
+  document.querySelectorAll('.help-code-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.parentElement.querySelector('.help-code-value').textContent;
+      copyToClipboard(code);
+    });
   });
   // Fermer popup avec Escape
   document.addEventListener('keydown', (e) => {

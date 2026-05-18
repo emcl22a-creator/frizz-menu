@@ -1619,29 +1619,7 @@
     isolation: isolate;
   }
   
-  /* Halo lumineux animé en arrière-plan */
-  .subscription-card-premium::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -10%;
-    width: 50%;
-    height: 200%;
-    background: linear-gradient(135deg, 
-      transparent 0%, 
-      rgba(0, 122, 255, 0.08) 30%, 
-      rgba(0, 122, 255, 0.15) 50%, 
-      rgba(0, 122, 255, 0.08) 70%, 
-      transparent 100%);
-    transform: rotate(15deg);
-    animation: subscriptionShimmer 8s ease-in-out infinite;
-    z-index: -1;
-    pointer-events: none;
-  }
-  @keyframes subscriptionShimmer {
-    0%, 100% { transform: translateX(-30%) rotate(15deg); opacity: 0.6; }
-    50% { transform: translateX(150%) rotate(15deg); opacity: 1; }
-  }
+  /* Halo lumineux retiré (effet miroir indésirable) */
 
   /* Petit orbe bleu en haut à droite */
   .subscription-card-premium::after {
@@ -1793,17 +1771,6 @@
     position: relative;
     overflow: hidden;
   }
-  .subscription-btn-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transition: left 0.6s;
-  }
-  .subscription-btn-premium:hover::before { left: 100%; }
   .subscription-btn-premium:active { transform: scale(0.98); }
   .subscription-btn-premium:disabled { opacity: 0.6; cursor: not-allowed; }
   .subscription-btn-premium svg {
@@ -2192,6 +2159,44 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    width: 100%;
+  }
+  .resa-form-row-2 .resa-form-field {
+    min-width: 0; /* Permet aux inputs de bien rétrécir dans la grid */
+  }
+  .resa-form-row-2 .resa-form-input {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Fix iOS pour les inputs date/time */
+  input.resa-form-input[type="date"],
+  input.resa-form-input[type="time"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: none;
+    min-height: 50px;
+    padding: 12px 14px;
+    font-size: 15px;
+    line-height: 1.2;
+    text-align: left;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  /* Cacher l'icône calendrier/horloge native qui prend trop de place */
+  input.resa-form-input[type="date"]::-webkit-calendar-picker-indicator,
+  input.resa-form-input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0.4;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+  /* Style placeholder iOS */
+  input.resa-form-input[type="date"]::-webkit-date-and-time-value,
+  input.resa-form-input[type="time"]::-webkit-date-and-time-value {
+    text-align: left;
   }
 
   /* Actions formulaire en bas */

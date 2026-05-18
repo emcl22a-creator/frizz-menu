@@ -187,22 +187,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px 8px;
+    padding: 8px 20px 8px;
     animation: cascadeIn 0.6s ease-out 0.02s backwards;
   }
   .logo {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
     object-fit: contain;
     display: block;
-    filter: drop-shadow(0 8px 20px rgba(0, 122, 255, 0.30));
+    filter: drop-shadow(0 12px 28px rgba(0, 122, 255, 0.40)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
   }
   .bell-btn {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px) saturate(180%);
     border: 0.5px solid rgba(0, 0, 0, 0.06);
     display: flex;
@@ -210,7 +210,7 @@
     justify-content: center;
     color: var(--label);
     position: relative;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s;
   }
   .bell-btn:active { transform: scale(0.95); }
@@ -277,7 +277,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 12px 30px rgba(0, 122, 255, 0.30), 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    box-shadow: 0 20px 50px rgba(0, 122, 255, 0.40), 0 8px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.20);
     position: relative;
     overflow: hidden;
   }
@@ -338,7 +338,7 @@
     display: flex;
     flex-direction: column;
     aspect-ratio: 1 / 1.18;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
     overflow: hidden;
     position: relative;
   }
@@ -410,7 +410,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07), 0 3px 10px rgba(0, 0, 0, 0.05);
   }
   .stat-icon {
     width: 40px;
@@ -449,7 +449,7 @@
     border-radius: 20px;
     margin: 0 20px;
     padding: 18px 0 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
     animation: cascadeIn 0.6s ease-out 0.26s backwards;
   }
   .resa-header {
@@ -591,6 +591,148 @@
   @keyframes cascadeIn {
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ═══ POPUP RÉSERVATIONS PLEIN ÉCRAN ═══ */
+  .resa-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(4px);
+    z-index: 95;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .resa-popup-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .resa-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 96;
+    background: var(--bg);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .resa-popup.visible {
+    transform: translateY(0);
+  }
+  .resa-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 0.5px solid var(--separator);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+  .resa-popup-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--label);
+  }
+  .resa-popup-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(60, 60, 67, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-secondary);
+    transition: background 0.15s;
+  }
+  .resa-popup-close:active { background: rgba(60, 60, 67, 0.18); }
+  .resa-popup-close svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+  /* Filtres en pilules */
+  .resa-filters {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .resa-filters::-webkit-scrollbar { display: none; }
+  .resa-filter-pill {
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(60, 60, 67, 0.08);
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+  }
+  .resa-filter-pill:active { transform: scale(0.96); }
+  .resa-filter-pill.active {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.30);
+  }
+  .resa-filter-count {
+    margin-left: 6px;
+    opacity: 0.7;
+    font-weight: 600;
+  }
+
+  /* Liste de résa filtrée */
+  .resa-popup-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 20px 40px;
+  }
+  .resa-popup-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s;
+  }
+  .resa-popup-card:active { transform: scale(0.99); }
+  .resa-popup-empty {
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .resa-popup-empty-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .resa-popup-empty-icon svg { width: 26px; height: 26px; stroke: var(--blue); stroke-width: 1.8; fill: none; }
+  .resa-popup-empty-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 6px;
+  }
+  .resa-popup-empty-text {
+    font-size: 14px;
+    color: var(--label-secondary);
+    line-height: 1.4;
   }
 
   /* ═══ POPUP NOTIFICATIONS ═══ */
@@ -872,6 +1014,27 @@
   </button>
 </nav>
 
+<!-- POPUP RÉSERVATIONS (plein écran avec filtres) -->
+<div class="resa-popup-backdrop" id="resaPopupBackdrop"></div>
+<div class="resa-popup" id="resaPopup">
+  <div class="resa-popup-header">
+    <h2>Réservations</h2>
+    <button class="resa-popup-close" id="resaPopupCloseBtn" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="resa-filters" id="resaFilters">
+    <button class="resa-filter-pill active" data-filter="today">Aujourd'hui<span class="resa-filter-count" id="countToday">0</span></button>
+    <button class="resa-filter-pill" data-filter="tomorrow">Demain<span class="resa-filter-count" id="countTomorrow">0</span></button>
+    <button class="resa-filter-pill" data-filter="week">Semaine<span class="resa-filter-count" id="countWeek">0</span></button>
+    <button class="resa-filter-pill" data-filter="month">Mois<span class="resa-filter-count" id="countMonth">0</span></button>
+  </div>
+  <div class="resa-popup-list" id="resaPopupList"></div>
+</div>
+
 <!-- POPUP NOTIFICATIONS -->
 <div class="notif-backdrop" id="notifBackdrop"></div>
 <div class="notif-popup" id="notifPopup">
@@ -1125,6 +1288,129 @@
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
+  // ═══ POPUP RÉSERVATIONS PLEIN ÉCRAN ═══
+  let currentResaFilter = 'today';
+
+  function getFilteredResas(filter) {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
+    const tomorrowStart = todayEnd;
+    const tomorrowEnd = new Date(tomorrowStart.getTime() + 24 * 3600 * 1000);
+    
+    // Début de semaine : lundi 00:00 de la semaine en cours
+    const weekStart = new Date(todayStart);
+    const dayOfWeek = (todayStart.getDay() + 6) % 7; // lundi = 0
+    weekStart.setDate(todayStart.getDate() - dayOfWeek);
+    const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 3600 * 1000);
+    
+    // Mois en cours
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const validResas = allReservations
+      .filter(r => r.statut !== 'annulee' && r.statut !== 'annule')
+      .map(r => ({
+        ...r,
+        dateObj: new Date(`${r.date_reservation}T${r.heure_reservation || '00:00:00'}`),
+      }));
+
+    let filtered;
+    if (filter === 'today') {
+      filtered = validResas.filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd);
+    } else if (filter === 'tomorrow') {
+      filtered = validResas.filter(r => r.dateObj >= tomorrowStart && r.dateObj < tomorrowEnd);
+    } else if (filter === 'week') {
+      filtered = validResas.filter(r => r.dateObj >= weekStart && r.dateObj < weekEnd);
+    } else if (filter === 'month') {
+      filtered = validResas.filter(r => r.dateObj >= monthStart && r.dateObj < monthEnd);
+    } else {
+      filtered = validResas;
+    }
+
+    return filtered.sort((a, b) => a.dateObj - b.dateObj);
+  }
+
+  function updateFilterCounts() {
+    $('countToday').textContent = getFilteredResas('today').length;
+    $('countTomorrow').textContent = getFilteredResas('tomorrow').length;
+    $('countWeek').textContent = getFilteredResas('week').length;
+    $('countMonth').textContent = getFilteredResas('month').length;
+  }
+
+  function openResaPopup() {
+    currentResaFilter = 'today';
+    updateFilterCounts();
+    setResaFilter('today');
+    $('resaPopupBackdrop').classList.add('visible');
+    $('resaPopup').classList.add('visible');
+  }
+
+  function closeResaPopup() {
+    $('resaPopupBackdrop').classList.remove('visible');
+    $('resaPopup').classList.remove('visible');
+  }
+
+  function setResaFilter(filter) {
+    currentResaFilter = filter;
+    // Update pilules
+    document.querySelectorAll('.resa-filter-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.filter === filter);
+    });
+    renderResaPopupList();
+  }
+
+  function renderResaPopupList() {
+    const filtered = getFilteredResas(currentResaFilter);
+    const container = $('resaPopupList');
+
+    if (filtered.length === 0) {
+      const messages = {
+        today: 'Aucune réservation aujourd\'hui',
+        tomorrow: 'Aucune réservation demain',
+        week: 'Aucune réservation cette semaine',
+        month: 'Aucune réservation ce mois',
+      };
+      container.innerHTML = `
+        <div class="resa-popup-empty">
+          <div class="resa-popup-empty-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div class="resa-popup-empty-title">${messages[currentResaFilter] || 'Aucune réservation'}</div>
+          <div class="resa-popup-empty-text">Les nouvelles réservations apparaîtront ici.</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+      const initials = getInitials(r.client_nom);
+      const heure = formatHeure(r.heure_reservation);
+      const dateResa = formatResaDate(r.date_reservation);
+      const color = avatarColorFor(r.client_nom || '');
+      const sourceText = (r.source === 'ia' || r.source === 'vapi')
+        ? 'Confirmée par IA'
+        : 'Confirmée';
+      return `
+        <div class="resa-popup-card">
+          <div class="avatar" style="background: ${color.bg}; color: ${color.fg};">${escapeHtml(initials)}</div>
+          <div class="resa-info">
+            <div class="resa-title">Table de ${parseInt(r.nb_couverts) || '?'} · ${escapeHtml(r.client_nom || 'Client')}</div>
+            <div class="resa-subtitle">${dateResa} à ${heure} · ${sourceText}</div>
+          </div>
+          <div class="resa-time">
+            ${heure}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   // ═══ POPUP NOTIFICATIONS ═══
   function getTodayActivity() {
     // Réservations dont created_at est aujourd'hui
@@ -1268,16 +1554,21 @@
   }
 
   // EVENT LISTENERS
-  $('voirPlusBtn').addEventListener('click', () => {
-    // Scroll fluide vers la section "Réservations à venir"
-    document.querySelector('.resa-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('voirPlusBtn').addEventListener('click', openResaPopup);
+  $('resaPopupCloseBtn').addEventListener('click', closeResaPopup);
+  $('resaPopupBackdrop').addEventListener('click', closeResaPopup);
+  document.querySelectorAll('.resa-filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => setResaFilter(pill.dataset.filter));
   });
   $('bellBtn').addEventListener('click', openNotifs);
   $('notifCloseBtn').addEventListener('click', closeNotifs);
   $('notifBackdrop').addEventListener('click', closeNotifs);
   // Fermer popup avec Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeNotifs();
+    if (e.key === 'Escape') {
+      closeNotifs();
+      closeResaPopup();
+    }
   });
 
   document.addEventListener('DOMContentLoaded', checkSession);

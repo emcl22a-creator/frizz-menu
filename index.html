@@ -593,6 +593,211 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ═══ PAGE ACTIVITÉ ═══ */
+  .page { display: block; }
+  .page.hidden { display: none !important; }
+
+  /* Filtres pilules */
+  .activity-filters {
+    display: flex;
+    gap: 8px;
+    padding: 4px 20px 18px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    animation: cascadeIn 0.5s ease-out 0.08s backwards;
+  }
+  .activity-filters::-webkit-scrollbar { display: none; }
+  .activity-filter-pill {
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .activity-filter-pill:active { transform: scale(0.96); }
+  .activity-filter-pill.active {
+    background: var(--blue);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 6px 16px rgba(0, 122, 255, 0.35);
+  }
+  .activity-filter-count {
+    margin-left: 6px;
+    opacity: 0.7;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Timeline */
+  .activity-timeline {
+    padding: 0 20px;
+    animation: cascadeIn 0.6s ease-out 0.14s backwards;
+  }
+
+  /* Group date header (style "Aujourd'hui", "Hier", "Il y a 3 jours") */
+  .activity-day-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 4px 10px;
+  }
+  .activity-day-header:first-child {
+    padding-top: 0;
+  }
+
+  /* Timeline item */
+  .activity-item {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .activity-item:active {
+    transform: scale(0.99);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Icône colorée selon le type */
+  .activity-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .activity-icon.created {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.15) 0%, rgba(52, 199, 89, 0.25) 100%);
+    color: var(--green);
+  }
+  .activity-icon.modified {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.25) 100%);
+    color: var(--blue);
+  }
+  .activity-icon.cancelled {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.15) 0%, rgba(255, 59, 48, 0.25) 100%);
+    color: var(--red);
+  }
+  .activity-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Petit badge de type pour clarté */
+  .activity-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    margin-bottom: 4px;
+    width: fit-content;
+  }
+  .activity-type-badge.created {
+    background: rgba(52, 199, 89, 0.10);
+    color: #1F7A3D;
+  }
+  .activity-type-badge.modified {
+    background: rgba(0, 122, 255, 0.10);
+    color: var(--blue);
+  }
+  .activity-type-badge.cancelled {
+    background: rgba(255, 59, 48, 0.10);
+    color: #C0392B;
+  }
+
+  /* Contenu de l'item */
+  .activity-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .activity-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .activity-details {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .activity-time {
+    font-size: 12px;
+    color: var(--label-tertiary);
+    letter-spacing: -0.1px;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Empty state */
+  .activity-empty {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 48px 24px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  }
+  .activity-empty-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .activity-empty-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke: var(--blue);
+    stroke-width: 1.8;
+    fill: none;
+  }
+  .activity-empty-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 6px;
+  }
+  .activity-empty-text {
+    font-size: 14px;
+    color: var(--label-secondary);
+    line-height: 1.4;
+  }
+
   /* ═══ POPUP RÉSERVATIONS PLEIN ÉCRAN ═══ */
   .resa-popup-backdrop {
     position: fixed;
@@ -916,6 +1121,9 @@
     </button>
   </div>
 
+  <!-- ═══ PAGE STATS ═══ -->
+  <div class="page active" id="page-stats">
+
   <section class="greeting">
     <h1 id="greetingTitle">Bonjour <span class="wave">👋</span></h1>
     <p class="subtitle" id="greetingSubtitle">—</p>
@@ -998,10 +1206,42 @@
     </div>
     <div id="resaList"></div>
   </section>
+
+  </div><!-- /page-stats -->
+
+  <!-- ═══ PAGE ACTIVITÉ ═══ -->
+  <div class="page hidden" id="page-activity">
+
+    <section class="greeting">
+      <h1>Activité</h1>
+      <p class="subtitle" id="activitySubtitle">—</p>
+    </section>
+
+    <!-- Filtres pilules -->
+    <div class="activity-filters" id="activityFilters">
+      <button class="activity-filter-pill active" data-filter="all">
+        Tous<span class="activity-filter-count" id="activityCountAll">0</span>
+      </button>
+      <button class="activity-filter-pill" data-filter="created">
+        Créées<span class="activity-filter-count" id="activityCountCreated">0</span>
+      </button>
+      <button class="activity-filter-pill" data-filter="modified">
+        Modifiées<span class="activity-filter-count" id="activityCountModified">0</span>
+      </button>
+      <button class="activity-filter-pill" data-filter="cancelled">
+        Annulées<span class="activity-filter-count" id="activityCountCancelled">0</span>
+      </button>
+    </div>
+
+    <!-- Timeline -->
+    <div class="activity-timeline" id="activityTimeline"></div>
+
+  </div><!-- /page-activity -->
+
 </div>
 
 <nav class="tabbar hidden" id="tabbar">
-  <button class="tab active">
+  <button class="tab active" data-page="stats">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <rect x="3" y="12" width="4" height="9" rx="1"/>
       <rect x="10" y="6" width="4" height="15" rx="1"/>
@@ -1009,7 +1249,7 @@
     </svg>
     Stats
   </button>
-  <button class="tab" disabled style="opacity: 0.4;">
+  <button class="tab" data-page="activity">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
     </svg>
@@ -1563,6 +1803,219 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // ═══ NAVIGATION ENTRE PAGES ═══
+  function switchPage(pageId) {
+    // Cacher toutes les pages
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Afficher la page cible
+    const target = document.getElementById('page-' + pageId);
+    if (target) {
+      target.classList.remove('hidden');
+      target.classList.add('active');
+    }
+    // Mettre à jour la tab active
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const activeTab = document.querySelector(`.tab[data-page="${pageId}"]`);
+    if (activeTab) activeTab.classList.add('active');
+    // Render le contenu si Activité
+    if (pageId === 'activity') {
+      renderActivity();
+    }
+    // Scroll en haut
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // ═══ PAGE ACTIVITÉ ═══
+  let currentActivityFilter = 'all';
+
+  function classifyReservation(r) {
+    // 'cancelled' si statut annulee/annule
+    if (r.statut === 'annulee' || r.statut === 'annule') {
+      return 'cancelled';
+    }
+    // 'modified' si updated_at significativement après created_at (> 1 minute = vraie modif)
+    if (r.created_at && r.updated_at) {
+      const created = new Date(r.created_at);
+      const updated = new Date(r.updated_at);
+      const diffMs = updated - created;
+      if (diffMs > 60000) { // > 60 secondes = modif réelle
+        return 'modified';
+      }
+    }
+    // Par défaut : créée (statut confirmee, jamais modifiée)
+    return 'created';
+  }
+
+  function getActivityEvents() {
+    // Pour chaque résa, on génère 1 événement (basé sur sa classification)
+    // Trié par date d'événement la plus récente d'abord
+    return allReservations
+      .map(r => {
+        const type = classifyReservation(r);
+        // Date de l'événement = updated_at si modifié/annulé, sinon created_at
+        const eventDate = (type === 'created') 
+          ? (r.created_at || r.date_reservation)
+          : (r.updated_at || r.created_at || r.date_reservation);
+        return {
+          ...r,
+          eventType: type,
+          eventDate: new Date(eventDate),
+        };
+      })
+      .sort((a, b) => b.eventDate - a.eventDate); // plus récent en haut
+  }
+
+  function updateActivityCounts() {
+    const events = getActivityEvents();
+    $('activityCountAll').textContent = events.length;
+    $('activityCountCreated').textContent = events.filter(e => e.eventType === 'created').length;
+    $('activityCountModified').textContent = events.filter(e => e.eventType === 'modified').length;
+    $('activityCountCancelled').textContent = events.filter(e => e.eventType === 'cancelled').length;
+  }
+
+  function setActivityFilter(filter) {
+    currentActivityFilter = filter;
+    document.querySelectorAll('.activity-filter-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.filter === filter);
+    });
+    renderActivityTimeline();
+  }
+
+  function renderActivity() {
+    updateActivityCounts();
+    // Subtitle dynamique
+    const events = getActivityEvents();
+    const total = events.length;
+    if (total === 0) {
+      $('activitySubtitle').textContent = "Aucune activité enregistrée";
+    } else if (total === 1) {
+      $('activitySubtitle').textContent = "1 événement total";
+    } else {
+      $('activitySubtitle').textContent = `${total} événements au total`;
+    }
+    renderActivityTimeline();
+  }
+
+  function renderActivityTimeline() {
+    const container = $('activityTimeline');
+    let events = getActivityEvents();
+
+    // Appliquer le filtre
+    if (currentActivityFilter !== 'all') {
+      events = events.filter(e => e.eventType === currentActivityFilter);
+    }
+
+    // Empty state
+    if (events.length === 0) {
+      const messages = {
+        all: { title: 'Aucune activité', text: 'Les actions de Frizz apparaîtront ici dès qu\'un client appelle.' },
+        created: { title: 'Aucune création', text: 'Aucune réservation créée pour le moment.' },
+        modified: { title: 'Aucune modification', text: 'Aucune réservation modifiée pour le moment.' },
+        cancelled: { title: 'Aucune annulation', text: 'Aucune réservation annulée. C\'est plutôt bon signe !' },
+      };
+      const msg = messages[currentActivityFilter] || messages.all;
+      container.innerHTML = `
+        <div class="activity-empty">
+          <div class="activity-empty-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="activity-empty-title">${msg.title}</div>
+          <div class="activity-empty-text">${msg.text}</div>
+        </div>
+      `;
+      return;
+    }
+
+    // Grouper par jour (Aujourd'hui, Hier, etc.)
+    const groups = groupActivitiesByDay(events);
+    container.innerHTML = groups.map(group => `
+      <div class="activity-day-header">${group.label}</div>
+      ${group.events.map(renderActivityItem).join('')}
+    `).join('');
+  }
+
+  function groupActivitiesByDay(events) {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayStart = new Date(todayStart.getTime() - 24 * 3600 * 1000);
+
+    const groups = {};
+    events.forEach(e => {
+      const eventDayStart = new Date(e.eventDate.getFullYear(), e.eventDate.getMonth(), e.eventDate.getDate());
+      let label;
+      if (eventDayStart.getTime() === todayStart.getTime()) {
+        label = "Aujourd'hui";
+      } else if (eventDayStart.getTime() === yesterdayStart.getTime()) {
+        label = "Hier";
+      } else {
+        const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+        label = `${days[eventDayStart.getDay()]} ${eventDayStart.getDate()} ${months[eventDayStart.getMonth()]}`;
+      }
+      if (!groups[label]) groups[label] = [];
+      groups[label].push(e);
+    });
+
+    // Préserver l'ordre (les events sont déjà triés par date desc)
+    const orderedLabels = [];
+    events.forEach(e => {
+      const eventDayStart = new Date(e.eventDate.getFullYear(), e.eventDate.getMonth(), e.eventDate.getDate());
+      let label;
+      if (eventDayStart.getTime() === todayStart.getTime()) label = "Aujourd'hui";
+      else if (eventDayStart.getTime() === yesterdayStart.getTime()) label = "Hier";
+      else {
+        const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+        label = `${days[eventDayStart.getDay()]} ${eventDayStart.getDate()} ${months[eventDayStart.getMonth()]}`;
+      }
+      if (!orderedLabels.includes(label)) orderedLabels.push(label);
+    });
+
+    return orderedLabels.map(label => ({ label, events: groups[label] }));
+  }
+
+  function renderActivityItem(e) {
+    const type = e.eventType;
+    const clientNom = escapeHtml(e.client_nom || 'Client');
+    const couverts = parseInt(e.nb_couverts) || '?';
+    const dateResa = formatResaDate(e.date_reservation);
+    const heureResa = formatHeure(e.heure_reservation);
+
+    let icon, title, badge;
+    if (type === 'created') {
+      icon = '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>';
+      title = `Nouvelle résa · ${clientNom}`;
+      badge = 'Créée';
+    } else if (type === 'modified') {
+      icon = '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+      title = `Modification · ${clientNom}`;
+      badge = 'Modifiée';
+    } else {
+      icon = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke-linecap="round"/></svg>';
+      title = `Annulation · ${clientNom}`;
+      badge = 'Annulée';
+    }
+
+    const timeAgo = formatTimeAgo(e.eventDate);
+
+    return `
+      <div class="activity-item">
+        <div class="activity-icon ${type}">${icon}</div>
+        <div class="activity-content">
+          <div class="activity-type-badge ${type}">${badge}</div>
+          <div class="activity-title">${title}</div>
+          <div class="activity-details">Table de ${couverts} · ${dateResa} à ${heureResa}</div>
+          <div class="activity-time">${timeAgo}</div>
+        </div>
+      </div>
+    `;
+  }
+
   // EVENT LISTENERS
   $('voirPlusBtn').addEventListener('click', openResaPopup);
   $('resaPopupCloseBtn').addEventListener('click', closeResaPopup);
@@ -1573,6 +2026,16 @@
   $('bellBtn').addEventListener('click', openNotifs);
   $('notifCloseBtn').addEventListener('click', closeNotifs);
   $('notifBackdrop').addEventListener('click', closeNotifs);
+
+  // Navigation entre pages (tabs)
+  document.querySelectorAll('.tab[data-page]').forEach(tab => {
+    tab.addEventListener('click', () => switchPage(tab.dataset.page));
+  });
+
+  // Filtres page Activité
+  document.querySelectorAll('.activity-filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => setActivityFilter(pill.dataset.filter));
+  });
   // Fermer popup avec Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {

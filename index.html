@@ -292,7 +292,8 @@
     aspect-ratio: 1 / 1.18;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: space-around;
     box-shadow: 0 20px 50px rgba(0, 122, 255, 0.40), 0 8px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.20);
     position: relative;
     overflow: hidden;
@@ -1803,7 +1804,7 @@
 
   /* ═══ 3 PLANS GRID ═══ */
   .plans-intro {
-    text-align: center;
+    text-align: left;
     padding: 8px 4px 16px;
   }
   .plans-intro-title {
@@ -1817,6 +1818,7 @@
     font-size: 13px;
     color: var(--label-secondary);
     letter-spacing: -0.2px;
+    line-height: 1.4;
   }
 
   .plans-grid {
@@ -3026,10 +3028,6 @@
             </div>
             <div class="plan-feature">
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-              <span>Rappels SMS clients</span>
-            </div>
-            <div class="plan-feature">
-              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <span>SMS de confirmation client</span>
             </div>
             <div class="plan-feature">
@@ -3296,6 +3294,39 @@
           Se déconnecter
         </button>
       </div>
+      
+      <!-- Section : Me contacter -->
+      <div class="settings-section">
+        <div class="settings-section-title">Aide & Contact</div>
+        <div class="settings-section-card">
+          <a href="mailto:contact@frizz-instant.com" class="settings-row" style="text-decoration: none;">
+            <div class="settings-row-icon" style="background: rgba(0, 122, 255, 0.10); color: var(--blue);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div class="settings-row-label">M'envoyer un email</div>
+            <div class="settings-row-value">contact@frizz-instant.com</div>
+            <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </a>
+          <a href="tel:+33000000000" class="settings-row" style="text-decoration: none;">
+            <div class="settings-row-icon" style="background: rgba(52, 199, 89, 0.10); color: var(--green);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="settings-row-label">M'appeler</div>
+            <div class="settings-row-value">Emilien</div>
+            <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      
       <div class="app-version">Frizz Instant · v1.0</div>
     </div>
 
@@ -3727,13 +3758,12 @@
       $('greetingSubtitle').textContent = `${todayCount} réservations aujourd'hui`;
     }
 
-    // Appels Frizz ce mois (résas créées par l'IA Audrey/Julien)
+    // Appels Frizz ce mois (toutes les résas créées ce mois)
     try {
       const callsThisMonth = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        const isFromAI = r.source === 'ia' || r.source === 'vapi';
-        return createdAt >= firstThisMonth && isFromAI;
+        return createdAt >= firstThisMonth;
       }).length;
       const elCalls = $('couvertsLibres');
       if (elCalls) elCalls.textContent = callsThisMonth;
@@ -3812,16 +3842,15 @@
       $('chartDotInner').setAttribute('cy', '62');
     }
 
-    // Temps gagné ce mois (= temps que Frizz a économisé au patron en gérant les appels)
-    // Hypothèse : chaque appel IA = ~3,5 minutes de temps gagné pour le restaurateur
+    // Temps gagné ce mois
+    // = nombre de résas créées ce mois × ~3,5 minutes économisées par appel
     try {
-      const callsThisMonthForTime = allReservations.filter(r => {
+      const resasThisMonthCount = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        const isFromAI = r.source === 'ia' || r.source === 'vapi';
-        return createdAt >= firstThisMonth && isFromAI;
+        return createdAt >= firstThisMonth;
       }).length;
-      const minutesGagnees = callsThisMonthForTime * 3.5; // 3,5 min par appel
+      const minutesGagnees = resasThisMonthCount * 3.5; // 3,5 min par résa
       const heuresGagnees = Math.floor(minutesGagnees / 60);
       const minutesRestantes = Math.round(minutesGagnees % 60);
       
@@ -3844,12 +3873,22 @@
     }
 
     // ─── NO-SHOWS ÉVITÉS ───
-    // = nombre de résas annulées via l'IA (Audrey/Julien a évité que la table reste réservée pour rien)
-    const noShowsEvites = allReservations.filter(r =>
-      (r.statut === 'annulee' || r.statut === 'annule') &&
-      (r.source === 'ia' || r.source === 'vapi')
-    ).length;
-    $('noShowsEvites').textContent = noShowsEvites;
+    // = nombre de résas annulées ce mois (l'IA a évité que la table reste bloquée pour rien)
+    try {
+      const noShowsEvites = allReservations.filter(r => {
+        if (!r.created_at) return false;
+        const createdAt = new Date(r.created_at);
+        if (createdAt < firstThisMonth) return false;
+        const statut = (r.statut || r.status || '').toLowerCase();
+        return statut === 'annulee' || statut === 'annule' || statut === 'cancelled' || statut === 'canceled';
+      }).length;
+      const elNo = $('noShowsEvites');
+      if (elNo) elNo.textContent = noShowsEvites;
+    } catch (e) {
+      console.warn('Erreur no-shows:', e);
+      const elNo = $('noShowsEvites');
+      if (elNo) elNo.textContent = '0';
+    }
 
     // Liste résas à venir
     renderResaList(validResas, now);

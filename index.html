@@ -3670,9 +3670,11 @@
       showApp();
     } catch (err) {
       console.error('Load error:', err);
-      alert('Erreur de chargement : ' + (err.message || err));
-      await supa.auth.signOut();
-      showNotConnected();
+      console.error('Error details:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+      const errMsg = err?.message || err?.error_description || err?.hint || err?.details || JSON.stringify(err) || 'Erreur inconnue';
+      alert('Erreur de chargement : ' + errMsg + '\n\nVérifiez votre connexion ou contactez le support.');
+      // Ne pas déconnecter automatiquement — l'utilisateur peut réessayer
+      hide('splash');
     }
   }
 

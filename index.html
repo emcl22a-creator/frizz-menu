@@ -4229,7 +4229,7 @@
     $('settingsCapaciteExtValue').textContent = (currentSalon.capacite_exterieur || 0) + ' couverts';
 
     // Voix sélectionnée (défaut: voix_feminine si non définie)
-    const currentVoice = currentSalon.voix || 'voix_feminine';
+    const currentVoice = getCurrentVoice();
     document.querySelectorAll('.voice-card').forEach(card => {
       card.classList.toggle('selected', card.dataset.voice === currentVoice);
     });
@@ -4323,9 +4323,24 @@
     }
   }
 
+  // Détecte le nom de la colonne voix dans currentSalon (voix ou voix_ia)
+  function detectVoiceField() {
+    if (!currentSalon) return 'voix';
+    if ('voix' in currentSalon) return 'voix';
+    if ('voix_ia' in currentSalon) return 'voix_ia';
+    return 'voix'; // défaut
+  }
+
+  function getCurrentVoice() {
+    if (!currentSalon) return 'voix_feminine';
+    const field = detectVoiceField();
+    return currentSalon[field] || 'voix_feminine';
+  }
+
   async function selectVoice(voiceCode) {
     if (!currentSalon) return;
-    if (currentSalon.voix === voiceCode) return; // déjà sélectionnée
+    const field = detectVoiceField();
+    if (currentSalon[field] === voiceCode) return; // déjà sélectionnée
 
     // Update UI optimiste
     document.querySelectorAll('.voice-card').forEach(card => {
@@ -4334,19 +4349,24 @@
 
     // Save en base
     try {
-      const { error } = await supa
+      console.log('[selectVoice] Updating', field, '=', voiceCode);
+      const { data, error } = await supa
         .from('frizz_ai_salons')
-        .update({ voix: voiceCode })
-        .eq('id', currentSalon.id);
+        .update({ [field]: voiceCode })
+        .eq('id', currentSalon.id)
+        .select();
       if (error) throw error;
-      currentSalon.voix = voiceCode;
+      if (!data || data.length === 0) {
+        throw new Error('Modification refusée (vérifiez les permissions RLS)');
+      }
+      currentSalon[field] = voiceCode;
       showToast('✓ Voix mise à jour');
     } catch (err) {
       console.error('Erreur sauvegarde voix:', err);
-      showToast('⚠️ Erreur de sauvegarde');
+      showToast('⚠️ ' + (err.message || 'Erreur de sauvegarde'));
       // Revert UI
       document.querySelectorAll('.voice-card').forEach(card => {
-        card.classList.toggle('selected', card.dataset.voice === (currentSalon.voix || 'voix_feminine'));
+        card.classList.toggle('selected', card.dataset.voice === getCurrentVoice());
       });
     }
   }

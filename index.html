@@ -1726,10 +1726,6 @@
     color: var(--label);
     letter-spacing: -0.8px;
     line-height: 1;
-    background: linear-gradient(135deg, #007AFF 0%, #AF52DE 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
   .subscription-price-large {
     font-size: 18px;
@@ -2989,76 +2985,23 @@
   <div class="password-modal-grabber"></div>
   <div class="password-modal-body">
     
-    <!-- VUE 1 : Choix de la méthode -->
-    <div id="passwordViewChoice">
-      <div class="password-modal-title">Modifier le mot de passe</div>
-      <div class="password-modal-subtitle">Choisissez la méthode qui vous convient le mieux.</div>
+    <div class="password-modal-title">Modifier le mot de passe</div>
+    <div class="password-modal-subtitle">Saisissez votre nouveau mot de passe, puis confirmez-le.</div>
 
-      <button class="password-option" id="passwordOptionEmail">
-        <div class="password-option-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-        </div>
-        <div class="password-option-content">
-          <div class="password-option-title">
-            Recevoir un email
-            <span class="password-option-badge">Recommandé</span>
-          </div>
-          <div class="password-option-desc">Un lien sécurisé vous sera envoyé par email pour changer votre mot de passe.</div>
-        </div>
-        <svg class="password-option-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-
-      <button class="password-option" id="passwordOptionDirect">
-        <div class="password-option-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="11" width="18" height="11" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="password-option-content">
-          <div class="password-option-title">Changer directement</div>
-          <div class="password-option-desc">Tapez votre nouveau mot de passe dès maintenant, sans email.</div>
-        </div>
-        <svg class="password-option-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-
-      <button class="password-form-btn cancel" id="passwordModalCloseBtn" style="width: 100%; margin-top: 8px;">Annuler</button>
+    <div class="password-form-field">
+      <label class="password-form-label">Nouveau mot de passe</label>
+      <input type="password" class="password-form-input" id="passwordNewInput" placeholder="••••••••" autocomplete="new-password">
+      <div class="password-form-help">Au moins 6 caractères.</div>
     </div>
 
-    <!-- VUE 2 : Formulaire changement direct -->
-    <div id="passwordViewForm" class="hidden">
-      <button class="password-form-back" id="passwordFormBackBtn">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-        Retour
-      </button>
+    <div class="password-form-field">
+      <label class="password-form-label">Confirmer le mot de passe</label>
+      <input type="password" class="password-form-input" id="passwordConfirmInput" placeholder="••••••••" autocomplete="new-password">
+    </div>
 
-      <div class="password-modal-title">Nouveau mot de passe</div>
-      <div class="password-modal-subtitle">Saisissez votre nouveau mot de passe, puis confirmez-le.</div>
-
-      <div class="password-form-field">
-        <label class="password-form-label">Nouveau mot de passe</label>
-        <input type="password" class="password-form-input" id="passwordNewInput" placeholder="••••••••" autocomplete="new-password">
-        <div class="password-form-help">Au moins 8 caractères, avec lettres et chiffres recommandé.</div>
-      </div>
-
-      <div class="password-form-field">
-        <label class="password-form-label">Confirmer le mot de passe</label>
-        <input type="password" class="password-form-input" id="passwordConfirmInput" placeholder="••••••••" autocomplete="new-password">
-      </div>
-
-      <div class="password-form-actions">
-        <button class="password-form-btn cancel" id="passwordFormCancelBtn">Annuler</button>
-        <button class="password-form-btn save" id="passwordFormSaveBtn">Enregistrer</button>
-      </div>
+    <div class="password-form-actions">
+      <button class="password-form-btn cancel" id="passwordFormCancelBtn">Annuler</button>
+      <button class="password-form-btn save" id="passwordFormSaveBtn">Enregistrer</button>
     </div>
 
   </div>
@@ -4275,53 +4218,16 @@
 
   // ═══ COMPTE : modifier mot de passe + déconnexion ═══
   function openPasswordModal() {
-    // Reset à la vue de choix
-    $('passwordViewChoice').classList.remove('hidden');
-    $('passwordViewForm').classList.add('hidden');
     $('passwordNewInput').value = '';
     $('passwordConfirmInput').value = '';
     $('passwordModalBackdrop').classList.add('visible');
     $('passwordModal').classList.add('visible');
+    setTimeout(() => $('passwordNewInput').focus(), 300);
   }
 
   function closePasswordModal() {
     $('passwordModalBackdrop').classList.remove('visible');
     $('passwordModal').classList.remove('visible');
-  }
-
-  function switchToPasswordForm() {
-    $('passwordViewChoice').classList.add('hidden');
-    $('passwordViewForm').classList.remove('hidden');
-    setTimeout(() => $('passwordNewInput').focus(), 300);
-  }
-
-  function switchToPasswordChoice() {
-    $('passwordViewForm').classList.add('hidden');
-    $('passwordViewChoice').classList.remove('hidden');
-  }
-
-  async function sendPasswordResetEmail() {
-    if (!currentUser || !currentUser.email) {
-      showToast('⚠️ Email introuvable');
-      return;
-    }
-
-    const btn = $('passwordOptionEmail');
-    btn.disabled = true;
-
-    try {
-      const { error } = await supa.auth.resetPasswordForEmail(currentUser.email, {
-        redirectTo: window.location.origin + '/login',
-      });
-      if (error) throw error;
-      closePasswordModal();
-      showToast('✓ Email envoyé à ' + currentUser.email);
-    } catch (err) {
-      console.error('Reset password error:', err);
-      showToast('⚠️ ' + (err.message || 'Erreur d\'envoi'));
-    } finally {
-      btn.disabled = false;
-    }
   }
 
   async function saveNewPassword() {
@@ -4611,7 +4517,8 @@
     $('editModalSubtitle').textContent = `Modifier ${label.toLowerCase()}`;
     const input = $('editModalInput');
     input.type = type === 'number' ? 'number' : 'text';
-    input.value = currentValue || '';
+    // ⚠️ Important: utiliser != null pour ne pas perdre la valeur 0 (qui est falsy)
+    input.value = (currentValue !== null && currentValue !== undefined) ? String(currentValue) : '';
     input.min = type === 'number' ? '0' : '';
     $('editModalBackdrop').classList.add('visible');
     $('editModal').classList.add('visible');
@@ -4670,6 +4577,10 @@
       // Update local data
       currentSalon[editingField] = newValue;
       renderSettings();
+      // Si on a modifié la capacité, rafraîchir aussi la page Stats (couverts libres dépend)
+      if (editingField === 'couverts_interieur' || editingField === 'couverts_terrasse') {
+        renderStats(allReservations);
+      }
       closeEditModal();
       showToast('✓ Modifié');
     } catch (err) {
@@ -4758,14 +4669,8 @@
   $('changePasswordBtn').addEventListener('click', openPasswordModal);
   $('logoutBtn').addEventListener('click', handleLogout);
 
-  // Modale Mot de passe — choix
+  // Modale Mot de passe
   $('passwordModalBackdrop').addEventListener('click', closePasswordModal);
-  $('passwordModalCloseBtn').addEventListener('click', closePasswordModal);
-  $('passwordOptionEmail').addEventListener('click', sendPasswordResetEmail);
-  $('passwordOptionDirect').addEventListener('click', switchToPasswordForm);
-
-  // Modale Mot de passe — formulaire
-  $('passwordFormBackBtn').addEventListener('click', switchToPasswordChoice);
   $('passwordFormCancelBtn').addEventListener('click', closePasswordModal);
   $('passwordFormSaveBtn').addEventListener('click', saveNewPassword);
   $('passwordConfirmInput').addEventListener('keydown', (e) => {

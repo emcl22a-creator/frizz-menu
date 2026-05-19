@@ -5121,7 +5121,24 @@
         const tpl = document.getElementById('paywallTemplate');
         const overlay = tpl.content.cloneNode(true).querySelector('.paywall-overlay');
         const cta = overlay.querySelector('.paywall-btn-cta');
-        cta.addEventListener('click', handleSubscriptionClick);
+        // Le bouton du paywall redirige vers la page Réglages où sont les 3 forfaits
+        cta.addEventListener('click', () => {
+          // Naviguer vers la page Réglages
+          const settingsTab = document.querySelector('[data-page="settings"]') || document.querySelector('.tab-item:last-child');
+          if (settingsTab) {
+            settingsTab.click();
+          } else {
+            // Fallback : afficher manuellement
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            const settingsPage = document.getElementById('page-settings');
+            if (settingsPage) settingsPage.classList.remove('hidden');
+          }
+          // Scroll vers la section abonnement
+          setTimeout(() => {
+            const plansGrid = document.querySelector('.plans-grid');
+            if (plansGrid) plansGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        });
         page.appendChild(overlay);
       }
     });

@@ -217,13 +217,29 @@
   .bell-btn svg { width: 22px; height: 22px; stroke: var(--label); stroke-width: 1.8; fill: none; }
   .bell-dot {
     position: absolute;
-    top: 9px;
-    right: 11px;
-    width: 8px;
-    height: 8px;
-    background: var(--blue);
-    border-radius: 50%;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #FF3B30;
+    border-radius: 100px;
     border: 2px solid white;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 2px 6px rgba(255, 59, 48, 0.30);
+    animation: bellBadgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+  @keyframes bellBadgePop {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
   }
 
   /* GREETING */
@@ -2659,7 +2675,7 @@
   <div class="page hidden" id="page-activity">
 
     <section class="greeting">
-      <h1>Activité</h1>
+      <h1>Journal</h1>
       <p class="subtitle" id="activitySubtitle">—</p>
     </section>
 
@@ -2710,7 +2726,7 @@
             </div>
           </div>
           
-          <div class="subscription-plan-row">
+          <div class="subscription-plan-row" style="margin-bottom: 10px;">
             <div class="subscription-plan">Frizz Pro</div>
           </div>
           <div class="subscription-plan-row" style="margin-bottom: 8px;">
@@ -2807,15 +2823,15 @@
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
-        <div class="settings-row editable" data-field="couverts_interieur" data-type="number" data-label="Capacité intérieur">
+        <div class="settings-row editable" data-field="capacite_interieur" data-type="number" data-label="Capacité intérieur">
           <div class="settings-row-label">Capacité intérieur</div>
           <div class="settings-row-value" id="settingsCapaciteIntValue">—</div>
           <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
-        <div class="settings-row editable" data-field="couverts_terrasse" data-type="number" data-label="Capacité terrasse">
-          <div class="settings-row-label">Capacité terrasse</div>
+        <div class="settings-row editable" data-field="capacite_exterieur" data-type="number" data-label="Capacité extérieur">
+          <div class="settings-row-label">Capacité extérieur</div>
           <div class="settings-row-value" id="settingsCapaciteExtValue">—</div>
           <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <polyline points="9 18 15 12 9 6"/>
@@ -3033,7 +3049,7 @@
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
     </svg>
-    Activité
+    Journal
   </button>
   <button class="tab" data-page="settings">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -3328,8 +3344,8 @@
     }
 
     // Couverts libres
-    const capaciteInterieur = parseInt(currentSalon.couverts_interieur) || 0;
-    const capaciteTerrasse = parseInt(currentSalon.couverts_terrasse) || 0;
+    const capaciteInterieur = getCapaciteInterieur();
+    const capaciteTerrasse = getCapaciteTerrasse();
     const capaciteTotale = capaciteInterieur + capaciteTerrasse;
     const couvertsReservesToday = validResas
       .filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd)
@@ -3842,10 +3858,14 @@
   function updateBellDot() {
     const activity = getTodayActivity();
     const dot = $('bellDot');
-    if (activity.length > 0) {
-      dot.style.display = 'block';
+    const count = activity.length;
+    if (count > 0) {
+      // Afficher le nombre (max 99+)
+      dot.textContent = count > 99 ? '99+' : String(count);
+      dot.style.display = 'flex';
     } else {
       dot.style.display = 'none';
+      dot.textContent = '';
     }
   }
 
@@ -4198,8 +4218,8 @@
     $('settingsNomValue').textContent = currentSalon.nom || '—';
     $('settingsAdresseValue').textContent = currentSalon.adresse || '—';
     $('settingsVilleValue').textContent = currentSalon.ville || '—';
-    $('settingsCapaciteIntValue').textContent = (currentSalon.couverts_interieur || 0) + ' couverts';
-    $('settingsCapaciteExtValue').textContent = (currentSalon.couverts_terrasse || 0) + ' couverts';
+    $('settingsCapaciteIntValue').textContent = (currentSalon.capacite_interieur || 0) + ' couverts';
+    $('settingsCapaciteExtValue').textContent = (currentSalon.capacite_exterieur || 0) + ' couverts';
 
     // Voix sélectionnée (défaut: voix_feminine si non définie)
     const currentVoice = currentSalon.voix || 'voix_feminine';
@@ -4402,6 +4422,33 @@
     toast._timeout = setTimeout(() => toast.classList.remove('visible'), 2200);
   }
 
+  // ═══ DÉTECTION AUTOMATIQUE DES NOMS DE COLONNES CAPACITÉ ═══
+  // Compatible avec différents schémas Supabase
+  function detectCapaciteFields() {
+    if (!currentSalon) return { interieur: null, terrasse: null };
+    
+    // Vrais noms en premier (vérifiés sur ta base)
+    const candidatsInt = ['capacite_interieur', 'couverts_interieur', 'nb_couverts_interieur', 'capacite_int'];
+    const candidatsExt = ['capacite_exterieur', 'capacite_terrasse', 'couverts_terrasse', 'couverts_exterieur', 'nb_couverts_terrasse'];
+    
+    const interieur = candidatsInt.find(name => name in currentSalon) || null;
+    const terrasse = candidatsExt.find(name => name in currentSalon) || null;
+    
+    return { interieur, terrasse };
+  }
+
+  function getCapaciteInterieur() {
+    const fields = detectCapaciteFields();
+    if (!fields.interieur || !currentSalon) return 0;
+    return parseInt(currentSalon[fields.interieur]) || 0;
+  }
+
+  function getCapaciteTerrasse() {
+    const fields = detectCapaciteFields();
+    if (!fields.terrasse || !currentSalon) return 0;
+    return parseInt(currentSalon[fields.terrasse]) || 0;
+  }
+
   // ═══ ABONNEMENT ═══
   function isSubscriptionActive() {
     if (!currentSalon) return false;
@@ -4433,7 +4480,7 @@
       badge.classList.add('inactive');
       statusText.textContent = 'Inactif';
       btnText.textContent = 'S\'abonner maintenant';
-      if (tagline) tagline.textContent = 'Débloquez Stats, Activité et toutes les fonctionnalités Frizz.';
+      if (tagline) tagline.textContent = 'Débloquez Stats, Journal et toutes les fonctionnalités Frizz.';
     }
   }
 
@@ -4578,7 +4625,7 @@
       currentSalon[editingField] = newValue;
       renderSettings();
       // Si on a modifié la capacité, rafraîchir aussi la page Stats (couverts libres dépend)
-      if (editingField === 'couverts_interieur' || editingField === 'couverts_terrasse') {
+      if (editingField === 'capacite_interieur' || editingField === 'capacite_exterieur') {
         renderStats(allReservations);
       }
       closeEditModal();

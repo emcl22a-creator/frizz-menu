@@ -3997,10 +3997,16 @@
   }
 
   function updateFilterCounts() {
-    $('countToday').textContent = getFilteredResas('today').length;
-    $('countTomorrow').textContent = getFilteredResas('tomorrow').length;
-    $('countWeek').textContent = getFilteredResas('week').length;
-    $('countMonth').textContent = getFilteredResas('month').length;
+    // Les éléments countToday, countTomorrow, etc. ont été supprimés
+    // Cette fonction est gardée pour la compatibilité mais ne fait plus rien
+    const elToday = $('countToday');
+    if (elToday) elToday.textContent = getFilteredResas('today').length;
+    const elTomorrow = $('countTomorrow');
+    if (elTomorrow) elTomorrow.textContent = getFilteredResas('tomorrow').length;
+    const elWeek = $('countWeek');
+    if (elWeek) elWeek.textContent = getFilteredResas('week').length;
+    const elMonth = $('countMonth');
+    if (elMonth) elMonth.textContent = getFilteredResas('month').length;
   }
 
   function openResaPopup() {

@@ -2827,7 +2827,7 @@
   <div class="page active" id="page-stats">
 
   <section class="greeting">
-    <h1 id="greetingTitle">Bonjour</h1>
+    <h1 id="greetingTitle">Bonjour <span class="wave">👋</span></h1>
     <p class="subtitle" id="greetingSubtitle">—</p>
   </section>
 
@@ -2968,7 +2968,7 @@
       <!-- Intro -->
       <div class="plans-intro">
         <div class="plans-intro-title" id="plansIntroTitle">Choisissez votre forfait</div>
-        <div class="plans-intro-subtitle">Sans engagement<br>Annulable à tout moment</div>
+        <div class="plans-intro-subtitle">Sans engagement · Annulable à tout moment</div>
       </div>
       
       <!-- Les 3 plans -->
@@ -3749,8 +3749,8 @@
     // Greeting
     const prenom = currentSalon.patron_prenom || '';
     $('greetingTitle').innerHTML = prenom
-      ? `Bonjour ${escapeHtml(prenom)}`
-      : `Bonjour`;
+      ? `Bonjour ${escapeHtml(prenom)} <span class="wave">👋</span>`
+      : `Bonjour <span class="wave">👋</span>`;
 
     const todayCount = validResas.filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd).length;
     if (todayCount === 0) {
@@ -5331,10 +5331,14 @@
     tab.addEventListener('click', () => switchPage(tab.dataset.page));
   });
   
-  // Click sur la card "Appels Frizz ce mois" → page Journal
+  // Click sur la card "Appels Frizz ce mois" → ouvre la popup résa
   const heroCardEl = $('heroCard');
   if (heroCardEl) {
-    heroCardEl.addEventListener('click', () => switchPage('activity'));
+    heroCardEl.addEventListener('click', () => {
+      if (typeof openResaPopup === 'function') {
+        openResaPopup();
+      }
+    });
   }
 
   // Filtres page Activité

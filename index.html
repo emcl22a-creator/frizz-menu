@@ -3708,24 +3708,38 @@
     }
 
     // Appels Frizz ce mois (résas créées par l'IA Audrey/Julien)
-    const callsThisMonth = allReservations.filter(r => {
-      if (!r.created_at) return false;
-      const createdAt = new Date(r.created_at);
-      const isFromAI = r.source === 'ia' || r.source === 'vapi';
-      return createdAt >= firstThisMonth && isFromAI;
-    }).length;
-    $('couvertsLibres').textContent = callsThisMonth;
-    
-    // Sous-label : montrer la limite du plan actuel
-    const currentPlan = getCurrentPlan ? getCurrentPlan() : null;
-    const callsLimit = (currentPlan && PLANS[currentPlan]) ? PLANS[currentPlan].callsIncluded : null;
-    const labelEl = $('callsLimitLabel');
-    if (labelEl) {
-      if (callsLimit) {
-        labelEl.textContent = `sur ${callsLimit} inclus`;
-      } else {
-        labelEl.textContent = 'pas d\'abonnement actif';
+    try {
+      const callsThisMonth = allReservations.filter(r => {
+        if (!r.created_at) return false;
+        const createdAt = new Date(r.created_at);
+        const isFromAI = r.source === 'ia' || r.source === 'vapi';
+        return createdAt >= firstThisMonth && isFromAI;
+      }).length;
+      const elCalls = $('couvertsLibres');
+      if (elCalls) elCalls.textContent = callsThisMonth;
+      
+      // Sous-label : montrer la limite du plan actuel
+      let currentPlan = null;
+      try {
+        currentPlan = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null;
+      } catch (e) {
+        currentPlan = null;
       }
+      const callsLimit = (currentPlan && typeof PLANS !== 'undefined' && PLANS[currentPlan]) 
+        ? PLANS[currentPlan].callsIncluded 
+        : null;
+      const labelEl = $('callsLimitLabel');
+      if (labelEl) {
+        if (callsLimit) {
+          labelEl.textContent = `sur ${callsLimit} inclus`;
+        } else {
+          labelEl.textContent = 'pas d\'abonnement actif';
+        }
+      }
+    } catch (e) {
+      console.warn('Erreur appels Frizz:', e);
+      const elCalls = $('couvertsLibres');
+      if (elCalls) elCalls.textContent = '0';
     }
 
     // Trend vs mois dernier
@@ -3780,28 +3794,34 @@
 
     // Temps gagné ce mois (= temps que Frizz a économisé au patron en gérant les appels)
     // Hypothèse : chaque appel IA = ~3,5 minutes de temps gagné pour le restaurateur
-    // (le temps qu'il aurait passé à répondre + à noter la résa + à confirmer)
-    const callsThisMonthForTime = allReservations.filter(r => {
-      if (!r.created_at) return false;
-      const createdAt = new Date(r.created_at);
-      const isFromAI = r.source === 'ia' || r.source === 'vapi';
-      return createdAt >= firstThisMonth && isFromAI;
-    }).length;
-    const minutesGagnees = callsThisMonthForTime * 3.5; // 3,5 min par appel
-    const heuresGagnees = Math.floor(minutesGagnees / 60);
-    const minutesRestantes = Math.round(minutesGagnees % 60);
-    
-    let tempsTexte;
-    if (heuresGagnees === 0 && minutesRestantes === 0) {
-      tempsTexte = '0min';
-    } else if (heuresGagnees === 0) {
-      tempsTexte = `${minutesRestantes}min`;
-    } else if (minutesRestantes === 0) {
-      tempsTexte = `${heuresGagnees}h`;
-    } else {
-      tempsTexte = `${heuresGagnees}h${String(minutesRestantes).padStart(2, '0')}`;
+    try {
+      const callsThisMonthForTime = allReservations.filter(r => {
+        if (!r.created_at) return false;
+        const createdAt = new Date(r.created_at);
+        const isFromAI = r.source === 'ia' || r.source === 'vapi';
+        return createdAt >= firstThisMonth && isFromAI;
+      }).length;
+      const minutesGagnees = callsThisMonthForTime * 3.5; // 3,5 min par appel
+      const heuresGagnees = Math.floor(minutesGagnees / 60);
+      const minutesRestantes = Math.round(minutesGagnees % 60);
+      
+      let tempsTexte;
+      if (heuresGagnees === 0 && minutesRestantes === 0) {
+        tempsTexte = '0min';
+      } else if (heuresGagnees === 0) {
+        tempsTexte = `${minutesRestantes}min`;
+      } else if (minutesRestantes === 0) {
+        tempsTexte = `${heuresGagnees}h`;
+      } else {
+        tempsTexte = `${heuresGagnees}h${String(minutesRestantes).padStart(2, '0')}`;
+      }
+      const elTime = $('resaCeMois');
+      if (elTime) elTime.textContent = tempsTexte;
+    } catch (e) {
+      console.warn('Erreur temps gagné:', e);
+      const elTime = $('resaCeMois');
+      if (elTime) elTime.textContent = '0min';
     }
-    $('resaCeMois').textContent = tempsTexte;
 
     // ─── NO-SHOWS ÉVITÉS ───
     // = nombre de résas annulées via l'IA (Audrey/Julien a évité que la table reste réservée pour rien)
@@ -4902,6 +4922,7 @@
 
   function renderSubscription() {
     if (!currentSalon) return;
+    try {
     
     const status = currentSalon.subscription_status || 'inactive';
     const currentPlan = getCurrentPlan();
@@ -4992,6 +5013,9 @@
     const manageBtn = $('manageBillingBtn');
     if (manageBtn) {
       manageBtn.classList.toggle('hidden', !isActive);
+    }
+    } catch (e) {
+      console.warn('Erreur renderSubscription:', e);
     }
   }
 

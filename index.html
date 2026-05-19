@@ -932,7 +932,6 @@
   .settings-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 14px 16px;
     gap: 12px;
   }
@@ -952,6 +951,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-left: auto;
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   /* Frizz number block */
@@ -3301,6 +3303,7 @@
 
       allReservations = reservations || [];
       renderStats(allReservations);
+      renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
       updateBellDot();
       applyPaywall();
       showApp();

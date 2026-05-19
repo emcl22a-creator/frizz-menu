@@ -1800,17 +1800,237 @@
     position: relative;
     z-index: 1;
   }
-  
-  /* Carte abonnement avec effet glass */
-  .settings-section-card.premium-glass {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(30px) saturate(200%);
-    -webkit-backdrop-filter: blur(30px) saturate(200%);
-    border: 0.5px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 
-      0 16px 40px rgba(0, 122, 255, 0.15),
-      0 4px 12px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* ═══ 3 PLANS GRID ═══ */
+  .plans-intro {
+    text-align: center;
+    padding: 8px 16px 16px;
+  }
+  .plans-intro-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+  }
+  .plans-intro-subtitle {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+  }
+
+  .plans-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 16px;
+  }
+
+  .plan-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    padding: 18px 16px 16px;
+    transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+  }
+  .plan-card:active {
+    transform: scale(0.99);
+  }
+
+  /* Plan populaire (Pro) */
+  .plan-card.popular {
+    border-color: var(--blue);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.04) 0%, rgba(255, 255, 255, 0.95) 50%);
+  }
+
+  /* Plan actuel */
+  .plan-card.current {
+    border-color: var(--green);
+    box-shadow: 0 8px 24px rgba(52, 199, 89, 0.15);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -1px;
+    right: 14px;
+    padding: 4px 12px;
+    border-radius: 0 0 10px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .plan-badge.popular {
+    background: var(--blue);
+    color: white;
+  }
+  .plan-badge.current {
+    background: var(--green);
+    color: white;
+  }
+
+  .plan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .plan-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.4px;
+  }
+  .plan-name.starter { color: #6B7280; }
+  .plan-name.pro { 
+    background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .plan-name.premium { 
+    background: linear-gradient(135deg, #AF52DE 0%, #FF2D55 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .plan-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .plan-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.8px;
+    line-height: 1;
+  }
+  .plan-price-suffix {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.1px;
+  }
+  .plan-tagline {
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+
+  .plan-features {
+    margin-bottom: 14px;
+  }
+  .plan-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 13px;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .plan-feature-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--green-light);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .plan-feature-check svg {
+    width: 10px;
+    height: 10px;
+    stroke: currentColor;
+    stroke-width: 3.5;
+    fill: none;
+  }
+
+  .plan-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    transition: transform 0.15s, opacity 0.15s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .plan-btn:active { transform: scale(0.97); }
+  .plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .plan-btn.primary {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+  }
+  .plan-btn.premium {
+    background: linear-gradient(135deg, #AF52DE 0%, #FF2D55 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
+  }
+  .plan-btn.current-plan {
+    background: var(--green);
+    color: white;
+  }
+
+  /* Compteur d'appels (si abonné) */
+  .plan-usage-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1.5px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 0 16px 12px;
+  }
+  .plan-usage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .plan-usage-title {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+  }
+  .plan-usage-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+  }
+  .plan-usage-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .plan-usage-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue) 0%, #5856D6 100%);
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .plan-usage-bar-fill.warning {
+    background: linear-gradient(90deg, #FF9500 0%, #FF3B30 100%);
+  }
+  .plan-usage-bar-fill.danger {
+    background: var(--red);
   }
 
   /* Section abonnement (ancien — fallback si glass pas appliqué) */
@@ -2714,41 +2934,157 @@
       <p class="subtitle">Gérez votre assistant et votre restaurant</p>
     </section>
 
-    <!-- Section : Abonnement (Style Apple Premium) -->
+    <!-- Section : Abonnement (3 forfaits) -->
     <div class="settings-section">
       <div class="settings-section-title">Abonnement</div>
-      <div class="settings-section-card premium-glass">
-        <div class="subscription-card-premium">
-          
-          <div class="subscription-header-row">
-            <div class="subscription-icon-premium">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="subscription-status inactive" id="subscriptionStatusBadge">
-              <span class="subscription-status-dot"></span>
-              <span id="subscriptionStatusText">Inactif</span>
-            </div>
-          </div>
-          
-          <div class="subscription-plan-row" style="margin-bottom: 10px;">
-            <div class="subscription-plan">Frizz Pro</div>
-          </div>
-          <div class="subscription-plan-row" style="margin-bottom: 8px;">
-            <span class="subscription-price-large" id="subscriptionPriceText">69 €</span>
-            <span class="subscription-price-suffix">/ mois · sans engagement</span>
-          </div>
-          <div class="subscription-tagline" id="subscriptionTagline">Profitez de toutes les fonctionnalités de Frizz</div>
-          
-          <button class="subscription-btn-premium" id="subscriptionBtn">
-            <span id="subscriptionBtnText">S'abonner maintenant</span>
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </button>
-          
+      
+      <!-- Compteur d'appels (visible si abonné) -->
+      <div class="plan-usage-card hidden" id="planUsageCard">
+        <div class="plan-usage-header">
+          <span class="plan-usage-title">Appels ce mois</span>
+          <span class="plan-usage-count" id="planUsageCount">— / —</span>
         </div>
+        <div class="plan-usage-bar">
+          <div class="plan-usage-bar-fill" id="planUsageBarFill" style="width: 0%;"></div>
+        </div>
+      </div>
+      
+      <!-- Intro -->
+      <div class="plans-intro">
+        <div class="plans-intro-title" id="plansIntroTitle">Choisissez votre forfait</div>
+        <div class="plans-intro-subtitle">Sans engagement · Annulable à tout moment</div>
+      </div>
+      
+      <!-- Les 3 plans -->
+      <div class="plans-grid">
+        
+        <!-- ─── STARTER ─── -->
+        <div class="plan-card" data-plan="starter">
+          <div class="plan-badge current hidden" id="badgeStarter">Plan actuel</div>
+          <div class="plan-header">
+            <div class="plan-name starter">Frizz Starter</div>
+          </div>
+          <div class="plan-price-block">
+            <span class="plan-price">69 €</span>
+            <span class="plan-price-suffix">/ mois</span>
+          </div>
+          <div class="plan-tagline">Pour les petits restaurants qui démarrent</div>
+          
+          <div class="plan-features">
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span><strong>50 appels</strong> inclus / mois</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Voix Audrey ou Julien</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Réservations illimitées</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Français + Anglais</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Tableau de bord temps réel</span>
+            </div>
+          </div>
+          
+          <button class="plan-btn" data-plan="starter" id="btnStarter">Choisir Starter</button>
+        </div>
+        
+        <!-- ─── PRO (Populaire) ─── -->
+        <div class="plan-card popular" data-plan="pro">
+          <div class="plan-badge popular" id="badgePro">⭐ Le plus populaire</div>
+          <div class="plan-header" style="margin-top: 14px;">
+            <div class="plan-name pro">Frizz Pro</div>
+          </div>
+          <div class="plan-price-block">
+            <span class="plan-price">149 €</span>
+            <span class="plan-price-suffix">/ mois</span>
+          </div>
+          <div class="plan-tagline">Pour les restaurants établis · Multilingue</div>
+          
+          <div class="plan-features">
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span><strong>150 appels</strong> inclus / mois</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Tout Starter +</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>5 langues (FR/EN/DE/IT/ES)</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Rappels SMS clients</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Statistiques avancées</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Support prioritaire</span>
+            </div>
+          </div>
+          
+          <button class="plan-btn primary" data-plan="pro" id="btnPro">Choisir Pro</button>
+        </div>
+        
+        <!-- ─── PREMIUM ─── -->
+        <div class="plan-card" data-plan="premium">
+          <div class="plan-badge current hidden" id="badgePremium">Plan actuel</div>
+          <div class="plan-header">
+            <div class="plan-name premium">Frizz Premium</div>
+          </div>
+          <div class="plan-price-block">
+            <span class="plan-price">299 €</span>
+            <span class="plan-price-suffix">/ mois</span>
+          </div>
+          <div class="plan-tagline">Pour les restaurants haut de gamme · Voix sur mesure</div>
+          
+          <div class="plan-features">
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span><strong>300 appels</strong> inclus / mois</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Tout Pro +</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Voix personnalisée (clone)</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Intégration site & Instagram</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Support 7/7 par téléphone</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>Account manager dédié</span>
+            </div>
+          </div>
+          
+          <button class="plan-btn premium" data-plan="premium" id="btnPremium">Choisir Premium</button>
+        </div>
+        
+      </div>
+      
+      <!-- Lien gestion -->
+      <div style="padding: 4px 16px 16px; text-align: center;">
+        <button id="manageBillingBtn" style="color: var(--blue); font-size: 13px; font-weight: 500; padding: 6px;" class="hidden">Gérer mon abonnement →</button>
       </div>
     </div>
 
@@ -3239,6 +3575,28 @@
   // CONFIG SUPABASE
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';
+
+  // ═══ PRICING : 3 FORFAITS FRIZZ ═══
+  const PLANS = {
+    starter: {
+      name: 'Frizz Starter',
+      price: 69,
+      callsIncluded: 50,
+      stripePriceId: 'price_1TYpVGPxoshdWo4sF2anxYWF',
+    },
+    pro: {
+      name: 'Frizz Pro',
+      price: 149,
+      callsIncluded: 150,
+      stripePriceId: 'price_1TYpWrPxoshdWo4sIOVGbYeS',
+    },
+    premium: {
+      name: 'Frizz Premium',
+      price: 299,
+      callsIncluded: 300,
+      stripePriceId: 'price_1TYpXiPxoshdWo4sAzst0yyk',
+    },
+  };
   const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentUser = null;
@@ -4483,50 +4841,143 @@
     return status === 'active' || status === 'trialing';
   }
 
+  // ═══ DÉTECTION DU PLAN ACTUEL ═══
+  function getCurrentPlan() {
+    if (!currentSalon) return null;
+    // Lit la colonne 'plan' de frizz_ai_salons : 'starter', 'pro', 'premium' ou null
+    return currentSalon.plan || null;
+  }
+
+  function getCurrentPlanCallsLimit() {
+    const plan = getCurrentPlan();
+    if (!plan || !PLANS[plan]) return 0;
+    return PLANS[plan].callsIncluded;
+  }
+
+  function getCurrentMonthCalls() {
+    // Compte le nombre d'appels du mois en cours dans allReservations
+    // (les résas créées par l'IA = appels reçus)
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    return allReservations.filter(r => {
+      if (!r.created_at) return false;
+      const createdAt = new Date(r.created_at);
+      const isThisMonth = createdAt >= monthStart;
+      const isFromAI = r.source === 'ia' || r.source === 'vapi';
+      return isThisMonth && isFromAI;
+    }).length;
+  }
+
   function renderSubscription() {
-    const badge = $('subscriptionStatusBadge');
-    const statusText = $('subscriptionStatusText');
-    const btnText = $('subscriptionBtnText');
-    const tagline = $('subscriptionTagline');
-    if (!badge || !currentSalon) return;
-
+    if (!currentSalon) return;
+    
     const status = currentSalon.subscription_status || 'inactive';
-
-    badge.classList.remove('active', 'trialing', 'inactive');
-    if (status === 'active') {
-      badge.classList.add('active');
-      statusText.textContent = 'Actif';
-      btnText.textContent = 'Gérer mon abonnement';
-      if (tagline) tagline.textContent = 'Votre abonnement est actif. Toutes les fonctionnalités sont débloquées.';
-    } else if (status === 'trialing') {
-      badge.classList.add('trialing');
-      statusText.textContent = 'Essai gratuit';
-      btnText.textContent = 'Voir mon abonnement';
-      if (tagline) tagline.textContent = 'Profitez de votre essai gratuit avant la facturation automatique.';
+    const currentPlan = getCurrentPlan();
+    const isActive = status === 'active' || status === 'trialing';
+    
+    // Hide all "Plan actuel" badges
+    ['Starter', 'Pro', 'Premium'].forEach(p => {
+      const badge = $('badge' + p);
+      if (badge) badge.classList.add('hidden');
+    });
+    
+    // Reset all plan cards
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.classList.remove('current');
+    });
+    
+    // Si actif, highlight le plan actuel
+    if (isActive && currentPlan) {
+      const card = document.querySelector(`.plan-card[data-plan="${currentPlan}"]`);
+      if (card) card.classList.add('current');
+      const badge = $('badge' + currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1));
+      if (badge) badge.classList.remove('hidden');
+      
+      // Re-hide "popular" badge si Pro est le plan actuel (pour éviter double badge)
+      if (currentPlan === 'pro') {
+        $('badgePro').textContent = '✓ Plan actuel';
+        $('badgePro').classList.remove('popular');
+        $('badgePro').classList.add('current');
+      }
+    }
+    
+    // Update les boutons selon le plan actuel
+    ['starter', 'pro', 'premium'].forEach(planKey => {
+      const btn = $('btn' + planKey.charAt(0).toUpperCase() + planKey.slice(1));
+      if (!btn) return;
+      
+      if (currentPlan === planKey && isActive) {
+        btn.textContent = '✓ Plan actuel';
+        btn.classList.add('current-plan');
+        btn.classList.remove('primary', 'premium');
+      } else if (isActive) {
+        // Abonné mais à un autre plan
+        const planOrder = { starter: 1, pro: 2, premium: 3 };
+        const isUpgrade = planOrder[planKey] > planOrder[currentPlan];
+        btn.textContent = isUpgrade ? 'Passer au ' + PLANS[planKey].name : 'Changer pour ' + PLANS[planKey].name;
+        btn.classList.remove('current-plan');
+        if (planKey === 'pro') btn.classList.add('primary');
+        if (planKey === 'premium') btn.classList.add('premium');
+      } else {
+        // Pas abonné
+        btn.textContent = 'Choisir ' + PLANS[planKey].name.replace('Frizz ', '');
+        btn.classList.remove('current-plan');
+        if (planKey === 'pro') btn.classList.add('primary');
+        if (planKey === 'premium') btn.classList.add('premium');
+      }
+    });
+    
+    // Update titre intro
+    const introTitle = $('plansIntroTitle');
+    if (introTitle) {
+      if (isActive) {
+        introTitle.textContent = 'Votre abonnement';
+      } else {
+        introTitle.textContent = 'Choisissez votre forfait';
+      }
+    }
+    
+    // Compteur d'appels (visible si abonné)
+    const usageCard = $('planUsageCard');
+    if (isActive && currentPlan) {
+      const used = getCurrentMonthCalls();
+      const limit = getCurrentPlanCallsLimit();
+      const percent = limit > 0 ? Math.min(100, (used / limit) * 100) : 0;
+      
+      $('planUsageCount').textContent = `${used} / ${limit}`;
+      const fill = $('planUsageBarFill');
+      fill.style.width = percent + '%';
+      fill.classList.remove('warning', 'danger');
+      if (percent >= 90) fill.classList.add('danger');
+      else if (percent >= 75) fill.classList.add('warning');
+      
+      usageCard.classList.remove('hidden');
     } else {
-      badge.classList.add('inactive');
-      statusText.textContent = 'Inactif';
-      btnText.textContent = 'S\'abonner maintenant';
-      if (tagline) tagline.textContent = 'Débloquez Stats, Journal et toutes les fonctionnalités Frizz.';
+      usageCard.classList.add('hidden');
+    }
+    
+    // Bouton "Gérer mon abonnement" (visible si abonné)
+    const manageBtn = $('manageBillingBtn');
+    if (manageBtn) {
+      manageBtn.classList.toggle('hidden', !isActive);
     }
   }
 
-  async function handleSubscriptionClick() {
-    if (!currentSalon) return;
-    const btn = $('subscriptionBtn');
-    const originalText = $('subscriptionBtnText').textContent;
+  async function handlePlanSelection(planKey) {
+    if (!currentSalon || !PLANS[planKey]) return;
+    const plan = PLANS[planKey];
+    const btn = $('btn' + planKey.charAt(0).toUpperCase() + planKey.slice(1));
+    const originalText = btn.textContent;
     btn.disabled = true;
-    $('subscriptionBtnText').textContent = 'Chargement…';
-
+    btn.textContent = 'Chargement…';
+    
     try {
       const { data: { session } } = await supa.auth.getSession();
       if (!session) throw new Error('Session invalide');
-
-      // Si abonné → ouvrir le Customer Portal
-      // Si non abonné → ouvrir le Checkout
+      
       const isActive = isSubscriptionActive();
       const endpoint = isActive ? 'create_customer_portal_session' : 'create_checkout_session';
-
+      
       const response = await fetch(`${SUPABASE_URL}/functions/v1/${endpoint}`, {
         method: 'POST',
         headers: {
@@ -4534,14 +4985,18 @@
           'Authorization': `Bearer ${session.access_token}`,
           'apikey': SUPABASE_ANON_KEY,
         },
-        body: JSON.stringify({ salon_id: currentSalon.id }),
+        body: JSON.stringify({ 
+          salon_id: currentSalon.id,
+          price_id: plan.stripePriceId,  // ⬅️ Le bon Price ID selon le plan choisi
+          plan: planKey,                   // ⬅️ Pour l'enregistrer en base
+        }),
       });
-
+      
       if (!response.ok) {
         const err = await response.text();
         throw new Error(err || `HTTP ${response.status}`);
       }
-
+      
       const data = await response.json();
       if (data.url) {
         window.location.href = data.url;
@@ -4552,7 +5007,41 @@
       console.error('Erreur Stripe:', err);
       showToast('⚠️ ' + (err.message || 'Erreur de paiement'));
       btn.disabled = false;
-      $('subscriptionBtnText').textContent = originalText;
+      btn.textContent = originalText;
+    }
+  }
+
+  async function handleManageBilling() {
+    if (!currentSalon) return;
+    const btn = $('manageBillingBtn');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Chargement…';
+    
+    try {
+      const { data: { session } } = await supa.auth.getSession();
+      if (!session) throw new Error('Session invalide');
+      
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/create_customer_portal_session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ salon_id: currentSalon.id }),
+      });
+      
+      if (!response.ok) throw new Error(await response.text() || 'Erreur');
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('Erreur portal:', err);
+      showToast('⚠️ ' + (err.message || 'Erreur'));
+      btn.disabled = false;
+      btn.textContent = originalText;
     }
   }
 
@@ -4736,8 +5225,11 @@
     });
   });
 
-  // Page Réglages — Bouton abonnement
-  $('subscriptionBtn').addEventListener('click', handleSubscriptionClick);
+  // Page Réglages — Boutons des 3 plans
+  $('btnStarter').addEventListener('click', () => handlePlanSelection('starter'));
+  $('btnPro').addEventListener('click', () => handlePlanSelection('pro'));
+  $('btnPremium').addEventListener('click', () => handlePlanSelection('premium'));
+  $('manageBillingBtn').addEventListener('click', handleManageBilling);
 
   // Page Réglages — Compte
   $('changePasswordBtn').addEventListener('click', openPasswordModal);

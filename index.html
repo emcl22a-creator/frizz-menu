@@ -2812,7 +2812,7 @@
   <div class="page active" id="page-stats">
 
   <section class="greeting">
-    <h1 id="greetingTitle">Bonjour <span class="wave">👋</span></h1>
+    <h1 id="greetingTitle">Bonjour</h1>
     <p class="subtitle" id="greetingSubtitle">—</p>
   </section>
 
@@ -2951,7 +2951,7 @@
       <!-- Intro -->
       <div class="plans-intro">
         <div class="plans-intro-title" id="plansIntroTitle">Choisissez votre forfait</div>
-        <div class="plans-intro-subtitle">Sans engagement · Annulable à tout moment</div>
+        <div class="plans-intro-subtitle">Sans engagement<br>Annulable à tout moment</div>
       </div>
       
       <!-- Les 3 plans -->
@@ -2990,6 +2990,10 @@
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <span>Tableau de bord temps réel</span>
             </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>SMS de confirmation client</span>
+            </div>
           </div>
           
           <button class="plan-btn" data-plan="starter" id="btnStarter">Choisir Starter</button>
@@ -3023,6 +3027,10 @@
             <div class="plan-feature">
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <span>Rappels SMS clients</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>SMS de confirmation client</span>
             </div>
             <div class="plan-feature">
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -3061,6 +3069,10 @@
             <div class="plan-feature">
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <span>Voix personnalisée (clone)</span>
+            </div>
+            <div class="plan-feature">
+              <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span>SMS de confirmation client</span>
             </div>
             <div class="plan-feature">
               <div class="plan-feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -3703,8 +3715,8 @@
     // Greeting
     const prenom = currentSalon.patron_prenom || '';
     $('greetingTitle').innerHTML = prenom
-      ? `Bonjour ${escapeHtml(prenom)} <span class="wave">👋</span>`
-      : `Bonjour <span class="wave">👋</span>`;
+      ? `Bonjour ${escapeHtml(prenom)}`
+      : `Bonjour`;
 
     const todayCount = validResas.filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd).length;
     if (todayCount === 0) {
@@ -3741,7 +3753,7 @@
         if (callsLimit) {
           labelEl.textContent = `sur ${callsLimit} inclus`;
         } else {
-          labelEl.textContent = 'pas d\'abonnement actif';
+          labelEl.textContent = '';
         }
       }
     } catch (e) {

@@ -2818,12 +2818,12 @@
 
   <section class="duo-grid">
     <div class="hero-card">
-      <div class="hero-label">Couverts libres<br>aujourd'hui</div>
+      <div class="hero-label">Appels Frizz<br>ce mois</div>
       <div class="hero-number" id="couvertsLibres">0</div>
-      <div class="hero-sublabel">disponibles</div>
+      <div class="hero-sublabel" id="callsLimitLabel">sur — inclus</div>
       <div class="hero-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-.32 0-.63.05-.91.14.57.81.9 1.79.9 2.86 0 1.07-.34 2.04-.9 2.86.28.09.59.14.91.14m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+          <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </div>
@@ -2935,7 +2935,6 @@
 
     <!-- Section : Abonnement (3 forfaits) -->
     <div class="settings-section">
-      <div class="settings-section-title">Abonnement</div>
       
       <!-- Compteur d'appels (visible si abonné) -->
       <div class="plan-usage-card hidden" id="planUsageCard">
@@ -3707,15 +3706,26 @@
       $('greetingSubtitle').textContent = `${todayCount} réservations aujourd'hui`;
     }
 
-    // Couverts libres
-    const capaciteInterieur = getCapaciteInterieur();
-    const capaciteTerrasse = getCapaciteTerrasse();
-    const capaciteTotale = capaciteInterieur + capaciteTerrasse;
-    const couvertsReservesToday = validResas
-      .filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd)
-      .reduce((sum, r) => sum + (parseInt(r.nb_couverts) || 0), 0);
-    const couvertsLibres = Math.max(0, capaciteTotale - couvertsReservesToday);
-    $('couvertsLibres').textContent = couvertsLibres;
+    // Appels Frizz ce mois (résas créées par l'IA Audrey/Julien)
+    const callsThisMonth = allReservations.filter(r => {
+      if (!r.created_at) return false;
+      const createdAt = new Date(r.created_at);
+      const isFromAI = r.source === 'ia' || r.source === 'vapi';
+      return createdAt >= firstThisMonth && isFromAI;
+    }).length;
+    $('couvertsLibres').textContent = callsThisMonth;
+    
+    // Sous-label : montrer la limite du plan actuel
+    const currentPlan = getCurrentPlan ? getCurrentPlan() : null;
+    const callsLimit = (currentPlan && PLANS[currentPlan]) ? PLANS[currentPlan].callsIncluded : null;
+    const labelEl = $('callsLimitLabel');
+    if (labelEl) {
+      if (callsLimit) {
+        labelEl.textContent = `sur ${callsLimit} inclus`;
+      } else {
+        labelEl.textContent = 'pas d\'abonnement actif';
+      }
+    }
 
     // Trend vs mois dernier
     const thisMonthCount = validResas.filter(r => r.dateObj >= firstThisMonth && r.dateObj <= now).length;

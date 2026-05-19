@@ -2858,13 +2858,14 @@
   <section class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon blue">
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
         </svg>
       </div>
       <div class="stat-content">
-        <span class="stat-label">Réservations ce mois</span>
-        <span class="stat-value" id="resaCeMois">0</span>
+        <span class="stat-label">Temps gagné ce mois</span>
+        <span class="stat-value" id="resaCeMois">0min</span>
       </div>
     </div>
     <div class="stat-card">
@@ -3777,8 +3778,30 @@
       $('chartDotInner').setAttribute('cy', '62');
     }
 
-    // Résas ce mois
-    $('resaCeMois').textContent = thisMonthCount;
+    // Temps gagné ce mois (= temps que Frizz a économisé au patron en gérant les appels)
+    // Hypothèse : chaque appel IA = ~3,5 minutes de temps gagné pour le restaurateur
+    // (le temps qu'il aurait passé à répondre + à noter la résa + à confirmer)
+    const callsThisMonthForTime = allReservations.filter(r => {
+      if (!r.created_at) return false;
+      const createdAt = new Date(r.created_at);
+      const isFromAI = r.source === 'ia' || r.source === 'vapi';
+      return createdAt >= firstThisMonth && isFromAI;
+    }).length;
+    const minutesGagnees = callsThisMonthForTime * 3.5; // 3,5 min par appel
+    const heuresGagnees = Math.floor(minutesGagnees / 60);
+    const minutesRestantes = Math.round(minutesGagnees % 60);
+    
+    let tempsTexte;
+    if (heuresGagnees === 0 && minutesRestantes === 0) {
+      tempsTexte = '0min';
+    } else if (heuresGagnees === 0) {
+      tempsTexte = `${minutesRestantes}min`;
+    } else if (minutesRestantes === 0) {
+      tempsTexte = `${heuresGagnees}h`;
+    } else {
+      tempsTexte = `${heuresGagnees}h${String(minutesRestantes).padStart(2, '0')}`;
+    }
+    $('resaCeMois').textContent = tempsTexte;
 
     // ─── NO-SHOWS ÉVITÉS ───
     // = nombre de résas annulées via l'IA (Audrey/Julien a évité que la table reste réservée pour rien)

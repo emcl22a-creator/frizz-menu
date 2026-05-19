@@ -293,10 +293,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     box-shadow: 0 20px 50px rgba(0, 122, 255, 0.40), 0 8px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.20);
     position: relative;
     overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .hero-card:active {
+    transform: scale(0.98);
+  }
+  .hero-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 4px;
   }
   .hero-card::before {
     content: '';
@@ -2819,10 +2831,12 @@
   </section>
 
   <section class="duo-grid">
-    <div class="hero-card">
+    <div class="hero-card" id="heroCard" style="cursor: pointer;">
       <div class="hero-label">Appels Frizz<br>ce mois</div>
-      <div class="hero-number" id="couvertsLibres">0</div>
-      <div class="hero-sublabel" id="callsLimitLabel">sur — inclus</div>
+      <div class="hero-center">
+        <div class="hero-number" id="couvertsLibres">0</div>
+        <div class="hero-sublabel" id="callsLimitLabel">sur — inclus</div>
+      </div>
       <div class="hero-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3294,41 +3308,41 @@
           Se déconnecter
         </button>
       </div>
-      
-      <!-- Section : Me contacter -->
-      <div class="settings-section">
-        <div class="settings-section-title">Aide & Contact</div>
-        <div class="settings-section-card">
-          <a href="mailto:contact@frizz-instant.com" class="settings-row" style="text-decoration: none;">
-            <div class="settings-row-icon" style="background: rgba(0, 122, 255, 0.10); color: var(--blue);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </div>
-            <div class="settings-row-label">M'envoyer un email</div>
-            <div class="settings-row-value">contact@frizz-instant.com</div>
-            <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </a>
-          <a href="tel:+33000000000" class="settings-row" style="text-decoration: none;">
-            <div class="settings-row-icon" style="background: rgba(52, 199, 89, 0.10); color: var(--green);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-            </div>
-            <div class="settings-row-label">M'appeler</div>
-            <div class="settings-row-value">Emilien</div>
-            <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-      
-      <div class="app-version">Frizz Instant · v1.0</div>
     </div>
+    
+    <!-- Section : Aide & Contact -->
+    <div class="settings-section">
+      <div class="settings-section-title">Aide & Contact</div>
+      <div class="settings-section-card">
+        <a href="mailto:contact@frizz-instant.com" class="settings-row" style="text-decoration: none;">
+          <div class="settings-row-icon" style="background: rgba(0, 122, 255, 0.10); color: var(--blue);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="settings-row-label">M'envoyer un email</div>
+          <div class="settings-row-value">contact@frizz-instant.com</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+        <a href="tel:+33000000000" class="settings-row" style="text-decoration: none;">
+          <div class="settings-row-icon" style="background: rgba(52, 199, 89, 0.10); color: var(--green);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="settings-row-label">M'appeler</div>
+          <div class="settings-row-value">Emilien</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    
+    <div class="app-version">Frizz Instant · v1.0</div>
 
     <!-- Toast notification -->
     <div class="settings-toast" id="settingsToast">✓ Copié !</div>
@@ -3463,10 +3477,10 @@
     </button>
   </div>
   <div class="resa-filters" id="resaFilters">
-    <button class="resa-filter-pill active" data-filter="today">Aujourd'hui<span class="resa-filter-count" id="countToday">0</span></button>
-    <button class="resa-filter-pill" data-filter="tomorrow">Demain<span class="resa-filter-count" id="countTomorrow">0</span></button>
-    <button class="resa-filter-pill" data-filter="week">Semaine<span class="resa-filter-count" id="countWeek">0</span></button>
-    <button class="resa-filter-pill" data-filter="month">Mois<span class="resa-filter-count" id="countMonth">0</span></button>
+    <button class="resa-filter-pill active" data-filter="today">Aujourd'hui</button>
+    <button class="resa-filter-pill" data-filter="tomorrow">Demain</button>
+    <button class="resa-filter-pill" data-filter="week">Semaine</button>
+    <button class="resa-filter-pill" data-filter="month">Mois</button>
   </div>
   <div class="resa-popup-list" id="resaPopupList"></div>
 </div>
@@ -3843,14 +3857,14 @@
     }
 
     // Temps gagné ce mois
-    // = nombre de résas créées ce mois × ~3,5 minutes économisées par appel
+    // = nombre de résas créées ce mois × ~2 minutes économisées par appel
     try {
       const resasThisMonthCount = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
         return createdAt >= firstThisMonth;
       }).length;
-      const minutesGagnees = resasThisMonthCount * 3.5; // 3,5 min par résa
+      const minutesGagnees = resasThisMonthCount * 2; // 2 min par résa
       const heuresGagnees = Math.floor(minutesGagnees / 60);
       const minutesRestantes = Math.round(minutesGagnees % 60);
       
@@ -5321,6 +5335,12 @@
   document.querySelectorAll('.tab[data-page]').forEach(tab => {
     tab.addEventListener('click', () => switchPage(tab.dataset.page));
   });
+  
+  // Click sur la card "Appels Frizz ce mois" → page Journal
+  const heroCardEl = $('heroCard');
+  if (heroCardEl) {
+    heroCardEl.addEventListener('click', () => switchPage('activity'));
+  }
 
   // Filtres page Activité
   document.querySelectorAll('.activity-filter-pill').forEach(pill => {

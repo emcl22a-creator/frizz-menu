@@ -4272,30 +4272,40 @@
       return;
     }
 
+    // Icônes par source (identiques au popup) : téléphone = Frizz, personne = manuel
+    const ICON_FRIZZ = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
+    const ICON_MANUAL = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+
     container.innerHTML = todayResas.map(r => {
-      const initials = getInitials(r.client_nom);
+      const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+      const cls = isFrizz ? 'src-frizz' : 'src-manual';
+      const icon = isFrizz ? ICON_FRIZZ : ICON_MANUAL;
+      const badge = isFrizz ? 'Frizz' : 'Manuelle';
       const heure = formatHeure(r.heure_reservation);
-      const color = avatarColorFor(r.client_nom || '');
+      const couverts = parseInt(r.nb_couverts) || '?';
       const isPast = r.dateObj < now;
-      const sourceText = (r.source === 'ia' || r.source === 'vapi')
-        ? (isPast ? 'Réservation honorée' : 'Réservation confirmée par IA')
-        : (isPast ? 'Réservation passée' : 'Réservation confirmée');
       return `
-        <div class="resa-row"${isPast ? ' style="opacity: 0.5;"' : ''}>
-          <div class="avatar" style="background: ${color.bg}; color: ${color.fg};">${escapeHtml(initials)}</div>
-          <div class="resa-info">
-            <div class="resa-title">Table de ${parseInt(r.nb_couverts) || '?'} · ${escapeHtml(r.client_nom || 'Client')}</div>
-            <div class="resa-subtitle">${sourceText}</div>
-          </div>
-          <div class="resa-time">
-            ${heure}
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
+        <div class="agenda-item" data-resa-id="${escapeHtml(r.id)}"${isPast ? ' style="opacity: 0.5;"' : ''}>
+          <div class="agenda-time">${heure}</div>
+          <div class="agenda-rail"><span class="agenda-dot ${cls}"></span></div>
+          <div class="agenda-card">
+            <div class="agenda-avatar ${cls}">${icon}</div>
+            <div class="agenda-text">
+              <div class="agenda-name">Table de ${couverts} · ${escapeHtml(r.client_nom || 'Client')}</div>
+              <span class="agenda-badge ${cls}">${badge}</span>
+            </div>
           </div>
         </div>
       `;
     }).join('');
+
+    // Items cliquables → fiche détail (comme dans le popup)
+    container.querySelectorAll('.agenda-item[data-resa-id]').forEach(card => {
+      card.addEventListener('click', () => {
+        const resa = allReservations.find(r => r.id === card.dataset.resaId);
+        if (resa) openResaDetail(resa);
+      });
+    });
   }
 
   function getInitials(name) {

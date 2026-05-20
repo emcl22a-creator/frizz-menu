@@ -253,6 +253,36 @@
   }
 
   /* DUO HERO + CHART */
+  .call-banner {
+    display: none;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 0 20px 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 0.5px solid transparent;
+  }
+  .call-banner.danger { background: rgba(255, 59, 48, 0.08); border-color: rgba(255, 59, 48, 0.25); }
+  .call-banner.warn { background: rgba(255, 149, 0, 0.10); border-color: rgba(255, 149, 0, 0.28); }
+  .call-banner-icon { flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; }
+  .call-banner.danger .call-banner-icon { color: var(--red); }
+  .call-banner.warn .call-banner-icon { color: #FF9500; }
+  .call-banner-body { flex: 1; min-width: 0; }
+  .call-banner-title { font-size: 15px; font-weight: 700; color: var(--label); margin-bottom: 3px; }
+  .call-banner-text { font-size: 13px; color: var(--label-secondary); line-height: 1.45; }
+  .call-banner-cta {
+    margin-top: 11px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--label);
+    border: none;
+    border-radius: 9px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .call-banner-cta:active { opacity: 0.8; }
+
   .duo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -3045,6 +3075,19 @@
     <p class="subtitle" id="greetingSubtitle">—</p>
   </section>
 
+  <div class="call-banner" id="callLimitBanner">
+    <svg class="call-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <div class="call-banner-body">
+      <div class="call-banner-title">—</div>
+      <div class="call-banner-text">—</div>
+      <button class="call-banner-cta" id="callBannerCta">Voir les forfaits</button>
+    </div>
+  </div>
+
   <section class="duo-grid">
     <div class="hero-card" id="heroCard" style="cursor: pointer;">
       <div class="hero-label">Appels Frizz<br>ce mois</div>
@@ -4056,6 +4099,7 @@
   }
 
   function renderStats(reservations) {
+    renderCallLimitBanner();
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
@@ -5343,6 +5387,48 @@
     }).length;
   }
 
+  // Bandeau d'alerte : pas de forfait actif OU limite d'appels atteinte
+  function renderCallLimitBanner() {
+    const banner = document.getElementById('callLimitBanner');
+    if (!banner || !currentSalon) return;
+
+    const active = isSubscriptionActive();
+    const used = getCurrentMonthCalls();
+    const limit = getCurrentPlanCallsLimit();
+
+    let state = null; // 'noplan' | 'over' | 'warn'
+    if (!active) {
+      state = 'noplan';
+    } else if (limit > 0 && used >= limit) {
+      state = 'over';
+    } else if (limit > 0 && used >= Math.ceil(limit * 0.8)) {
+      state = 'warn';
+    }
+
+    if (!state) {
+      banner.style.display = 'none';
+      banner.classList.remove('warn', 'danger');
+      return;
+    }
+
+    banner.style.display = 'flex';
+    banner.classList.toggle('danger', state === 'noplan' || state === 'over');
+    banner.classList.toggle('warn', state === 'warn');
+
+    const titleEl = banner.querySelector('.call-banner-title');
+    const textEl = banner.querySelector('.call-banner-text');
+    if (state === 'noplan') {
+      titleEl.textContent = 'Aucun forfait actif';
+      textEl.textContent = "Vos appels Frizz sont suspendus. Choisissez un forfait pour qu'Audrey réponde au téléphone.";
+    } else if (state === 'over') {
+      titleEl.textContent = "Limite d'appels atteinte";
+      textEl.textContent = `Vous avez atteint vos ${limit} appels ce mois. Les nouveaux appels sont suspendus. Passez à un forfait supérieur pour continuer à recevoir des appels.`;
+    } else {
+      titleEl.textContent = 'Vous approchez de votre limite';
+      textEl.textContent = `${used} appels sur ${limit} ce mois. Pensez à passer au forfait supérieur avant la coupure.`;
+    }
+  }
+
   function renderSubscription() {
     if (!currentSalon) return;
     try {
@@ -5819,6 +5905,14 @@
       openEditModal(field, type, label, currentValue);
     });
   });
+
+  (function () {
+    const cta = document.getElementById('callBannerCta');
+    if (cta) cta.addEventListener('click', () => {
+      if (typeof goToPlans === 'function') goToPlans();
+      else if (typeof openPlanPopup === 'function') openPlanPopup();
+    });
+  })();
 
   // Modale d'édition
   $('editModalCancelBtn').addEventListener('click', closeEditModal);

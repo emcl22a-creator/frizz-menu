@@ -3130,7 +3130,7 @@
   </section>
 
   <section class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card" id="resaMonthCard" style="cursor: pointer;">
       <div class="stat-icon blue">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -3144,7 +3144,7 @@
         <span class="stat-value" id="resaCeMois">0</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" id="cancelMonthCard" style="cursor: pointer;">
       <div class="stat-icon green">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -5833,13 +5833,28 @@
     tab.addEventListener('click', () => switchPage(tab.dataset.page));
   });
   
-  // Click sur la card "Appels Frizz ce mois" → ouvre la popup résa
+  // Click sur la card "Appels Frizz ce mois" → page Journal
   const heroCardEl = $('heroCard');
   if (heroCardEl) {
     heroCardEl.addEventListener('click', () => {
-      if (typeof openResaPopup === 'function') {
-        openResaPopup();
-      }
+      if (typeof switchPage === 'function') switchPage('activity');
+    });
+  }
+
+  // Click sur la card "Réservations ce mois" → popup Réservations
+  const resaMonthCardEl = $('resaMonthCard');
+  if (resaMonthCardEl) {
+    resaMonthCardEl.addEventListener('click', () => {
+      if (typeof openResaPopup === 'function') openResaPopup();
+    });
+  }
+
+  // Click sur la card "Annulations ce mois" → Journal filtré sur les annulations
+  const cancelMonthCardEl = $('cancelMonthCard');
+  if (cancelMonthCardEl) {
+    cancelMonthCardEl.addEventListener('click', () => {
+      if (typeof switchPage === 'function') switchPage('activity');
+      if (typeof setActivityFilter === 'function') setActivityFilter('cancelled');
     });
   }
 

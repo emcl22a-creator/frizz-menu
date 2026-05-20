@@ -2961,8 +2961,8 @@
         </svg>
       </div>
       <div class="stat-content">
-        <span class="stat-label">Temps gagné ce mois</span>
-        <span class="stat-value" id="resaCeMois">0min</span>
+        <span class="stat-label">Nombre de réservations ce mois</span>
+        <span class="stat-value" id="resaCeMois">0</span>
       </div>
     </div>
     <div class="stat-card">
@@ -2973,7 +2973,7 @@
         </svg>
       </div>
       <div class="stat-content">
-        <span class="stat-label">No-shows évités</span>
+        <span class="stat-label">Nombre d'annulations de réservation</span>
         <span class="stat-value" id="noShowsEvites">0</span>
       </div>
     </div>
@@ -3981,38 +3981,23 @@
       $('chartDotInner').setAttribute('cy', '62');
     }
 
-    // Temps gagné ce mois
-    // = nombre de résas créées ce mois × ~2 minutes économisées par appel
+    // Nombre de réservations ce mois
     try {
       const resasThisMonthCount = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
         return createdAt >= firstThisMonth;
       }).length;
-      const minutesGagnees = resasThisMonthCount * 2; // 2 min par résa
-      const heuresGagnees = Math.floor(minutesGagnees / 60);
-      const minutesRestantes = Math.round(minutesGagnees % 60);
-      
-      let tempsTexte;
-      if (heuresGagnees === 0 && minutesRestantes === 0) {
-        tempsTexte = '0min';
-      } else if (heuresGagnees === 0) {
-        tempsTexte = `${minutesRestantes}min`;
-      } else if (minutesRestantes === 0) {
-        tempsTexte = `${heuresGagnees}h`;
-      } else {
-        tempsTexte = `${heuresGagnees}h${String(minutesRestantes).padStart(2, '0')}`;
-      }
       const elTime = $('resaCeMois');
-      if (elTime) elTime.textContent = tempsTexte;
+      if (elTime) elTime.textContent = resasThisMonthCount;
     } catch (e) {
-      console.warn('Erreur temps gagné:', e);
+      console.warn('Erreur nombre de réservations:', e);
       const elTime = $('resaCeMois');
-      if (elTime) elTime.textContent = '0min';
+      if (elTime) elTime.textContent = '0';
     }
 
-    // ─── NO-SHOWS ÉVITÉS ───
-    // = nombre de résas annulées ce mois (l'IA a évité que la table reste bloquée pour rien)
+    // ─── NOMBRE D'ANNULATIONS DE RÉSERVATION ───
+    // = nombre de résas annulées ce mois
     try {
       const noShowsEvites = allReservations.filter(r => {
         if (!r.created_at) return false;

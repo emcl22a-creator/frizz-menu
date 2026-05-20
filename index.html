@@ -3403,6 +3403,48 @@
       </div>
     </div>
 
+    <!-- Section : Horaires & réservations -->
+    <div class="settings-section">
+      <div class="settings-section-title">Horaires & réservations</div>
+      <div class="settings-section-card">
+        <div class="settings-row editable" data-field="duree_table_minutes" data-type="number" data-label="Durée d'une table (minutes)">
+          <div class="settings-row-label">Durée d'une table</div>
+          <div class="settings-row-value" id="settingsDureeValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+        <div class="settings-row editable" data-field="midi_ouverture" data-type="time" data-label="Midi — ouverture">
+          <div class="settings-row-label">Midi — ouverture</div>
+          <div class="settings-row-value" id="settingsMidiOuvValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+        <div class="settings-row editable" data-field="midi_fermeture" data-type="time" data-label="Midi — fermeture">
+          <div class="settings-row-label">Midi — fermeture</div>
+          <div class="settings-row-value" id="settingsMidiFermValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+        <div class="settings-row editable" data-field="soir_ouverture" data-type="time" data-label="Soir — ouverture">
+          <div class="settings-row-label">Soir — ouverture</div>
+          <div class="settings-row-value" id="settingsSoirOuvValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+        <div class="settings-row editable" data-field="soir_fermeture" data-type="time" data-label="Soir — fermeture">
+          <div class="settings-row-label">Soir — fermeture</div>
+          <div class="settings-row-value" id="settingsSoirFermValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <!-- Section : Votre numéro Frizz -->
     <div class="settings-section">
       <div class="settings-section-title">Votre numéro Frizz</div>
@@ -4992,6 +5034,13 @@
     $('settingsCapaciteIntValue').textContent = (currentSalon.capacite_interieur || 0) + ' couverts';
     $('settingsCapaciteExtValue').textContent = (currentSalon.capacite_exterieur || 0) + ' couverts';
 
+    // Horaires & réservations
+    $('settingsDureeValue').textContent = (currentSalon.duree_table_minutes || 70) + ' min';
+    $('settingsMidiOuvValue').textContent = currentSalon.midi_ouverture || '— (pas de service)';
+    $('settingsMidiFermValue').textContent = currentSalon.midi_fermeture || '— (pas de service)';
+    $('settingsSoirOuvValue').textContent = currentSalon.soir_ouverture || '— (pas de service)';
+    $('settingsSoirFermValue').textContent = currentSalon.soir_fermeture || '— (pas de service)';
+
     // Voix sélectionnée (défaut: voix_feminine si non définie)
     const currentVoice = getCurrentVoice();
     document.querySelectorAll('.voice-card').forEach(card => {
@@ -5544,7 +5593,7 @@
     $('editModalTitle').textContent = label;
     $('editModalSubtitle').textContent = `Modifier ${label.toLowerCase()}`;
     const input = $('editModalInput');
-    input.type = type === 'number' ? 'number' : 'text';
+    input.type = type === 'number' ? 'number' : (type === 'time' ? 'time' : 'text');
     // ⚠️ Important: utiliser != null pour ne pas perdre la valeur 0 (qui est falsy)
     input.value = (currentValue !== null && currentValue !== undefined) ? String(currentValue) : '';
     input.min = type === 'number' ? '0' : '';
@@ -5576,6 +5625,9 @@
     if (editingType === 'number') {
       newValue = parseInt(newValue) || 0;
       if (newValue < 0) newValue = 0;
+    } else if (editingType === 'time') {
+      // Heure facultative : vide = pas de service (on stocke null)
+      if (newValue === '') newValue = null;
     }
 
     if (newValue === '' && editingType === 'text') {

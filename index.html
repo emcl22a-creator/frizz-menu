@@ -3164,7 +3164,7 @@
 
   <section class="resa-section">
     <div class="resa-header">
-      <h2>Réservations du jour</h2>
+      <h2>Calendrier</h2>
       <a class="voir-plus" id="voirPlusBtn">
         Voir plus
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -4021,6 +4021,7 @@
   let currentUser = null;
   let currentSalon = null;
   let allReservations = []; // stockage global pour la popup notifs
+  let monthCallsCount = 0;  // vrais appels Frizz du mois (table frizz_ai_appels)
 
   const $ = (id) => document.getElementById(id);
   const show = (id) => $(id).classList.remove('hidden');
@@ -4084,6 +4085,7 @@
 
       allReservations = reservations || [];
       renderStats(allReservations);
+      loadMonthCalls(); // charge le vrai nombre d'appels Frizz du mois
       renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
       updateBellDot();
       applyPaywall();
@@ -4130,13 +4132,9 @@
       $('greetingSubtitle').textContent = `${todayCount} réservations aujourd'hui`;
     }
 
-    // Appels Frizz ce mois (toutes les résas créées ce mois)
+    // Appels Frizz ce mois (vrais appels reçus, table frizz_ai_appels)
     try {
-      const callsThisMonth = allReservations.filter(r => {
-        if (!r.created_at) return false;
-        const createdAt = new Date(r.created_at);
-        return createdAt >= firstThisMonth;
-      }).length;
+      const callsThisMonth = monthCallsCount;
       const elCalls = $('couvertsLibres');
       if (elCalls) elCalls.textContent = callsThisMonth;
       
@@ -5374,17 +5372,28 @@
   }
 
   function getCurrentMonthCalls() {
-    // Compte le nombre d'appels du mois en cours dans allReservations
-    // (les résas créées par l'IA = appels reçus)
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    return allReservations.filter(r => {
-      if (!r.created_at) return false;
-      const createdAt = new Date(r.created_at);
-      const isThisMonth = createdAt >= monthStart;
-      const isFromAI = r.source === 'ia' || r.source === 'vapi';
-      return isThisMonth && isFromAI;
-    }).length;
+    // Vrai nombre d'appels Frizz du mois (table frizz_ai_appels)
+    return monthCallsCount;
+  }
+
+  // Charge le nombre réel d'appels du mois depuis Supabase
+  async function loadMonthCalls() {
+    if (!currentSalon) return;
+    try {
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { count, error } = await supa
+        .from('frizz_ai_appels')
+        .select('*', { count: 'exact', head: true })
+        .eq('salon_id', currentSalon.id)
+        .gte('created_at', monthStart);
+      if (!error) {
+        monthCallsCount = count || 0;
+        renderStats(allReservations); // rafraîchit le compteur + le bandeau
+      }
+    } catch (e) {
+      console.warn('Erreur chargement appels Frizz:', e);
+    }
   }
 
   // Bandeau d'alerte : pas de forfait actif OU limite d'appels atteinte

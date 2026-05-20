@@ -5405,12 +5405,12 @@
     const used = getCurrentMonthCalls();
     const limit = getCurrentPlanCallsLimit();
 
-    let state = null; // 'noplan' | 'over' | 'warn'
-    if (!active) {
-      state = 'noplan';
-    } else if (limit > 0 && used >= limit) {
+    let state = null; // 'over' | 'warn'
+    // Pas de bandeau "aucun forfait" : le blocage se fait en interne (routeur),
+    // on n'affiche rien sur la page tant que la personne n'a pas de forfait.
+    if (active && limit > 0 && used >= limit) {
       state = 'over';
-    } else if (limit > 0 && used >= Math.ceil(limit * 0.8)) {
+    } else if (active && limit > 0 && used >= Math.ceil(limit * 0.8)) {
       state = 'warn';
     }
 
@@ -5421,15 +5421,12 @@
     }
 
     banner.style.display = 'flex';
-    banner.classList.toggle('danger', state === 'noplan' || state === 'over');
+    banner.classList.toggle('danger', state === 'over');
     banner.classList.toggle('warn', state === 'warn');
 
     const titleEl = banner.querySelector('.call-banner-title');
     const textEl = banner.querySelector('.call-banner-text');
-    if (state === 'noplan') {
-      titleEl.textContent = 'Aucun forfait actif';
-      textEl.textContent = "Vos appels Frizz sont suspendus. Choisissez un forfait pour qu'Audrey réponde au téléphone.";
-    } else if (state === 'over') {
+    if (state === 'over') {
       titleEl.textContent = "Limite d'appels atteinte";
       textEl.textContent = `Vous avez atteint vos ${limit} appels ce mois. Les nouveaux appels sont suspendus. Passez à un forfait supérieur pour continuer à recevoir des appels.`;
     } else {

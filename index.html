@@ -1793,6 +1793,25 @@
   .edit-modal-input:focus {
     border-color: var(--blue);
   }
+  /* Champ heure (et date) : éviter le rendu cassé sur mobile/iOS */
+  .edit-modal-input[type="time"],
+  .edit-modal-input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 52px;
+    display: block;
+    text-align: left;
+  }
+  .edit-modal-input[type="time"]::-webkit-date-and-time-value,
+  .edit-modal-input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+  }
+  .edit-modal-input[type="time"]::-webkit-calendar-picker-indicator,
+  .edit-modal-input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-left: auto;
+    opacity: 0.5;
+  }
   .edit-modal-actions {
     display: flex;
     gap: 10px;

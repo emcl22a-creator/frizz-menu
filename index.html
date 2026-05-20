@@ -1391,6 +1391,109 @@
     line-height: 1.4;
   }
 
+  /* ═══ POPUP PLAN / ESSAI (fermable) ═══ */
+  .plan-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+  .plan-popup-backdrop.visible { opacity: 1; visibility: visible; }
+  .plan-popup {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -46%) scale(0.96);
+    width: calc(100% - 40px);
+    max-width: 380px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  }
+  .plan-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .plan-popup-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plan-popup-close svg { width: 16px; height: 16px; }
+  .plan-popup-body { padding: 30px 24px 22px; text-align: center; }
+  .plan-popup-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 16px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plan-popup-icon svg { width: 28px; height: 28px; fill: none; stroke: #fff; stroke-width: 2; }
+  .plan-popup-title { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .plan-popup-subtitle { font-size: 14px; line-height: 1.45; color: #6b6b70; margin-bottom: 20px; }
+  .plan-popup-voices {
+    background: #f5f5f7;
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+  }
+  .plan-popup-voices-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8a8a8e;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+  .plan-popup-voice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .plan-popup-voice + .plan-popup-voice { border-top: 1px solid rgba(0, 0, 0, 0.06); }
+  .plan-popup-voice .voice-info { flex: 1; text-align: left; }
+  .plan-popup-cta {
+    width: 100%;
+    background: #000;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+  }
+  .plan-popup-later {
+    width: 100%;
+    background: transparent;
+    color: #8a8a8e;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px;
+  }
+
   /* ═══ PAYWALL OVERLAY (sur pages Stats/Activité) ═══ */
   .paywall-overlay {
     position: absolute;
@@ -3365,6 +3468,66 @@
   </div>
 </template>
 
+<!-- ═══ POPUP PLAN / ESSAI (fermable, affiché 1 fois si non abonné) ═══ -->
+<div class="plan-popup-backdrop" id="planPopupBackdrop"></div>
+<div class="plan-popup" id="planPopup" role="dialog" aria-modal="true" aria-labelledby="planPopupTitle">
+  <button class="plan-popup-close" id="planPopupCloseBtn" aria-label="Fermer">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <div class="plan-popup-body">
+    <div class="plan-popup-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="11" width="18" height="11" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="plan-popup-title" id="planPopupTitle">Bienvenue sur Frizz</div>
+    <div class="plan-popup-subtitle">Vous pouvez explorer librement. Choisissez un plan pour activer toutes les fonctionnalités et laisser votre assistant gérer vos appels.</div>
+
+    <div class="plan-popup-voices">
+      <div class="plan-popup-voices-label">Écoutez vos deux voix</div>
+      <div class="plan-popup-voice">
+        <div class="voice-avatar voice-female">👩</div>
+        <div class="voice-info">
+          <div class="voice-name">Audrey</div>
+          <div class="voice-subtitle">Voix féminine</div>
+        </div>
+        <button class="voice-play-btn" data-audio="audrey" aria-label="Écouter Audrey">
+          <svg class="voice-play-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+          </svg>
+          <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+            <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      <div class="plan-popup-voice">
+        <div class="voice-avatar voice-male">🧑</div>
+        <div class="voice-info">
+          <div class="voice-name">Julien</div>
+          <div class="voice-subtitle">Voix masculine</div>
+        </div>
+        <button class="voice-play-btn" data-audio="julien" aria-label="Écouter Julien">
+          <svg class="voice-play-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+          </svg>
+          <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+            <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="plan-popup-cta" id="planPopupCtaBtn">Voir les forfaits — à partir de 69 € / mois</button>
+    <button class="plan-popup-later" id="planPopupLaterBtn">Plus tard, explorer d'abord</button>
+  </div>
+</div>
+
 <!-- ═══ MODALE MOT DE PASSE (2 options) ═══ -->
 <div class="password-modal-backdrop" id="passwordModalBackdrop"></div>
 <div class="password-modal" id="passwordModal">
@@ -4794,6 +4957,7 @@
 
   async function selectVoice(voiceCode) {
     if (!currentSalon) return;
+    if (!requireActivePlan()) return; // 🔒 modification bloquée sans abonnement
     const field = detectVoiceField();
     if (currentSalon[field] === voiceCode) return; // déjà sélectionnée
 
@@ -5147,44 +5311,81 @@
   }
 
   // ═══ PAYWALL ═══
+  // Nouveau comportement : on ne bloque plus l'affichage des pages.
+  // L'utilisateur sans abonnement peut TOUT VOIR (pages + données démo).
+  // Un popup fermable l'invite à choisir un plan, et les actions de
+  // modification/activation sont bloquées (voir requireActivePlan()).
   function applyPaywall() {
-    const active = isSubscriptionActive();
-    const pagesToBlock = ['page-stats', 'page-activity'];
-
-    pagesToBlock.forEach(pageId => {
+    // Retirer tout ancien calque bloquant éventuel (pages désormais visibles)
+    ['page-stats', 'page-activity'].forEach(pageId => {
       const page = document.getElementById(pageId);
       if (!page) return;
-
-      // Retirer l'ancien overlay s'il existe
       const oldOverlay = page.querySelector('.paywall-overlay');
       if (oldOverlay) oldOverlay.remove();
-
-      if (!active) {
-        // Cloner le template et l'ajouter
-        const tpl = document.getElementById('paywallTemplate');
-        const overlay = tpl.content.cloneNode(true).querySelector('.paywall-overlay');
-        const cta = overlay.querySelector('.paywall-btn-cta');
-        // Le bouton du paywall redirige vers la page Réglages où sont les 3 forfaits
-        cta.addEventListener('click', () => {
-          // Naviguer vers la page Réglages
-          const settingsTab = document.querySelector('[data-page="settings"]') || document.querySelector('.tab-item:last-child');
-          if (settingsTab) {
-            settingsTab.click();
-          } else {
-            // Fallback : afficher manuellement
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            const settingsPage = document.getElementById('page-settings');
-            if (settingsPage) settingsPage.classList.remove('hidden');
-          }
-          // Scroll vers la section abonnement
-          setTimeout(() => {
-            const plansGrid = document.querySelector('.plans-grid');
-            if (plansGrid) plansGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }, 200);
-        });
-        page.appendChild(overlay);
-      }
     });
+    maybeShowPlanPopup();
+  }
+
+  // Navigue vers la page Réglages et fait défiler jusqu'aux forfaits
+  function goToPlans() {
+    const settingsTab = document.querySelector('[data-page="settings"]') || document.querySelector('.tab-item:last-child');
+    if (settingsTab) {
+      settingsTab.click();
+    } else {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      const settingsPage = document.getElementById('page-settings');
+      if (settingsPage) settingsPage.classList.remove('hidden');
+    }
+    setTimeout(() => {
+      const plansGrid = document.querySelector('.plans-grid');
+      if (plansGrid) plansGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  }
+
+  // ═══ POPUP PLAN / ESSAI ═══
+  let planPopupShown = false; // affiché 1 seule fois par ouverture de l'app
+
+  function openPlanPopup() {
+    const backdrop = $('planPopupBackdrop');
+    const popup = $('planPopup');
+    if (!backdrop || !popup) return;
+    backdrop.classList.add('visible');
+    popup.classList.add('visible');
+  }
+
+  function closePlanPopup() {
+    const backdrop = $('planPopupBackdrop');
+    const popup = $('planPopup');
+    if (backdrop) backdrop.classList.remove('visible');
+    if (popup) popup.classList.remove('visible');
+    // Stoppe un éventuel audio en cours de lecture
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      if (currentPlayingBtn) {
+        currentPlayingBtn.classList.remove('playing');
+        currentPlayingBtn.querySelector('.voice-play-icon').classList.remove('hidden');
+        currentPlayingBtn.querySelector('.voice-pause-icon').classList.add('hidden');
+      }
+      currentAudio = null;
+      currentPlayingBtn = null;
+    }
+  }
+
+  function maybeShowPlanPopup() {
+    if (planPopupShown) return;
+    if (isSubscriptionActive()) return; // déjà abonné → pas de popup
+    planPopupShown = true;
+    setTimeout(openPlanPopup, 400); // petit délai après l'ouverture de l'app
+  }
+
+  // Bloque une action de modification/activation si pas d'abonnement actif.
+  // Retourne true si l'action est autorisée, false sinon (et invite à choisir un plan).
+  function requireActivePlan() {
+    if (isSubscriptionActive()) return true;
+    showToast('🔒 Choisissez un plan pour activer cette fonctionnalité');
+    openPlanPopup();
+    return false;
   }
 
   // ═══ MODALE D'ÉDITION (iOS-style) ═══
@@ -5215,6 +5416,11 @@
   async function saveEditModal() {
     if (!editingField || !currentSalon) {
       closeEditModal();
+      return;
+    }
+    if (!isSubscriptionActive()) { // 🔒 modification bloquée sans abonnement
+      closeEditModal();
+      requireActivePlan();
       return;
     }
 
@@ -5339,6 +5545,21 @@
       playVoicePreview(btn.dataset.audio, btn);
     });
   });
+
+  // Popup plan / essai — fermeture et navigation
+  (function wirePlanPopup() {
+    const closeBtn = $('planPopupCloseBtn');
+    const laterBtn = $('planPopupLaterBtn');
+    const backdrop = $('planPopupBackdrop');
+    const ctaBtn = $('planPopupCtaBtn');
+    if (closeBtn) closeBtn.addEventListener('click', closePlanPopup);
+    if (laterBtn) laterBtn.addEventListener('click', closePlanPopup);
+    if (backdrop) backdrop.addEventListener('click', closePlanPopup);
+    if (ctaBtn) ctaBtn.addEventListener('click', () => {
+      closePlanPopup();
+      goToPlans();
+    });
+  })();
 
   // Page Réglages — Copier numéro Frizz
   $('frizzNumberCopyBtn').addEventListener('click', () => {

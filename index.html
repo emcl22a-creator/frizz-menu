@@ -3849,6 +3849,13 @@
       <input type="number" class="resa-form-input" id="resaFormCouverts" min="1" max="50" placeholder="4">
     </div>
     <div class="resa-form-field">
+      <label class="resa-form-label">Emplacement</label>
+      <select class="resa-form-input" id="resaFormEmplacement">
+        <option value="interieur">Intérieur</option>
+        <option value="terrasse">Terrasse</option>
+      </select>
+    </div>
+    <div class="resa-form-field">
       <label class="resa-form-label">Téléphone (optionnel)</label>
       <input type="tel" class="resa-form-input" id="resaFormTel" placeholder="+33 6 12 34 56 78">
     </div>
@@ -4390,7 +4397,7 @@
 
     $('resaDetailDate').textContent = formatResaDate(resa.date_reservation);
     $('resaDetailHeure').textContent = formatHeure(resa.heure_reservation);
-    $('resaDetailCouverts').textContent = (parseInt(resa.nb_couverts) || '?') + ' personnes';
+    $('resaDetailCouverts').textContent = (parseInt(resa.nb_couverts) || '?') + ' personnes' + (resa.emplacement === 'terrasse' ? ' · Terrasse' : ' · Intérieur');
 
     // Téléphone : afficher seulement si présent
     if (resa.client_telephone) {
@@ -4485,6 +4492,7 @@
       $('resaFormDate').value = `${yyyy}-${mm}-${dd}`;
       $('resaFormHeure').value = '20:00';
       $('resaFormCouverts').value = '';
+      $('resaFormEmplacement').value = 'interieur';
       $('resaFormTel').value = '';
       $('resaFormNotes').value = '';
     } else if (mode === 'edit' && resa) {
@@ -4494,6 +4502,7 @@
       $('resaFormDate').value = resa.date_reservation || '';
       $('resaFormHeure').value = (resa.heure_reservation || '20:00:00').substring(0, 5);
       $('resaFormCouverts').value = resa.nb_couverts || '';
+      $('resaFormEmplacement').value = (resa.emplacement === 'terrasse') ? 'terrasse' : 'interieur';
       $('resaFormTel').value = resa.client_telephone || '';
       $('resaFormNotes').value = resa.notes || '';
     }
@@ -4550,6 +4559,7 @@
         nb_couverts: couverts,
         client_telephone: tel || null,
         notes: notes || null,
+        emplacement: ($('resaFormEmplacement').value === 'terrasse') ? 'terrasse' : 'interieur',
       };
 
       if (resaFormMode === 'create') {

@@ -3043,50 +3043,43 @@
   /* ═══ ADAPTATION TABLETTE (≥ 600px) ═══ */
   @media (min-width: 600px) {
     body {
-      background: var(--bg, #f2f2f7);
-      padding: 24px 0;
+      background: linear-gradient(170deg, #E8EEF7 0%, #F2F2F7 50%, #EAF0F8 100%);
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
     }
-    /* L'app devient une carte centrée, plus large et confortable */
+    /* L'app reste une colonne façon mobile, centrée dans une carte élégante */
     .app {
-      max-width: 720px;
-      min-height: calc(100vh - 48px);
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
-      border: 0.5px solid rgba(0, 0, 0, 0.06);
-      border-radius: 28px;
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.08);
+      width: 440px;
+      max-width: 440px;
+      min-height: auto;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 0.5px solid rgba(0, 0, 0, 0.07);
+      border-radius: 36px;
+      box-shadow: 0 24px 70px rgba(20, 40, 80, 0.16), 0 8px 24px rgba(0, 0, 0, 0.06);
       overflow: hidden;
-      padding-bottom: 110px;
+      padding-bottom: 96px;
+      margin: 0;
     }
-    /* La barre d'onglets s'aligne sur la largeur de la carte */
+    /* La barre d'onglets épouse la largeur de la carte, en bas */
     .tabbar {
-      max-width: 720px;
-      border-radius: 0 0 28px 28px;
+      left: 50% !important;
+      transform: translateX(-50%);
+      width: 440px !important;
+      max-width: 440px !important;
+      border-radius: 0 0 36px 36px;
     }
-    /* Les grilles de stats respirent davantage */
-    .duo-grid, .stats-grid {
-      padding-left: 28px;
-      padding-right: 28px;
-      gap: 18px;
-    }
-    .greeting { padding: 26px 28px 24px; }
-    .greeting h1 { font-size: 40px; }
-    /* Sections réglages : largeur confortable, centrées */
-    .settings-section,
-    .activity-filters,
-    .activity-timeline { padding-left: 28px; padding-right: 28px; }
-    /* Le calendrier / les listes gardent une largeur lisible */
-    .resa-list, .agenda-day-header, .agenda-item { max-width: 640px; margin-left: auto; margin-right: auto; }
-    /* Popups et modales plus larges sur tablette */
-    .resa-popup, .resa-detail, .resa-form { max-width: 600px; }
-    .plan-popup { max-width: 460px; }
+    /* Le hero ne doit pas devenir géant : on plafonne sa hauteur */
+    .hero-card { aspect-ratio: auto; min-height: 230px; }
+    .hero-number { font-size: 52px; }
   }
 
-  /* ═══ GRAND ÉCRAN / TABLETTE PAYSAGE (≥ 900px) ═══ */
+  /* Tablette en paysage / grand écran : on garde la même colonne propre */
   @media (min-width: 900px) {
-    .app { max-width: 820px; }
-    .tabbar { max-width: 820px; }
+    .app { width: 460px; max-width: 460px; }
+    .tabbar { width: 460px !important; max-width: 460px !important; }
   }
 </style>
 </head>

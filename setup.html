@@ -305,15 +305,9 @@ body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-are
       <input type="text" class="field-input" id="resto_adresse" placeholder="12 rue de la Paix">
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Code postal</label>
-        <input type="text" class="field-input" id="resto_cp" placeholder="68000">
-      </div>
-      <div class="field">
-        <label class="field-label">Ville</label>
-        <input type="text" class="field-input" id="resto_ville" placeholder="Mulhouse">
-      </div>
+    <div class="field">
+      <label class="field-label">Ville</label>
+      <input type="text" class="field-input" id="resto_ville" placeholder="Mulhouse">
     </div>
 
     <div class="field">
@@ -322,32 +316,16 @@ body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-are
       <div class="field-hint">C'est ce numéro que Frizz va remplacer pour décrocher</div>
     </div>
 
-    <div class="field">
-      <label class="field-label">Type de cuisine</label>
-      <select class="field-select" id="resto_type">
-        <option value="">Choisir…</option>
-        <option value="francaise">Française traditionnelle</option>
-        <option value="bistrot">Bistrot / Brasserie</option>
-        <option value="italien">Italien / Pizzeria</option>
-        <option value="asiatique">Asiatique (japonais, thaï, chinois, vietnamien)</option>
-        <option value="mediterraneen">Méditerranéen (libanais, grec, turc)</option>
-        <option value="burger">Burger / Street food</option>
-        <option value="gastronomique">Gastronomique</option>
-        <option value="vegetarien">Végétarien / Vegan</option>
-        <option value="autre">Autre</option>
-      </select>
-    </div>
-
     <div class="field-row">
       <div class="field">
-        <label class="field-label">Couverts (capacité)</label>
-        <input type="number" class="field-input" id="resto_couverts" placeholder="50" min="1" max="500">
-        <div class="field-hint">Total de places assises</div>
+        <label class="field-label">Couverts intérieur</label>
+        <input type="number" class="field-input" id="resto_capacite_interieur" placeholder="40" min="0" max="500">
+        <div class="field-hint">Places assises en salle</div>
       </div>
       <div class="field">
-        <label class="field-label">Ticket moyen (€)</label>
-        <input type="number" class="field-input" id="resto_ticket" placeholder="45" min="10" max="500">
-        <div class="field-hint">Pour calcul ROI no-shows</div>
+        <label class="field-label">Couverts terrasse</label>
+        <input type="number" class="field-input" id="resto_capacite_exterieur" placeholder="20" min="0" max="500">
+        <div class="field-hint">Places en extérieur</div>
       </div>
     </div>
   </div>
@@ -380,9 +358,7 @@ body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-are
       <div class="recap-row"><span class="recap-key">Nom</span><span class="recap-value" id="r-resto-nom"></span></div>
       <div class="recap-row"><span class="recap-key">Adresse</span><span class="recap-value" id="r-resto-adresse"></span></div>
       <div class="recap-row"><span class="recap-key">Téléphone</span><span class="recap-value" id="r-resto-tel"></span></div>
-      <div class="recap-row"><span class="recap-key">Type</span><span class="recap-value" id="r-resto-type"></span></div>
       <div class="recap-row"><span class="recap-key">Couverts</span><span class="recap-value" id="r-resto-couverts"></span></div>
-      <div class="recap-row"><span class="recap-key">Ticket moyen</span><span class="recap-value" id="r-resto-ticket"></span></div>
     </div>
 
     <div class="recap-card">
@@ -419,7 +395,6 @@ const horaires = JOURS.map((nom, i) => ({
   nom,
   jourApi: JOURS_API[i],
   ouvert: i < 5, // Lundi-Vendredi par défaut
-  matin: { actif: false, ouverture: '07:00', fermeture: '10:30' },
   midi: { actif: i < 6, ouverture: '12:00', fermeture: '14:30' },
   soir: { actif: i < 6, ouverture: '19:00', fermeture: '22:30' }
 }));
@@ -450,6 +425,12 @@ async function init() {
     if (salons[0].patron_nom) document.getElementById('patron_nom').value = salons[0].patron_nom;
     if (salons[0].patron_telephone) document.getElementById('patron_telephone').value = salons[0].patron_telephone;
     if (salons[0].patron_email) document.getElementById('patron_email').value = salons[0].patron_email;
+    if (salons[0].nom) document.getElementById('resto_nom').value = salons[0].nom;
+    if (salons[0].adresse) document.getElementById('resto_adresse').value = salons[0].adresse;
+    if (salons[0].ville) document.getElementById('resto_ville').value = salons[0].ville;
+    if (salons[0].telephone) document.getElementById('resto_telephone').value = salons[0].telephone;
+    if (salons[0].capacite_interieur != null) document.getElementById('resto_capacite_interieur').value = salons[0].capacite_interieur;
+    if (salons[0].capacite_exterieur != null) document.getElementById('resto_capacite_exterieur').value = salons[0].capacite_exterieur;
   }
   if (!document.getElementById('patron_email').value) {
     document.getElementById('patron_email').value = user.email || '';
@@ -468,17 +449,6 @@ function renderHoraires() {
         <div class="day-toggle" onclick="toggleDay(${idx})"></div>
       </div>
       <div class="day-services">
-        <div class="service-row">
-          <div class="service-checkbox ${h.matin.actif ? 'checked' : ''}" onclick="toggleService(${idx},'matin')"></div>
-          <div class="service-label">Matin</div>
-          <input type="time" class="time-input" value="${h.matin.ouverture}" 
-                 ${h.matin.actif ? '' : 'disabled'} 
-                 onchange="updateTime(${idx},'matin','ouverture',this.value)">
-          <span class="time-arrow">→</span>
-          <input type="time" class="time-input" value="${h.matin.fermeture}" 
-                 ${h.matin.actif ? '' : 'disabled'} 
-                 onchange="updateTime(${idx},'matin','fermeture',this.value)">
-        </div>
         <div class="service-row">
           <div class="service-checkbox ${h.midi.actif ? 'checked' : ''}" onclick="toggleService(${idx},'midi')"></div>
           <div class="service-label">Midi</div>
@@ -559,15 +529,15 @@ function validateStep2() {
   if (!val('resto_adresse')) { showToast('Adresse requise', 'error'); return false; }
   if (!val('resto_ville')) { showToast('Ville requise', 'error'); return false; }
   if (!val('resto_telephone')) { showToast('Téléphone du resto requis', 'error'); return false; }
-  if (!val('resto_type')) { showToast('Type de cuisine requis', 'error'); return false; }
-  const couverts = parseInt(val('resto_couverts'));
-  if (!couverts || couverts < 1) { showToast('Nb de couverts requis', 'error'); return false; }
-  const ticket = parseInt(val('resto_ticket'));
-  if (!ticket || ticket < 10) { showToast('Ticket moyen requis', 'error'); return false; }
+  const capInt = parseInt(val('resto_capacite_interieur'));
+  const capExt = parseInt(val('resto_capacite_exterieur'));
+  if ((isNaN(capInt) || capInt < 0) && (isNaN(capExt) || capExt < 0)) {
+    showToast('Indiquez au moins une capacité (intérieur ou terrasse)', 'error'); return false;
+  }
   return true;
 }
 function validateStep3() {
-  const auMoinsUnJour = horaires.some(h => h.ouvert && (h.matin.actif || h.midi.actif || h.soir.actif));
+  const auMoinsUnJour = horaires.some(h => h.ouvert && (h.midi.actif || h.soir.actif));
   if (!auMoinsUnJour) { showToast('Au moins un service par semaine', 'error'); return false; }
   return true;
 }
@@ -604,21 +574,14 @@ async function saveStep1() {
   return true;
 }
 async function saveStep2() {
-  const typeMap = {
-    francaise: 'Française traditionnelle', bistrot: 'Bistrot / Brasserie',
-    italien: 'Italien / Pizzeria', asiatique: 'Asiatique',
-    mediterraneen: 'Méditerranéen', burger: 'Burger / Street food',
-    gastronomique: 'Gastronomique', vegetarien: 'Végétarien / Vegan', autre: 'Autre'
-  };
   const payload = {
     nom: val('resto_nom'),
-    adresse: val('resto_adresse') + (val('resto_cp') ? ', ' + val('resto_cp') : ''),
+    adresse: val('resto_adresse'),
     ville: val('resto_ville'),
     telephone: val('resto_telephone'),
     type_etablissement: 'restaurant',
-    type_cuisine: typeMap[val('resto_type')] || val('resto_type'),
-    capacite_couverts: parseInt(val('resto_couverts')),
-    ticket_moyen: parseInt(val('resto_ticket'))
+    capacite_interieur: parseInt(val('resto_capacite_interieur')) || 0,
+    capacite_exterieur: parseInt(val('resto_capacite_exterieur')) || 0
   };
   const { error } = await supa.from('frizz_ai_salons').update(payload).eq('id', salonId);
   if (error) {
@@ -635,12 +598,6 @@ async function saveStep3() {
   const inserts = [];
   for (const h of horaires) {
     if (!h.ouvert) continue;
-    if (h.matin.actif) {
-      inserts.push({
-        salon_id: salonId, jour_semaine: h.jourApi, service: 'matin',
-        heure_ouverture: h.matin.ouverture, heure_fermeture: h.matin.fermeture, ferme: false
-      });
-    }
     if (h.midi.actif) {
       inserts.push({
         salon_id: salonId, jour_semaine: h.jourApi, service: 'midi',
@@ -670,18 +627,14 @@ function renderRecap() {
   document.getElementById('r-email').textContent = val('patron_email');
 
   document.getElementById('r-resto-nom').textContent = val('resto_nom');
-  const adr = val('resto_adresse') + (val('resto_cp') ? ', ' + val('resto_cp') : '') + ' ' + val('resto_ville');
+  const adr = val('resto_adresse') + ' ' + val('resto_ville');
   document.getElementById('r-resto-adresse').textContent = adr;
   document.getElementById('r-resto-tel').textContent = val('resto_telephone');
-  const typeLabels = {
-    francaise: 'Française traditionnelle', bistrot: 'Bistrot / Brasserie',
-    italien: 'Italien / Pizzeria', asiatique: 'Asiatique',
-    mediterraneen: 'Méditerranéen', burger: 'Burger / Street food',
-    gastronomique: 'Gastronomique', vegetarien: 'Végétarien / Vegan', autre: 'Autre'
-  };
-  document.getElementById('r-resto-type').textContent = typeLabels[val('resto_type')] || '—';
-  document.getElementById('r-resto-couverts').textContent = val('resto_couverts') + ' places';
-  document.getElementById('r-resto-ticket').textContent = val('resto_ticket') + ' €';
+  const capInt = parseInt(val('resto_capacite_interieur')) || 0;
+  const capExt = parseInt(val('resto_capacite_exterieur')) || 0;
+  let capTxt = capInt + ' intérieur';
+  if (capExt > 0) capTxt += ' · ' + capExt + ' terrasse';
+  document.getElementById('r-resto-couverts').textContent = capTxt;
 
   const horairesHtml = horaires.map(h => {
     if (!h.ouvert) return `<div class="recap-row"><span class="recap-key">${h.nom}</span><span class="recap-value" style="color:var(--text-tertiary)">Fermé</span></div>`;

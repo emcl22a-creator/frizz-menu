@@ -3066,86 +3066,28 @@
 
   .hidden { display: none !important; }
 
-  /* ═══ ADAPTATION TABLETTE (≥ 600px) ═══ */
-  /* ═══ TABLETTE (≥ 700px) : l'app s'élargit dans un panneau sombre ═══ */
-  @media (min-width: 700px) {
+  /* ═══ TABLETTE & PC (≥ 600px) : on garde la colonne mobile, centrée sur fond noir ═══ */
+  @media (min-width: 600px) {
     body {
       background: var(--bg);
-      padding: 40px 0;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
     }
+    /* L'app reste exactement la même colonne étroite que sur mobile, centrée */
     .app {
-      width: 700px;
-      max-width: 700px;
-      min-height: auto;
-      background: var(--bg-card);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 0.5px solid var(--separator);
-      border-radius: 32px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-      overflow: hidden;
-      padding: 0 28px 96px;
-      margin: 0;
+      width: 430px;
+      max-width: 430px;
+      margin: 0 auto;
     }
-    /* La barre d'onglets reste fixée en bas, centrée à la largeur du panneau */
+    /* La barre d'onglets reste fixée en bas, à la même largeur, centrée */
     .tabbar {
-      position: fixed !important;
-      bottom: 0;
       left: 50% !important;
       transform: translateX(-50%);
-      width: 700px !important;
-      max-width: 700px !important;
-      border-radius: 32px 32px 0 0;
-      border-top: 0.5px solid var(--separator);
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+      width: 430px !important;
+      max-width: 430px !important;
     }
-    /* Le hero ne doit pas devenir géant : on plafonne sa hauteur */
-    .hero-card { aspect-ratio: auto; min-height: 240px; }
-    .hero-number { font-size: 80px; }
-    /* Le contenu respire un peu plus */
-    .greeting { padding-left: 4px; padding-right: 4px; }
   }
 
-  /* ═══ PC / GRAND ÉCRAN (≥ 1024px) : layout large, contenu réparti ═══ */
-  @media (min-width: 1024px) {
-    body { padding: 56px 0; }
-    .app {
-      width: 1040px;
-      max-width: 1040px;
-      padding: 0 40px 100px;
-    }
-    /* La tabbar fixée en bas, centrée à la largeur du panneau */
-    .tabbar {
-      position: fixed !important;
-      bottom: 0;
-      left: 50% !important;
-      transform: translateX(-50%);
-      width: 1040px !important;
-      max-width: 1040px !important;
-      border-radius: 32px 32px 0 0;
-      border-top: 0.5px solid var(--separator);
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
-    }
-
-    /* Les deux grandes cartes côte à côte, équilibrées et pas géantes */
-    .duo-grid { gap: 20px; }
-    .hero-card { aspect-ratio: auto; min-height: 300px; }
-    .hero-number { font-size: 92px; }
-    .chart-card { min-height: 300px; }
-
-    /* Les 2 stat-cards côte à côte avec plus d'air */
-    .stats-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .resa-section { margin-top: 24px; }
-
-    /* Le titre de bienvenue plus grand, à l'aise */
-    .greeting h1 { font-size: 38px; }
-  }
 </style>
 </head>
 <body>

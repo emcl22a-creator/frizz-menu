@@ -370,10 +370,11 @@ form.addEventListener('submit', async (e) => {
         actif: true,
         subscription_status: 'inactive',
         trial_end: null,
+        onboarded: true,
       });
     if (salonError) throw salonError;
 
-    window.location.href = 'setup.html';
+    window.location.href = 'index.html';
   } catch (err) {
     setLoading(false);
     let msg = err.message || 'Une erreur est survenue';
@@ -388,18 +389,9 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-supa.auth.getSession().then(async ({ data: { session } }) => {
+supa.auth.getSession().then(({ data: { session } }) => {
   if (!session) return;
-  const { data: salon } = await supa
-    .from('frizz_ai_salons')
-    .select('onboarded')
-    .eq('user_id', session.user.id)
-    .limit(1).single();
-  if (salon && salon.onboarded === false) {
-    window.location.href = 'setup.html';
-  } else {
-    window.location.href = 'index.html';
-  }
+  window.location.href = 'index.html';
 });
 </script>
 </body>

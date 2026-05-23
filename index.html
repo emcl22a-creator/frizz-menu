@@ -2062,6 +2062,73 @@
   }
   .table-delete-btn:active { background: rgba(255, 69, 58, 0.22); }
 
+  /* Bloc attribution de tables dans le formulaire résa */
+  .resa-tables-counter {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    padding: 8px 0;
+    color: var(--label-secondary);
+  }
+  .resa-tables-counter.ok { color: var(--green); }
+  .resa-tables-counter.insufficient { color: var(--red); }
+  .resa-tables-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .resa-table-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--separator);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .resa-table-check.selected {
+    background: var(--blue-light);
+    border-color: var(--blue);
+  }
+  .resa-table-check.occupied {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(255, 69, 58, 0.06);
+  }
+  .resa-table-check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--label-tertiary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .resa-table-check.selected .resa-table-check-box {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .resa-table-check-box svg { width: 12px; height: 12px; display: none; }
+  .resa-table-check.selected .resa-table-check-box svg { display: block; stroke: white; stroke-width: 3; fill: none; }
+  .resa-table-check-info { flex: 1; min-width: 0; }
+  .resa-table-check-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .resa-table-check-meta {
+    font-size: 12px;
+    color: var(--label-secondary);
+    margin-top: 1px;
+  }
+
   /* Section abonnement — Style Apple premium */
   .subscription-card-premium {
     position: relative;
@@ -4213,11 +4280,18 @@
       <input type="number" class="resa-form-input" id="resaFormCouverts" min="1" max="50" placeholder="4">
     </div>
     <div class="resa-form-field">
-      <label class="resa-form-label">Emplacement</label>
-      <select class="resa-form-input" id="resaFormEmplacement">
-        <option value="interieur">Intérieur</option>
-        <option value="terrasse">Terrasse</option>
-      </select>
+      <label class="resa-form-label">Zone</label>
+      <div class="table-zone-picker" id="resaFormZonePicker">
+        <button type="button" class="table-zone-option" data-zone="">Toutes</button>
+        <button type="button" class="table-zone-option selected" data-zone="interieur">Intérieur</button>
+        <button type="button" class="table-zone-option" data-zone="exterieur">Extérieur</button>
+      </div>
+    </div>
+    <!-- Bloc attribution de tables -->
+    <div class="resa-form-field">
+      <label class="resa-form-label">Tables</label>
+      <div class="resa-tables-counter" id="resaTablesCounter">Saisissez date, heure et couverts</div>
+      <div class="resa-tables-checklist" id="resaTablesChecklist"></div>
     </div>
     <div class="resa-form-field">
       <label class="resa-form-label">Téléphone (optionnel)</label>
@@ -4880,10 +4954,21 @@
   // ═══ MODALE FORMULAIRE RÉSA (création + modification) ═══
   let resaFormMode = 'create'; // 'create' | 'edit'
   let resaFormEditingId = null;
+  let resaSelectedTableIds = []; // tables cochées pour la résa en cours
+  let resaZone = 'interieur';    // zone choisie dans le formulaire
+
+  function setResaZone(zone) {
+    resaZone = zone;
+    document.querySelectorAll('#resaFormZonePicker .table-zone-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.zone === zone);
+    });
+    refreshResaTables(); // recalcule l'attribution quand la zone change
+  }
 
   function openResaForm(mode, resa = null) {
     resaFormMode = mode;
     resaFormEditingId = resa ? resa.id : null;
+    resaSelectedTableIds = [];
 
     if (mode === 'create') {
       $('resaFormTitle').textContent = 'Nouvelle réservation';
@@ -4897,7 +4982,7 @@
       $('resaFormDate').value = `${yyyy}-${mm}-${dd}`;
       $('resaFormHeure').value = '20:00';
       $('resaFormCouverts').value = '';
-      $('resaFormEmplacement').value = 'interieur';
+      setResaZone('interieur');
       $('resaFormTel').value = '';
       $('resaFormNotes').value = '';
     } else if (mode === 'edit' && resa) {
@@ -4907,13 +4992,137 @@
       $('resaFormDate').value = resa.date_reservation || '';
       $('resaFormHeure').value = (resa.heure_reservation || '20:00:00').substring(0, 5);
       $('resaFormCouverts').value = resa.nb_couverts || '';
-      $('resaFormEmplacement').value = (resa.emplacement === 'terrasse') ? 'terrasse' : 'interieur';
+      let z = (resa.emplacement === 'terrasse' || resa.emplacement === 'exterieur') ? 'exterieur' : 'interieur';
+      setResaZone(z);
       $('resaFormTel').value = resa.client_telephone || '';
       $('resaFormNotes').value = resa.notes || '';
+      // Charger les tables déjà attribuées à cette résa
+      loadResaExistingTables(resa.id);
     }
 
     $('resaFormBackdrop').classList.add('visible');
     $('resaFormModal').classList.add('visible');
+    refreshResaTables();
+  }
+
+  // Charge les tables déjà liées à une réservation (mode édition)
+  async function loadResaExistingTables(resaId) {
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_reservation_tables')
+        .select('table_id')
+        .eq('reservation_id', resaId);
+      if (error) throw error;
+      resaSelectedTableIds = (data || []).map(l => l.table_id);
+      refreshResaTables();
+    } catch (err) {
+      console.error('Erreur chargement tables résa:', err);
+    }
+  }
+
+  // Recalcule la disponibilité + l'attribution auto, puis affiche la checklist
+  let resaOccupiedIds = [];
+  async function refreshResaTables() {
+    const checklistEl = $('resaTablesChecklist');
+    const counterEl = $('resaTablesCounter');
+    if (!checklistEl || !counterEl) return;
+
+    const dateStr = $('resaFormDate').value;
+    const heureStr = $('resaFormHeure').value;
+    const nb = parseInt($('resaFormCouverts').value) || 0;
+
+    if (!dateStr || !heureStr || nb < 1) {
+      counterEl.className = 'resa-tables-counter';
+      counterEl.textContent = 'Saisissez date, heure et couverts';
+      checklistEl.innerHTML = '';
+      return;
+    }
+    if (!allTables.length) {
+      counterEl.textContent = 'Aucune table définie (Réglages → Mes tables)';
+      checklistEl.innerHTML = '';
+      return;
+    }
+
+    counterEl.textContent = 'Calcul des disponibilités…';
+
+    // Disponibilité + proposition auto
+    const { res, occupes } = await getAttributionPourCreneau(
+      nb, dateStr, heureStr, resaZone || null, resaFormEditingId
+    );
+    resaOccupiedIds = occupes;
+
+    // En création : on pré-coche la proposition auto.
+    // En édition : on garde les tables déjà sélectionnées si elles existent.
+    if (resaFormMode === 'create' || resaSelectedTableIds.length === 0) {
+      resaSelectedTableIds = res.ok ? res.tables.map(t => t.id) : [];
+    }
+
+    drawResaTablesChecklist();
+  }
+
+  function drawResaTablesChecklist() {
+    const checklistEl = $('resaTablesChecklist');
+    const counterEl = $('resaTablesCounter');
+    const nb = parseInt($('resaFormCouverts').value) || 0;
+
+    // Filtrer par zone si une zone est choisie
+    let tablesToShow = allTables.filter(t => t.active !== false);
+    if (resaZone) {
+      tablesToShow = tablesToShow.filter(t => {
+        let z = (t.zone || 'interieur').toLowerCase();
+        if (z === 'terrasse') z = 'exterieur';
+        return z === resaZone;
+      });
+    }
+
+    checklistEl.innerHTML = tablesToShow.map(t => {
+      const isOccupied = resaOccupiedIds.includes(t.id) && !resaSelectedTableIds.includes(t.id);
+      const isSelected = resaSelectedTableIds.includes(t.id);
+      let z = (t.zone || 'interieur').toLowerCase();
+      if (z === 'terrasse') z = 'exterieur';
+      const zoneLabel = z === 'exterieur' ? 'Extérieur' : 'Intérieur';
+      return `
+        <div class="resa-table-check${isSelected ? ' selected' : ''}${isOccupied ? ' occupied' : ''}" data-table-id="${t.id}" data-occupied="${isOccupied}">
+          <div class="resa-table-check-box">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="resa-table-check-info">
+            <div class="resa-table-check-name">${escapeHtml(t.nom)}</div>
+            <div class="resa-table-check-meta">${t.capacite} places · ${zoneLabel}${isOccupied ? ' · déjà réservée' : ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Clic sur une table → cocher/décocher (sauf si occupée)
+    checklistEl.querySelectorAll('.resa-table-check').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.dataset.occupied === 'true') {
+          showToast('⚠️ Cette table est déjà réservée sur ce créneau');
+          return;
+        }
+        const id = el.dataset.tableId;
+        if (resaSelectedTableIds.includes(id)) {
+          resaSelectedTableIds = resaSelectedTableIds.filter(x => x !== id);
+        } else {
+          resaSelectedTableIds.push(id);
+        }
+        drawResaTablesChecklist();
+      });
+    });
+
+    // Compteur
+    const placesSelectionnees = resaSelectedTableIds.reduce((sum, id) => {
+      const t = allTables.find(x => x.id === id);
+      return sum + (t ? (parseInt(t.capacite) || 0) : 0);
+    }, 0);
+
+    if (placesSelectionnees >= nb && resaSelectedTableIds.length > 0) {
+      counterEl.className = 'resa-tables-counter ok';
+      counterEl.textContent = `✓ ${placesSelectionnees} places sélectionnées pour ${nb} personne${nb > 1 ? 's' : ''}`;
+    } else {
+      counterEl.className = 'resa-tables-counter insufficient';
+      counterEl.textContent = `${placesSelectionnees} places sélectionnées · il en faut ${nb}`;
+    }
   }
 
   function closeResaForm() {
@@ -4952,6 +5161,20 @@
       return;
     }
 
+    // Anti-surbooking : au moins une table, et capacité suffisante
+    if (resaSelectedTableIds.length === 0) {
+      showToast('⚠️ Sélectionnez au moins une table');
+      return;
+    }
+    const placesSelectionnees = resaSelectedTableIds.reduce((sum, id) => {
+      const t = allTables.find(x => x.id === id);
+      return sum + (t ? (parseInt(t.capacite) || 0) : 0);
+    }, 0);
+    if (placesSelectionnees < couverts) {
+      showToast(`⚠️ Capacité insuffisante : ${placesSelectionnees} places pour ${couverts} personnes`);
+      return;
+    }
+
     const btn = $('resaFormSaveBtn');
     btn.disabled = true;
     btn.textContent = 'Enregistrement…';
@@ -4964,8 +5187,10 @@
         nb_couverts: couverts,
         client_telephone: tel || null,
         notes: notes || null,
-        emplacement: ($('resaFormEmplacement').value === 'terrasse') ? 'terrasse' : 'interieur',
+        emplacement: (resaZone === 'exterieur') ? 'exterieur' : 'interieur',
       };
+
+      let resaId = resaFormEditingId;
 
       if (resaFormMode === 'create') {
         // Création
@@ -4981,6 +5206,7 @@
 
         if (data && data[0]) {
           allReservations.push(data[0]);
+          resaId = data[0].id;
         }
         showToast('✓ Réservation créée');
       } else {
@@ -5000,6 +5226,20 @@
         showToast('✓ Réservation modifiée');
       }
 
+      // ─── Mise à jour des liens table(s) ↔ réservation ───
+      if (resaId) {
+        // On efface les anciens liens (utile en édition), puis on recrée
+        await supa.from('frizz_ai_reservation_tables').delete().eq('reservation_id', resaId);
+        const liens = resaSelectedTableIds.map(tid => ({
+          reservation_id: resaId,
+          table_id: tid,
+        }));
+        if (liens.length) {
+          const { error: errLiens } = await supa.from('frizz_ai_reservation_tables').insert(liens);
+          if (errLiens) throw errLiens;
+        }
+      }
+
       closeResaForm();
       // Refresh tout
       updateFilterCounts();
@@ -5007,7 +5247,7 @@
       renderStats(allReservations);
       updateBellDot();
     } catch (err) {
-      console.error('Erreur sauvegarde résa:', err);
+      console.error('Erreur sauvegarde résa:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
       showToast('⚠️ ' + (err.message || 'Erreur de sauvegarde'));
     } finally {
       btn.disabled = false;
@@ -5622,6 +5862,79 @@
       `✅ Pour ${nb} personne${nb > 1 ? 's' : ''} → ${typeLabel} :<br>` +
       `<strong style="color:var(--label);">${noms}</strong><br>` +
       `<span style="color:var(--label-tertiary);">Capacité totale : ${res.capaciteTotale} places</span>`;
+  }
+
+  // ═══════════════════════════════════════════
+  // DISPONIBILITÉ : quelles tables sont libres sur un créneau
+  // ═══════════════════════════════════════════
+
+  // Durée d'occupation d'une table (minutes), depuis les réglages du salon
+  function getDureeTableMinutes() {
+    return parseInt(currentSalon && currentSalon.duree_table_minutes) || 90;
+  }
+
+  // Construit un objet Date à partir d'une date 'YYYY-MM-DD' et d'une heure 'HH:MM' ou 'HH:MM:SS'
+  function toDateTime(dateStr, heureStr) {
+    const h = (heureStr || '00:00:00');
+    return new Date(`${dateStr}T${h.length === 5 ? h + ':00' : h}`);
+  }
+
+  // Deux créneaux [d1,f1] et [d2,f2] se chevauchent-ils ?
+  function creneauxSeChevauchent(d1, f1, d2, f2) {
+    return d1 < f2 && d2 < f1;
+  }
+
+  // Retourne la liste des table_id occupés sur le créneau (date + heure), durée = réglage salon.
+  // excludeResaId : id d'une réservation à ignorer (utile en mode édition).
+  async function getTablesOccupees(dateStr, heureStr, excludeResaId) {
+    if (!currentSalon) return [];
+    const dureeMin = getDureeTableMinutes();
+    const debutDemande = toDateTime(dateStr, heureStr);
+    const finDemande = new Date(debutDemande.getTime() + dureeMin * 60000);
+
+    // 1) Réservations de cette date (hors annulées), pour ce salon
+    const { data: resas, error: errResa } = await supa
+      .from('frizz_ai_reservations')
+      .select('id, date_reservation, heure_reservation, statut')
+      .eq('salon_id', currentSalon.id)
+      .eq('date_reservation', dateStr);
+    if (errResa) { console.error('Erreur dispo (résas):', errResa); return []; }
+
+    const resasChevauchantes = (resas || []).filter(r => {
+      if (r.statut === 'annulee' || r.statut === 'annule') return false;
+      if (excludeResaId && r.id === excludeResaId) return false;
+      const debutR = toDateTime(r.date_reservation, r.heure_reservation);
+      const finR = new Date(debutR.getTime() + dureeMin * 60000);
+      return creneauxSeChevauchent(debutDemande, finDemande, debutR, finR);
+    });
+
+    if (!resasChevauchantes.length) return [];
+
+    // 2) Tables liées à ces réservations
+    const ids = resasChevauchantes.map(r => r.id);
+    const { data: liens, error: errLiens } = await supa
+      .from('frizz_ai_reservation_tables')
+      .select('table_id, reservation_id')
+      .in('reservation_id', ids);
+    if (errLiens) { console.error('Erreur dispo (liens):', errLiens); return []; }
+
+    return [...new Set((liens || []).map(l => l.table_id))];
+  }
+
+  // Calcule l'attribution proposée pour un créneau donné (dispo + assemblage)
+  async function getAttributionPourCreneau(nbPersonnes, dateStr, heureStr, zone, excludeResaId) {
+    const occupes = await getTablesOccupees(dateStr, heureStr, excludeResaId);
+    // Tables libres = actives, non occupées, et (si zone précisée) de la bonne zone
+    let libres = allTables.filter(t => t.active !== false && !occupes.includes(t.id));
+    if (zone) {
+      libres = libres.filter(t => {
+        let z = (t.zone || 'interieur').toLowerCase();
+        if (z === 'terrasse') z = 'exterieur';
+        return z === zone;
+      });
+    }
+    const res = findTableAssignment(nbPersonnes, libres);
+    return { res, occupes };
   }
 
   // ─── Popup table : état + ouverture/fermeture ───
@@ -6447,6 +6760,18 @@
   $('resaFormCancelBtn').addEventListener('click', closeResaForm);
   $('resaFormBackdrop').addEventListener('click', closeResaForm);
   $('resaFormSaveBtn').addEventListener('click', saveResaForm);
+
+  // Zone-picker du formulaire résa
+  document.querySelectorAll('#resaFormZonePicker .table-zone-option').forEach(btn => {
+    btn.addEventListener('click', () => setResaZone(btn.dataset.zone));
+  });
+  // Recalcul auto de l'attribution quand date / heure / couverts changent
+  ['resaFormDate', 'resaFormHeure', 'resaFormCouverts'].forEach(id => {
+    if ($(id)) {
+      $(id).addEventListener('change', () => { resaSelectedTableIds = []; refreshResaTables(); });
+      $(id).addEventListener('input', () => { resaSelectedTableIds = []; refreshResaTables(); });
+    }
+  });
 
   // Bouton "Ajouter une table" (page Réglages)
   if ($('tablesAddBtn')) {

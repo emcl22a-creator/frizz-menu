@@ -3671,6 +3671,18 @@
           Ajouter une table
         </button>
       </div>
+
+      <!-- Encart de test d'assemblage (temporaire, pour valider l'algo) -->
+      <div class="settings-section-card" style="margin-top:12px;">
+        <div class="tables-intro">
+          🧪 Test d'attribution — entrez un nombre de personnes pour voir quelle(s) table(s) le système proposerait.
+        </div>
+        <div style="padding:14px 16px; display:flex; gap:10px; align-items:center;">
+          <input type="number" class="resa-form-input" id="testCouvertsInput" min="1" max="50" placeholder="7" style="flex:1;">
+          <button class="resa-form-btn save" id="testAssignBtn" style="width:auto; padding:13px 18px; margin:0;">Tester</button>
+        </div>
+        <div id="testAssignResult" class="tables-intro" style="border-top:0.5px solid var(--separator); border-bottom:none;"></div>
+      </div>
     </div>
 
     <!-- Section : Horaires & réservations -->
@@ -5484,6 +5496,134 @@
     });
   }
 
+  // ═══════════════════════════════════════════
+  // CERVEAU : trouver la meilleure attribution de table(s) pour un groupe
+  // ═══════════════════════════════════════════
+  //
+  // Règles :
+  //  - on n'utilise que des tables ACTIVES
+  //  - une seule table si possible (la plus juste)
+  //  - sinon on ASSEMBLE des tables COMBINABLES de la MÊME ZONE
+  //  - préférence "prendre large" : on maximise le confort (capacité totale élevée)
+  //  - pas de limite sur le nombre de tables assemblées
+  //
+  // `candidateTables` = liste de tables disponibles (par défaut toutes les actives).
+  //   Plus tard, on filtrera cette liste selon le créneau horaire (étape suivante).
+  //
+  // Retourne un objet :
+  //   { ok: true, tables: [...], capaciteTotale: N, type: 'simple'|'assemblage' }
+  //   ou { ok: false, raison: '...' }
+  function findTableAssignment(nbPersonnes, candidateTables) {
+    const tables = (candidateTables || allTables).filter(t => t.active !== false);
+    if (!nbPersonnes || nbPersonnes < 1) {
+      return { ok: false, raison: 'Nombre de personnes invalide' };
+    }
+
+    // 1) Chercher une SEULE table qui convient (capacité >= groupe)
+    //    On prend la plus petite table qui suffit (pour ne pas gâcher les grandes)
+    const tablesSuffisantes = tables
+      .filter(t => (parseInt(t.capacite) || 0) >= nbPersonnes)
+      .sort((a, b) => (a.capacite - b.capacite));
+
+    if (tablesSuffisantes.length > 0) {
+      const t = tablesSuffisantes[0];
+      return {
+        ok: true,
+        type: 'simple',
+        tables: [t],
+        capaciteTotale: parseInt(t.capacite) || 0,
+      };
+    }
+
+    // 2) Pas de table unique → ASSEMBLAGE
+    //    On ne combine que les tables "combinables", groupées PAR ZONE.
+    const combinables = tables.filter(t => t.combinable !== false);
+
+    // Regrouper par zone (terrasse traitée comme exterieur)
+    const parZone = {};
+    combinables.forEach(t => {
+      let z = (t.zone || 'interieur').toLowerCase();
+      if (z === 'terrasse') z = 'exterieur';
+      if (!parZone[z]) parZone[z] = [];
+      parZone[z].push(t);
+    });
+
+    // Pour chaque zone, chercher la meilleure combinaison
+    let meilleure = null;
+    for (const zone in parZone) {
+      const combo = bestComboInZone(parZone[zone], nbPersonnes);
+      if (combo) {
+        // On garde la combinaison avec la plus grande capacité totale ("prendre large"),
+        // et à capacité égale, le moins de tables.
+        if (!meilleure
+            || combo.capaciteTotale > meilleure.capaciteTotale
+            || (combo.capaciteTotale === meilleure.capaciteTotale && combo.tables.length < meilleure.tables.length)) {
+          meilleure = combo;
+        }
+      }
+    }
+
+    if (meilleure) {
+      return {
+        ok: true,
+        type: 'assemblage',
+        tables: meilleure.tables,
+        capaciteTotale: meilleure.capaciteTotale,
+      };
+    }
+
+    return { ok: false, raison: 'Aucune combinaison de tables ne peut accueillir ce groupe' };
+  }
+
+  // Trouve la meilleure combinaison de tables dans UNE zone pour atteindre nbPersonnes.
+  // "Prendre large" = on cherche à maximiser la capacité totale tout en couvrant le groupe.
+  // Retourne { tables: [...], capaciteTotale } ou null.
+  function bestComboInZone(tablesZone, nbPersonnes) {
+    // Trier par capacité décroissante : on assemble d'abord les grandes (= prendre large)
+    const sorted = [...tablesZone].sort((a, b) => (b.capacite - a.capacite));
+
+    const chosen = [];
+    let total = 0;
+    for (const t of sorted) {
+      chosen.push(t);
+      total += parseInt(t.capacite) || 0;
+      if (total >= nbPersonnes) {
+        return { tables: chosen, capaciteTotale: total };
+      }
+    }
+    // Même en prenant toutes les tables de la zone, on n'atteint pas le groupe
+    return null;
+  }
+
+  // ─── Encart de test d'attribution (temporaire) ───
+  function runTestAssign() {
+    const nb = parseInt($('testCouvertsInput').value) || 0;
+    const resultEl = $('testAssignResult');
+    if (!resultEl) return;
+
+    if (nb < 1) {
+      resultEl.innerHTML = '⚠️ Entrez un nombre de personnes valide.';
+      return;
+    }
+    if (!allTables.length) {
+      resultEl.innerHTML = '⚠️ Aucune table définie. Ajoutez d\'abord des tables.';
+      return;
+    }
+
+    const res = findTableAssignment(nb, allTables);
+    if (!res.ok) {
+      resultEl.innerHTML = `❌ Pour ${nb} personne${nb > 1 ? 's' : ''} : ${res.raison}.`;
+      return;
+    }
+
+    const noms = res.tables.map(t => `${escapeHtml(t.nom)} (${t.capacite})`).join(' + ');
+    const typeLabel = res.type === 'simple' ? 'une table' : `assemblage de ${res.tables.length} tables`;
+    resultEl.innerHTML =
+      `✅ Pour ${nb} personne${nb > 1 ? 's' : ''} → ${typeLabel} :<br>` +
+      `<strong style="color:var(--label);">${noms}</strong><br>` +
+      `<span style="color:var(--label-tertiary);">Capacité totale : ${res.capaciteTotale} places</span>`;
+  }
+
   // ─── Popup table : état + ouverture/fermeture ───
   let tableFormMode = 'create';   // 'create' | 'edit'
   let tableFormEditingId = null;
@@ -6321,6 +6461,8 @@
   document.querySelectorAll('#tableFormZonePicker .table-zone-option').forEach(btn => {
     btn.addEventListener('click', () => setTableFormZone(btn.dataset.zone));
   });
+  // Encart de test d'attribution
+  if ($('testAssignBtn')) $('testAssignBtn').addEventListener('click', runTestAssign);
 
   $('bellBtn').addEventListener('click', openNotifs);
   $('notifCloseBtn').addEventListener('click', closeNotifs);

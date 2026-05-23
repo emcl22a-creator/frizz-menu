@@ -2062,6 +2062,51 @@
   }
   .table-delete-btn:active { background: rgba(255, 69, 58, 0.22); }
 
+  /* Toggle iOS "combinable" dans la popup table */
+  .table-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+  }
+  .table-toggle-label { flex: 1; min-width: 0; }
+  .table-toggle-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+  }
+  .table-toggle-desc {
+    font-size: 12px;
+    color: var(--label-secondary);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .table-toggle {
+    width: 51px;
+    height: 31px;
+    border-radius: 31px;
+    background: var(--separator);
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .table-toggle.on { background: var(--green); }
+  .table-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+  .table-toggle.on .table-toggle-knob { transform: translateX(20px); }
+
   /* Bloc attribution de tables dans le formulaire résa */
   .resa-tables-counter {
     font-size: 13px;
@@ -4330,6 +4375,17 @@
         <button type="button" class="table-zone-option" data-zone="exterieur">Extérieur</button>
       </div>
     </div>
+    <div class="resa-form-field">
+      <div class="table-toggle-row">
+        <div class="table-toggle-label">
+          <div class="table-toggle-title">Combinable</div>
+          <div class="table-toggle-desc">Peut être assemblée avec d'autres tables pour les grands groupes</div>
+        </div>
+        <div class="table-toggle on" id="tableFormCombinable">
+          <div class="table-toggle-knob"></div>
+        </div>
+      </div>
+    </div>
     <!-- Bouton supprimer (visible seulement en mode édition) -->
     <button class="table-delete-btn hidden" id="tableFormDeleteBtn">Supprimer cette table</button>
   </div>
@@ -5717,7 +5773,7 @@
           <div class="table-icon">${initiale}</div>
           <div class="table-info">
             <div class="table-name">${escapeHtml(t.nom || 'Table')}</div>
-            <div class="table-meta">${parseInt(t.capacite) || 0} personne${(parseInt(t.capacite) || 0) > 1 ? 's' : ''}${t.active === false ? ' · désactivée' : ''}</div>
+            <div class="table-meta">${parseInt(t.capacite) || 0} personne${(parseInt(t.capacite) || 0) > 1 ? 's' : ''}${t.active === false ? ' · désactivée' : ''}${t.combinable === false ? ' · non combinable' : ''}</div>
           </div>
           <span class="table-zone ${zone}">${zoneLabel}</span>
           <svg class="table-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -5941,6 +5997,7 @@
   let tableFormMode = 'create';   // 'create' | 'edit'
   let tableFormEditingId = null;
   let tableFormZone = 'interieur';
+  let tableFormCombinable = true;  // état du toggle "combinable"
 
   // Sélection de zone dans la popup
   function setTableFormZone(zone) {
@@ -5948,6 +6005,13 @@
     document.querySelectorAll('#tableFormZonePicker .table-zone-option').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.zone === zone);
     });
+  }
+
+  // Toggle "combinable"
+  function setTableFormCombinable(on) {
+    tableFormCombinable = !!on;
+    const el = $('tableFormCombinable');
+    if (el) el.classList.toggle('on', tableFormCombinable);
   }
 
   // Ouvre la popup en mode création
@@ -5960,6 +6024,7 @@
     $('tableFormNom').value = '';
     $('tableFormCapacite').value = '';
     setTableFormZone('interieur');
+    setTableFormCombinable(true);
     $('tableFormDeleteBtn').classList.add('hidden');
     $('tableFormBackdrop').classList.add('visible');
     $('tableFormModal').classList.add('visible');
@@ -5976,6 +6041,7 @@
     let editZone = (table.zone || 'interieur').toLowerCase();
     if (editZone === 'terrasse') editZone = 'exterieur';
     setTableFormZone(editZone);
+    setTableFormCombinable(table.combinable !== false);
     $('tableFormDeleteBtn').classList.remove('hidden');
     $('tableFormBackdrop').classList.add('visible');
     $('tableFormModal').classList.add('visible');
@@ -6009,7 +6075,7 @@
             nom: nom,
             capacite: capacite,
             zone: tableFormZone,
-            combinable: true,
+            combinable: tableFormCombinable,
             active: true,
           })
           .select();
@@ -6019,7 +6085,7 @@
       } else {
         const { data, error } = await supa
           .from('frizz_ai_tables')
-          .update({ nom: nom, capacite: capacite, zone: tableFormZone })
+          .update({ nom: nom, capacite: capacite, zone: tableFormZone, combinable: tableFormCombinable })
           .eq('id', tableFormEditingId)
           .select();
         if (error) throw error;
@@ -6786,6 +6852,10 @@
   document.querySelectorAll('#tableFormZonePicker .table-zone-option').forEach(btn => {
     btn.addEventListener('click', () => setTableFormZone(btn.dataset.zone));
   });
+  // Popup table : toggle combinable
+  if ($('tableFormCombinable')) {
+    $('tableFormCombinable').addEventListener('click', () => setTableFormCombinable(!tableFormCombinable));
+  }
   // Encart de test d'attribution
   if ($('testAssignBtn')) $('testAssignBtn').addEventListener('click', runTestAssign);
 

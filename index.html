@@ -4242,7 +4242,6 @@
       <div class="table-zone-picker" id="tableFormZonePicker">
         <button type="button" class="table-zone-option selected" data-zone="interieur">Intérieur</button>
         <button type="button" class="table-zone-option" data-zone="exterieur">Extérieur</button>
-        <button type="button" class="table-zone-option" data-zone="terrasse">Terrasse</button>
       </div>
     </div>
     <!-- Bouton supprimer (visible seulement en mode édition) -->
@@ -5454,10 +5453,10 @@
     }
 
     listEl.innerHTML = allTables.map(t => {
-      const zone = (t.zone || 'interieur').toLowerCase();
-      const zoneLabel = zone === 'terrasse' ? 'Terrasse'
-                      : zone === 'exterieur' ? 'Extérieur'
-                      : 'Intérieur';
+      // 'terrasse' (ancienne valeur) est traité comme 'exterieur'
+      let zone = (t.zone || 'interieur').toLowerCase();
+      if (zone === 'terrasse') zone = 'exterieur';
+      const zoneLabel = zone === 'exterieur' ? 'Extérieur' : 'Intérieur';
       // Initiales pour la pastille : on prend les 2-3 premiers caractères du nom
       const initiale = escapeHtml((t.nom || 'T').substring(0, 3));
       const inactiveClass = t.active === false ? ' inactive' : '';
@@ -5521,7 +5520,9 @@
     $('tableFormSubtitle').textContent = `Table « ${table.nom} »`;
     $('tableFormNom').value = table.nom || '';
     $('tableFormCapacite').value = table.capacite || '';
-    setTableFormZone((table.zone || 'interieur').toLowerCase());
+    let editZone = (table.zone || 'interieur').toLowerCase();
+    if (editZone === 'terrasse') editZone = 'exterieur';
+    setTableFormZone(editZone);
     $('tableFormDeleteBtn').classList.remove('hidden');
     $('tableFormBackdrop').classList.add('visible');
     $('tableFormModal').classList.add('visible');

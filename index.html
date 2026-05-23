@@ -1913,6 +1913,112 @@
     flex-shrink: 0;
   }
 
+  /* ═══ Section Mes tables ═══ */
+  .tables-intro {
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.5;
+    letter-spacing: -0.2px;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .tables-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .tables-empty {
+    font-size: 14px;
+    color: var(--label-tertiary);
+    text-align: center;
+    padding: 24px 16px;
+    letter-spacing: -0.2px;
+  }
+  /* Une ligne = une table */
+  .table-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .table-item:active { background: rgba(0, 122, 255, 0.05); }
+  .table-item + .table-item { border-top: 0.5px solid var(--separator); }
+  .table-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .table-info { flex: 1; min-width: 0; }
+  .table-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .table-meta {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-top: 2px;
+  }
+  /* Badge de zone */
+  .table-zone {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .table-zone.interieur { background: var(--blue-light); color: var(--blue-vivid); }
+  .table-zone.terrasse  { background: var(--green-light); color: var(--green); }
+  .table-zone.exterieur { background: var(--green-light); color: var(--green); }
+  /* Table désactivée */
+  .table-item.inactive { opacity: 0.4; }
+  /* Chevron */
+  .table-chevron {
+    width: 12px;
+    height: 12px;
+    stroke: var(--label-tertiary);
+    stroke-width: 2.4;
+    fill: none;
+    flex-shrink: 0;
+    margin-left: 2px;
+  }
+  /* Bouton ajouter */
+  .tables-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-top: 0.5px solid var(--separator);
+    color: var(--blue);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .tables-add-btn:active { background: rgba(0, 122, 255, 0.05); }
+  .tables-add-btn svg { stroke: var(--blue); }
+
   /* Section abonnement — Style Apple premium */
   .subscription-card-premium {
     position: relative;
@@ -3522,7 +3628,7 @@
           Définissez les tables de votre salle. Les réservations seront attribuées à de vraies tables, selon leur capacité et leur zone.
         </div>
 
-        <!-- Liste des tables (remplie par JS) -->
+        <!-- Liste des tables (remplie par renderTables) -->
         <div id="tablesList" class="tables-list">
           <div class="tables-empty" id="tablesEmpty">Chargement…</div>
         </div>
@@ -5241,8 +5347,166 @@
       $('accountEmail').textContent = currentUser.email || '—';
     }
 
+    // Mes tables
+    renderTables();
+
     // Abonnement
     renderSubscription();
+  }
+
+  // ═══════════════════════════════════════════
+  // MES TABLES — gestion des tables du restaurant
+  // ═══════════════════════════════════════════
+  let allTables = []; // cache local des tables du salon
+
+  // Charge les tables depuis Supabase et déclenche l'affichage
+  async function renderTables() {
+    if (!currentSalon) return;
+    const listEl = $('tablesList');
+    if (!listEl) return;
+
+    listEl.innerHTML = '<div class="tables-empty">Chargement…</div>';
+
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_tables')
+        .select('*')
+        .eq('salon_id', currentSalon.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      allTables = data || [];
+      drawTablesList();
+    } catch (err) {
+      console.error('Erreur chargement tables:', err);
+      listEl.innerHTML = '<div class="tables-empty">Erreur de chargement</div>';
+    }
+  }
+
+  // Dessine la liste à partir du cache allTables
+  function drawTablesList() {
+    const listEl = $('tablesList');
+    if (!listEl) return;
+
+    if (!allTables.length) {
+      listEl.innerHTML = '<div class="tables-empty">Aucune table pour l\'instant.<br>Ajoutez votre première table ci-dessous.</div>';
+      return;
+    }
+
+    listEl.innerHTML = allTables.map(t => {
+      const zone = (t.zone || 'interieur').toLowerCase();
+      const zoneLabel = zone === 'terrasse' ? 'Terrasse'
+                      : zone === 'exterieur' ? 'Extérieur'
+                      : 'Intérieur';
+      // Initiales pour la pastille : on prend les 2-3 premiers caractères du nom
+      const initiale = escapeHtml((t.nom || 'T').substring(0, 3));
+      const inactiveClass = t.active === false ? ' inactive' : '';
+      return `
+        <div class="table-item${inactiveClass}" data-table-id="${t.id}">
+          <div class="table-icon">${initiale}</div>
+          <div class="table-info">
+            <div class="table-name">${escapeHtml(t.nom || 'Table')}</div>
+            <div class="table-meta">${parseInt(t.capacite) || 0} personne${(parseInt(t.capacite) || 0) > 1 ? 's' : ''}${t.active === false ? ' · désactivée' : ''}</div>
+          </div>
+          <span class="table-zone ${zone}">${zoneLabel}</span>
+          <svg class="table-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>`;
+    }).join('');
+
+    // Clic sur une table → édition (formulaire stylé à venir ; pour l'instant simple)
+    listEl.querySelectorAll('.table-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.tableId;
+        const table = allTables.find(t => t.id === id);
+        if (table) openTableEditor(table);
+      });
+    });
+  }
+
+  // Ajoute une nouvelle table (création rapide via prompts — sera remplacé par un vrai formulaire stylé)
+  async function addTableQuick() {
+    if (!currentSalon) return;
+
+    const nom = prompt('Nom de la table (ex : T1, Terrasse 3) :');
+    if (nom === null || !nom.trim()) return;
+
+    const capStr = prompt('Capacité (nombre de personnes) :', '4');
+    if (capStr === null) return;
+    const capacite = parseInt(capStr);
+    if (!capacite || capacite < 1) { showToast('⚠️ Capacité invalide'); return; }
+
+    const zoneStr = prompt('Zone — tapez : interieur, exterieur ou terrasse', 'interieur');
+    if (zoneStr === null) return;
+    const zone = ['interieur', 'exterieur', 'terrasse'].includes((zoneStr || '').trim().toLowerCase())
+      ? zoneStr.trim().toLowerCase() : 'interieur';
+
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_tables')
+        .insert({
+          salon_id: currentSalon.id,
+          nom: nom.trim(),
+          capacite: capacite,
+          zone: zone,
+          combinable: true,
+          active: true,
+        })
+        .select();
+      if (error) throw error;
+      if (data && data[0]) allTables.push(data[0]);
+      drawTablesList();
+      showToast('✓ Table ajoutée');
+    } catch (err) {
+      console.error('Erreur ajout table:', err);
+      showToast('⚠️ ' + (err.message || 'Erreur'));
+    }
+  }
+
+  // Éditeur de table (suppression rapide pour l'instant ; formulaire complet à venir)
+  async function openTableEditor(table) {
+    const action = prompt(
+      `Table : ${table.nom} (${table.capacite} pers., ${table.zone})\n\n` +
+      `Tapez :\n- un nouveau nom pour renommer\n- "SUPPRIMER" pour supprimer cette table\n- laissez vide pour annuler`,
+      table.nom
+    );
+    if (action === null || !action.trim()) return;
+
+    if (action.trim().toUpperCase() === 'SUPPRIMER') {
+      if (!confirm(`Supprimer définitivement la table "${table.nom}" ?`)) return;
+      try {
+        const { error } = await supa
+          .from('frizz_ai_tables')
+          .delete()
+          .eq('id', table.id);
+        if (error) throw error;
+        allTables = allTables.filter(t => t.id !== table.id);
+        drawTablesList();
+        showToast('✓ Table supprimée');
+      } catch (err) {
+        console.error('Erreur suppression table:', err);
+        showToast('⚠️ ' + (err.message || 'Erreur'));
+      }
+      return;
+    }
+
+    // Sinon : renommer
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_tables')
+        .update({ nom: action.trim() })
+        .eq('id', table.id)
+        .select();
+      if (error) throw error;
+      const idx = allTables.findIndex(t => t.id === table.id);
+      if (idx >= 0 && data && data[0]) allTables[idx] = data[0];
+      drawTablesList();
+      showToast('✓ Table modifiée');
+    } catch (err) {
+      console.error('Erreur modif table:', err);
+      showToast('⚠️ ' + (err.message || 'Erreur'));
+    }
   }
 
   // ═══ COMPTE : modifier mot de passe + déconnexion ═══
@@ -5945,6 +6209,11 @@
   $('resaFormCancelBtn').addEventListener('click', closeResaForm);
   $('resaFormBackdrop').addEventListener('click', closeResaForm);
   $('resaFormSaveBtn').addEventListener('click', saveResaForm);
+
+  // Bouton "Ajouter une table" (page Réglages)
+  if ($('tablesAddBtn')) {
+    $('tablesAddBtn').addEventListener('click', addTableQuick);
+  }
 
   $('bellBtn').addEventListener('click', openNotifs);
   $('notifCloseBtn').addEventListener('click', closeNotifs);

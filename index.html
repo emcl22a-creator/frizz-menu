@@ -3339,17 +3339,27 @@
   /* ═══ TABLETTE & PC (≥ 600px) : on garde la colonne mobile, centrée sur fond noir ═══ */
   @media (min-width: 600px) {
     body {
-      background: var(--bg);
       display: flex;
       justify-content: center;
+      /* Fond premium : dégradé sombre profond + lueurs subtiles */
+      background:
+        radial-gradient(circle at 20% 15%, rgba(10, 132, 255, 0.10), transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(175, 82, 222, 0.08), transparent 45%),
+        var(--bg);
+      background-attachment: fixed;
+      min-height: 100vh;
     }
-    /* L'app reste exactement la même colonne étroite que sur mobile, centrée */
+    /* L'app : largeur native, posée comme un bel objet flottant */
     .app {
       width: 430px;
       max-width: 430px;
       margin: 0 auto;
+      background: var(--bg);
+      border-left: 0.5px solid rgba(255, 255, 255, 0.08);
+      border-right: 0.5px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
     }
-    /* La barre d'onglets reste fixée en bas, à la même largeur, centrée */
+    /* La barre d'onglets suit la même largeur, centrée */
     .tabbar {
       left: 50% !important;
       transform: translateX(-50%);

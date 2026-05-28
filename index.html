@@ -3339,33 +3339,28 @@
   /* ═══ TABLETTE & PC (≥ 600px) : on garde la colonne mobile, centrée sur fond noir ═══ */
   @media (min-width: 600px) {
     body {
-      display: flex;
-      justify-content: center;
-      /* Fond premium : dégradé sombre profond + lueurs subtiles */
-      background:
-        radial-gradient(circle at 20% 15%, rgba(10, 132, 255, 0.10), transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(10, 132, 255, 0.08), transparent 45%),
-        var(--bg);
-      background-attachment: fixed;
-      min-height: 100vh;
-    }
-    /* L'app : largeur native, posée comme un bel objet flottant */
-    .app {
-      width: 430px;
-      max-width: 430px;
-      margin: 0 auto;
       background: var(--bg);
-      border-left: 0.5px solid rgba(255, 255, 255, 0.08);
-      border-right: 0.5px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
     }
-    /* La barre d'onglets suit la même largeur, centrée */
+    /* Effet zoom : toute l'app grossit proportionnellement pour remplir la largeur.
+       430px (largeur mobile native) → ramené à la largeur de l'écran via zoom. */
+    .app {
+      zoom: 1.8;
+      margin: 0 auto;
+    }
+    /* La tabbar suit le même zoom et reste centrée sur la largeur zoomée */
     .tabbar {
+      zoom: 1.8;
       left: 50% !important;
       transform: translateX(-50%);
       width: 430px !important;
       max-width: 430px !important;
     }
+  }
+
+  /* Tablette large : zoom encore plus grand pour remplir */
+  @media (min-width: 900px) {
+    .app { zoom: 2.2; }
+    .tabbar { zoom: 2.2; }
   }
 
 </style>

@@ -3341,26 +3341,19 @@
     body {
       background: var(--bg);
     }
-    /* Effet zoom : toute l'app grossit proportionnellement pour remplir la largeur.
-       430px (largeur mobile native) → ramené à la largeur de l'écran via zoom. */
+    /* Zoom calculé auto : largeur de l'écran ÷ 430px (largeur native mobile).
+       Remplit toujours pile la largeur, quelle que soit la tablette. */
     .app {
-      zoom: 1.8;
+      zoom: calc(100vw / 430);
       margin: 0 auto;
     }
-    /* La tabbar suit le même zoom et reste centrée sur la largeur zoomée */
     .tabbar {
-      zoom: 1.8;
+      zoom: calc(100vw / 430);
       left: 50% !important;
       transform: translateX(-50%);
       width: 430px !important;
       max-width: 430px !important;
     }
-  }
-
-  /* Tablette large : zoom encore plus grand pour remplir */
-  @media (min-width: 900px) {
-    .app { zoom: 2.2; }
-    .tabbar { zoom: 2.2; }
   }
 
 </style>

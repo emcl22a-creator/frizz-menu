@@ -3880,7 +3880,7 @@
           <div class="help-code-desc">
             Votre téléphone sonne normalement. Si personne ne répond au bout de quelques sonneries (vous êtes en cuisine, débordé…), Frizz prend l'appel automatiquement. <strong>C'est l'option conseillée.</strong>
           </div>
-          <div class="help-code-value" id="helpCodeNoReply">**61*+33939034328#</div>
+          <div class="help-code-value" id="helpCodeNoReply">**61*+33 9 39 03 43 28#</div>
           <button class="help-code-copy" data-copy="noreply">Copier</button>
         </div>
 
@@ -3892,7 +3892,7 @@
           <div class="help-code-desc">
             Si votre ligne est occupée par un autre appel, le nouvel appel est envoyé à Frizz au lieu de tomber sur la messagerie.
           </div>
-          <div class="help-code-value" id="helpCodeBusy">**67*+33939034328#</div>
+          <div class="help-code-value" id="helpCodeBusy">**67*+33 9 39 03 43 28#</div>
           <button class="help-code-copy" data-copy="busy">Copier</button>
         </div>
 
@@ -3904,7 +3904,7 @@
           <div class="help-code-desc">
             Frizz décroche <strong>tous</strong> vos appels, immédiatement, sans faire sonner votre téléphone. Pratique les jours de fermeture ou de congé.
           </div>
-          <div class="help-code-value" id="helpCodeActivate">**21*+33939034328#</div>
+          <div class="help-code-value" id="helpCodeActivate">**21*+33 9 39 03 43 28#</div>
           <button class="help-code-copy" data-copy="activate">Copier</button>
         </div>
 
@@ -6937,16 +6937,16 @@
     });
   })();
 
-  // Page Réglages — Copier numéro Frizz
+  // Page Réglages — Copier numéro Frizz (sans espaces pour la copie)
   $('frizzNumberCopyBtn').addEventListener('click', () => {
-    copyToClipboard($('frizzNumberValue').textContent);
+    copyToClipboard($('frizzNumberValue').textContent.replace(/\s/g, ''));
   });
 
-  // Page Réglages — Copier codes USSD
+  // Page Réglages — Copier codes USSD (affichés espacés, copiés sans espaces)
   document.querySelectorAll('.help-code-copy').forEach(btn => {
     btn.addEventListener('click', () => {
       const code = btn.parentElement.querySelector('.help-code-value').textContent;
-      copyToClipboard(code);
+      copyToClipboard(code.replace(/\s/g, ''));
     });
   });
 

@@ -3872,7 +3872,7 @@
 
   /* Liste des résas du jour — style "Inbox iOS" : lignes séparées, pas de cartes */
   .cal-day-list {
-    padding: 4px 20px 100px;
+    padding: 4px 24px 100px;
     animation: cascadeIn 0.6s ease-out 0.18s backwards;
   }
   .cal-day-row {
@@ -4065,23 +4065,13 @@
       </div>
       <a class="stats-week-link" id="statsWeekLinkBtn">Voir tout ›</a>
     </div>
-    <div class="cal-week-controls">
-      <button class="cal-week-arrow" id="statsPrevWeekBtn" aria-label="Semaine précédente">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-      </button>
-      <button class="cal-week-today-btn hidden" id="statsTodayBtn">Auj.</button>
-      <button class="cal-week-arrow" id="statsNextWeekBtn" aria-label="Semaine suivante">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-    </div>
     <div class="cal-week-card cal-week-card--inline">
       <div class="cal-week-weekdays" id="statsWeekWeekdays"></div>
       <div class="cal-week-days" id="statsWeekDays"></div>
     </div>
+
+    <!-- Liste des résas du jour (style Inbox iOS) — lecture seule, pour info -->
+    <div class="cal-day-list" id="statsDayList"></div>
   </section>
 
   </div><!-- /page-stats -->
@@ -6765,7 +6755,6 @@
     const weekdaysEl = $('statsWeekWeekdays');
     const daysEl = $('statsWeekDays');
     const subtitleEl = $('statsWeekSubtitle');
-    const todayBtn = $('statsTodayBtn');
     if (!weekdaysEl || !daysEl) return;
 
     const today = calStartOfDay(new Date());
@@ -6829,15 +6818,6 @@
       `;
     }).join('');
 
-    // Bouton "Auj." : visible seulement si on n'est pas sur la semaine courante
-    if (todayBtn) {
-      if (isCurrentWeek) {
-        todayBtn.classList.add('hidden');
-      } else {
-        todayBtn.classList.remove('hidden');
-      }
-    }
-
     // Click sur un jour → bascule sur la page Calendrier avec ce jour sélectionné
     daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
       cell.addEventListener('click', () => {
@@ -6861,33 +6841,46 @@
       });
       linkBtn._statsBound = true;
     }
-    const prevBtn = $('statsPrevWeekBtn');
-    if (prevBtn && !prevBtn._statsBound) {
-      prevBtn.addEventListener('click', () => {
-        const d = new Date(statsViewedWeekStart);
-        d.setDate(d.getDate() - 7);
-        statsViewedWeekStart = d;
-        renderStatsWeek();
-      });
-      prevBtn._statsBound = true;
-    }
-    const nextBtn = $('statsNextWeekBtn');
-    if (nextBtn && !nextBtn._statsBound) {
-      nextBtn.addEventListener('click', () => {
-        const d = new Date(statsViewedWeekStart);
-        d.setDate(d.getDate() + 7);
-        statsViewedWeekStart = d;
-        renderStatsWeek();
-      });
-      nextBtn._statsBound = true;
-    }
-    const todayBtn = $('statsTodayBtn');
-    if (todayBtn && !todayBtn._statsBound) {
-      todayBtn.addEventListener('click', () => {
-        statsViewedWeekStart = calMondayOfWeek(calStartOfDay(new Date()));
-        renderStatsWeek();
-      });
-      todayBtn._statsBound = true;
+
+    // Swipe gauche/droite sur la section semaine pour changer de semaine
+    const sectionEl = document.querySelector('.stats-week-section');
+    if (sectionEl && !sectionEl._swipeBound) {
+      let startX = 0;
+      let startY = 0;
+      let startTime = 0;
+      let tracking = false;
+
+      sectionEl.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) { tracking = false; return; }
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startTime = Date.now();
+        tracking = true;
+      }, { passive: true });
+
+      sectionEl.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        const dt = Date.now() - startTime;
+
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
+          if (dx < 0) {
+            const d = new Date(statsViewedWeekStart);
+            d.setDate(d.getDate() + 7);
+            statsViewedWeekStart = d;
+          } else {
+            const d = new Date(statsViewedWeekStart);
+            d.setDate(d.getDate() - 7);
+            statsViewedWeekStart = d;
+          }
+          renderStatsWeek();
+        }
+      }, { passive: true });
+
+      sectionEl._swipeBound = true;
     }
   }
 

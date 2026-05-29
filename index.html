@@ -291,6 +291,17 @@
     margin-bottom: 12px;
     animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
+
+  /* Colonne droite de la duo-grid : 2 KPI empilés à hauteur du Hero */
+  .duo-stats-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .duo-stats-col .stat-card {
+    flex: 1;
+    min-height: 0;
+  }
   .hero-card {
     background: linear-gradient(160deg, #4DA2FF 0%, #1E64FF 60%, #0A4FE5 100%);
     border-radius: 24px;
@@ -314,7 +325,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
     gap: 4px;
   }
   .hero-card::before {
@@ -336,12 +349,11 @@
     color: white;
   }
   .hero-number {
-    font-size: 71px;
+    font-size: 84px;
     font-weight: 600;
-    letter-spacing: -2px;
+    letter-spacing: -2.5px;
     line-height: 1;
     text-align: center;
-    margin: -2px 0;
     color: white;
     font-variant-numeric: tabular-nums;
   }
@@ -1912,6 +1924,267 @@
     flex-shrink: 0;
   }
 
+  /* ═══ Section Mes tables ═══ */
+  .tables-intro {
+    font-size: 13px;
+    color: var(--label-secondary);
+    line-height: 1.5;
+    letter-spacing: -0.2px;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .tables-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .tables-empty {
+    font-size: 14px;
+    color: var(--label-tertiary);
+    text-align: center;
+    padding: 24px 16px;
+    letter-spacing: -0.2px;
+  }
+  /* Une ligne = une table */
+  .table-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .table-item:active { background: rgba(0, 122, 255, 0.05); }
+  .table-item + .table-item { border-top: 0.5px solid var(--separator); }
+  .table-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .table-info { flex: 1; min-width: 0; }
+  .table-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .table-meta {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.2px;
+    margin-top: 2px;
+  }
+  /* Badge de zone */
+  .table-zone {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .table-zone.interieur { background: var(--blue-light); color: var(--blue-vivid); }
+  .table-zone.terrasse  { background: var(--green-light); color: var(--green); }
+  .table-zone.exterieur { background: var(--green-light); color: var(--green); }
+  /* Table désactivée */
+  .table-item.inactive { opacity: 0.4; }
+  /* Chevron */
+  .table-chevron {
+    width: 12px;
+    height: 12px;
+    stroke: var(--label-tertiary);
+    stroke-width: 2.4;
+    fill: none;
+    flex-shrink: 0;
+    margin-left: 2px;
+  }
+  /* Bouton ajouter */
+  .tables-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-top: 0.5px solid var(--separator);
+    color: var(--blue);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .tables-add-btn:active { background: rgba(0, 122, 255, 0.05); }
+  .tables-add-btn svg { stroke: var(--blue); }
+
+  /* Sélecteur de zone dans la popup table */
+  .table-zone-picker {
+    display: flex;
+    gap: 8px;
+  }
+  .table-zone-option {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--separator);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--label-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .table-zone-option:active { transform: scale(0.97); }
+  .table-zone-option.selected {
+    background: var(--blue-light);
+    border-color: var(--blue);
+    color: var(--blue-vivid);
+  }
+  /* Bouton supprimer table (mode édition) */
+  .table-delete-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255, 69, 58, 0.12);
+    color: var(--red);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .table-delete-btn:active { background: rgba(255, 69, 58, 0.22); }
+
+  /* Toggle iOS "combinable" dans la popup table */
+  .table-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+  }
+  .table-toggle-label { flex: 1; min-width: 0; }
+  .table-toggle-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+  }
+  .table-toggle-desc {
+    font-size: 12px;
+    color: var(--label-secondary);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .table-toggle {
+    width: 51px;
+    height: 31px;
+    border-radius: 31px;
+    background: var(--separator);
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .table-toggle.on { background: var(--green); }
+  .table-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+  .table-toggle.on .table-toggle-knob { transform: translateX(20px); }
+
+  /* Bloc attribution de tables dans le formulaire résa */
+  .resa-tables-counter {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    padding: 8px 0;
+    color: var(--label-secondary);
+  }
+  .resa-tables-counter.ok { color: var(--green); }
+  .resa-tables-counter.insufficient { color: var(--red); }
+  .resa-tables-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .resa-table-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--separator);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .resa-table-check.selected {
+    background: var(--blue-light);
+    border-color: var(--blue);
+  }
+  .resa-table-check.occupied {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(255, 69, 58, 0.06);
+  }
+  .resa-table-check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--label-tertiary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .resa-table-check.selected .resa-table-check-box {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .resa-table-check-box svg { width: 12px; height: 12px; display: none; }
+  .resa-table-check.selected .resa-table-check-box svg { display: block; stroke: white; stroke-width: 3; fill: none; }
+  .resa-table-check-info { flex: 1; min-width: 0; }
+  .resa-table-check-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .resa-table-check-meta {
+    font-size: 12px;
+    color: var(--label-secondary);
+    margin-top: 1px;
+  }
+
   /* Section abonnement — Style Apple premium */
   .subscription-card-premium {
     position: relative;
@@ -2843,6 +3116,15 @@
     letter-spacing: -0.1px;
   }
 
+  .legal-footer {
+    text-align: center;
+    padding: 4px 20px 32px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--label-tertiary);
+    letter-spacing: -0.1px;
+  }
+
   /* ═══ MODALE CHOIX MOT DE PASSE (2 options) ═══ */
   .password-modal-backdrop {
     position: fixed;
@@ -3069,22 +3351,260 @@
   @media (min-width: 600px) {
     body {
       background: var(--bg);
-      display: flex;
-      justify-content: center;
     }
-    /* L'app reste exactement la même colonne étroite que sur mobile, centrée */
+    /* Zoom calculé auto : largeur de l'écran ÷ 430px (largeur native mobile).
+       Remplit toujours pile la largeur, quelle que soit la tablette. */
     .app {
-      width: 430px;
-      max-width: 430px;
+      zoom: calc(100vw / 430);
       margin: 0 auto;
     }
-    /* La barre d'onglets reste fixée en bas, à la même largeur, centrée */
     .tabbar {
+      zoom: calc(100vw / 430);
       left: 50% !important;
       transform: translateX(-50%);
       width: 430px !important;
       max-width: 430px !important;
     }
+  }
+
+  /* Barre nav haute de la page Messages */
+  .messages-navbar {
+    padding: 14px 16px 0;
+    display: flex;
+    align-items: center;
+    animation: cascadeIn 0.6s ease-out 0.02s backwards;
+  }
+  .messages-back {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: none;
+    color: var(--blue);
+    padding: 6px 8px 6px 4px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .messages-back svg { width: 22px; height: 22px; }
+  .messages-back:active { opacity: 0.5; }
+
+  /* Raccourci Messages en haut du Journal — même style que activity-item */
+  .messages-shortcut-wrap {
+    padding: 0 20px;
+    margin-bottom: 16px;
+    animation: cascadeIn 0.6s ease-out 0.10s backwards;
+  }
+  .messages-shortcut {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: rgba(20, 20, 22, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+    padding: 14px 16px;
+    cursor: pointer;
+    color: var(--label-primary);
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+  .messages-shortcut:active {
+    transform: scale(0.99);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .messages-shortcut:active { opacity: 0.6; transform: scale(0.98); }
+  .messages-shortcut-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(10, 132, 255, 0.18);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .messages-shortcut-icon svg { width: 20px; height: 20px; }
+  .messages-shortcut-body { flex: 1; text-align: left; min-width: 0; }
+  .messages-shortcut-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .messages-shortcut-subtitle {
+    font-size: 13px;
+    color: var(--label-tertiary);
+    margin-top: 2px;
+    letter-spacing: -0.1px;
+  }
+  .messages-shortcut-badge {
+    flex-shrink: 0;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 11px;
+    background: var(--red, #FF3B30);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .messages-shortcut-badge.hidden { display: none; }
+  .messages-shortcut-chevron {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--label-tertiary);
+  }
+
+  /* Liste des messages */
+  .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 20px 100px;
+    animation: cascadeIn 0.6s ease-out 0.14s backwards;
+  }
+  .message-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .message-card.priority-haute {
+    border-left: 3px solid var(--red, #FF3B30);
+  }
+  .message-card.treated {
+    opacity: 0.55;
+  }
+  .message-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .message-card-titlebox { flex: 1; min-width: 0; }
+  .message-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .message-card-meta {
+    font-size: 12px;
+    color: var(--label-tertiary);
+    margin-top: 2px;
+  }
+  .message-card-cat {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--label-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .message-card-cat.urgent {
+    background: rgba(255, 59, 48, 0.18);
+    color: var(--red, #FF3B30);
+  }
+  .message-card-raison {
+    font-size: 14px;
+    color: var(--label-secondary);
+    line-height: 1.45;
+    letter-spacing: -0.1px;
+  }
+  .message-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .message-card-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease;
+  }
+  .message-card-btn:active { opacity: 0.6; }
+  .message-card-btn svg { width: 15px; height: 15px; }
+  .message-card-btn.btn-call {
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+  }
+  .message-card-btn.btn-sms {
+    background: rgba(10, 132, 255, 0.18);
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .message-card-btn.btn-done {
+    background: rgba(48, 209, 88, 0.18);
+    color: var(--green, #30D158);
+  }
+  .message-card-btn.btn-undo {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--label-secondary);
+  }
+  .message-card-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--label-tertiary);
+    font-size: 14px;
+  }
+  /* Carte "Aucun numéro attribué" (pas d'abonnement) */
+  .no-number-card {
+    text-align: center;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .no-number-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-tertiary);
+  }
+  .no-number-icon svg { width: 22px; height: 22px; }
+  .no-number-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .no-number-text {
+    font-size: 14px;
+    color: var(--label-tertiary);
+    line-height: 1.45;
+    max-width: 340px;
   }
 
 </style>
@@ -3141,7 +3661,6 @@
       <div class="hero-label">Appels Frizz<br>ce mois</div>
       <div class="hero-center">
         <div class="hero-number" id="couvertsLibres">0</div>
-        <div class="hero-sublabel" id="callsLimitLabel">sur — inclus</div>
       </div>
       <div class="hero-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -3150,62 +3669,36 @@
       </div>
     </div>
 
-    <div class="chart-card">
-      <div class="chart-title">vs mois dernier</div>
-      <div class="chart-badge" id="trendBadge">
-        <svg viewBox="0 0 24 24" id="trendArrow">
-          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" transform="rotate(-90 12 12)"/>
-        </svg>
-        <span id="trendPercent">0%</span>
+    <div class="duo-stats-col">
+      <div class="stat-card" id="resaMonthCard" style="cursor: pointer;">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Réservations ce mois</span>
+          <span class="stat-value" id="resaCeMois">0</span>
+        </div>
       </div>
-      <p class="chart-desc">
-        <span id="trendDescMain">—</span>
-        <span class="secondary" id="trendDescSecondary"></span>
-      </p>
-      <svg class="chart-svg" viewBox="0 0 200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#007AFF" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="#007AFF" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path id="chartArea" d="M 0 55 C 30 52, 50 48, 75 42 S 120 28, 150 18 S 180 12, 200 8 L 200 70 L 0 70 Z" fill="url(#chartGradient)"/>
-        <path id="chartLine" class="chart-line" d="M 0 55 C 30 52, 50 48, 75 42 S 120 28, 150 18 S 180 12, 200 8" fill="none" stroke="#007AFF" stroke-width="2.4" stroke-linecap="round"/>
-        <circle id="chartDotOuter" class="chart-dot" cx="200" cy="8" r="4" fill="#007AFF"/>
-        <circle id="chartDotInner" class="chart-dot" cx="200" cy="8" r="2" fill="white"/>
-      </svg>
-    </div>
-  </section>
-
-  <section class="stats-grid">
-    <div class="stat-card" id="resaMonthCard" style="cursor: pointer;">
-      <div class="stat-icon blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Réservations ce mois</span>
-        <span class="stat-value" id="resaCeMois">0</span>
-      </div>
-    </div>
-    <div class="stat-card" id="cancelMonthCard" style="cursor: pointer;">
-      <div class="stat-icon green">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-          <line x1="10" y1="15" x2="14" y2="19"/>
-          <line x1="14" y1="15" x2="10" y2="19"/>
-        </svg>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Annulations ce mois</span>
-        <span class="stat-value" id="noShowsEvites">0</span>
+      <div class="stat-card" id="cancelMonthCard" style="cursor: pointer;">
+        <div class="stat-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="10" y1="15" x2="14" y2="19"/>
+            <line x1="14" y1="15" x2="10" y2="19"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Annulations ce mois</span>
+          <span class="stat-value" id="noShowsEvites">0</span>
+        </div>
       </div>
     </div>
   </section>
@@ -3233,19 +3726,38 @@
       <p class="subtitle" id="activitySubtitle">—</p>
     </section>
 
+    <!-- Raccourci vers la page Messages -->
+    <div class="messages-shortcut-wrap">
+      <button class="messages-shortcut" id="messagesShortcutBtn">
+        <div class="messages-shortcut-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div class="messages-shortcut-body">
+          <div class="messages-shortcut-title">Messages à rappeler</div>
+          <div class="messages-shortcut-subtitle" id="messagesShortcutSubtitle">Aucun message en attente</div>
+        </div>
+        <div class="messages-shortcut-badge hidden" id="messagesShortcutBadge">0</div>
+        <svg class="messages-shortcut-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
     <!-- Filtres pilules -->
     <div class="activity-filters" id="activityFilters">
       <button class="activity-filter-pill active" data-filter="all">
         Tous<span class="activity-filter-count" id="activityCountAll">0</span>
       </button>
       <button class="activity-filter-pill" data-filter="created">
-        Créées<span class="activity-filter-count" id="activityCountCreated">0</span>
+        Nouvelle table<span class="activity-filter-count" id="activityCountCreated">0</span>
       </button>
       <button class="activity-filter-pill" data-filter="modified">
-        Modifiées<span class="activity-filter-count" id="activityCountModified">0</span>
+        Modification<span class="activity-filter-count" id="activityCountModified">0</span>
       </button>
       <button class="activity-filter-pill" data-filter="cancelled">
-        Annulées<span class="activity-filter-count" id="activityCountCancelled">0</span>
+        Annulation<span class="activity-filter-count" id="activityCountCancelled">0</span>
       </button>
     </div>
 
@@ -3253,6 +3765,39 @@
     <div class="activity-timeline" id="activityTimeline"></div>
 
   </div><!-- /page-activity -->
+
+  <!-- ═══ PAGE MESSAGES (demandes de rappel) ═══ -->
+  <div class="page hidden" id="page-messages">
+
+    <!-- Barre nav haute (retour) -->
+    <div class="messages-navbar">
+      <button class="messages-back" id="messagesBackBtn" aria-label="Retour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Retour</span>
+      </button>
+    </div>
+
+    <section class="greeting">
+      <h1>Messages à rappeler</h1>
+      <p class="subtitle" id="messagesSubtitle">—</p>
+    </section>
+
+    <!-- Filtres -->
+    <div class="activity-filters" id="messagesFilters">
+      <button class="activity-filter-pill active" data-msg-filter="nouveaux">
+        À rappeler<span class="activity-filter-count" id="messagesCountNouveaux">0</span>
+      </button>
+      <button class="activity-filter-pill" data-msg-filter="traites">
+        Traités<span class="activity-filter-count" id="messagesCountTraites">0</span>
+      </button>
+    </div>
+
+    <!-- Liste -->
+    <div class="messages-list" id="messagesList"></div>
+
+  </div><!-- /page-messages -->
 
   <!-- ═══ PAGE RÉGLAGES ═══ -->
   <div class="page hidden" id="page-settings">
@@ -3496,20 +4041,42 @@
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
-        <div class="settings-row editable" data-field="capacite_interieur" data-type="number" data-label="Capacité intérieur">
-          <div class="settings-row-label">Capacité intérieur</div>
-          <div class="settings-row-value" id="settingsCapaciteIntValue">—</div>
-          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
+      </div>
+    </div>
+
+    <!-- Section : Mes tables -->
+    <div class="settings-section">
+      <div class="settings-section-title">Mes tables</div>
+      <div class="settings-section-card">
+        <div class="tables-intro">
+          Définissez les tables de votre salle. Les réservations seront attribuées à de vraies tables, selon leur capacité et leur zone.
         </div>
-        <div class="settings-row editable" data-field="capacite_exterieur" data-type="number" data-label="Capacité extérieur">
-          <div class="settings-row-label">Capacité extérieur</div>
-          <div class="settings-row-value" id="settingsCapaciteExtValue">—</div>
-          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
+
+        <!-- Liste des tables (remplie par renderTables) -->
+        <div id="tablesList" class="tables-list">
+          <div class="tables-empty" id="tablesEmpty">Chargement…</div>
         </div>
+
+        <!-- Bouton ajouter -->
+        <button class="tables-add-btn" id="tablesAddBtn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Ajouter une table
+        </button>
+      </div>
+
+      <!-- Encart de test d'assemblage (temporaire, pour valider l'algo) -->
+      <div class="settings-section-card" style="margin-top:12px;">
+        <div class="tables-intro">
+          🧪 Test d'attribution — entrez un nombre de personnes pour voir quelle(s) table(s) le système proposerait.
+        </div>
+        <div style="padding:14px 16px; display:flex; gap:10px; align-items:center;">
+          <input type="number" class="resa-form-input" id="testCouvertsInput" min="1" max="50" placeholder="7" style="flex:1;">
+          <button class="resa-form-btn save" id="testAssignBtn" style="width:auto; padding:13px 18px; margin:0;">Tester</button>
+        </div>
+        <div id="testAssignResult" class="tables-intro" style="border-top:0.5px solid var(--separator); border-bottom:none;"></div>
       </div>
     </div>
 
@@ -3556,12 +4123,12 @@
     </div>
 
     <!-- Section : Votre numéro Frizz -->
-    <div class="settings-section">
+    <div class="settings-section" id="settingsSectionFrizzNumber">
       <div class="settings-section-title">Votre numéro Frizz</div>
       <div class="settings-section-card">
         <div class="frizz-number-block">
           <div class="frizz-number-label">Numéro à utiliser pour le renvoi</div>
-          <div class="frizz-number-value" id="frizzNumberValue">+1 319 289 9858</div>
+          <div class="frizz-number-value" id="frizzNumberValue">—</div>
           <button class="frizz-number-copy" id="frizzNumberCopyBtn">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
@@ -3573,12 +4140,27 @@
       </div>
     </div>
 
+    <!-- Section alternative : pas d'abonnement → pas de numéro -->
+    <div class="settings-section hidden" id="settingsSectionNoNumber">
+      <div class="settings-section-title">Votre numéro Frizz</div>
+      <div class="settings-section-card no-number-card">
+        <div class="no-number-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <line x1="2" y1="2" x2="22" y2="22"/>
+          </svg>
+        </div>
+        <div class="no-number-title">Aucun numéro attribué</div>
+        <div class="no-number-text">Votre numéro Frizz est créé automatiquement dès la souscription d'un abonnement.</div>
+      </div>
+    </div>
+
     <!-- Section : Aide renvoi d'appel -->
-    <div class="settings-section">
+    <div class="settings-section" id="settingsSectionHelpCodes">
       <div class="settings-section-title">Aide renvoi d'appel</div>
       <div class="settings-section-card settings-help-card">
         <div class="settings-help-intro">
-          Frizz répond au téléphone à votre place. Pour ça, il faut dire à votre téléphone d'envoyer les appels vers Frizz. C'est simple : choisissez dans quels cas Frizz doit répondre, copiez le code affiché, collez-le sur votre téléphone et appuyez sur Appeler. C'est tout.
+          Frizz peut répondre à votre téléphone à votre place. Pour cela, choisissez ci-dessous <strong>quand</strong> Frizz doit répondre, puis tapez le code correspondant sur votre téléphone. C'est tout.
         </div>
 
         <div class="help-code-block">
@@ -3589,7 +4171,7 @@
           <div class="help-code-desc">
             Votre téléphone sonne normalement. Si personne ne répond au bout de quelques sonneries (vous êtes en cuisine, débordé…), Frizz prend l'appel automatiquement. <strong>C'est l'option conseillée.</strong>
           </div>
-          <div class="help-code-value" id="helpCodeNoReply">**61*+13192899858#</div>
+          <div class="help-code-value" id="helpCodeNoReply">—</div>
           <button class="help-code-copy" data-copy="noreply">Copier</button>
         </div>
 
@@ -3601,7 +4183,7 @@
           <div class="help-code-desc">
             Si votre ligne est occupée par un autre appel, le nouvel appel est envoyé à Frizz au lieu de tomber sur la messagerie.
           </div>
-          <div class="help-code-value" id="helpCodeBusy">**67*+13192899858#</div>
+          <div class="help-code-value" id="helpCodeBusy">—</div>
           <button class="help-code-copy" data-copy="busy">Copier</button>
         </div>
 
@@ -3613,7 +4195,7 @@
           <div class="help-code-desc">
             Frizz décroche <strong>tous</strong> vos appels, immédiatement, sans faire sonner votre téléphone. Pratique les jours de fermeture ou de congé.
           </div>
-          <div class="help-code-value" id="helpCodeActivate">**21*+13192899858#</div>
+          <div class="help-code-value" id="helpCodeActivate">—</div>
           <button class="help-code-copy" data-copy="activate">Copier</button>
         </div>
 
@@ -3718,6 +4300,12 @@
     </div>
 
     <div class="app-version">Frizz Instant · v1.0</div>
+
+    <div class="legal-footer">
+      © 2026 Hairlab — Adrien Moine<br>
+      SIRET : 100 403 401 00019<br>
+      Siège social : 60 rue François 1er, 75008 Paris
+    </div>
 
     <!-- Toast notification -->
     <div class="settings-toast" id="settingsToast">✓ Copié !</div>
@@ -4041,11 +4629,18 @@
       <input type="number" class="resa-form-input" id="resaFormCouverts" min="1" max="50" placeholder="4">
     </div>
     <div class="resa-form-field">
-      <label class="resa-form-label">Emplacement</label>
-      <select class="resa-form-input" id="resaFormEmplacement">
-        <option value="interieur">Intérieur</option>
-        <option value="terrasse">Terrasse</option>
-      </select>
+      <label class="resa-form-label">Zone</label>
+      <div class="table-zone-picker" id="resaFormZonePicker">
+        <button type="button" class="table-zone-option" data-zone="">Toutes</button>
+        <button type="button" class="table-zone-option selected" data-zone="interieur">Intérieur</button>
+        <button type="button" class="table-zone-option" data-zone="exterieur">Extérieur</button>
+      </div>
+    </div>
+    <!-- Bloc attribution de tables -->
+    <div class="resa-form-field">
+      <label class="resa-form-label">Tables</label>
+      <div class="resa-tables-counter" id="resaTablesCounter">Saisissez date, heure et couverts</div>
+      <div class="resa-tables-checklist" id="resaTablesChecklist"></div>
     </div>
     <div class="resa-form-field">
       <label class="resa-form-label">Téléphone (optionnel)</label>
@@ -4061,6 +4656,49 @@
     <button class="resa-form-btn save" id="resaFormSaveBtn">Enregistrer</button>
   </div>
 </div>
+
+<!-- ═══ Popup ajout / édition de table ═══ -->
+<div class="resa-detail-backdrop" id="tableFormBackdrop"></div>
+<div class="resa-form-modal" id="tableFormModal">
+  <div class="resa-form-grabber"></div>
+  <div class="resa-form-title" id="tableFormTitle">Ajouter une table</div>
+  <div class="resa-form-subtitle" id="tableFormSubtitle">Définissez le nom, la capacité et la zone</div>
+  <div class="resa-form-body">
+    <div class="resa-form-field">
+      <label class="resa-form-label">Nom de la table</label>
+      <input type="text" class="resa-form-input" id="tableFormNom" placeholder="Ex : T1, Terrasse 3" maxlength="30">
+    </div>
+    <div class="resa-form-field">
+      <label class="resa-form-label">Capacité (personnes)</label>
+      <input type="number" class="resa-form-input" id="tableFormCapacite" min="1" max="30" placeholder="4">
+    </div>
+    <div class="resa-form-field">
+      <label class="resa-form-label">Zone</label>
+      <div class="table-zone-picker" id="tableFormZonePicker">
+        <button type="button" class="table-zone-option selected" data-zone="interieur">Intérieur</button>
+        <button type="button" class="table-zone-option" data-zone="exterieur">Extérieur</button>
+      </div>
+    </div>
+    <div class="resa-form-field">
+      <div class="table-toggle-row">
+        <div class="table-toggle-label">
+          <div class="table-toggle-title">Combinable</div>
+          <div class="table-toggle-desc">Peut être assemblée avec d'autres tables pour les grands groupes</div>
+        </div>
+        <div class="table-toggle on" id="tableFormCombinable">
+          <div class="table-toggle-knob"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Bouton supprimer (visible seulement en mode édition) -->
+    <button class="table-delete-btn hidden" id="tableFormDeleteBtn">Supprimer cette table</button>
+  </div>
+  <div class="resa-form-actions">
+    <button class="resa-form-btn cancel" id="tableFormCancelBtn">Annuler</button>
+    <button class="resa-form-btn save" id="tableFormSaveBtn">Enregistrer</button>
+  </div>
+</div>
+
 
 <!-- POPUP NOTIFICATIONS -->
 <div class="notif-backdrop" id="notifBackdrop"></div>
@@ -4175,6 +4813,7 @@
       renderStats(allReservations);
       loadMonthCalls(); // charge le vrai nombre d'appels Frizz du mois
       renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
+      updateFrizzNumberDisplay(); // Affiche le numéro Frizz du salon (ou message "aucun numéro" si pas d'abonnement)
       updateBellDot();
       applyPaywall();
       showApp();
@@ -4212,13 +4851,7 @@
       : `Bonjour <span class="wave">👋</span>`;
 
     const todayCount = validResas.filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd).length;
-    if (todayCount === 0) {
-      $('greetingSubtitle').textContent = "Pas encore de réservation aujourd'hui";
-    } else if (todayCount === 1) {
-      $('greetingSubtitle').textContent = "1 réservation aujourd'hui";
-    } else {
-      $('greetingSubtitle').textContent = `${todayCount} réservations aujourd'hui`;
-    }
+    $('greetingSubtitle').textContent = "";
 
     // Appels Frizz ce mois (vrais appels reçus, table frizz_ai_appels)
     try {
@@ -4250,54 +4883,67 @@
       if (elCalls) elCalls.textContent = '0';
     }
 
-    // Trend vs mois dernier
-    const thisMonthCount = validResas.filter(r => r.dateObj >= firstThisMonth && r.dateObj <= now).length;
-    const lastMonthCount = validResas.filter(r => r.dateObj >= firstLastMonth && r.dateObj <= lastMonthCutoff).length;
+    // Trend vs mois dernier (bloc retiré de l'UI — on garde le calcul au cas où on le remet)
+    const trendBadgeEl = $('trendBadge');
+    if (trendBadgeEl) {
+      const thisMonthCount = validResas.filter(r => r.dateObj >= firstThisMonth && r.dateObj <= now).length;
+      const lastMonthCount = validResas.filter(r => r.dateObj >= firstLastMonth && r.dateObj <= lastMonthCutoff).length;
 
-    let pct = 0;
-    let direction = 'up';
-    let descMain = '';
-    let descSecondary = '';
+      let pct = 0;
+      let direction = 'up';
+      let descMain = '';
+      let descSecondary = '';
 
-    if (lastMonthCount === 0 && thisMonthCount === 0) {
-      pct = 0;
-      descMain = 'Aucune donnée';
-      descSecondary = '';
-    } else if (lastMonthCount === 0) {
-      pct = 100;
-      direction = 'up';
-      descMain = `${thisMonthCount} résa ce mois`;
-      descSecondary = '(rien le mois dernier)';
-    } else {
-      pct = Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
-      direction = pct >= 0 ? 'up' : 'down';
-      descMain = `${thisMonthCount} ce mois`;
-      descSecondary = `(${lastMonthCount} le mois dernier)`;
-    }
+      if (lastMonthCount === 0 && thisMonthCount === 0) {
+        pct = 0;
+        descMain = 'Aucune donnée';
+        descSecondary = '';
+      } else if (lastMonthCount === 0) {
+        pct = 100;
+        direction = 'up';
+        descMain = `${thisMonthCount} résa ce mois`;
+        descSecondary = '(rien le mois dernier)';
+      } else {
+        pct = Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
+        direction = pct >= 0 ? 'up' : 'down';
+        descMain = `${thisMonthCount} ce mois`;
+        descSecondary = `(${lastMonthCount} le mois dernier)`;
+      }
 
-    $('trendPercent').textContent = (pct >= 0 ? '+' : '') + pct + '%';
-    $('trendDescMain').textContent = descMain;
-    $('trendDescSecondary').textContent = descSecondary;
+      const elPct = $('trendPercent');
+      if (elPct) elPct.textContent = (pct >= 0 ? '+' : '') + pct + '%';
+      const elDescMain = $('trendDescMain');
+      if (elDescMain) elDescMain.textContent = descMain;
+      const elDescSec = $('trendDescSecondary');
+      if (elDescSec) elDescSec.textContent = descSecondary;
 
-    const arrowEl = $('trendArrow');
-    const rotation = direction === 'down' ? '90 12 12' : '-90 12 12';
-    arrowEl.querySelector('path').setAttribute('transform', `rotate(${rotation})`);
+      const arrowEl = $('trendArrow');
+      if (arrowEl) {
+        const rotation = direction === 'down' ? '90 12 12' : '-90 12 12';
+        const pathEl = arrowEl.querySelector('path');
+        if (pathEl) pathEl.setAttribute('transform', `rotate(${rotation})`);
+      }
 
-    const color = direction === 'down' ? '#FF453A' : '#007AFF';
-    $('trendBadge').style.background = direction === 'down' ? 'rgba(255, 69, 58, 0.10)' : 'rgba(0, 122, 255, 0.10)';
-    $('trendBadge').style.color = color;
-    $('chartLine').setAttribute('stroke', color);
-    $('chartDotOuter').setAttribute('fill', color);
-    const grad1 = document.querySelector('#chartGradient stop:first-child');
-    const grad2 = document.querySelector('#chartGradient stop:last-child');
-    if (grad1) grad1.setAttribute('stop-color', color);
-    if (grad2) grad2.setAttribute('stop-color', color);
+      const color = direction === 'down' ? '#FF453A' : '#007AFF';
+      trendBadgeEl.style.background = direction === 'down' ? 'rgba(255, 69, 58, 0.10)' : 'rgba(0, 122, 255, 0.10)';
+      trendBadgeEl.style.color = color;
+      const chartLineEl = $('chartLine');
+      if (chartLineEl) chartLineEl.setAttribute('stroke', color);
+      const chartDotOuterEl = $('chartDotOuter');
+      if (chartDotOuterEl) chartDotOuterEl.setAttribute('fill', color);
+      const grad1 = document.querySelector('#chartGradient stop:first-child');
+      const grad2 = document.querySelector('#chartGradient stop:last-child');
+      if (grad1) grad1.setAttribute('stop-color', color);
+      if (grad2) grad2.setAttribute('stop-color', color);
 
-    if (direction === 'down') {
-      $('chartLine').setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62');
-      $('chartArea').setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62 L 200 70 L 0 70 Z');
-      $('chartDotOuter').setAttribute('cy', '62');
-      $('chartDotInner').setAttribute('cy', '62');
+      if (direction === 'down' && chartLineEl) {
+        chartLineEl.setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62');
+        const chartAreaEl = $('chartArea');
+        if (chartAreaEl) chartAreaEl.setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62 L 200 70 L 0 70 Z');
+        if (chartDotOuterEl) chartDotOuterEl.setAttribute('cy', '62');
+        const chartDotInnerEl = $('chartDotInner');
+        if (chartDotInnerEl) chartDotInnerEl.setAttribute('cy', '62');
+      }
     }
 
     // Nombre de réservations ce mois
@@ -4412,16 +5058,13 @@
     const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
     const tomorrowStart = todayEnd;
     const tomorrowEnd = new Date(tomorrowStart.getTime() + 24 * 3600 * 1000);
-    
-    // Début de semaine : lundi 00:00 de la semaine en cours
-    const weekStart = new Date(todayStart);
-    const dayOfWeek = (todayStart.getDay() + 6) % 7; // lundi = 0
-    weekStart.setDate(todayStart.getDate() - dayOfWeek);
-    const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 3600 * 1000);
-    
-    // Mois en cours
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // Semaine = les 7 prochains jours (sens "vie réelle", pas calendaire strict)
+    // Évite que les résas de lundi prochain soient exclues si on est vendredi.
+    const weekEnd = new Date(todayStart.getTime() + 7 * 24 * 3600 * 1000);
+
+    // Mois = les 30 prochains jours (sens "vie réelle")
+    const monthEnd = new Date(todayStart.getTime() + 30 * 24 * 3600 * 1000);
 
     const validResas = allReservations
       .filter(r => r.statut !== 'annulee' && r.statut !== 'annule')
@@ -4676,10 +5319,21 @@
   // ═══ MODALE FORMULAIRE RÉSA (création + modification) ═══
   let resaFormMode = 'create'; // 'create' | 'edit'
   let resaFormEditingId = null;
+  let resaSelectedTableIds = []; // tables cochées pour la résa en cours
+  let resaZone = 'interieur';    // zone choisie dans le formulaire
+
+  function setResaZone(zone) {
+    resaZone = zone;
+    document.querySelectorAll('#resaFormZonePicker .table-zone-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.zone === zone);
+    });
+    refreshResaTables(); // recalcule l'attribution quand la zone change
+  }
 
   function openResaForm(mode, resa = null) {
     resaFormMode = mode;
     resaFormEditingId = resa ? resa.id : null;
+    resaSelectedTableIds = [];
 
     if (mode === 'create') {
       $('resaFormTitle').textContent = 'Nouvelle réservation';
@@ -4693,7 +5347,7 @@
       $('resaFormDate').value = `${yyyy}-${mm}-${dd}`;
       $('resaFormHeure').value = '20:00';
       $('resaFormCouverts').value = '';
-      $('resaFormEmplacement').value = 'interieur';
+      setResaZone('interieur');
       $('resaFormTel').value = '';
       $('resaFormNotes').value = '';
     } else if (mode === 'edit' && resa) {
@@ -4703,13 +5357,137 @@
       $('resaFormDate').value = resa.date_reservation || '';
       $('resaFormHeure').value = (resa.heure_reservation || '20:00:00').substring(0, 5);
       $('resaFormCouverts').value = resa.nb_couverts || '';
-      $('resaFormEmplacement').value = (resa.emplacement === 'terrasse') ? 'terrasse' : 'interieur';
+      let z = (resa.emplacement === 'terrasse' || resa.emplacement === 'exterieur') ? 'exterieur' : 'interieur';
+      setResaZone(z);
       $('resaFormTel').value = resa.client_telephone || '';
       $('resaFormNotes').value = resa.notes || '';
+      // Charger les tables déjà attribuées à cette résa
+      loadResaExistingTables(resa.id);
     }
 
     $('resaFormBackdrop').classList.add('visible');
     $('resaFormModal').classList.add('visible');
+    refreshResaTables();
+  }
+
+  // Charge les tables déjà liées à une réservation (mode édition)
+  async function loadResaExistingTables(resaId) {
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_reservation_tables')
+        .select('table_id')
+        .eq('reservation_id', resaId);
+      if (error) throw error;
+      resaSelectedTableIds = (data || []).map(l => l.table_id);
+      refreshResaTables();
+    } catch (err) {
+      console.error('Erreur chargement tables résa:', err);
+    }
+  }
+
+  // Recalcule la disponibilité + l'attribution auto, puis affiche la checklist
+  let resaOccupiedIds = [];
+  async function refreshResaTables() {
+    const checklistEl = $('resaTablesChecklist');
+    const counterEl = $('resaTablesCounter');
+    if (!checklistEl || !counterEl) return;
+
+    const dateStr = $('resaFormDate').value;
+    const heureStr = $('resaFormHeure').value;
+    const nb = parseInt($('resaFormCouverts').value) || 0;
+
+    if (!dateStr || !heureStr || nb < 1) {
+      counterEl.className = 'resa-tables-counter';
+      counterEl.textContent = 'Saisissez date, heure et couverts';
+      checklistEl.innerHTML = '';
+      return;
+    }
+    if (!allTables.length) {
+      counterEl.textContent = 'Aucune table définie (Réglages → Mes tables)';
+      checklistEl.innerHTML = '';
+      return;
+    }
+
+    counterEl.textContent = 'Calcul des disponibilités…';
+
+    // Disponibilité + proposition auto
+    const { res, occupes } = await getAttributionPourCreneau(
+      nb, dateStr, heureStr, resaZone || null, resaFormEditingId
+    );
+    resaOccupiedIds = occupes;
+
+    // En création : on pré-coche la proposition auto.
+    // En édition : on garde les tables déjà sélectionnées si elles existent.
+    if (resaFormMode === 'create' || resaSelectedTableIds.length === 0) {
+      resaSelectedTableIds = res.ok ? res.tables.map(t => t.id) : [];
+    }
+
+    drawResaTablesChecklist();
+  }
+
+  function drawResaTablesChecklist() {
+    const checklistEl = $('resaTablesChecklist');
+    const counterEl = $('resaTablesCounter');
+    const nb = parseInt($('resaFormCouverts').value) || 0;
+
+    // Filtrer par zone si une zone est choisie
+    let tablesToShow = allTables.filter(t => t.active !== false);
+    if (resaZone) {
+      tablesToShow = tablesToShow.filter(t => {
+        let z = (t.zone || 'interieur').toLowerCase();
+        if (z === 'terrasse') z = 'exterieur';
+        return z === resaZone;
+      });
+    }
+
+    checklistEl.innerHTML = tablesToShow.map(t => {
+      const isOccupied = resaOccupiedIds.includes(t.id) && !resaSelectedTableIds.includes(t.id);
+      const isSelected = resaSelectedTableIds.includes(t.id);
+      let z = (t.zone || 'interieur').toLowerCase();
+      if (z === 'terrasse') z = 'exterieur';
+      const zoneLabel = z === 'exterieur' ? 'Extérieur' : 'Intérieur';
+      return `
+        <div class="resa-table-check${isSelected ? ' selected' : ''}${isOccupied ? ' occupied' : ''}" data-table-id="${t.id}" data-occupied="${isOccupied}">
+          <div class="resa-table-check-box">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="resa-table-check-info">
+            <div class="resa-table-check-name">${escapeHtml(t.nom)}</div>
+            <div class="resa-table-check-meta">${t.capacite} places · ${zoneLabel}${isOccupied ? ' · déjà réservée' : ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Clic sur une table → cocher/décocher (sauf si occupée)
+    checklistEl.querySelectorAll('.resa-table-check').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.dataset.occupied === 'true') {
+          showToast('⚠️ Cette table est déjà réservée sur ce créneau');
+          return;
+        }
+        const id = el.dataset.tableId;
+        if (resaSelectedTableIds.includes(id)) {
+          resaSelectedTableIds = resaSelectedTableIds.filter(x => x !== id);
+        } else {
+          resaSelectedTableIds.push(id);
+        }
+        drawResaTablesChecklist();
+      });
+    });
+
+    // Compteur
+    const placesSelectionnees = resaSelectedTableIds.reduce((sum, id) => {
+      const t = allTables.find(x => x.id === id);
+      return sum + (t ? (parseInt(t.capacite) || 0) : 0);
+    }, 0);
+
+    if (placesSelectionnees >= nb && resaSelectedTableIds.length > 0) {
+      counterEl.className = 'resa-tables-counter ok';
+      counterEl.textContent = `✓ ${placesSelectionnees} places sélectionnées pour ${nb} personne${nb > 1 ? 's' : ''}`;
+    } else {
+      counterEl.className = 'resa-tables-counter insufficient';
+      counterEl.textContent = `${placesSelectionnees} places sélectionnées · il en faut ${nb}`;
+    }
   }
 
   function closeResaForm() {
@@ -4748,6 +5526,20 @@
       return;
     }
 
+    // Anti-surbooking : au moins une table, et capacité suffisante
+    if (resaSelectedTableIds.length === 0) {
+      showToast('⚠️ Sélectionnez au moins une table');
+      return;
+    }
+    const placesSelectionnees = resaSelectedTableIds.reduce((sum, id) => {
+      const t = allTables.find(x => x.id === id);
+      return sum + (t ? (parseInt(t.capacite) || 0) : 0);
+    }, 0);
+    if (placesSelectionnees < couverts) {
+      showToast(`⚠️ Capacité insuffisante : ${placesSelectionnees} places pour ${couverts} personnes`);
+      return;
+    }
+
     const btn = $('resaFormSaveBtn');
     btn.disabled = true;
     btn.textContent = 'Enregistrement…';
@@ -4760,8 +5552,10 @@
         nb_couverts: couverts,
         client_telephone: tel || null,
         notes: notes || null,
-        emplacement: ($('resaFormEmplacement').value === 'terrasse') ? 'terrasse' : 'interieur',
+        emplacement: (resaZone === 'exterieur') ? 'exterieur' : 'interieur',
       };
+
+      let resaId = resaFormEditingId;
 
       if (resaFormMode === 'create') {
         // Création
@@ -4777,6 +5571,7 @@
 
         if (data && data[0]) {
           allReservations.push(data[0]);
+          resaId = data[0].id;
         }
         showToast('✓ Réservation créée');
       } else {
@@ -4796,6 +5591,20 @@
         showToast('✓ Réservation modifiée');
       }
 
+      // ─── Mise à jour des liens table(s) ↔ réservation ───
+      if (resaId) {
+        // On efface les anciens liens (utile en édition), puis on recrée
+        await supa.from('frizz_ai_reservation_tables').delete().eq('reservation_id', resaId);
+        const liens = resaSelectedTableIds.map(tid => ({
+          reservation_id: resaId,
+          table_id: tid,
+        }));
+        if (liens.length) {
+          const { error: errLiens } = await supa.from('frizz_ai_reservation_tables').insert(liens);
+          if (errLiens) throw errLiens;
+        }
+      }
+
       closeResaForm();
       // Refresh tout
       updateFilterCounts();
@@ -4803,7 +5612,7 @@
       renderStats(allReservations);
       updateBellDot();
     } catch (err) {
-      console.error('Erreur sauvegarde résa:', err);
+      console.error('Erreur sauvegarde résa:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
       showToast('⚠️ ' + (err.message || 'Erreur de sauvegarde'));
     } finally {
       btn.disabled = false;
@@ -4975,6 +5784,7 @@
     // Render le contenu si Activité
     if (pageId === 'activity') {
       renderActivity();
+      loadMessages(); // Met à jour le badge "Messages à rappeler"
     }
     // Render le contenu si Réglages
     if (pageId === 'settings') {
@@ -5179,6 +5989,290 @@
     `;
   }
 
+  // ════════════════════════════════════════════════════
+  // ═══ AFFICHAGE DYNAMIQUE DU NUMÉRO FRIZZ ═══
+  // ════════════════════════════════════════════════════
+  // Met à jour les sections "Votre numéro Frizz" et "Aide renvoi d'appel"
+  // selon que le salon connecté a (ou non) un numero_frizz attribué.
+
+  function formatFrizzNumberPretty(numero) {
+    // Transforme "+33974991129" en "+33 9 74 99 11 29"
+    if (!numero) return '';
+    const cleaned = numero.replace(/\s/g, '');
+    // +33 + 1 chiffre + 8 chiffres (groupés par 2)
+    const match = cleaned.match(/^\+33(\d)(\d{2})(\d{2})(\d{2})(\d{2})$/);
+    if (match) {
+      return `+33 ${match[1]} ${match[2]} ${match[3]} ${match[4]} ${match[5]}`;
+    }
+    return numero; // fallback
+  }
+
+  function updateFrizzNumberDisplay() {
+    const sectionFrizz = $('settingsSectionFrizzNumber');
+    const sectionHelp = $('settingsSectionHelpCodes');
+    const sectionNoNumber = $('settingsSectionNoNumber');
+
+    const numero = currentSalon?.numero_frizz;
+
+    if (!numero) {
+      // Pas de numéro → on cache les 2 sections opérationnelles + affiche le message
+      if (sectionFrizz) sectionFrizz.classList.add('hidden');
+      if (sectionHelp) sectionHelp.classList.add('hidden');
+      if (sectionNoNumber) sectionNoNumber.classList.remove('hidden');
+      return;
+    }
+
+    // Numéro présent → on affiche les sections opérationnelles + cache le message
+    if (sectionFrizz) sectionFrizz.classList.remove('hidden');
+    if (sectionHelp) sectionHelp.classList.remove('hidden');
+    if (sectionNoNumber) sectionNoNumber.classList.add('hidden');
+
+    // Formatage joli pour l'affichage
+    const pretty = formatFrizzNumberPretty(numero);
+
+    // 1) Numéro principal
+    const valEl = $('frizzNumberValue');
+    if (valEl) valEl.textContent = pretty;
+
+    // 2) Codes USSD (on garde le format avec espaces — l'utilisateur copiera et collera)
+    const codeNoReply = $('helpCodeNoReply');
+    const codeBusy = $('helpCodeBusy');
+    const codeActivate = $('helpCodeActivate');
+    if (codeNoReply) codeNoReply.textContent = `**61*${pretty}#`;
+    if (codeBusy) codeBusy.textContent = `**67*${pretty}#`;
+    if (codeActivate) codeActivate.textContent = `**21*${pretty}#`;
+  }
+
+  // ════════════════════════════════════════════════════
+  // ═══ PAGE MESSAGES (demandes de rappel) ═══
+  // ════════════════════════════════════════════════════
+  let allMessages = [];           // tous les messages chargés
+  let messagesFilter = 'nouveaux'; // 'nouveaux' ou 'traites'
+
+  // Labels lisibles des catégories Vapi
+  const MESSAGE_CAT_LABELS = {
+    fournisseur_inconnu: 'Fournisseur',
+    employe: 'Employé',
+    media: 'Média',
+    client_mecontent: 'Client mécontent',
+    autre: 'Autre',
+  };
+
+  async function loadMessages() {
+    if (!currentSalon) return;
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_messages')
+        .select('*')
+        .eq('salon_id', currentSalon.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      allMessages = data || [];
+      updateMessagesShortcut();
+      renderMessages();
+    } catch (err) {
+      console.error('Erreur chargement messages:', err);
+      allMessages = [];
+      updateMessagesShortcut();
+      renderMessages();
+    }
+  }
+
+  function updateMessagesShortcut() {
+    const nouveaux = allMessages.filter(m => !m.traite).length;
+    const subtitle = $('messagesShortcutSubtitle');
+    const badge = $('messagesShortcutBadge');
+    if (!subtitle || !badge) return;
+    if (nouveaux === 0) {
+      subtitle.textContent = 'Aucun message en attente';
+      badge.classList.add('hidden');
+    } else if (nouveaux === 1) {
+      subtitle.textContent = '1 demande de rappel';
+      badge.textContent = '1';
+      badge.classList.remove('hidden');
+    } else {
+      subtitle.textContent = `${nouveaux} demandes de rappel`;
+      badge.textContent = String(nouveaux);
+      badge.classList.remove('hidden');
+    }
+  }
+
+  function renderMessages() {
+    const container = $('messagesList');
+    if (!container) return;
+
+    // Compteurs filtres
+    const nouveaux = allMessages.filter(m => !m.traite);
+    const traites = allMessages.filter(m => m.traite);
+    $('messagesCountNouveaux').textContent = nouveaux.length;
+    $('messagesCountTraites').textContent = traites.length;
+
+    // Subtitle
+    const sub = $('messagesSubtitle');
+    if (sub) {
+      const total = allMessages.length;
+      sub.textContent = total === 0
+        ? 'Aucun message pour le moment'
+        : (nouveaux.length === 0
+            ? 'Tous les messages sont traités ✓'
+            : `${nouveaux.length} ${nouveaux.length > 1 ? 'demandes' : 'demande'} de rappel`);
+    }
+
+    const list = messagesFilter === 'nouveaux' ? nouveaux : traites;
+
+    if (list.length === 0) {
+      const txt = messagesFilter === 'nouveaux'
+        ? 'Aucune demande en attente. Quand un client demandera à être rappelé, son message apparaîtra ici.'
+        : 'Aucun message traité pour le moment.';
+      container.innerHTML = `<div class="message-card-empty">${txt}</div>`;
+      return;
+    }
+
+    container.innerHTML = list.map(renderMessageCard).join('');
+
+    // Branchement des boutons "Marquer comme traité"
+    container.querySelectorAll('[data-action="done"]').forEach(btn => {
+      btn.addEventListener('click', () => markMessageTraite(btn.dataset.id, true));
+    });
+    container.querySelectorAll('[data-action="undo"]').forEach(btn => {
+      btn.addEventListener('click', () => markMessageTraite(btn.dataset.id, false));
+    });
+  }
+
+  function renderMessageCard(m) {
+    const nom = escapeHtml(m.appelant_nom || 'Appelant inconnu');
+    const societe = m.appelant_societe ? ` · ${escapeHtml(m.appelant_societe)}` : '';
+    const tel = m.appelant_telephone || '';
+    const telDisplay = tel ? escapeHtml(tel) : 'Numéro non communiqué';
+    const dateCreated = formatMessageDate(m.created_at);
+    const raison = escapeHtml(m.raison || '');
+    const cat = MESSAGE_CAT_LABELS[m.categorie] || 'Autre';
+    const isUrgent = m.priorite === 'haute' || m.categorie === 'client_mecontent';
+    const priorityClass = m.priorite === 'haute' ? ' priority-haute' : '';
+    const treatedClass = m.traite ? ' treated' : '';
+
+    // Boutons actions
+    let actions = '';
+    if (!m.traite) {
+      if (tel) {
+        const telClean = tel.replace(/\s/g, '');
+        actions = `
+          <a class="message-card-btn btn-call" href="tel:${escapeHtml(telClean)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Rappeler
+          </a>
+          <a class="message-card-btn btn-sms" href="sms:${escapeHtml(telClean)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            SMS
+          </a>
+        `;
+      }
+      actions += `
+        <button class="message-card-btn btn-done" data-action="done" data-id="${escapeHtml(m.id)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Traité
+        </button>
+      `;
+    } else {
+      actions = `
+        <button class="message-card-btn btn-undo" data-action="undo" data-id="${escapeHtml(m.id)}">
+          Marquer non traité
+        </button>
+      `;
+    }
+
+    return `
+      <div class="message-card${priorityClass}${treatedClass}">
+        <div class="message-card-header">
+          <div class="message-card-titlebox">
+            <div class="message-card-name">${nom}</div>
+            <div class="message-card-meta">${telDisplay}${societe} · ${dateCreated}</div>
+          </div>
+          <div class="message-card-cat${isUrgent ? ' urgent' : ''}">${escapeHtml(cat)}</div>
+        </div>
+        <div class="message-card-raison">${raison}</div>
+        <div class="message-card-actions">${actions}</div>
+      </div>
+    `;
+  }
+
+  function formatMessageDate(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      const now = new Date();
+      const diffMs = now - d;
+      const diffH = Math.floor(diffMs / 3600000);
+      if (diffH < 1) return 'il y a quelques minutes';
+      if (diffH < 24) return `il y a ${diffH}h`;
+      const diffJ = Math.floor(diffH / 24);
+      if (diffJ === 1) return 'hier';
+      if (diffJ < 7) return `il y a ${diffJ} jours`;
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    } catch { return ''; }
+  }
+
+  async function markMessageTraite(id, traite) {
+    try {
+      const update = traite
+        ? { traite: true, traite_at: new Date().toISOString() }
+        : { traite: false, traite_at: null };
+      const { error } = await supa
+        .from('frizz_ai_messages')
+        .update(update)
+        .eq('id', id);
+      if (error) throw error;
+      // Mise à jour locale
+      const m = allMessages.find(x => x.id === id);
+      if (m) {
+        m.traite = traite;
+        m.traite_at = update.traite_at;
+      }
+      updateMessagesShortcut();
+      renderMessages();
+    } catch (err) {
+      console.error('Erreur mise à jour message:', err);
+      alert("Impossible de mettre à jour le message. Réessayez.");
+    }
+  }
+
+  function openMessagesPage() {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const page = $('page-messages');
+    if (page) {
+      page.classList.remove('hidden');
+      page.classList.add('active');
+    }
+    loadMessages();
+  }
+
+  function closeMessagesPage() {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const activity = $('page-activity');
+    if (activity) {
+      activity.classList.remove('hidden');
+      activity.classList.add('active');
+    }
+  }
+
+  // Brancher les boutons (avec garde si éléments absents)
+  document.addEventListener('DOMContentLoaded', () => {
+    const shortcut = $('messagesShortcutBtn');
+    if (shortcut) shortcut.addEventListener('click', openMessagesPage);
+
+    const back = $('messagesBackBtn');
+    if (back) back.addEventListener('click', closeMessagesPage);
+
+    document.querySelectorAll('[data-msg-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-msg-filter]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        messagesFilter = btn.dataset.msgFilter;
+        renderMessages();
+      });
+    });
+  });
+
   // ═══ PAGE RÉGLAGES ═══
   // URLs des audios (à remplacer par les vraies URLs après upload)
   const VOICE_AUDIOS = {
@@ -5195,8 +6289,6 @@
     $('settingsNomValue').textContent = currentSalon.nom || '—';
     $('settingsAdresseValue').textContent = currentSalon.adresse || '—';
     $('settingsVilleValue').textContent = currentSalon.ville || '—';
-    $('settingsCapaciteIntValue').textContent = (currentSalon.capacite_interieur || 0) + ' couverts';
-    $('settingsCapaciteExtValue').textContent = (currentSalon.capacite_exterieur || 0) + ' couverts';
 
     // Horaires & réservations
     $('settingsDureeValue').textContent = (currentSalon.duree_table_minutes || 70) + ' min';
@@ -5216,8 +6308,416 @@
       $('accountEmail').textContent = currentUser.email || '—';
     }
 
+    // Mes tables
+    renderTables();
+
     // Abonnement
     renderSubscription();
+  }
+
+  // ═══════════════════════════════════════════
+  // MES TABLES — gestion des tables du restaurant
+  // ═══════════════════════════════════════════
+  let allTables = []; // cache local des tables du salon
+
+  // Charge les tables depuis Supabase et déclenche l'affichage
+  async function renderTables() {
+    if (!currentSalon) return;
+    const listEl = $('tablesList');
+    if (!listEl) return;
+
+    listEl.innerHTML = '<div class="tables-empty">Chargement…</div>';
+
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_tables')
+        .select('*')
+        .eq('salon_id', currentSalon.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      allTables = data || [];
+      drawTablesList();
+    } catch (err) {
+      console.error('Erreur chargement tables:', err);
+      listEl.innerHTML = '<div class="tables-empty">Erreur de chargement</div>';
+    }
+  }
+
+  // Dessine la liste à partir du cache allTables
+  function drawTablesList() {
+    const listEl = $('tablesList');
+    if (!listEl) return;
+
+    if (!allTables.length) {
+      listEl.innerHTML = '<div class="tables-empty">Aucune table pour l\'instant.<br>Ajoutez votre première table ci-dessous.</div>';
+      return;
+    }
+
+    listEl.innerHTML = allTables.map(t => {
+      // 'terrasse' (ancienne valeur) est traité comme 'exterieur'
+      let zone = (t.zone || 'interieur').toLowerCase();
+      if (zone === 'terrasse') zone = 'exterieur';
+      const zoneLabel = zone === 'exterieur' ? 'Extérieur' : 'Intérieur';
+      // Initiales pour la pastille : on prend les 2-3 premiers caractères du nom
+      const initiale = escapeHtml((t.nom || 'T').substring(0, 3));
+      const inactiveClass = t.active === false ? ' inactive' : '';
+      return `
+        <div class="table-item${inactiveClass}" data-table-id="${t.id}">
+          <div class="table-icon">${initiale}</div>
+          <div class="table-info">
+            <div class="table-name">${escapeHtml(t.nom || 'Table')}</div>
+            <div class="table-meta">${parseInt(t.capacite) || 0} personne${(parseInt(t.capacite) || 0) > 1 ? 's' : ''}${t.active === false ? ' · désactivée' : ''}${t.combinable === false ? ' · non combinable' : ''}</div>
+          </div>
+          <span class="table-zone ${zone}">${zoneLabel}</span>
+          <svg class="table-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>`;
+    }).join('');
+
+    // Clic sur une table → édition (formulaire stylé à venir ; pour l'instant simple)
+    listEl.querySelectorAll('.table-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.tableId;
+        const table = allTables.find(t => t.id === id);
+        if (table) openTableEditor(table);
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════
+  // CERVEAU : trouver la meilleure attribution de table(s) pour un groupe
+  // ═══════════════════════════════════════════
+  //
+  // Règles :
+  //  - on n'utilise que des tables ACTIVES
+  //  - une seule table si possible (la plus juste)
+  //  - sinon on ASSEMBLE des tables COMBINABLES de la MÊME ZONE
+  //  - préférence "prendre large" : on maximise le confort (capacité totale élevée)
+  //  - pas de limite sur le nombre de tables assemblées
+  //
+  // `candidateTables` = liste de tables disponibles (par défaut toutes les actives).
+  //   Plus tard, on filtrera cette liste selon le créneau horaire (étape suivante).
+  //
+  // Retourne un objet :
+  //   { ok: true, tables: [...], capaciteTotale: N, type: 'simple'|'assemblage' }
+  //   ou { ok: false, raison: '...' }
+  function findTableAssignment(nbPersonnes, candidateTables) {
+    const tables = (candidateTables || allTables).filter(t => t.active !== false);
+    if (!nbPersonnes || nbPersonnes < 1) {
+      return { ok: false, raison: 'Nombre de personnes invalide' };
+    }
+
+    // 1) Chercher une SEULE table qui convient (capacité >= groupe)
+    //    On prend la plus petite table qui suffit (pour ne pas gâcher les grandes)
+    const tablesSuffisantes = tables
+      .filter(t => (parseInt(t.capacite) || 0) >= nbPersonnes)
+      .sort((a, b) => (a.capacite - b.capacite));
+
+    if (tablesSuffisantes.length > 0) {
+      const t = tablesSuffisantes[0];
+      return {
+        ok: true,
+        type: 'simple',
+        tables: [t],
+        capaciteTotale: parseInt(t.capacite) || 0,
+      };
+    }
+
+    // 2) Pas de table unique → ASSEMBLAGE
+    //    On ne combine que les tables "combinables", groupées PAR ZONE.
+    const combinables = tables.filter(t => t.combinable !== false);
+
+    // Regrouper par zone (terrasse traitée comme exterieur)
+    const parZone = {};
+    combinables.forEach(t => {
+      let z = (t.zone || 'interieur').toLowerCase();
+      if (z === 'terrasse') z = 'exterieur';
+      if (!parZone[z]) parZone[z] = [];
+      parZone[z].push(t);
+    });
+
+    // Pour chaque zone, chercher la meilleure combinaison
+    let meilleure = null;
+    for (const zone in parZone) {
+      const combo = bestComboInZone(parZone[zone], nbPersonnes);
+      if (combo) {
+        // On garde la combinaison avec la plus grande capacité totale ("prendre large"),
+        // et à capacité égale, le moins de tables.
+        if (!meilleure
+            || combo.capaciteTotale > meilleure.capaciteTotale
+            || (combo.capaciteTotale === meilleure.capaciteTotale && combo.tables.length < meilleure.tables.length)) {
+          meilleure = combo;
+        }
+      }
+    }
+
+    if (meilleure) {
+      return {
+        ok: true,
+        type: 'assemblage',
+        tables: meilleure.tables,
+        capaciteTotale: meilleure.capaciteTotale,
+      };
+    }
+
+    return { ok: false, raison: 'Aucune combinaison de tables ne peut accueillir ce groupe' };
+  }
+
+  // Trouve la meilleure combinaison de tables dans UNE zone pour atteindre nbPersonnes.
+  // "Prendre large" = on cherche à maximiser la capacité totale tout en couvrant le groupe.
+  // Retourne { tables: [...], capaciteTotale } ou null.
+  function bestComboInZone(tablesZone, nbPersonnes) {
+    // Trier par capacité décroissante : on assemble d'abord les grandes (= prendre large)
+    const sorted = [...tablesZone].sort((a, b) => (b.capacite - a.capacite));
+
+    const chosen = [];
+    let total = 0;
+    for (const t of sorted) {
+      chosen.push(t);
+      total += parseInt(t.capacite) || 0;
+      if (total >= nbPersonnes) {
+        return { tables: chosen, capaciteTotale: total };
+      }
+    }
+    // Même en prenant toutes les tables de la zone, on n'atteint pas le groupe
+    return null;
+  }
+
+  // ─── Encart de test d'attribution (temporaire) ───
+  function runTestAssign() {
+    const nb = parseInt($('testCouvertsInput').value) || 0;
+    const resultEl = $('testAssignResult');
+    if (!resultEl) return;
+
+    if (nb < 1) {
+      resultEl.innerHTML = '⚠️ Entrez un nombre de personnes valide.';
+      return;
+    }
+    if (!allTables.length) {
+      resultEl.innerHTML = '⚠️ Aucune table définie. Ajoutez d\'abord des tables.';
+      return;
+    }
+
+    const res = findTableAssignment(nb, allTables);
+    if (!res.ok) {
+      resultEl.innerHTML = `❌ Pour ${nb} personne${nb > 1 ? 's' : ''} : ${res.raison}.`;
+      return;
+    }
+
+    const noms = res.tables.map(t => `${escapeHtml(t.nom)} (${t.capacite})`).join(' + ');
+    const typeLabel = res.type === 'simple' ? 'une table' : `assemblage de ${res.tables.length} tables`;
+    resultEl.innerHTML =
+      `✅ Pour ${nb} personne${nb > 1 ? 's' : ''} → ${typeLabel} :<br>` +
+      `<strong style="color:var(--label);">${noms}</strong><br>` +
+      `<span style="color:var(--label-tertiary);">Capacité totale : ${res.capaciteTotale} places</span>`;
+  }
+
+  // ═══════════════════════════════════════════
+  // DISPONIBILITÉ : quelles tables sont libres sur un créneau
+  // ═══════════════════════════════════════════
+
+  // Durée d'occupation d'une table (minutes), depuis les réglages du salon
+  function getDureeTableMinutes() {
+    return parseInt(currentSalon && currentSalon.duree_table_minutes) || 90;
+  }
+
+  // Construit un objet Date à partir d'une date 'YYYY-MM-DD' et d'une heure 'HH:MM' ou 'HH:MM:SS'
+  function toDateTime(dateStr, heureStr) {
+    const h = (heureStr || '00:00:00');
+    return new Date(`${dateStr}T${h.length === 5 ? h + ':00' : h}`);
+  }
+
+  // Deux créneaux [d1,f1] et [d2,f2] se chevauchent-ils ?
+  function creneauxSeChevauchent(d1, f1, d2, f2) {
+    return d1 < f2 && d2 < f1;
+  }
+
+  // Retourne la liste des table_id occupés sur le créneau (date + heure), durée = réglage salon.
+  // excludeResaId : id d'une réservation à ignorer (utile en mode édition).
+  async function getTablesOccupees(dateStr, heureStr, excludeResaId) {
+    if (!currentSalon) return [];
+    const dureeMin = getDureeTableMinutes();
+    const debutDemande = toDateTime(dateStr, heureStr);
+    const finDemande = new Date(debutDemande.getTime() + dureeMin * 60000);
+
+    // 1) Réservations de cette date (hors annulées), pour ce salon
+    const { data: resas, error: errResa } = await supa
+      .from('frizz_ai_reservations')
+      .select('id, date_reservation, heure_reservation, statut')
+      .eq('salon_id', currentSalon.id)
+      .eq('date_reservation', dateStr);
+    if (errResa) { console.error('Erreur dispo (résas):', errResa); return []; }
+
+    const resasChevauchantes = (resas || []).filter(r => {
+      if (r.statut === 'annulee' || r.statut === 'annule') return false;
+      if (excludeResaId && r.id === excludeResaId) return false;
+      const debutR = toDateTime(r.date_reservation, r.heure_reservation);
+      const finR = new Date(debutR.getTime() + dureeMin * 60000);
+      return creneauxSeChevauchent(debutDemande, finDemande, debutR, finR);
+    });
+
+    if (!resasChevauchantes.length) return [];
+
+    // 2) Tables liées à ces réservations
+    const ids = resasChevauchantes.map(r => r.id);
+    const { data: liens, error: errLiens } = await supa
+      .from('frizz_ai_reservation_tables')
+      .select('table_id, reservation_id')
+      .in('reservation_id', ids);
+    if (errLiens) { console.error('Erreur dispo (liens):', errLiens); return []; }
+
+    return [...new Set((liens || []).map(l => l.table_id))];
+  }
+
+  // Calcule l'attribution proposée pour un créneau donné (dispo + assemblage)
+  async function getAttributionPourCreneau(nbPersonnes, dateStr, heureStr, zone, excludeResaId) {
+    const occupes = await getTablesOccupees(dateStr, heureStr, excludeResaId);
+    // Tables libres = actives, non occupées, et (si zone précisée) de la bonne zone
+    let libres = allTables.filter(t => t.active !== false && !occupes.includes(t.id));
+    if (zone) {
+      libres = libres.filter(t => {
+        let z = (t.zone || 'interieur').toLowerCase();
+        if (z === 'terrasse') z = 'exterieur';
+        return z === zone;
+      });
+    }
+    const res = findTableAssignment(nbPersonnes, libres);
+    return { res, occupes };
+  }
+
+  // ─── Popup table : état + ouverture/fermeture ───
+  let tableFormMode = 'create';   // 'create' | 'edit'
+  let tableFormEditingId = null;
+  let tableFormZone = 'interieur';
+  let tableFormCombinable = true;  // état du toggle "combinable"
+
+  // Sélection de zone dans la popup
+  function setTableFormZone(zone) {
+    tableFormZone = zone;
+    document.querySelectorAll('#tableFormZonePicker .table-zone-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.zone === zone);
+    });
+  }
+
+  // Toggle "combinable"
+  function setTableFormCombinable(on) {
+    tableFormCombinable = !!on;
+    const el = $('tableFormCombinable');
+    if (el) el.classList.toggle('on', tableFormCombinable);
+  }
+
+  // Ouvre la popup en mode création
+  function openTableForm() {
+    if (!currentSalon) return;
+    tableFormMode = 'create';
+    tableFormEditingId = null;
+    $('tableFormTitle').textContent = 'Ajouter une table';
+    $('tableFormSubtitle').textContent = 'Définissez le nom, la capacité et la zone';
+    $('tableFormNom').value = '';
+    $('tableFormCapacite').value = '';
+    setTableFormZone('interieur');
+    setTableFormCombinable(true);
+    $('tableFormDeleteBtn').classList.add('hidden');
+    $('tableFormBackdrop').classList.add('visible');
+    $('tableFormModal').classList.add('visible');
+  }
+
+  // Ouvre la popup en mode édition
+  function openTableEditor(table) {
+    tableFormMode = 'edit';
+    tableFormEditingId = table.id;
+    $('tableFormTitle').textContent = 'Modifier la table';
+    $('tableFormSubtitle').textContent = `Table « ${table.nom} »`;
+    $('tableFormNom').value = table.nom || '';
+    $('tableFormCapacite').value = table.capacite || '';
+    let editZone = (table.zone || 'interieur').toLowerCase();
+    if (editZone === 'terrasse') editZone = 'exterieur';
+    setTableFormZone(editZone);
+    setTableFormCombinable(table.combinable !== false);
+    $('tableFormDeleteBtn').classList.remove('hidden');
+    $('tableFormBackdrop').classList.add('visible');
+    $('tableFormModal').classList.add('visible');
+  }
+
+  function closeTableForm() {
+    $('tableFormBackdrop').classList.remove('visible');
+    $('tableFormModal').classList.remove('visible');
+    tableFormEditingId = null;
+  }
+
+  // Enregistre (création ou modification)
+  async function saveTableForm() {
+    if (!currentSalon) return;
+    const nom = $('tableFormNom').value.trim();
+    const capacite = parseInt($('tableFormCapacite').value) || 0;
+
+    if (!nom) { showToast('⚠️ Nom requis'); $('tableFormNom').focus(); return; }
+    if (capacite < 1) { showToast('⚠️ Capacité invalide'); $('tableFormCapacite').focus(); return; }
+
+    const btn = $('tableFormSaveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+
+    try {
+      if (tableFormMode === 'create') {
+        const { data, error } = await supa
+          .from('frizz_ai_tables')
+          .insert({
+            salon_id: currentSalon.id,
+            nom: nom,
+            capacite: capacite,
+            zone: tableFormZone,
+            combinable: tableFormCombinable,
+            active: true,
+          })
+          .select();
+        if (error) throw error;
+        if (data && data[0]) allTables.push(data[0]);
+        showToast('✓ Table ajoutée');
+      } else {
+        const { data, error } = await supa
+          .from('frizz_ai_tables')
+          .update({ nom: nom, capacite: capacite, zone: tableFormZone, combinable: tableFormCombinable })
+          .eq('id', tableFormEditingId)
+          .select();
+        if (error) throw error;
+        const idx = allTables.findIndex(t => t.id === tableFormEditingId);
+        if (idx >= 0 && data && data[0]) allTables[idx] = data[0];
+        showToast('✓ Table modifiée');
+      }
+      drawTablesList();
+      closeTableForm();
+    } catch (err) {
+      console.error('Erreur enregistrement table — message:', err?.message);
+      console.error('Erreur enregistrement table — détail:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+      showToast('⚠️ ' + (err.message || err.hint || err.details || 'Erreur'));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  }
+
+  // Supprime la table en cours d'édition
+  async function deleteCurrentTable() {
+    if (!tableFormEditingId) return;
+    const table = allTables.find(t => t.id === tableFormEditingId);
+    if (!confirm(`Supprimer définitivement la table « ${table ? table.nom : ''} » ?`)) return;
+    try {
+      const { error } = await supa
+        .from('frizz_ai_tables')
+        .delete()
+        .eq('id', tableFormEditingId);
+      if (error) throw error;
+      allTables = allTables.filter(t => t.id !== tableFormEditingId);
+      drawTablesList();
+      closeTableForm();
+      showToast('✓ Table supprimée');
+    } catch (err) {
+      console.error('Erreur suppression table:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+      showToast('⚠️ ' + (err.message || 'Erreur'));
+    }
   }
 
   // ═══ COMPTE : modifier mot de passe + déconnexion ═══
@@ -5921,6 +7421,38 @@
   $('resaFormBackdrop').addEventListener('click', closeResaForm);
   $('resaFormSaveBtn').addEventListener('click', saveResaForm);
 
+  // Zone-picker du formulaire résa
+  document.querySelectorAll('#resaFormZonePicker .table-zone-option').forEach(btn => {
+    btn.addEventListener('click', () => setResaZone(btn.dataset.zone));
+  });
+  // Recalcul auto de l'attribution quand date / heure / couverts changent
+  ['resaFormDate', 'resaFormHeure', 'resaFormCouverts'].forEach(id => {
+    if ($(id)) {
+      $(id).addEventListener('change', () => { resaSelectedTableIds = []; refreshResaTables(); });
+      $(id).addEventListener('input', () => { resaSelectedTableIds = []; refreshResaTables(); });
+    }
+  });
+
+  // Bouton "Ajouter une table" (page Réglages)
+  if ($('tablesAddBtn')) {
+    $('tablesAddBtn').addEventListener('click', openTableForm);
+  }
+  // Popup table : actions
+  if ($('tableFormCancelBtn')) $('tableFormCancelBtn').addEventListener('click', closeTableForm);
+  if ($('tableFormBackdrop')) $('tableFormBackdrop').addEventListener('click', closeTableForm);
+  if ($('tableFormSaveBtn')) $('tableFormSaveBtn').addEventListener('click', saveTableForm);
+  if ($('tableFormDeleteBtn')) $('tableFormDeleteBtn').addEventListener('click', deleteCurrentTable);
+  // Popup table : sélecteur de zone
+  document.querySelectorAll('#tableFormZonePicker .table-zone-option').forEach(btn => {
+    btn.addEventListener('click', () => setTableFormZone(btn.dataset.zone));
+  });
+  // Popup table : toggle combinable
+  if ($('tableFormCombinable')) {
+    $('tableFormCombinable').addEventListener('click', () => setTableFormCombinable(!tableFormCombinable));
+  }
+  // Encart de test d'attribution
+  if ($('testAssignBtn')) $('testAssignBtn').addEventListener('click', runTestAssign);
+
   $('bellBtn').addEventListener('click', openNotifs);
   $('notifCloseBtn').addEventListener('click', closeNotifs);
   $('notifBackdrop').addEventListener('click', closeNotifs);
@@ -5992,16 +7524,16 @@
     });
   })();
 
-  // Page Réglages — Copier numéro Frizz
+  // Page Réglages — Copier numéro Frizz (sans espaces pour la copie)
   $('frizzNumberCopyBtn').addEventListener('click', () => {
-    copyToClipboard($('frizzNumberValue').textContent);
+    copyToClipboard($('frizzNumberValue').textContent.replace(/\s/g, ''));
   });
 
-  // Page Réglages — Copier codes USSD
+  // Page Réglages — Copier codes USSD (affichés espacés, copiés sans espaces)
   document.querySelectorAll('.help-code-copy').forEach(btn => {
     btn.addEventListener('click', () => {
       const code = btn.parentElement.querySelector('.help-code-value').textContent;
-      copyToClipboard(code);
+      copyToClipboard(code.replace(/\s/g, ''));
     });
   });
 

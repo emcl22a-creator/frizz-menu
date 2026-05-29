@@ -3655,32 +3655,6 @@
         </svg>
       </div>
     </div>
-
-    <div class="chart-card">
-      <div class="chart-title">vs mois dernier</div>
-      <div class="chart-badge" id="trendBadge">
-        <svg viewBox="0 0 24 24" id="trendArrow">
-          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" transform="rotate(-90 12 12)"/>
-        </svg>
-        <span id="trendPercent">0%</span>
-      </div>
-      <p class="chart-desc">
-        <span id="trendDescMain">—</span>
-        <span class="secondary" id="trendDescSecondary"></span>
-      </p>
-      <svg class="chart-svg" viewBox="0 0 200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#007AFF" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="#007AFF" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path id="chartArea" d="M 0 55 C 30 52, 50 48, 75 42 S 120 28, 150 18 S 180 12, 200 8 L 200 70 L 0 70 Z" fill="url(#chartGradient)"/>
-        <path id="chartLine" class="chart-line" d="M 0 55 C 30 52, 50 48, 75 42 S 120 28, 150 18 S 180 12, 200 8" fill="none" stroke="#007AFF" stroke-width="2.4" stroke-linecap="round"/>
-        <circle id="chartDotOuter" class="chart-dot" cx="200" cy="8" r="4" fill="#007AFF"/>
-        <circle id="chartDotInner" class="chart-dot" cx="200" cy="8" r="2" fill="white"/>
-      </svg>
-    </div>
   </section>
 
   <section class="stats-grid">
@@ -4896,54 +4870,67 @@
       if (elCalls) elCalls.textContent = '0';
     }
 
-    // Trend vs mois dernier
-    const thisMonthCount = validResas.filter(r => r.dateObj >= firstThisMonth && r.dateObj <= now).length;
-    const lastMonthCount = validResas.filter(r => r.dateObj >= firstLastMonth && r.dateObj <= lastMonthCutoff).length;
+    // Trend vs mois dernier (bloc retiré de l'UI — on garde le calcul au cas où on le remet)
+    const trendBadgeEl = $('trendBadge');
+    if (trendBadgeEl) {
+      const thisMonthCount = validResas.filter(r => r.dateObj >= firstThisMonth && r.dateObj <= now).length;
+      const lastMonthCount = validResas.filter(r => r.dateObj >= firstLastMonth && r.dateObj <= lastMonthCutoff).length;
 
-    let pct = 0;
-    let direction = 'up';
-    let descMain = '';
-    let descSecondary = '';
+      let pct = 0;
+      let direction = 'up';
+      let descMain = '';
+      let descSecondary = '';
 
-    if (lastMonthCount === 0 && thisMonthCount === 0) {
-      pct = 0;
-      descMain = 'Aucune donnée';
-      descSecondary = '';
-    } else if (lastMonthCount === 0) {
-      pct = 100;
-      direction = 'up';
-      descMain = `${thisMonthCount} résa ce mois`;
-      descSecondary = '(rien le mois dernier)';
-    } else {
-      pct = Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
-      direction = pct >= 0 ? 'up' : 'down';
-      descMain = `${thisMonthCount} ce mois`;
-      descSecondary = `(${lastMonthCount} le mois dernier)`;
-    }
+      if (lastMonthCount === 0 && thisMonthCount === 0) {
+        pct = 0;
+        descMain = 'Aucune donnée';
+        descSecondary = '';
+      } else if (lastMonthCount === 0) {
+        pct = 100;
+        direction = 'up';
+        descMain = `${thisMonthCount} résa ce mois`;
+        descSecondary = '(rien le mois dernier)';
+      } else {
+        pct = Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
+        direction = pct >= 0 ? 'up' : 'down';
+        descMain = `${thisMonthCount} ce mois`;
+        descSecondary = `(${lastMonthCount} le mois dernier)`;
+      }
 
-    $('trendPercent').textContent = (pct >= 0 ? '+' : '') + pct + '%';
-    $('trendDescMain').textContent = descMain;
-    $('trendDescSecondary').textContent = descSecondary;
+      const elPct = $('trendPercent');
+      if (elPct) elPct.textContent = (pct >= 0 ? '+' : '') + pct + '%';
+      const elDescMain = $('trendDescMain');
+      if (elDescMain) elDescMain.textContent = descMain;
+      const elDescSec = $('trendDescSecondary');
+      if (elDescSec) elDescSec.textContent = descSecondary;
 
-    const arrowEl = $('trendArrow');
-    const rotation = direction === 'down' ? '90 12 12' : '-90 12 12';
-    arrowEl.querySelector('path').setAttribute('transform', `rotate(${rotation})`);
+      const arrowEl = $('trendArrow');
+      if (arrowEl) {
+        const rotation = direction === 'down' ? '90 12 12' : '-90 12 12';
+        const pathEl = arrowEl.querySelector('path');
+        if (pathEl) pathEl.setAttribute('transform', `rotate(${rotation})`);
+      }
 
-    const color = direction === 'down' ? '#FF453A' : '#007AFF';
-    $('trendBadge').style.background = direction === 'down' ? 'rgba(255, 69, 58, 0.10)' : 'rgba(0, 122, 255, 0.10)';
-    $('trendBadge').style.color = color;
-    $('chartLine').setAttribute('stroke', color);
-    $('chartDotOuter').setAttribute('fill', color);
-    const grad1 = document.querySelector('#chartGradient stop:first-child');
-    const grad2 = document.querySelector('#chartGradient stop:last-child');
-    if (grad1) grad1.setAttribute('stop-color', color);
-    if (grad2) grad2.setAttribute('stop-color', color);
+      const color = direction === 'down' ? '#FF453A' : '#007AFF';
+      trendBadgeEl.style.background = direction === 'down' ? 'rgba(255, 69, 58, 0.10)' : 'rgba(0, 122, 255, 0.10)';
+      trendBadgeEl.style.color = color;
+      const chartLineEl = $('chartLine');
+      if (chartLineEl) chartLineEl.setAttribute('stroke', color);
+      const chartDotOuterEl = $('chartDotOuter');
+      if (chartDotOuterEl) chartDotOuterEl.setAttribute('fill', color);
+      const grad1 = document.querySelector('#chartGradient stop:first-child');
+      const grad2 = document.querySelector('#chartGradient stop:last-child');
+      if (grad1) grad1.setAttribute('stop-color', color);
+      if (grad2) grad2.setAttribute('stop-color', color);
 
-    if (direction === 'down') {
-      $('chartLine').setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62');
-      $('chartArea').setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62 L 200 70 L 0 70 Z');
-      $('chartDotOuter').setAttribute('cy', '62');
-      $('chartDotInner').setAttribute('cy', '62');
+      if (direction === 'down' && chartLineEl) {
+        chartLineEl.setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62');
+        const chartAreaEl = $('chartArea');
+        if (chartAreaEl) chartAreaEl.setAttribute('d', 'M 0 8 C 30 12, 50 18, 75 28 S 120 42, 150 52 S 180 58, 200 62 L 200 70 L 0 70 Z');
+        if (chartDotOuterEl) chartDotOuterEl.setAttribute('cy', '62');
+        const chartDotInnerEl = $('chartDotInner');
+        if (chartDotInnerEl) chartDotInnerEl.setAttribute('cy', '62');
+      }
     }
 
     // Nombre de réservations ce mois

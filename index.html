@@ -3931,6 +3931,20 @@
     font-size: 15px;
   }
 
+  /* Header de jour dans la liste de la semaine sur Stats */
+  .stats-day-section-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 18px 0 8px;
+    border-bottom: 0.33px solid rgba(255, 255, 255, 0.12);
+  }
+  .stats-day-section-header:first-child {
+    padding-top: 6px;
+  }
+
   /* Bouton flottant compact : juste un + (style Apple) */
   .cal-fab {
     position: fixed;
@@ -6826,6 +6840,87 @@
         calSelectedDate = new Date(y, m - 1, dd);
         calViewedWeekStart = calMondayOfWeek(calSelectedDate);
         if (typeof switchPage === 'function') switchPage('calendrier');
+      });
+    });
+
+    // Mettre à jour la liste des résas de la semaine sous la barre
+    renderStatsWeekList();
+  }
+
+  // Liste des résas de la semaine affichée sous la barre Stats, groupées par jour
+  function renderStatsWeekList() {
+    const listEl = $('statsDayList');
+    if (!listEl) return;
+
+    const today = calStartOfDay(new Date());
+    const weekStart = new Date(statsViewedWeekStart);
+    const weekEnd = new Date(statsViewedWeekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    // Filtrer les résas dans la semaine affichée (lundi → dimanche)
+    const weekResas = (allReservations || [])
+      .filter(r => {
+        if (r.statut === 'annulee' || r.statut === 'annule') return false;
+        if (!r.date_reservation) return false;
+        const [y, m, dd] = r.date_reservation.split('-').map(Number);
+        const rDate = new Date(y, m - 1, dd);
+        return rDate >= weekStart && rDate < weekEnd;
+      })
+      .sort((a, b) => {
+        const dateCmp = (a.date_reservation || '').localeCompare(b.date_reservation || '');
+        if (dateCmp !== 0) return dateCmp;
+        return (a.heure_reservation || '').localeCompare(b.heure_reservation || '');
+      });
+
+    if (weekResas.length === 0) {
+      listEl.innerHTML = `<div class="cal-day-empty">Aucune réservation cette semaine</div>`;
+      return;
+    }
+
+    // Regrouper par date
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const moisShort = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+
+    let html = '';
+    let lastDate = null;
+    weekResas.forEach(r => {
+      if (r.date_reservation !== lastDate) {
+        const [y, m, dd] = r.date_reservation.split('-').map(Number);
+        const d = new Date(y, m - 1, dd);
+        const isToday = calSameDay(d, today);
+        const label = isToday
+          ? `Aujourd'hui · ${d.getDate()} ${moisShort[d.getMonth()]}`
+          : `${jours[d.getDay()]} ${d.getDate()} ${moisShort[d.getMonth()]}`;
+        html += `<div class="stats-day-section-header">${label}</div>`;
+        lastDate = r.date_reservation;
+      }
+
+      const heure = formatHeure(r.heure_reservation);
+      const couverts = parseInt(r.nb_couverts) || '?';
+      const nom = escapeHtml(r.client_nom || 'Client');
+      const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+      html += `
+        <div class="cal-day-row" data-resa-id="${escapeHtml(r.id)}">
+          <div class="cal-day-row-time">${heure}</div>
+          <div class="cal-day-row-info">
+            <div class="cal-day-row-name">${nom}</div>
+            <div class="cal-day-row-meta">${personnes}</div>
+          </div>
+          <div class="cal-day-row-chevron">›</div>
+        </div>
+      `;
+    });
+
+    listEl.innerHTML = html;
+
+    // Clic sur une résa → ouvrir le formulaire d'édition
+    listEl.querySelectorAll('.cal-day-row[data-resa-id]').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.resaId;
+        const resa = (allReservations || []).find(r => String(r.id) === String(id));
+        if (resa && typeof openResaForm === 'function') {
+          openResaForm('edit', resa);
+        }
       });
     });
   }

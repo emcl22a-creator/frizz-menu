@@ -221,7 +221,7 @@
 
   /* GREETING */
   .greeting {
-    padding: 27px 22px 22px;
+    padding: 27px 20px 22px;
     animation: cascadeIn 0.6s ease-out 0.06s backwards;
   }
   .greeting h1 {
@@ -3730,6 +3730,56 @@
   .cal-day.outside .cal-day-dot { display: none; }
 
   /* Nouvelle : barre des 7 prochains jours (style iOS Calendrier) */
+  .cal-week-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px 8px;
+  }
+  .cal-week-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.08s;
+  }
+  .cal-week-arrow:active {
+    background: rgba(10, 132, 255, 0.12);
+    transform: scale(0.92);
+  }
+  .cal-week-arrow svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cal-week-today-btn {
+    background: rgba(10, 132, 255, 0.15);
+    color: var(--blue);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.08s;
+  }
+  .cal-week-today-btn:active {
+    transform: scale(0.95);
+    background: rgba(10, 132, 255, 0.25);
+  }
+  .cal-week-today-btn.hidden { display: none; }
+
   .cal-week-card {
     background: rgba(20, 20, 22, 0.95);
     backdrop-filter: blur(20px) saturate(180%);
@@ -3788,6 +3838,10 @@
   .cal-week-day.selected .cal-week-day-num {
     background: var(--blue);
     color: #fff;
+    font-weight: 600;
+  }
+  .cal-week-day.today-marker .cal-week-day-num {
+    color: var(--blue);
     font-weight: 600;
   }
   .cal-week-day-dot {
@@ -3994,6 +4048,19 @@
       </div>
       <a class="stats-week-link" id="statsWeekLinkBtn">Voir tout ›</a>
     </div>
+    <div class="cal-week-controls">
+      <button class="cal-week-arrow" id="statsPrevWeekBtn" aria-label="Semaine précédente">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <button class="cal-week-today-btn hidden" id="statsTodayBtn">Auj.</button>
+      <button class="cal-week-arrow" id="statsNextWeekBtn" aria-label="Semaine suivante">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
     <div class="cal-week-card">
       <div class="cal-week-weekdays" id="statsWeekWeekdays"></div>
       <div class="cal-week-days" id="statsWeekDays"></div>
@@ -4009,6 +4076,21 @@
       <h1 id="calPageTitle">Calendrier</h1>
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
+
+    <!-- Contrôles de semaine : flèches + bouton "Auj." -->
+    <div class="cal-week-controls">
+      <button class="cal-week-arrow" id="calPrevWeekBtn" aria-label="Semaine précédente">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <button class="cal-week-today-btn hidden" id="calTodayBtn">Auj.</button>
+      <button class="cal-week-arrow" id="calNextWeekBtn" aria-label="Semaine suivante">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
 
     <!-- Barre des 7 prochains jours -->
     <section class="cal-week-card">
@@ -6433,9 +6515,19 @@
   // État
   let calSelectedDate = new Date(); // jour sélectionné dans la grille
   calSelectedDate.setHours(0, 0, 0, 0);
-  let calViewedMonth = new Date(); // mois affiché par la grille (premier jour)
+  let calViewedMonth = new Date(); // mois affiché par la grille (premier jour) — héritage de l'ancien mensuel
   calViewedMonth.setHours(0, 0, 0, 0);
   calViewedMonth.setDate(1);
+  // Lundi de la semaine actuellement affichée (page Calendrier)
+  let calViewedWeekStart = (function() {
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    const dow = (t.getDay() + 6) % 7; // 0=lundi, 6=dimanche
+    t.setDate(t.getDate() - dow);
+    return t;
+  })();
+  // Lundi de la semaine actuellement affichée (page Stats, indépendante)
+  let statsViewedWeekStart = new Date(calViewedWeekStart);
 
   // Helpers
   function calStartOfDay(d) {
@@ -6464,6 +6556,14 @@
     const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]}`;
   }
+  function calMondayOfWeek(d) {
+    // Retourne le lundi 00:00 de la semaine contenant d
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    const dow = (x.getDay() + 6) % 7; // 0=lundi, 6=dimanche
+    x.setDate(x.getDate() - dow);
+    return x;
+  }
 
   // Calcule les dates qui ont au moins une résa (non annulée), pour le mois affiché
   function calGetDatesWithResas() {
@@ -6479,37 +6579,42 @@
   function renderCalendarWeek() {
     const weekdaysEl = $('calWeekWeekdays');
     const daysEl = $('calWeekDays');
+    const todayBtn = $('calTodayBtn');
     if (!weekdaysEl || !daysEl) return;
 
     const today = calStartOfDay(new Date());
+    const todayWeekStart = calMondayOfWeek(today);
     const datesWithResas = calGetDatesWithResas();
 
-    // Construire les 7 prochains jours à partir d'aujourd'hui
+    // Construire les 7 jours de la semaine affichée (lundi → dimanche)
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
+      const d = new Date(calViewedWeekStart);
+      d.setDate(calViewedWeekStart.getDate() + i);
       weekDays.push(d);
     }
 
-    // Lettres des jours de la semaine en français (lundi=L, mardi=M...)
-    const dayLetters = ['D', 'L', 'M', 'M', 'J', 'V', 'S']; // index 0=dimanche, 1=lundi...
+    // Lettres des jours (ordre fixe lundi→dimanche : L M M J V S D)
+    const dayLetters = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
-    // Rendu des initiales (selon les jours réels affichés)
-    weekdaysEl.innerHTML = weekDays.map(d => {
-      return `<div class="cal-week-weekday">${dayLetters[d.getDay()]}</div>`;
+    weekdaysEl.innerHTML = dayLetters.map(l =>
+      `<div class="cal-week-weekday">${l}</div>`
+    ).join('');
+
+    weekdaysEl.innerHTML = weekDays.map((d, idx) => {
+      return `<div class="cal-week-weekday">${dayLetters[idx]}</div>`;
     }).join('');
 
-    // Rendu des jours
     daysEl.innerHTML = weekDays.map(d => {
       const isSelected = calSameDay(d, calSelectedDate);
+      const isToday = calSameDay(d, today);
       const iso = calIsoDate(d);
       const hasResa = datesWithResas.has(iso);
-      // Petite atténuation pour les jours dimanche/samedi (façon iOS)
       const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
 
       const classes = ['cal-week-day'];
       if (isSelected) classes.push('selected');
+      else if (isToday) classes.push('today-marker'); // visuel léger pour aujourd'hui si pas sélectionné
       if (isWeekend && !isSelected) classes.push('faded');
 
       return `
@@ -6519,6 +6624,15 @@
         </div>
       `;
     }).join('');
+
+    // Bouton "Auj." : visible seulement si on n'est pas sur la semaine courante
+    if (todayBtn) {
+      if (calSameDay(calViewedWeekStart, todayWeekStart)) {
+        todayBtn.classList.add('hidden');
+      } else {
+        todayBtn.classList.remove('hidden');
+      }
+    }
 
     // Brancher les clicks sur les jours
     daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
@@ -6599,7 +6713,7 @@
     renderCalendarDayDetail();
   }
 
-  // Brancher le bouton FAB "+ Nouvelle résa" (une seule fois)
+  // Brancher le bouton FAB "+ Nouvelle résa" + flèches semaine + bouton Auj.
   function bindCalendarPageEvents() {
     const fabBtn = $('calFabBtn');
     if (fabBtn && !fabBtn._calBound) {
@@ -6607,6 +6721,37 @@
         if (typeof openResaForm === 'function') openResaForm('create');
       });
       fabBtn._calBound = true;
+    }
+    const prevBtn = $('calPrevWeekBtn');
+    if (prevBtn && !prevBtn._calBound) {
+      prevBtn.addEventListener('click', () => {
+        const d = new Date(calViewedWeekStart);
+        d.setDate(d.getDate() - 7);
+        calViewedWeekStart = d;
+        renderCalendarWeek();
+      });
+      prevBtn._calBound = true;
+    }
+    const nextBtn = $('calNextWeekBtn');
+    if (nextBtn && !nextBtn._calBound) {
+      nextBtn.addEventListener('click', () => {
+        const d = new Date(calViewedWeekStart);
+        d.setDate(d.getDate() + 7);
+        calViewedWeekStart = d;
+        renderCalendarWeek();
+      });
+      nextBtn._calBound = true;
+    }
+    const todayBtn = $('calTodayBtn');
+    if (todayBtn && !todayBtn._calBound) {
+      todayBtn.addEventListener('click', () => {
+        const today = calStartOfDay(new Date());
+        calViewedWeekStart = calMondayOfWeek(today);
+        calSelectedDate = today;
+        renderCalendarWeek();
+        renderCalendarDayDetail();
+      });
+      todayBtn._calBound = true;
     }
   }
 
@@ -6617,54 +6762,61 @@
     const weekdaysEl = $('statsWeekWeekdays');
     const daysEl = $('statsWeekDays');
     const subtitleEl = $('statsWeekSubtitle');
+    const todayBtn = $('statsTodayBtn');
     if (!weekdaysEl || !daysEl) return;
 
     const today = calStartOfDay(new Date());
+    const todayWeekStart = calMondayOfWeek(today);
     const datesWithResas = calGetDatesWithResas();
 
-    // Les 7 prochains jours à partir d'aujourd'hui
+    // 7 jours de la semaine affichée (lundi → dimanche)
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
+      const d = new Date(statsViewedWeekStart);
+      d.setDate(statsViewedWeekStart.getDate() + i);
       weekDays.push(d);
     }
 
-    // Compter les résas à venir sur les 7 prochains jours
-    let upcomingCount = 0;
+    // Compter les résas sur la semaine affichée
+    let weekCount = 0;
+    const weekEnd = new Date(statsViewedWeekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
     if (Array.isArray(allReservations)) {
-      const lastDay = new Date(today);
-      lastDay.setDate(today.getDate() + 7); // exclusif (aujourd'hui + 6 jours suivants)
       allReservations.forEach(r => {
         if (r.statut === 'annulee' || r.statut === 'annule') return;
         if (!r.date_reservation) return;
         const [y, m, dd] = r.date_reservation.split('-').map(Number);
         const rDate = new Date(y, m - 1, dd);
-        if (rDate >= today && rDate < lastDay) upcomingCount++;
+        if (rDate >= statsViewedWeekStart && rDate < weekEnd) weekCount++;
       });
     }
+    const isCurrentWeek = calSameDay(statsViewedWeekStart, todayWeekStart);
     if (subtitleEl) {
-      if (upcomingCount === 0) subtitleEl.textContent = 'Aucune réservation cette semaine';
-      else if (upcomingCount === 1) subtitleEl.textContent = '1 réservation à venir';
-      else subtitleEl.textContent = `${upcomingCount} réservations à venir`;
+      if (weekCount === 0) {
+        subtitleEl.textContent = isCurrentWeek ? 'Aucune réservation cette semaine' : 'Aucune réservation';
+      } else if (weekCount === 1) {
+        subtitleEl.textContent = isCurrentWeek ? '1 réservation à venir' : '1 réservation';
+      } else {
+        subtitleEl.textContent = isCurrentWeek ? `${weekCount} réservations à venir` : `${weekCount} réservations`;
+      }
     }
 
-    // Lettres des jours en français
-    const dayLetters = ['D', 'L', 'M', 'M', 'J', 'V', 'S']; // 0=dim, 1=lun, ...
+    // Lettres des jours (lundi→dimanche)
+    const dayLetters = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
-    weekdaysEl.innerHTML = weekDays.map(d => {
-      return `<div class="cal-week-weekday">${dayLetters[d.getDay()]}</div>`;
-    }).join('');
+    weekdaysEl.innerHTML = dayLetters.map(l =>
+      `<div class="cal-week-weekday">${l}</div>`
+    ).join('');
 
-    daysEl.innerHTML = weekDays.map((d, idx) => {
+    daysEl.innerHTML = weekDays.map(d => {
       const iso = calIsoDate(d);
       const hasResa = datesWithResas.has(iso);
-      const isToday = (idx === 0); // aujourd'hui = première colonne
+      const isToday = calSameDay(d, today);
       const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
 
       const classes = ['cal-week-day'];
-      if (isToday) classes.push('selected'); // on réutilise le style "selected" pour aujourd'hui
-      if (isWeekend && !isToday) classes.push('faded');
+      if (isToday) classes.push('selected');
+      else if (isWeekend) classes.push('faded');
 
       return `
         <div class="${classes.join(' ')}" data-date="${iso}">
@@ -6674,12 +6826,22 @@
       `;
     }).join('');
 
+    // Bouton "Auj." : visible seulement si on n'est pas sur la semaine courante
+    if (todayBtn) {
+      if (isCurrentWeek) {
+        todayBtn.classList.add('hidden');
+      } else {
+        todayBtn.classList.remove('hidden');
+      }
+    }
+
     // Click sur un jour → bascule sur la page Calendrier avec ce jour sélectionné
     daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
       cell.addEventListener('click', () => {
         const iso = cell.dataset.date;
         const [y, m, dd] = iso.split('-').map(Number);
         calSelectedDate = new Date(y, m - 1, dd);
+        calViewedWeekStart = calMondayOfWeek(calSelectedDate);
         if (typeof switchPage === 'function') switchPage('calendrier');
       });
     });
@@ -6689,11 +6851,40 @@
     const linkBtn = $('statsWeekLinkBtn');
     if (linkBtn && !linkBtn._statsBound) {
       linkBtn.addEventListener('click', () => {
-        // Réinitialise sur aujourd'hui puis bascule
-        calSelectedDate = calStartOfDay(new Date());
+        const today = calStartOfDay(new Date());
+        calSelectedDate = today;
+        calViewedWeekStart = calMondayOfWeek(today);
         if (typeof switchPage === 'function') switchPage('calendrier');
       });
       linkBtn._statsBound = true;
+    }
+    const prevBtn = $('statsPrevWeekBtn');
+    if (prevBtn && !prevBtn._statsBound) {
+      prevBtn.addEventListener('click', () => {
+        const d = new Date(statsViewedWeekStart);
+        d.setDate(d.getDate() - 7);
+        statsViewedWeekStart = d;
+        renderStatsWeek();
+      });
+      prevBtn._statsBound = true;
+    }
+    const nextBtn = $('statsNextWeekBtn');
+    if (nextBtn && !nextBtn._statsBound) {
+      nextBtn.addEventListener('click', () => {
+        const d = new Date(statsViewedWeekStart);
+        d.setDate(d.getDate() + 7);
+        statsViewedWeekStart = d;
+        renderStatsWeek();
+      });
+      nextBtn._statsBound = true;
+    }
+    const todayBtn = $('statsTodayBtn');
+    if (todayBtn && !todayBtn._statsBound) {
+      todayBtn.addEventListener('click', () => {
+        statsViewedWeekStart = calMondayOfWeek(calStartOfDay(new Date()));
+        renderStatsWeek();
+      });
+      todayBtn._statsBound = true;
     }
   }
 

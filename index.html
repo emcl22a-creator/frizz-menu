@@ -6636,6 +6636,13 @@
     });
   }
 
+  // Helper : formater l'emplacement d'une résa (Intérieur / Extérieur / Peu importe)
+  function formatEmplacement(emplacement) {
+    if (emplacement === 'interieur') return 'Intérieur';
+    if (emplacement === 'exterieur') return 'Extérieur';
+    return 'Peu importe';
+  }
+
   function renderCalendarDayDetail() {
     const titleEl = $('calPageTitle');
     const subtitleEl = $('calendrierSubtitle');
@@ -6674,12 +6681,13 @@
       const couverts = parseInt(r.nb_couverts) || '?';
       const nom = escapeHtml(r.client_nom || 'Client');
       const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+      const lieu = formatEmplacement(r.emplacement);
       return `
         <div class="cal-day-row" data-resa-id="${escapeHtml(r.id)}">
           <div class="cal-day-row-time">${heure}</div>
           <div class="cal-day-row-info">
             <div class="cal-day-row-name">${nom}</div>
-            <div class="cal-day-row-meta">${personnes}</div>
+            <div class="cal-day-row-meta">${personnes} · ${lieu}</div>
           </div>
           <div class="cal-day-row-chevron">›</div>
         </div>
@@ -6898,12 +6906,13 @@
       const couverts = parseInt(r.nb_couverts) || '?';
       const nom = escapeHtml(r.client_nom || 'Client');
       const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+      const lieu = formatEmplacement(r.emplacement);
       html += `
         <div class="cal-day-row" data-resa-id="${escapeHtml(r.id)}">
           <div class="cal-day-row-time">${heure}</div>
           <div class="cal-day-row-info">
             <div class="cal-day-row-name">${nom}</div>
-            <div class="cal-day-row-meta">${personnes}</div>
+            <div class="cal-day-row-meta">${personnes} · ${lieu}</div>
           </div>
           <div class="cal-day-row-chevron">›</div>
         </div>

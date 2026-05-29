@@ -3373,21 +3373,30 @@
   .messages-back svg { width: 22px; height: 22px; }
   .messages-back:active { opacity: 0.5; }
 
-  /* Raccourci Messages en haut du Journal */
+  /* Raccourci Messages en haut du Journal — même style que activity-item */
+  .messages-shortcut-wrap {
+    padding: 0 20px;
+    margin-bottom: 16px;
+  }
   .messages-shortcut {
     display: flex;
     align-items: center;
     gap: 14px;
-    width: auto;
-    background: rgba(255, 255, 255, 0.05);
-    border: 0.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
+    width: 100%;
+    background: rgba(20, 20, 22, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
     padding: 14px 16px;
-    margin: 4px 20px 16px;
     cursor: pointer;
     color: var(--label-primary);
     -webkit-tap-highlight-color: transparent;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+  .messages-shortcut:active {
+    transform: scale(0.99);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   }
   .messages-shortcut:active { opacity: 0.6; transform: scale(0.98); }
   .messages-shortcut-icon {
@@ -3693,21 +3702,23 @@
     </section>
 
     <!-- Raccourci vers la page Messages -->
-    <button class="messages-shortcut" id="messagesShortcutBtn">
-      <div class="messages-shortcut-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    <div class="messages-shortcut-wrap">
+      <button class="messages-shortcut" id="messagesShortcutBtn">
+        <div class="messages-shortcut-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div class="messages-shortcut-body">
+          <div class="messages-shortcut-title">Messages à rappeler</div>
+          <div class="messages-shortcut-subtitle" id="messagesShortcutSubtitle">Aucun message en attente</div>
+        </div>
+        <div class="messages-shortcut-badge hidden" id="messagesShortcutBadge">0</div>
+        <svg class="messages-shortcut-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
-      </div>
-      <div class="messages-shortcut-body">
-        <div class="messages-shortcut-title">Messages à rappeler</div>
-        <div class="messages-shortcut-subtitle" id="messagesShortcutSubtitle">Aucun message en attente</div>
-      </div>
-      <div class="messages-shortcut-badge hidden" id="messagesShortcutBadge">0</div>
-      <svg class="messages-shortcut-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
+      </button>
+    </div>
 
     <!-- Filtres pilules -->
     <div class="activity-filters" id="activityFilters">

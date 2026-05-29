@@ -3695,6 +3695,88 @@
   .cal-day.selected .cal-day-dot { background: #fff; }
   .cal-day.outside .cal-day-dot { display: none; }
 
+  /* Nouvelle : barre des 7 prochains jours (style iOS Calendrier) */
+  .cal-week-card {
+    background: rgba(20, 20, 22, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    margin: 0 20px 14px;
+    padding: 16px 12px 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+    animation: cascadeIn 0.6s ease-out 0.10s backwards;
+  }
+  .cal-week-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 8px;
+  }
+  .cal-week-weekday {
+    text-align: center;
+    font-size: 12px;
+    color: var(--label-tertiary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cal-week-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-week-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.08s;
+    position: relative;
+  }
+  .cal-week-day:active { transform: scale(0.92); }
+  .cal-week-day-num {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--label);
+    letter-spacing: -0.5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .cal-week-day.faded .cal-week-day-num { color: rgba(255, 255, 255, 0.35); }
+  .cal-week-day.selected .cal-week-day-num {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 600;
+  }
+  .cal-week-day-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-top: 4px;
+  }
+  .cal-week-day.selected .cal-week-day-dot { background: #fff; }
+
+  /* Label de la date sélectionnée façon iOS ("Vendredi - 29 mai 2026") */
+  .cal-selected-label {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+    padding: 4px 20px 18px;
+    text-transform: capitalize;
+    animation: cascadeIn 0.6s ease-out 0.12s backwards;
+  }
+
   /* Liste détaillée du jour sélectionné */
   .cal-day-header {
     font-size: 13px;
@@ -3888,34 +3970,18 @@
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
 
-    <!-- Mini calendrier mensuel -->
-    <section class="cal-month-card">
-      <div class="cal-month-header">
-        <button class="cal-nav-btn" id="calPrevMonthBtn" aria-label="Mois précédent">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-        </button>
-        <div class="cal-month-title" id="calMonthTitle">mai 2026</div>
-        <button class="cal-nav-btn" id="calNextMonthBtn" aria-label="Mois suivant">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
-        </button>
+    <!-- Barre des 7 prochains jours -->
+    <section class="cal-week-card">
+      <div class="cal-week-weekdays" id="calWeekWeekdays">
+        <!-- Initiales L/M/M/J/V/S/D générées par JS -->
       </div>
-      <div class="cal-weekdays">
-        <div class="cal-weekday">L</div>
-        <div class="cal-weekday">M</div>
-        <div class="cal-weekday">M</div>
-        <div class="cal-weekday">J</div>
-        <div class="cal-weekday">V</div>
-        <div class="cal-weekday">S</div>
-        <div class="cal-weekday">D</div>
-      </div>
-      <div class="cal-grid" id="calGrid">
-        <!-- Cellules de jour générées par JS -->
+      <div class="cal-week-days" id="calWeekDays">
+        <!-- 7 cellules de jour générées par JS -->
       </div>
     </section>
+
+    <!-- Date complète du jour sélectionné, façon iOS -->
+    <div class="cal-selected-label" id="calSelectedLabel">—</div>
 
     <!-- Liste détaillée du jour sélectionné -->
     <div class="cal-day-header" id="calDayHeader">—</div>
@@ -6370,65 +6436,67 @@
     return result;
   }
 
-  function renderCalendarMonth() {
-    const grid = $('calGrid');
-    const titleEl = $('calMonthTitle');
-    if (!grid || !titleEl) return;
+  function renderCalendarWeek() {
+    const weekdaysEl = $('calWeekWeekdays');
+    const daysEl = $('calWeekDays');
+    const selectedLabelEl = $('calSelectedLabel');
+    if (!weekdaysEl || !daysEl) return;
 
-    titleEl.textContent = calFormatMonthLabel(calViewedMonth);
-
-    // Calcul des bornes du mois affiché
-    const year = calViewedMonth.getFullYear();
-    const month = calViewedMonth.getMonth();
-    const firstOfMonth = new Date(year, month, 1);
-    const lastOfMonth = new Date(year, month + 1, 0); // dernier jour du mois
-
-    // On part du lundi qui précède le 1er du mois (ou égal)
-    // Notre semaine commence le lundi : (getDay()+6)%7 → 0=lundi … 6=dimanche
-    const firstWeekday = (firstOfMonth.getDay() + 6) % 7;
-    const gridStart = new Date(firstOfMonth);
-    gridStart.setDate(firstOfMonth.getDate() - firstWeekday);
-
-    // 6 semaines × 7 jours = 42 cellules (couvre tous les cas)
+    const today = calStartOfDay(new Date());
     const datesWithResas = calGetDatesWithResas();
-    const todayStart = calStartOfDay(new Date());
 
-    let html = '';
-    for (let i = 0; i < 42; i++) {
-      const d = new Date(gridStart);
-      d.setDate(gridStart.getDate() + i);
-      const isOutside = d.getMonth() !== month;
-      const isToday = calSameDay(d, todayStart);
+    // Construire les 7 prochains jours à partir d'aujourd'hui
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      weekDays.push(d);
+    }
+
+    // Lettres des jours de la semaine en français (lundi=L, mardi=M...)
+    const dayLetters = ['D', 'L', 'M', 'M', 'J', 'V', 'S']; // index 0=dimanche, 1=lundi...
+
+    // Rendu des initiales (selon les jours réels affichés)
+    weekdaysEl.innerHTML = weekDays.map(d => {
+      return `<div class="cal-week-weekday">${dayLetters[d.getDay()]}</div>`;
+    }).join('');
+
+    // Rendu des jours
+    daysEl.innerHTML = weekDays.map(d => {
       const isSelected = calSameDay(d, calSelectedDate);
       const iso = calIsoDate(d);
       const hasResa = datesWithResas.has(iso);
+      // Petite atténuation pour les jours dimanche/samedi (façon iOS), c'est optionnel
+      const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
 
-      const classes = ['cal-day'];
-      if (isOutside) classes.push('outside');
-      if (isToday) classes.push('today');
+      const classes = ['cal-week-day'];
       if (isSelected) classes.push('selected');
+      if (isWeekend && !isSelected) classes.push('faded');
 
-      html += `<div class="${classes.join(' ')}" data-date="${iso}">
-        ${d.getDate()}
-        ${hasResa ? '<div class="cal-day-dot"></div>' : ''}
-      </div>`;
+      return `
+        <div class="${classes.join(' ')}" data-date="${iso}">
+          <div class="cal-week-day-num">${d.getDate()}</div>
+          ${hasResa ? '<div class="cal-week-day-dot"></div>' : ''}
+        </div>
+      `;
+    }).join('');
 
-      // Si on a dépassé le dernier jour du mois ET qu'on est sur une semaine complète, on peut s'arrêter
-      // (mais on garde 6 lignes pleines pour stabilité visuelle)
+    // Label sous la barre : "Vendredi - 29 mai 2026"
+    if (selectedLabelEl) {
+      const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+      const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+      const jourSel = calSelectedDate;
+      const label = `${jours[jourSel.getDay()]} - ${jourSel.getDate()} ${mois[jourSel.getMonth()]} ${jourSel.getFullYear()}`;
+      selectedLabelEl.textContent = label;
     }
-    grid.innerHTML = html;
 
     // Brancher les clicks sur les jours
-    grid.querySelectorAll('.cal-day:not(.outside)').forEach(cell => {
+    daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
       cell.addEventListener('click', () => {
         const iso = cell.dataset.date;
         const [y, m, dd] = iso.split('-').map(Number);
         calSelectedDate = new Date(y, m - 1, dd);
-        // Si le jour sélectionné est dans un autre mois, on ajuste viewedMonth aussi
-        if (calSelectedDate.getMonth() !== calViewedMonth.getMonth() || calSelectedDate.getFullYear() !== calViewedMonth.getFullYear()) {
-          calViewedMonth = new Date(calSelectedDate.getFullYear(), calSelectedDate.getMonth(), 1);
-        }
-        renderCalendarMonth();
+        renderCalendarWeek();
         renderCalendarDayDetail();
       });
     });
@@ -6501,29 +6569,13 @@
   }
 
   function renderCalendarPage() {
-    renderCalendarMonth();
+    renderCalendarWeek();
     renderCalendarDayDetail();
   }
 
-  // Brancher les boutons de navigation et le FAB (une seule fois)
+  // Brancher le bouton FAB "+ Nouvelle résa" (une seule fois)
   function bindCalendarPageEvents() {
-    const prevBtn = $('calPrevMonthBtn');
-    const nextBtn = $('calNextMonthBtn');
     const fabBtn = $('calFabBtn');
-    if (prevBtn && !prevBtn._calBound) {
-      prevBtn.addEventListener('click', () => {
-        calViewedMonth = new Date(calViewedMonth.getFullYear(), calViewedMonth.getMonth() - 1, 1);
-        renderCalendarMonth();
-      });
-      prevBtn._calBound = true;
-    }
-    if (nextBtn && !nextBtn._calBound) {
-      nextBtn.addEventListener('click', () => {
-        calViewedMonth = new Date(calViewedMonth.getFullYear(), calViewedMonth.getMonth() + 1, 1);
-        renderCalendarMonth();
-      });
-      nextBtn._calBound = true;
-    }
     if (fabBtn && !fabBtn._calBound) {
       fabBtn.addEventListener('click', () => {
         if (typeof openResaForm === 'function') openResaForm('create');

@@ -3560,6 +3560,38 @@
     color: var(--label-tertiary);
     font-size: 14px;
   }
+  /* Carte "Aucun numéro attribué" (pas d'abonnement) */
+  .no-number-card {
+    text-align: center;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .no-number-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--label-tertiary);
+  }
+  .no-number-icon svg { width: 22px; height: 22px; }
+  .no-number-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .no-number-text {
+    font-size: 14px;
+    color: var(--label-tertiary);
+    line-height: 1.45;
+    max-width: 340px;
+  }
 
 </style>
 </head>
@@ -4104,12 +4136,12 @@
     </div>
 
     <!-- Section : Votre numéro Frizz -->
-    <div class="settings-section">
+    <div class="settings-section" id="settingsSectionFrizzNumber">
       <div class="settings-section-title">Votre numéro Frizz</div>
       <div class="settings-section-card">
         <div class="frizz-number-block">
           <div class="frizz-number-label">Numéro à utiliser pour le renvoi</div>
-          <div class="frizz-number-value" id="frizzNumberValue">+33 9 39 03 43 28</div>
+          <div class="frizz-number-value" id="frizzNumberValue">—</div>
           <button class="frizz-number-copy" id="frizzNumberCopyBtn">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
@@ -4121,8 +4153,23 @@
       </div>
     </div>
 
+    <!-- Section alternative : pas d'abonnement → pas de numéro -->
+    <div class="settings-section hidden" id="settingsSectionNoNumber">
+      <div class="settings-section-title">Votre numéro Frizz</div>
+      <div class="settings-section-card no-number-card">
+        <div class="no-number-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <line x1="2" y1="2" x2="22" y2="22"/>
+          </svg>
+        </div>
+        <div class="no-number-title">Aucun numéro attribué</div>
+        <div class="no-number-text">Votre numéro Frizz est créé automatiquement dès la souscription d'un abonnement.</div>
+      </div>
+    </div>
+
     <!-- Section : Aide renvoi d'appel -->
-    <div class="settings-section">
+    <div class="settings-section" id="settingsSectionHelpCodes">
       <div class="settings-section-title">Aide renvoi d'appel</div>
       <div class="settings-section-card settings-help-card">
         <div class="settings-help-intro">
@@ -4137,7 +4184,7 @@
           <div class="help-code-desc">
             Votre téléphone sonne normalement. Si personne ne répond au bout de quelques sonneries (vous êtes en cuisine, débordé…), Frizz prend l'appel automatiquement. <strong>C'est l'option conseillée.</strong>
           </div>
-          <div class="help-code-value" id="helpCodeNoReply">**61*+33 9 39 03 43 28#</div>
+          <div class="help-code-value" id="helpCodeNoReply">—</div>
           <button class="help-code-copy" data-copy="noreply">Copier</button>
         </div>
 
@@ -4149,7 +4196,7 @@
           <div class="help-code-desc">
             Si votre ligne est occupée par un autre appel, le nouvel appel est envoyé à Frizz au lieu de tomber sur la messagerie.
           </div>
-          <div class="help-code-value" id="helpCodeBusy">**67*+33 9 39 03 43 28#</div>
+          <div class="help-code-value" id="helpCodeBusy">—</div>
           <button class="help-code-copy" data-copy="busy">Copier</button>
         </div>
 
@@ -4161,7 +4208,7 @@
           <div class="help-code-desc">
             Frizz décroche <strong>tous</strong> vos appels, immédiatement, sans faire sonner votre téléphone. Pratique les jours de fermeture ou de congé.
           </div>
-          <div class="help-code-value" id="helpCodeActivate">**21*+33 9 39 03 43 28#</div>
+          <div class="help-code-value" id="helpCodeActivate">—</div>
           <button class="help-code-copy" data-copy="activate">Copier</button>
         </div>
 
@@ -4779,6 +4826,7 @@
       renderStats(allReservations);
       loadMonthCalls(); // charge le vrai nombre d'appels Frizz du mois
       renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
+      updateFrizzNumberDisplay(); // Affiche le numéro Frizz du salon (ou message "aucun numéro" si pas d'abonnement)
       updateBellDot();
       applyPaywall();
       showApp();
@@ -5942,6 +5990,60 @@
         </div>
       </div>
     `;
+  }
+
+  // ════════════════════════════════════════════════════
+  // ═══ AFFICHAGE DYNAMIQUE DU NUMÉRO FRIZZ ═══
+  // ════════════════════════════════════════════════════
+  // Met à jour les sections "Votre numéro Frizz" et "Aide renvoi d'appel"
+  // selon que le salon connecté a (ou non) un numero_frizz attribué.
+
+  function formatFrizzNumberPretty(numero) {
+    // Transforme "+33974991129" en "+33 9 74 99 11 29"
+    if (!numero) return '';
+    const cleaned = numero.replace(/\s/g, '');
+    // +33 + 1 chiffre + 8 chiffres (groupés par 2)
+    const match = cleaned.match(/^\+33(\d)(\d{2})(\d{2})(\d{2})(\d{2})$/);
+    if (match) {
+      return `+33 ${match[1]} ${match[2]} ${match[3]} ${match[4]} ${match[5]}`;
+    }
+    return numero; // fallback
+  }
+
+  function updateFrizzNumberDisplay() {
+    const sectionFrizz = $('settingsSectionFrizzNumber');
+    const sectionHelp = $('settingsSectionHelpCodes');
+    const sectionNoNumber = $('settingsSectionNoNumber');
+
+    const numero = currentSalon?.numero_frizz;
+
+    if (!numero) {
+      // Pas de numéro → on cache les 2 sections opérationnelles + affiche le message
+      if (sectionFrizz) sectionFrizz.classList.add('hidden');
+      if (sectionHelp) sectionHelp.classList.add('hidden');
+      if (sectionNoNumber) sectionNoNumber.classList.remove('hidden');
+      return;
+    }
+
+    // Numéro présent → on affiche les sections opérationnelles + cache le message
+    if (sectionFrizz) sectionFrizz.classList.remove('hidden');
+    if (sectionHelp) sectionHelp.classList.remove('hidden');
+    if (sectionNoNumber) sectionNoNumber.classList.add('hidden');
+
+    // Formatage joli pour l'affichage
+    const pretty = formatFrizzNumberPretty(numero);
+
+    // 1) Numéro principal
+    const valEl = $('frizzNumberValue');
+    if (valEl) valEl.textContent = pretty;
+
+    // 2) Codes USSD (on garde le format avec espaces — l'utilisateur copiera et collera)
+    const codeNoReply = $('helpCodeNoReply');
+    const codeBusy = $('helpCodeBusy');
+    const codeActivate = $('helpCodeActivate');
+    if (codeNoReply) codeNoReply.textContent = `**61*${pretty}#`;
+    if (codeBusy) codeBusy.textContent = `**67*${pretty}#`;
+    if (codeActivate) codeActivate.textContent = `**21*${pretty}#`;
   }
 
   // ════════════════════════════════════════════════════

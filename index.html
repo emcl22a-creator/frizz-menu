@@ -4094,23 +4094,8 @@
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
 
-    <!-- Contrôles de semaine : flèches + bouton "Auj." -->
-    <div class="cal-week-controls">
-      <button class="cal-week-arrow" id="calPrevWeekBtn" aria-label="Semaine précédente">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-      </button>
-      <button class="cal-week-today-btn hidden" id="calTodayBtn">Auj.</button>
-      <button class="cal-week-arrow" id="calNextWeekBtn" aria-label="Semaine suivante">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Barre des 7 prochains jours -->
-    <section class="cal-week-card">
+    <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
+    <section class="cal-week-card cal-week-card--inline">
       <div class="cal-week-weekdays" id="calWeekWeekdays">
         <!-- Initiales L/M/M/J/V/S/D générées par JS -->
       </div>
@@ -6596,11 +6581,9 @@
   function renderCalendarWeek() {
     const weekdaysEl = $('calWeekWeekdays');
     const daysEl = $('calWeekDays');
-    const todayBtn = $('calTodayBtn');
     if (!weekdaysEl || !daysEl) return;
 
     const today = calStartOfDay(new Date());
-    const todayWeekStart = calMondayOfWeek(today);
     const datesWithResas = calGetDatesWithResas();
 
     // Construire les 7 jours de la semaine affichée (lundi → dimanche)
@@ -6618,10 +6601,6 @@
       `<div class="cal-week-weekday">${l}</div>`
     ).join('');
 
-    weekdaysEl.innerHTML = weekDays.map((d, idx) => {
-      return `<div class="cal-week-weekday">${dayLetters[idx]}</div>`;
-    }).join('');
-
     daysEl.innerHTML = weekDays.map(d => {
       const isSelected = calSameDay(d, calSelectedDate);
       const isToday = calSameDay(d, today);
@@ -6631,7 +6610,7 @@
 
       const classes = ['cal-week-day'];
       if (isSelected) classes.push('selected');
-      else if (isToday) classes.push('today-marker'); // visuel léger pour aujourd'hui si pas sélectionné
+      else if (isToday) classes.push('today-marker');
       if (isWeekend && !isSelected) classes.push('faded');
 
       return `
@@ -6641,15 +6620,6 @@
         </div>
       `;
     }).join('');
-
-    // Bouton "Auj." : visible seulement si on n'est pas sur la semaine courante
-    if (todayBtn) {
-      if (calSameDay(calViewedWeekStart, todayWeekStart)) {
-        todayBtn.classList.add('hidden');
-      } else {
-        todayBtn.classList.remove('hidden');
-      }
-    }
 
     // Brancher les clicks sur les jours
     daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
@@ -6730,7 +6700,7 @@
     renderCalendarDayDetail();
   }
 
-  // Brancher le bouton FAB "+ Nouvelle résa" + flèches semaine + bouton Auj.
+  // Brancher le bouton FAB "+ Nouvelle résa" + le swipe sur la page
   function bindCalendarPageEvents() {
     const fabBtn = $('calFabBtn');
     if (fabBtn && !fabBtn._calBound) {
@@ -6739,36 +6709,52 @@
       });
       fabBtn._calBound = true;
     }
-    const prevBtn = $('calPrevWeekBtn');
-    if (prevBtn && !prevBtn._calBound) {
-      prevBtn.addEventListener('click', () => {
-        const d = new Date(calViewedWeekStart);
-        d.setDate(d.getDate() - 7);
-        calViewedWeekStart = d;
-        renderCalendarWeek();
-      });
-      prevBtn._calBound = true;
-    }
-    const nextBtn = $('calNextWeekBtn');
-    if (nextBtn && !nextBtn._calBound) {
-      nextBtn.addEventListener('click', () => {
-        const d = new Date(calViewedWeekStart);
-        d.setDate(d.getDate() + 7);
-        calViewedWeekStart = d;
-        renderCalendarWeek();
-      });
-      nextBtn._calBound = true;
-    }
-    const todayBtn = $('calTodayBtn');
-    if (todayBtn && !todayBtn._calBound) {
-      todayBtn.addEventListener('click', () => {
-        const today = calStartOfDay(new Date());
-        calViewedWeekStart = calMondayOfWeek(today);
-        calSelectedDate = today;
-        renderCalendarWeek();
-        renderCalendarDayDetail();
-      });
-      todayBtn._calBound = true;
+
+    // Swipe gauche/droite sur toute la page pour changer de semaine
+    const pageEl = $('page-calendrier');
+    if (pageEl && !pageEl._swipeBound) {
+      let startX = 0;
+      let startY = 0;
+      let startTime = 0;
+      let tracking = false;
+
+      pageEl.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) { tracking = false; return; }
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startTime = Date.now();
+        tracking = true;
+      }, { passive: true });
+
+      pageEl.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        const dt = Date.now() - startTime;
+
+        // Swipe horizontal valide :
+        //   - distance horizontale > 60px
+        //   - mouvement principalement horizontal (|dx| > 1.5 * |dy|)
+        //   - durée < 600ms (sinon c'est un glissement lent, pas un swipe)
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
+          if (dx < 0) {
+            // Swipe vers la gauche → semaine suivante
+            const d = new Date(calViewedWeekStart);
+            d.setDate(d.getDate() + 7);
+            calViewedWeekStart = d;
+          } else {
+            // Swipe vers la droite → semaine précédente
+            const d = new Date(calViewedWeekStart);
+            d.setDate(d.getDate() - 7);
+            calViewedWeekStart = d;
+          }
+          renderCalendarWeek();
+        }
+      }, { passive: true });
+
+      pageEl._swipeBound = true;
     }
   }
 

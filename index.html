@@ -3356,6 +3356,196 @@
     }
   }
 
+  /* ═══ PAGE MESSAGES + RACCOURCI DEPUIS JOURNAL ═══ */
+  .messages-back {
+    position: absolute;
+    top: 18px;
+    left: -4px;
+    background: transparent;
+    border: none;
+    color: var(--label-secondary);
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .messages-back svg { width: 22px; height: 22px; }
+  .messages-back:active { opacity: 0.5; }
+
+  /* Raccourci Messages en haut du Journal */
+  .messages-shortcut {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 4px 0 16px;
+    cursor: pointer;
+    color: var(--label-primary);
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .messages-shortcut:active { opacity: 0.6; transform: scale(0.98); }
+  .messages-shortcut-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(10, 132, 255, 0.18);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .messages-shortcut-icon svg { width: 20px; height: 20px; }
+  .messages-shortcut-body { flex: 1; text-align: left; min-width: 0; }
+  .messages-shortcut-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .messages-shortcut-subtitle {
+    font-size: 13px;
+    color: var(--label-tertiary);
+    margin-top: 2px;
+    letter-spacing: -0.1px;
+  }
+  .messages-shortcut-badge {
+    flex-shrink: 0;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 11px;
+    background: var(--red, #FF3B30);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .messages-shortcut-badge.hidden { display: none; }
+  .messages-shortcut-chevron {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--label-tertiary);
+  }
+
+  /* Liste des messages */
+  .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0 100px;
+  }
+  .message-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .message-card.priority-haute {
+    border-left: 3px solid var(--red, #FF3B30);
+  }
+  .message-card.treated {
+    opacity: 0.55;
+  }
+  .message-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .message-card-titlebox { flex: 1; min-width: 0; }
+  .message-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+  }
+  .message-card-meta {
+    font-size: 12px;
+    color: var(--label-tertiary);
+    margin-top: 2px;
+  }
+  .message-card-cat {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--label-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .message-card-cat.urgent {
+    background: rgba(255, 59, 48, 0.18);
+    color: var(--red, #FF3B30);
+  }
+  .message-card-raison {
+    font-size: 14px;
+    color: var(--label-secondary);
+    line-height: 1.45;
+    letter-spacing: -0.1px;
+  }
+  .message-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .message-card-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease;
+  }
+  .message-card-btn:active { opacity: 0.6; }
+  .message-card-btn svg { width: 15px; height: 15px; }
+  .message-card-btn.btn-call {
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+  }
+  .message-card-btn.btn-sms {
+    background: rgba(10, 132, 255, 0.18);
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .message-card-btn.btn-done {
+    background: rgba(48, 209, 88, 0.18);
+    color: var(--green, #30D158);
+  }
+  .message-card-btn.btn-undo {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--label-secondary);
+  }
+  .message-card-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--label-tertiary);
+    font-size: 14px;
+  }
+
 </style>
 </head>
 <body>
@@ -3502,6 +3692,23 @@
       <p class="subtitle" id="activitySubtitle">—</p>
     </section>
 
+    <!-- Raccourci vers la page Messages -->
+    <button class="messages-shortcut" id="messagesShortcutBtn">
+      <div class="messages-shortcut-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <div class="messages-shortcut-body">
+        <div class="messages-shortcut-title">Messages à rappeler</div>
+        <div class="messages-shortcut-subtitle" id="messagesShortcutSubtitle">Aucun message en attente</div>
+      </div>
+      <div class="messages-shortcut-badge hidden" id="messagesShortcutBadge">0</div>
+      <svg class="messages-shortcut-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
     <!-- Filtres pilules -->
     <div class="activity-filters" id="activityFilters">
       <button class="activity-filter-pill active" data-filter="all">
@@ -3522,6 +3729,34 @@
     <div class="activity-timeline" id="activityTimeline"></div>
 
   </div><!-- /page-activity -->
+
+  <!-- ═══ PAGE MESSAGES (demandes de rappel) ═══ -->
+  <div class="page hidden" id="page-messages">
+
+    <section class="greeting">
+      <button class="messages-back" id="messagesBackBtn" aria-label="Retour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <h1>Messages</h1>
+      <p class="subtitle" id="messagesSubtitle">—</p>
+    </section>
+
+    <!-- Filtres -->
+    <div class="activity-filters" id="messagesFilters">
+      <button class="activity-filter-pill active" data-msg-filter="nouveaux">
+        À rappeler<span class="activity-filter-count" id="messagesCountNouveaux">0</span>
+      </button>
+      <button class="activity-filter-pill" data-msg-filter="traites">
+        Traités<span class="activity-filter-count" id="messagesCountTraites">0</span>
+      </button>
+    </div>
+
+    <!-- Liste -->
+    <div class="messages-list" id="messagesList"></div>
+
+  </div><!-- /page-messages -->
 
   <!-- ═══ PAGE RÉGLAGES ═══ -->
   <div class="page hidden" id="page-settings">
@@ -5482,6 +5717,7 @@
     // Render le contenu si Activité
     if (pageId === 'activity') {
       renderActivity();
+      loadMessages(); // Met à jour le badge "Messages à rappeler"
     }
     // Render le contenu si Réglages
     if (pageId === 'settings') {
@@ -5685,6 +5921,236 @@
       </div>
     `;
   }
+
+  // ════════════════════════════════════════════════════
+  // ═══ PAGE MESSAGES (demandes de rappel) ═══
+  // ════════════════════════════════════════════════════
+  let allMessages = [];           // tous les messages chargés
+  let messagesFilter = 'nouveaux'; // 'nouveaux' ou 'traites'
+
+  // Labels lisibles des catégories Vapi
+  const MESSAGE_CAT_LABELS = {
+    fournisseur_inconnu: 'Fournisseur',
+    employe: 'Employé',
+    media: 'Média',
+    client_mecontent: 'Client mécontent',
+    autre: 'Autre',
+  };
+
+  async function loadMessages() {
+    if (!currentSalon) return;
+    try {
+      const { data, error } = await supa
+        .from('frizz_ai_messages')
+        .select('*')
+        .eq('salon_id', currentSalon.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      allMessages = data || [];
+      updateMessagesShortcut();
+      renderMessages();
+    } catch (err) {
+      console.error('Erreur chargement messages:', err);
+      allMessages = [];
+      updateMessagesShortcut();
+      renderMessages();
+    }
+  }
+
+  function updateMessagesShortcut() {
+    const nouveaux = allMessages.filter(m => !m.traite).length;
+    const subtitle = $('messagesShortcutSubtitle');
+    const badge = $('messagesShortcutBadge');
+    if (!subtitle || !badge) return;
+    if (nouveaux === 0) {
+      subtitle.textContent = 'Aucun message en attente';
+      badge.classList.add('hidden');
+    } else if (nouveaux === 1) {
+      subtitle.textContent = '1 demande de rappel';
+      badge.textContent = '1';
+      badge.classList.remove('hidden');
+    } else {
+      subtitle.textContent = `${nouveaux} demandes de rappel`;
+      badge.textContent = String(nouveaux);
+      badge.classList.remove('hidden');
+    }
+  }
+
+  function renderMessages() {
+    const container = $('messagesList');
+    if (!container) return;
+
+    // Compteurs filtres
+    const nouveaux = allMessages.filter(m => !m.traite);
+    const traites = allMessages.filter(m => m.traite);
+    $('messagesCountNouveaux').textContent = nouveaux.length;
+    $('messagesCountTraites').textContent = traites.length;
+
+    // Subtitle
+    const sub = $('messagesSubtitle');
+    if (sub) {
+      const total = allMessages.length;
+      sub.textContent = total === 0
+        ? 'Aucun message pour le moment'
+        : (nouveaux.length === 0
+            ? 'Tous les messages sont traités ✓'
+            : `${nouveaux.length} ${nouveaux.length > 1 ? 'demandes' : 'demande'} de rappel`);
+    }
+
+    const list = messagesFilter === 'nouveaux' ? nouveaux : traites;
+
+    if (list.length === 0) {
+      const txt = messagesFilter === 'nouveaux'
+        ? 'Aucune demande en attente. Quand un client demandera à être rappelé, son message apparaîtra ici.'
+        : 'Aucun message traité pour le moment.';
+      container.innerHTML = `<div class="message-card-empty">${txt}</div>`;
+      return;
+    }
+
+    container.innerHTML = list.map(renderMessageCard).join('');
+
+    // Branchement des boutons "Marquer comme traité"
+    container.querySelectorAll('[data-action="done"]').forEach(btn => {
+      btn.addEventListener('click', () => markMessageTraite(btn.dataset.id, true));
+    });
+    container.querySelectorAll('[data-action="undo"]').forEach(btn => {
+      btn.addEventListener('click', () => markMessageTraite(btn.dataset.id, false));
+    });
+  }
+
+  function renderMessageCard(m) {
+    const nom = escapeHtml(m.appelant_nom || 'Appelant inconnu');
+    const societe = m.appelant_societe ? ` · ${escapeHtml(m.appelant_societe)}` : '';
+    const tel = m.appelant_telephone || '';
+    const telDisplay = tel ? escapeHtml(tel) : 'Numéro non communiqué';
+    const dateCreated = formatMessageDate(m.created_at);
+    const raison = escapeHtml(m.raison || '');
+    const cat = MESSAGE_CAT_LABELS[m.categorie] || 'Autre';
+    const isUrgent = m.priorite === 'haute' || m.categorie === 'client_mecontent';
+    const priorityClass = m.priorite === 'haute' ? ' priority-haute' : '';
+    const treatedClass = m.traite ? ' treated' : '';
+
+    // Boutons actions
+    let actions = '';
+    if (!m.traite) {
+      if (tel) {
+        const telClean = tel.replace(/\s/g, '');
+        actions = `
+          <a class="message-card-btn btn-call" href="tel:${escapeHtml(telClean)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Rappeler
+          </a>
+          <a class="message-card-btn btn-sms" href="sms:${escapeHtml(telClean)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            SMS
+          </a>
+        `;
+      }
+      actions += `
+        <button class="message-card-btn btn-done" data-action="done" data-id="${escapeHtml(m.id)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Traité
+        </button>
+      `;
+    } else {
+      actions = `
+        <button class="message-card-btn btn-undo" data-action="undo" data-id="${escapeHtml(m.id)}">
+          Marquer non traité
+        </button>
+      `;
+    }
+
+    return `
+      <div class="message-card${priorityClass}${treatedClass}">
+        <div class="message-card-header">
+          <div class="message-card-titlebox">
+            <div class="message-card-name">${nom}</div>
+            <div class="message-card-meta">${telDisplay}${societe} · ${dateCreated}</div>
+          </div>
+          <div class="message-card-cat${isUrgent ? ' urgent' : ''}">${escapeHtml(cat)}</div>
+        </div>
+        <div class="message-card-raison">${raison}</div>
+        <div class="message-card-actions">${actions}</div>
+      </div>
+    `;
+  }
+
+  function formatMessageDate(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      const now = new Date();
+      const diffMs = now - d;
+      const diffH = Math.floor(diffMs / 3600000);
+      if (diffH < 1) return 'il y a quelques minutes';
+      if (diffH < 24) return `il y a ${diffH}h`;
+      const diffJ = Math.floor(diffH / 24);
+      if (diffJ === 1) return 'hier';
+      if (diffJ < 7) return `il y a ${diffJ} jours`;
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    } catch { return ''; }
+  }
+
+  async function markMessageTraite(id, traite) {
+    try {
+      const update = traite
+        ? { traite: true, traite_at: new Date().toISOString() }
+        : { traite: false, traite_at: null };
+      const { error } = await supa
+        .from('frizz_ai_messages')
+        .update(update)
+        .eq('id', id);
+      if (error) throw error;
+      // Mise à jour locale
+      const m = allMessages.find(x => x.id === id);
+      if (m) {
+        m.traite = traite;
+        m.traite_at = update.traite_at;
+      }
+      updateMessagesShortcut();
+      renderMessages();
+    } catch (err) {
+      console.error('Erreur mise à jour message:', err);
+      alert("Impossible de mettre à jour le message. Réessayez.");
+    }
+  }
+
+  function openMessagesPage() {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const page = $('page-messages');
+    if (page) {
+      page.classList.remove('hidden');
+      page.classList.add('active');
+    }
+    loadMessages();
+  }
+
+  function closeMessagesPage() {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const activity = $('page-activity');
+    if (activity) {
+      activity.classList.remove('hidden');
+      activity.classList.add('active');
+    }
+  }
+
+  // Brancher les boutons (avec garde si éléments absents)
+  document.addEventListener('DOMContentLoaded', () => {
+    const shortcut = $('messagesShortcutBtn');
+    if (shortcut) shortcut.addEventListener('click', openMessagesPage);
+
+    const back = $('messagesBackBtn');
+    if (back) back.addEventListener('click', closeMessagesPage);
+
+    document.querySelectorAll('[data-msg-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-msg-filter]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        messagesFilter = btn.dataset.msgFilter;
+        renderMessages();
+      });
+    });
+  });
 
   // ═══ PAGE RÉGLAGES ═══
   // URLs des audios (à remplacer par les vraies URLs après upload)

@@ -1520,6 +1520,7 @@
   .notif-icon.created { background: rgba(52, 199, 89, 0.10); color: var(--green); }
   .notif-icon.modified { background: rgba(0, 122, 255, 0.10); color: var(--blue); }
   .notif-icon.cancelled { background: rgba(255, 59, 48, 0.10); color: var(--red); }
+  .notif-icon.message { background: rgba(0, 122, 255, 0.10); color: var(--blue); }
   .notif-icon svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; fill: none; }
 
   .notif-content { flex: 1; min-width: 0; }
@@ -5636,10 +5637,20 @@
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // plus récent en haut
   }
 
+  function getUnreadMessages() {
+    // Messages à rappeler (non traités) → seront affichés dans les notifications cloche
+    if (!Array.isArray(allMessages)) return [];
+    return allMessages
+      .filter(m => !m.traite)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // plus récent en haut
+  }
+
   function updateBellDot() {
     const activity = getTodayActivity();
+    const unreadMsg = getUnreadMessages();
     const dot = $('bellDot');
-    const count = activity.length;
+    if (!dot) return;
+    const count = activity.length + unreadMsg.length;
     if (count > 0) {
       // Afficher le nombre (max 99+)
       dot.textContent = count > 99 ? '99+' : String(count);
@@ -5663,9 +5674,10 @@
 
   function renderNotifs() {
     const activity = getTodayActivity();
+    const unreadMsg = getUnreadMessages();
     const container = $('notifList');
 
-    if (activity.length === 0) {
+    if (activity.length === 0 && unreadMsg.length === 0) {
       container.innerHTML = `
         <div class="notif-empty">
           <div class="notif-empty-icon">
@@ -5680,7 +5692,28 @@
       return;
     }
 
-    container.innerHTML = activity.map(r => {
+    // Rendu des messages non traités (en premier, ils sont prioritaires)
+    const messagesHtml = unreadMsg.map(m => {
+      const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+      const nom = escapeHtml(m.appelant_nom || 'Appelant inconnu');
+      const title = `Message à rappeler de ${nom}`;
+      const subtitle = escapeHtml(m.raison || '');
+      const timeAgo = formatTimeAgo(m.created_at);
+      // Au clic, on ouvre la page Messages
+      return `
+        <div class="notif-row" data-action="open-messages" style="cursor: pointer;">
+          <div class="notif-icon message">${icon}</div>
+          <div class="notif-content">
+            <div class="notif-title">${title}</div>
+            <div class="notif-subtitle">${subtitle}</div>
+            <div class="notif-time">${timeAgo}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Rendu des réservations du jour
+    const reservationsHtml = activity.map(r => {
       // Déterminer le type : créée / modifiée / annulée
       const statut = r.statut || 'confirmee';
       let type, icon, title;
@@ -5718,6 +5751,16 @@
         </div>
       `;
     }).join('');
+
+    container.innerHTML = messagesHtml + reservationsHtml;
+
+    // Brancher : clic sur une notif message → ouvre la page Messages
+    container.querySelectorAll('[data-action="open-messages"]').forEach(row => {
+      row.addEventListener('click', () => {
+        closeNotifs();
+        openMessagesPage();
+      });
+    });
   }
 
   function formatResaDate(dateStr) {
@@ -6070,11 +6113,14 @@
       allMessages = data || [];
       updateMessagesShortcut();
       renderMessages();
+      // Met aussi à jour le badge cloche (qui compte les messages non traités)
+      if (typeof updateBellDot === 'function') updateBellDot();
     } catch (err) {
       console.error('Erreur chargement messages:', err);
       allMessages = [];
       updateMessagesShortcut();
       renderMessages();
+      if (typeof updateBellDot === 'function') updateBellDot();
     }
   }
 
@@ -6230,6 +6276,8 @@
       }
       updateMessagesShortcut();
       renderMessages();
+      // Le badge cloche compte les messages non traités → on rafraîchit
+      if (typeof updateBellDot === 'function') updateBellDot();
     } catch (err) {
       console.error('Erreur mise à jour message:', err);
       alert("Impossible de mettre à jour le message. Réessayez.");

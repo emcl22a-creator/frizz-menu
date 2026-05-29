@@ -3765,104 +3765,95 @@
   }
   .cal-week-day.selected .cal-week-day-dot { background: #fff; }
 
-  /* Label de la date sélectionnée façon iOS ("Vendredi - 29 mai 2026") */
-  .cal-selected-label {
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--label);
-    letter-spacing: -0.2px;
-    padding: 4px 20px 18px;
-    text-transform: capitalize;
-    animation: cascadeIn 0.6s ease-out 0.12s backwards;
-  }
-
-  /* Liste détaillée du jour sélectionné */
-  .cal-day-header {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--label-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 6px 24px 10px;
-    animation: cascadeIn 0.6s ease-out 0.14s backwards;
-  }
+  /* Liste des résas du jour — style "Inbox iOS" : lignes séparées, pas de cartes */
   .cal-day-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0 20px 100px;
+    padding: 4px 20px 100px;
     animation: cascadeIn 0.6s ease-out 0.18s backwards;
   }
-  .cal-day-card {
-    background: rgba(20, 20, 22, 0.95);
-    border: 0.5px solid rgba(255, 255, 255, 0.16);
-    border-radius: 14px;
-    padding: 14px;
+  .cal-day-row {
     display: flex;
-    gap: 12px;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.1s;
+    padding: 14px 0;
+    border-bottom: 0.33px solid rgba(255, 255, 255, 0.12);
     cursor: pointer;
+    transition: opacity 0.15s;
   }
-  .cal-day-card:active { transform: scale(0.985); }
-  .cal-day-card-time {
-    font-size: 18px;
+  .cal-day-row:last-child {
+    border-bottom: none;
+  }
+  .cal-day-row:active {
+    opacity: 0.6;
+  }
+  .cal-day-row-time {
+    font-size: 17px;
     font-weight: 600;
-    color: var(--label);
-    letter-spacing: -0.5px;
-    width: 56px;
+    color: var(--blue);
+    letter-spacing: -0.3px;
+    width: 62px;
     flex-shrink: 0;
-    text-align: left;
   }
-  .cal-day-card-info {
+  .cal-day-row-info {
     flex: 1;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    padding-left: 12px;
+    min-width: 0;
   }
-  .cal-day-card-name {
-    font-size: 15px;
-    font-weight: 600;
+  .cal-day-row-name {
+    font-size: 17px;
+    font-weight: 500;
     color: var(--label);
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .cal-day-card-meta {
-    font-size: 12px;
-    color: var(--label-tertiary);
-    margin-top: 2px;
+  .cal-day-row-meta {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cal-day-row-chevron {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 18px;
+    font-weight: 500;
+    padding-left: 8px;
   }
   .cal-day-empty {
     text-align: center;
     padding: 40px 20px;
-    color: var(--label-tertiary);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 15px;
   }
 
-  /* Bouton flottant "+ Nouvelle résa" */
+  /* Bouton flottant compact : juste un + (style Apple) */
   .cal-fab {
     position: fixed;
     right: 20px;
     bottom: 90px;
+    width: 48px;
+    height: 48px;
     background: var(--blue);
     border: none;
     color: #fff;
-    border-radius: 100px;
-    padding: 13px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
+    border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.45);
+    box-shadow: 0 8px 24px rgba(10, 132, 255, 0.50);
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     z-index: 100;
-    transition: transform 0.1s, box-shadow 0.15s;
+    transition: transform 0.1s;
     animation: cascadeIn 0.6s ease-out 0.22s backwards;
   }
-  .cal-fab:active { transform: scale(0.95); }
-  .cal-fab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; }
+  .cal-fab:active { transform: scale(0.92); }
+  .cal-fab svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+  }
 
 </style>
 </head>
@@ -3966,7 +3957,7 @@
   <div class="page hidden" id="page-calendrier">
 
     <section class="greeting">
-      <h1>Calendrier</h1>
+      <h1 id="calPageTitle">Calendrier</h1>
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
 
@@ -3980,22 +3971,17 @@
       </div>
     </section>
 
-    <!-- Date complète du jour sélectionné, façon iOS -->
-    <div class="cal-selected-label" id="calSelectedLabel">—</div>
-
-    <!-- Liste détaillée du jour sélectionné -->
-    <div class="cal-day-header" id="calDayHeader">—</div>
+    <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
     <div class="cal-day-list" id="calDayList">
       <!-- Résas du jour générées par JS -->
     </div>
 
-    <!-- Bouton flottant : créer une résa -->
+    <!-- Bouton flottant : créer une résa (juste un +) -->
     <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
         <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
       </svg>
-      Nouvelle résa
     </button>
 
   </div><!-- /page-calendrier -->
@@ -6439,7 +6425,6 @@
   function renderCalendarWeek() {
     const weekdaysEl = $('calWeekWeekdays');
     const daysEl = $('calWeekDays');
-    const selectedLabelEl = $('calSelectedLabel');
     if (!weekdaysEl || !daysEl) return;
 
     const today = calStartOfDay(new Date());
@@ -6466,7 +6451,7 @@
       const isSelected = calSameDay(d, calSelectedDate);
       const iso = calIsoDate(d);
       const hasResa = datesWithResas.has(iso);
-      // Petite atténuation pour les jours dimanche/samedi (façon iOS), c'est optionnel
+      // Petite atténuation pour les jours dimanche/samedi (façon iOS)
       const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
 
       const classes = ['cal-week-day'];
@@ -6481,15 +6466,6 @@
       `;
     }).join('');
 
-    // Label sous la barre : "Vendredi - 29 mai 2026"
-    if (selectedLabelEl) {
-      const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-      const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-      const jourSel = calSelectedDate;
-      const label = `${jours[jourSel.getDay()]} - ${jourSel.getDate()} ${mois[jourSel.getMonth()]} ${jourSel.getFullYear()}`;
-      selectedLabelEl.textContent = label;
-    }
-
     // Brancher les clicks sur les jours
     daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
       cell.addEventListener('click', () => {
@@ -6503,39 +6479,35 @@
   }
 
   function renderCalendarDayDetail() {
-    const headerEl = $('calDayHeader');
-    const listEl = $('calDayList');
+    const titleEl = $('calPageTitle');
     const subtitleEl = $('calendrierSubtitle');
-    if (!headerEl || !listEl) return;
+    const listEl = $('calDayList');
+    if (!listEl) return;
 
-    // Sous-titre de la page : compte des résas du jour sélectionné
     const iso = calIsoDate(calSelectedDate);
     const dayResas = (allReservations || [])
       .filter(r => r.date_reservation === iso && r.statut !== 'annulee' && r.statut !== 'annule')
       .sort((a, b) => (a.heure_reservation || '').localeCompare(b.heure_reservation || ''));
 
-    if (subtitleEl) {
-      const n = dayResas.length;
-      const today = calSameDay(calSelectedDate, calStartOfDay(new Date()));
-      const prefix = today ? "Aujourd'hui : " : '';
-      if (n === 0) subtitleEl.textContent = `${prefix}aucune réservation`;
-      else if (n === 1) subtitleEl.textContent = `${prefix}1 réservation`;
-      else subtitleEl.textContent = `${prefix}${n} réservations`;
+    // Titre de la page = la date du jour sélectionné ("Vendredi 29 mai")
+    if (titleEl) {
+      const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+      const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+      const j = calSelectedDate;
+      titleEl.textContent = `${jours[j.getDay()]} ${j.getDate()} ${mois[j.getMonth()]}`;
     }
 
-    // Header de la liste : "VENDREDI 29 MAI · 3 RÉSAS" (ou "AUCUNE")
-    const dayLabel = calFormatSelectedDay(calSelectedDate);
-    const countLabel = dayResas.length === 0 ? 'aucune résa' : (dayResas.length === 1 ? '1 résa' : `${dayResas.length} résas`);
-    headerEl.textContent = `${dayLabel} · ${countLabel}`;
+    // Sous-titre : compte des résas du jour
+    if (subtitleEl) {
+      const n = dayResas.length;
+      if (n === 0) subtitleEl.textContent = 'Aucune réservation';
+      else if (n === 1) subtitleEl.textContent = '1 réservation';
+      else subtitleEl.textContent = `${n} réservations`;
+    }
 
-    // Liste des résas du jour
+    // Liste des résas — style Inbox iOS (lignes séparées, pas de cartes)
     if (dayResas.length === 0) {
-      listEl.innerHTML = `
-        <div class="cal-day-empty">
-          Aucune réservation pour ce jour.<br>
-          Cliquez sur "+ Nouvelle résa" pour en créer une.
-        </div>
-      `;
+      listEl.innerHTML = `<div class="cal-day-empty">Aucun événement</div>`;
       return;
     }
 
@@ -6543,23 +6515,23 @@
       const heure = formatHeure(r.heure_reservation);
       const couverts = parseInt(r.nb_couverts) || '?';
       const nom = escapeHtml(r.client_nom || 'Client');
-      // Pour la meta : on tente d'afficher la table si disponible, sinon juste les couverts
-      let meta = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+      const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
       return `
-        <div class="cal-day-card" data-resa-id="${escapeHtml(r.id)}">
-          <div class="cal-day-card-time">${heure}</div>
-          <div class="cal-day-card-info">
-            <div class="cal-day-card-name">${nom}</div>
-            <div class="cal-day-card-meta">${meta}</div>
+        <div class="cal-day-row" data-resa-id="${escapeHtml(r.id)}">
+          <div class="cal-day-row-time">${heure}</div>
+          <div class="cal-day-row-info">
+            <div class="cal-day-row-name">${nom}</div>
+            <div class="cal-day-row-meta">${personnes}</div>
           </div>
+          <div class="cal-day-row-chevron">›</div>
         </div>
       `;
     }).join('');
 
     // Brancher clic sur une résa → ouvrir le formulaire en mode édition
-    listEl.querySelectorAll('.cal-day-card[data-resa-id]').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.dataset.resaId;
+    listEl.querySelectorAll('.cal-day-row[data-resa-id]').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.resaId;
         const resa = (allReservations || []).find(r => String(r.id) === String(id));
         if (resa && typeof openResaForm === 'function') {
           openResaForm('edit', resa);

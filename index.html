@@ -349,7 +349,7 @@
     color: white;
   }
   .hero-number {
-    font-size: 64px;
+    font-size: 69px;
     font-weight: 600;
     letter-spacing: -2px;
     line-height: 1;
@@ -3607,6 +3607,40 @@
     line-height: 1.45;
     max-width: 340px;
   }
+  /* Section "Votre semaine" sur la page Stats */
+  .stats-week-section {
+    margin-top: 18px;
+    animation: cascadeIn 0.6s ease-out 0.18s backwards;
+  }
+  .stats-week-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 14px;
+  }
+  .stats-week-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--label);
+    line-height: 1.1;
+  }
+  .stats-week-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+  }
+  .stats-week-link {
+    font-size: 15px;
+    color: var(--blue);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .stats-week-link:active { opacity: 0.5; }
+
   /* ═══ PAGE CALENDRIER ═══ */
   .cal-month-card {
     background: rgba(20, 20, 22, 0.95);
@@ -3948,6 +3982,21 @@
           <span class="stat-value" id="noShowsEvites">0</span>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Aperçu de la semaine (raccourci vers page Calendrier) -->
+  <section class="stats-week-section">
+    <div class="stats-week-header">
+      <div>
+        <div class="stats-week-title">Votre semaine</div>
+        <div class="stats-week-subtitle" id="statsWeekSubtitle">—</div>
+      </div>
+      <a class="stats-week-link" id="statsWeekLinkBtn">Voir tout ›</a>
+    </div>
+    <div class="cal-week-card">
+      <div class="cal-week-weekdays" id="statsWeekWeekdays"></div>
+      <div class="cal-week-days" id="statsWeekDays"></div>
     </div>
   </section>
 
@@ -5096,6 +5145,9 @@
       // Calendrier : branche les events et fait un premier rendu
       if (typeof bindCalendarPageEvents === 'function') bindCalendarPageEvents();
       if (typeof renderCalendarPage === 'function') renderCalendarPage();
+      // Aperçu semaine sur Stats
+      if (typeof bindStatsWeekEvents === 'function') bindStatsWeekEvents();
+      if (typeof renderStatsWeek === 'function') renderStatsWeek();
       applyPaywall();
       showApp();
     } catch (err) {
@@ -5895,6 +5947,8 @@
       updateBellDot();
       // Si on est sur la page Calendrier, rafraîchir aussi
       if (typeof renderCalendarPage === 'function') renderCalendarPage();
+      // Rafraîchir aussi l'aperçu semaine sur Stats
+      if (typeof renderStatsWeek === 'function') renderStatsWeek();
     } catch (err) {
       console.error('Erreur sauvegarde résa:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
       showToast('⚠️ ' + (err.message || 'Erreur de sauvegarde'));
@@ -6553,6 +6607,93 @@
         if (typeof openResaForm === 'function') openResaForm('create');
       });
       fabBtn._calBound = true;
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // ═══ APERÇU SEMAINE SUR LA PAGE STATS ═══
+  // ════════════════════════════════════════════════════
+  function renderStatsWeek() {
+    const weekdaysEl = $('statsWeekWeekdays');
+    const daysEl = $('statsWeekDays');
+    const subtitleEl = $('statsWeekSubtitle');
+    if (!weekdaysEl || !daysEl) return;
+
+    const today = calStartOfDay(new Date());
+    const datesWithResas = calGetDatesWithResas();
+
+    // Les 7 prochains jours à partir d'aujourd'hui
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      weekDays.push(d);
+    }
+
+    // Compter les résas à venir sur les 7 prochains jours
+    let upcomingCount = 0;
+    if (Array.isArray(allReservations)) {
+      const lastDay = new Date(today);
+      lastDay.setDate(today.getDate() + 7); // exclusif (aujourd'hui + 6 jours suivants)
+      allReservations.forEach(r => {
+        if (r.statut === 'annulee' || r.statut === 'annule') return;
+        if (!r.date_reservation) return;
+        const [y, m, dd] = r.date_reservation.split('-').map(Number);
+        const rDate = new Date(y, m - 1, dd);
+        if (rDate >= today && rDate < lastDay) upcomingCount++;
+      });
+    }
+    if (subtitleEl) {
+      if (upcomingCount === 0) subtitleEl.textContent = 'Aucune réservation cette semaine';
+      else if (upcomingCount === 1) subtitleEl.textContent = '1 réservation à venir';
+      else subtitleEl.textContent = `${upcomingCount} réservations à venir`;
+    }
+
+    // Lettres des jours en français
+    const dayLetters = ['D', 'L', 'M', 'M', 'J', 'V', 'S']; // 0=dim, 1=lun, ...
+
+    weekdaysEl.innerHTML = weekDays.map(d => {
+      return `<div class="cal-week-weekday">${dayLetters[d.getDay()]}</div>`;
+    }).join('');
+
+    daysEl.innerHTML = weekDays.map((d, idx) => {
+      const iso = calIsoDate(d);
+      const hasResa = datesWithResas.has(iso);
+      const isToday = (idx === 0); // aujourd'hui = première colonne
+      const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
+
+      const classes = ['cal-week-day'];
+      if (isToday) classes.push('selected'); // on réutilise le style "selected" pour aujourd'hui
+      if (isWeekend && !isToday) classes.push('faded');
+
+      return `
+        <div class="${classes.join(' ')}" data-date="${iso}">
+          <div class="cal-week-day-num">${d.getDate()}</div>
+          ${hasResa ? '<div class="cal-week-day-dot"></div>' : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Click sur un jour → bascule sur la page Calendrier avec ce jour sélectionné
+    daysEl.querySelectorAll('.cal-week-day').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const iso = cell.dataset.date;
+        const [y, m, dd] = iso.split('-').map(Number);
+        calSelectedDate = new Date(y, m - 1, dd);
+        if (typeof switchPage === 'function') switchPage('calendrier');
+      });
+    });
+  }
+
+  function bindStatsWeekEvents() {
+    const linkBtn = $('statsWeekLinkBtn');
+    if (linkBtn && !linkBtn._statsBound) {
+      linkBtn.addEventListener('click', () => {
+        // Réinitialise sur aujourd'hui puis bascule
+        calSelectedDate = calStartOfDay(new Date());
+        if (typeof switchPage === 'function') switchPage('calendrier');
+      });
+      linkBtn._statsBound = true;
     }
   }
 

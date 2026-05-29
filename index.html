@@ -349,9 +349,9 @@
     color: white;
   }
   .hero-number {
-    font-size: 84px;
+    font-size: 64px;
     font-weight: 600;
-    letter-spacing: -2.5px;
+    letter-spacing: -2px;
     line-height: 1;
     text-align: center;
     color: white;
@@ -3659,7 +3659,7 @@
 
   <section class="duo-grid">
     <div class="hero-card" id="heroCard" style="cursor: pointer;">
-      <div class="hero-label">Appels Frizz<br>ce mois</div>
+      <div class="hero-label">Aujourd'hui</div>
       <div class="hero-center">
         <div class="hero-number" id="couvertsLibres">0</div>
       </div>
@@ -4749,6 +4749,7 @@
   let currentSalon = null;
   let allReservations = []; // stockage global pour la popup notifs
   let monthCallsCount = 0;  // vrais appels Frizz du mois (table frizz_ai_appels)
+  let todayCallsCount = 0;  // vrais appels Frizz d'aujourd'hui (table frizz_ai_appels)
 
   const $ = (id) => document.getElementById(id);
   const show = (id) => $(id).classList.remove('hidden');
@@ -4854,11 +4855,11 @@
     const todayCount = validResas.filter(r => r.dateObj >= todayStart && r.dateObj < todayEnd).length;
     $('greetingSubtitle').textContent = "";
 
-    // Appels Frizz ce mois (vrais appels reçus, table frizz_ai_appels)
+    // Appels Frizz d'AUJOURD'HUI (vrais appels reçus, table frizz_ai_appels)
     try {
-      const callsThisMonth = monthCallsCount;
+      const callsToday = todayCallsCount;
       const elCalls = $('couvertsLibres');
-      if (elCalls) elCalls.textContent = callsThisMonth;
+      if (elCalls) elCalls.textContent = callsToday;
       
       // Sous-label : montrer la limite du plan actuel
       let currentPlan = null;
@@ -7027,21 +7028,33 @@
     return monthCallsCount;
   }
 
-  // Charge le nombre réel d'appels du mois depuis Supabase
+  // Charge le nombre réel d'appels du mois ET d'aujourd'hui depuis Supabase
   async function loadMonthCalls() {
     if (!currentSalon) return;
     try {
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { count, error } = await supa
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+
+      // 1) Appels du mois (pour la limite du plan)
+      const { count: monthCount, error: monthErr } = await supa
         .from('frizz_ai_appels')
         .select('*', { count: 'exact', head: true })
         .eq('salon_id', currentSalon.id)
         .gte('created_at', monthStart);
-      if (!error) {
-        monthCallsCount = count || 0;
-        renderStats(allReservations); // rafraîchit le compteur + le bandeau
-      }
+      if (!monthErr) monthCallsCount = monthCount || 0;
+
+      // 2) Appels du jour (pour la carte "Aujourd'hui" sur la page Stats)
+      const { count: todayCount, error: todayErr } = await supa
+        .from('frizz_ai_appels')
+        .select('*', { count: 'exact', head: true })
+        .eq('salon_id', currentSalon.id)
+        .gte('created_at', todayStart)
+        .lt('created_at', todayEnd);
+      if (!todayErr) todayCallsCount = todayCount || 0;
+
+      renderStats(allReservations); // rafraîchit l'affichage
     } catch (e) {
       console.warn('Erreur chargement appels Frizz:', e);
     }

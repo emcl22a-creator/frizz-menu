@@ -5058,16 +5058,13 @@
     const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
     const tomorrowStart = todayEnd;
     const tomorrowEnd = new Date(tomorrowStart.getTime() + 24 * 3600 * 1000);
-    
-    // Début de semaine : lundi 00:00 de la semaine en cours
-    const weekStart = new Date(todayStart);
-    const dayOfWeek = (todayStart.getDay() + 6) % 7; // lundi = 0
-    weekStart.setDate(todayStart.getDate() - dayOfWeek);
-    const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 3600 * 1000);
-    
-    // Mois en cours
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // Semaine = les 7 prochains jours (sens "vie réelle", pas calendaire strict)
+    // Évite que les résas de lundi prochain soient exclues si on est vendredi.
+    const weekEnd = new Date(todayStart.getTime() + 7 * 24 * 3600 * 1000);
+
+    // Mois = les 30 prochains jours (sens "vie réelle")
+    const monthEnd = new Date(todayStart.getTime() + 30 * 24 * 3600 * 1000);
 
     const validResas = allReservations
       .filter(r => r.statut !== 'annulee' && r.statut !== 'annule')

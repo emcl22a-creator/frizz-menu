@@ -3607,6 +3607,180 @@
     line-height: 1.45;
     max-width: 340px;
   }
+  /* ═══ PAGE CALENDRIER ═══ */
+  .cal-month-card {
+    background: rgba(20, 20, 22, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    margin: 0 20px 18px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+    animation: cascadeIn 0.6s ease-out 0.10s backwards;
+  }
+  .cal-month-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 12px;
+  }
+  .cal-month-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.3px;
+    text-transform: capitalize;
+  }
+  .cal-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .cal-nav-btn:active { transform: scale(0.92); background: rgba(10, 132, 255, 0.10); }
+  .cal-nav-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: 0 2px;
+    margin-bottom: 4px;
+  }
+  .cal-weekday {
+    text-align: center;
+    font-size: 11px;
+    color: var(--label-tertiary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: 0 2px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--label);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, transform 0.08s;
+  }
+  .cal-day:active { transform: scale(0.92); }
+  .cal-day.outside { color: rgba(255, 255, 255, 0.25); pointer-events: none; }
+  .cal-day.today { color: var(--blue); font-weight: 600; }
+  .cal-day.selected { background: var(--blue); color: #fff; font-weight: 600; }
+  .cal-day.selected.today { color: #fff; }
+  .cal-day-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-top: 2px;
+  }
+  .cal-day.selected .cal-day-dot { background: #fff; }
+  .cal-day.outside .cal-day-dot { display: none; }
+
+  /* Liste détaillée du jour sélectionné */
+  .cal-day-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 24px 10px;
+    animation: cascadeIn 0.6s ease-out 0.14s backwards;
+  }
+  .cal-day-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 20px 100px;
+    animation: cascadeIn 0.6s ease-out 0.18s backwards;
+  }
+  .cal-day-card {
+    background: rgba(20, 20, 22, 0.95);
+    border: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.1s;
+    cursor: pointer;
+  }
+  .cal-day-card:active { transform: scale(0.985); }
+  .cal-day-card-time {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.5px;
+    width: 56px;
+    flex-shrink: 0;
+    text-align: left;
+  }
+  .cal-day-card-info {
+    flex: 1;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 12px;
+  }
+  .cal-day-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.2px;
+  }
+  .cal-day-card-meta {
+    font-size: 12px;
+    color: var(--label-tertiary);
+    margin-top: 2px;
+  }
+  .cal-day-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--label-tertiary);
+    font-size: 14px;
+  }
+
+  /* Bouton flottant "+ Nouvelle résa" */
+  .cal-fab {
+    position: fixed;
+    right: 20px;
+    bottom: 90px;
+    background: var(--blue);
+    border: none;
+    color: #fff;
+    border-radius: 100px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 100;
+    transition: transform 0.1s, box-shadow 0.15s;
+    animation: cascadeIn 0.6s ease-out 0.22s backwards;
+  }
+  .cal-fab:active { transform: scale(0.95); }
+  .cal-fab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; }
 
 </style>
 </head>
@@ -3659,7 +3833,7 @@
 
   <section class="duo-grid">
     <div class="hero-card" id="heroCard" style="cursor: pointer;">
-      <div class="hero-label">Aujourd'hui</div>
+      <div class="hero-label">Nombre d'appel<br>aujourd'hui</div>
       <div class="hero-center">
         <div class="hero-number" id="couvertsLibres">0</div>
       </div>
@@ -3704,20 +3878,61 @@
     </div>
   </section>
 
-  <section class="resa-section">
-    <div class="resa-header">
-      <h2>Calendrier</h2>
-      <a class="voir-plus" id="voirPlusBtn">
-        Voir plus
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </a>
-    </div>
-    <div id="resaList"></div>
-  </section>
-
   </div><!-- /page-stats -->
+
+  <!-- ═══ PAGE CALENDRIER ═══ -->
+  <div class="page hidden" id="page-calendrier">
+
+    <section class="greeting">
+      <h1>Calendrier</h1>
+      <p class="subtitle" id="calendrierSubtitle">—</p>
+    </section>
+
+    <!-- Mini calendrier mensuel -->
+    <section class="cal-month-card">
+      <div class="cal-month-header">
+        <button class="cal-nav-btn" id="calPrevMonthBtn" aria-label="Mois précédent">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <div class="cal-month-title" id="calMonthTitle">mai 2026</div>
+        <button class="cal-nav-btn" id="calNextMonthBtn" aria-label="Mois suivant">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cal-weekdays">
+        <div class="cal-weekday">L</div>
+        <div class="cal-weekday">M</div>
+        <div class="cal-weekday">M</div>
+        <div class="cal-weekday">J</div>
+        <div class="cal-weekday">V</div>
+        <div class="cal-weekday">S</div>
+        <div class="cal-weekday">D</div>
+      </div>
+      <div class="cal-grid" id="calGrid">
+        <!-- Cellules de jour générées par JS -->
+      </div>
+    </section>
+
+    <!-- Liste détaillée du jour sélectionné -->
+    <div class="cal-day-header" id="calDayHeader">—</div>
+    <div class="cal-day-list" id="calDayList">
+      <!-- Résas du jour générées par JS -->
+    </div>
+
+    <!-- Bouton flottant : créer une résa -->
+    <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
+        <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
+      </svg>
+      Nouvelle résa
+    </button>
+
+  </div><!-- /page-calendrier -->
 
   <!-- ═══ PAGE ACTIVITÉ ═══ -->
   <div class="page hidden" id="page-activity">
@@ -4476,6 +4691,15 @@
     </svg>
     Stats
   </button>
+  <button class="tab" data-page="calendrier">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="16" y1="2" x2="16" y2="6" stroke-linecap="round"/>
+      <line x1="8" y1="2" x2="8" y2="6" stroke-linecap="round"/>
+      <line x1="3" y1="10" x2="21" y2="10" stroke-linecap="round"/>
+    </svg>
+    Calendrier
+  </button>
   <button class="tab" data-page="activity">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -4817,6 +5041,9 @@
       renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
       updateFrizzNumberDisplay(); // Affiche le numéro Frizz du salon (ou message "aucun numéro" si pas d'abonnement)
       updateBellDot();
+      // Calendrier : branche les events et fait un premier rendu
+      if (typeof bindCalendarPageEvents === 'function') bindCalendarPageEvents();
+      if (typeof renderCalendarPage === 'function') renderCalendarPage();
       applyPaywall();
       showApp();
     } catch (err) {
@@ -4987,6 +5214,7 @@
 
   function renderResaList(validResas, now) {
     const container = $('resaList');
+    if (!container) return; // l'élément peut ne pas exister (section retirée de la page Stats)
     // Toutes les résas d'aujourd'hui (statut non annulée déjà filtré dans validResas)
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(todayStart.getTime() + 24 * 3600 * 1000);
@@ -5613,6 +5841,8 @@
       renderResaPopupList();
       renderStats(allReservations);
       updateBellDot();
+      // Si on est sur la page Calendrier, rafraîchir aussi
+      if (typeof renderCalendarPage === 'function') renderCalendarPage();
     } catch (err) {
       console.error('Erreur sauvegarde résa:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
       showToast('⚠️ ' + (err.message || 'Erreur de sauvegarde'));
@@ -5829,6 +6059,10 @@
     if (pageId === 'activity') {
       renderActivity();
       loadMessages(); // Met à jour le badge "Messages à rappeler"
+    }
+    // Render le contenu si Calendrier (rafraîchit le mois + le détail du jour)
+    if (pageId === 'calendrier') {
+      if (typeof renderCalendarPage === 'function') renderCalendarPage();
     }
     // Render le contenu si Réglages
     if (pageId === 'settings') {
@@ -6085,6 +6319,217 @@
     if (codeNoReply) codeNoReply.textContent = `**61*${pretty}#`;
     if (codeBusy) codeBusy.textContent = `**67*${pretty}#`;
     if (codeActivate) codeActivate.textContent = `**21*${pretty}#`;
+  }
+
+  // ════════════════════════════════════════════════════
+  // ═══ PAGE CALENDRIER (mini-cal + liste du jour) ═══
+  // ════════════════════════════════════════════════════
+  // État
+  let calSelectedDate = new Date(); // jour sélectionné dans la grille
+  calSelectedDate.setHours(0, 0, 0, 0);
+  let calViewedMonth = new Date(); // mois affiché par la grille (premier jour)
+  calViewedMonth.setHours(0, 0, 0, 0);
+  calViewedMonth.setDate(1);
+
+  // Helpers
+  function calStartOfDay(d) {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  }
+  function calSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+      && a.getMonth() === b.getMonth()
+      && a.getDate() === b.getDate();
+  }
+  function calIsoDate(d) {
+    // YYYY-MM-DD (pour matcher avec r.date_reservation)
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+  function calFormatMonthLabel(d) {
+    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    return `${mois[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function calFormatSelectedDay(d) {
+    const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]}`;
+  }
+
+  // Calcule les dates qui ont au moins une résa (non annulée), pour le mois affiché
+  function calGetDatesWithResas() {
+    if (!Array.isArray(allReservations)) return new Set();
+    const result = new Set();
+    allReservations.forEach(r => {
+      if (r.statut === 'annulee' || r.statut === 'annule') return;
+      if (r.date_reservation) result.add(r.date_reservation);
+    });
+    return result;
+  }
+
+  function renderCalendarMonth() {
+    const grid = $('calGrid');
+    const titleEl = $('calMonthTitle');
+    if (!grid || !titleEl) return;
+
+    titleEl.textContent = calFormatMonthLabel(calViewedMonth);
+
+    // Calcul des bornes du mois affiché
+    const year = calViewedMonth.getFullYear();
+    const month = calViewedMonth.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const lastOfMonth = new Date(year, month + 1, 0); // dernier jour du mois
+
+    // On part du lundi qui précède le 1er du mois (ou égal)
+    // Notre semaine commence le lundi : (getDay()+6)%7 → 0=lundi … 6=dimanche
+    const firstWeekday = (firstOfMonth.getDay() + 6) % 7;
+    const gridStart = new Date(firstOfMonth);
+    gridStart.setDate(firstOfMonth.getDate() - firstWeekday);
+
+    // 6 semaines × 7 jours = 42 cellules (couvre tous les cas)
+    const datesWithResas = calGetDatesWithResas();
+    const todayStart = calStartOfDay(new Date());
+
+    let html = '';
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      const isOutside = d.getMonth() !== month;
+      const isToday = calSameDay(d, todayStart);
+      const isSelected = calSameDay(d, calSelectedDate);
+      const iso = calIsoDate(d);
+      const hasResa = datesWithResas.has(iso);
+
+      const classes = ['cal-day'];
+      if (isOutside) classes.push('outside');
+      if (isToday) classes.push('today');
+      if (isSelected) classes.push('selected');
+
+      html += `<div class="${classes.join(' ')}" data-date="${iso}">
+        ${d.getDate()}
+        ${hasResa ? '<div class="cal-day-dot"></div>' : ''}
+      </div>`;
+
+      // Si on a dépassé le dernier jour du mois ET qu'on est sur une semaine complète, on peut s'arrêter
+      // (mais on garde 6 lignes pleines pour stabilité visuelle)
+    }
+    grid.innerHTML = html;
+
+    // Brancher les clicks sur les jours
+    grid.querySelectorAll('.cal-day:not(.outside)').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const iso = cell.dataset.date;
+        const [y, m, dd] = iso.split('-').map(Number);
+        calSelectedDate = new Date(y, m - 1, dd);
+        // Si le jour sélectionné est dans un autre mois, on ajuste viewedMonth aussi
+        if (calSelectedDate.getMonth() !== calViewedMonth.getMonth() || calSelectedDate.getFullYear() !== calViewedMonth.getFullYear()) {
+          calViewedMonth = new Date(calSelectedDate.getFullYear(), calSelectedDate.getMonth(), 1);
+        }
+        renderCalendarMonth();
+        renderCalendarDayDetail();
+      });
+    });
+  }
+
+  function renderCalendarDayDetail() {
+    const headerEl = $('calDayHeader');
+    const listEl = $('calDayList');
+    const subtitleEl = $('calendrierSubtitle');
+    if (!headerEl || !listEl) return;
+
+    // Sous-titre de la page : compte des résas du jour sélectionné
+    const iso = calIsoDate(calSelectedDate);
+    const dayResas = (allReservations || [])
+      .filter(r => r.date_reservation === iso && r.statut !== 'annulee' && r.statut !== 'annule')
+      .sort((a, b) => (a.heure_reservation || '').localeCompare(b.heure_reservation || ''));
+
+    if (subtitleEl) {
+      const n = dayResas.length;
+      const today = calSameDay(calSelectedDate, calStartOfDay(new Date()));
+      const prefix = today ? "Aujourd'hui : " : '';
+      if (n === 0) subtitleEl.textContent = `${prefix}aucune réservation`;
+      else if (n === 1) subtitleEl.textContent = `${prefix}1 réservation`;
+      else subtitleEl.textContent = `${prefix}${n} réservations`;
+    }
+
+    // Header de la liste : "VENDREDI 29 MAI · 3 RÉSAS" (ou "AUCUNE")
+    const dayLabel = calFormatSelectedDay(calSelectedDate);
+    const countLabel = dayResas.length === 0 ? 'aucune résa' : (dayResas.length === 1 ? '1 résa' : `${dayResas.length} résas`);
+    headerEl.textContent = `${dayLabel} · ${countLabel}`;
+
+    // Liste des résas du jour
+    if (dayResas.length === 0) {
+      listEl.innerHTML = `
+        <div class="cal-day-empty">
+          Aucune réservation pour ce jour.<br>
+          Cliquez sur "+ Nouvelle résa" pour en créer une.
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = dayResas.map(r => {
+      const heure = formatHeure(r.heure_reservation);
+      const couverts = parseInt(r.nb_couverts) || '?';
+      const nom = escapeHtml(r.client_nom || 'Client');
+      // Pour la meta : on tente d'afficher la table si disponible, sinon juste les couverts
+      let meta = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+      return `
+        <div class="cal-day-card" data-resa-id="${escapeHtml(r.id)}">
+          <div class="cal-day-card-time">${heure}</div>
+          <div class="cal-day-card-info">
+            <div class="cal-day-card-name">${nom}</div>
+            <div class="cal-day-card-meta">${meta}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Brancher clic sur une résa → ouvrir le formulaire en mode édition
+    listEl.querySelectorAll('.cal-day-card[data-resa-id]').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.resaId;
+        const resa = (allReservations || []).find(r => String(r.id) === String(id));
+        if (resa && typeof openResaForm === 'function') {
+          openResaForm('edit', resa);
+        }
+      });
+    });
+  }
+
+  function renderCalendarPage() {
+    renderCalendarMonth();
+    renderCalendarDayDetail();
+  }
+
+  // Brancher les boutons de navigation et le FAB (une seule fois)
+  function bindCalendarPageEvents() {
+    const prevBtn = $('calPrevMonthBtn');
+    const nextBtn = $('calNextMonthBtn');
+    const fabBtn = $('calFabBtn');
+    if (prevBtn && !prevBtn._calBound) {
+      prevBtn.addEventListener('click', () => {
+        calViewedMonth = new Date(calViewedMonth.getFullYear(), calViewedMonth.getMonth() - 1, 1);
+        renderCalendarMonth();
+      });
+      prevBtn._calBound = true;
+    }
+    if (nextBtn && !nextBtn._calBound) {
+      nextBtn.addEventListener('click', () => {
+        calViewedMonth = new Date(calViewedMonth.getFullYear(), calViewedMonth.getMonth() + 1, 1);
+        renderCalendarMonth();
+      });
+      nextBtn._calBound = true;
+    }
+    if (fabBtn && !fabBtn._calBound) {
+      fabBtn.addEventListener('click', () => {
+        if (typeof openResaForm === 'function') openResaForm('create');
+      });
+      fabBtn._calBound = true;
+    }
   }
 
   // ════════════════════════════════════════════════════
@@ -7457,7 +7902,8 @@
   }
 
   // EVENT LISTENERS
-  $('voirPlusBtn').addEventListener('click', openResaPopup);
+  const voirPlusBtnEl = $('voirPlusBtn');
+  if (voirPlusBtnEl) voirPlusBtnEl.addEventListener('click', openResaPopup);
   $('resaPopupCloseBtn').addEventListener('click', closeResaPopup);
   $('resaPopupBackdrop').addEventListener('click', closeResaPopup);
   document.querySelectorAll('.resa-filter-pill').forEach(pill => {

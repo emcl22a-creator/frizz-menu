@@ -317,8 +317,8 @@
     flex: 0 0 100%;
     scroll-snap-align: center;
     margin-bottom: 0;
-    /* Plus de padding-bottom pour ne pas que le chiffre touche les dots */
-    padding-bottom: 28px;
+    /* +9px de hauteur (32 top + 38 bottom = +9 vs 28/28) + espace pour les dots */
+    padding-bottom: 38px;
   }
   /* Dots indicateurs — à l'intérieur de la carte (positionnés en absolu en bas) */
   .kpi-hero-dots {
@@ -347,7 +347,7 @@
   .kpi-hero {
     background: linear-gradient(160deg, #4DA2FF 0%, #1E64FF 60%, #0A4FE5 100%);
     border-radius: 22px;
-    padding: 28px 24px;
+    padding: 32px 24px 33px;
     margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
@@ -4320,7 +4320,7 @@
       <div class="kpi-mini" id="resaMonthCard" style="cursor: pointer;">
         <div class="kpi-mini-text">
           <div class="kpi-mini-value" id="resaCeMois">0</div>
-          <div class="kpi-mini-label">Réservations</div>
+          <div class="kpi-mini-label">Résa. ce mois</div>
         </div>
         <div class="kpi-mini-icon kpi-mini-icon--blue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
@@ -4335,7 +4335,7 @@
       <div class="kpi-mini" id="cancelMonthCard" style="cursor: pointer;">
         <div class="kpi-mini-text">
           <div class="kpi-mini-value" id="noShowsEvites">0</div>
-          <div class="kpi-mini-label">Annulations</div>
+          <div class="kpi-mini-label">Annul. ce mois</div>
         </div>
         <div class="kpi-mini-icon kpi-mini-icon--green">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
@@ -5667,17 +5667,15 @@
       }
     }
 
-    // Nombre de réservations cette semaine (lundi-dimanche)
+    // Nombre de réservations ce mois
     try {
-      const endThisWeek = new Date(firstThisWeek);
-      endThisWeek.setDate(endThisWeek.getDate() + 7);
-      const resasThisWeekCount = allReservations.filter(r => {
+      const resasThisMonthCount = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        return createdAt >= firstThisWeek && createdAt < endThisWeek;
+        return createdAt >= firstThisMonth;
       }).length;
       const elTime = $('resaCeMois');
-      if (elTime) elTime.textContent = resasThisWeekCount;
+      if (elTime) elTime.textContent = resasThisMonthCount;
     } catch (e) {
       console.warn('Erreur nombre de réservations:', e);
       const elTime = $('resaCeMois');
@@ -5685,14 +5683,12 @@
     }
 
     // ─── NOMBRE D'ANNULATIONS DE RÉSERVATION ───
-    // = nombre de résas annulées cette semaine
+    // = nombre de résas annulées ce mois
     try {
-      const endThisWeek = new Date(firstThisWeek);
-      endThisWeek.setDate(endThisWeek.getDate() + 7);
       const noShowsEvites = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        if (createdAt < firstThisWeek || createdAt >= endThisWeek) return false;
+        if (createdAt < firstThisMonth) return false;
         const statut = (r.statut || r.status || '').toLowerCase();
         return statut === 'annulee' || statut === 'annule' || statut === 'cancelled' || statut === 'canceled';
       }).length;

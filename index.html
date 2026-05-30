@@ -293,7 +293,6 @@
 
   /* ═══ KPI V2 ═══ Hero banner horizontal + 2 mini-cartes inline */
   .kpi-stack {
-    padding: 0 20px;
     margin-bottom: 12px;
     animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
@@ -311,10 +310,12 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    /* Padding interne : les cartes ont 20px d'air des bords, mais le swipe va d'un bord à l'autre */
+    padding: 0 20px;
   }
   .kpi-hero-carousel::-webkit-scrollbar { display: none; }
   .kpi-hero-carousel .kpi-hero {
-    flex: 0 0 100%;
+    flex: 0 0 calc(100% - 40px);
     scroll-snap-align: center;
     margin-bottom: 0;
     /* +9px de hauteur (32 top + 38 bottom = +9 vs 28/28) + espace pour les dots */
@@ -399,6 +400,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    padding: 0 20px;
   }
   .kpi-mini {
     background: rgba(20, 20, 22, 0.92);
@@ -4320,7 +4322,7 @@
       <div class="kpi-mini" id="resaMonthCard" style="cursor: pointer;">
         <div class="kpi-mini-text">
           <div class="kpi-mini-value" id="resaCeMois">0</div>
-          <div class="kpi-mini-label">Résa. ce mois</div>
+          <div class="kpi-mini-label">Réservations</div>
         </div>
         <div class="kpi-mini-icon kpi-mini-icon--blue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
@@ -4335,7 +4337,7 @@
       <div class="kpi-mini" id="cancelMonthCard" style="cursor: pointer;">
         <div class="kpi-mini-text">
           <div class="kpi-mini-value" id="noShowsEvites">0</div>
-          <div class="kpi-mini-label">Annul. ce mois</div>
+          <div class="kpi-mini-label">Annulations</div>
         </div>
         <div class="kpi-mini-icon kpi-mini-icon--green">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
@@ -7356,8 +7358,9 @@
       carousel.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
-          const cardWidth = carousel.offsetWidth;
-          const idx = Math.round(carousel.scrollLeft / cardWidth);
+          // Largeur d'une carte + gap = (offsetWidth - padding 2x20) + gap 12 = offsetWidth - 28
+          const cardStep = carousel.offsetWidth - 28;
+          const idx = Math.round(carousel.scrollLeft / cardStep);
           dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === idx);
           });

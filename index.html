@@ -4105,7 +4105,7 @@
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-label">Réservations ce mois</span>
+          <span class="stat-label">Réservations cette semaine</span>
           <span class="stat-value" id="resaCeMois">0</span>
         </div>
       </div>
@@ -4121,7 +4121,7 @@
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-label">Annulations ce mois</span>
+          <span class="stat-label">Annulations cette semaine</span>
           <span class="stat-value" id="noShowsEvites">0</span>
         </div>
       </div>
@@ -5314,6 +5314,13 @@
     const firstLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const dayOfMonth = now.getDate();
     const lastMonthCutoff = new Date(now.getFullYear(), now.getMonth() - 1, dayOfMonth);
+    // Lundi de cette semaine (00:00) — utilisé pour les KPI "cette semaine"
+    const firstThisWeek = (function() {
+      const d = new Date(todayStart);
+      const dow = (d.getDay() + 6) % 7; // 0=lundi, 6=dimanche
+      d.setDate(d.getDate() - dow);
+      return d;
+    })();
 
     const validResas = reservations
       .filter(r => r.statut !== 'annulee' && r.statut !== 'annule')
@@ -5428,15 +5435,17 @@
       }
     }
 
-    // Nombre de réservations ce mois
+    // Nombre de réservations cette semaine (lundi-dimanche)
     try {
-      const resasThisMonthCount = allReservations.filter(r => {
+      const endThisWeek = new Date(firstThisWeek);
+      endThisWeek.setDate(endThisWeek.getDate() + 7);
+      const resasThisWeekCount = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        return createdAt >= firstThisMonth;
+        return createdAt >= firstThisWeek && createdAt < endThisWeek;
       }).length;
       const elTime = $('resaCeMois');
-      if (elTime) elTime.textContent = resasThisMonthCount;
+      if (elTime) elTime.textContent = resasThisWeekCount;
     } catch (e) {
       console.warn('Erreur nombre de réservations:', e);
       const elTime = $('resaCeMois');
@@ -5444,12 +5453,14 @@
     }
 
     // ─── NOMBRE D'ANNULATIONS DE RÉSERVATION ───
-    // = nombre de résas annulées ce mois
+    // = nombre de résas annulées cette semaine
     try {
+      const endThisWeek = new Date(firstThisWeek);
+      endThisWeek.setDate(endThisWeek.getDate() + 7);
       const noShowsEvites = allReservations.filter(r => {
         if (!r.created_at) return false;
         const createdAt = new Date(r.created_at);
-        if (createdAt < firstThisMonth) return false;
+        if (createdAt < firstThisWeek || createdAt >= endThisWeek) return false;
         const statut = (r.statut || r.status || '').toLowerCase();
         return statut === 'annulee' || statut === 'annule' || statut === 'cancelled' || statut === 'canceled';
       }).length;
@@ -6941,27 +6952,26 @@
     const today = calStartOfDay(new Date());
     const todayWeekStart = calMondayOfWeek(today);
 
-    // Compter les résas de la semaine affichée (pour le sous-titre)
-    let weekCount = 0;
-    const weekEnd = new Date(statsViewedWeekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+    // Compter les résas à venir dans les 7 prochains jours (aujourd'hui inclus)
+    let upcomingCount = 0;
+    const rangeEnd = new Date(today);
+    rangeEnd.setDate(rangeEnd.getDate() + 7);
     if (Array.isArray(allReservations)) {
       allReservations.forEach(r => {
         if (r.statut === 'annulee' || r.statut === 'annule') return;
         if (!r.date_reservation) return;
         const [y, m, dd] = r.date_reservation.split('-').map(Number);
         const rDate = new Date(y, m - 1, dd);
-        if (rDate >= statsViewedWeekStart && rDate < weekEnd) weekCount++;
+        if (rDate >= today && rDate < rangeEnd) upcomingCount++;
       });
     }
-    const isCurrentWeek = calSameDay(statsViewedWeekStart, todayWeekStart);
     if (subtitleEl) {
-      if (weekCount === 0) {
-        subtitleEl.textContent = isCurrentWeek ? 'Aucune réservation cette semaine' : 'Aucune réservation';
-      } else if (weekCount === 1) {
-        subtitleEl.textContent = isCurrentWeek ? '1 réservation à venir' : '1 réservation';
+      if (upcomingCount === 0) {
+        subtitleEl.textContent = 'Aucune réservation à venir';
+      } else if (upcomingCount === 1) {
+        subtitleEl.textContent = '1 réservation à venir';
       } else {
-        subtitleEl.textContent = isCurrentWeek ? `${weekCount} réservations à venir` : `${weekCount} réservations`;
+        subtitleEl.textContent = `${upcomingCount} réservations à venir`;
       }
     }
 
@@ -7025,18 +7035,18 @@
     if (!listEl) return;
 
     const today = calStartOfDay(new Date());
-    const weekStart = new Date(statsViewedWeekStart);
-    const weekEnd = new Date(statsViewedWeekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+    // Fenêtre : aujourd'hui → aujourd'hui + 7 jours (exclusif)
+    const rangeEnd = new Date(today);
+    rangeEnd.setDate(rangeEnd.getDate() + 7);
 
-    // Filtrer les résas dans la semaine affichée (lundi → dimanche)
+    // Filtrer les résas à venir dans les 7 prochains jours (aujourd'hui inclus, jours passés exclus)
     const weekResas = (allReservations || [])
       .filter(r => {
         if (r.statut === 'annulee' || r.statut === 'annule') return false;
         if (!r.date_reservation) return false;
         const [y, m, dd] = r.date_reservation.split('-').map(Number);
         const rDate = new Date(y, m - 1, dd);
-        return rDate >= weekStart && rDate < weekEnd;
+        return rDate >= today && rDate < rangeEnd;
       })
       .sort((a, b) => {
         const dateCmp = (a.date_reservation || '').localeCompare(b.date_reservation || '');
@@ -7045,7 +7055,7 @@
       });
 
     if (weekResas.length === 0) {
-      listEl.innerHTML = `<div class="cal-day-empty">Aucune réservation cette semaine</div>`;
+      listEl.innerHTML = `<div class="cal-day-empty">Aucune réservation à venir</div>`;
       return;
     }
 
@@ -8597,7 +8607,7 @@
     });
   }
 
-  // Click sur la card "Réservations ce mois" → page Calendrier
+  // Click sur la card "Réservations cette semaine" → page Calendrier
   const resaMonthCardEl = $('resaMonthCard');
   if (resaMonthCardEl) {
     resaMonthCardEl.addEventListener('click', () => {
@@ -8609,7 +8619,7 @@
     });
   }
 
-  // Click sur la card "Annulations ce mois" → Journal filtré sur les annulations
+  // Click sur la card "Annulations cette semaine" → Journal filtré sur les annulations
   const cancelMonthCardEl = $('cancelMonthCard');
   if (cancelMonthCardEl) {
     cancelMonthCardEl.addEventListener('click', () => {

@@ -3672,6 +3672,9 @@
   /* Conteneur qui anime ses enfants (barre 7 jours + liste résas) */
   .cal-animatable {
     will-change: transform, opacity;
+  }
+  /* Animation d'ouverture déclenchée à l'arrivée sur la page Calendrier (classe ajoutée par JS) */
+  .cal-animatable.cal-page-enter {
     animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
   .cal-animatable.cal-slide-in-right,
@@ -4129,7 +4132,7 @@
   <section class="stats-week-section">
     <div class="stats-week-header">
       <div>
-        <div class="stats-week-title">Votre semaine</div>
+        <div class="stats-week-title">Les 7 prochains jours</div>
         <div class="stats-week-subtitle" id="statsWeekSubtitle">—</div>
       </div>
       <a class="stats-week-link" id="statsWeekLinkBtn">Voir tout ›</a>
@@ -4210,7 +4213,7 @@
         Tous<span class="activity-filter-count" id="activityCountAll">0</span>
       </button>
       <button class="activity-filter-pill" data-filter="created">
-        Nouvelle table<span class="activity-filter-count" id="activityCountCreated">0</span>
+        Nouvelle rés.<span class="activity-filter-count" id="activityCountCreated">0</span>
       </button>
       <button class="activity-filter-pill" data-filter="modified">
         Modification<span class="activity-filter-count" id="activityCountModified">0</span>
@@ -6315,6 +6318,19 @@
     // Render le contenu si Calendrier (rafraîchit le mois + le détail du jour)
     if (pageId === 'calendrier') {
       if (typeof renderCalendarPage === 'function') renderCalendarPage();
+      // Déclencher l'animation d'ouverture sur le wrapper (uniquement à l'arrivée)
+      const animEl = document.getElementById('calAnimatable');
+      if (animEl) {
+        animEl.classList.remove('cal-page-enter');
+        void animEl.offsetWidth; // forcer reflow
+        animEl.classList.add('cal-page-enter');
+        // Retirer la classe après l'animation pour ne pas la rejouer involontairement
+        const onEnd = () => {
+          animEl.classList.remove('cal-page-enter');
+          animEl.removeEventListener('animationend', onEnd);
+        };
+        animEl.addEventListener('animationend', onEnd);
+      }
     }
     // Render le contenu si Réglages
     if (pageId === 'settings') {
@@ -6489,7 +6505,7 @@
     if (type === 'created') {
       icon = '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>';
       title = `Nouvelle résa · ${clientNom}`;
-      badge = 'Créée';
+      badge = 'Nouvelle rés.';
     } else if (type === 'modified') {
       icon = '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
       title = `Modification · ${clientNom}`;

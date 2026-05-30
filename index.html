@@ -169,7 +169,7 @@
   }
   /* Sur Stats : plus d'espace entre la topbar et les KPI (pas de greeting entre) */
   #page-stats {
-    padding-top: 42px;
+    padding-top: 32px;
   }
   .logo {
     width: 46px;
@@ -299,6 +299,46 @@
   }
 
   /* Hero banner — Appels aujourd'hui */
+  .kpi-hero-carousel-wrap {
+    margin-bottom: 12px;
+  }
+  .kpi-hero-carousel {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* Pas de bordure visible du scroll */
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* Padding latéral pour que la 1ère et la dernière carte aient un peu d'espace */
+    padding-bottom: 12px;
+  }
+  .kpi-hero-carousel::-webkit-scrollbar { display: none; }
+  .kpi-hero-carousel .kpi-hero {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    margin-bottom: 0;
+  }
+  /* Dots indicateurs */
+  .kpi-hero-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 4px;
+  }
+  .kpi-hero-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: background 0.25s, transform 0.25s;
+  }
+  .kpi-hero-dot.active {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.15);
+  }
+  /* La carte elle-même reste identique */
   .kpi-hero {
     background: linear-gradient(160deg, #4DA2FF 0%, #1E64FF 60%, #0A4FE5 100%);
     border-radius: 22px;
@@ -4237,13 +4277,37 @@
 
   <!-- KPI : 1 hero banner + 2 mini-cartes inline -->
   <section class="kpi-stack">
-    <!-- Hero banner horizontal (Appels Frizz aujourd'hui) -->
-    <div class="kpi-hero" id="heroCard" style="cursor: pointer;">
-      <div class="kpi-hero-text">
-        <div class="kpi-hero-title">Appels Frizz</div>
-        <div class="kpi-hero-sub">aujourd'hui</div>
+    <!-- Carousel Hero : Appels Frizz (aujourd'hui / semaine / mois) -->
+    <div class="kpi-hero-carousel-wrap">
+      <div class="kpi-hero-carousel" id="heroCarousel">
+        <div class="kpi-hero" data-period="today">
+          <div class="kpi-hero-text">
+            <div class="kpi-hero-title">Appels Frizz</div>
+            <div class="kpi-hero-sub">aujourd'hui</div>
+          </div>
+          <div class="kpi-hero-number" id="couvertsLibres">0</div>
+        </div>
+        <div class="kpi-hero" data-period="week">
+          <div class="kpi-hero-text">
+            <div class="kpi-hero-title">Appels Frizz</div>
+            <div class="kpi-hero-sub">cette semaine</div>
+          </div>
+          <div class="kpi-hero-number" id="appelsSemaine">0</div>
+        </div>
+        <div class="kpi-hero" data-period="month">
+          <div class="kpi-hero-text">
+            <div class="kpi-hero-title">Appels Frizz</div>
+            <div class="kpi-hero-sub">ce mois</div>
+          </div>
+          <div class="kpi-hero-number" id="appelsMois">0</div>
+        </div>
       </div>
-      <div class="kpi-hero-number" id="couvertsLibres">0</div>
+      <!-- Dots indicateurs -->
+      <div class="kpi-hero-dots" id="heroDots">
+        <div class="kpi-hero-dot active"></div>
+        <div class="kpi-hero-dot"></div>
+        <div class="kpi-hero-dot"></div>
+      </div>
     </div>
 
     <!-- 2 mini-cartes : Réservations + Annulations -->
@@ -5376,6 +5440,7 @@
   let currentSalon = null;
   let allReservations = []; // stockage global pour la popup notifs
   let monthCallsCount = 0;  // vrais appels Frizz du mois (table frizz_ai_appels)
+  let weekCallsCount = 0;   // vrais appels Frizz de cette semaine
   let todayCallsCount = 0;  // vrais appels Frizz d'aujourd'hui (table frizz_ai_appels)
 
   const $ = (id) => document.getElementById(id);
@@ -5504,6 +5569,11 @@
       const callsToday = todayCallsCount;
       const elCalls = $('couvertsLibres');
       if (elCalls) elCalls.textContent = callsToday;
+      // Mises à jour des cartes Semaine et Mois du carousel
+      const elWeek = $('appelsSemaine');
+      if (elWeek) elWeek.textContent = weekCallsCount;
+      const elMonth = $('appelsMois');
+      if (elMonth) elMonth.textContent = monthCallsCount;
       
       // Sous-label : montrer la limite du plan actuel
       let currentPlan = null;
@@ -7277,6 +7347,24 @@
       linkBtn._statsBound = true;
     }
 
+    // Carousel hero (Appels aujourd'hui / semaine / mois) — mise à jour des dots au scroll
+    const carousel = $('heroCarousel');
+    if (carousel && !carousel._heroBound) {
+      const dots = document.querySelectorAll('#heroDots .kpi-hero-dot');
+      let scrollTimeout;
+      carousel.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const cardWidth = carousel.offsetWidth;
+          const idx = Math.round(carousel.scrollLeft / cardWidth);
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === idx);
+          });
+        }, 30);
+      }, { passive: true });
+      carousel._heroBound = true;
+    }
+
     // Swipe gauche/droite sur la section semaine pour changer de semaine
     const sectionEl = document.querySelector('.stats-week-section');
     if (sectionEl && !sectionEl._swipeBound) {
@@ -8260,7 +8348,7 @@
     return monthCallsCount;
   }
 
-  // Charge le nombre réel d'appels du mois ET d'aujourd'hui depuis Supabase
+  // Charge le nombre réel d'appels du mois, de la semaine ET d'aujourd'hui depuis Supabase
   async function loadMonthCalls() {
     if (!currentSalon) return;
     try {
@@ -8268,6 +8356,11 @@
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
       const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+      // Lundi 00:00 de cette semaine
+      const weekStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dow = (weekStartDate.getDay() + 6) % 7; // 0=lundi
+      weekStartDate.setDate(weekStartDate.getDate() - dow);
+      const weekStart = weekStartDate.toISOString();
 
       // 1) Appels du mois (pour la limite du plan)
       const { count: monthCount, error: monthErr } = await supa
@@ -8277,7 +8370,15 @@
         .gte('created_at', monthStart);
       if (!monthErr) monthCallsCount = monthCount || 0;
 
-      // 2) Appels du jour (pour la carte "Aujourd'hui" sur la page Stats)
+      // 2) Appels de cette semaine
+      const { count: weekCount, error: weekErr } = await supa
+        .from('frizz_ai_appels')
+        .select('*', { count: 'exact', head: true })
+        .eq('salon_id', currentSalon.id)
+        .gte('created_at', weekStart);
+      if (!weekErr) weekCallsCount = weekCount || 0;
+
+      // 3) Appels du jour (pour la carte "Aujourd'hui" sur la page Stats)
       const { count: todayCount, error: todayErr } = await supa
         .from('frizz_ai_appels')
         .select('*', { count: 'exact', head: true })

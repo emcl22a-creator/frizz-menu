@@ -301,6 +301,7 @@
   /* Hero banner — Appels aujourd'hui */
   .kpi-hero-carousel-wrap {
     margin-bottom: 12px;
+    position: relative;
   }
   .kpi-hero-carousel {
     display: flex;
@@ -308,34 +309,38 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    /* Pas de bordure visible du scroll */
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    /* Padding latéral pour que la 1ère et la dernière carte aient un peu d'espace */
-    padding-bottom: 12px;
   }
   .kpi-hero-carousel::-webkit-scrollbar { display: none; }
   .kpi-hero-carousel .kpi-hero {
     flex: 0 0 100%;
     scroll-snap-align: center;
     margin-bottom: 0;
+    /* Plus de padding-bottom pour ne pas que le chiffre touche les dots */
+    padding-bottom: 28px;
   }
-  /* Dots indicateurs */
+  /* Dots indicateurs — à l'intérieur de la carte (positionnés en absolu en bas) */
   .kpi-hero-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: center;
     gap: 6px;
-    padding-top: 4px;
+    pointer-events: none;
+    z-index: 2;
   }
   .kpi-hero-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.35);
     transition: background 0.25s, transform 0.25s;
   }
   .kpi-hero-dot.active {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.95);
     transform: scale(1.15);
   }
   /* La carte elle-même reste identique */
@@ -417,10 +422,10 @@
     line-height: 1;
   }
   .kpi-mini-label {
-    font-size: 17px;
+    font-size: 15px;
     color: var(--label);
     margin-top: 6px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
     font-weight: 500;
   }
   .kpi-mini-icon {

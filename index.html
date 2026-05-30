@@ -164,7 +164,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 20px 30px;
+    padding: 20px 20px 50px;
     animation: cascadeIn 0.6s ease-out 0.02s backwards;
   }
   .logo {
@@ -4078,10 +4078,6 @@
       </div>
       <a class="stats-week-link" id="statsWeekLinkBtn">Voir tout ›</a>
     </div>
-    <div class="cal-week-card cal-week-card--inline">
-      <div class="cal-week-weekdays" id="statsWeekWeekdays"></div>
-      <div class="cal-week-days" id="statsWeekDays"></div>
-    </div>
 
     <!-- Liste des résas du jour (style Inbox iOS) — lecture seule, pour info -->
     <div class="cal-day-list" id="statsDayList"></div>
@@ -6780,21 +6776,12 @@
     const weekdaysEl = $('statsWeekWeekdays');
     const daysEl = $('statsWeekDays');
     const subtitleEl = $('statsWeekSubtitle');
-    if (!weekdaysEl || !daysEl) return;
 
+    // Calculer toujours le sous-titre + la liste, même si la barre 7 jours est absente
     const today = calStartOfDay(new Date());
     const todayWeekStart = calMondayOfWeek(today);
-    const datesWithResas = calGetDatesWithResas();
 
-    // 7 jours de la semaine affichée (lundi → dimanche)
-    const weekDays = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(statsViewedWeekStart);
-      d.setDate(statsViewedWeekStart.getDate() + i);
-      weekDays.push(d);
-    }
-
-    // Compter les résas sur la semaine affichée
+    // Compter les résas de la semaine affichée (pour le sous-titre)
     let weekCount = 0;
     const weekEnd = new Date(statsViewedWeekStart);
     weekEnd.setDate(weekEnd.getDate() + 7);
@@ -6818,6 +6805,23 @@
       }
     }
 
+    // Liste des résas de la semaine
+    renderStatsWeekList();
+
+    // Si la barre 7 jours n'existe pas sur la page, on s'arrête là (titre + liste mis à jour)
+    if (!weekdaysEl || !daysEl) return;
+
+    const datesWithResas = calGetDatesWithResas();
+
+    // 7 jours de la semaine affichée (lundi → dimanche)
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(statsViewedWeekStart);
+      d.setDate(statsViewedWeekStart.getDate() + i);
+      weekDays.push(d);
+    }
+
+    // Compter les résas sur la semaine affichée
     // Lettres des jours (lundi→dimanche)
     const dayLetters = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
@@ -6853,9 +6857,6 @@
         if (typeof switchPage === 'function') switchPage('calendrier');
       });
     });
-
-    // Mettre à jour la liste des résas de la semaine sous la barre
-    renderStatsWeekList();
   }
 
   // Liste des résas de la semaine affichée sous la barre Stats, groupées par jour

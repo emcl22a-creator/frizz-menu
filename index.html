@@ -3651,20 +3651,48 @@
 
   /* ═══ PAGE CALENDRIER ═══ */
 
-  /* Animations de slide quand on change de semaine */
-  @keyframes slideInFromRight {
-    from { opacity: 0; transform: translateX(40px); }
+  /* Animations style iOS Calendar : slide complet quand on change de semaine */
+  @keyframes calSlideInRight {
+    from { opacity: 0; transform: translateX(100%); }
     to   { opacity: 1; transform: translateX(0); }
   }
-  @keyframes slideInFromLeft {
-    from { opacity: 0; transform: translateX(-40px); }
+  @keyframes calSlideOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-100%); }
+  }
+  @keyframes calSlideInLeft {
+    from { opacity: 0; transform: translateX(-100%); }
     to   { opacity: 1; transform: translateX(0); }
   }
-  .cal-slide-in-right {
-    animation: slideInFromRight 0.32s ease-out;
+  @keyframes calSlideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(100%); }
   }
-  .cal-slide-in-left {
-    animation: slideInFromLeft 0.32s ease-out;
+
+  /* Conteneur qui anime ses enfants (barre 7 jours + liste résas) */
+  .cal-animatable {
+    will-change: transform, opacity;
+  }
+  .cal-animatable.cal-slide-in-right {
+    animation: calSlideInRight 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  .cal-animatable.cal-slide-in-left {
+    animation: calSlideInLeft 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  .cal-animatable.cal-slide-out-left {
+    animation: calSlideOutLeft 0.18s ease-in forwards;
+  }
+  .cal-animatable.cal-slide-out-right {
+    animation: calSlideOutRight 0.18s ease-in forwards;
+  }
+
+  /* Fondu doux pour le changement de jour (tap) */
+  @keyframes calFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .cal-fade-in {
+    animation: calFadeIn 0.2s ease-out;
   }
 
   .cal-month-card {
@@ -4114,19 +4142,22 @@
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
 
-    <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
-    <section class="cal-week-card cal-week-card--inline">
-      <div class="cal-week-weekdays" id="calWeekWeekdays">
-        <!-- Initiales L/M/M/J/V/S/D générées par JS -->
-      </div>
-      <div class="cal-week-days" id="calWeekDays">
-        <!-- 7 cellules de jour générées par JS -->
-      </div>
-    </section>
+    <!-- Conteneur animable : la barre 7 jours + la liste glissent ensemble au swipe -->
+    <div class="cal-animatable" id="calAnimatable">
+      <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
+      <section class="cal-week-card cal-week-card--inline">
+        <div class="cal-week-weekdays" id="calWeekWeekdays">
+          <!-- Initiales L/M/M/J/V/S/D générées par JS -->
+        </div>
+        <div class="cal-week-days" id="calWeekDays">
+          <!-- 7 cellules de jour générées par JS -->
+        </div>
+      </section>
 
-    <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
-    <div class="cal-day-list" id="calDayList">
-      <!-- Résas du jour générées par JS -->
+      <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
+      <div class="cal-day-list" id="calDayList">
+        <!-- Résas du jour générées par JS -->
+      </div>
     </div>
 
     <!-- Bouton flottant : créer une résa (juste un +) -->
@@ -6650,9 +6681,19 @@
       cell.addEventListener('click', () => {
         const iso = cell.dataset.date;
         const [y, m, dd] = iso.split('-').map(Number);
-        calSelectedDate = new Date(y, m - 1, dd);
+        const newDate = new Date(y, m - 1, dd);
+        // Si on tape sur le même jour déjà sélectionné, on ne fait rien (évite anim inutile)
+        if (calSameDay(newDate, calSelectedDate)) return;
+        calSelectedDate = newDate;
         renderCalendarWeek();
         renderCalendarDayDetail();
+        // Fondu doux sur la liste des résas (style Apple Calendar)
+        const listEl = $('calDayList');
+        if (listEl) {
+          listEl.classList.remove('cal-fade-in');
+          void listEl.offsetWidth;
+          listEl.classList.add('cal-fade-in');
+        }
       });
     });
   }
@@ -6732,6 +6773,57 @@
     renderCalendarDayDetail();
   }
 
+  // Helper : changer de semaine avec animation slide complet (style iOS Calendar)
+  // direction = 'next' (slide vers la gauche) ou 'prev' (slide vers la droite)
+  let calAnimating = false;
+  function changeCalendarWeek(direction) {
+    if (calAnimating) return; // empêche les doubles déclenchements
+    const animEl = $('calAnimatable');
+    if (!animEl) {
+      // Si pas de conteneur, on change sans animation
+      const d = new Date(calViewedWeekStart);
+      d.setDate(d.getDate() + (direction === 'next' ? 7 : -7));
+      calViewedWeekStart = d;
+      renderCalendarWeek();
+      return;
+    }
+
+    calAnimating = true;
+
+    // Étape 1 : slide out de l'ancien contenu
+    const outClass = direction === 'next' ? 'cal-slide-out-left' : 'cal-slide-out-right';
+    const inClass = direction === 'next' ? 'cal-slide-in-right' : 'cal-slide-in-left';
+
+    // Nettoyer toutes les classes d'animation
+    animEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left', 'cal-slide-out-left', 'cal-slide-out-right');
+    void animEl.offsetWidth; // forcer reflow
+    animEl.classList.add(outClass);
+
+    // Quand l'animation slideOut est finie, on change la semaine et on slideIn
+    const onOutEnd = () => {
+      animEl.removeEventListener('animationend', onOutEnd);
+
+      // Changer la semaine + re-rendre
+      const d = new Date(calViewedWeekStart);
+      d.setDate(d.getDate() + (direction === 'next' ? 7 : -7));
+      calViewedWeekStart = d;
+      renderCalendarWeek();
+
+      // Étape 2 : slide in du nouveau contenu
+      animEl.classList.remove('cal-slide-out-left', 'cal-slide-out-right');
+      void animEl.offsetWidth;
+      animEl.classList.add(inClass);
+
+      const onInEnd = () => {
+        animEl.removeEventListener('animationend', onInEnd);
+        animEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left');
+        calAnimating = false;
+      };
+      animEl.addEventListener('animationend', onInEnd);
+    };
+    animEl.addEventListener('animationend', onOutEnd);
+  }
+
   // Brancher le bouton FAB "+ Nouvelle résa" + le swipe sur la page
   function bindCalendarPageEvents() {
     const fabBtn = $('calFabBtn');
@@ -6766,38 +6858,8 @@
         const dy = touch.clientY - startY;
         const dt = Date.now() - startTime;
 
-        // Swipe horizontal valide :
-        //   - distance horizontale > 60px
-        //   - mouvement principalement horizontal (|dx| > 1.5 * |dy|)
-        //   - durée < 600ms (sinon c'est un glissement lent, pas un swipe)
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
-          let direction;
-          if (dx < 0) {
-            // Swipe vers la gauche → semaine suivante
-            const d = new Date(calViewedWeekStart);
-            d.setDate(d.getDate() + 7);
-            calViewedWeekStart = d;
-            direction = 'right'; // nouveau contenu arrive depuis la droite
-          } else {
-            // Swipe vers la droite → semaine précédente
-            const d = new Date(calViewedWeekStart);
-            d.setDate(d.getDate() - 7);
-            calViewedWeekStart = d;
-            direction = 'left'; // nouveau contenu arrive depuis la gauche
-          }
-          renderCalendarWeek();
-
-          // Animation slide : on applique la classe puis on la retire après l'animation
-          const weekCard = document.querySelector('#page-calendrier .cal-week-card');
-          const dayList = $('calDayList');
-          [weekCard, dayList].forEach(el => {
-            if (!el) return;
-            const animClass = direction === 'right' ? 'cal-slide-in-right' : 'cal-slide-in-left';
-            el.classList.remove('cal-slide-in-right', 'cal-slide-in-left');
-            // Forcer reflow pour redéclencher l'animation
-            void el.offsetWidth;
-            el.classList.add(animClass);
-          });
+          changeCalendarWeek(dx < 0 ? 'next' : 'prev');
         }
       }, { passive: true });
 

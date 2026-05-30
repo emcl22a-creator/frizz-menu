@@ -328,16 +328,16 @@
     z-index: 1;
   }
   .kpi-hero-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.92);
     letter-spacing: -0.3px;
     line-height: 1.1;
   }
   .kpi-hero-sub {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.72);
-    margin-top: 2px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 3px;
   }
   .kpi-hero-number {
     font-size: 64px;
@@ -377,10 +377,10 @@
     line-height: 1;
   }
   .kpi-mini-label {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.55);
+    font-size: 17px;
+    color: var(--label);
     margin-top: 6px;
-    letter-spacing: -0.1px;
+    letter-spacing: -0.3px;
     font-weight: 500;
   }
   .kpi-mini-icon {
@@ -3762,6 +3762,10 @@
   .stats-week-link:active { opacity: 0.5; }
 
   /* Bouton flottant en bas centre — "Voir le calendrier" */
+  @keyframes statsFabIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
   .stats-floating-btn {
     position: fixed;
     bottom: 90px; /* au-dessus de la tabbar */
@@ -3783,8 +3787,8 @@
     align-items: center;
     gap: 8px;
     z-index: 100;
-    transition: transform 0.1s, opacity 0.15s;
-    animation: cascadeIn 0.6s ease-out 0.25s backwards;
+    transition: opacity 0.15s;
+    animation: statsFabIn 0.45s ease-out 0.25s backwards;
   }
   .stats-floating-btn:active {
     transform: translateX(-50%) scale(0.95);

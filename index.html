@@ -3673,16 +3673,20 @@
   .cal-animatable {
     will-change: transform, opacity;
   }
-  .cal-animatable.cal-slide-in-right {
+  .cal-animatable.cal-slide-in-right,
+  .cal-day-list.cal-slide-in-right {
     animation: calSlideInRight 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  .cal-animatable.cal-slide-in-left {
+  .cal-animatable.cal-slide-in-left,
+  .cal-day-list.cal-slide-in-left {
     animation: calSlideInLeft 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  .cal-animatable.cal-slide-out-left {
+  .cal-animatable.cal-slide-out-left,
+  .cal-day-list.cal-slide-out-left {
     animation: calSlideOutLeft 0.18s ease-in forwards;
   }
-  .cal-animatable.cal-slide-out-right {
+  .cal-animatable.cal-slide-out-right,
+  .cal-day-list.cal-slide-out-right {
     animation: calSlideOutRight 0.18s ease-in forwards;
   }
 
@@ -6682,20 +6686,59 @@
         const iso = cell.dataset.date;
         const [y, m, dd] = iso.split('-').map(Number);
         const newDate = new Date(y, m - 1, dd);
-        // Si on tape sur le même jour déjà sélectionné, on ne fait rien (évite anim inutile)
+        // Si on tape sur le même jour déjà sélectionné, on ne fait rien
         if (calSameDay(newDate, calSelectedDate)) return;
+
+        // Direction du slide : si nouveau jour est APRÈS l'actuel → slide vers la gauche
+        // (la nouvelle liste entre depuis la droite, comme pour aller "vers le futur")
+        const direction = (newDate > calSelectedDate) ? 'next' : 'prev';
+
         calSelectedDate = newDate;
         renderCalendarWeek();
-        renderCalendarDayDetail();
-        // Fondu doux sur la liste des résas (style Apple Calendar)
-        const listEl = $('calDayList');
-        if (listEl) {
-          listEl.classList.remove('cal-fade-in');
-          void listEl.offsetWidth;
-          listEl.classList.add('cal-fade-in');
-        }
+        animateDayList(direction);
       });
     });
+  }
+
+  // Animation slide de la liste des résas (sans toucher à la barre 7 jours)
+  // direction = 'next' (slide gauche, nouvelle liste arrive de droite)
+  //           = 'prev' (slide droite, nouvelle liste arrive de gauche)
+  let calDayListAnimating = false;
+  function animateDayList(direction) {
+    const listEl = $('calDayList');
+    if (!listEl) {
+      renderCalendarDayDetail();
+      return;
+    }
+    if (calDayListAnimating) {
+      // Si déjà en train d'animer, on coupe et on rend direct
+      renderCalendarDayDetail();
+      return;
+    }
+    calDayListAnimating = true;
+
+    const outClass = direction === 'next' ? 'cal-slide-out-left' : 'cal-slide-out-right';
+    const inClass = direction === 'next' ? 'cal-slide-in-right' : 'cal-slide-in-left';
+
+    listEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left', 'cal-slide-out-left', 'cal-slide-out-right', 'cal-fade-in');
+    void listEl.offsetWidth;
+    listEl.classList.add(outClass);
+
+    const onOutEnd = () => {
+      listEl.removeEventListener('animationend', onOutEnd);
+      renderCalendarDayDetail();
+      listEl.classList.remove('cal-slide-out-left', 'cal-slide-out-right');
+      void listEl.offsetWidth;
+      listEl.classList.add(inClass);
+
+      const onInEnd = () => {
+        listEl.removeEventListener('animationend', onInEnd);
+        listEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left');
+        calDayListAnimating = false;
+      };
+      listEl.addEventListener('animationend', onInEnd);
+    };
+    listEl.addEventListener('animationend', onOutEnd);
   }
 
   // Helper : formater l'emplacement d'une résa (Intérieur / Extérieur / Peu importe)

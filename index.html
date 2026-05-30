@@ -3672,6 +3672,7 @@
   /* Conteneur qui anime ses enfants (barre 7 jours + liste résas) */
   .cal-animatable {
     will-change: transform, opacity;
+    animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
   .cal-animatable.cal-slide-in-right,
   .cal-day-list.cal-slide-in-right {
@@ -3862,7 +3863,6 @@
     margin: 0 20px 14px;
     padding: 14px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07), 0 3px 10px rgba(0, 0, 0, 0.05);
-    animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
   .cal-week-weekdays {
     display: grid;
@@ -3930,7 +3930,10 @@
   /* Liste des résas du jour — style "Inbox iOS" : lignes séparées, pas de cartes */
   .cal-day-list {
     padding: 4px 30px 100px;
-    animation: cascadeIn 0.6s ease-out 0.18s backwards;
+  }
+  /* Sur la page Calendrier, les résas ont un padding spécifique à 23px gauche/droite */
+  #page-calendrier .cal-day-list {
+    padding: 4px 23px 100px;
   }
   .cal-day-row {
     display: flex;
@@ -8578,11 +8581,15 @@
     });
   }
 
-  // Click sur la card "Réservations ce mois" → popup Réservations
+  // Click sur la card "Réservations ce mois" → page Calendrier
   const resaMonthCardEl = $('resaMonthCard');
   if (resaMonthCardEl) {
     resaMonthCardEl.addEventListener('click', () => {
-      if (typeof openResaPopup === 'function') openResaPopup();
+      // Réinitialiser sur aujourd'hui pour partir sur la semaine courante
+      const today = calStartOfDay(new Date());
+      calSelectedDate = today;
+      calViewedWeekStart = calMondayOfWeek(today);
+      if (typeof switchPage === 'function') switchPage('calendrier');
     });
   }
 

@@ -1130,39 +1130,31 @@
   /* TAB BAR */
   .tabbar {
     position: fixed;
-    bottom: max(14px, env(safe-area-inset-bottom));
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - 28px);
-    max-width: 402px;
-    /* Effet Liquid Glass teinté vert (style iOS) */
-    background: rgba(48, 209, 88, 0.16);
-    backdrop-filter: blur(40px) saturate(220%);
-    -webkit-backdrop-filter: blur(40px) saturate(220%);
-    border: 0.5px solid rgba(48, 209, 88, 0.30);
-    border-radius: 100px;
-    padding: 4px 8px; /* tabbar plus fine */
+    width: 100%;
+    max-width: 430px;
+    /* Effet glass teinté vert (style iOS) */
+    background: rgba(48, 209, 88, 0.12);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border-top: 0.5px solid rgba(48, 209, 88, 0.25);
+    padding: 6px 0 max(8px, env(safe-area-inset-bottom));
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 10;
-    /* Ombre + halo vert pour l'effet glass teinté */
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.30),
-      0 2px 12px rgba(48, 209, 88, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.10),
-      inset 0 -1px 0 rgba(48, 209, 88, 0.10);
   }
-  /* Reflet glossy subtil sur le haut (teinté légèrement vert) */
+  /* Reflet glossy subtil sur le haut */
   .tabbar::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
-    height: 50%;
-    border-radius: 100px 100px 50% 50% / 100px 100px 100% 100%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 100%);
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 50%, transparent 100%);
     pointer-events: none;
   }
   .tab {
@@ -1171,7 +1163,7 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 3px 0; /* compact */
+    padding: 3px 0;
     color: var(--label-secondary);
     font-size: 9px;
     font-weight: 500;

@@ -1135,25 +1135,25 @@
     transform: translateX(-50%);
     width: calc(100% - 28px);
     max-width: 402px;
-    /* Effet Liquid Glass (style iOS 26) */
-    background: rgba(28, 28, 30, 0.55);
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border: 0.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 100px; /* totalement arrondi en pilule */
-    padding: 10px 8px;
+    /* Effet Liquid Glass teinté vert (style iOS) */
+    background: rgba(48, 209, 88, 0.16);
+    backdrop-filter: blur(40px) saturate(220%);
+    -webkit-backdrop-filter: blur(40px) saturate(220%);
+    border: 0.5px solid rgba(48, 209, 88, 0.30);
+    border-radius: 100px;
+    padding: 4px 8px; /* tabbar plus fine */
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 10;
-    /* Ombre douce + halo lumineux pour l'effet "goutte d'eau" */
+    /* Ombre + halo vert pour l'effet glass teinté */
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.35),
-      0 2px 8px rgba(0, 0, 0, 0.20),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+      0 8px 32px rgba(0, 0, 0, 0.30),
+      0 2px 12px rgba(48, 209, 88, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -1px 0 rgba(48, 209, 88, 0.10);
   }
-  /* Reflet glossy subtil sur le haut de la pilule (effet goutte d'eau) */
+  /* Reflet glossy subtil sur le haut (teinté légèrement vert) */
   .tabbar::before {
     content: '';
     position: absolute;
@@ -1162,7 +1162,7 @@
     right: 10%;
     height: 50%;
     border-radius: 100px 100px 50% 50% / 100px 100px 100% 100%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
   }
   .tab {
@@ -1170,10 +1170,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 4px 0;
+    gap: 2px;
+    padding: 3px 0; /* compact */
     color: var(--label-secondary);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     letter-spacing: -0.1px;
     transition: color 0.15s;
@@ -1201,9 +1201,9 @@
   }
   .tab-badge.hidden { display: none; }
   .tab.active {
-    color: var(--blue);
+    color: #30D158; /* vert iOS */
   }
-  /* Pilule lumineuse derrière l'onglet actif (style iOS Liquid Glass) */
+  /* Pilule lumineuse derrière l'onglet actif (vert) */
   .tab.active::after {
     content: '';
     position: absolute;
@@ -1213,21 +1213,21 @@
     width: calc(100% + 4px);
     height: calc(100% + 4px);
     border-radius: 100px;
-    background: rgba(10, 132, 255, 0.14);
+    background: rgba(48, 209, 88, 0.20);
     z-index: -1;
-    box-shadow: 0 0 16px rgba(10, 132, 255, 0.25);
+    box-shadow: 0 0 14px rgba(48, 209, 88, 0.35);
   }
   .tab svg {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     stroke: currentColor;
     stroke-width: 1.8;
     fill: none;
   }
-  .tab.active svg { fill: rgba(0, 122, 255, 0.15); stroke: var(--blue); }
+  .tab.active svg { fill: rgba(48, 209, 88, 0.15); stroke: #30D158; }
   /* Stats tab uses the Frizz sound-wave logo: solid filled bars, no stroke */
   .tab[data-page="stats"] svg { fill: currentColor; stroke: none; }
-  .tab[data-page="stats"].active svg { fill: var(--blue); stroke: none; }
+  .tab[data-page="stats"].active svg { fill: #30D158; stroke: none; }
 
   @keyframes cascadeIn {
     from { opacity: 0; transform: translateY(16px); }

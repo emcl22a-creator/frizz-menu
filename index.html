@@ -401,7 +401,7 @@
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
   }
 
-  /* Cartes empilées — plus grandes */
+  /* Cartes empilées — plus grandes (Apple Health style) */
   .health-cards {
     display: flex;
     flex-direction: column;
@@ -411,31 +411,30 @@
     display: block;
     width: 100%;
     border-radius: 26px;
-    padding: 22px 24px 26px;
-    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    padding: 24px 26px 28px;
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
     cursor: pointer;
     text-align: left;
     transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1);
     position: relative;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
-    min-height: 160px;
+    min-height: 180px;
   }
   .health-card:active { transform: scale(0.98); }
-  /* Variantes de couleur (mode sombre pastel atténué — plus lumineux) */
+  /* Couleurs Apple Health (saturées sur fond sombre) */
   .health-card--green {
-    background: linear-gradient(135deg, rgba(48, 209, 88, 0.40) 0%, rgba(48, 209, 88, 0.22) 100%);
+    background: linear-gradient(135deg, rgba(50, 215, 75, 0.55) 0%, rgba(40, 175, 60, 0.38) 100%);
   }
   .health-card--blue {
-    background: linear-gradient(135deg, rgba(10, 132, 255, 0.40) 0%, rgba(10, 132, 255, 0.22) 100%);
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.55) 0%, rgba(0, 100, 220, 0.38) 100%);
   }
   .health-card--yellow {
-    background: linear-gradient(135deg, rgba(255, 204, 0, 0.40) 0%, rgba(255, 159, 10, 0.22) 100%);
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.55) 0%, rgba(255, 149, 0, 0.38) 100%);
   }
   .health-card--pink {
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.40) 0%, rgba(255, 45, 85, 0.22) 100%);
+    background: linear-gradient(135deg, rgba(255, 55, 95, 0.55) 0%, rgba(255, 45, 85, 0.38) 100%);
   }
-
   /* Top de la carte : icône + titre + meta */
   .health-card-top {
     display: flex;
@@ -492,17 +491,17 @@
     margin-top: 10px;
   }
   .health-card-value {
-    font-size: 48px;
+    font-size: 56px;
     font-weight: 700;
     color: #fff;
-    letter-spacing: -1.5px;
+    letter-spacing: -1.8px;
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .health-card-unit {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
     margin-left: 3px;
   }
   .health-card-chart {
@@ -4941,29 +4940,7 @@
 
       <!-- Cartes empilées style Apple Health -->
       <div class="health-cards">
-        <!-- Carte Appels Frizz (vert) -->
-        <button class="health-card health-card--green" data-popup="appels" type="button">
-          <div class="health-card-top">
-            <div class="health-card-icon-wrap">
-              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
-              </svg>
-            </div>
-            <div class="health-card-title">Appels Frizz</div>
-            <div class="health-card-meta">
-              <span id="accueilAppelsMeta">aujourd'hui</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </div>
-          <div class="health-card-body">
-            <div class="health-card-value"><span id="accueilAppelsValue">0</span></div>
-            <div class="health-card-chart" id="accueilAppelsChart" aria-hidden="true">
-              <!-- Mini-barres SVG construites en JS -->
-            </div>
-          </div>
-        </button>
-
-        <!-- Carte Réservations (bleu) -->
+        <!-- 1) Carte Calendrier (bleu) -->
         <button class="health-card health-card--blue" data-popup="reservations" type="button">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
@@ -4971,7 +4948,7 @@
                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
               </svg>
             </div>
-            <div class="health-card-title">Réservations</div>
+            <div class="health-card-title">Calendrier</div>
             <div class="health-card-meta">
               <span id="accueilResasMeta">ce mois</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
@@ -4983,7 +4960,7 @@
           </div>
         </button>
 
-        <!-- Carte Activités (jaune) -->
+        <!-- 2) Carte Activités (jaune) -->
         <button class="health-card health-card--yellow" data-popup="activites" type="button">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
@@ -5008,7 +4985,29 @@
           </div>
         </button>
 
-        <!-- Carte Conversion (rose) -->
+        <!-- 3) Carte Appels Frizz (vert) -->
+        <button class="health-card health-card--green" data-popup="appels" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Appels Frizz</div>
+            <div class="health-card-meta">
+              <span id="accueilAppelsMeta">aujourd'hui</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value"><span id="accueilAppelsValue">0</span></div>
+            <div class="health-card-chart" id="accueilAppelsChart" aria-hidden="true">
+              <!-- Mini-barres SVG construites en JS -->
+            </div>
+          </div>
+        </button>
+
+        <!-- 4) Carte Conversion (rose) -->
         <button class="health-card health-card--pink" data-popup="conversion" type="button">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
@@ -10109,7 +10108,7 @@
         </div>
       `;
     } else if (type === 'reservations') {
-      titleText = 'Réservations';
+      titleText = 'Calendrier';
       bodyHTML = ''; // sera rempli par DOM move
     } else if (type === 'activites') {
       titleText = 'Activités';

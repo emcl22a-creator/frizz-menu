@@ -427,13 +427,21 @@
     color: rgba(255, 255, 255, 0.4);
     font-size: 15px;
   }
-  /* Items de la liste : padding L/R retiré (géré par .notif-page-list maintenant) */
+  /* Items de la liste : style iOS épuré (override les autres .activity-item) */
   .notif-page-list .activity-item {
-    padding: 14px 0;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 14px 0 !important;
+    align-items: center !important;
   }
-  /* Séparateur fin entre items pour un look iOS plus propre */
+  /* Séparateur fin entre items pour un look iOS Settings */
   .notif-page-list .activity-item:not(:last-child) {
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08) !important;
   }
 
   /* GREETING */
@@ -4706,41 +4714,18 @@
           </div>
         </div>
 
-        <!-- 2 mini-cartes : Évolution + Tps gagné -->
-        <div class="kpi-mini-row">
-          <div class="kpi-mini kpi-mini-ring-card" id="conversionCard" style="cursor: default;">
-            <div class="kpi-mini-text">
-              <div class="kpi-mini-label">Conversion</div>
-              <div class="kpi-mini-sublabel">ce mois</div>
-            </div>
-            <div class="kpi-mini-ring">
-              <svg viewBox="0 0 60 60" class="ring-svg">
-                <!-- Cercle de fond (track) -->
-                <circle class="ring-bg" cx="30" cy="30" r="25"/>
-                <!-- Cercle de progression animé -->
-                <circle class="ring-progress" id="conversionRing" cx="30" cy="30" r="25"/>
-              </svg>
-              <div class="ring-text" id="conversionRingText">0<span class="ring-unit">%</span></div>
-            </div>
-            <!-- Stubs pour ne pas casser l'ancien JS -->
-            <span id="evolutionCard" hidden style="display:none;"></span>
-            <span id="evolutionValue" hidden style="display:none;"></span>
-            <span id="evolutionIcon" hidden style="display:none;"></span>
-            <span id="activitiesCount" hidden style="display:none;">0</span>
-            <span id="activitiesCard" hidden style="display:none;"></span>
-          </div>
-
-          <div class="kpi-mini" id="timeSavedCard" style="cursor: default;">
-            <div class="kpi-mini-text">
-              <div class="kpi-mini-value" id="timeSavedValue"><span class="kpi-mini-num">0</span><span class="kpi-mini-unit">min</span></div>
-              <div class="kpi-mini-label">Tps gagné</div>
-            </div>
-            <div class="kpi-mini-icon kpi-mini-icon--green">
-              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-              </svg>
-            </div>
-          </div>
+        <!-- Mini-cartes Conversion + Tps gagné supprimées. Stubs cachés pour ne pas casser le JS. -->
+        <div hidden style="display:none;">
+          <span id="conversionCard"></span>
+          <span id="conversionRing"></span>
+          <span id="conversionRingText"></span>
+          <span id="evolutionCard"></span>
+          <span id="evolutionValue"></span>
+          <span id="evolutionIcon"></span>
+          <span id="timeSavedCard"></span>
+          <span id="timeSavedValue"></span>
+          <span id="activitiesCount">0</span>
+          <span id="activitiesCard"></span>
         </div>
       </section>
 

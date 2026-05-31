@@ -5770,8 +5770,7 @@
       const { data: salons, error: salonErr } = await supa
         .from('frizz_ai_salons')
         .select('*')
-        .eq('user_id', currentUser.id)
-        .limit(1);
+        .eq('user_id', currentUser.id);
 
       if (salonErr) throw salonErr;
 
@@ -5782,11 +5781,34 @@
           .eq('id', '0a4897c5-42a9-4e86-8de5-9c4c34232281')
           .limit(1);
         currentSalon = demoSalons?.[0] || null;
-      } else {
+      } else if (salons.length === 1) {
+        // Un seul salon : pas de choix
         currentSalon = salons[0];
+      } else {
+        // Plusieurs salons : choisir intelligemment
+        let chosen = null;
+        // 1) Préférer le dernier salon utilisé (mémorisé dans localStorage)
+        try {
+          const lastSalonId = localStorage.getItem('frizz_last_salon_id');
+          if (lastSalonId) {
+            chosen = salons.find(s => s.id === lastSalonId);
+          }
+        } catch (e) { /* localStorage peut être bloqué */ }
+        // 2) Sinon, préférer un salon avec un numéro Frizz attribué (= actif en production)
+        if (!chosen) {
+          chosen = salons.find(s => s.numero_frizz && String(s.numero_frizz).trim().length > 0);
+        }
+        // 3) Sinon, prendre le premier
+        if (!chosen) chosen = salons[0];
+        currentSalon = chosen;
       }
 
       if (!currentSalon) throw new Error('Aucun salon trouvé pour ce compte.');
+
+      // Mémoriser le salon actuel pour la prochaine session
+      try {
+        if (currentSalon?.id) localStorage.setItem('frizz_last_salon_id', currentSalon.id);
+      } catch (e) { /* ignore */ }
 
       const { data: reservations, error: resaErr } = await supa
         .from('frizz_ai_reservations')

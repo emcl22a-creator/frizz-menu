@@ -646,10 +646,23 @@
     line-height: 1;
     white-space: nowrap;
   }
-  /* Pour le chiffre + unité (ex: "27 min"), on réduit un peu pour garder une seule ligne */
+  /* Tps gagné : chiffre à la même taille que les autres mini-cartes, unité plus petite */
   #timeSavedValue {
-    font-size: 26px;
-    letter-spacing: -0.5px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .kpi-mini-num {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .kpi-mini-unit {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: -0.2px;
   }
   /* Masquer les chiffres qui sont encore en cours de chargement (évite le flash 0 → vrai chiffre) */
   .kpi-loading {
@@ -4574,7 +4587,7 @@
 
       <div class="kpi-mini" id="timeSavedCard" style="cursor: default;">
         <div class="kpi-mini-text">
-          <div class="kpi-mini-value" id="timeSavedValue">0 min</div>
+          <div class="kpi-mini-value" id="timeSavedValue"><span class="kpi-mini-num">0</span><span class="kpi-mini-unit">min</span></div>
           <div class="kpi-mini-label">Tps gagné</div>
         </div>
         <div class="kpi-mini-icon kpi-mini-icon--green">
@@ -5889,10 +5902,10 @@
     // Temps gagné (somme des durées d'appels du mois, en minutes)
     try {
       const elTime = $('timeSavedValue');
-      if (elTime) elTime.textContent = `${timeSavedMinutes} min`;
+      if (elTime) elTime.innerHTML = `<span class="kpi-mini-num">${timeSavedMinutes}</span><span class="kpi-mini-unit">min</span>`;
     } catch (e) {
       const elTime = $('timeSavedValue');
-      if (elTime) elTime.textContent = '0 min';
+      if (elTime) elTime.innerHTML = '<span class="kpi-mini-num">0</span><span class="kpi-mini-unit">min</span>';
     }
 
     // ─── NOMBRE D'ANNULATIONS DE RÉSERVATION ───

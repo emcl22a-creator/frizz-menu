@@ -395,12 +395,16 @@
 
   /* ═══ PAGE NOTIFICATIONS ═══ */
   #page-notifications {
-    padding-top: 28px;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-top: 27px; /* identique à #page-stats */
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Animation d'ouverture déclenchée à chaque arrivée sur la page Notifications */
+  .notif-animatable.notif-page-enter {
+    animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
   .notif-page-actions {
-    padding: 0 8px 14px;
+    padding: 0 20px 14px; /* 20px L/R comme Stats */
     display: flex;
     justify-content: flex-start; /* bouton à gauche */
   }
@@ -425,8 +429,7 @@
   }
   /* Réutilise le style activity-item pour les items de notif */
   .notif-page-list .activity-item {
-    padding: 14px 8px;
-    border-radius: 12px;
+    padding: 14px 20px;
   }
 
   /* GREETING */
@@ -4569,11 +4572,13 @@
 
   <!-- ═══ PAGE NOTIFICATIONS (page d'accueil) ═══ -->
   <div class="page active" id="page-notifications">
-    <div class="notif-page-actions">
-      <button class="notif-page-mark-all" id="notifPageMarkAllBtn">Tout marquer comme lu</button>
-    </div>
-    <div class="notif-page-list" id="notifPageList">
-      <!-- Liste construite dynamiquement -->
+    <div class="notif-animatable notif-page-enter" id="notifAnimatable">
+      <div class="notif-page-actions">
+        <button class="notif-page-mark-all" id="notifPageMarkAllBtn">Tout marquer comme lu</button>
+      </div>
+      <div class="notif-page-list" id="notifPageList">
+        <!-- Liste construite dynamiquement -->
+      </div>
     </div>
     <!-- Stub pour ne pas casser le JS qui peut accéder à notifPageSubtitle -->
     <span id="notifPageSubtitle" hidden style="display:none;"></span>
@@ -6062,6 +6067,11 @@
 
     // Liste résas à venir
     renderResaList(validResas, now);
+
+    // Rafraîchir la page Notifications avec les données fraîches
+    try {
+      if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
+    } catch (e) { /* ignore */ }
   }
 
   function renderResaList(validResas, now) {
@@ -6909,9 +6919,16 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const activeTab = document.querySelector(`.tab[data-page="${pageId}"]`);
     if (activeTab) activeTab.classList.add('active');
-    // Render le contenu si Notifications (rafraîchit la liste)
+    // Render le contenu si Notifications (rafraîchit la liste + animation)
     if (pageId === 'notifications') {
       if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
+      // Re-jouer l'animation d'ouverture
+      const animEl = document.getElementById('notifAnimatable');
+      if (animEl) {
+        animEl.classList.remove('notif-page-enter');
+        void animEl.offsetWidth; // forcer reflow
+        animEl.classList.add('notif-page-enter');
+      }
     }
     // Render le contenu si Activité
     if (pageId === 'activity') {
@@ -9417,7 +9434,7 @@
         else subtitle.textContent = `${unread} non lue${unread > 1 ? 's' : ''}`;
       }
       if (items.length === 0) {
-        list.innerHTML = '<div class="notif-page-empty">Aucune notification pour le moment.</div>';
+        list.innerHTML = '<div class="notif-page-empty">Aucune activité pour le moment.</div>';
         return;
       }
       const html = items.map(item => {

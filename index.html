@@ -9281,8 +9281,8 @@
     });
   }
 
-  // ═══ BOTTOM SHEET ACTIVITÉS ═══
   // ═══ PAGE NOTIFICATIONS (anciennement bottom sheet) ═══
+  try {
   (function setupNotificationPage() {
     const list = $('notifPageList');
     const subtitle = $('notifPageSubtitle');
@@ -9494,11 +9494,20 @@
     renderList();
     updateCounter();
   })();
+  } catch (notifErr) {
+    console.error('[NOTIF] setupNotificationPage a planté (non bloquant) :', notifErr);
+  }
 
-  // Filtres page Activité
-  document.querySelectorAll('.activity-filter-pill').forEach(pill => {
-    pill.addEventListener('click', () => setActivityFilter(pill.dataset.filter));
-  });
+  // Filtres page Activité (sécurisé)
+  try {
+    document.querySelectorAll('.activity-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        if (typeof setActivityFilter === 'function') setActivityFilter(pill.dataset.filter);
+      });
+    });
+  } catch (filterErr) {
+    console.error('[FILTER] activity-filter-pill failed:', filterErr);
+  }
 
   // Page Réglages — Sélection de voix
   document.querySelectorAll('.voice-card').forEach(card => {

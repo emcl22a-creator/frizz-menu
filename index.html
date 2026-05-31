@@ -1130,20 +1130,40 @@
   /* TAB BAR */
   .tabbar {
     position: fixed;
-    bottom: 0;
+    bottom: max(14px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: var(--tabbar-bg);
-    backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    border-top: 0.5px solid var(--separator);
-    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    width: calc(100% - 28px);
+    max-width: 402px;
+    /* Effet Liquid Glass (style iOS 26) */
+    background: rgba(28, 28, 30, 0.55);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 100px; /* totalement arrondi en pilule */
+    padding: 10px 8px;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     z-index: 10;
+    /* Ombre douce + halo lumineux pour l'effet "goutte d'eau" */
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      0 2px 8px rgba(0, 0, 0, 0.20),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  }
+  /* Reflet glossy subtil sur le haut de la pilule (effet goutte d'eau) */
+  .tabbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 50%;
+    border-radius: 100px 100px 50% 50% / 100px 100px 100% 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
   }
   .tab {
     flex: 1;
@@ -1151,7 +1171,7 @@
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    padding: 6px 0;
+    padding: 4px 0;
     color: var(--label-secondary);
     font-size: 10px;
     font-weight: 500;
@@ -1180,7 +1200,23 @@
     box-shadow: 0 1px 4px rgba(255, 59, 48, 0.4);
   }
   .tab-badge.hidden { display: none; }
-  .tab.active { color: var(--blue); }
+  .tab.active {
+    color: var(--blue);
+  }
+  /* Pilule lumineuse derrière l'onglet actif (style iOS Liquid Glass) */
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: 100px;
+    background: rgba(10, 132, 255, 0.14);
+    z-index: -1;
+    box-shadow: 0 0 16px rgba(10, 132, 255, 0.25);
+  }
   .tab svg {
     width: 26px;
     height: 26px;

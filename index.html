@@ -644,6 +644,17 @@
     color: var(--label);
     letter-spacing: -1px;
     line-height: 1;
+    white-space: nowrap;
+  }
+  /* Pour le chiffre + unité (ex: "27 min"), on réduit un peu pour garder une seule ligne */
+  #timeSavedValue {
+    font-size: 26px;
+    letter-spacing: -0.5px;
+  }
+  /* Masquer les chiffres qui sont encore en cours de chargement (évite le flash 0 → vrai chiffre) */
+  .kpi-loading {
+    opacity: 0;
+    transition: opacity 0.25s ease-out;
   }
   .kpi-mini-label {
     font-size: 15px;
@@ -4512,7 +4523,7 @@
               <div class="kpi-hero-title">Appels Frizz</div>
               <div class="kpi-hero-sub">aujourd'hui</div>
             </div>
-            <div class="kpi-hero-number" id="couvertsLibres">0</div>
+            <div class="kpi-hero-number kpi-loading" id="couvertsLibres">0</div>
           </div>
         </div>
         <div class="kpi-hero-slide">
@@ -4521,7 +4532,7 @@
               <div class="kpi-hero-title">Appels Frizz</div>
               <div class="kpi-hero-sub">cette semaine</div>
             </div>
-            <div class="kpi-hero-number" id="appelsSemaine">0</div>
+            <div class="kpi-hero-number kpi-loading" id="appelsSemaine">0</div>
           </div>
         </div>
         <div class="kpi-hero-slide">
@@ -4530,7 +4541,7 @@
               <div class="kpi-hero-title">Appels Frizz</div>
               <div class="kpi-hero-sub">ce mois</div>
             </div>
-            <div class="kpi-hero-number" id="appelsMois">0</div>
+            <div class="kpi-hero-number kpi-loading" id="appelsMois">0</div>
           </div>
         </div>
       </div>
@@ -5766,12 +5777,12 @@
     try {
       const callsToday = todayCallsCount;
       const elCalls = $('couvertsLibres');
-      if (elCalls) elCalls.textContent = callsToday;
+      if (elCalls) { elCalls.textContent = callsToday; elCalls.classList.remove('kpi-loading'); }
       // Mises à jour des cartes Semaine et Mois du carousel
       const elWeek = $('appelsSemaine');
-      if (elWeek) elWeek.textContent = weekCallsCount;
+      if (elWeek) { elWeek.textContent = weekCallsCount; elWeek.classList.remove('kpi-loading'); }
       const elMonth = $('appelsMois');
-      if (elMonth) elMonth.textContent = monthCallsCount;
+      if (elMonth) { elMonth.textContent = monthCallsCount; elMonth.classList.remove('kpi-loading'); }
       
       // Sous-label : montrer la limite du plan actuel
       let currentPlan = null;
@@ -9244,7 +9255,7 @@
         if (item.kind === 'modified') return personName ? `Modif. — ${personName}` : 'Modif.';
         if (item.kind === 'cancelled') return personName ? `Annulation — ${personName}` : 'Annulation';
       }
-      if (item.type === 'message') return personName ? `Message — ${personName}` : 'Message';
+      if (item.type === 'message') return personName ? `Demande appel — ${personName}` : 'Demande appel';
       return personName || '';
     }
 

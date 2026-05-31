@@ -418,6 +418,56 @@
     transition: transform 0.1s;
   }
   .kpi-mini:active { transform: scale(0.97); }
+
+  /* Carrousel à l'intérieur de la mini-carte Réservations */
+  .kpi-mini-carousel-wrap {
+    display: block;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-mini-carousel-wrap:active { transform: scale(0.97); }
+  .kpi-mini-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .kpi-mini-carousel::-webkit-scrollbar { display: none; }
+  .kpi-mini-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+    padding: 20px 18px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  /* Dots à l'intérieur de la carte (en bas centré) */
+  .kpi-mini-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .kpi-mini-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: background 0.25s, transform 0.25s;
+  }
+  .kpi-mini-dot.active {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.15);
+  }
   .kpi-mini-text { display: flex; flex-direction: column; min-width: 0; }
   .kpi-mini-value {
     font-size: 34px;
@@ -4328,18 +4378,40 @@
 
     <!-- 2 mini-cartes : Réservations + Annulations -->
     <div class="kpi-mini-row">
-      <div class="kpi-mini" id="resaMonthCard" style="cursor: pointer;">
-        <div class="kpi-mini-text">
-          <div class="kpi-mini-value" id="resaCeMois">0</div>
-          <div class="kpi-mini-label">Réservations</div>
+      <div class="kpi-mini kpi-mini-carousel-wrap" id="resaMonthCard" style="cursor: pointer;">
+        <div class="kpi-mini-carousel" id="resaCarousel">
+          <div class="kpi-mini-slide">
+            <div class="kpi-mini-text">
+              <div class="kpi-mini-value" id="resaCetteSem">0</div>
+              <div class="kpi-mini-label">Rés. cette sem.</div>
+            </div>
+            <div class="kpi-mini-icon kpi-mini-icon--blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-mini-slide">
+            <div class="kpi-mini-text">
+              <div class="kpi-mini-value" id="resaCeMois">0</div>
+              <div class="kpi-mini-label">Rés. ce mois</div>
+            </div>
+            <div class="kpi-mini-icon kpi-mini-icon--blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+          </div>
         </div>
-        <div class="kpi-mini-icon kpi-mini-icon--blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
+        <div class="kpi-mini-dots" id="resaDots">
+          <div class="kpi-mini-dot active"></div>
+          <div class="kpi-mini-dot"></div>
         </div>
       </div>
 
@@ -5671,6 +5743,27 @@
         const chartDotInnerEl = $('chartDotInner');
         if (chartDotInnerEl) chartDotInnerEl.setAttribute('cy', '62');
       }
+    }
+
+    // Nombre de réservations cette semaine (lundi → dimanche)
+    try {
+      const now0 = new Date();
+      const weekStart = new Date(now0.getFullYear(), now0.getMonth(), now0.getDate());
+      const dow = (weekStart.getDay() + 6) % 7; // 0=lundi
+      weekStart.setDate(weekStart.getDate() - dow);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 7);
+      const resasThisWeekCount = allReservations.filter(r => {
+        if (!r.created_at) return false;
+        const createdAt = new Date(r.created_at);
+        return createdAt >= weekStart && createdAt < weekEnd;
+      }).length;
+      const elSem = $('resaCetteSem');
+      if (elSem) elSem.textContent = resasThisWeekCount;
+    } catch (e) {
+      console.warn('Erreur nombre de réservations semaine:', e);
+      const elSem = $('resaCetteSem');
+      if (elSem) elSem.textContent = '0';
     }
 
     // Nombre de réservations ce mois
@@ -7368,6 +7461,23 @@
         }, 30);
       }, { passive: true });
       carousel._heroBound = true;
+    }
+
+    // Mini-carousel sur la mini-carte Réservations (cette sem. / ce mois)
+    const resaCar = $('resaCarousel');
+    if (resaCar && !resaCar._resaBound) {
+      const rDots = document.querySelectorAll('#resaDots .kpi-mini-dot');
+      let rTimeout;
+      resaCar.addEventListener('scroll', () => {
+        clearTimeout(rTimeout);
+        rTimeout = setTimeout(() => {
+          const idx = Math.round(resaCar.scrollLeft / resaCar.offsetWidth);
+          rDots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === idx);
+          });
+        }, 30);
+      }, { passive: true });
+      resaCar._resaBound = true;
     }
 
     // Swipe gauche/droite sur la section semaine pour changer de semaine

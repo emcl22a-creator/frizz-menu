@@ -304,21 +304,23 @@
   }
   .kpi-hero-carousel {
     display: flex;
-    gap: 12px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    /* Padding interne : les cartes ont 20px d'air des bords, mais le swipe va d'un bord à l'autre */
-    padding: 0 20px;
   }
   .kpi-hero-carousel::-webkit-scrollbar { display: none; }
+  /* Chaque slide prend toute la largeur de l'écran, avec son propre padding interne pour l'air des bords */
+  .kpi-hero-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
   .kpi-hero-carousel .kpi-hero {
-    flex: 0 0 calc(100% - 40px);
-    scroll-snap-align: center;
     margin-bottom: 0;
-    /* +9px de hauteur (32 top + 38 bottom = +9 vs 28/28) + espace pour les dots */
+    /* Espace pour les dots à l'intérieur de la carte */
     padding-bottom: 38px;
   }
   /* Dots indicateurs — à l'intérieur de la carte (positionnés en absolu en bas) */
@@ -4287,26 +4289,32 @@
     <!-- Carousel Hero : Appels Frizz (aujourd'hui / semaine / mois) -->
     <div class="kpi-hero-carousel-wrap">
       <div class="kpi-hero-carousel" id="heroCarousel">
-        <div class="kpi-hero" data-period="today">
-          <div class="kpi-hero-text">
-            <div class="kpi-hero-title">Appels Frizz</div>
-            <div class="kpi-hero-sub">aujourd'hui</div>
+        <div class="kpi-hero-slide">
+          <div class="kpi-hero" data-period="today">
+            <div class="kpi-hero-text">
+              <div class="kpi-hero-title">Appels Frizz</div>
+              <div class="kpi-hero-sub">aujourd'hui</div>
+            </div>
+            <div class="kpi-hero-number" id="couvertsLibres">0</div>
           </div>
-          <div class="kpi-hero-number" id="couvertsLibres">0</div>
         </div>
-        <div class="kpi-hero" data-period="week">
-          <div class="kpi-hero-text">
-            <div class="kpi-hero-title">Appels Frizz</div>
-            <div class="kpi-hero-sub">cette semaine</div>
+        <div class="kpi-hero-slide">
+          <div class="kpi-hero" data-period="week">
+            <div class="kpi-hero-text">
+              <div class="kpi-hero-title">Appels Frizz</div>
+              <div class="kpi-hero-sub">cette semaine</div>
+            </div>
+            <div class="kpi-hero-number" id="appelsSemaine">0</div>
           </div>
-          <div class="kpi-hero-number" id="appelsSemaine">0</div>
         </div>
-        <div class="kpi-hero" data-period="month">
-          <div class="kpi-hero-text">
-            <div class="kpi-hero-title">Appels Frizz</div>
-            <div class="kpi-hero-sub">ce mois</div>
+        <div class="kpi-hero-slide">
+          <div class="kpi-hero" data-period="month">
+            <div class="kpi-hero-text">
+              <div class="kpi-hero-title">Appels Frizz</div>
+              <div class="kpi-hero-sub">ce mois</div>
+            </div>
+            <div class="kpi-hero-number" id="appelsMois">0</div>
           </div>
-          <div class="kpi-hero-number" id="appelsMois">0</div>
         </div>
       </div>
       <!-- Dots indicateurs -->
@@ -7358,9 +7366,8 @@
       carousel.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
-          // Largeur d'une carte + gap = (offsetWidth - padding 2x20) + gap 12 = offsetWidth - 28
-          const cardStep = carousel.offsetWidth - 28;
-          const idx = Math.round(carousel.scrollLeft / cardStep);
+          // Chaque slide fait 100% de la largeur du carousel
+          const idx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
           dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === idx);
           });

@@ -537,6 +537,36 @@
     font-weight: 700;
     color: #fff;
   }
+  /* Mini-liste de notifications (cohérent avec popup Activités) */
+  .health-card-chart--list {
+    width: 110px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+    justify-content: center;
+  }
+  .mini-list-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mini-list-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    flex-shrink: 0;
+  }
+  .mini-list-line {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+  .mini-list-line--long { width: 80px; }
+  .mini-list-line--med { width: 60px; }
+  .mini-list-line--short { width: 40px; }
   .ring-svg--card {
     width: 56px;
     height: 56px;
@@ -4969,12 +4999,7 @@
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
               <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="4" cy="6" r="1.6"/>
-                <rect x="8" y="5" width="13" height="2" rx="1"/>
-                <circle cx="4" cy="12" r="1.6"/>
-                <rect x="8" y="11" width="13" height="2" rx="1"/>
-                <circle cx="4" cy="18" r="1.6"/>
-                <rect x="8" y="17" width="13" height="2" rx="1"/>
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
               </svg>
             </div>
             <div class="health-card-title">Activités</div>
@@ -4985,7 +5010,21 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilActivitesValue">0</span></div>
-            <div class="health-card-chart health-card-chart--badge" id="accueilActivitesBadge" aria-hidden="true"></div>
+            <div class="health-card-chart health-card-chart--list" id="accueilActivitesBadge" aria-hidden="true">
+              <!-- Mini-liste de notifications (cohérent avec la popup Activités) -->
+              <div class="mini-list-row">
+                <span class="mini-list-dot"></span>
+                <span class="mini-list-line mini-list-line--long"></span>
+              </div>
+              <div class="mini-list-row">
+                <span class="mini-list-dot"></span>
+                <span class="mini-list-line mini-list-line--med"></span>
+              </div>
+              <div class="mini-list-row">
+                <span class="mini-list-dot"></span>
+                <span class="mini-list-line mini-list-line--short"></span>
+              </div>
+            </div>
           </div>
         </button>
 
@@ -5004,7 +5043,7 @@
             </div>
             <div class="health-card-title">Statistique</div>
             <div class="health-card-meta">
-              <span id="accueilConversionMeta">ce mois</span>
+              <span id="accueilConversionMeta">voir</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
           </div>

@@ -401,17 +401,17 @@
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
   }
 
-  /* Cartes empilées — plus grandes (Apple Health style) */
+  /* Cartes empilées — taille parfaite Apple Health */
   .health-cards {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
   .health-card {
     display: block;
     width: 100%;
-    border-radius: 26px;
-    padding: 24px 26px 28px;
+    border-radius: 22px;
+    padding: 18px 20px 20px;
     border: 0.5px solid rgba(255, 255, 255, 0.06);
     cursor: pointer;
     text-align: left;
@@ -419,32 +419,36 @@
     position: relative;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
-    min-height: 180px;
+    min-height: 150px;
   }
   .health-card:active { transform: scale(0.98); }
-  /* Couleurs Apple Health (saturées sur fond sombre) */
+  /* Couleurs Apple système iOS (mode sombre) */
   .health-card--green {
-    background: linear-gradient(135deg, rgba(50, 215, 75, 0.55) 0%, rgba(40, 175, 60, 0.38) 100%);
+    /* systemGreen dark mode #30D158 */
+    background: rgba(48, 209, 88, 0.32);
   }
   .health-card--blue {
-    background: linear-gradient(135deg, rgba(10, 132, 255, 0.55) 0%, rgba(0, 100, 220, 0.38) 100%);
+    /* systemBlue dark mode #0A84FF */
+    background: rgba(10, 132, 255, 0.32);
   }
   .health-card--yellow {
-    background: linear-gradient(135deg, rgba(255, 204, 0, 0.55) 0%, rgba(255, 149, 0, 0.38) 100%);
+    /* systemYellow dark mode #FFD60A */
+    background: rgba(255, 214, 10, 0.32);
   }
   .health-card--pink {
-    background: linear-gradient(135deg, rgba(255, 55, 95, 0.55) 0%, rgba(255, 45, 85, 0.38) 100%);
+    /* systemPink dark mode #FF375F */
+    background: rgba(255, 55, 95, 0.32);
   }
-  /* Top de la carte : icône + titre + meta */
+  /* Top de la carte : icône à GAUCHE, titre au milieu, meta à DROITE */
   .health-card-top {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
   .health-card-icon-wrap {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.96);
     display: flex;
@@ -453,15 +457,15 @@
     flex-shrink: 0;
   }
   .health-card-icon {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
   .health-card--green .health-card-icon { color: #30D158; }
   .health-card--blue .health-card-icon { color: #0A84FF; }
   .health-card--yellow .health-card-icon { color: #FF9F0A; }
   .health-card--pink .health-card-icon { color: #FF375F; }
   .health-card-title {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     color: #fff;
     letter-spacing: -0.3px;
@@ -471,18 +475,18 @@
   .health-card-meta {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.55);
+    gap: 3px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
     font-weight: 500;
     flex-shrink: 0;
   }
   .health-card-meta svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
-  /* Body : valeur + chart */
+  /* Body : valeur tout à GAUCHE, chart tout à DROITE (jusqu'aux coins) */
   .health-card-body {
     display: flex;
     align-items: flex-end;
@@ -491,22 +495,22 @@
     margin-top: 10px;
   }
   .health-card-value {
-    font-size: 56px;
+    font-size: 48px;
     font-weight: 700;
     color: #fff;
-    letter-spacing: -1.8px;
+    letter-spacing: -1.6px;
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .health-card-unit {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.7);
     margin-left: 3px;
   }
   .health-card-chart {
-    width: 100px;
-    height: 48px;
+    width: 120px;
+    height: 50px;
     flex-shrink: 0;
     display: flex;
     align-items: flex-end;
@@ -516,16 +520,16 @@
   .health-card-chart .bar {
     width: 6px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.55);
   }
   .health-card-chart .bar:last-child {
     background: rgba(255, 255, 255, 0.95);
   }
   .health-card-chart--badge {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -534,8 +538,8 @@
     color: #fff;
   }
   .ring-svg--card {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     transform: rotate(-90deg);
   }
   .ring-progress--pink {

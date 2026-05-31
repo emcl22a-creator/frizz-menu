@@ -537,15 +537,60 @@
     font-weight: 700;
     color: #fff;
   }
+  /* Sous-label sous le grand chiffre (carte Statistique) */
+  .health-card-sublabel {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0;
+    margin-top: 6px;
+    line-height: 1.2;
+  }
+  /* Comparaison visuelle : 2 barres côte à côte (mois précédent vs mois actuel) */
+  .health-card-chart--compare {
+    width: 95px !important;
+    height: 56px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    gap: 14px !important;
+  }
+  .compare-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .compare-bar {
+    width: 14px;
+    border-radius: 4px;
+    transition: height 0.8s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+  .compare-bar--prev {
+    background: rgba(255, 255, 255, 0.4);
+    height: 24px;
+  }
+  .compare-bar--curr {
+    background: rgba(255, 255, 255, 0.95);
+    height: 40px;
+  }
+  .compare-bar-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.2px;
+  }
+
   /* Mini-liste de notifications (cohérent avec popup Activités) */
   .health-card-chart--list {
     width: 110px;
     height: auto;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 6px;
-    align-items: stretch;
-    justify-content: center;
+    align-items: flex-end !important;
+    justify-content: center !important;
   }
   .mini-list-row {
     display: flex;
@@ -604,7 +649,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 92vh;
+    top: 5vh; /* commence à 5% du haut → garantit qu'on ne dépasse pas */
+    /* Compatibilité avec barres d'OS mobiles */
+    max-height: 100vh;
+    max-height: 100dvh;
     background: #0A0A0B;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
@@ -615,9 +663,18 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    /* Respecter la safe-area haute (encoche/Dynamic Island) */
+    padding-top: env(safe-area-inset-top);
   }
   .modal-popup.visible {
     transform: translateY(0);
+  }
+  /* Le body de la popup gère son propre scroll + padding-bottom safe-area */
+  .modal-popup-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 0 calc(30px + env(safe-area-inset-bottom));
   }
   .modal-popup-handle {
     width: 36px;
@@ -664,12 +721,16 @@
     stroke-width: 2.5;
     fill: none;
   }
-  .modal-popup-body {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px 0 30px;
+  /* Inversion bleu/vert UNIQUEMENT dans la popup Activités */
+  #popupActivitesContainer .activity-item-icon--blue {
+    background: rgba(48, 209, 88, 0.18) !important;
+    color: #30D158 !important;
   }
+  #popupActivitesContainer .activity-item-icon--green {
+    background: rgba(10, 132, 255, 0.18) !important;
+    color: #0A84FF !important;
+  }
+
   .popup-stat-row {
     display: flex;
     align-items: center;
@@ -5048,13 +5109,25 @@
             </div>
           </div>
           <div class="health-card-body">
-            <div class="health-card-value"><span id="accueilConversionValue">0</span><span class="health-card-unit">%</span></div>
-            <div class="health-card-chart" id="accueilConversionChart" aria-hidden="true">
-              <svg viewBox="0 0 60 60" class="ring-svg ring-svg--card">
-                <circle class="ring-bg" cx="30" cy="30" r="25"/>
-                <circle class="ring-progress ring-progress--pink" id="accueilConversionRing" cx="30" cy="30" r="25"/>
-              </svg>
+            <div class="health-card-value">
+              <span id="accueilEvolValue">+0</span><span class="health-card-unit">%</span>
+              <div class="health-card-sublabel">vs mois dernier</div>
             </div>
+            <div class="health-card-chart health-card-chart--compare" aria-hidden="true">
+              <!-- Comparaison visuelle : 2 barres côte à côte (mois -1 vs ce mois) -->
+              <div class="compare-bar-group">
+                <div class="compare-bar compare-bar--prev" id="accueilCompareBarPrev"></div>
+                <div class="compare-bar-label">M-1</div>
+              </div>
+              <div class="compare-bar-group">
+                <div class="compare-bar compare-bar--curr" id="accueilCompareBarCurr"></div>
+                <div class="compare-bar-label">M</div>
+              </div>
+            </div>
+            <!-- Stubs cachés pour ne pas casser l'ancien JS -->
+            <span id="accueilConversionValue" hidden style="display:none;">0</span>
+            <span id="accueilConversionRing" hidden style="display:none;"></span>
+            <span id="accueilConversionChart" hidden style="display:none;"></span>
           </div>
         </button>
       </div>
@@ -10052,33 +10125,55 @@
         } catch (e) {}
         const elActi = $('accueilActivitesValue');
         if (elActi) elActi.textContent = unread;
-        const elActiBadge = $('accueilActivitesBadge');
-        if (elActiBadge) elActiBadge.textContent = unread > 0 ? (unread > 99 ? '99+' : unread) : '';
+        // La mini-liste reste statique (dessin décoratif cohérent avec la popup)
 
-        // Conversion
+        // Statistique : évolution vs mois précédent
         try {
           const now0 = new Date();
           const startThisMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+          const startPrevMonth = new Date(now0.getFullYear(), now0.getMonth() - 1, 1);
+          const endPrevMonth = new Date(now0.getFullYear(), now0.getMonth(), 0, 23, 59, 59);
           const resasThisMonth = (allReservations || []).filter(r => {
             if (!r.created_at) return false;
-            return new Date(r.created_at) >= startThisMonth;
+            const d = new Date(r.created_at);
+            return d >= startThisMonth;
           }).length;
-          let convPercent = 0;
-          if (typeof monthCallsCount !== 'undefined' && monthCallsCount > 0) {
-            convPercent = Math.min(100, Math.round((resasThisMonth / monthCallsCount) * 100));
+          const resasPrevMonth = (allReservations || []).filter(r => {
+            if (!r.created_at) return false;
+            const d = new Date(r.created_at);
+            return d >= startPrevMonth && d <= endPrevMonth;
+          }).length;
+          // Calcul du % d'évolution
+          let evolPercent = 0;
+          if (resasPrevMonth === 0) {
+            evolPercent = resasThisMonth > 0 ? 100 : 0;
+          } else {
+            evolPercent = Math.round(((resasThisMonth - resasPrevMonth) / resasPrevMonth) * 100);
           }
-          const elConv = $('accueilConversionValue');
-          if (elConv) elConv.textContent = convPercent;
-          // Animer le ring
-          const ring = $('accueilConversionRing');
-          if (ring) {
-            const circ = 2 * Math.PI * 25;
-            ring.style.strokeDashoffset = circ;
+          const elEvol = $('accueilEvolValue');
+          if (elEvol) {
+            const sign = evolPercent > 0 ? '+' : (evolPercent < 0 ? '−' : '');
+            elEvol.textContent = `${sign}${Math.abs(evolPercent)}`;
+          }
+          // Anime les barres de comparaison (hauteur proportionnelle)
+          const maxRef = Math.max(resasThisMonth, resasPrevMonth, 1);
+          const barPrev = $('accueilCompareBarPrev');
+          const barCurr = $('accueilCompareBarCurr');
+          if (barPrev && barCurr) {
+            const hPrev = Math.max(8, Math.round((resasPrevMonth / maxRef) * 46));
+            const hCurr = Math.max(8, Math.round((resasThisMonth / maxRef) * 46));
+            // Reset puis anime
+            barPrev.style.height = '4px';
+            barCurr.style.height = '4px';
             setTimeout(() => {
-              ring.style.strokeDashoffset = circ - (circ * convPercent / 100);
-            }, 80);
+              barPrev.style.height = `${hPrev}px`;
+              barCurr.style.height = `${hCurr}px`;
+            }, 100);
           }
-        } catch (e) {}
+          // Compat : maintenir l'ancien id si quelqu'un le lit
+          const elConv = $('accueilConversionValue');
+          if (elConv) elConv.textContent = Math.abs(evolPercent);
+        } catch (e) { console.warn('Statistique evol calc:', e); }
       }
       window.__renderAccueil = renderAccueil;
 

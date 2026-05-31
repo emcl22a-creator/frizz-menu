@@ -393,6 +393,302 @@
     padding: 12px 20px 6px;
   }
 
+  /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
+  #page-accueil {
+    padding: 12px 20px 100px;
+  }
+  .accueil-animatable.accueil-page-enter {
+    animation: cascadeIn 0.6s ease-out 0.05s backwards;
+  }
+  .accueil-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 20px;
+  }
+  .accueil-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    color: #fff;
+    margin: 0;
+  }
+  .accueil-avatar-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s;
+  }
+  .accueil-avatar-btn:active { transform: scale(0.92); }
+  .accueil-avatar-btn svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Cartes empilées */
+  .health-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .health-card {
+    display: block;
+    width: 100%;
+    border-radius: 22px;
+    padding: 16px 18px 18px;
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1);
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .health-card:active { transform: scale(0.98); }
+  /* Variantes de couleur (mode sombre pastel atténué) */
+  .health-card--green {
+    background: linear-gradient(135deg, rgba(48, 209, 88, 0.22) 0%, rgba(48, 209, 88, 0.12) 100%);
+  }
+  .health-card--blue {
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.22) 0%, rgba(10, 132, 255, 0.12) 100%);
+  }
+  .health-card--yellow {
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.22) 0%, rgba(255, 159, 10, 0.12) 100%);
+  }
+  .health-card--pink {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.22) 0%, rgba(255, 45, 85, 0.12) 100%);
+  }
+
+  /* Top de la carte : icône + titre + meta */
+  .health-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .health-card-icon-wrap {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .health-card-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .health-card--green .health-card-icon { color: #30D158; }
+  .health-card--blue .health-card-icon { color: #0A84FF; }
+  .health-card--yellow .health-card-icon { color: #FF9F0A; }
+  .health-card--pink .health-card-icon { color: #FF375F; }
+  .health-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+    flex: 1;
+    min-width: 0;
+  }
+  .health-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .health-card-meta svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Body : valeur + chart */
+  .health-card-body {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .health-card-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1.2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .health-card-unit {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: 2px;
+  }
+  .health-card-chart {
+    width: 80px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 3px;
+  }
+  .health-card-chart .bar {
+    width: 5px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .health-card-chart .bar:last-child {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  .health-card-chart--badge {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .ring-svg--card {
+    width: 50px;
+    height: 50px;
+    transform: rotate(-90deg);
+  }
+  .ring-progress--pink {
+    stroke: #FF375F;
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 157.08;
+    stroke-dashoffset: 157.08;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+
+  /* ═══ POPUP MODALE (style iOS Apple Music — bottom sheet plein écran) ═══ */
+  .modal-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+    z-index: 200;
+    pointer-events: none;
+    transition: background 0.3s ease-out, backdrop-filter 0.3s ease-out;
+  }
+  .modal-popup-backdrop.visible {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+  .modal-popup {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 92vh;
+    background: #0A0A0B;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-popup.visible {
+    transform: translateY(0);
+  }
+  .modal-popup-handle {
+    width: 36px;
+    height: 5px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+    touch-action: none;
+    cursor: grab;
+  }
+  .modal-popup-header {
+    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+  .modal-popup-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.4px;
+  }
+  .modal-popup-close {
+    background: rgba(255, 255, 255, 0.10);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .modal-popup-close svg {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .modal-popup-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 0 30px;
+  }
+  .popup-stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+  }
+  .popup-stat-label {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+  }
+  .popup-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
   /* ═══ PAGE NOTIFICATIONS (devenue Accueil — fusion Stats + Notif) ═══ */
   #page-notifications {
     padding-top: 27px; /* identique à l'ancien #page-stats */
@@ -4687,7 +4983,120 @@
   </div>
 
   <!-- ═══ PAGE NOTIFICATIONS (page d'accueil) ═══ -->
-  <div class="page active" id="page-notifications">
+  <!-- ═══ PAGE ACCUEIL (page d'accueil — design Apple Health) ═══ -->
+  <div class="page active" id="page-accueil">
+    <div class="accueil-animatable accueil-page-enter" id="accueilAnimatable">
+
+      <!-- Header -->
+      <div class="accueil-header">
+        <h1 class="accueil-title">Bonjour <span id="accueilFirstName">—</span></h1>
+        <button class="accueil-avatar-btn" id="accueilAvatarBtn" aria-label="Profil">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Cartes empilées style Apple Health -->
+      <div class="health-cards">
+        <!-- Carte Appels Frizz (vert) -->
+        <button class="health-card health-card--green" data-popup="appels" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Appels Frizz</div>
+            <div class="health-card-meta">
+              <span id="accueilAppelsMeta">aujourd'hui</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value"><span id="accueilAppelsValue">0</span></div>
+            <div class="health-card-chart" id="accueilAppelsChart" aria-hidden="true">
+              <!-- Mini-barres SVG construites en JS -->
+            </div>
+          </div>
+        </button>
+
+        <!-- Carte Réservations (bleu) -->
+        <button class="health-card health-card--blue" data-popup="reservations" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Réservations</div>
+            <div class="health-card-meta">
+              <span id="accueilResasMeta">ce mois</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value"><span id="accueilResasValue">0</span></div>
+            <div class="health-card-chart" id="accueilResasChart" aria-hidden="true"></div>
+          </div>
+        </button>
+
+        <!-- Carte Activités (jaune) -->
+        <button class="health-card health-card--yellow" data-popup="activites" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="4" cy="6" r="1.6"/>
+                <rect x="8" y="5" width="13" height="2" rx="1"/>
+                <circle cx="4" cy="12" r="1.6"/>
+                <rect x="8" y="11" width="13" height="2" rx="1"/>
+                <circle cx="4" cy="18" r="1.6"/>
+                <rect x="8" y="17" width="13" height="2" rx="1"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Activités</div>
+            <div class="health-card-meta">
+              <span id="accueilActivitesMeta">à traiter</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value"><span id="accueilActivitesValue">0</span></div>
+            <div class="health-card-chart health-card-chart--badge" id="accueilActivitesBadge" aria-hidden="true"></div>
+          </div>
+        </button>
+
+        <!-- Carte Conversion (rose) -->
+        <button class="health-card health-card--pink" data-popup="conversion" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Conversion</div>
+            <div class="health-card-meta">
+              <span id="accueilConversionMeta">ce mois</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value"><span id="accueilConversionValue">0</span><span class="health-card-unit">%</span></div>
+            <div class="health-card-chart" id="accueilConversionChart" aria-hidden="true">
+              <svg viewBox="0 0 60 60" class="ring-svg ring-svg--card">
+                <circle class="ring-bg" cx="30" cy="30" r="25"/>
+                <circle class="ring-progress ring-progress--pink" id="accueilConversionRing" cx="30" cy="30" r="25"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ ANCIENNE PAGE ACCUEIL (devient page-notifications, accessible via popup) ═══ -->
+  <div class="page hidden" id="page-notifications">
     <div class="notif-animatable notif-page-enter" id="notifAnimatable">
 
       <!-- Bandeau d'alerte plan/forfait -->
@@ -5525,23 +5934,17 @@
 </div>
 
 <nav class="tabbar hidden" id="tabbar">
-  <button class="tab active" data-page="notifications">
+  <button class="tab active" data-page="accueil">
     <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/>
     </svg>
     Accueil
+  </button>
+  <!-- Onglets supprimés (fusionnés dans Accueil sous forme de cartes). Stubs cachés. -->
+  <button class="tab" data-page="notifications" hidden style="display:none !important;" aria-hidden="true">
     <span class="tab-badge hidden" id="tabBadgeNotif">0</span>
   </button>
-  <button class="tab" data-page="calendrier">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <line x1="16" y1="2" x2="16" y2="6" stroke-linecap="round"/>
-      <line x1="8" y1="2" x2="8" y2="6" stroke-linecap="round"/>
-      <line x1="3" y1="10" x2="21" y2="10" stroke-linecap="round"/>
-    </svg>
-    Calendrier
-  </button>
-  <!-- Onglet Stats supprimé (fusionné dans Accueil). Stub caché. -->
+  <button class="tab" data-page="calendrier" hidden style="display:none !important;" aria-hidden="true"></button>
   <button class="tab" data-page="stats" hidden style="display:none !important;" aria-hidden="true"></button>
   <button class="tab" data-page="settings">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -5551,6 +5954,24 @@
     Réglages
   </button>
 </nav>
+
+<!-- ═══ POPUPS MODALES (bottom sheets style iOS) ═══ -->
+<div class="modal-popup-backdrop" id="modalPopupBackdrop"></div>
+<div class="modal-popup" id="modalPopup">
+  <div class="modal-popup-handle"></div>
+  <div class="modal-popup-header">
+    <h2 class="modal-popup-title" id="modalPopupTitle">—</h2>
+    <button class="modal-popup-close" id="modalPopupCloseBtn" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="modal-popup-body" id="modalPopupBody">
+    <!-- Contenu injecté dynamiquement -->
+  </div>
+</div>
 
 <!-- ═══ Bottom sheet Activités supprimé (remplacé par page Notifications). Stubs cachés. ═══ -->
 <div id="activitySheetBackdrop" hidden style="display:none !important;"></div>
@@ -6995,6 +7416,17 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const activeTab = document.querySelector(`.tab[data-page="${pageId}"]`);
     if (activeTab) activeTab.classList.add('active');
+    // Render le contenu si Accueil (rafraîchit les cartes + animation)
+    if (pageId === 'accueil') {
+      if (typeof window.__renderAccueil === 'function') window.__renderAccueil();
+      // Re-jouer l'animation d'ouverture
+      const animEl = document.getElementById('accueilAnimatable');
+      if (animEl) {
+        animEl.classList.remove('accueil-page-enter');
+        void animEl.offsetWidth;
+        animEl.classList.add('accueil-page-enter');
+      }
+    }
     // Render le contenu si Notifications (rafraîchit la liste + animation)
     if (pageId === 'notifications') {
       if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
@@ -9600,6 +10032,248 @@
   } catch (notifErr) {
     console.error('[NOTIF] setupNotificationPage a planté (non bloquant) :', notifErr);
   }
+
+  // ═══ PAGE ACCUEIL (Apple Health style) ═══
+  try {
+    (function setupAccueilPage() {
+      // Render des cartes
+      function renderAccueil() {
+        // Prénom
+        const firstNameEl = $('accueilFirstName');
+        if (firstNameEl && typeof currentSalon !== 'undefined' && currentSalon) {
+          const prenom = currentSalon.patron_prenom || currentSalon.nom || '';
+          firstNameEl.textContent = prenom || '👋';
+        }
+
+        // Appels Frizz (today)
+        const elAppels = $('accueilAppelsValue');
+        if (elAppels) elAppels.textContent = (typeof todayCallsCount !== 'undefined') ? todayCallsCount : 0;
+
+        // Mini-bars Appels (placeholder décoratif inspiré du design Apple Health)
+        const elAppelsChart = $('accueilAppelsChart');
+        if (elAppelsChart) {
+          // 8 mini-barres avec hauteurs aléatoires
+          const heights = [12, 20, 16, 28, 22, 18, 30, 36];
+          elAppelsChart.innerHTML = heights.map(h => `<div class="bar" style="height:${h}px"></div>`).join('');
+        }
+
+        // Réservations (du mois)
+        if (typeof allReservations !== 'undefined' && Array.isArray(allReservations)) {
+          const now0 = new Date();
+          const startThisMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+          const resasThisMonth = allReservations.filter(r => {
+            if (!r.created_at) return false;
+            return new Date(r.created_at) >= startThisMonth;
+          }).length;
+          const elResas = $('accueilResasValue');
+          if (elResas) elResas.textContent = resasThisMonth;
+          // Mini-barres
+          const elResasChart = $('accueilResasChart');
+          if (elResasChart) {
+            const heights = [10, 18, 14, 24, 30, 16, 26, 32];
+            elResasChart.innerHTML = heights.map(h => `<div class="bar" style="height:${h}px"></div>`).join('');
+          }
+        }
+
+        // Activités à traiter
+        let unread = 0;
+        try {
+          const unreadResas = (allReservations || []).filter(r => r.vu === false || r.vu === null).length;
+          const unreadMessages = (typeof allMessages !== 'undefined' && Array.isArray(allMessages))
+            ? allMessages.filter(m => !m.traite).length : 0;
+          unread = unreadResas + unreadMessages;
+        } catch (e) {}
+        const elActi = $('accueilActivitesValue');
+        if (elActi) elActi.textContent = unread;
+        const elActiBadge = $('accueilActivitesBadge');
+        if (elActiBadge) elActiBadge.textContent = unread > 0 ? (unread > 99 ? '99+' : unread) : '';
+
+        // Conversion
+        try {
+          const now0 = new Date();
+          const startThisMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+          const resasThisMonth = (allReservations || []).filter(r => {
+            if (!r.created_at) return false;
+            return new Date(r.created_at) >= startThisMonth;
+          }).length;
+          let convPercent = 0;
+          if (typeof monthCallsCount !== 'undefined' && monthCallsCount > 0) {
+            convPercent = Math.min(100, Math.round((resasThisMonth / monthCallsCount) * 100));
+          }
+          const elConv = $('accueilConversionValue');
+          if (elConv) elConv.textContent = convPercent;
+          // Animer le ring
+          const ring = $('accueilConversionRing');
+          if (ring) {
+            const circ = 2 * Math.PI * 25;
+            ring.style.strokeDashoffset = circ;
+            setTimeout(() => {
+              ring.style.strokeDashoffset = circ - (circ * convPercent / 100);
+            }, 80);
+          }
+        } catch (e) {}
+      }
+      window.__renderAccueil = renderAccueil;
+
+      // Bind clic sur les cartes pour ouvrir la popup
+      document.querySelectorAll('.health-card[data-popup]').forEach(card => {
+        card.addEventListener('click', () => {
+          const popupId = card.dataset.popup;
+          openPopup(popupId);
+        });
+      });
+
+      // Premier rendu
+      renderAccueil();
+    })();
+  } catch (accueilErr) {
+    console.error('[ACCUEIL] setupAccueilPage a planté :', accueilErr);
+  }
+
+  // ═══ POPUP MODALE ═══
+  function openPopup(type) {
+    const popup = $('modalPopup');
+    const backdrop = $('modalPopupBackdrop');
+    const title = $('modalPopupTitle');
+    const body = $('modalPopupBody');
+    if (!popup || !backdrop || !body) return;
+
+    // Définir titre + contenu selon le type
+    let titleText = '';
+    let bodyHTML = '';
+
+    if (type === 'appels') {
+      titleText = 'Appels Frizz';
+      bodyHTML = `
+        <div style="padding: 0 20px;">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="popup-stat-row">
+              <div class="popup-stat-label">Aujourd'hui</div>
+              <div class="popup-stat-value">${(typeof todayCallsCount !== 'undefined') ? todayCallsCount : 0}</div>
+            </div>
+            <div class="popup-stat-row">
+              <div class="popup-stat-label">Cette semaine</div>
+              <div class="popup-stat-value">${(typeof weekCallsCount !== 'undefined') ? weekCallsCount : 0}</div>
+            </div>
+            <div class="popup-stat-row">
+              <div class="popup-stat-label">Ce mois</div>
+              <div class="popup-stat-value">${(typeof monthCallsCount !== 'undefined') ? monthCallsCount : 0}</div>
+            </div>
+            <div class="popup-stat-row">
+              <div class="popup-stat-label">Temps gagné</div>
+              <div class="popup-stat-value">${(typeof timeSavedMinutes !== 'undefined') ? timeSavedMinutes : 0} min</div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (type === 'reservations') {
+      titleText = 'Réservations';
+      // Pour le calendrier, on bascule vers la page calendrier au lieu de duppliquer
+      bodyHTML = `<div style="padding:0 20px;"><p style="color:rgba(255,255,255,0.6);margin-bottom:14px;">Le calendrier complet n'est pas encore intégré à la popup.</p>
+        <button id="popupGoCalendrier" style="background:var(--blue);color:white;border:none;padding:14px 20px;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;width:100%;">Voir le calendrier complet</button>
+      </div>`;
+    } else if (type === 'activites') {
+      titleText = 'Activités';
+      bodyHTML = '<div id="popupActivitesContainer"></div>';
+    } else if (type === 'conversion') {
+      titleText = 'Conversion';
+      // Recalculer
+      let convPercent = 0;
+      try {
+        const now0 = new Date();
+        const startThisMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+        const resasThisMonth = (allReservations || []).filter(r => {
+          if (!r.created_at) return false;
+          return new Date(r.created_at) >= startThisMonth;
+        }).length;
+        if (typeof monthCallsCount !== 'undefined' && monthCallsCount > 0) {
+          convPercent = Math.min(100, Math.round((resasThisMonth / monthCallsCount) * 100));
+        }
+      } catch (e) {}
+      bodyHTML = `
+        <div style="padding: 30px 20px; text-align: center;">
+          <div style="font-size: 72px; font-weight: 700; color: #FF375F; letter-spacing: -3px; line-height: 1;">${convPercent}<span style="font-size:32px;color:rgba(255,255,255,0.5);">%</span></div>
+          <p style="color: rgba(255,255,255,0.7); margin-top: 16px; font-size: 15px;">des appels Frizz se sont convertis en réservations ce mois.</p>
+          <div style="margin-top: 32px; padding: 18px; background: rgba(255,255,255,0.05); border-radius: 16px; text-align: left;">
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Détails ce mois</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;color:#fff;font-size:15px;"><span>Appels totaux</span><strong>${(typeof monthCallsCount !== 'undefined') ? monthCallsCount : 0}</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;color:#fff;font-size:15px;"><span>Réservations</span><strong>${(()=>{ try {const now0=new Date();const sm=new Date(now0.getFullYear(),now0.getMonth(),1);return (allReservations||[]).filter(r=>r.created_at && new Date(r.created_at)>=sm).length;} catch(e){return 0;}})()}</strong></div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (title) title.textContent = titleText;
+    if (body) body.innerHTML = bodyHTML;
+
+    // Si activités : injecter la liste agrégée
+    if (type === 'activites') {
+      const container = document.getElementById('popupActivitesContainer');
+      const notifList = document.getElementById('notifPageList');
+      if (container && notifList) {
+        container.innerHTML = '<div class="notif-page-list">' + notifList.innerHTML + '</div>';
+      }
+    }
+
+    // Si réservations : bind le bouton
+    if (type === 'reservations') {
+      setTimeout(() => {
+        const btn = document.getElementById('popupGoCalendrier');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            closePopup();
+            setTimeout(() => switchPage('calendrier'), 200);
+          });
+        }
+      }, 50);
+    }
+
+    // Ouvrir
+    backdrop.classList.add('visible');
+    popup.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePopup() {
+    const popup = $('modalPopup');
+    const backdrop = $('modalPopupBackdrop');
+    if (popup) {
+      popup.classList.remove('visible');
+      popup.style.transform = '';
+    }
+    if (backdrop) backdrop.classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+
+  // Bind close + backdrop
+  (function setupPopupClose() {
+    const closeBtn = $('modalPopupCloseBtn');
+    const backdrop = $('modalPopupBackdrop');
+    if (closeBtn) closeBtn.addEventListener('click', closePopup);
+    if (backdrop) backdrop.addEventListener('click', closePopup);
+
+    // Drag pour fermer
+    const popup = $('modalPopup');
+    const handle = popup ? popup.querySelector('.modal-popup-handle') : null;
+    if (handle && popup) {
+      let startY = 0, currentY = 0, dragging = false;
+      const start = (y) => { startY = y; currentY = y; dragging = true; popup.style.transition = 'none'; };
+      const move = (y) => { if (!dragging) return; currentY = y; const dy = Math.max(0, y - startY); popup.style.transform = `translateY(${dy}px)`; };
+      const end = () => {
+        if (!dragging) return;
+        dragging = false;
+        popup.style.transition = '';
+        if (currentY - startY > 120) closePopup();
+        else popup.style.transform = '';
+      };
+      handle.addEventListener('touchstart', e => start(e.touches[0].clientY), { passive: true });
+      handle.addEventListener('touchmove', e => move(e.touches[0].clientY), { passive: true });
+      handle.addEventListener('touchend', end);
+      handle.addEventListener('mousedown', e => { start(e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', e => { if (dragging) move(e.clientY); });
+      document.addEventListener('mouseup', end);
+    }
+  })();
 
   // Filtres page Activité (sécurisé)
   try {

@@ -395,7 +395,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: 28px 20px 100px;
+    padding: 24.5px 20px 100px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -1861,22 +1861,61 @@
   /* TAB BAR */
   .tabbar {
     position: fixed;
-    bottom: 0;
+    bottom: max(20px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: #000;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.10);
-    padding: 14px 0 max(20px, env(safe-area-inset-bottom));
+    width: auto;
+    background: #fff;
+    border-radius: 100px;
+    padding: 6px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
+    gap: 8px;
     z-index: 10;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
   }
-  /* Reflet glossy retiré (tabbar noire) */
   .tabbar::before {
     display: none;
+  }
+  /* Boutons ronds style ChatGPT */
+  .tab-round {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1), background 0.2s;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab-round:active { transform: scale(0.92); }
+  /* Boutons secondaires (gauche et droit) : fond noir */
+  .tab-round--secondary {
+    background: #000;
+    color: #fff;
+  }
+  .tab-round--secondary svg {
+    width: 22px;
+    height: 22px;
+  }
+  /* Bouton primaire central : vert iOS, plus gros */
+  .tab-round--primary {
+    background: #30D158;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 4px 12px rgba(48, 209, 88, 0.40);
+  }
+  .tab-round--primary svg {
+    width: 26px;
+    height: 26px;
+  }
+  .tab-round--primary:active {
+    background: #28B348;
   }
   .tab {
     flex: 1;
@@ -6346,25 +6385,34 @@
 </div>
 
 <nav class="tabbar hidden" id="tabbar">
-  <button class="tab active" data-page="accueil">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/>
+  <!-- Bouton gauche : Réglages -->
+  <button class="tab-round tab-round--secondary" id="tabSettingsBtn" data-page="settings" aria-label="Réglages">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
-    Accueil
   </button>
-  <!-- Onglets supprimés (fusionnés dans Accueil sous forme de cartes). Stubs cachés. -->
+  <!-- Bouton centre : + Nouvelle résa (gros, vert) -->
+  <button class="tab-round tab-round--primary" id="tabAddBtn" aria-label="Nouvelle réservation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>
+  <!-- Bouton droit : Accueil (sparkle) -->
+  <button class="tab-round tab-round--secondary" id="tabHomeBtn" data-page="accueil" aria-label="Accueil">
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/>
+      <path d="M19 14L19.7 16.3L22 17L19.7 17.7L19 20L18.3 17.7L16 17L18.3 16.3L19 14Z"/>
+    </svg>
+  </button>
+
+  <!-- Stubs cachés pour ne pas casser le JS existant -->
   <button class="tab" data-page="notifications" hidden style="display:none !important;" aria-hidden="true">
     <span class="tab-badge hidden" id="tabBadgeNotif">0</span>
   </button>
   <button class="tab" data-page="calendrier" hidden style="display:none !important;" aria-hidden="true"></button>
   <button class="tab" data-page="stats" hidden style="display:none !important;" aria-hidden="true"></button>
-  <button class="tab" data-page="settings">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-    </svg>
-    Réglages
-  </button>
 </nav>
 
 <!-- ═══ POPUPS MODALES (bottom sheets style iOS) ═══ -->
@@ -10576,6 +10624,29 @@
           openPopup(popupId);
         });
       });
+
+      // Bind nouveaux boutons de la tabbar (style ChatGPT)
+      const tabSettings = $('tabSettingsBtn');
+      if (tabSettings && !tabSettings._bound) {
+        tabSettings.addEventListener('click', () => {
+          if (typeof switchPage === 'function') switchPage('settings');
+        });
+        tabSettings._bound = true;
+      }
+      const tabHome = $('tabHomeBtn');
+      if (tabHome && !tabHome._bound) {
+        tabHome.addEventListener('click', () => {
+          if (typeof switchPage === 'function') switchPage('accueil');
+        });
+        tabHome._bound = true;
+      }
+      const tabAdd = $('tabAddBtn');
+      if (tabAdd && !tabAdd._bound) {
+        tabAdd.addEventListener('click', () => {
+          if (typeof openResaForm === 'function') openResaForm('create');
+        });
+        tabAdd._bound = true;
+      }
 
       // Premier rendu
       renderAccueil();

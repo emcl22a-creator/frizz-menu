@@ -721,14 +721,33 @@
     stroke-width: 2.5;
     fill: none;
   }
-  /* Inversion bleu/vert UNIQUEMENT dans la popup Activités */
+  /* Override couleurs UNIQUEMENT dans la popup Activités */
+  /* Création de résa (kind=created) : était bleu → maintenant vert */
   #popupActivitesContainer .activity-item-icon--blue {
     background: rgba(48, 209, 88, 0.18) !important;
     color: #30D158 !important;
   }
+  /* Message (kind=message) : était vert → maintenant bleu */
   #popupActivitesContainer .activity-item-icon--green {
     background: rgba(10, 132, 255, 0.18) !important;
     color: #0A84FF !important;
+  }
+  /* Coche "marquer comme lu" : passe en vert au lieu de bleu */
+  #popupActivitesContainer .activity-item.read .activity-item-check {
+    background: #30D158 !important;
+    border-color: #30D158 !important;
+  }
+  /* Coche au survol / focus en mode non lu */
+  #popupActivitesContainer .activity-item-check:active {
+    border-color: #30D158 !important;
+  }
+  /* Items cliquables pour ouvrir détails */
+  #popupActivitesContainer .activity-item {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #popupActivitesContainer .activity-item:active {
+    background: rgba(255, 255, 255, 0.03) !important;
   }
 
   /* 2 cartes en haut de la popup Activités */
@@ -760,19 +779,19 @@
     border: 0.5px solid rgba(255, 255, 255, 0.12);
   }
   .popup-acti-card-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
+    border: none;
   }
   .popup-acti-card-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 26px;
+    height: 26px;
   }
-  .popup-acti-card--green .popup-acti-card-icon svg { color: #1A8E3D; }
+  .popup-acti-card--green .popup-acti-card-icon svg { color: #fff; }
   .popup-acti-card--glass .popup-acti-card-icon svg { color: #fff; }
   .popup-acti-card-content {
     display: flex;
@@ -10434,6 +10453,57 @@
       const notifList = document.getElementById('notifPageList');
       if (container && notifList) {
         container.innerHTML = '<div class="notif-page-list">' + notifList.innerHTML + '</div>';
+        // Re-binder les listeners dans la popup (innerHTML perd les events)
+        container.querySelectorAll('.activity-item').forEach(el => {
+          // Clic sur la coche : marquer comme lu/non lu
+          const btn = el.querySelector('.activity-item-check');
+          if (btn) {
+            btn.addEventListener('click', async (e) => {
+              e.stopPropagation();
+              const isRead = el.classList.contains('read');
+              const newVal = !isRead;
+              el.classList.toggle('read', newVal);
+              // Aussi mettre à jour le même item dans la liste source (synchro)
+              const srcEl = notifList.querySelector(`.activity-item[data-type="${el.dataset.type}"][data-id="${el.dataset.id}"]`);
+              if (srcEl) srcEl.classList.toggle('read', newVal);
+              // Persister en base
+              try {
+                const tp = el.dataset.type;
+                const id = el.dataset.id;
+                if (tp === 'reservation' && typeof supa !== 'undefined') {
+                  await supa.from('frizz_ai_reservations').update({ vu: newVal }).eq('id', id);
+                  // Refléter dans le state local
+                  if (Array.isArray(allReservations)) {
+                    const r = allReservations.find(x => String(x.id) === String(id));
+                    if (r) r.vu = newVal;
+                  }
+                } else if (tp === 'message' && typeof supa !== 'undefined') {
+                  await supa.from('frizz_ai_messages').update({ traite: newVal }).eq('id', id);
+                  if (typeof allMessages !== 'undefined' && Array.isArray(allMessages)) {
+                    const m = allMessages.find(x => String(x.id) === String(id));
+                    if (m) m.traite = newVal;
+                  }
+                }
+              } catch (err) { console.warn('persistRead from popup:', err); }
+              // Rafraîchir l'Accueil et la liste source
+              if (typeof window.__renderAccueil === 'function') window.__renderAccueil();
+              if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
+            });
+          }
+          // Clic sur l'item : ouvrir les détails de la réservation
+          el.addEventListener('click', (e) => {
+            // Ne pas déclencher si on a cliqué sur la coche (déjà géré)
+            if (e.target.closest('.activity-item-check')) return;
+            const tp = el.dataset.type;
+            const id = el.dataset.id;
+            if (tp === 'reservation' && Array.isArray(allReservations)) {
+              const resa = allReservations.find(r => String(r.id) === String(id));
+              if (resa && typeof openResaDetail === 'function') {
+                openResaDetail(resa);
+              }
+            }
+          });
+        });
       }
     }
 

@@ -1094,6 +1094,149 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ═══ VARIANTE B : Minimaliste épuré ═══ */
+  .stats-grid-b {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .stat-cell-b {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 18px 16px;
+  }
+  .stat-cell-b-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 500;
+  }
+  .stat-cell-b-value {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-top: 14px;
+    color: #FF375F;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-cell-b-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 6px;
+  }
+
+  /* Carte conversion (B) */
+  .stat-conv-b {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .stat-conv-b-left { flex: 1; }
+  .stat-conv-b-value {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-top: 8px;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-conv-b-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+  .stat-conv-b-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .stat-conv-b-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 7;
+  }
+  .stat-conv-b-ring-fg {
+    fill: none;
+    stroke: url(#statConvGrad);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 213.6;
+    stroke-dashoffset: 213.6;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+  .stat-conv-b-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Carte répartition (B) */
+  .stat-bars-b {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .stat-bars-b-title {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .stat-bars-b-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .stat-bar-b-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .stat-bar-b-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .stat-bar-b-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-bar-b-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .stat-bar-b-fill {
+    height: 100%;
+    background: #FF375F;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+  .stat-bar-b-fill--soft { background: rgba(255, 55, 95, 0.6); }
+  .stat-bar-b-fill--softer { background: rgba(255, 55, 95, 0.3); }
+
   /* Carte 3 barres : répartition des appels */
   .stat-bars-card {
     padding: 18px 20px 20px;
@@ -11364,61 +11507,66 @@
         </div>
       </div>
 
-      <!-- 2) Deux cartes côte à côte : ce jour + cette semaine -->
-      <div class="stats-grid stats-grid--big">
-        <div class="stat-card stat-card--pink stat-card--big-cell">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
-          </div>
-          <div class="stat-card-value stat-card-value--xl">${resasToday}</div>
-          <div class="stat-card-name">Rés. ce jour</div>
+      <!-- 2) Deux cartes minimalistes : ce jour + cette semaine -->
+      <div class="stats-grid-b">
+        <div class="stat-cell-b">
+          <div class="stat-cell-b-label">Ce jour</div>
+          <div class="stat-cell-b-value">${resasToday}</div>
+          <div class="stat-cell-b-sub">Réservations</div>
         </div>
-        <div class="stat-card stat-card--pink stat-card--big-cell">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
-          </div>
-          <div class="stat-card-value stat-card-value--xl">${resasWeek}</div>
-          <div class="stat-card-name">Rés. cette semaine</div>
+        <div class="stat-cell-b">
+          <div class="stat-cell-b-label">Cette semaine</div>
+          <div class="stat-cell-b-value">${resasWeek}</div>
+          <div class="stat-cell-b-sub">Réservations</div>
         </div>
       </div>
 
-      <!-- 3) Rés. ce mois + cercle de conversion (style iOS Watch) -->
-      <div class="stat-card stat-card--pink stat-conv-card">
-        <div class="stat-conv-left">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
-          </div>
-          <div class="stat-conv-value">${resasMonth}</div>
-          <div class="stat-conv-label">Rés. ce mois</div>
-          <div class="stat-conv-sub">${convPercent}% de conversion</div>
+      <!-- 3) Ce mois + ring conversion (style B) -->
+      <div class="stat-conv-b">
+        <div class="stat-conv-b-left">
+          <div class="stat-cell-b-label">Ce mois</div>
+          <div class="stat-conv-b-value">${resasMonth}</div>
+          <div class="stat-cell-b-sub">Réservations</div>
         </div>
-        <div class="stat-conv-right">
-          <svg viewBox="0 0 80 80" class="stat-conv-ring">
-            <circle cx="40" cy="40" r="34" class="stat-conv-ring-bg"/>
-            <circle cx="40" cy="40" r="34" class="stat-conv-ring-fg" id="statConvRing"/>
+        <div class="stat-conv-b-ring">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" class="stat-conv-b-ring-bg"/>
+            <circle cx="40" cy="40" r="34" class="stat-conv-b-ring-fg" id="statConvRing"/>
+            <defs>
+              <linearGradient id="statConvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF7A95"/>
+                <stop offset="100%" stop-color="#FF375F"/>
+              </linearGradient>
+            </defs>
           </svg>
-          <div class="stat-conv-ring-text"><span id="statConvPercent">0</span>%</div>
+          <div class="stat-conv-b-ring-text"><span id="statConvPercent">0</span>%</div>
         </div>
       </div>
 
-      <!-- 4) Répartition des appels (3 barres) -->
-      <div class="stat-card stat-card--pink stat-bars-card">
-        <div class="stat-bars-title">Répartition des appels</div>
-        <div class="stat-bars-list">
-          <div class="stat-bar-row">
-            <div class="stat-bar-label">Réservation</div>
-            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${(appelsResa/maxAppels)*100}%"></div></div>
-            <div class="stat-bar-value">${appelsResa}</div>
+      <!-- 4) Répartition (style B : barre sous le label) -->
+      <div class="stat-bars-b">
+        <div class="stat-bars-b-title">Répartition</div>
+        <div class="stat-bars-b-list">
+          <div class="stat-bar-b">
+            <div class="stat-bar-b-head">
+              <span class="stat-bar-b-label">Réservation</span>
+              <span class="stat-bar-b-value">${appelsResa}</span>
+            </div>
+            <div class="stat-bar-b-track"><div class="stat-bar-b-fill" style="width:${(appelsResa/maxAppels)*100}%"></div></div>
           </div>
-          <div class="stat-bar-row">
-            <div class="stat-bar-label">Annulation</div>
-            <div class="stat-bar-track"><div class="stat-bar-fill stat-bar-fill--soft" style="width:${(appelsAnnul/maxAppels)*100}%"></div></div>
-            <div class="stat-bar-value">${appelsAnnul}</div>
+          <div class="stat-bar-b">
+            <div class="stat-bar-b-head">
+              <span class="stat-bar-b-label">Annulation</span>
+              <span class="stat-bar-b-value">${appelsAnnul}</span>
+            </div>
+            <div class="stat-bar-b-track"><div class="stat-bar-b-fill stat-bar-b-fill--soft" style="width:${(appelsAnnul/maxAppels)*100}%"></div></div>
           </div>
-          <div class="stat-bar-row">
-            <div class="stat-bar-label">Autre</div>
-            <div class="stat-bar-track"><div class="stat-bar-fill stat-bar-fill--softer" style="width:${(appelsAutre/maxAppels)*100}%"></div></div>
-            <div class="stat-bar-value">${appelsAutre}</div>
+          <div class="stat-bar-b">
+            <div class="stat-bar-b-head">
+              <span class="stat-bar-b-label">Autre</span>
+              <span class="stat-bar-b-value">${appelsAutre}</span>
+            </div>
+            <div class="stat-bar-b-track"><div class="stat-bar-b-fill stat-bar-b-fill--softer" style="width:${(appelsAutre/maxAppels)*100}%"></div></div>
           </div>
         </div>
       </div>

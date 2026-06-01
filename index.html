@@ -1128,6 +1128,25 @@
     margin-top: 6px;
   }
 
+  /* Mini-courbe (remplace le ring conversion) */
+  .stat-conv-clickable {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1), background 0.2s;
+  }
+  .stat-conv-clickable:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+  .stat-conv-b-chart {
+    width: 110px;
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   /* Carte conversion (B) */
   .stat-conv-b {
     background: rgba(255, 255, 255, 0.04);
@@ -11442,9 +11461,12 @@
     const startWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
 
     const all = allReservations || [];
-    const resasToday = all.filter(r => r.created_at && new Date(r.created_at) >= startToday).length;
-    const resasWeek = all.filter(r => r.created_at && new Date(r.created_at) >= startWeek).length;
-    const resasMonth = all.filter(r => r.created_at && new Date(r.created_at) >= startThisMonth).length;
+    const isFrizzResa = r => (r.source === 'ia' || r.source === 'vapi');
+    const resasToday = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startToday).length;
+    const resasWeek = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startWeek).length;
+    const resasMonth = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startThisMonth).length;
+    // Pour le graphique annuel (Frizz vs total)
+    const resasMonthAll = all.filter(r => r.created_at && new Date(r.created_at) >= startThisMonth).length;
 
     // Forfait : utilisation
     let planLimit = 0, planUsed = 0, planName = 'Frizz Starter';
@@ -11507,34 +11529,24 @@
         <div class="stat-cell-b">
           <div class="stat-cell-b-label">Ce jour</div>
           <div class="stat-cell-b-value">${resasToday}</div>
-          <div class="stat-cell-b-sub">Réservations</div>
+          <div class="stat-cell-b-sub">Réservations Frizz</div>
         </div>
         <div class="stat-cell-b">
           <div class="stat-cell-b-label">Cette semaine</div>
           <div class="stat-cell-b-value">${resasWeek}</div>
-          <div class="stat-cell-b-sub">Réservations</div>
+          <div class="stat-cell-b-sub">Réservations Frizz</div>
         </div>
       </div>
 
-      <!-- 3) Ce mois + ring conversion (style B) -->
-      <div class="stat-conv-b">
+      <!-- 3) Ce mois + mini-graphique (cliquable → graphique annuel) -->
+      <div class="stat-conv-b stat-conv-clickable" id="statMonthChartCard">
         <div class="stat-conv-b-left">
           <div class="stat-cell-b-label">Ce mois</div>
           <div class="stat-conv-b-value">${resasMonth}</div>
-          <div class="stat-cell-b-sub">Réservations</div>
+          <div class="stat-cell-b-sub">Réservations Frizz</div>
         </div>
-        <div class="stat-conv-b-ring">
-          <svg viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" class="stat-conv-b-ring-bg"/>
-            <circle cx="40" cy="40" r="34" class="stat-conv-b-ring-fg" id="statConvRing"/>
-            <defs>
-              <linearGradient id="statConvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FF7A95"/>
-                <stop offset="100%" stop-color="#FF375F"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div class="stat-conv-b-ring-text"><span id="statConvPercent">0</span>%</div>
+        <div class="stat-conv-b-chart" id="statMonthChartMini" aria-hidden="true">
+          <!-- Mini-courbe SVG construite en JS -->
         </div>
       </div>
 
@@ -11577,30 +11589,160 @@
       }
     }, 60);
 
-    // Animer le cercle de conversion (style iOS Watch)
+    // Construire la mini-courbe annuelle (Frizz par mois)
     setTimeout(() => {
-      const ring = document.getElementById('statConvRing');
-      const text = document.getElementById('statConvPercent');
-      if (ring) {
-        const circ = 2 * Math.PI * 34; // ≈ 213.6
-        const offset = circ - (circ * convPercent / 100);
-        ring.style.strokeDashoffset = offset;
+      const miniChart = document.getElementById('statMonthChartMini');
+      if (miniChart) {
+        const yearData = computeYearlyData(all);
+        miniChart.innerHTML = renderMiniSparkline(yearData);
       }
-      // Animation comptage du %
-      if (text) {
-        let current = 0;
-        const target = convPercent;
-        const step = Math.max(1, Math.ceil(target / 30));
-        const interval = setInterval(() => {
-          current += step;
-          if (current >= target) {
-            current = target;
-            clearInterval(interval);
-          }
-          text.textContent = current;
-        }, 25);
+      // Bind clic sur la carte pour ouvrir le graphique annuel
+      const card = document.getElementById('statMonthChartCard');
+      if (card && !card._chartBound) {
+        card.addEventListener('click', () => openYearlyChart(all));
+        card._chartBound = true;
       }
     }, 80);
+  }
+
+  // Calcule les résas Frizz et totales pour chaque mois de l'année en cours
+  function computeYearlyData(allResas) {
+    const year = new Date().getFullYear();
+    const data = [];
+    for (let m = 0; m < 12; m++) {
+      const monthStart = new Date(year, m, 1);
+      const monthEnd = new Date(year, m + 1, 0, 23, 59, 59);
+      const inMonth = allResas.filter(r => {
+        if (!r.created_at) return false;
+        const d = new Date(r.created_at);
+        return d >= monthStart && d <= monthEnd;
+      });
+      const frizz = inMonth.filter(r => r.source === 'ia' || r.source === 'vapi').length;
+      const total = inMonth.length;
+      data.push({ month: m, frizz, total });
+    }
+    return data;
+  }
+
+  // Mini-courbe SVG style sparkline Apple Stocks
+  function renderMiniSparkline(yearData) {
+    const w = 110, h = 50, pad = 4;
+    const maxVal = Math.max(1, ...yearData.map(d => d.total));
+    const xStep = (w - pad * 2) / 11;
+    const ptFrizz = yearData.map((d, i) => `${pad + i * xStep},${h - pad - ((d.frizz / maxVal) * (h - pad * 2))}`).join(' ');
+    const ptTotal = yearData.map((d, i) => `${pad + i * xStep},${h - pad - ((d.total / maxVal) * (h - pad * 2))}`).join(' ');
+    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:100%;overflow:visible;">
+      <polyline points="${ptTotal}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.6"/>
+      <polyline points="${ptFrizz}" fill="none" stroke="#FF375F" stroke-width="2"/>
+    </svg>`;
+  }
+
+  // ═══ POPUP GRAPHIQUE ANNUEL (sur clic carte Ce mois) ═══
+  function openYearlyChart(allResas) {
+    const yearData = computeYearlyData(allResas);
+    const moisLabels = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    const maxVal = Math.max(1, ...yearData.map(d => d.total));
+
+    const w = 320, h = 200, padL = 30, padR = 10, padT = 20, padB = 30;
+    const xStep = (w - padL - padR) / 11;
+    const innerH = h - padT - padB;
+
+    const ptFrizz = yearData.map((d, i) => `${padL + i * xStep},${padT + innerH - ((d.frizz / maxVal) * innerH)}`).join(' ');
+    const ptTotal = yearData.map((d, i) => `${padL + i * xStep},${padT + innerH - ((d.total / maxVal) * innerH)}`).join(' ');
+
+    // Points Frizz
+    const dotsFrizz = yearData.map((d, i) => {
+      const cx = padL + i * xStep;
+      const cy = padT + innerH - ((d.frizz / maxVal) * innerH);
+      return `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#FF375F"/>`;
+    }).join('');
+    // Points totaux
+    const dotsTotal = yearData.map((d, i) => {
+      const cx = padL + i * xStep;
+      const cy = padT + innerH - ((d.total / maxVal) * innerH);
+      return `<circle cx="${cx}" cy="${cy}" r="3.5" fill="rgba(255,255,255,0.85)"/>`;
+    }).join('');
+
+    // Labels des mois
+    const monthLabels = moisLabels.map((m, i) => {
+      const x = padL + i * xStep;
+      return `<text x="${x}" y="${h - 8}" fill="rgba(255,255,255,0.55)" font-size="9" text-anchor="middle">${m}</text>`;
+    }).join('');
+
+    // Lignes Y de référence (0, max/2, max)
+    const yLines = [0, 0.5, 1].map(f => {
+      const y = padT + innerH * (1 - f);
+      const val = Math.round(maxVal * f);
+      return `<line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+              <text x="${padL - 6}" y="${y + 3}" fill="rgba(255,255,255,0.45)" font-size="9" text-anchor="end">${val}</text>`;
+    }).join('');
+
+    const totalFrizz = yearData.reduce((s, d) => s + d.frizz, 0);
+    const totalAll = yearData.reduce((s, d) => s + d.total, 0);
+
+    // Construire la popup
+    const popup = $('modalPopup');
+    const body = $('modalPopupBody');
+    const title = $('modalPopupTitle');
+    if (!popup || !body || !title) return;
+    // Mémoriser l'ancien contenu pour pouvoir y revenir
+    if (!popup.dataset.prevContent) {
+      popup.dataset.prevContent = body.innerHTML;
+      popup.dataset.prevTitle = title.textContent;
+    }
+    title.textContent = 'Réservations · ' + new Date().getFullYear();
+    body.innerHTML = `
+      <div style="padding: 4px 20px 30px;">
+        <!-- Légende -->
+        <div style="display:flex;gap:18px;margin-bottom:18px;padding:14px 16px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.06);border-radius:14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:#FF375F;flex-shrink:0;"></span>
+            <div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.65);">Frizz uniquement</div>
+              <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.2;">${totalFrizz}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.85);flex-shrink:0;"></span>
+            <div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.65);">Frizz + Manuelle</div>
+              <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.2;">${totalAll}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Graphique -->
+        <div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.06);border-radius:20px;padding:18px;">
+          <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">
+            ${yLines}
+            <polyline points="${ptTotal}" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"/>
+            <polyline points="${ptFrizz}" fill="none" stroke="#FF375F" stroke-width="2.2"/>
+            ${dotsTotal}
+            ${dotsFrizz}
+            ${monthLabels}
+          </svg>
+        </div>
+
+        <!-- Tableau récap par mois -->
+        <div style="margin-top:14px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.06);border-radius:20px;padding:18px;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;font-weight:500;">Détails par mois</div>
+          <div style="display:flex;flex-direction:column;">
+            ${yearData.map((d, i) => `
+              <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);">
+                <span style="font-size:13px;color:rgba(255,255,255,0.7);width:32px;">${moisLabels[i]}</span>
+                <span></span>
+                <span style="font-size:13px;font-weight:700;color:#FF375F;font-variant-numeric:tabular-nums;">${d.frizz}</span>
+                <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;">${d.total}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    body.scrollTop = 0;
+    // Le bouton X devient "retour"
+    const closeBtn = $('modalPopupCloseBtn');
+    if (closeBtn) closeBtn.dataset.mode = 'back';
   }
 
   function closePopup() {

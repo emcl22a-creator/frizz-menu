@@ -1603,36 +1603,276 @@
     font-weight: 500;
   }
 
-  /* ═══ SWITCHER ONGLETS Calendrier / Tables ═══ */
-  .cal-tabs-switcher {
+  /* ═══ SERVICE DU JOUR (Mockup 3 - Pavages glass) ═══ */
+
+  /* Header avec date + flèches */
+  .service-header {
     display: flex;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 4px;
-    gap: 4px;
-    margin: 0 20px 14px;
+    justify-content: space-between;
+    align-items: end;
+    padding: 0 20px 14px;
   }
-  .cal-tab-btn {
+  .service-header-center {
+    text-align: left;
     flex: 1;
-    background: transparent;
+  }
+  .service-header-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+  }
+  .service-header-title {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .service-nav-btn {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: none;
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 9px;
-    border-radius: 10px;
+    color: #0A84FF;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+    margin-left: 6px;
+  }
+  .service-nav-btn:active { transform: scale(0.92); }
+  .service-nav-btn svg { width: 16px; height: 16px; }
+
+  /* Pilules jours horizontales */
+  .service-day-pills {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .service-day-pills::-webkit-scrollbar { display: none; }
+  .service-day-pill {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    text-align: center;
+    min-width: 56px;
     font-family: inherit;
-    transition: background 0.2s, color 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .cal-tab-btn.active {
-    background: rgba(255, 255, 255, 0.12);
+  .service-day-pill-label {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .service-day-pill-num {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 3px;
+  }
+  .service-day-pill.active {
+    background: #0A84FF;
+    border-color: #0A84FF;
+    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.30);
+  }
+  .service-day-pill.active .service-day-pill-label {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+  }
+  .service-day-pill.active .service-day-pill-num {
     color: #fff;
   }
-  .cal-tab-pane.hidden {
-    display: none !important;
+  .service-day-pill:active { transform: scale(0.95); }
+
+  /* KPI principal — carte gradient bleu Frizz */
+  .service-kpi-card {
+    background: linear-gradient(160deg, #4DA2FF 0%, #1E64FF 60%, #0A4FE5 100%);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin: 0 20px 10px;
+    box-shadow: 0 8px 24px rgba(10, 79, 229, 0.30);
+  }
+  .service-kpi-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+  .service-kpi-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .service-kpi-value {
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .service-kpi-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* 2 cartes mini glass */
+  .service-mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 20px;
+    margin-bottom: 18px;
+  }
+  .service-mini-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    padding: 14px 16px;
+  }
+  .service-mini-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .service-mini-value {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .service-mini-value--blue { color: #0A84FF; }
+
+  /* Section label Midi / Soir */
+  .service-section-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 0 24px;
+    margin-bottom: 10px;
+  }
+
+  /* Liste de résas (pavages glass empilés) */
+  .service-resa-list {
+    padding: 0 20px;
+    margin-bottom: 14px;
+  }
+  .service-resa-row {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .service-resa-row:active { transform: scale(0.98); }
+  .service-resa-time-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .service-resa-time-pill-text {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: #fff;
+  }
+  .service-resa-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .service-resa-meta {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .service-resa-check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.20);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .service-resa-check svg { display: none; }
+  /* Ligne marquée "arrivée" */
+  .service-resa-row.is-arrived .service-resa-time-pill {
+    background: rgba(10, 132, 255, 0.18);
+  }
+  .service-resa-row.is-arrived .service-resa-time-pill-text {
+    color: #0A84FF;
+  }
+  .service-resa-row.is-arrived .service-resa-check {
+    background: #0A84FF;
+    border-color: #0A84FF;
+  }
+  .service-resa-row.is-arrived .service-resa-check svg {
+    display: block;
+    width: 13px;
+    height: 13px;
+    stroke: #fff;
+    stroke-width: 3;
+    fill: none;
+  }
+
+  /* Vide */
+  .service-empty {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .service-empty-title {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .service-empty-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* ═══ POPUP TABLES (4ème) ═══ */
@@ -6833,69 +7073,87 @@
     <button id="statsWeekLinkBtn" hidden style="display:none;"></button>
   </div><!-- /page-stats -->
 
-  <!-- ═══ PAGE CALENDRIER ═══ -->
+  <!-- ═══ PAGE CALENDRIER / SERVICE DU JOUR ═══ -->
   <div class="page hidden" id="page-calendrier">
 
-    <section class="greeting">
-      <h1 id="calPageTitle">Calendrier</h1>
-      <p class="subtitle" id="calendrierSubtitle">—</p>
-    </section>
-
-    <!-- Switcher onglets : Calendrier / Tables -->
-    <div class="cal-tabs-switcher" id="calTabsSwitcher">
-      <button class="cal-tab-btn active" data-tab="calendar" type="button">Calendrier</button>
-      <button class="cal-tab-btn" data-tab="tables" type="button">Tables</button>
-    </div>
-
-    <!-- VUE 1 : CALENDRIER -->
-    <div class="cal-tab-pane" id="calTabPaneCalendar">
-      <!-- Conteneur animable : la barre 7 jours + la liste glissent ensemble au swipe -->
-      <div class="cal-animatable" id="calAnimatable">
-        <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
-        <section class="cal-week-card cal-week-card--inline">
-          <div class="cal-week-weekdays" id="calWeekWeekdays">
-            <!-- Initiales L/M/M/J/V/S/D générées par JS -->
-          </div>
-          <div class="cal-week-days" id="calWeekDays">
-            <!-- 7 cellules de jour générées par JS -->
-          </div>
-        </section>
-
-        <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
-        <div class="cal-day-list" id="calDayList">
-          <!-- Résas du jour générées par JS -->
-        </div>
+    <!-- Header avec date + flèches navigation -->
+    <div class="service-header">
+      <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="service-header-center">
+        <div class="service-header-label" id="serviceHeaderLabel">Lundi 2 juin</div>
+        <div class="service-header-title" id="serviceHeaderTitle">Service</div>
       </div>
-
-      <!-- Bouton flottant : créer une résa (juste un +) -->
-      <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
-          <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
-        </svg>
+      <button class="service-nav-btn" id="serviceNavNextBtn" type="button" aria-label="Jour suivant">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
 
-    <!-- VUE 2 : TABLES (slider d'heure + liste) -->
-    <div class="cal-tab-pane hidden" id="calTabPaneTables">
-      <div class="popup-tables-hour">
-        <div class="popup-tables-hour-head">
-          <div class="popup-tables-hour-label">Heure</div>
-          <div class="popup-tables-hour-value" id="popupTablesHourValue">20:00</div>
-        </div>
-        <input type="range" class="popup-tables-slider" id="popupTablesSlider" min="660" max="1380" step="15" value="1200">
-        <div class="popup-tables-slider-marks">
-          <span>11h</span><span>14h</span><span>17h</span><span>20h</span><span>23h</span>
+    <!-- Pilules de jours (auj, demain, +2, +3, ...) -->
+    <div class="service-day-pills" id="serviceDayPills">
+      <!-- 7 pilules générées par JS -->
+    </div>
+
+    <!-- Contenu animable (swipable) -->
+    <div class="service-animatable" id="serviceAnimatable">
+
+      <!-- Carte KPI principale (couverts) - bleu gradient Frizz -->
+      <div class="service-kpi-card">
+        <div class="service-kpi-label">Couverts attendus</div>
+        <div class="service-kpi-row">
+          <div class="service-kpi-value" id="serviceKpiCouverts">0</div>
+          <div class="service-kpi-sub" id="serviceKpiResas">sur 0 résa</div>
         </div>
       </div>
-      <div class="popup-tables-filters" id="popupTablesFilters">
-        <button class="popup-tables-filter active" data-filter="toutes" type="button">Toutes</button>
-        <button class="popup-tables-filter" data-filter="salle" type="button">Salle</button>
-        <button class="popup-tables-filter" data-filter="terrasse" type="button">Terrasse</button>
-        <button class="popup-tables-filter" data-filter="combinables" type="button">Combinables</button>
+
+      <!-- 2 cartes mini (Arrivés / Prochaine) -->
+      <div class="service-mini-grid">
+        <div class="service-mini-card">
+          <div class="service-mini-label">Arrivés</div>
+          <div class="service-mini-value service-mini-value--blue" id="serviceMiniArrives">0 / 0</div>
+        </div>
+        <div class="service-mini-card">
+          <div class="service-mini-label">Prochaine</div>
+          <div class="service-mini-value" id="serviceMiniProchaine">—</div>
+        </div>
       </div>
-      <div class="popup-tables-list" id="popupTablesList"></div>
-      <button class="popup-tables-add" id="popupTablesAdd" type="button">+ Ajouter une table</button>
+
+      <!-- Liste des résas, segmentée Midi / Soir -->
+      <div class="service-section-label" id="serviceMidiLabel" style="display:none;">Midi</div>
+      <div class="service-resa-list" id="serviceMidiList"></div>
+
+      <div class="service-section-label" id="serviceSoirLabel" style="display:none;">Soir</div>
+      <div class="service-resa-list" id="serviceSoirList"></div>
+
+      <!-- Liste sans segment (si pas d'horaires définis) -->
+      <div class="service-section-label" id="serviceAllLabel" style="display:none;">Réservations</div>
+      <div class="service-resa-list" id="serviceAllList"></div>
+
+      <!-- Vide -->
+      <div class="service-empty" id="serviceEmpty" style="display:none;">
+        <div class="service-empty-title">Aucune réservation</div>
+        <div class="service-empty-sub">Aucune résa prévue pour ce jour.</div>
+      </div>
+
+    </div>
+
+    <!-- Bouton flottant : créer une résa -->
+    <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
+        <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Stubs cachés pour ne pas casser l'ancien JS qui peut référencer ces IDs -->
+    <div hidden style="display:none;">
+      <h1 id="calPageTitle"></h1>
+      <p id="calendrierSubtitle"></p>
+      <div id="calAnimatable"></div>
+      <div id="calWeekWeekdays"></div>
+      <div id="calWeekDays"></div>
+      <div id="calDayList"></div>
     </div>
 
   </div><!-- /page-calendrier -->
@@ -9694,63 +9952,304 @@
     });
   }
 
+  // ═══════════════════════════════════════════════════════════
+  //   SERVICE DU JOUR (remplace l'ancien calendrier)
+  // ═══════════════════════════════════════════════════════════
+  // Date actuellement affichée (par défaut : aujourd'hui)
+  let serviceViewedDate = new Date();
+  serviceViewedDate.setHours(0, 0, 0, 0);
+
   function renderCalendarPage() {
-    renderCalendarWeek();
-    renderCalendarDayDetail();
+    // Alias rétrocompatible : on rend la nouvelle vue Service du jour
+    renderServiceDuJour();
   }
 
-  // Helper : changer de semaine avec animation slide complet (style iOS Calendar)
-  // direction = 'next' (slide vers la gauche) ou 'prev' (slide vers la droite)
-  let calAnimating = false;
-  function changeCalendarWeek(direction) {
-    if (calAnimating) return; // empêche les doubles déclenchements
-    const animEl = $('calAnimatable');
-    if (!animEl) {
-      // Si pas de conteneur, on change sans animation
-      const d = new Date(calViewedWeekStart);
-      d.setDate(d.getDate() + (direction === 'next' ? 7 : -7));
-      calViewedWeekStart = d;
-      renderCalendarWeek();
+  function renderServiceDuJour() {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const target = new Date(serviceViewedDate); target.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((target - today) / 86400000);
+
+    // ── Header label + title ──
+    const moisLong = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const joursLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    const headerLabel = `${joursLong[target.getDay()]} ${target.getDate()} ${moisLong[target.getMonth()]}`;
+    let headerTitle = 'Service';
+    if (diffDays === 0) headerTitle = 'Aujourd\'hui';
+    else if (diffDays === 1) headerTitle = 'Demain';
+    else if (diffDays === -1) headerTitle = 'Hier';
+    else headerTitle = joursLong[target.getDay()];
+    const hl = document.getElementById('serviceHeaderLabel');
+    const ht = document.getElementById('serviceHeaderTitle');
+    if (hl) hl.textContent = headerLabel;
+    if (ht) ht.textContent = headerTitle;
+
+    // ── Pilules jours (7 jours autour d'aujourd'hui : -1 à +5) ──
+    renderServiceDayPills();
+
+    // ── Résas du jour ──
+    const dateStr = formatDateISO(target);
+    const annulesStatuts = ['annulee','annulée','annule','annulé','cancelled'];
+    const dayResas = (allReservations || [])
+      .filter(r => {
+        const d = (r.date_reservation || r.date || '').slice(0, 10);
+        if (d !== dateStr) return false;
+        const s = String(r.statut || '').toLowerCase().trim();
+        if (annulesStatuts.includes(s)) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const ta = String(a.heure_reservation || a.heure || '23:59').slice(0, 5);
+        const tb = String(b.heure_reservation || b.heure || '23:59').slice(0, 5);
+        return ta.localeCompare(tb);
+      });
+
+    // ── KPI ──
+    const totalResas = dayResas.length;
+    const totalCouverts = dayResas.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
+    const isArrived = r => String(r.statut || '').toLowerCase().trim() === 'arrivee' || String(r.statut || '').toLowerCase().trim() === 'arrivée';
+    const arrives = dayResas.filter(isArrived).length;
+    const toCome = dayResas.filter(r => !isArrived(r));
+
+    const elCouv = document.getElementById('serviceKpiCouverts');
+    const elResas = document.getElementById('serviceKpiResas');
+    const elArr = document.getElementById('serviceMiniArrives');
+    const elProch = document.getElementById('serviceMiniProchaine');
+    if (elCouv) elCouv.textContent = totalCouverts;
+    if (elResas) elResas.textContent = `sur ${totalResas} résa${totalResas > 1 ? 's' : ''}`;
+    if (elArr) elArr.textContent = `${arrives} / ${totalResas}`;
+    if (elProch) {
+      if (toCome.length > 0) {
+        const h = (toCome[0].heure_reservation || toCome[0].heure || '').slice(0, 5);
+        elProch.textContent = h || '—';
+      } else {
+        elProch.textContent = totalResas > 0 ? 'Terminé' : '—';
+      }
+    }
+
+    // ── Segmenter Midi/Soir d'après horaires_ouverture ──
+    const horaires = currentSalon && currentSalon.horaires_ouverture;
+    let midiEndMin = null;
+    if (horaires) {
+      // Récupère le créneau du jour
+      const dayKeys = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+      const dayKey = dayKeys[target.getDay()];
+      const dayConf = horaires[dayKey];
+      if (dayConf && Array.isArray(dayConf.creneaux) && dayConf.creneaux.length >= 1) {
+        // Si 2+ créneaux : le 1er finit le midi, le 2ème commence le soir
+        const c0 = dayConf.creneaux[0];
+        if (c0 && c0.fermeture) {
+          const [h, m] = String(c0.fermeture).split(':').map(x => parseInt(x) || 0);
+          midiEndMin = h * 60 + m;
+        }
+      }
+    }
+
+    const midiList = document.getElementById('serviceMidiList');
+    const soirList = document.getElementById('serviceSoirList');
+    const allList = document.getElementById('serviceAllList');
+    const midiLabel = document.getElementById('serviceMidiLabel');
+    const soirLabel = document.getElementById('serviceSoirLabel');
+    const allLabel = document.getElementById('serviceAllLabel');
+    const emptyEl = document.getElementById('serviceEmpty');
+
+    // Reset
+    [midiList, soirList, allList].forEach(el => { if (el) el.innerHTML = ''; });
+    [midiLabel, soirLabel, allLabel, emptyEl].forEach(el => { if (el) el.style.display = 'none'; });
+
+    if (dayResas.length === 0) {
+      if (emptyEl) emptyEl.style.display = '';
       return;
     }
 
-    calAnimating = true;
+    if (midiEndMin !== null) {
+      // Séparer Midi / Soir
+      const midiRes = dayResas.filter(r => {
+        const h = String(r.heure_reservation || r.heure || '23:59').slice(0, 5);
+        const [hh, mm] = h.split(':').map(x => parseInt(x) || 0);
+        return (hh * 60 + mm) < midiEndMin + 60; // +1h de marge pour le service midi
+      });
+      const soirRes = dayResas.filter(r => !midiRes.includes(r));
+      if (midiRes.length > 0) {
+        if (midiLabel) midiLabel.style.display = '';
+        if (midiList) midiList.innerHTML = midiRes.map(renderServiceResaRow).join('');
+      }
+      if (soirRes.length > 0) {
+        if (soirLabel) soirLabel.style.display = '';
+        if (soirList) soirList.innerHTML = soirRes.map(renderServiceResaRow).join('');
+      }
+    } else {
+      // Pas d'horaires → une seule liste
+      if (allLabel) allLabel.style.display = '';
+      if (allList) allList.innerHTML = dayResas.map(renderServiceResaRow).join('');
+    }
 
-    // Étape 1 : slide out de l'ancien contenu
+    // Bind clics
+    bindServiceResaRows();
+  }
+
+  function renderServiceResaRow(r) {
+    const heure = String(r.heure_reservation || r.heure || '').slice(0, 5);
+    const nom = r.client_name || r.nom || r.client_nom || 'Client';
+    const couverts = parseInt(r.nb_couverts || r.couverts) || 0;
+    const lieu = r.emplacement === 'terrasse' ? 'Terrasse' : (r.emplacement === 'exterieur' ? 'Terrasse' : '');
+    const tableName = r.table_nom || r.table || '';
+    const arrived = String(r.statut || '').toLowerCase().trim() === 'arrivee' || String(r.statut || '').toLowerCase().trim() === 'arrivée';
+    const metaParts = [`${couverts} pers`];
+    if (tableName) metaParts.push(tableName);
+    if (lieu) metaParts.push(lieu);
+    const meta = metaParts.join(' · ');
+    const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+    return `
+      <div class="service-resa-row ${arrived ? 'is-arrived' : ''}" data-resa-id="${r.id}">
+        <div class="service-resa-time-pill">
+          <div class="service-resa-time-pill-text">${escapeHtml(heure)}</div>
+        </div>
+        <div>
+          <div class="service-resa-name">${escapeHtml(nom)}</div>
+          <div class="service-resa-meta">${escapeHtml(meta)}</div>
+        </div>
+        <button class="service-resa-check" data-action="toggle-arrived" data-resa-id="${r.id}" type="button" aria-label="Marquer arrivé">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+    `;
+  }
+
+  function bindServiceResaRows() {
+    document.querySelectorAll('.service-resa-row').forEach(row => {
+      // Clic sur la ligne → ouvrir le détail de la résa
+      row.addEventListener('click', (e) => {
+        // Ne pas déclencher si on a tapé sur le bouton check
+        if (e.target.closest('[data-action="toggle-arrived"]')) return;
+        const id = row.dataset.resaId;
+        const resa = (allReservations || []).find(r => String(r.id) === String(id));
+        if (resa && typeof openResaDetail === 'function') {
+          try { openResaDetail(resa); } catch (err) { console.warn('openResaDetail:', err); }
+        }
+      });
+    });
+    document.querySelectorAll('.service-resa-check').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.resaId;
+        const row = btn.closest('.service-resa-row');
+        const isArrived = row && row.classList.contains('is-arrived');
+        const newStatut = isArrived ? 'confirmee' : 'arrivee';
+        // Optimistic UI
+        if (row) row.classList.toggle('is-arrived', !isArrived);
+        // Update Supabase
+        try {
+          await supa.from('frizz_ai_reservations')
+            .update({ statut: newStatut })
+            .eq('id', id);
+          // Mise à jour locale
+          const idx = (allReservations || []).findIndex(r => String(r.id) === String(id));
+          if (idx >= 0) allReservations[idx].statut = newStatut;
+          // Rafraîchir les KPI
+          renderServiceDuJour();
+        } catch (err) {
+          console.error('toggle arrived:', err);
+          // Rollback UI
+          if (row) row.classList.toggle('is-arrived', isArrived);
+        }
+      });
+    });
+  }
+
+  function renderServiceDayPills() {
+    const container = document.getElementById('serviceDayPills');
+    if (!container) return;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const target = new Date(serviceViewedDate); target.setHours(0, 0, 0, 0);
+    const joursCourts = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+    // Plage : 1 jour avant à 5 jours après
+    const pills = [];
+    for (let offset = -1; offset <= 5; offset++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() + offset);
+      let label;
+      if (offset === -1) label = 'Hier';
+      else if (offset === 0) label = 'Auj.';
+      else if (offset === 1) label = 'Demain';
+      else label = joursCourts[d.getDay()];
+      const isActive = d.getTime() === target.getTime();
+      pills.push(`
+        <button class="service-day-pill ${isActive ? 'active' : ''}" data-offset="${offset}" type="button">
+          <div class="service-day-pill-label">${label}</div>
+          <div class="service-day-pill-num">${d.getDate()}</div>
+        </button>
+      `);
+    }
+    container.innerHTML = pills.join('');
+    // Bind clics
+    container.querySelectorAll('.service-day-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const offset = parseInt(btn.dataset.offset) || 0;
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const d = new Date(today);
+        d.setDate(d.getDate() + offset);
+        const direction = d > serviceViewedDate ? 'next' : 'prev';
+        serviceViewedDate = d;
+        animateServiceChange(direction);
+      });
+    });
+  }
+
+  function formatDateISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  }
+
+  // Animation slide gauche/droite à la navigation jour
+  let serviceAnimating = false;
+  function animateServiceChange(direction) {
+    if (serviceAnimating) {
+      // Pas d'animation si déjà en cours, juste re-rendre
+      renderServiceDuJour();
+      return;
+    }
+    const animEl = document.getElementById('serviceAnimatable');
+    if (!animEl) {
+      renderServiceDuJour();
+      return;
+    }
+    serviceAnimating = true;
     const outClass = direction === 'next' ? 'cal-slide-out-left' : 'cal-slide-out-right';
     const inClass = direction === 'next' ? 'cal-slide-in-right' : 'cal-slide-in-left';
-
-    // Nettoyer toutes les classes d'animation
-    animEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left', 'cal-slide-out-left', 'cal-slide-out-right');
-    void animEl.offsetWidth; // forcer reflow
+    animEl.classList.remove('cal-slide-in-right','cal-slide-in-left','cal-slide-out-left','cal-slide-out-right');
+    void animEl.offsetWidth;
     animEl.classList.add(outClass);
-
-    // Quand l'animation slideOut est finie, on change la semaine et on slideIn
     const onOutEnd = () => {
       animEl.removeEventListener('animationend', onOutEnd);
-
-      // Changer la semaine + re-rendre
-      const d = new Date(calViewedWeekStart);
-      d.setDate(d.getDate() + (direction === 'next' ? 7 : -7));
-      calViewedWeekStart = d;
-      renderCalendarWeek();
-
-      // Étape 2 : slide in du nouveau contenu
-      animEl.classList.remove('cal-slide-out-left', 'cal-slide-out-right');
+      renderServiceDuJour();
+      animEl.classList.remove('cal-slide-out-left','cal-slide-out-right');
       void animEl.offsetWidth;
       animEl.classList.add(inClass);
-
       const onInEnd = () => {
         animEl.removeEventListener('animationend', onInEnd);
-        animEl.classList.remove('cal-slide-in-right', 'cal-slide-in-left');
-        calAnimating = false;
+        animEl.classList.remove('cal-slide-in-right','cal-slide-in-left');
+        serviceAnimating = false;
       };
       animEl.addEventListener('animationend', onInEnd);
     };
     animEl.addEventListener('animationend', onOutEnd);
   }
 
-  // Brancher le bouton FAB "+ Nouvelle résa" + le swipe sur la page
+  // Helper : changer de semaine — RÉTROCOMPAT, désormais c'est jour par jour
+  let calAnimating = false;
+  function changeCalendarWeek(direction) {
+    // Compat : ancienne fonction qui changeait la semaine, maintenant on change le jour
+    const d = new Date(serviceViewedDate);
+    d.setDate(d.getDate() + (direction === 'next' ? 1 : -1));
+    serviceViewedDate = d;
+    animateServiceChange(direction);
+  }
+
+  // Brancher boutons et swipe
   function bindCalendarPageEvents() {
     const fabBtn = $('calFabBtn');
     if (fabBtn && !fabBtn._calBound) {
@@ -9760,14 +10259,22 @@
       fabBtn._calBound = true;
     }
 
-    // Swipe gauche/droite sur toute la page pour changer de semaine
+    // Boutons flèches
+    const prevBtn = document.getElementById('serviceNavPrevBtn');
+    const nextBtn = document.getElementById('serviceNavNextBtn');
+    if (prevBtn && !prevBtn._svcBound) {
+      prevBtn.addEventListener('click', () => changeCalendarWeek('prev'));
+      prevBtn._svcBound = true;
+    }
+    if (nextBtn && !nextBtn._svcBound) {
+      nextBtn.addEventListener('click', () => changeCalendarWeek('next'));
+      nextBtn._svcBound = true;
+    }
+
+    // Swipe gauche/droite sur toute la page (jour précédent/suivant)
     const pageEl = $('page-calendrier');
     if (pageEl && !pageEl._swipeBound) {
-      let startX = 0;
-      let startY = 0;
-      let startTime = 0;
-      let tracking = false;
-
+      let startX = 0, startY = 0, startTime = 0, tracking = false;
       pageEl.addEventListener('touchstart', (e) => {
         if (e.touches.length !== 1) { tracking = false; return; }
         startX = e.touches[0].clientX;
@@ -9775,7 +10282,6 @@
         startTime = Date.now();
         tracking = true;
       }, { passive: true });
-
       pageEl.addEventListener('touchend', (e) => {
         if (!tracking) return;
         tracking = false;
@@ -9783,12 +10289,10 @@
         const dx = touch.clientX - startX;
         const dy = touch.clientY - startY;
         const dt = Date.now() - startTime;
-
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
           changeCalendarWeek(dx < 0 ? 'next' : 'prev');
         }
       }, { passive: true });
-
       pageEl._swipeBound = true;
     }
   }
@@ -12039,41 +12543,11 @@
         }
         // Marquer que la popup contient le calendrier (pour pouvoir le remettre à la fermeture)
         popup.dataset.hasCalendrier = '1';
-        // Rafraîchir le calendrier
+        // Rafraîchir le calendrier (= nouvelle vue Service du jour)
         if (typeof renderCalendarPage === 'function') {
           try { renderCalendarPage(); } catch (e) { console.warn('renderCalendarPage:', e); }
         }
-        // Brancher le switcher onglets (Calendrier / Tables)
-        const switcher = document.getElementById('calTabsSwitcher');
-        if (switcher) {
-          switcher.querySelectorAll('.cal-tab-btn').forEach(btn => {
-            btn.onclick = () => {
-              switcher.querySelectorAll('.cal-tab-btn').forEach(b => b.classList.remove('active'));
-              btn.classList.add('active');
-              const tab = btn.dataset.tab;
-              const paneCal = document.getElementById('calTabPaneCalendar');
-              const paneTab = document.getElementById('calTabPaneTables');
-              if (tab === 'calendar') {
-                if (paneCal) paneCal.classList.remove('hidden');
-                if (paneTab) paneTab.classList.add('hidden');
-              } else {
-                if (paneCal) paneCal.classList.add('hidden');
-                if (paneTab) paneTab.classList.remove('hidden');
-                // Render la vue tables au premier affichage / refresh à chaque clic
-                try { renderTablesPopup(); } catch (e) { console.warn('renderTablesPopup:', e); }
-              }
-            };
-          });
-          // Reset à l'onglet Calendrier à chaque ouverture
-          switcher.querySelectorAll('.cal-tab-btn').forEach(b => b.classList.remove('active'));
-          const first = switcher.querySelector('.cal-tab-btn[data-tab="calendar"]');
-          if (first) first.classList.add('active');
-          const paneCal = document.getElementById('calTabPaneCalendar');
-          const paneTab = document.getElementById('calTabPaneTables');
-          if (paneCal) paneCal.classList.remove('hidden');
-          if (paneTab) paneTab.classList.add('hidden');
-        }
-        // Brancher le swipe gauche/droite sur le body de la popup pour changer de semaine
+        // Brancher le swipe gauche/droite sur le body de la popup pour changer de jour
         if (!popupBody._calSwipeBound) {
           let startX = 0, startY = 0, startTime = 0, tracking = false;
           popupBody.addEventListener('touchstart', (e) => {

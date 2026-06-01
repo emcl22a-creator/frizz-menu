@@ -1717,7 +1717,7 @@
     color: rgba(255, 255, 255, 0.85);
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    margin-bottom: 6px;
+    margin-bottom: 21px;
   }
   .service-kpi-row {
     display: flex;
@@ -1756,7 +1756,7 @@
     color: rgba(255, 255, 255, 0.55);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 21px;
   }
   .service-mini-value {
     font-size: 28px;
@@ -7076,11 +7076,10 @@
   <!-- ═══ PAGE CALENDRIER / SERVICE DU JOUR ═══ -->
   <div class="page hidden" id="page-calendrier">
 
-    <!-- Header : LABEL date + gros titre "Service" + flèches navigation -->
+    <!-- Header : label date + flèches navigation -->
     <div class="service-header">
       <div class="service-header-center">
         <div class="service-header-label" id="serviceHeaderLabel">Lundi 2 juin</div>
-        <div class="service-header-title" id="serviceHeaderTitle">Service</div>
       </div>
       <div class="service-header-nav">
         <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
@@ -7090,11 +7089,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
+      <!-- Stub caché pour ne pas casser le JS qui set serviceHeaderTitle -->
+      <span id="serviceHeaderTitle" hidden style="display:none;"></span>
     </div>
 
-    <!-- Pilules de jours (auj, demain, +2, +3, ...) -->
-    <div class="service-day-pills" id="serviceDayPills">
-      <!-- 7 pilules générées par JS -->
+    <!-- Pilules de jours retirées (navigation via flèches + swipe) -->
+    <div class="service-day-pills" id="serviceDayPills" hidden style="display:none;" aria-hidden="true">
     </div>
 
     <!-- Contenu animable (swipable) -->
@@ -12469,8 +12469,7 @@
         </div>
       `;
     } else if (type === 'reservations') {
-      // Titre vide car le contenu (page-calendrier) a son propre header "Service"
-      titleText = '';
+      titleText = 'Service';
       bodyHTML = ''; // sera rempli par DOM move
     } else if (type === 'activites') {
       titleText = 'Notification';
@@ -13441,6 +13440,35 @@
       handle.addEventListener('mousedown', e => { start(e.clientY); e.preventDefault(); });
       document.addEventListener('mousemove', e => { if (dragging) move(e.clientY); });
       document.addEventListener('mouseup', end);
+
+      // Drag-down sur tout le body de la popup (quand on est en haut du scroll)
+      const popupBodyEl = $('modalPopupBody');
+      if (popupBodyEl && !popupBodyEl._dragDownBound) {
+        let bStartY = 0, bDragging = false;
+        popupBodyEl.addEventListener('touchstart', (e) => {
+          if (e.touches.length !== 1) return;
+          // Activer le drag-down UNIQUEMENT si on est tout en haut du scroll
+          if (popupBodyEl.scrollTop > 0) { bDragging = false; return; }
+          bStartY = e.touches[0].clientY;
+          bDragging = true;
+          popup.style.transition = 'none';
+        }, { passive: true });
+        popupBodyEl.addEventListener('touchmove', (e) => {
+          if (!bDragging) return;
+          const dy = e.touches[0].clientY - bStartY;
+          if (dy < 0) { return; } // ignore swipe vers le haut
+          popup.style.transform = `translateY(${dy}px)`;
+        }, { passive: true });
+        popupBodyEl.addEventListener('touchend', (e) => {
+          if (!bDragging) return;
+          bDragging = false;
+          popup.style.transition = '';
+          const lastY = e.changedTouches[0].clientY;
+          if (lastY - bStartY > 120) closePopup();
+          else popup.style.transform = '';
+        });
+        popupBodyEl._dragDownBound = true;
+      }
     }
   })();
 

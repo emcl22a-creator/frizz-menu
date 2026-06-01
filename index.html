@@ -1286,6 +1286,47 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Carte graphique annuel intégré (popup Statistique) */
+  .stat-yearchart-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 20px;
+    padding: 18px 16px 14px;
+  }
+  .stat-yearchart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  .stat-yearchart-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .stat-yearchart-legend {
+    display: flex;
+    gap: 12px;
+  }
+  .stat-yearchart-legend-item {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stat-yearchart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .stat-yearchart-svg {
+    width: 100%;
+    overflow: hidden;
+  }
+
   /* Carte répartition (B) */
   .stat-bars-b {
     background: transparent;
@@ -1560,6 +1601,38 @@
     font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     font-weight: 500;
+  }
+
+  /* ═══ SWITCHER ONGLETS Calendrier / Tables ═══ */
+  .cal-tabs-switcher {
+    display: flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 4px;
+    gap: 4px;
+    margin: 0 20px 14px;
+  }
+  .cal-tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cal-tab-btn.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+  .cal-tab-pane.hidden {
+    display: none !important;
   }
 
   /* ═══ POPUP TABLES (4ème) ═══ */
@@ -2921,6 +2994,9 @@
     animation: cascadeIn 0.6s ease-out 0.12s backwards;
   }
   #modalPopup.visible .stat-conv-clickable {
+    animation: cascadeIn 0.6s ease-out 0.18s backwards;
+  }
+  #modalPopup.visible .stat-yearchart-card {
     animation: cascadeIn 0.6s ease-out 0.18s backwards;
   }
   #modalPopup.visible .stat-bars-b {
@@ -6765,31 +6841,62 @@
       <p class="subtitle" id="calendrierSubtitle">—</p>
     </section>
 
-    <!-- Conteneur animable : la barre 7 jours + la liste glissent ensemble au swipe -->
-    <div class="cal-animatable" id="calAnimatable">
-      <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
-      <section class="cal-week-card cal-week-card--inline">
-        <div class="cal-week-weekdays" id="calWeekWeekdays">
-          <!-- Initiales L/M/M/J/V/S/D générées par JS -->
-        </div>
-        <div class="cal-week-days" id="calWeekDays">
-          <!-- 7 cellules de jour générées par JS -->
-        </div>
-      </section>
-
-      <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
-      <div class="cal-day-list" id="calDayList">
-        <!-- Résas du jour générées par JS -->
-      </div>
+    <!-- Switcher onglets : Calendrier / Tables -->
+    <div class="cal-tabs-switcher" id="calTabsSwitcher">
+      <button class="cal-tab-btn active" data-tab="calendar" type="button">Calendrier</button>
+      <button class="cal-tab-btn" data-tab="tables" type="button">Tables</button>
     </div>
 
-    <!-- Bouton flottant : créer une résa (juste un +) -->
-    <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
-        <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
-      </svg>
-    </button>
+    <!-- VUE 1 : CALENDRIER -->
+    <div class="cal-tab-pane" id="calTabPaneCalendar">
+      <!-- Conteneur animable : la barre 7 jours + la liste glissent ensemble au swipe -->
+      <div class="cal-animatable" id="calAnimatable">
+        <!-- Barre des 7 jours (swipe gauche/droite pour changer de semaine) -->
+        <section class="cal-week-card cal-week-card--inline">
+          <div class="cal-week-weekdays" id="calWeekWeekdays">
+            <!-- Initiales L/M/M/J/V/S/D générées par JS -->
+          </div>
+          <div class="cal-week-days" id="calWeekDays">
+            <!-- 7 cellules de jour générées par JS -->
+          </div>
+        </section>
+
+        <!-- Liste des résas du jour sélectionné (style Inbox iOS) -->
+        <div class="cal-day-list" id="calDayList">
+          <!-- Résas du jour générées par JS -->
+        </div>
+      </div>
+
+      <!-- Bouton flottant : créer une résa (juste un +) -->
+      <button class="cal-fab" id="calFabBtn" aria-label="Créer une réservation">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"/>
+          <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- VUE 2 : TABLES (slider d'heure + liste) -->
+    <div class="cal-tab-pane hidden" id="calTabPaneTables">
+      <div class="popup-tables-hour">
+        <div class="popup-tables-hour-head">
+          <div class="popup-tables-hour-label">Heure</div>
+          <div class="popup-tables-hour-value" id="popupTablesHourValue">20:00</div>
+        </div>
+        <input type="range" class="popup-tables-slider" id="popupTablesSlider" min="660" max="1380" step="15" value="1200">
+        <div class="popup-tables-slider-marks">
+          <span>11h</span><span>14h</span><span>17h</span><span>20h</span><span>23h</span>
+        </div>
+      </div>
+      <div class="popup-tables-filters" id="popupTablesFilters">
+        <button class="popup-tables-filter active" data-filter="toutes" type="button">Toutes</button>
+        <button class="popup-tables-filter" data-filter="salle" type="button">Salle</button>
+        <button class="popup-tables-filter" data-filter="terrasse" type="button">Terrasse</button>
+        <button class="popup-tables-filter" data-filter="combinables" type="button">Combinables</button>
+      </div>
+      <div class="popup-tables-list" id="popupTablesList"></div>
+      <button class="popup-tables-add" id="popupTablesAdd" type="button">+ Ajouter une table</button>
+    </div>
 
   </div><!-- /page-calendrier -->
 
@@ -7087,8 +7194,8 @@
       </div>
     </div>
 
-    <!-- Section : Mes tables -->
-    <div class="settings-section">
+    <!-- Section : Mes tables — MASQUÉE (gestion désormais dans la popup Calendrier > onglet Tables) -->
+    <div class="settings-section" style="display:none;" aria-hidden="true">
       <div class="settings-section-title">Mes tables</div>
       <div class="settings-section-card">
         <div class="tables-intro">
@@ -11908,29 +12015,9 @@
           <div id="statsPopupBody"></div>
         </div>
       `;
-    } else if (type === 'tables') {
-      titleText = 'Tables';
-      bodyHTML = `
-        <div class="popup-tables-hour">
-          <div class="popup-tables-hour-head">
-            <div class="popup-tables-hour-label">Heure</div>
-            <div class="popup-tables-hour-value" id="popupTablesHourValue">20:00</div>
-          </div>
-          <input type="range" class="popup-tables-slider" id="popupTablesSlider" min="660" max="1380" step="15" value="1200">
-          <div class="popup-tables-slider-marks">
-            <span>11h</span><span>14h</span><span>17h</span><span>20h</span><span>23h</span>
-          </div>
-        </div>
-        <div class="popup-tables-filters" id="popupTablesFilters">
-          <button class="popup-tables-filter active" data-filter="toutes" type="button">Toutes</button>
-          <button class="popup-tables-filter" data-filter="salle" type="button">Salle</button>
-          <button class="popup-tables-filter" data-filter="terrasse" type="button">Terrasse</button>
-          <button class="popup-tables-filter" data-filter="combinables" type="button">Combinables</button>
-        </div>
-        <div class="popup-tables-list" id="popupTablesList"></div>
-        <button class="popup-tables-add" id="popupTablesAdd" type="button">+ Ajouter une table</button>
-      `;
     }
+    // Note : la vue "Tables" est désormais une 2ème page de la popup Calendrier (onglet)
+    // — voir cal-tabs-switcher dans page-calendrier
 
     if (title) title.textContent = titleText;
     if (body) body.innerHTML = bodyHTML;
@@ -11938,11 +12025,6 @@
     // Si statistique : render direct (plus de filtres)
     if (type === 'conversion' || type === 'statistique') {
       renderStatsPopup();
-    }
-
-    // Si tables : charger les tables + render
-    if (type === 'tables') {
-      renderTablesPopup();
     }
 
     // Si réservations : déplacer le DOM du calendrier dans la popup
@@ -11960,6 +12042,36 @@
         // Rafraîchir le calendrier
         if (typeof renderCalendarPage === 'function') {
           try { renderCalendarPage(); } catch (e) { console.warn('renderCalendarPage:', e); }
+        }
+        // Brancher le switcher onglets (Calendrier / Tables)
+        const switcher = document.getElementById('calTabsSwitcher');
+        if (switcher) {
+          switcher.querySelectorAll('.cal-tab-btn').forEach(btn => {
+            btn.onclick = () => {
+              switcher.querySelectorAll('.cal-tab-btn').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              const tab = btn.dataset.tab;
+              const paneCal = document.getElementById('calTabPaneCalendar');
+              const paneTab = document.getElementById('calTabPaneTables');
+              if (tab === 'calendar') {
+                if (paneCal) paneCal.classList.remove('hidden');
+                if (paneTab) paneTab.classList.add('hidden');
+              } else {
+                if (paneCal) paneCal.classList.add('hidden');
+                if (paneTab) paneTab.classList.remove('hidden');
+                // Render la vue tables au premier affichage / refresh à chaque clic
+                try { renderTablesPopup(); } catch (e) { console.warn('renderTablesPopup:', e); }
+              }
+            };
+          });
+          // Reset à l'onglet Calendrier à chaque ouverture
+          switcher.querySelectorAll('.cal-tab-btn').forEach(b => b.classList.remove('active'));
+          const first = switcher.querySelector('.cal-tab-btn[data-tab="calendar"]');
+          if (first) first.classList.add('active');
+          const paneCal = document.getElementById('calTabPaneCalendar');
+          const paneTab = document.getElementById('calTabPaneTables');
+          if (paneCal) paneCal.classList.remove('hidden');
+          if (paneTab) paneTab.classList.add('hidden');
         }
         // Brancher le swipe gauche/droite sur le body de la popup pour changer de semaine
         if (!popupBody._calSwipeBound) {
@@ -12251,29 +12363,31 @@
         </div>
       </div>
 
-      <!-- 2) Deux cartes minimalistes : ce jour + cette semaine -->
+      <!-- 2) Deux cartes minimalistes : Cette semaine + Ce mois -->
       <div class="stats-grid-b">
-        <div class="stat-cell-b">
-          <div class="stat-cell-b-label">Ce jour</div>
-          <div class="stat-cell-b-value">${resasToday}</div>
-          <div class="stat-cell-b-sub">Réservations Frizz</div>
-        </div>
         <div class="stat-cell-b">
           <div class="stat-cell-b-label">Cette semaine</div>
           <div class="stat-cell-b-value">${resasWeek}</div>
           <div class="stat-cell-b-sub">Réservations Frizz</div>
         </div>
-      </div>
-
-      <!-- 3) Ce mois + mini-graphique (cliquable → graphique annuel) -->
-      <div class="stat-conv-b stat-conv-clickable" id="statMonthChartCard">
-        <div class="stat-conv-b-left">
+        <div class="stat-cell-b">
           <div class="stat-cell-b-label">Ce mois</div>
-          <div class="stat-conv-b-value">${resasMonth}</div>
+          <div class="stat-cell-b-value">${resasMonth}</div>
           <div class="stat-cell-b-sub">Réservations Frizz</div>
         </div>
-        <div class="stat-conv-b-chart" id="statMonthChartMini" aria-hidden="true">
-          <!-- Mini-courbe SVG construite en JS -->
+      </div>
+
+      <!-- 3) Graphique annuel intégré (Frizz par mois) -->
+      <div class="stat-yearchart-card">
+        <div class="stat-yearchart-head">
+          <div class="stat-yearchart-title">Réservations · ${new Date().getFullYear()}</div>
+          <div class="stat-yearchart-legend">
+            <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:#FF375F;"></span>Frizz</span>
+            <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:rgba(255,255,255,0.85);"></span>Total</span>
+          </div>
+        </div>
+        <div class="stat-yearchart-svg" id="statYearChartSvg" aria-hidden="true">
+          <!-- SVG construit en JS -->
         </div>
       </div>
 
@@ -12316,19 +12430,62 @@
       }
     }, 60);
 
-    // Construire la mini-courbe annuelle (Frizz par mois)
+    // Construire le graphique annuel intégré (Frizz par mois)
     setTimeout(() => {
-      const miniChart = document.getElementById('statMonthChartMini');
-      if (miniChart) {
-        const yearData = computeYearlyData(all);
-        miniChart.innerHTML = renderMiniSparkline(yearData);
-      }
-      // Bind clic sur la carte pour ouvrir le graphique annuel
-      const card = document.getElementById('statMonthChartCard');
-      if (card && !card._chartBound) {
-        card.addEventListener('click', () => openYearlyChart(all));
-        card._chartBound = true;
-      }
+      const container = document.getElementById('statYearChartSvg');
+      if (!container) return;
+      const yearData = computeYearlyData(all);
+      const maxVal = Math.max(1, ...yearData.map(yd => yd.total));
+      const moisLabels = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+      // Dimensions adaptées au container (largeur popup)
+      const w = 320, h = 160, padL = 26, padR = 10, padT = 14, padB = 24;
+      const xStep = (w - padL - padR) / 11;
+      const innerH = h - padT - padB;
+      const ptsFrizz = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.frizz / maxVal) * innerH)]);
+      const ptsTotal = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.total / maxVal) * innerH)]);
+      const pathFrizz = pointsToSmoothPath(ptsFrizz);
+      const pathTotal = pointsToSmoothPath(ptsTotal);
+      const lastX = ptsFrizz[ptsFrizz.length - 1][0];
+      const firstX = ptsFrizz[0][0];
+      const baseY = padT + innerH;
+      const areaFrizz = pathFrizz + ` L ${lastX},${baseY} L ${firstX},${baseY} Z`;
+      const areaTotal = pathTotal + ` L ${lastX},${baseY} L ${firstX},${baseY} Z`;
+      const dotsFrizz = yearData.map((dd, i) => {
+        const cx = padL + i * xStep;
+        const cy = padT + innerH - ((dd.frizz / maxVal) * innerH);
+        return `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#FF375F"/>`;
+      }).join('');
+      const monthLabels = moisLabels.map((m, i) => {
+        const x = padL + i * xStep;
+        return `<text x="${x}" y="${h - 6}" fill="rgba(255,255,255,0.5)" font-size="9" text-anchor="middle">${m}</text>`;
+      }).join('');
+      const yLines = [0, 0.5, 1].map(f => {
+        const y = padT + innerH * (1 - f);
+        const val = Math.round(maxVal * f);
+        return `<line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+                <text x="${padL - 5}" y="${y + 3}" fill="rgba(255,255,255,0.42)" font-size="9" text-anchor="end">${val}</text>`;
+      }).join('');
+      container.innerHTML = `
+        <svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" width="100%" height="${h}" style="display:block;">
+          <defs>
+            <linearGradient id="yearChartGradFrizz" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="rgba(255,55,95,0.35)"/>
+              <stop offset="100%" stop-color="rgba(255,55,95,0)"/>
+            </linearGradient>
+            <linearGradient id="yearChartGradTotal" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+          </defs>
+          ${yLines}
+          <path d="${areaTotal}" fill="url(#yearChartGradTotal)" stroke="none"/>
+          <path d="${areaFrizz}" fill="url(#yearChartGradFrizz)" stroke="none"/>
+          <path d="${pathTotal}" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathFrizz}" fill="none" stroke="#FF375F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          ${dotsFrizz}
+          ${monthLabels}
+        </svg>
+      `;
     }, 80);
   }
 

@@ -731,6 +731,69 @@
     color: #0A84FF !important;
   }
 
+  /* 2 cartes en haut de la popup Activités */
+  .popup-activites-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 4px 20px 18px;
+  }
+  .popup-acti-card {
+    border-radius: 18px;
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100px;
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+  }
+  .popup-acti-card--green {
+    /* Même gradient que la carte Activités (vert Apple Music) */
+    background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
+    box-shadow: 0 8px 24px rgba(26, 142, 61, 0.22);
+  }
+  .popup-acti-card--glass {
+    /* Verre dépoli iOS */
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+  }
+  .popup-acti-card-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup-acti-card-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .popup-acti-card--green .popup-acti-card-icon svg { color: #1A8E3D; }
+  .popup-acti-card--glass .popup-acti-card-icon svg { color: #fff; }
+  .popup-acti-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+  }
+  .popup-acti-card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .popup-acti-card-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
   .popup-stat-row {
     display: flex;
     align-items: center;
@@ -10245,7 +10308,47 @@
       bodyHTML = ''; // sera rempli par DOM move
     } else if (type === 'activites') {
       titleText = 'Activités';
-      bodyHTML = '<div id="popupActivitesContainer"></div>';
+      // Calculs rapides pour les 2 cartes en haut
+      let unreadCount = 0, totalToday = 0;
+      try {
+        const today0 = new Date();
+        const startToday = new Date(today0.getFullYear(), today0.getMonth(), today0.getDate());
+        const unreadResas = (allReservations || []).filter(r => r.vu === false || r.vu === null).length;
+        const unreadMsgs = (typeof allMessages !== 'undefined' && Array.isArray(allMessages))
+          ? allMessages.filter(m => !m.traite).length : 0;
+        unreadCount = unreadResas + unreadMsgs;
+        const todayResas = (allReservations || []).filter(r => r.created_at && new Date(r.created_at) >= startToday).length;
+        const todayMsgs = (typeof allMessages !== 'undefined' && Array.isArray(allMessages))
+          ? allMessages.filter(m => m.created_at && new Date(m.created_at) >= startToday).length : 0;
+        totalToday = todayResas + todayMsgs;
+      } catch (e) {}
+      bodyHTML = `
+        <div class="popup-activites-cards">
+          <div class="popup-acti-card popup-acti-card--green">
+            <div class="popup-acti-card-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            <div class="popup-acti-card-content">
+              <div class="popup-acti-card-value">${unreadCount}</div>
+              <div class="popup-acti-card-label">À traiter</div>
+            </div>
+          </div>
+          <div class="popup-acti-card popup-acti-card--glass">
+            <div class="popup-acti-card-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+              </svg>
+            </div>
+            <div class="popup-acti-card-content">
+              <div class="popup-acti-card-value">${totalToday}</div>
+              <div class="popup-acti-card-label">Aujourd'hui</div>
+            </div>
+          </div>
+        </div>
+        <div id="popupActivitesContainer"></div>
+      `;
     } else if (type === 'conversion' || type === 'statistique') {
       titleText = 'Statistique';
       // Recalculer
@@ -10323,6 +10426,10 @@
 
     // Si activités : injecter la liste agrégée
     if (type === 'activites') {
+      // Force le re-rendu de la liste d'activités pour avoir le tri à jour
+      if (typeof window.__renderNotifPage === 'function') {
+        try { window.__renderNotifPage(); } catch (e) { console.warn(e); }
+      }
       const container = document.getElementById('popupActivitesContainer');
       const notifList = document.getElementById('notifPageList');
       if (container && notifList) {

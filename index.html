@@ -1603,31 +1603,29 @@
     font-weight: 500;
   }
 
-  /* ═══ SERVICE DU JOUR (Mockup 3 - Pavages glass) ═══ */
+  /* ═══ SERVICE DU JOUR ═══ */
 
-  /* Header avec date + flèches */
+  /* Header avec date + flèches navigation */
   .service-header {
     display: flex;
     justify-content: space-between;
-    align-items: end;
-    padding: 0 20px 14px;
+    align-items: center;
+    padding: 4px 20px 14px;
   }
   .service-header-center {
     text-align: left;
     flex: 1;
   }
   .service-header-label {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 2px;
-  }
-  .service-header-title {
-    font-size: 30px;
+    font-size: 17px;
     font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .service-header-nav {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
   }
   .service-nav-btn {
     background: transparent;
@@ -1642,7 +1640,6 @@
     justify-content: center;
     -webkit-tap-highlight-color: transparent;
     flex-shrink: 0;
-    margin-left: 6px;
   }
   .service-nav-btn:active { transform: scale(0.92); }
   .service-nav-btn svg { width: 16px; height: 16px; }
@@ -7070,16 +7067,19 @@
 
     <!-- Header avec date + flèches navigation -->
     <div class="service-header">
-      <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
       <div class="service-header-center">
         <div class="service-header-label" id="serviceHeaderLabel">Lundi 2 juin</div>
-        <div class="service-header-title" id="serviceHeaderTitle">Service</div>
       </div>
-      <button class="service-nav-btn" id="serviceNavNextBtn" type="button" aria-label="Jour suivant">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <div class="service-header-nav">
+        <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="service-nav-btn" id="serviceNavNextBtn" type="button" aria-label="Jour suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <!-- Stub pour ne pas casser le JS qui pourrait référencer serviceHeaderTitle -->
+      <span id="serviceHeaderTitle" hidden style="display:none;"></span>
     </div>
 
     <!-- Pilules de jours (auj, demain, +2, +3, ...) -->

@@ -895,6 +895,70 @@
     gap: 14px;
   }
 
+  /* Carte principale "Appels ce mois" — Ring central énorme (variante 20) */
+  .stat-ring-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 22px 20px;
+    text-align: center;
+  }
+  .stat-ring-header {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .stat-ring-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto;
+  }
+  .stat-ring-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .stat-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 14;
+  }
+  .stat-ring-fg {
+    fill: none;
+    stroke: url(#statRingGrad);
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-dasharray: 427.26;
+    stroke-dashoffset: 427.26; /* commence vide, anime vers la cible */
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+  .stat-ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-ring-value {
+    font-size: 40px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1.2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-ring-limit {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
   /* Carte principale "Appels ce mois" avec énorme barre */
   .stat-card--main {
     padding: 20px 22px 22px;
@@ -11279,17 +11343,24 @@
     const maxAppels = Math.max(appelsResa, appelsAnnul, appelsAutre, 1);
 
     container.innerHTML = `
-      <!-- 1) Appels ce mois + forfait + barre énorme -->
-      <div class="stat-card stat-card--pink stat-card--main">
-        <div class="stat-main-header">
-          <div class="stat-main-title">Appels ce mois</div>
-          <div class="stat-main-plan">${planName}</div>
-        </div>
-        <div class="stat-main-bar-row">
-          <div class="stat-main-bar">
-            <div class="stat-main-bar-fill" style="width:${planPercent}%"></div>
+      <!-- 1) Appels ce mois — Ring central énorme (variante 20) -->
+      <div class="stat-card stat-ring-card">
+        <div class="stat-ring-header">${planName} · Appels ce mois</div>
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 160 160" class="stat-ring-svg">
+            <circle cx="80" cy="80" r="68" class="stat-ring-bg"/>
+            <circle cx="80" cy="80" r="68" class="stat-ring-fg" id="statMainRing"/>
+            <defs>
+              <linearGradient id="statRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF7A95"/>
+                <stop offset="100%" stop-color="#FF375F"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="stat-ring-center">
+            <div class="stat-ring-value">${planUsed}</div>
+            <div class="stat-ring-limit">/ ${planLimit}</div>
           </div>
-          <div class="stat-main-count">${planUsed}<span class="stat-main-count-sep">/</span>${planLimit}</div>
         </div>
       </div>
 
@@ -11352,6 +11423,16 @@
         </div>
       </div>
     `;
+
+    // Animer le ring principal (Appels ce mois — variante 20)
+    setTimeout(() => {
+      const mainRing = document.getElementById('statMainRing');
+      if (mainRing) {
+        const circ = 2 * Math.PI * 68; // ≈ 427.26
+        const offset = circ - (circ * planPercent / 100);
+        mainRing.style.strokeDashoffset = offset;
+      }
+    }, 60);
 
     // Animer le cercle de conversion (style iOS Watch)
     setTimeout(() => {

@@ -2720,7 +2720,7 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(6px);
-    z-index: 110;
+    z-index: 250;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
@@ -2739,7 +2739,7 @@
     background: var(--bg);
     border-radius: 24px 24px 0 0;
     padding: 8px 20px max(28px, env(safe-area-inset-bottom)) 20px;
-    z-index: 111;
+    z-index: 251;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
     visibility: hidden;
@@ -3601,7 +3601,7 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(6px);
-    z-index: 98;
+    z-index: 250;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
@@ -3619,7 +3619,7 @@
     max-width: 430px;
     background: var(--bg);
     border-radius: 24px 24px 0 0;
-    z-index: 99;
+    z-index: 251;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
     visibility: hidden;
@@ -3797,7 +3797,7 @@
     max-width: 430px;
     background: var(--bg);
     border-radius: 24px 24px 0 0;
-    z-index: 99;
+    z-index: 251;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
     visibility: hidden;
@@ -10292,6 +10292,31 @@
         // Rafraîchir le calendrier
         if (typeof renderCalendarPage === 'function') {
           try { renderCalendarPage(); } catch (e) { console.warn('renderCalendarPage:', e); }
+        }
+        // Brancher le swipe gauche/droite sur le body de la popup pour changer de semaine
+        if (!popupBody._calSwipeBound) {
+          let startX = 0, startY = 0, startTime = 0, tracking = false;
+          popupBody.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) { tracking = false; return; }
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            startTime = Date.now();
+            tracking = true;
+          }, { passive: true });
+          popupBody.addEventListener('touchend', (e) => {
+            if (!tracking) return;
+            tracking = false;
+            const touch = e.changedTouches[0];
+            const dx = touch.clientX - startX;
+            const dy = touch.clientY - startY;
+            const dt = Date.now() - startTime;
+            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
+              if (typeof changeCalendarWeek === 'function') {
+                changeCalendarWeek(dx < 0 ? 'next' : 'prev');
+              }
+            }
+          }, { passive: true });
+          popupBody._calSwipeBound = true;
         }
       }
     }

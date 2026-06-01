@@ -1605,27 +1605,38 @@
 
   /* ═══ SERVICE DU JOUR ═══ */
 
-  /* Header avec date + flèches navigation */
+  /* Header : label date + gros titre Service + flèches */
   .service-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
     padding: 4px 20px 14px;
   }
   .service-header-center {
     text-align: left;
     flex: 1;
+    min-width: 0;
   }
   .service-header-label {
-    font-size: 17px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .service-header-title {
+    font-size: 30px;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
+    line-height: 1;
     color: #fff;
   }
   .service-header-nav {
     display: flex;
     gap: 6px;
     flex-shrink: 0;
+    align-self: end;
+    padding-bottom: 2px;
   }
   .service-nav-btn {
     background: transparent;
@@ -7065,10 +7076,11 @@
   <!-- ═══ PAGE CALENDRIER / SERVICE DU JOUR ═══ -->
   <div class="page hidden" id="page-calendrier">
 
-    <!-- Header avec date + flèches navigation -->
+    <!-- Header : LABEL date + gros titre "Service" + flèches navigation -->
     <div class="service-header">
       <div class="service-header-center">
         <div class="service-header-label" id="serviceHeaderLabel">Lundi 2 juin</div>
+        <div class="service-header-title" id="serviceHeaderTitle">Service</div>
       </div>
       <div class="service-header-nav">
         <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
@@ -7078,8 +7090,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
-      <!-- Stub pour ne pas casser le JS qui pourrait référencer serviceHeaderTitle -->
-      <span id="serviceHeaderTitle" hidden style="display:none;"></span>
     </div>
 
     <!-- Pilules de jours (auj, demain, +2, +3, ...) -->
@@ -12459,7 +12469,8 @@
         </div>
       `;
     } else if (type === 'reservations') {
-      titleText = 'Service';
+      // Titre vide car le contenu (page-calendrier) a son propre header "Service"
+      titleText = '';
       bodyHTML = ''; // sera rempli par DOM move
     } else if (type === 'activites') {
       titleText = 'Notification';

@@ -884,50 +884,200 @@
 
   /* ═══ POPUP STATISTIQUE ═══ */
   .stats-popup-wrapper {
-    padding: 0 0 30px;
-  }
-  /* Pilule de filtres période (style iOS segmented control) */
-  .stats-period-pills {
-    display: flex;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 100px;
-    padding: 4px;
-    margin: 4px 20px 18px;
-  }
-  .stats-period-pill {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 4px;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .stats-period-pill.active {
-    background: #FF375F;
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(255, 55, 95, 0.30);
-  }
-  .stats-period-pill:active {
-    transform: scale(0.96);
-  }
-
-  .stats-popup {
     padding: 4px 20px 30px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
   #statsPopupBody {
-    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Carte principale "Appels ce mois" avec énorme barre */
+  .stat-card--main {
+    padding: 20px 22px 22px;
+    background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%) !important;
+    box-shadow: 0 8px 24px rgba(184, 36, 69, 0.30) !important;
+  }
+  .stat-main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .stat-main-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .stat-main-plan {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.20);
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.2px;
+  }
+  .stat-main-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .stat-main-bar {
+    flex: 1;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stat-main-bar-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 100px;
+    transition: width 1.2s cubic-bezier(0.34, 1.20, 0.64, 1);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+  }
+  .stat-main-count {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .stat-main-count-sep {
+    opacity: 0.6;
+    margin: 0 1px;
+    font-weight: 500;
+  }
+
+  /* Carte conversion avec ring iOS */
+  .stat-conv-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+  }
+  .stat-conv-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .stat-conv-left .stat-card-icon {
+    margin-bottom: 10px;
+  }
+  .stat-conv-value {
+    font-size: 44px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-conv-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 2px;
+  }
+  .stat-conv-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 4px;
+  }
+  .stat-conv-right {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+  }
+  .stat-conv-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .stat-conv-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 8;
+  }
+  .stat-conv-ring-fg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 213.6;
+    stroke-dashoffset: 213.6;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.34, 1.20, 0.64, 1);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.50));
+  }
+  .stat-conv-ring-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Carte 3 barres : répartition des appels */
+  .stat-bars-card {
+    padding: 18px 20px 20px;
+  }
+  .stat-bars-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+    letter-spacing: -0.2px;
+  }
+  .stat-bars-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+  .stat-bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+  .stat-bar-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+  }
+  .stat-bar-track {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .stat-bar-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.34, 1.20, 0.64, 1);
+  }
+  .stat-bar-fill--soft { background: rgba(255, 255, 255, 0.7); }
+  .stat-bar-fill--softer { background: rgba(255, 255, 255, 0.5); }
+  .stat-bar-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 26px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
   .stat-card {
     background: rgba(255, 55, 95, 0.32);
@@ -10835,16 +10985,8 @@
       `;
     } else if (type === 'conversion' || type === 'statistique') {
       titleText = 'Statistique';
-      // Le contenu sera généré dynamiquement après ouverture (avec filtre par défaut = mois)
       bodyHTML = `
         <div class="stats-popup-wrapper">
-          <!-- Pilule de filtres période -->
-          <div class="stats-period-pills">
-            <button class="stats-period-pill" data-period="jour">Jour</button>
-            <button class="stats-period-pill" data-period="semaine">Semaine</button>
-            <button class="stats-period-pill active" data-period="mois">Mois</button>
-            <button class="stats-period-pill" data-period="annee">Année</button>
-          </div>
           <div id="statsPopupBody"></div>
         </div>
       `;
@@ -10853,16 +10995,9 @@
     if (title) title.textContent = titleText;
     if (body) body.innerHTML = bodyHTML;
 
-    // Si statistique : init render + bind filtres
+    // Si statistique : render direct (plus de filtres)
     if (type === 'conversion' || type === 'statistique') {
-      renderStatsPopup('mois');
-      document.querySelectorAll('.stats-period-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-          document.querySelectorAll('.stats-period-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          renderStatsPopup(pill.dataset.period);
-        });
-      });
+      renderStatsPopup();
     }
 
     // Si réservations : déplacer le DOM du calendrier dans la popup
@@ -11093,182 +11228,155 @@
     }
   }
 
-  // ═══ RENDER POPUP STATISTIQUE selon la période ═══
-  function renderStatsPopup(period) {
+  // ═══ RENDER POPUP STATISTIQUE (nouvelle version simplifiée) ═══
+  function renderStatsPopup() {
     const container = document.getElementById('statsPopupBody');
     if (!container) return;
     const now = new Date();
-    let start, label, prevStart, prevEnd;
-    if (period === 'jour') {
-      start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      prevStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-      prevEnd = new Date(start.getTime() - 1);
-      label = 'aujourd\u2019hui';
-    } else if (period === 'semaine') {
-      const d = now.getDay();
-      const diff = (d === 0 ? 6 : d - 1);
-      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
-      prevStart = new Date(start.getTime() - 7*24*3600*1000);
-      prevEnd = new Date(start.getTime() - 1);
-      label = 'cette semaine';
-    } else if (period === 'annee') {
-      start = new Date(now.getFullYear(), 0, 1);
-      prevStart = new Date(now.getFullYear() - 1, 0, 1);
-      prevEnd = new Date(now.getFullYear(), 0, 0, 23, 59, 59);
-      label = 'cette année';
-    } else { // mois
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-      prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      prevEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
-      label = 'ce mois';
-    }
+    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const d = now.getDay();
+    const diff = (d === 0 ? 6 : d - 1);
+    const startWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
 
     const all = allReservations || [];
-    const resasPeriod = all.filter(r => r.created_at && new Date(r.created_at) >= start).length;
-    const resasPrev = all.filter(r => {
-      if (!r.created_at) return false;
-      const d = new Date(r.created_at);
-      return d >= prevStart && d <= prevEnd;
-    }).length;
-    let evolPercent = 0;
-    if (resasPrev === 0) evolPercent = resasPeriod > 0 ? 100 : 0;
-    else evolPercent = Math.round(((resasPeriod - resasPrev) / resasPrev) * 100);
+    const resasToday = all.filter(r => r.created_at && new Date(r.created_at) >= startToday).length;
+    const resasWeek = all.filter(r => r.created_at && new Date(r.created_at) >= startWeek).length;
+    const resasMonth = all.filter(r => r.created_at && new Date(r.created_at) >= startThisMonth).length;
 
-    // Appels (selon période)
-    let appels = 0;
-    if (period === 'jour' && typeof todayCallsCount !== 'undefined') appels = todayCallsCount;
-    else if (period === 'semaine' && typeof weekCallsCount !== 'undefined') appels = weekCallsCount;
-    else if (period === 'mois' && typeof monthCallsCount !== 'undefined') appels = monthCallsCount;
-    else if (period === 'annee' && typeof monthCallsCount !== 'undefined') appels = monthCallsCount; // approx
-
-    // Conversion appels → résas
-    const convPercent = appels > 0 ? Math.min(100, Math.round((resasPeriod / appels) * 100)) : 0;
-
-    // Forfait : appels limite
-    let planLimit = 0, planUsed = 0;
+    // Forfait : utilisation
+    let planLimit = 0, planUsed = 0, planName = 'Frizz Starter';
     try {
       if (typeof getCurrentPlanCallsLimit === 'function') planLimit = getCurrentPlanCallsLimit();
       if (typeof getCurrentMonthCalls === 'function') planUsed = getCurrentMonthCalls();
-    } catch (e) {}
-    const planPercent = planLimit > 0 ? Math.min(100, Math.round((planUsed / planLimit) * 100)) : 0;
-
-    // Couverts
-    const couvertsArr = all
-      .filter(r => r.created_at && new Date(r.created_at) >= start)
-      .map(r => parseInt(r.nb_couverts || r.couverts || 0, 10))
-      .filter(n => n > 0);
-    const totalCouverts = couvertsArr.reduce((a, b) => a + b, 0);
-    const avgCouverts = couvertsArr.length > 0 ? (totalCouverts / couvertsArr.length).toFixed(1) : '—';
-
-    // Jour/heure favoris
-    const jourCount = {}, heureCount = {};
-    const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    all.filter(r => r.created_at && new Date(r.created_at) >= start).forEach(r => {
-      if (r.date_reservation) {
-        try {
-          const d = new Date(`${r.date_reservation}T00:00:00`);
-          const j = jours[d.getDay()];
-          jourCount[j] = (jourCount[j] || 0) + 1;
-        } catch (e) {}
+      if (typeof currentSalon !== 'undefined' && currentSalon) {
+        const planKey = (currentSalon.plan || currentSalon.subscription_plan || '').toLowerCase();
+        if (planKey.includes('premium')) planName = 'Frizz Premium';
+        else if (planKey.includes('pro')) planName = 'Frizz Pro';
+        else if (planKey.includes('starter')) planName = 'Frizz Starter';
       }
-      if (r.heure_reservation) {
-        const h = r.heure_reservation.substring(0, 2);
-        heureCount[h] = (heureCount[h] || 0) + 1;
+    } catch (e) {}
+    // Si aucune limite, valeurs par défaut pour affichage
+    if (planLimit === 0) planLimit = 150;
+    const planPercent = planLimit > 0 ? Math.min(100, (planUsed / planLimit) * 100) : 0;
+
+    // Conversion appels → réservations (sur le mois)
+    const monthCalls = (typeof monthCallsCount !== 'undefined') ? monthCallsCount : 0;
+    const convPercent = monthCalls > 0 ? Math.min(100, Math.round((resasMonth / monthCalls) * 100)) : 0;
+
+    // Répartition des appels par type (réservation / annulation / autre)
+    // On déduit depuis les résas (created + cancelled) et le total appels
+    let appelsResa = 0, appelsAnnul = 0;
+    all.filter(r => r.created_at && new Date(r.created_at) >= startThisMonth).forEach(r => {
+      const statut = (r.statut || r.status || '').toString().toLowerCase().trim();
+      if (['annulee','annulée','annule','annulé','cancelled','canceled','cancel','annulation'].includes(statut)) {
+        appelsAnnul++;
+      } else {
+        appelsResa++;
       }
     });
-    const topJourE = Object.entries(jourCount).sort((a, b) => b[1] - a[1])[0];
-    const topHeureE = Object.entries(heureCount).sort((a, b) => b[1] - a[1])[0];
-    const topJour = topJourE ? topJourE[0] : '—';
-    const topHeure = topHeureE ? `${topHeureE[0]}h` : '—';
-
-    const evolSign = evolPercent > 0 ? '+' : (evolPercent < 0 ? '−' : '');
-    const evolIcon = evolPercent >= 0
-      ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>';
+    const appelsAutre = Math.max(0, monthCalls - appelsResa - appelsAnnul);
+    const maxAppels = Math.max(appelsResa, appelsAnnul, appelsAutre, 1);
 
     container.innerHTML = `
-      <!-- Carte hero supprimée à la demande -->
-
-      <!-- Carte Appels (déplacée des Réglages) -->
-      ${planLimit > 0 ? `
-      <div class="stat-card stat-card--pink stat-card--wide">
-        <div class="stat-card-wide-header">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
-          </div>
-          <div>
-            <div class="stat-card-name">Appels ce mois</div>
-            <div class="stat-card-sub-mini">${planUsed} / ${planLimit} appels du forfait</div>
-          </div>
+      <!-- 1) Appels ce mois + forfait + barre énorme -->
+      <div class="stat-card stat-card--pink stat-card--main">
+        <div class="stat-main-header">
+          <div class="stat-main-title">Appels ce mois</div>
+          <div class="stat-main-plan">${planName}</div>
         </div>
-        <div class="stat-card-big stat-card-big--inline">${planUsed}<span class="stat-card-unit">/${planLimit}</span></div>
-        <div class="stat-card-progress">
-          <div class="stat-card-progress-bar" style="width:${planPercent}%"></div>
-        </div>
-        <div class="stat-card-progress-labels">
-          <span>${planPercent}% utilisé</span>
-          <span>${planLimit - planUsed} restants</span>
+        <div class="stat-main-bar-row">
+          <div class="stat-main-bar">
+            <div class="stat-main-bar-fill" style="width:${planPercent}%"></div>
+          </div>
+          <div class="stat-main-count">${planUsed}<span class="stat-main-count-sep">/</span>${planLimit}</div>
         </div>
       </div>
-      ` : ''}
 
-      <!-- 2 grandes cartes côte à côte : Réservations + Appels -->
+      <!-- 2) Deux cartes côte à côte : ce jour + cette semaine -->
       <div class="stats-grid stats-grid--big">
         <div class="stat-card stat-card--pink stat-card--big-cell">
           <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
           </div>
-          <div class="stat-card-value stat-card-value--xl">${resasPeriod}</div>
-          <div class="stat-card-name">Résas ${label}</div>
+          <div class="stat-card-value stat-card-value--xl">${resasToday}</div>
+          <div class="stat-card-name">Rés. ce jour</div>
         </div>
         <div class="stat-card stat-card--pink stat-card--big-cell">
           <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
           </div>
-          <div class="stat-card-value stat-card-value--xl">${appels}</div>
-          <div class="stat-card-name">Appels Frizz</div>
+          <div class="stat-card-value stat-card-value--xl">${resasWeek}</div>
+          <div class="stat-card-name">Rés. cette semaine</div>
         </div>
       </div>
 
-      <!-- Carte conversion -->
-      <div class="stat-card stat-card--pink stat-card--wide">
-        <div class="stat-card-wide-header">
+      <!-- 3) Rés. ce mois + cercle de conversion (style iOS Watch) -->
+      <div class="stat-card stat-card--pink stat-conv-card">
+        <div class="stat-conv-left">
           <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
           </div>
-          <div>
-            <div class="stat-card-name">Conversion appels → résas</div>
-            <div class="stat-card-sub-mini">${label}</div>
-          </div>
+          <div class="stat-conv-value">${resasMonth}</div>
+          <div class="stat-conv-label">Rés. ce mois</div>
+          <div class="stat-conv-sub">${convPercent}% de conversion</div>
         </div>
-        <div class="stat-card-big stat-card-big--inline">${convPercent}<span class="stat-card-unit">%</span></div>
-        <div class="stat-card-progress">
-          <div class="stat-card-progress-bar" style="width:${convPercent}%"></div>
-        </div>
-        <div class="stat-card-progress-labels">
-          <span>${appels} appels</span>
-          <span>${resasPeriod} résas</span>
+        <div class="stat-conv-right">
+          <svg viewBox="0 0 80 80" class="stat-conv-ring">
+            <circle cx="40" cy="40" r="34" class="stat-conv-ring-bg"/>
+            <circle cx="40" cy="40" r="34" class="stat-conv-ring-fg" id="statConvRing"/>
+          </svg>
+          <div class="stat-conv-ring-text"><span id="statConvPercent">0</span>%</div>
         </div>
       </div>
 
-      <!-- 2 cartes : top jour / top heure -->
-      <div class="stats-grid">
-        <div class="stat-card stat-card--pink">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z"/></svg>
+      <!-- 4) Répartition des appels (3 barres) -->
+      <div class="stat-card stat-card--pink stat-bars-card">
+        <div class="stat-bars-title">Répartition des appels</div>
+        <div class="stat-bars-list">
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Réservation</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${(appelsResa/maxAppels)*100}%"></div></div>
+            <div class="stat-bar-value">${appelsResa}</div>
           </div>
-          <div class="stat-card-value">${topJour}</div>
-          <div class="stat-card-name">Jour favori</div>
-        </div>
-        <div class="stat-card stat-card--pink">
-          <div class="stat-card-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Annulation</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill stat-bar-fill--soft" style="width:${(appelsAnnul/maxAppels)*100}%"></div></div>
+            <div class="stat-bar-value">${appelsAnnul}</div>
           </div>
-          <div class="stat-card-value">${topHeure}</div>
-          <div class="stat-card-name">Heure favorite</div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Autre</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill stat-bar-fill--softer" style="width:${(appelsAutre/maxAppels)*100}%"></div></div>
+            <div class="stat-bar-value">${appelsAutre}</div>
+          </div>
         </div>
       </div>
     `;
+
+    // Animer le cercle de conversion (style iOS Watch)
+    setTimeout(() => {
+      const ring = document.getElementById('statConvRing');
+      const text = document.getElementById('statConvPercent');
+      if (ring) {
+        const circ = 2 * Math.PI * 34; // ≈ 213.6
+        const offset = circ - (circ * convPercent / 100);
+        ring.style.strokeDashoffset = offset;
+      }
+      // Animation comptage du %
+      if (text) {
+        let current = 0;
+        const target = convPercent;
+        const step = Math.max(1, Math.ceil(target / 30));
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          text.textContent = current;
+        }, 25);
+      }
+    }, 80);
   }
 
   function closePopup() {

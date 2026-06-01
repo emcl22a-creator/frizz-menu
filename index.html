@@ -812,6 +812,10 @@
   #page-calendrier .greeting {
     padding: 27px 25px 22px;
   }
+  /* Quand le calendrier est intégré dans la popup, réduire le padding-top de 8px */
+  #modalPopupBody .greeting {
+    padding-top: 19px;
+  }
   .greeting h1 {
     font-size: 36px;
     font-weight: 600;
@@ -6609,6 +6613,10 @@
     try {
       if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
     } catch (e) { /* ignore */ }
+    // Rafraîchir la page Accueil (cartes Apple Health)
+    try {
+      if (typeof window.__renderAccueil === 'function') window.__renderAccueil();
+    } catch (e) { /* ignore */ }
   }
 
   function renderResaList(validResas, now) {
@@ -9359,6 +9367,10 @@
       if (!todayErr) todayCallsCount = todayCount || 0;
 
       renderStats(allReservations); // rafraîchit l'affichage
+      // Rafraîchir aussi la page Accueil maintenant que toutes les variables sont chargées
+      if (typeof window.__renderAccueil === 'function') {
+        try { window.__renderAccueil(); } catch (e) { console.warn('renderAccueil after calls load:', e); }
+      }
     } catch (e) {
       console.warn('Erreur chargement appels Frizz:', e);
     }

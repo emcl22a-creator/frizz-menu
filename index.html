@@ -10763,13 +10763,8 @@
           else if (['modifiee','modifiée','modified','modifie','modifié','updated','modification'].includes(statut)) {
             kind = 'modified';
           }
-          else if (r.updated_at && r.created_at) {
-            const cd = new Date(r.created_at);
-            const ud = new Date(r.updated_at);
-            if (ud - cd > 60000) {
-              kind = 'modified';
-            }
-          }
+          // Note : on ne déduit plus "modified" depuis updated_at car ça déclenche
+          // sur les actions "marquer comme vu" qui modifient updated_at sans être de vraies modifs.
           // Lieu (intérieur / extérieur / peu importe)
           const emplRaw = (r.emplacement || r.lieu || r.location || r.zone || '').toString().toLowerCase().trim();
           let lieu = 'Peu importe';
@@ -11386,7 +11381,7 @@
         </div>
         ` : ''}
 
-        ${dateFormatted || couverts || lieu ? `
+        ${dateFormatted || couverts || lieu || tel ? `
         <div class="client-profile-section">
           <div class="client-profile-section-title">Réservation</div>
           <div class="client-profile-rows">
@@ -11394,7 +11389,7 @@
             ${heureResa ? `<div class="client-profile-row"><span class="cp-row-label">Heure</span><span class="cp-row-value">${escapeHTML(heureResa.substring(0,5))}</span></div>` : ''}
             ${couverts ? `<div class="client-profile-row"><span class="cp-row-label">Couverts</span><span class="cp-row-value">${escapeHTML(couverts)} pers.</span></div>` : ''}
             ${lieu ? `<div class="client-profile-row"><span class="cp-row-label">Emplacement</span><span class="cp-row-value">${escapeHTML(lieu)}</span></div>` : ''}
-            ${statut ? `<div class="client-profile-row"><span class="cp-row-label">Statut</span><span class="cp-row-value">${escapeHTML(statut)}</span></div>` : ''}
+            ${tel ? `<div class="client-profile-row"><span class="cp-row-label">Téléphone</span><span class="cp-row-value">${escapeHTML(tel)}</span></div>` : ''}
           </div>
         </div>
         ` : ''}

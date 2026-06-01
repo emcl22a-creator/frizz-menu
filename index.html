@@ -165,12 +165,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 20px 8px;
+    padding: 20px 20px 12px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
     animation: cascadeIn 0.6s ease-out 0.02s backwards;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10, 10, 12, 0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
   }
+
   /* Sur Stats : plus d'espace entre la topbar et les KPI (pas de greeting entre) */
   #page-stats {
-    padding-top: 27px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 70px);
   }
   .logo {
     height: 28px;
@@ -395,7 +406,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: 24.5px 20px 100px;
+    padding: calc(env(safe-area-inset-top, 0px) + 64px) 20px 100px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -2441,11 +2452,37 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ═══ ANIMATIONS POPUPS NOTIFICATION & STATISTIQUE ═══ */
+  /* Même cascadeIn en cascade que la page Calendrier */
+
+  /* Popup Notification : 2 cartes du haut puis liste */
+  #modalPopup.visible .popup-activites-cards {
+    animation: cascadeIn 0.6s ease-out 0.06s backwards;
+  }
+  #modalPopup.visible #popupActivitesContainer {
+    animation: cascadeIn 0.6s ease-out 0.14s backwards;
+  }
+
+  /* Popup Statistique : 4 cartes en cascade */
+  #modalPopup.visible .stat-ring-card {
+    animation: cascadeIn 0.6s ease-out 0.06s backwards;
+  }
+  #modalPopup.visible .stats-grid-b {
+    animation: cascadeIn 0.6s ease-out 0.12s backwards;
+  }
+  #modalPopup.visible .stat-conv-clickable {
+    animation: cascadeIn 0.6s ease-out 0.18s backwards;
+  }
+  #modalPopup.visible .stat-bars-b {
+    animation: cascadeIn 0.6s ease-out 0.24s backwards;
+  }
+
   /* ═══ PAGE ACTIVITÉ ═══ */
   .page { 
     display: block; 
     position: relative; 
     min-height: calc(100vh - 100px); /* Hauteur minimale pour couvrir l'écran (moins la tabbar) */
+    padding-top: calc(env(safe-area-inset-top, 0px) + 64px);
   }
   .page.hidden { display: none !important; }
 
@@ -4202,8 +4239,8 @@
 
   /* Plan actuel */
   .plan-card.current {
-    border-color: var(--green);
-    box-shadow: 0 8px 24px rgba(52, 199, 89, 0.15);
+    border-color: var(--blue);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.18);
   }
 
   .plan-badge {
@@ -4222,7 +4259,7 @@
     color: white;
   }
   .plan-badge.current {
-    background: var(--green);
+    background: var(--blue);
     color: white;
   }
 
@@ -10796,10 +10833,13 @@
             date: r.updated_at || r.created_at,
             read: r.vu === true,
             nom: r.client_name || r.nom || r.client_nom || 'Client',
+            telephone: r.client_phone || r.telephone || r.tel || r.phone || '',
             nbCouverts: r.nb_couverts || r.couverts,
             heure: r.heure_reservation || r.time || r.heure,
             jour: r.date_reservation || r.date,
-            lieu
+            lieu,
+            // Données complètes pour le profil
+            _raw: r
           });
         });
       }
@@ -10813,8 +10853,10 @@
             date: m.created_at,
             read: m.traite === true,
             nom: m.appelant_nom || 'Appelant',
+            telephone: m.appelant_tel || m.telephone || m.tel || m.phone || m.numero || m.numero_appelant || m.from_number || '',
             raison: m.raison || '',
-            categorie: m.categorie
+            categorie: m.categorie,
+            _raw: m
           });
         });
       }
@@ -11343,16 +11385,19 @@
 
   // ═══ PROFIL CLIENT (modale détaillée depuis popup Activités) ═══
   function openClientProfile(item, kind) {
-    // Extraire les infos
-    const nom = item.client_name || item.nom || item.client_nom || item.from_name || 'Client';
-    const tel = item.client_phone || item.telephone || item.tel || item.phone || item.from_number || '';
-    const couverts = item.nb_couverts || item.couverts || '';
-    const dateResa = item.date_reservation || item.date || '';
-    const heureResa = item.heure_reservation || item.heure || item.time || '';
-    const lieu = item.emplacement || item.lieu || '';
-    const notes = item.notes || item.commentaire || item.message || '';
-    const statut = item.statut || item.status || '';
-    const createdAt = item.created_at || '';
+    // Si on a la donnée brute originale (depuis buildActivityList), on l'utilise en priorité
+    // car elle contient TOUTES les colonnes (notamment le téléphone)
+    const raw = item._raw || item;
+    // Extraire les infos (cherche d'abord dans raw, puis dans item)
+    const nom = raw.client_name || raw.nom || raw.client_nom || raw.appelant_nom || raw.from_name || item.nom || 'Client';
+    const tel = raw.client_phone || raw.telephone || raw.tel || raw.phone || raw.appelant_tel || raw.numero || raw.numero_appelant || raw.from_number || item.telephone || '';
+    const couverts = raw.nb_couverts || raw.couverts || item.nbCouverts || '';
+    const dateResa = raw.date_reservation || raw.date || item.jour || '';
+    const heureResa = raw.heure_reservation || raw.heure || raw.time || item.heure || '';
+    const lieu = raw.emplacement || raw.lieu || item.lieu || '';
+    const notes = raw.notes || raw.commentaire || raw.message || raw.raison || item.raison || '';
+    const statut = raw.statut || raw.status || '';
+    const createdAt = raw.created_at || item.date || '';
 
     // Format date FR
     let dateFormatted = '';

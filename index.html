@@ -4373,8 +4373,8 @@
     box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
   }
   .plan-btn.current-plan {
-    background: var(--green);
-    color: white;
+    /* La couleur de fond vient des classes primary/premium (ou du défaut blanc pour Starter).
+       On ajoute juste une icône check via le contenu et on garde la couleur du plan. */
   }
 
   /* Compteur d'appels (si abonné) */
@@ -10382,12 +10382,16 @@
       if (currentPlan === planKey && isActive) {
         btn.textContent = '✓ Plan actuel';
         btn.classList.add('current-plan');
-        btn.classList.remove('primary', 'premium');
+        // Garde primary (Pro) ou premium (Premium) pour conserver la couleur du plan.
+        // Pour Starter, pas de classe → garde le fond blanc par défaut.
+        if (planKey === 'pro') btn.classList.add('primary');
+        if (planKey === 'premium') btn.classList.add('premium');
+        if (planKey === 'starter') btn.classList.remove('primary', 'premium');
       } else if (isActive) {
         // Abonné mais à un autre plan
         const planOrder = { starter: 1, pro: 2, premium: 3 };
         const isUpgrade = planOrder[planKey] > planOrder[currentPlan];
-        btn.textContent = isUpgrade ? 'Passer au ' + PLANS[planKey].name : 'Changer pour ' + PLANS[planKey].name;
+        btn.textContent = isUpgrade ? 'Passer au ' + PLANS[planKey].name : 'Passer pour ' + PLANS[planKey].name;
         btn.classList.remove('current-plan');
         if (planKey === 'pro') btn.classList.add('primary');
         if (planKey === 'premium') btn.classList.add('premium');

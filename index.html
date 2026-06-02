@@ -457,6 +457,22 @@
     background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
     box-shadow: 0 8px 24px rgba(184, 36, 69, 0.22);
   }
+  /* Orange iOS — pour Notification */
+  .health-card--orange {
+    background: linear-gradient(160deg, #FFB05A 0%, #FF9F0A 55%, #C2660A 100%);
+    box-shadow: 0 8px 24px rgba(255, 159, 10, 0.28);
+  }
+  /* Or / Gold — pour Statistique */
+  .health-card--gold {
+    background: linear-gradient(160deg, #FFE082 0%, #D4A017 55%, #8C6A0A 100%);
+    box-shadow: 0 8px 24px rgba(212, 160, 23, 0.28);
+  }
+  /* Noir mat premium — pour Mon restaurant */
+  .health-card--black {
+    background: linear-gradient(160deg, #3A3A3D 0%, #1C1C1E 55%, #000000 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+  }
   .health-card--purple {
     background: linear-gradient(160deg, #C088FF 0%, #8B5CF6 55%, #5B21B6 100%);
     box-shadow: 0 8px 24px rgba(91, 33, 182, 0.28);
@@ -491,6 +507,10 @@
   .health-card--blue .health-card-icon { color: #0A84FF; }
   .health-card--yellow .health-card-icon { color: #FF9F0A; }
   .health-card--pink .health-card-icon { color: #FF375F; }
+  .health-card--orange .health-card-icon { color: #FF9F0A; }
+  .health-card--gold .health-card-icon { color: #D4A017; }
+  .health-card--black .health-card-icon { color: #fff; }
+  .health-card--black .health-card-icon-wrap { background: rgba(255, 255, 255, 0.12); }
   .health-card--purple .health-card-icon { color: #8B5CF6; }
   .health-card--glass .health-card-icon { color: #48484A; }
   .health-card--glass .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
@@ -957,9 +977,9 @@
   /* Carte principale "Appels ce mois" — Ring central énorme (variante 20)
      Même gradient rose que l'élément Statistique sur l'accueil */
   .stat-ring-card {
-    background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
+    background: linear-gradient(160deg, #FFE082 0%, #D4A017 55%, #8C6A0A 100%);
     border: 0.5px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 8px 24px rgba(184, 36, 69, 0.30);
+    box-shadow: 0 8px 24px rgba(212, 160, 23, 0.30);
     border-radius: 20px;
     padding: 22px 20px;
     text-align: center;
@@ -1615,6 +1635,86 @@
     font-weight: 500;
   }
 
+  /* ═══ POPUP MON RESTAURANT ═══ */
+  .mon-resto-wrap {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .mon-resto-section-title {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .mon-resto-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .mon-resto-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+    gap: 14px;
+  }
+  .mon-resto-row:last-child { border-bottom: none; }
+  .mon-resto-row-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    flex-shrink: 0;
+  }
+  .mon-resto-row-value {
+    font-size: 14px;
+    color: #fff;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+  }
+  .mon-resto-row-value--mono {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    color: #FFE082;
+  }
+  .mon-resto-action {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mon-resto-action:active { background: rgba(255, 255, 255, 0.04); }
+  .mon-resto-action svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #0A84FF;
+  }
+  .mon-resto-action span {
+    flex: 1;
+  }
+  .mon-resto-action-chevron {
+    color: rgba(255, 255, 255, 0.3) !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
   /* ═══ TOAST/BANDEAU NOTIFICATION IN-APP ═══ */
   .toast-notif {
     position: fixed;
@@ -1646,7 +1746,7 @@
     width: 36px;
     height: 36px;
     border-radius: 9px;
-    background: linear-gradient(135deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
+    background: linear-gradient(135deg, #FFB05A 0%, #FF9F0A 55%, #C2660A 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2376,9 +2476,9 @@
     border: 0.5px solid rgba(255, 255, 255, 0.08);
   }
   .popup-acti-card--green {
-    /* Même gradient que la carte Activités (vert Apple Music) */
-    background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
-    box-shadow: 0 8px 24px rgba(26, 142, 61, 0.22);
+    /* Même gradient que la carte Notification (orange iOS) */
+    background: linear-gradient(160deg, #FFB05A 0%, #FF9F0A 55%, #C2660A 100%);
+    box-shadow: 0 8px 24px rgba(255, 159, 10, 0.28);
   }
   .popup-acti-card--glass {
     /* Verre dépoli iOS */
@@ -7197,7 +7297,7 @@
         </button>
 
         <!-- 2) Carte Activités/Notification (rose) -->
-        <button class="health-card health-card--pink" data-popup="activites" type="button">
+        <button class="health-card health-card--orange" data-popup="activites" type="button">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
               <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -7236,7 +7336,7 @@
         <span id="accueilAppelsMeta" hidden style="display:none;"></span>
 
         <!-- 3) Carte Statistique (rose) -->
-        <button class="health-card health-card--purple" data-popup="statistique" type="button">
+        <button class="health-card health-card--gold" data-popup="statistique" type="button">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
               <svg class="health-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -7272,7 +7372,27 @@
           </div>
         </button>
 
-        <!-- ═══ CARTE TABLES (4ème, glass) ═══ -->
+        <!-- ═══ 4) Carte Mon restaurant (noir mat premium) ═══ -->
+        <button class="health-card health-card--black" data-popup="mon-restaurant" type="button">
+          <div class="health-card-top">
+            <div class="health-card-icon-wrap">
+              <svg class="health-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div class="health-card-title">Mon restaurant</div>
+            <div class="health-card-meta">
+              <span>gérer</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="health-card-body">
+            <div class="health-card-value" id="accueilRestaurantName" style="font-size:22px;">—</div>
+          </div>
+        </button>
+
+        <!-- ═══ CARTE TABLES (5ème, glass) ═══ -->
         <button class="health-card health-card--glass" data-popup="tables" type="button" style="display:none;" aria-hidden="true">
           <div class="health-card-top">
             <div class="health-card-icon-wrap">
@@ -13196,6 +13316,60 @@
           <div id="statsPopupBody"></div>
         </div>
       `;
+    } else if (type === 'mon-restaurant') {
+      titleText = 'Mon restaurant';
+      const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      })[c]);
+      const nom = currentSalon?.nom_restaurant || currentSalon?.name || '—';
+      const adresse = currentSalon?.adresse || currentSalon?.address || '—';
+      const tel = currentSalon?.telephone || currentSalon?.phone || '—';
+      const numeroFrizz = currentSalon?.numero_frizz || '—';
+      const email = (typeof currentUser !== 'undefined' && currentUser?.email) ? currentUser.email : '—';
+      bodyHTML = `
+        <div class="mon-resto-wrap">
+          <div class="mon-resto-section">
+            <div class="mon-resto-section-title">Établissement</div>
+            <div class="mon-resto-card">
+              <div class="mon-resto-row">
+                <div class="mon-resto-row-label">Nom</div>
+                <div class="mon-resto-row-value">${escapeHtml(nom)}</div>
+              </div>
+              <div class="mon-resto-row">
+                <div class="mon-resto-row-label">Adresse</div>
+                <div class="mon-resto-row-value">${escapeHtml(adresse)}</div>
+              </div>
+              <div class="mon-resto-row">
+                <div class="mon-resto-row-label">Téléphone</div>
+                <div class="mon-resto-row-value">${escapeHtml(tel)}</div>
+              </div>
+              <div class="mon-resto-row">
+                <div class="mon-resto-row-label">Email</div>
+                <div class="mon-resto-row-value">${escapeHtml(email)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="mon-resto-section">
+            <div class="mon-resto-section-title">Numéro Frizz</div>
+            <div class="mon-resto-card">
+              <div class="mon-resto-row">
+                <div class="mon-resto-row-label">Numéro IA</div>
+                <div class="mon-resto-row-value mon-resto-row-value--mono">${escapeHtml(numeroFrizz)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="mon-resto-section">
+            <div class="mon-resto-section-title">Actions rapides</div>
+            <div class="mon-resto-card">
+              <button class="mon-resto-action" type="button" data-action="settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Ouvrir les réglages complets</span>
+                <svg class="mon-resto-action-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
     }
     // Note : la vue "Tables" est désormais une 2ème page de la popup Calendrier (onglet)
     // — voir cal-tabs-switcher dans page-calendrier
@@ -13206,6 +13380,23 @@
     // Si statistique : render direct (plus de filtres)
     if (type === 'conversion' || type === 'statistique') {
       renderStatsPopup();
+    }
+
+    // Si mon-restaurant : brancher l'action "Ouvrir les réglages"
+    if (type === 'mon-restaurant') {
+      setTimeout(() => {
+        const actionBtn = document.querySelector('.mon-resto-action[data-action="settings"]');
+        if (actionBtn) {
+          actionBtn.addEventListener('click', () => {
+            // Fermer la popup et naviguer vers Réglages
+            if (typeof closePopup === 'function') closePopup();
+            setTimeout(() => {
+              if (typeof showPage === 'function') showPage('settings');
+              else if (typeof goToPage === 'function') goToPage('settings');
+            }, 250);
+          });
+        }
+      }, 50);
     }
 
     // Si réservations : déplacer le DOM du calendrier dans la popup

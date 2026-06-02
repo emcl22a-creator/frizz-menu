@@ -1782,31 +1782,164 @@
 
   /* ═══ SERVICE DU JOUR ═══ */
 
-  /* Compteur (X résas · Y couverts) */
+  /* ─── BANDEAU bleu Frizz unifié ─── */
+  .service-banner {
+    margin: 0 16px 16px;
+    background: linear-gradient(135deg, #4DA2FF 0%, #1E64FF 50%, #0A4FE5 100%);
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(10, 79, 229, 0.22);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    position: relative;
+  }
+  .service-banner-left {
+    flex: 1;
+    min-width: 0;
+  }
+  .service-banner-dow {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 500;
+  }
+  .service-banner-date {
+    font-size: 26px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  .service-banner-counter {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 6px;
+  }
+  .service-banner-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .service-banner-nav {
+    display: flex;
+    gap: 4px;
+  }
+  .service-banner-nav-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .service-banner-nav-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    transform: scale(0.95);
+  }
+  .service-banner-nav-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .service-banner-today-btn {
+    background: rgba(255, 255, 255, 0.96);
+    border: none;
+    color: #0A4FE5;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+    transition: transform 0.1s;
+    white-space: nowrap;
+  }
+  .service-banner-today-btn:active { transform: scale(0.96); }
+
+  /* ─── COMPTEUR (legacy, plus utilisé visuellement, mais rétrocompat) ─── */
   .service-counter {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.55);
-    padding: 14px 24px 14px;
+    padding: 0;
   }
 
-  /* Tableau Tables × Créneaux */
+  /* ─── TABLEAU Tables × Créneaux avec colonne fixe ─── */
   .service-table-wrap {
     margin: 0 16px;
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+  }
+  /* Colonne fixe à gauche (Table + noms) */
+  .service-table-fixed {
+    flex-shrink: 0;
+    width: 80px;
+    background: rgba(0, 0, 0, 0.4);
+    border-right: 0.5px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    flex-direction: column;
+  }
+  .service-table-fixed-head {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 10px 10px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.10);
+    height: 36px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+  .service-table-fixed-row {
+    font-size: 13px;
+    color: #fff;
+    padding: 10px 10px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    height: 44px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .service-table-fixed-row:last-child { border-bottom: none; }
+  .service-table-fixed-row .table-capacity {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: 4px;
+  }
+  /* Zone scrollable horizontalement */
+  .service-table-scroll {
+    flex: 1;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  .service-table-wrap::-webkit-scrollbar { display: none; }
-  /* Header (Table | 12:00 | 12:30 | ...) */
+  .service-table-scroll::-webkit-scrollbar { display: none; }
+  /* Header (12:00 | 12:30 | ...) — sans le label Table */
   .service-table-head {
     display: grid;
-    padding: 10px 12px;
+    padding: 0 4px;
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.10);
     background: rgba(255, 255, 255, 0.02);
+    height: 36px;
+    box-sizing: border-box;
+    align-items: center;
   }
   .service-table-head-cell {
     font-size: 10px;
@@ -1817,34 +1950,20 @@
     padding: 0 4px;
     white-space: nowrap;
   }
-  .service-table-head-cell.is-label {
-    text-align: left;
-    color: rgba(255, 255, 255, 0.5);
-    padding-right: 8px;
-  }
-  /* Lignes du tableau */
+  /* Lignes du tableau (cellules uniquement, sans label) */
   .service-table-body {
     display: flex;
     flex-direction: column;
   }
   .service-table-row {
     display: grid;
-    padding: 10px 12px;
+    padding: 0 4px;
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    height: 44px;
+    box-sizing: border-box;
     align-items: center;
   }
   .service-table-row:last-child { border-bottom: none; }
-  .service-table-cell-label {
-    font-size: 13px;
-    color: #fff;
-    padding-right: 8px;
-    white-space: nowrap;
-  }
-  .service-table-cell-label .table-capacity {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.4);
-    margin-left: 4px;
-  }
   .service-table-cell {
     text-align: center;
     padding: 0 2px;
@@ -1879,7 +1998,7 @@
     box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3);
   }
 
-  /* Bouton Aujourd'hui */
+  /* Bouton Aujourd'hui (legacy stub, plus utilisé) */
   .service-today-wrap {
     display: flex;
     justify-content: flex-start;
@@ -7620,26 +7739,33 @@
   <!-- ═══ PAGE CALENDRIER / SERVICE DU JOUR ═══ -->
   <div class="page hidden" id="page-calendrier">
 
-    <!-- Bouton Aujourd'hui (réinitialise à la date du jour) -->
-    <div class="service-today-wrap">
-      <button class="service-today-btn" id="serviceTodayBtn" type="button">Aujourd'hui</button>
+    <!-- ═══ BANDEAU BLEU FRIZZ unifié (date + navigation + compteur + bouton Aujourd'hui) ═══ -->
+    <div class="service-banner">
+      <div class="service-banner-left">
+        <div class="service-banner-dow" id="serviceHeaderDow">Mardi</div>
+        <div class="service-banner-date" id="serviceHeaderLabel">2 juin</div>
+        <div class="service-banner-counter" id="serviceCounterText">0 résa · 0 couvert</div>
+      </div>
+      <div class="service-banner-right">
+        <div class="service-banner-nav">
+          <button class="service-banner-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="service-banner-nav-btn" id="serviceNavNextBtn" type="button" aria-label="Jour suivant">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <button class="service-banner-today-btn" id="serviceTodayBtn" type="button">Aujourd'hui</button>
+      </div>
+      <!-- Stubs cachés pour rétrocompat (ancien JS set serviceHeaderTitle/serviceTodayBtn) -->
+      <span id="serviceHeaderTitle" hidden style="display:none;"></span>
+      <div class="service-today-wrap" hidden style="display:none;" aria-hidden="true"></div>
     </div>
 
-    <!-- Header : label date + flèches navigation -->
-    <div class="service-header">
-      <div class="service-header-center">
-        <div class="service-header-label" id="serviceHeaderLabel">Lundi 2 juin</div>
-      </div>
-      <div class="service-header-nav">
-        <button class="service-nav-btn" id="serviceNavPrevBtn" type="button" aria-label="Jour précédent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="service-nav-btn" id="serviceNavNextBtn" type="button" aria-label="Jour suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-      <!-- Stub caché pour ne pas casser le JS qui set serviceHeaderTitle -->
-      <span id="serviceHeaderTitle" hidden style="display:none;"></span>
+    <!-- Stub caché : header simple (ancien JS) -->
+    <div class="service-header" hidden style="display:none;" aria-hidden="true">
+      <span class="service-header-center"></span>
+      <span class="service-header-nav"></span>
     </div>
 
     <!-- Pilules de jours retirées (navigation via flèches + swipe) -->
@@ -7649,17 +7775,20 @@
     <!-- Contenu animable (swipable) -->
     <div class="service-animatable" id="serviceAnimatable">
 
-      <!-- Compteur en ligne : X résas / Y couverts -->
-      <div class="service-counter" id="serviceCounter">
-        <span id="serviceCounterText">0 résa · 0 couvert</span>
+      <!-- TABLEAU Tables × Créneaux (avec colonne Table fixe à gauche) -->
+      <div class="service-table-wrap" id="serviceTableWrap">
+        <!-- Colonne fixe à gauche (Table + nom des tables) -->
+        <div class="service-table-fixed" id="serviceTableFixed"></div>
+        <!-- Zone scrollable horizontalement (header heures + cellules) -->
+        <div class="service-table-scroll" id="serviceTableScroll">
+          <div class="service-table-head" id="serviceTableHead"></div>
+          <div class="service-table-body" id="serviceTableBody"></div>
+        </div>
       </div>
 
-      <!-- TABLEAU Tables × Créneaux -->
-      <div class="service-table-wrap" id="serviceTableWrap">
-        <!-- Header : Table | 12:00 | 12:30 | ... -->
-        <div class="service-table-head" id="serviceTableHead"></div>
-        <!-- Lignes : 1 par table -->
-        <div class="service-table-body" id="serviceTableBody"></div>
+      <!-- Compteur stub (rétrocompat) -->
+      <div hidden style="display:none;" aria-hidden="true">
+        <div class="service-counter" id="serviceCounter"></div>
       </div>
 
       <!-- Vide -->
@@ -10588,21 +10717,27 @@
     // ── Header label + title ──
     const moisLong = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
     const joursLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-    const headerLabel = `${joursLong[target.getDay()]} ${target.getDate()} ${moisLong[target.getMonth()]}`;
+    const dowText = joursLong[target.getDay()];
+    const dateText = `${target.getDate()} ${moisLong[target.getMonth()]}`;
+    const headerLabel = `${dowText} ${dateText}`;
     let headerTitle = 'Service';
     if (diffDays === 0) headerTitle = 'Aujourd\'hui';
     else if (diffDays === 1) headerTitle = 'Demain';
     else if (diffDays === -1) headerTitle = 'Hier';
-    else headerTitle = joursLong[target.getDay()];
+    else headerTitle = dowText;
+    // Bandeau split (DOW + date)
+    const dowEl = document.getElementById('serviceHeaderDow');
+    if (dowEl) dowEl.textContent = dowText;
     const hl = document.getElementById('serviceHeaderLabel');
+    if (hl) hl.textContent = dateText;
     const ht = document.getElementById('serviceHeaderTitle');
-    if (hl) hl.textContent = headerLabel;
     if (ht) ht.textContent = headerTitle;
 
-    // État du bouton "Aujourd'hui" : actif (bleu plein) si on est sur la date du jour
+    // État du bouton "Aujourd'hui" : caché si on est déjà sur aujourd'hui
     const todayBtnEl = document.getElementById('serviceTodayBtn');
     if (todayBtnEl) {
       todayBtnEl.classList.toggle('is-today', diffDays === 0);
+      todayBtnEl.style.visibility = (diffDays === 0) ? 'hidden' : 'visible';
     }
 
     // ── Pilules jours ──
@@ -10679,6 +10814,7 @@
       : [];
 
     const wrap = document.getElementById('serviceTableWrap');
+    const fixedCol = document.getElementById('serviceTableFixed');
     const head = document.getElementById('serviceTableHead');
     const body = document.getElementById('serviceTableBody');
     const emptyEl = document.getElementById('serviceEmpty');
@@ -10690,38 +10826,46 @@
     }
 
     if (emptyEl) emptyEl.style.display = 'none';
-    if (wrap) wrap.style.display = '';
+    if (wrap) wrap.style.display = 'flex';
 
-    // ── Header du tableau ──
-    // Grid : 1ère col = label (80px), puis N cols pour chaque créneau (60px min chacun)
-    const minWidth = 80 + creneaux.length * 60;
-    const gridCols = `80px repeat(${creneaux.length}, 60px)`;
-    if (head) {
-      head.style.gridTemplateColumns = gridCols;
-      head.style.minWidth = minWidth + 'px';
-      head.innerHTML = `
-        <div class="service-table-head-cell is-label">Table</div>
-        ${creneaux.map(c => `<div class="service-table-head-cell">${c}</div>`).join('')}
+    const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+
+    // ── Colonne fixe (gauche) : label "Table" + nom des tables ──
+    if (fixedCol) {
+      fixedCol.innerHTML = `
+        <div class="service-table-fixed-head">Table</div>
+        ${tables.map(t => {
+          const capacite = t.capacite || t.capacity || '';
+          return `<div class="service-table-fixed-row">${escapeHtml(t.nom || 'T?')}<span class="table-capacity">${capacite ? capacite + 'p' : ''}</span></div>`;
+        }).join('')}
       `;
     }
 
-    // ── Corps du tableau ──
-    // Pour chaque table, pour chaque créneau : déterminer si réservée ou libre
+    // ── Zone scrollable (droite) : header des créneaux + cellules ──
+    const slotWidth = 60;
+    const minWidth = creneaux.length * slotWidth;
+    const gridCols = `repeat(${creneaux.length}, ${slotWidth}px)`;
+
+    if (head) {
+      head.style.gridTemplateColumns = gridCols;
+      head.style.minWidth = minWidth + 'px';
+      head.innerHTML = creneaux.map(c => `<div class="service-table-head-cell">${c}</div>`).join('');
+    }
+
+    // ── Corps : pour chaque table, pour chaque créneau ──
     const isArrived = r => {
       const s = String(r.statut || '').toLowerCase().trim();
       return s === 'arrivee' || s === 'arrivée';
     };
     if (body) {
       body.innerHTML = tables.map(t => {
-        const capacite = t.capacite || t.capacity || '';
-        // Pour chaque créneau de la journée, trouver une résa qui occupe cette table à cette heure
         const cells = creneaux.map(slot => {
-          // Trouver une résa qui : 1) même table_id que t.id, 2) heure du slot tombe dans [début, début+durée_par_défaut]
           const reso = dayResas.find(r => {
             if (String(r.table_id || '') !== String(t.id)) return false;
             const heureRes = String(r.heure_reservation || r.heure || '').slice(0, 5);
             if (!heureRes) return false;
-            // Une résa "occupe" le slot si l'heure du slot tombe dans [heureRes, heureRes + duree]
             const duree = parseInt(currentSalon?.duree_table_minutes) || 90;
             const [rh, rm] = heureRes.split(':').map(x => parseInt(x) || 0);
             const resaStartMin = rh * 60 + rm;
@@ -10741,12 +10885,8 @@
             </div>`;
           }
         });
-        const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
-          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-        })[c]);
         return `
           <div class="service-table-row" style="grid-template-columns: ${gridCols}; min-width: ${minWidth}px;">
-            <div class="service-table-cell-label">${escapeHtml(t.nom || 'T?')}<span class="table-capacity">${capacite ? capacite + 'p' : ''}</span></div>
             ${cells.join('')}
           </div>
         `;

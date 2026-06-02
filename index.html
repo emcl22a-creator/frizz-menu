@@ -1782,6 +1782,103 @@
 
   /* ═══ SERVICE DU JOUR ═══ */
 
+  /* Compteur (X résas · Y couverts) */
+  .service-counter {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 14px 24px 14px;
+  }
+
+  /* Tableau Tables × Créneaux */
+  .service-table-wrap {
+    margin: 0 16px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .service-table-wrap::-webkit-scrollbar { display: none; }
+  /* Header (Table | 12:00 | 12:30 | ...) */
+  .service-table-head {
+    display: grid;
+    padding: 10px 12px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .service-table-head-cell {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: center;
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+  .service-table-head-cell.is-label {
+    text-align: left;
+    color: rgba(255, 255, 255, 0.5);
+    padding-right: 8px;
+  }
+  /* Lignes du tableau */
+  .service-table-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .service-table-row {
+    display: grid;
+    padding: 10px 12px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    align-items: center;
+  }
+  .service-table-row:last-child { border-bottom: none; }
+  .service-table-cell-label {
+    font-size: 13px;
+    color: #fff;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+  .service-table-cell-label .table-capacity {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: 4px;
+  }
+  .service-table-cell {
+    text-align: center;
+    padding: 0 2px;
+  }
+  /* Pilule de cellule */
+  .service-pill {
+    display: inline-block;
+    font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s;
+  }
+  .service-pill:active { transform: scale(0.95); }
+  .service-pill--reserved {
+    background: #0A84FF;
+    color: #fff;
+    font-weight: 500;
+  }
+  .service-pill--free {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .service-pill--arrived {
+    background: #0A84FF;
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3);
+  }
+
   /* Bouton Aujourd'hui */
   .service-today-wrap {
     display: flex;
@@ -7552,42 +7649,40 @@
     <!-- Contenu animable (swipable) -->
     <div class="service-animatable" id="serviceAnimatable">
 
-      <!-- Carte KPI principale (couverts) - bleu gradient Frizz -->
-      <div class="service-kpi-card">
-        <div class="service-kpi-label">Couverts attendus</div>
-        <div class="service-kpi-row">
-          <div class="service-kpi-value" id="serviceKpiCouverts">0</div>
-          <div class="service-kpi-sub" id="serviceKpiResas">sur 0 résa</div>
-        </div>
+      <!-- Compteur en ligne : X résas / Y couverts -->
+      <div class="service-counter" id="serviceCounter">
+        <span id="serviceCounterText">0 résa · 0 couvert</span>
       </div>
 
-      <!-- 2 cartes mini (Arrivés / Prochaine) -->
-      <div class="service-mini-grid">
-        <div class="service-mini-card">
-          <div class="service-mini-label">Arrivés</div>
-          <div class="service-mini-value service-mini-value--blue" id="serviceMiniArrives">0 / 0</div>
-        </div>
-        <div class="service-mini-card">
-          <div class="service-mini-label">Prochaine</div>
-          <div class="service-mini-value" id="serviceMiniProchaine">—</div>
-        </div>
+      <!-- TABLEAU Tables × Créneaux -->
+      <div class="service-table-wrap" id="serviceTableWrap">
+        <!-- Header : Table | 12:00 | 12:30 | ... -->
+        <div class="service-table-head" id="serviceTableHead"></div>
+        <!-- Lignes : 1 par table -->
+        <div class="service-table-body" id="serviceTableBody"></div>
       </div>
-
-      <!-- Liste des résas, segmentée Midi / Soir -->
-      <div class="service-section-label" id="serviceMidiLabel" style="display:none;">Midi</div>
-      <div class="service-resa-list" id="serviceMidiList"></div>
-
-      <div class="service-section-label" id="serviceSoirLabel" style="display:none;">Soir</div>
-      <div class="service-resa-list" id="serviceSoirList"></div>
-
-      <!-- Liste sans segment (si pas d'horaires définis) -->
-      <div class="service-section-label" id="serviceAllLabel" style="display:none;">Réservations</div>
-      <div class="service-resa-list" id="serviceAllList"></div>
 
       <!-- Vide -->
       <div class="service-empty" id="serviceEmpty" style="display:none;">
-        <div class="service-empty-title">Aucune réservation</div>
-        <div class="service-empty-sub">Aucune résa prévue pour ce jour.</div>
+        <div class="service-empty-title">Aucune table</div>
+        <div class="service-empty-sub">Ajoutez des tables dans Réglages → Mes tables.</div>
+      </div>
+
+      <!-- Stubs cachés pour ne pas casser l'ancien JS qui set ces IDs -->
+      <div hidden style="display:none;" aria-hidden="true">
+        <div class="service-kpi-card">
+          <div class="service-kpi-label">Couverts attendus</div>
+          <div class="service-kpi-value" id="serviceKpiCouverts">0</div>
+          <div class="service-kpi-sub" id="serviceKpiResas">sur 0 résa</div>
+        </div>
+        <div class="service-mini-value" id="serviceMiniArrives">0 / 0</div>
+        <div class="service-mini-value" id="serviceMiniProchaine">—</div>
+        <div id="serviceMidiLabel"></div>
+        <div id="serviceMidiList"></div>
+        <div id="serviceSoirLabel"></div>
+        <div id="serviceSoirList"></div>
+        <div id="serviceAllLabel"></div>
+        <div id="serviceAllList"></div>
       </div>
 
     </div>
@@ -10510,7 +10605,7 @@
       todayBtnEl.classList.toggle('is-today', diffDays === 0);
     }
 
-    // ── Pilules jours (7 jours autour d'aujourd'hui : -1 à +5) ──
+    // ── Pilules jours ──
     renderServiceDayPills();
 
     // ── Résas du jour ──
@@ -10523,95 +10618,176 @@
         const s = String(r.statut || '').toLowerCase().trim();
         if (annulesStatuts.includes(s)) return false;
         return true;
-      })
-      .sort((a, b) => {
-        const ta = String(a.heure_reservation || a.heure || '23:59').slice(0, 5);
-        const tb = String(b.heure_reservation || b.heure || '23:59').slice(0, 5);
-        return ta.localeCompare(tb);
       });
 
-    // ── KPI ──
+    // ── Compteur ──
     const totalResas = dayResas.length;
     const totalCouverts = dayResas.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
-    const isArrived = r => String(r.statut || '').toLowerCase().trim() === 'arrivee' || String(r.statut || '').toLowerCase().trim() === 'arrivée';
-    const arrives = dayResas.filter(isArrived).length;
-    const toCome = dayResas.filter(r => !isArrived(r));
-
-    const elCouv = document.getElementById('serviceKpiCouverts');
-    const elResas = document.getElementById('serviceKpiResas');
-    const elArr = document.getElementById('serviceMiniArrives');
-    const elProch = document.getElementById('serviceMiniProchaine');
-    if (elCouv) elCouv.textContent = totalCouverts;
-    if (elResas) elResas.textContent = `sur ${totalResas} résa${totalResas > 1 ? 's' : ''}`;
-    if (elArr) elArr.textContent = `${arrives} / ${totalResas}`;
-    if (elProch) {
-      if (toCome.length > 0) {
-        const h = (toCome[0].heure_reservation || toCome[0].heure || '').slice(0, 5);
-        elProch.textContent = h || '—';
-      } else {
-        elProch.textContent = totalResas > 0 ? 'Terminé' : '—';
-      }
+    const counterEl = document.getElementById('serviceCounterText');
+    if (counterEl) {
+      counterEl.textContent = `${totalResas} résa${totalResas > 1 ? 's' : ''} · ${totalCouverts} couvert${totalCouverts > 1 ? 's' : ''}`;
     }
 
-    // ── Segmenter Midi/Soir d'après horaires_ouverture ──
+    // ── Stubs KPI pour rétrocompat ──
+    const elCouv = document.getElementById('serviceKpiCouverts');
+    const elResas = document.getElementById('serviceKpiResas');
+    if (elCouv) elCouv.textContent = totalCouverts;
+    if (elResas) elResas.textContent = `sur ${totalResas} résa${totalResas > 1 ? 's' : ''}`;
+
+    // ── Construire la liste des créneaux 30 min du jour ──
+    // Basé sur horaires_ouverture du salon pour le jour de la semaine
+    const dayKeys = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+    const dayKey = dayKeys[target.getDay()];
     const horaires = currentSalon && currentSalon.horaires_ouverture;
-    let midiEndMin = null;
-    if (horaires) {
-      // Récupère le créneau du jour
-      const dayKeys = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-      const dayKey = dayKeys[target.getDay()];
-      const dayConf = horaires[dayKey];
-      if (dayConf && Array.isArray(dayConf.creneaux) && dayConf.creneaux.length >= 1) {
-        // Si 2+ créneaux : le 1er finit le midi, le 2ème commence le soir
-        const c0 = dayConf.creneaux[0];
-        if (c0 && c0.fermeture) {
-          const [h, m] = String(c0.fermeture).split(':').map(x => parseInt(x) || 0);
-          midiEndMin = h * 60 + m;
+    const dayConf = horaires && horaires[dayKey];
+    const creneaux = []; // tableau de "HH:MM"
+    if (dayConf && Array.isArray(dayConf.creneaux) && dayConf.creneaux.length > 0 && dayConf.ferme !== true) {
+      // Pour chaque créneau d'ouverture, générer des slots toutes les 30 min
+      for (const c of dayConf.creneaux) {
+        const ouv = String(c.ouverture || c.start || '').slice(0, 5);
+        const ferm = String(c.fermeture || c.end || '').slice(0, 5);
+        if (!ouv || !ferm) continue;
+        const [oh, om] = ouv.split(':').map(x => parseInt(x) || 0);
+        const [fh, fm] = ferm.split(':').map(x => parseInt(x) || 0);
+        const startMin = oh * 60 + om;
+        const endMin = fh * 60 + fm;
+        for (let m = startMin; m < endMin; m += 30) {
+          const h = String(Math.floor(m / 60)).padStart(2, '0');
+          const mm = String(m % 60).padStart(2, '0');
+          creneaux.push(`${h}:${mm}`);
         }
       }
     }
+    // Si pas d'horaires définis, fallback : créneaux 12h-14h30 + 19h-22h30 (par défaut FR)
+    if (creneaux.length === 0) {
+      for (let h = 12; h < 15; h++) {
+        creneaux.push(`${String(h).padStart(2,'0')}:00`);
+        creneaux.push(`${String(h).padStart(2,'0')}:30`);
+      }
+      for (let h = 19; h < 23; h++) {
+        creneaux.push(`${String(h).padStart(2,'0')}:00`);
+        creneaux.push(`${String(h).padStart(2,'0')}:30`);
+      }
+    }
 
-    const midiList = document.getElementById('serviceMidiList');
-    const soirList = document.getElementById('serviceSoirList');
-    const allList = document.getElementById('serviceAllList');
-    const midiLabel = document.getElementById('serviceMidiLabel');
-    const soirLabel = document.getElementById('serviceSoirLabel');
-    const allLabel = document.getElementById('serviceAllLabel');
+    // ── Construire la liste des tables (depuis allTables) ──
+    const tables = (typeof allTables !== 'undefined' && Array.isArray(allTables))
+      ? allTables.filter(t => t.active !== false).sort((a, b) => {
+          // Tri par nom (T1, T2, T3...)
+          return String(a.nom || '').localeCompare(String(b.nom || ''), 'fr', { numeric: true });
+        })
+      : [];
+
+    const wrap = document.getElementById('serviceTableWrap');
+    const head = document.getElementById('serviceTableHead');
+    const body = document.getElementById('serviceTableBody');
     const emptyEl = document.getElementById('serviceEmpty');
 
-    // Reset
-    [midiList, soirList, allList].forEach(el => { if (el) el.innerHTML = ''; });
-    [midiLabel, soirLabel, allLabel, emptyEl].forEach(el => { if (el) el.style.display = 'none'; });
-
-    if (dayResas.length === 0) {
+    if (!tables.length) {
+      if (wrap) wrap.style.display = 'none';
       if (emptyEl) emptyEl.style.display = '';
       return;
     }
 
-    if (midiEndMin !== null) {
-      // Séparer Midi / Soir
-      const midiRes = dayResas.filter(r => {
-        const h = String(r.heure_reservation || r.heure || '23:59').slice(0, 5);
-        const [hh, mm] = h.split(':').map(x => parseInt(x) || 0);
-        return (hh * 60 + mm) < midiEndMin + 60; // +1h de marge pour le service midi
-      });
-      const soirRes = dayResas.filter(r => !midiRes.includes(r));
-      if (midiRes.length > 0) {
-        if (midiLabel) midiLabel.style.display = '';
-        if (midiList) midiList.innerHTML = midiRes.map(renderServiceResaRow).join('');
-      }
-      if (soirRes.length > 0) {
-        if (soirLabel) soirLabel.style.display = '';
-        if (soirList) soirList.innerHTML = soirRes.map(renderServiceResaRow).join('');
-      }
-    } else {
-      // Pas d'horaires → une seule liste
-      if (allLabel) allLabel.style.display = '';
-      if (allList) allList.innerHTML = dayResas.map(renderServiceResaRow).join('');
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (wrap) wrap.style.display = '';
+
+    // ── Header du tableau ──
+    // Grid : 1ère col = label (80px), puis N cols pour chaque créneau (60px min chacun)
+    const minWidth = 80 + creneaux.length * 60;
+    const gridCols = `80px repeat(${creneaux.length}, 60px)`;
+    if (head) {
+      head.style.gridTemplateColumns = gridCols;
+      head.style.minWidth = minWidth + 'px';
+      head.innerHTML = `
+        <div class="service-table-head-cell is-label">Table</div>
+        ${creneaux.map(c => `<div class="service-table-head-cell">${c}</div>`).join('')}
+      `;
+    }
+
+    // ── Corps du tableau ──
+    // Pour chaque table, pour chaque créneau : déterminer si réservée ou libre
+    const isArrived = r => {
+      const s = String(r.statut || '').toLowerCase().trim();
+      return s === 'arrivee' || s === 'arrivée';
+    };
+    if (body) {
+      body.innerHTML = tables.map(t => {
+        const capacite = t.capacite || t.capacity || '';
+        // Pour chaque créneau de la journée, trouver une résa qui occupe cette table à cette heure
+        const cells = creneaux.map(slot => {
+          // Trouver une résa qui : 1) même table_id que t.id, 2) heure du slot tombe dans [début, début+durée_par_défaut]
+          const reso = dayResas.find(r => {
+            if (String(r.table_id || '') !== String(t.id)) return false;
+            const heureRes = String(r.heure_reservation || r.heure || '').slice(0, 5);
+            if (!heureRes) return false;
+            // Une résa "occupe" le slot si l'heure du slot tombe dans [heureRes, heureRes + duree]
+            const duree = parseInt(currentSalon?.duree_table_minutes) || 90;
+            const [rh, rm] = heureRes.split(':').map(x => parseInt(x) || 0);
+            const resaStartMin = rh * 60 + rm;
+            const resaEndMin = resaStartMin + duree;
+            const [sh, sm] = slot.split(':').map(x => parseInt(x) || 0);
+            const slotMin = sh * 60 + sm;
+            return slotMin >= resaStartMin && slotMin < resaEndMin;
+          });
+          if (reso) {
+            const arrived = isArrived(reso);
+            return `<div class="service-table-cell">
+              <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>
+            </div>`;
+          } else {
+            return `<div class="service-table-cell">
+              <button class="service-pill service-pill--free" data-action="create-resa" data-table-id="${t.id}" data-slot="${slot}" type="button">Libre</button>
+            </div>`;
+          }
+        });
+        const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
+          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        })[c]);
+        return `
+          <div class="service-table-row" style="grid-template-columns: ${gridCols}; min-width: ${minWidth}px;">
+            <div class="service-table-cell-label">${escapeHtml(t.nom || 'T?')}<span class="table-capacity">${capacite ? capacite + 'p' : ''}</span></div>
+            ${cells.join('')}
+          </div>
+        `;
+      }).join('');
     }
 
     // Bind clics
-    bindServiceResaRows();
+    bindServiceTableCells();
+  }
+
+  // Bind les clics sur les cellules du tableau
+  function bindServiceTableCells() {
+    document.querySelectorAll('.service-pill[data-action="open-resa"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.resaId;
+        const resa = (allReservations || []).find(r => String(r.id) === String(id));
+        if (resa && typeof openResaDetail === 'function') {
+          try { openResaDetail(resa); } catch (err) { console.warn('openResaDetail:', err); }
+        }
+      });
+    });
+    document.querySelectorAll('.service-pill[data-action="create-resa"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const tableId = btn.dataset.tableId;
+        const slot = btn.dataset.slot;
+        if (typeof openResaForm === 'function') {
+          try {
+            openResaForm('create', {
+              table_id: tableId,
+              heure_reservation: slot,
+              date_reservation: formatDateISO(serviceViewedDate)
+            });
+          } catch (err) {
+            console.warn('openResaForm:', err);
+            openResaForm('create');
+          }
+        }
+      });
+    });
   }
 
   function renderServiceResaRow(r) {

@@ -10135,12 +10135,27 @@
     const heure = String(r.heure_reservation || r.heure || '').slice(0, 5);
     const nom = r.client_name || r.nom || r.client_nom || 'Client';
     const couverts = parseInt(r.nb_couverts || r.couverts) || 0;
-    const lieu = r.emplacement === 'terrasse' ? 'Terrasse' : (r.emplacement === 'exterieur' ? 'Terrasse' : '');
-    const tableName = r.table_nom || r.table || '';
+    // Zone : afficher TOUJOURS Intérieur ou Extérieur
+    const zoneRaw = String(r.emplacement || '').toLowerCase().trim();
+    let lieu = '';
+    if (zoneRaw === 'exterieur' || zoneRaw === 'extérieur' || zoneRaw === 'terrasse') {
+      lieu = 'Extérieur';
+    } else if (zoneRaw === 'interieur' || zoneRaw === 'intérieur' || zoneRaw === 'salle' || zoneRaw === '') {
+      lieu = 'Intérieur';
+    } else {
+      lieu = zoneRaw.charAt(0).toUpperCase() + zoneRaw.slice(1);
+    }
+    // Nom de la table : résoudre via allTables (table_id → nom)
+    let tableName = r.table_nom || r.table || '';
+    if (!tableName && r.table_id && typeof allTables !== 'undefined' && Array.isArray(allTables)) {
+      const t = allTables.find(tt => String(tt.id) === String(r.table_id));
+      if (t && t.nom) tableName = t.nom;
+    }
     const arrived = String(r.statut || '').toLowerCase().trim() === 'arrivee' || String(r.statut || '').toLowerCase().trim() === 'arrivée';
+    // Construction de la meta : "6 pers · Intérieur · Table 3"
     const metaParts = [`${couverts} pers`];
-    if (tableName) metaParts.push(tableName);
     if (lieu) metaParts.push(lieu);
+    if (tableName) metaParts.push(tableName);
     const meta = metaParts.join(' · ');
     const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -12611,9 +12626,17 @@
         }
         // Marquer que la popup contient le calendrier (pour pouvoir le remettre à la fermeture)
         popup.dataset.hasCalendrier = '1';
-        // Rafraîchir le calendrier (= nouvelle vue Service du jour)
-        if (typeof renderCalendarPage === 'function') {
-          try { renderCalendarPage(); } catch (e) { console.warn('renderCalendarPage:', e); }
+        // Précharger les tables (pour que les noms s'affichent dans les meta des résas)
+        // puis rafraîchir le calendrier
+        const finishRender = () => {
+          if (typeof renderCalendarPage === 'function') {
+            try { renderCalendarPage(); } catch (e) { console.warn('renderCalendarPage:', e); }
+          }
+        };
+        if (typeof loadTablesForPopup === 'function') {
+          loadTablesForPopup().then(finishRender).catch(finishRender);
+        } else {
+          finishRender();
         }
         // Brancher le swipe gauche/droite sur le body de la popup pour changer de jour
         if (!popupBody._calSwipeBound) {

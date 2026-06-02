@@ -431,22 +431,20 @@
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
   }
-  /* Effet "swoosh" — vague en S translucide en arrière-plan (style Apple Music / Wallet) */
+  /* Effet "swoosh" — courbes douces en arrière-plan (style Apple Music / Wallet) */
   .health-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    /* SVG inline : 2 vagues en courbe douce + halos */
-    background-image:
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 180' preserveAspectRatio='none'><defs><linearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='white' stop-opacity='0'/><stop offset='50%25' stop-color='white' stop-opacity='0.18'/><stop offset='100%25' stop-color='white' stop-opacity='0.05'/></linearGradient><linearGradient id='g2' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='white' stop-opacity='0'/><stop offset='60%25' stop-color='white' stop-opacity='0.10'/><stop offset='100%25' stop-color='white' stop-opacity='0.02'/></linearGradient></defs><path d='M 0 130 C 80 90, 180 170, 280 110 C 340 75, 380 95, 400 110 L 400 180 L 0 180 Z' fill='url(%23g1)'/><path d='M 0 60 C 100 100, 200 30, 300 80 C 360 110, 380 90, 400 100 L 400 0 L 0 0 Z' fill='url(%23g2)'/></svg>"),
-      radial-gradient(ellipse 70% 50% at 95% 100%, rgba(255,255,255,0.20) 0%, transparent 60%);
-    background-size: 100% 100%, 100% 100%;
+    /* SVG inline : 2 courbes lumineuses qui traversent la carte en diagonale */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 180' preserveAspectRatio='none'><path d='M 0 40 C 100 70, 220 30, 320 90 C 360 115, 390 135, 400 145 L 400 180 L 0 180 Z' fill='rgba(255,255,255,0.08)'/><path d='M 0 90 C 110 130, 230 80, 340 130 C 370 145, 390 155, 400 160 L 400 180 L 0 180 Z' fill='rgba(255,255,255,0.06)'/></svg>");
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     pointer-events: none;
     z-index: 0;
     border-radius: inherit;
   }
-  /* Effet "specular highlight" — surbrillance en haut */
+  /* Effet "specular highlight" — légère surbrillance subtile en haut */
   .health-card::after {
     content: '';
     position: absolute;
@@ -454,7 +452,7 @@
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 100%);
     pointer-events: none;
     z-index: 0;
     border-radius: 24px 24px 0 0;

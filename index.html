@@ -721,7 +721,7 @@
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 16px 0 calc(30px + env(safe-area-inset-bottom));
+    padding: 16px 0 calc(120px + env(safe-area-inset-bottom));
   }
   .modal-popup-handle {
     width: 36px;
@@ -1604,6 +1604,32 @@
   }
 
   /* ═══ SERVICE DU JOUR ═══ */
+
+  /* Bouton Aujourd'hui */
+  .service-today-wrap {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 20px 8px;
+  }
+  .service-today-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #0A84FF;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .service-today-btn:active { transform: scale(0.96); }
+  .service-today-btn.is-today {
+    /* État actif (on est déjà sur aujourd'hui) - rempli en bleu */
+    background: #0A84FF;
+    border-color: #0A84FF;
+    color: #fff;
+  }
 
   /* Header : label date + gros titre Service + flèches */
   .service-header {
@@ -6307,7 +6333,8 @@
   }
 
   /* Conteneur qui anime ses enfants (barre 7 jours + liste résas) */
-  .cal-animatable {
+  .cal-animatable,
+  .service-animatable {
     will-change: transform, opacity;
   }
   /* Animation d'ouverture déclenchée à l'arrivée sur la page Calendrier (classe ajoutée par JS) */
@@ -6315,19 +6342,23 @@
     animation: cascadeIn 0.6s ease-out 0.10s backwards;
   }
   .cal-animatable.cal-slide-in-right,
-  .cal-day-list.cal-slide-in-right {
+  .cal-day-list.cal-slide-in-right,
+  .service-animatable.cal-slide-in-right {
     animation: calSlideInRight 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
   .cal-animatable.cal-slide-in-left,
-  .cal-day-list.cal-slide-in-left {
+  .cal-day-list.cal-slide-in-left,
+  .service-animatable.cal-slide-in-left {
     animation: calSlideInLeft 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
   .cal-animatable.cal-slide-out-left,
-  .cal-day-list.cal-slide-out-left {
+  .cal-day-list.cal-slide-out-left,
+  .service-animatable.cal-slide-out-left {
     animation: calSlideOutLeft 0.18s ease-in forwards !important;
   }
   .cal-animatable.cal-slide-out-right,
-  .cal-day-list.cal-slide-out-right {
+  .cal-day-list.cal-slide-out-right,
+  .service-animatable.cal-slide-out-right {
     animation: calSlideOutRight 0.18s ease-in forwards !important;
   }
 
@@ -6653,7 +6684,7 @@
   .cal-fab {
     position: fixed;
     right: 20px;
-    bottom: 90px;
+    bottom: 30px;
     width: 48px;
     height: 48px;
     background: var(--blue);
@@ -6665,7 +6696,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 210; /* au-dessus du popup body (z-index 201) */
     transition: transform 0.1s;
     animation: cascadeIn 0.6s ease-out 0.22s backwards;
   }
@@ -7075,6 +7106,11 @@
 
   <!-- ═══ PAGE CALENDRIER / SERVICE DU JOUR ═══ -->
   <div class="page hidden" id="page-calendrier">
+
+    <!-- Bouton Aujourd'hui (réinitialise à la date du jour) -->
+    <div class="service-today-wrap">
+      <button class="service-today-btn" id="serviceTodayBtn" type="button">Aujourd'hui</button>
+    </div>
 
     <!-- Header : label date + flèches navigation -->
     <div class="service-header">
@@ -9985,6 +10021,12 @@
     if (hl) hl.textContent = headerLabel;
     if (ht) ht.textContent = headerTitle;
 
+    // État du bouton "Aujourd'hui" : actif (bleu plein) si on est sur la date du jour
+    const todayBtnEl = document.getElementById('serviceTodayBtn');
+    if (todayBtnEl) {
+      todayBtnEl.classList.toggle('is-today', diffDays === 0);
+    }
+
     // ── Pilules jours (7 jours autour d'aujourd'hui : -1 à +5) ──
     renderServiceDayPills();
 
@@ -10225,9 +10267,20 @@
     animEl.classList.remove('cal-slide-in-right','cal-slide-in-left','cal-slide-out-left','cal-slide-out-right');
     void animEl.offsetWidth;
     animEl.classList.add(outClass);
+    // Fade le label date pendant l'animation
+    const labelEl = document.getElementById('serviceHeaderLabel');
+    if (labelEl) {
+      labelEl.style.transition = 'opacity 0.18s ease-in';
+      labelEl.style.opacity = '0';
+    }
     const onOutEnd = () => {
       animEl.removeEventListener('animationend', onOutEnd);
       renderServiceDuJour();
+      // Re-fade le label après update
+      if (labelEl) {
+        labelEl.style.transition = 'opacity 0.25s ease-out';
+        labelEl.style.opacity = '1';
+      }
       animEl.classList.remove('cal-slide-out-left','cal-slide-out-right');
       void animEl.offsetWidth;
       animEl.classList.add(inClass);
@@ -10271,6 +10324,19 @@
     if (nextBtn && !nextBtn._svcBound) {
       nextBtn.addEventListener('click', () => changeCalendarWeek('next'));
       nextBtn._svcBound = true;
+    }
+
+    // Bouton Aujourd'hui : revient à la date d'aujourd'hui
+    const todayBtn = document.getElementById('serviceTodayBtn');
+    if (todayBtn && !todayBtn._svcBound) {
+      todayBtn.addEventListener('click', () => {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        if (serviceViewedDate.getTime() === today.getTime()) return;
+        const direction = today > serviceViewedDate ? 'next' : 'prev';
+        serviceViewedDate = today;
+        animateServiceChange(direction);
+      });
+      todayBtn._svcBound = true;
     }
 
     // Swipe gauche/droite sur toute la page (jour précédent/suivant)

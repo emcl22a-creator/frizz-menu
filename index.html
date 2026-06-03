@@ -411,7 +411,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: calc(env(safe-area-inset-top, 0px) + 65px) 20px 100px;
+    padding: calc(env(safe-area-inset-top, 0px) + 69px) 20px 100px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -837,59 +837,6 @@
   }
   .modal-popup.visible {
     transform: translateY(0);
-  }
-
-  /* ═══════════════════════════════════════════════════════════════ */
-  /* ═══ THÈMES COULEUR DES POPUPS (matchent la couleur des cartes) */
-  /* ═══════════════════════════════════════════════════════════════ */
-
-  /* CALENDRIER = Apple TV+ (noir mat) */
-  .modal-popup.theme-calendrier {
-    background: linear-gradient(180deg, #1C1C1E 0%, #0A0A0B 60%, #000000 100%);
-  }
-  .modal-popup.theme-calendrier .modal-popup-handle {
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  /* NOTIFICATION = Apple Music (rose/rouge) */
-  .modal-popup.theme-notification {
-    background: linear-gradient(180deg, #FB5C74 0%, #FA233B 45%, #0A0A0B 100%);
-  }
-  .modal-popup.theme-notification .modal-popup-handle {
-    background: rgba(255, 255, 255, 0.55);
-  }
-
-  /* STATISTIQUE = Apple Arcade (bleu/violet) */
-  .modal-popup.theme-statistique {
-    background: linear-gradient(180deg, #5E5CE6 0%, #BF5AF2 35%, #0A0A0B 100%);
-  }
-  .modal-popup.theme-statistique .modal-popup-handle {
-    background: rgba(255, 255, 255, 0.55);
-  }
-
-  /* MON RESTAURANT = Apple Fitness+ (vert/bleu) */
-  .modal-popup.theme-monresto {
-    background: linear-gradient(180deg, #30D158 0%, #64D2FF 35%, #0A0A0B 100%);
-  }
-  .modal-popup.theme-monresto .modal-popup-handle {
-    background: rgba(255, 255, 255, 0.55);
-  }
-
-  /* Adaptation du titre (plus visible sur fond coloré) */
-  .modal-popup.theme-calendrier .modal-popup-title,
-  .modal-popup.theme-notification .modal-popup-title,
-  .modal-popup.theme-statistique .modal-popup-title,
-  .modal-popup.theme-monresto .modal-popup-title {
-    color: #fff;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.20);
-  }
-
-  /* Le body reste un wash très subtile pour lisibilité du contenu */
-  .modal-popup.theme-calendrier .modal-popup-body,
-  .modal-popup.theme-notification .modal-popup-body,
-  .modal-popup.theme-statistique .modal-popup-body,
-  .modal-popup.theme-monresto .modal-popup-body {
-    background: transparent;
   }
   /* Le body de la popup gère son propre scroll + padding-bottom safe-area */
   .modal-popup-body {
@@ -4237,19 +4184,18 @@
   }
   /* Bouton primaire central : bleu iOS */
   .tab-round--primary {
-    background: #ffffff;
-    color: #000000;
+    background: #0A84FF;
+    color: #fff;
     width: 50px;
     height: 50px;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.20);
-    border: 0.5px solid rgba(255, 255, 255, 0.40);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.40);
   }
   .tab-round--primary svg {
     width: 22px;
     height: 22px;
   }
   .tab-round--primary:active {
-    background: #E5E5EA;
+    background: #0066CC;
   }
   .tab {
     flex: 1;
@@ -8114,287 +8060,10 @@
     }
     .topbar {
       padding-left: max(20px, calc(50% - 380px + 20px));
-  /* ═══════════════════════════════════════════════════════════════ */
-  /* ═══  VUE DESKTOP (≥1024px) — sidebar + topbar + grille 2×2  ═══ */
-  /* ═══════════════════════════════════════════════════════════════ */
-
-  /* Subtitle caché par défaut sur mobile */
-  .accueil-subtitle {
-    display: none;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 6px;
-    font-weight: 500;
-    letter-spacing: -0.2px;
-  }
-
-  /* Sidebar + topbar cachés par défaut (mobile + login) */
-  .desktop-sidebar,
-  .desktop-topbar {
-    display: none !important;
-  }
-
-  @media (min-width: 1024px) {
-
-    /* ─── Sidebar gauche (visible UNIQUEMENT quand connecté + desktop) ─── */
-    body.app-visible .desktop-sidebar {
-      display: flex !important;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 240px;
-      background: #0A0A0B;
-      border-right: 0.5px solid rgba(255, 255, 255, 0.06);
-      flex-direction: column;
-      padding: 24px 16px;
-      z-index: 50;
+      padding-right: max(20px, calc(50% - 380px + 20px));
     }
-    .ds-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 12px 28px;
-    }
-    .ds-logo-icon {
-      width: 26px;
-      height: 26px;
-    }
-    .ds-logo-text {
-      font-size: 22px;
-      font-weight: 700;
-      color: #0A84FF;
-      letter-spacing: -0.5px;
-    }
-    .ds-nav {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .ds-nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 11px 12px;
-      border-radius: 10px;
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.75);
-      font-size: 14.5px;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      text-align: left;
-      transition: background 0.15s, color 0.15s;
-      letter-spacing: -0.2px;
-    }
-    .ds-nav-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-    .ds-nav-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-    }
-    .ds-nav-item.is-active {
-      background: #0A84FF;
-      color: #fff;
-    }
-    .ds-nav-item.is-active:hover {
-      background: #1E90FF;
-    }
-
-    /* Profil bas sidebar */
-    .ds-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 0.5px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-    }
-    .ds-profile-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #8B5CF6 0%, #5E5CE6 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .ds-profile-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .ds-profile-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      letter-spacing: -0.2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ds-profile-role {
-      font-size: 11.5px;
-      color: rgba(255, 255, 255, 0.5);
-      margin-top: 1px;
-    }
-    .ds-profile-chevron {
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.5);
-      cursor: pointer;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .ds-profile-chevron svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    /* ─── Topbar (cloche + menu en haut à droite) ─── */
-    body.app-visible .desktop-topbar {
-      display: flex !important;
-      position: fixed;
-      top: 24px;
-      right: 32px;
-      z-index: 51;
-      align-items: center;
-      gap: 8px;
-    }
-    .ds-topbar-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.06);
-      border: 0.5px solid rgba(255, 255, 255, 0.10);
-      color: rgba(255, 255, 255, 0.8);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s;
-      position: relative;
-    }
-    .ds-topbar-btn:hover {
-      background: rgba(255, 255, 255, 0.10);
-    }
-    .ds-topbar-btn svg {
-      width: 18px;
-      height: 18px;
-    }
-    .ds-topbar-bell-badge {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #0A84FF;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #0A0A0B;
-    }
-
-    /* ─── Layout principal : décaler le contenu à droite de la sidebar (seulement si connecté) ─── */
-    body.app-visible {
-      padding-left: 240px;
-    }
-    body.app-visible #page-accueil {
-      padding: 32px 40px 60px;
-      max-width: none;
-    }
-
-    /* Cacher la tabbar mobile */
-    .tabbar { display: none !important; }
-
-    /* Cacher le bouton "Vue Frizz+/Classique" */
-    .accueil-view-switch { display: none !important; }
-
-    /* Cacher la vue Peek Frizz+ et forcer la vue grille */
-    #healthCardsFrizzPlus { display: none !important; }
-    #healthCardsClassic {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      max-width: 1100px;
-    }
-
-    /* Header desktop : Bonjour + subtitle */
-    .accueil-header {
-      padding: 8px 0 28px;
-      align-items: flex-start;
-    }
-    .accueil-greeting-wrap {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0;
-    }
-    .accueil-greeting {
-      font-size: 30px;
-      letter-spacing: -0.6px;
-    }
-    .accueil-greeting-wave {
-      font-size: 30px;
-      margin-left: 8px;
-      display: inline-block;
-    }
-    /* Le greeting et la wave sur la même ligne, puis subtitle en dessous */
-    .accueil-greeting-wrap .accueil-greeting,
-    .accueil-greeting-wrap .accueil-greeting-wave {
-      display: inline-block;
-    }
-    .accueil-subtitle {
-      display: block;
-    }
-
-    /* Cartes : agrandir pour desktop */
-    .health-card {
-      padding: 22px 24px;
-      border-radius: 24px;
-      min-height: 200px;
-    }
-    .health-card-title {
-      font-size: 19px;
-    }
-    .health-card-value {
-      font-size: 56px;
-    }
-    .health-card-icon-wrap {
-      width: 38px;
-      height: 38px;
-    }
-    .health-card-icon-wrap svg.health-card-icon {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* Le rond bleu central + les boutons (header mobile) cachés sur desktop */
-    .top-header-glass { display: none !important; }
-  }
-
-  /* Encore plus grand sur ≥1280px */
-  @media (min-width: 1280px) {
-    #page-accueil {
-      padding: 40px 56px 60px;
-    }
-    #healthCardsClassic {
-      max-width: 1300px;
-      gap: 28px;
+    .modal-popup {
+      max-width: 760px;
     }
   }
 
@@ -8402,68 +8071,6 @@
 </head>
 <body>
 
-<!-- ═══ DESKTOP SIDEBAR (visible uniquement ≥1024px) ═══ -->
-<aside class="desktop-sidebar" id="desktopSidebar" aria-hidden="true">
-  <div class="ds-logo-wrap">
-    <svg class="ds-logo-icon" viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="2.5" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
-      <line x1="4" y1="12" x2="4" y2="12"/>
-      <line x1="8" y1="9" x2="8" y2="15"/>
-      <line x1="12" y1="6" x2="12" y2="18"/>
-      <line x1="16" y1="9" x2="16" y2="15"/>
-      <line x1="20" y1="11" x2="20" y2="13"/>
-    </svg>
-    <span class="ds-logo-text">Frizz</span>
-  </div>
-
-  <nav class="ds-nav">
-    <button class="ds-nav-item is-active" data-ds-nav="accueil" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Accueil</span>
-    </button>
-    <button class="ds-nav-item" data-ds-nav="calendrier" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span>Calendrier</span>
-    </button>
-    <button class="ds-nav-item" data-ds-nav="notifications" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <span>Notifications</span>
-    </button>
-    <button class="ds-nav-item" data-ds-nav="statistiques" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span>Statistiques</span>
-    </button>
-    <button class="ds-nav-item" data-ds-nav="monresto" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Mon restaurant</span>
-    </button>
-    <button class="ds-nav-item" data-ds-nav="settings" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span>Paramètres</span>
-    </button>
-  </nav>
-
-  <div class="ds-profile">
-    <div class="ds-profile-avatar" id="dsProfileAvatar">F</div>
-    <div class="ds-profile-info">
-      <div class="ds-profile-name" id="dsProfileName">Frizz Studio</div>
-      <div class="ds-profile-role">Admin</div>
-    </div>
-    <button class="ds-profile-chevron" type="button" aria-label="Profil">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-  </div>
-</aside>
-
-<!-- ═══ DESKTOP TOPBAR (cloche + menu, visible uniquement ≥1024px) ═══ -->
-<div class="desktop-topbar" id="desktopTopbar" aria-hidden="true">
-  <button class="ds-topbar-btn" id="dsTopbarBell" type="button" aria-label="Notifications">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-    <span class="ds-topbar-bell-badge" id="dsTopbarBellBadge" style="display:none;">0</span>
-  </button>
-  <button class="ds-topbar-btn" id="dsTopbarMenu" type="button" aria-label="Menu">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
-  </button>
-</div>
 
 <!-- SVG global defs : gradient pour le ring de conversion -->
 <svg width="0" height="0" style="position:absolute;" aria-hidden="true">
@@ -8491,8 +8098,8 @@
 <div class="app hidden" id="app">
   <div class="topbar">
     <svg class="logo" width="110" height="30" viewBox="0 0 290 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-      <!-- Waveform : 7 barres verticales arrondies, blanches -->
-      <g fill="#fff">
+      <!-- Waveform : 7 barres verticales arrondies, bleu Frizz -->
+      <g fill="#0A84FF">
         <rect x="0" y="34" width="7" height="12" rx="3.5"/>
         <rect x="14" y="26" width="7" height="28" rx="3.5"/>
         <rect x="28" y="14" width="7" height="52" rx="3.5"/>
@@ -8501,8 +8108,8 @@
         <rect x="70" y="26" width="7" height="28" rx="3.5"/>
         <rect x="84" y="34" width="7" height="12" rx="3.5"/>
       </g>
-      <!-- Texte Frizz : font rounded, blanc -->
-      <text x="105" y="59" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Inter', sans-serif" font-weight="700" font-size="60" fill="#fff" letter-spacing="-2.5">Frizz</text>
+      <!-- Texte Frizz : font rounded, bleu Frizz -->
+      <text x="105" y="59" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Inter', sans-serif" font-weight="700" font-size="60" fill="#0A84FF" letter-spacing="-2.5">Frizz</text>
     </svg>
     <!-- Bouton cloche supprimé (remplacé par le bottom sheet Activités). Stubs cachés pour JS. -->
     <button id="bellBtn" hidden aria-hidden="true" style="display:none !important; visibility:hidden !important; position:absolute; left:-9999px;"></button>
@@ -8522,7 +8129,6 @@
       <div class="accueil-header">
         <div class="accueil-greeting-wrap">
           <span class="accueil-greeting" id="accueilGreeting">Bonjour</span><span class="accueil-greeting-wave" id="accueilGreetingWave">👋</span>
-          <div class="accueil-subtitle" id="accueilSubtitle">Voici ce qui se passe aujourd'hui.</div>
         </div>
         <button class="accueil-view-switch" id="accueilViewSwitch" type="button">
           <span id="accueilViewSwitchLabel">Vue Frizz+</span>
@@ -10114,7 +9720,6 @@
     hide('app');
     hide('tabbar');
     show('notConnectedScreen');
-    document.body.classList.remove('app-visible');
   }
 
   function showApp() {
@@ -10122,7 +9727,6 @@
     hide('notConnectedScreen');
     show('app');
     show('tabbar');
-    document.body.classList.add('app-visible');
   }
 
   async function loadAppData() {
@@ -15139,19 +14743,6 @@
     // Ouvrir
     backdrop.classList.add('visible');
     popup.classList.add('visible');
-    // === THEME COULEUR : appliquer la couleur de la carte d'origine ===
-    // Retirer les anciennes classes theme
-    popup.classList.remove('theme-calendrier', 'theme-notification', 'theme-statistique', 'theme-monresto');
-    // Mapper le type → classe theme
-    const themeMap = {
-      'reservations': 'theme-calendrier',    // carte Calendrier (Apple TV+ noir)
-      'activites': 'theme-notification',     // carte Notification (Apple Music rose)
-      'statistique': 'theme-statistique',    // carte Statistique (Apple Arcade bleu/violet)
-      'mon-restaurant': 'theme-monresto'     // carte Mon restaurant (Apple Fitness+ vert/bleu)
-    };
-    if (themeMap[type]) {
-      popup.classList.add(themeMap[type]);
-    }
     document.body.style.overflow = 'hidden';
   }
 
@@ -16268,84 +15859,6 @@
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && currentSalon) loadAppData();
   });
-
-  // ═══════════════════════════════════════════════════════
-  // ═══ DESKTOP SIDEBAR — Navigation pour écrans ≥1024px ═══
-  // ═══════════════════════════════════════════════════════
-  (function setupDesktopSidebar() {
-    const sidebar = document.getElementById('desktopSidebar');
-    if (!sidebar) return;
-
-    // Routes : data-ds-nav="key" → action
-    const routes = {
-      'accueil': () => {
-        if (typeof switchPage === 'function') switchPage('accueil');
-      },
-      'calendrier': () => {
-        if (typeof openPopup === 'function') openPopup('reservations');
-      },
-      'notifications': () => {
-        if (typeof openPopup === 'function') openPopup('activites');
-      },
-      'statistiques': () => {
-        if (typeof openPopup === 'function') openPopup('statistique');
-      },
-      'monresto': () => {
-        if (typeof openPopup === 'function') openPopup('mon-restaurant');
-      },
-      'settings': () => {
-        if (typeof switchPage === 'function') switchPage('settings');
-      }
-    };
-
-    document.querySelectorAll('.ds-nav-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const key = btn.dataset.dsNav;
-        if (!key) return;
-        // UI : marquer actif
-        document.querySelectorAll('.ds-nav-item').forEach(b => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-        // Action
-        const fn = routes[key];
-        if (fn) fn();
-      });
-    });
-
-    // Cloche topbar = ouvrir Notifications
-    const bell = document.getElementById('dsTopbarBell');
-    if (bell) {
-      bell.addEventListener('click', () => {
-        if (typeof openPopup === 'function') openPopup('activites');
-      });
-    }
-
-    // Menu topbar = ouvrir Paramètres
-    const menu = document.getElementById('dsTopbarMenu');
-    if (menu) {
-      menu.addEventListener('click', () => {
-        if (typeof switchPage === 'function') switchPage('settings');
-      });
-    }
-
-    // Update du nom de profil sidebar quand currentSalon arrive
-    function updateProfile() {
-      try {
-        const nameEl = document.getElementById('dsProfileName');
-        const avatarEl = document.getElementById('dsProfileAvatar');
-        if (nameEl && typeof currentSalon !== 'undefined' && currentSalon) {
-          const name = currentSalon.nom || 'Frizz Studio';
-          nameEl.textContent = name;
-          if (avatarEl) {
-            avatarEl.textContent = (name.charAt(0) || 'F').toUpperCase();
-          }
-        }
-      } catch (e) {}
-    }
-    // Update régulier (le currentSalon arrive en async)
-    setTimeout(updateProfile, 500);
-    setTimeout(updateProfile, 1500);
-    setTimeout(updateProfile, 3000);
-  })();
 </script>
 
 </body>

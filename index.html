@@ -497,25 +497,16 @@
     height: 20px;
     color: #000000;
   }
-  /* Calendrier : cercle bleu Apple Maps + icône noire */
-  .health-card--blue .health-card-icon-wrap {
-    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
-  }
-  .health-card--blue .health-card-icon { color: #000000; }
-  /* Notification : cercle rouge Apple iOS + icône noire */
-  .health-card--orange .health-card-icon-wrap {
-    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
-  }
-  .health-card--orange .health-card-icon { color: #000000; }
-  /* Statistique : cercle violet Apple Arcade + icône noire */
-  .health-card--gold .health-card-icon-wrap {
-    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
-  }
-  .health-card--gold .health-card-icon { color: #000000; }
-  /* Mon restaurant : cercle vert Apple Fitness+ + icône noire */
+  /* Toutes les cartes : cercle blanc + icône noire */
+  .health-card--blue .health-card-icon-wrap,
+  .health-card--orange .health-card-icon-wrap,
+  .health-card--gold .health-card-icon-wrap,
   .health-card--black .health-card-icon-wrap {
-    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
+    background: #ffffff;
   }
+  .health-card--blue .health-card-icon,
+  .health-card--orange .health-card-icon,
+  .health-card--gold .health-card-icon,
   .health-card--black .health-card-icon { color: #000000; }
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
@@ -719,20 +710,53 @@
     letter-spacing: 0.2px;
   }
 
-  /* ═══ Sparkline (mini-courbe) carte Calendrier ═══ */
-  .health-card-chart--cal-spark {
-    width: 80px;
-    height: 44px;
+  /* ═══ Mini-tableau calendrier carte Calendrier ═══ */
+  .health-card-chart--cal-table {
+    width: 88px;
+    height: 56px;
     display: flex !important;
-    align-items: flex-end !important;
+    align-items: center !important;
     justify-content: flex-end !important;
     align-self: flex-end;
     padding: 0;
   }
-  .health-card-chart--cal-spark svg {
-    width: 100%;
-    height: 100%;
-    display: block;
+  .cal-table {
+    width: 88px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 0.5px solid rgba(10, 132, 255, 0.30);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .cal-table-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #0A84FF;
+    padding: 2px 0;
+  }
+  .cal-table-header span {
+    font-size: 7px;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1;
+    letter-spacing: 0.2px;
+  }
+  .cal-table-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    padding: 3px 2px;
+  }
+  .cal-table-cell {
+    aspect-ratio: 1;
+    background: rgba(10, 132, 255, 0.18);
+    border-radius: 1.5px;
+    min-height: 7px;
+  }
+  .cal-table-cell.is-today {
+    background: #0A84FF;
   }
 
   /* ═══ Icône iOS Calendrier : grosse date avec mois (ANCIEN, gardé en backup) ═══ */
@@ -8039,21 +8063,22 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilResasValue">0</span></div>
-            <div class="health-card-chart health-card-chart--cal-spark" id="accueilResasChart" aria-hidden="true">
-              <!-- Sparkline 7 jours façon Apple Health/Stocks + dot "aujourd'hui" -->
-              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
-                <!-- Ligne de fond (axe) -->
-                <line x1="4" y1="40" x2="76" y2="40" stroke="rgba(10,132,255,0.25)" stroke-width="1" stroke-linecap="round"/>
-                <!-- Courbe sparkline -->
-                <path d="M 5,32 L 17,28 L 29,18 L 41,22 L 53,12 L 65,16 L 75,8"
-                      fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Aire sous la courbe (léger gradient bleu transparent) -->
-                <path d="M 5,32 L 17,28 L 29,18 L 41,22 L 53,12 L 65,16 L 75,8 L 75,40 L 5,40 Z"
-                      fill="rgba(10,132,255,0.18)"/>
-                <!-- Dot final "aujourd'hui" -->
-                <circle cx="75" cy="8" r="3.5" fill="#0A84FF"/>
-                <circle cx="75" cy="8" r="2" fill="#1C1C1E"/>
-              </svg>
+            <div class="health-card-chart health-card-chart--cal-table" id="accueilResasChart" aria-hidden="true">
+              <!-- Mini-tableau calendrier (style page d'agenda iOS) -->
+              <div class="cal-table">
+                <div class="cal-table-header">
+                  <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                </div>
+                <div class="cal-table-grid">
+                  <span class="cal-table-cell"></span>
+                  <span class="cal-table-cell"></span>
+                  <span class="cal-table-cell is-today"></span>
+                  <span class="cal-table-cell"></span>
+                  <span class="cal-table-cell"></span>
+                  <span class="cal-table-cell"></span>
+                  <span class="cal-table-cell"></span>
+                </div>
+              </div>
             </div>
           </div>
         </button>

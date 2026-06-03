@@ -411,7 +411,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: calc(env(safe-area-inset-top, 0px) + 57px) 20px 100px;
+    padding: calc(env(safe-area-inset-top, 0px) + 57px) 20px 50px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -451,7 +451,7 @@
   /* Apple TV+ (noir mat) — Calendrier */
   .health-card--blue {
     background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
-    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .health-card--yellow {
     background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
@@ -577,38 +577,39 @@
   .health-card-chart .bar:last-child {
     background: rgba(255, 255, 255, 0.95);
   }
-  /* Variant "agenda" : 3 lignes (dot + barre) façon créneau de résa */
+  /* Variant "agenda" : 3 lignes (dot + barre) façon créneau de résa, format compact dans le coin */
   .health-card-chart--agenda {
-    width: 130px;
+    width: 80px;
     height: 50px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: stretch;
-    gap: 6px;
+    align-self: flex-end;
+    gap: 4px;
     padding: 0;
   }
   .acc-agenda-line {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   .acc-agenda-dot {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
     flex-shrink: 0;
   }
   .acc-agenda-bar {
-    height: 6px;
-    border-radius: 3px;
+    height: 4px;
+    border-radius: 2px;
     background: rgba(255, 255, 255, 0.55);
   }
-  .acc-agenda-bar--short  { width: 42px; background: rgba(255, 255, 255, 0.45); }
-  .acc-agenda-bar--medium { width: 65px; background: rgba(255, 255, 255, 0.65); }
-  .acc-agenda-bar--long   { width: 78px; background: rgba(255, 255, 255, 0.85); }
+  .acc-agenda-bar--short  { width: 30px; background: rgba(255, 255, 255, 0.45); }
+  .acc-agenda-bar--medium { width: 45px; background: rgba(255, 255, 255, 0.65); }
+  .acc-agenda-bar--long   { width: 58px; background: rgba(255, 255, 255, 0.85); }
 
   /* Variant "monresto" : 4 mini-tiles 2x2 façon launchpad */
   .monresto-completion {
@@ -8532,7 +8533,7 @@
       <!-- Vide -->
       <div class="service-empty" id="serviceEmpty" style="display:none;">
         <div class="service-empty-title">Aucune table</div>
-        <div class="service-empty-sub">Ajoutez des tables dans Réglages → Mes tables.</div>
+        <div class="service-empty-sub">Ajoutez des tables dans Mon restaurant → Mes tables.</div>
       </div>
 
       <!-- Stubs cachés pour ne pas casser l'ancien JS qui set ces IDs -->
@@ -10476,7 +10477,7 @@
       return;
     }
     if (!allTables.length) {
-      counterEl.textContent = 'Aucune table définie (Réglages → Mes tables)';
+      counterEl.textContent = 'Aucune table définie (Mon restaurant → Mes tables)';
       checklistEl.innerHTML = '';
       return;
     }

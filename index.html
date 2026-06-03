@@ -14276,39 +14276,16 @@
 
       // ═══ Animation typewriter pour "Bonjour, [prénom]" ═══
       function typewriterGreeting(text) {
+        // Note : ancienne animation typewriter remplacée par affichage direct
         const el = document.getElementById('accueilGreeting');
         const wave = document.getElementById('accueilGreetingWave');
         if (!el) return;
-        // Reset wave
-        if (wave) wave.style.display = 'none';
-        el.innerHTML = '';
-        const caret = document.createElement('span');
-        caret.className = 'typewriter-caret';
-        let i = 0;
-        const speed = 55; // ms par lettre
-        function type() {
-          if (i < text.length) {
-            const txt = text.slice(0, i + 1);
-            el.textContent = txt;
-            el.appendChild(caret);
-            i++;
-            setTimeout(type, speed);
-          } else {
-            // Retirer le caret et afficher l'icône 👋 qui salue
-            setTimeout(() => {
-              try { caret.remove(); } catch (e) {}
-              if (wave) {
-                wave.style.display = 'inline-block';
-                // Forcer le redémarrage de l'animation
-                wave.style.animation = 'none';
-                void wave.offsetWidth;
-                wave.style.animation = '';
-              }
-            }, 200);
-          }
+        // Afficher le texte directement
+        el.textContent = text;
+        // Afficher immédiatement l'icône 👋 (avec son animation wave en boucle)
+        if (wave) {
+          wave.style.display = 'inline-block';
         }
-        // Démarrer après un léger délai
-        setTimeout(type, 200);
       }
       // Calculer le prénom depuis currentSalon.prenom_proprietaire ou défaut
       function getOwnerFirstName() {

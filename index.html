@@ -476,19 +476,6 @@
             mask-composite: exclude;
     pointer-events: none;
   }
-  .health-card--yellow {
-    background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
-  }
-  .health-card--pink {
-    background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
-  }
-  .health-card--purple {
-    background: linear-gradient(160deg, #C088FF 0%, #8B5CF6 55%, #5B21B6 100%);
-  }
-  /* Gris iOS (4ème carte Tables) — systemGray sombre */
-  .health-card--glass {
-    background: linear-gradient(160deg, #6E6E73 0%, #48484A 60%, #2C2C2E 100%);
-  }
   /* Top de la carte */
   .health-card-top {
     display: flex;
@@ -500,7 +487,6 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.96);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -509,24 +495,33 @@
   .health-card-icon {
     width: 20px;
     height: 20px;
+    color: #000000;
   }
+  /* Calendrier : cercle bleu Apple Maps + icône noire */
+  .health-card--blue .health-card-icon-wrap {
+    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
+  }
+  .health-card--blue .health-card-icon { color: #000000; }
+  /* Notification : cercle rouge Apple iOS + icône noire */
+  .health-card--orange .health-card-icon-wrap {
+    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
+  }
+  .health-card--orange .health-card-icon { color: #000000; }
+  /* Statistique : cercle violet Apple Arcade + icône noire */
+  .health-card--gold .health-card-icon-wrap {
+    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
+  }
+  .health-card--gold .health-card-icon { color: #000000; }
+  /* Mon restaurant : cercle vert Apple Fitness+ + icône noire */
+  .health-card--black .health-card-icon-wrap {
+    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
+  }
+  .health-card--black .health-card-icon { color: #000000; }
+  /* Autres variantes (peu utilisées) */
+  .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
-  /* Calendrier = Apple TV+ (noir, icône blanche) */
-  .health-card--blue .health-card-icon { color: #fff; }
-  .health-card--blue .health-card-icon-wrap { background: rgba(255, 255, 255, 0.12); }
-  .health-card--yellow .health-card-icon { color: #FF9F0A; }
-  .health-card--pink .health-card-icon { color: #FF375F; }
-  /* Notification = Apple Music (rose/rouge) */
-  .health-card--orange .health-card-icon { color: #C50018; }
-  /* Statistique = Apple Arcade (violet) */
-  .health-card--gold .health-card-icon { color: #5E5CE6; }
-  .health-card--gold .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
-  /* Mon restaurant = Apple Fitness+ (vert) */
-  .health-card--black .health-card-icon { color: #30D158; }
-  .health-card--black .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
-  .health-card--purple .health-card-icon { color: #8B5CF6; }
-  .health-card--glass .health-card-icon { color: #48484A; }
   .health-card--glass .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
+  .health-card--glass .health-card-icon { color: #48484A; }
   .health-card-title {
     font-size: 17px;
     font-weight: 700;
@@ -1818,417 +1813,6 @@
     font-weight: 500;
   }
 
-  /* ═══ HEADER ACCUEIL (Bonjour + sélecteur de vue) ═══ */
-  .accueil-header {
-    padding: 12px 0 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .accueil-greeting-wrap {
-    display: none !important;
-  }
-  .accueil-greeting {
-    font-size: 19px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.3px;
-    line-height: 1.2;
-    min-height: 22px;
-  }
-  .accueil-greeting .typewriter-caret {
-    display: inline-block;
-    width: 2px;
-    height: 16px;
-    background: #0A84FF;
-    margin-left: 2px;
-    vertical-align: text-bottom;
-    animation: typewriterBlink 0.7s infinite;
-  }
-  @keyframes typewriterBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
-  }
-  /* Wave hello animation (l'icône 👋 qui salue) — UNIQUEMENT à l'ouverture de la page */
-  .accueil-greeting-wave {
-    display: inline-block;
-    font-size: 19px;
-    line-height: 1;
-    transform-origin: 70% 70%;
-  }
-  /* Animation jouée seulement quand la classe is-animating est appliquée (au load de la page) */
-  .accueil-greeting-wave.is-animating {
-    animation: waveHello 2.5s ease-in-out;
-  }
-  @keyframes waveHello {
-    0%, 60%, 100% { transform: rotate(0deg); }
-    10% { transform: rotate(14deg); }
-    20% { transform: rotate(-8deg); }
-    30% { transform: rotate(14deg); }
-    40% { transform: rotate(-4deg); }
-    50% { transform: rotate(10deg); }
-  }
-  .accueil-view-switch {
-    display: none !important;
-  }
-
-  /* ═══ VUE FRIZZ+ — Peek stack (DÉSACTIVÉE via display:none) ═══ */
-  .health-cards-frizzplus {
-    display: none !important;
-    /* Anciennes propriétés gardées pour cohérence du code */
-    position: relative;
-    padding: 0;
-    height: 380px;
-    margin-bottom: 24px;
-    /* En état "expanded" : on augmente la hauteur pour contenir les 4 cartes en pleine taille */
-    transition: height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1);
-  }
-  /* Forcer la vue classique à être toujours visible */
-  #healthCardsClassic {
-    display: flex !important;
-  }
-  .health-cards-frizzplus.is-expanded {
-    height: 580px;
-  }
-  .fzp-peek {
-    position: absolute;
-    height: 48px;
-    border-radius: 22px 22px 0 0;
-    padding: 12px 18px;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.20);
-    overflow: hidden;
-    transition:
-      top 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      left 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      right 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      border-radius 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      transform 0.15s;
-  }
-  .fzp-peek:active { transform: scale(0.99); }
-
-  /* Positions par défaut (collapsed - peek stack) */
-  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-1 { top: 0;  left: 30px; right: 30px; height: 48px; border-radius: 22px 22px 0 0; }
-  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-2 { top: 38px; left: 20px; right: 20px; height: 48px; border-radius: 22px 22px 0 0; }
-  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-3 { top: 76px; left: 10px; right: 10px; height: 48px; border-radius: 22px 22px 0 0; }
-
-  /* Positions en état expanded (B3 pop expand : toutes les peek deviennent des cartes pleines) */
-  .health-cards-frizzplus.is-expanded .fzp-peek-1 { top: 0;   left: 0; right: 0; height: 110px; border-radius: 22px; }
-  .health-cards-frizzplus.is-expanded .fzp-peek-2 { top: 122px; left: 0; right: 0; height: 110px; border-radius: 22px; }
-  .health-cards-frizzplus.is-expanded .fzp-peek-3 { top: 244px; left: 0; right: 0; height: 110px; border-radius: 22px; }
-
-  /* Pop : léger overshoot (scale > 1) au moment du clic switch */
-  @keyframes fzpPop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.04); }
-    100% { transform: scale(1); }
-  }
-  .health-cards-frizzplus.is-expanded .fzp-peek {
-    animation: fzpPop 0.5s ease-out;
-  }
-
-  /* Peek 1 = Calendrier = Apple TV+ (noir mat) */
-  .fzp-peek--blue {
-    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
-  }
-  /* Peek 2 = Notification = Apple Music (rose/rouge) */
-  .fzp-peek--steel {
-    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
-  }
-  /* Peek 3 = Statistique = Apple Arcade (bleu/violet) */
-  .fzp-peek--graphite {
-    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
-  }
-  .fzp-peek-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  /* En mode expanded : afficher la valeur grande à droite */
-  .fzp-peek-expanded-value {
-    display: none;
-    font-size: 32px;
-    font-weight: 500;
-    color: #fff;
-    line-height: 1;
-    letter-spacing: -1px;
-    font-variant-numeric: tabular-nums;
-    margin-top: 14px;
-    margin-left: 30px;
-    opacity: 0;
-    transition: opacity 0.25s ease-out 0.2s;
-  }
-  .health-cards-frizzplus.is-expanded .fzp-peek-expanded-value {
-    display: block;
-    opacity: 1;
-  }
-  .fzp-peek-icon {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.96);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .fzp-peek-icon svg {
-    width: 12px;
-    height: 12px;
-    color: #1E64FF;
-  }
-  .fzp-peek--blue .fzp-peek-icon { background: rgba(255, 255, 255, 0.12); }
-  .fzp-peek--blue .fzp-peek-icon svg { color: #fff; }
-  .fzp-peek--steel .fzp-peek-icon svg { color: #C50018; }
-  .fzp-peek--graphite .fzp-peek-icon svg { color: #5E5CE6; }
-  .fzp-peek-title {
-    font-size: 12px;
-    color: #fff;
-    font-weight: 500;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .fzp-peek-chev {
-    width: 12px;
-    height: 12px;
-    color: rgba(255, 255, 255, 0.85);
-    flex-shrink: 0;
-  }
-
-  .fzp-hero {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
-    border: 0.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 22px;
-    padding: 22px 20px;
-    cursor: pointer;
-    text-align: left;
-    color: #fff;
-    -webkit-tap-highlight-color: transparent;
-    transition:
-      top 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
-      transform 0.15s;
-    overflow: hidden;
-  }
-  .fzp-hero:active { transform: scale(0.995); }
-  /* Position défaut (collapsed) */
-  .health-cards-frizzplus:not(.is-expanded) .fzp-hero { top: 114px; height: 266px; }
-  /* Position expanded : Mon restaurant descend en bas */
-  .health-cards-frizzplus.is-expanded .fzp-hero { top: 366px; height: 200px; }
-  .fzp-hero-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .fzp-hero-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .fzp-hero-icon svg {
-    width: 16px;
-    height: 16px;
-    color: #fff;
-  }
-  .fzp-hero-title {
-    font-size: 15px;
-    color: #fff;
-    font-weight: 500;
-    flex: 1;
-  }
-  .fzp-hero-cta {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.55);
-  }
-  .fzp-hero-body {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    margin-top: 22px;
-  }
-  .fzp-hero-pct {
-    font-size: 72px;
-    font-weight: 500;
-    color: #fff;
-    line-height: 1;
-    letter-spacing: -2px;
-    font-variant-numeric: tabular-nums;
-  }
-  .fzp-hero-right {
-    text-align: right;
-  }
-  .fzp-hero-label {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
-  }
-  .fzp-hero-dots {
-    display: flex;
-    gap: 3px;
-    margin-top: 6px;
-    justify-content: flex-end;
-  }
-  .fzp-hero-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.20);
-  }
-  .fzp-hero-dot.is-done {
-    background: #fff;
-  }
-  .fzp-hero-track {
-    margin-top: 18px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.10);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .fzp-hero-fill {
-    height: 100%;
-    background: #fff;
-    border-radius: 2px;
-    transition: width 0.8s cubic-bezier(0.34, 1.20, 0.64, 1);
-  }
-
-  /* ═══ VIEW PICKER BOTTOM SHEET ═══ */
-  .view-picker-sheet {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    pointer-events: none;
-  }
-  .view-picker-sheet.visible {
-    pointer-events: auto;
-  }
-  .view-picker-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
-  .view-picker-sheet.visible .view-picker-backdrop { opacity: 1; }
-  .view-picker-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(28, 28, 30, 0.96);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border-top-left-radius: 22px;
-    border-top-right-radius: 22px;
-    padding: 8px 14px max(16px, env(safe-area-inset-bottom));
-    transform: translateY(100%);
-    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .view-picker-sheet.visible .view-picker-content { transform: translateY(0); }
-  .view-picker-handle {
-    width: 36px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.20);
-    margin: 8px auto 14px;
-  }
-  .view-picker-title {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.55);
-    text-align: center;
-    margin-bottom: 12px;
-    font-weight: 500;
-  }
-  .view-picker-option {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 0.5px solid rgba(255, 255, 255, 0.10);
-    border-radius: 14px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #fff;
-    font-family: inherit;
-    cursor: pointer;
-    text-align: left;
-    margin-bottom: 8px;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s;
-  }
-  .view-picker-option:active { background: rgba(255, 255, 255, 0.08); }
-  .view-picker-option.is-active {
-    background: rgba(10, 132, 255, 0.12);
-    border-color: rgba(10, 132, 255, 0.4);
-  }
-  .view-picker-option-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .view-picker-option-icon svg {
-    width: 18px;
-    height: 18px;
-    color: #fff;
-  }
-  .view-picker-option-body {
-    flex: 1;
-    min-width: 0;
-  }
-  .view-picker-option-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
-  }
-  .view-picker-option-sub {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 2px;
-  }
-  .view-picker-option-check {
-    width: 18px;
-    height: 18px;
-    color: #0A84FF;
-    opacity: 0;
-    transition: opacity 0.15s;
-    flex-shrink: 0;
-  }
-  .view-picker-option.is-active .view-picker-option-check { opacity: 1; }
-  .view-picker-cancel {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.06);
-    border: none;
-    border-radius: 14px;
-    padding: 14px;
-    color: #0A84FF;
-    font-size: 15px;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    margin-top: 8px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .view-picker-cancel:active { background: rgba(255, 255, 255, 0.10); }
 
   /* ═══ POPUP MON RESTAURANT (4 tuiles) ═══ */
   /* Sections settings accessibles uniquement via Mon restaurant */
@@ -4358,6 +3942,27 @@
   .tab-round--secondary svg {
     width: 20px;
     height: 20px;
+  }
+  /* Variante avec label texte (forme pilule) */
+  .tab-round--with-label {
+    width: auto;
+    min-width: 50px;
+    height: 44px;
+    border-radius: 22px;
+    padding: 0 14px 0 12px;
+    gap: 6px;
+  }
+  .tab-round--with-label svg {
+    width: 20px;
+    height: 20px;
+  }
+  .tab-round-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    line-height: 1;
   }
   /* Bouton primaire central : bleu iOS */
   .tab-round--primary {
@@ -8416,71 +8021,6 @@
       <span id="accueilFirstName" hidden style="display:none;">—</span>
       <span id="accueilAvatarBtn" hidden style="display:none;"></span>
 
-      <!-- ═══ Bonjour [prénom] + sélecteur de vue ═══ -->
-      <div class="accueil-header">
-        <div class="accueil-greeting-wrap">
-          <span class="accueil-greeting" id="accueilGreeting">Bonjour</span><span class="accueil-greeting-wave" id="accueilGreetingWave">👋</span>
-        </div>
-        <button class="accueil-view-switch" id="accueilViewSwitch" type="button">
-          <span id="accueilViewSwitchLabel">Vue Frizz+</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-
-      <!-- ═══ VUE FRIZZ+ (S3 Peek stack) — défaut ═══ -->
-      <div class="health-cards-frizzplus" id="healthCardsFrizzPlus">
-        <!-- Les 3 mini-cartes peek en haut (header seulement) -->
-        <button class="fzp-peek fzp-peek-1 fzp-peek--blue" data-popup="reservations" type="button">
-          <div class="fzp-peek-row">
-            <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
-            <div class="fzp-peek-title">Calendrier · <span id="fzpPeekResas">0</span></div>
-            <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="fzp-peek-expanded-value" id="fzpPeekResasExp">0 résas</div>
-        </button>
-        <button class="fzp-peek fzp-peek-2 fzp-peek--steel" data-popup="activites" type="button">
-          <div class="fzp-peek-row">
-            <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-            <div class="fzp-peek-title">Notification · <span id="fzpPeekNotif">0</span></div>
-            <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="fzp-peek-expanded-value" id="fzpPeekNotifExp">0 à traiter</div>
-        </button>
-        <button class="fzp-peek fzp-peek-3 fzp-peek--graphite" data-popup="statistique" type="button">
-          <div class="fzp-peek-row">
-            <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
-            <div class="fzp-peek-title">Statistique · <span id="fzpPeekStat">—</span></div>
-            <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="fzp-peek-expanded-value" id="fzpPeekStatExp">vs M-1</div>
-        </button>
-
-        <!-- Carte HERO Mon restaurant en focus -->
-        <button class="fzp-hero" data-popup="mon-restaurant" type="button">
-          <div class="fzp-hero-top">
-            <div class="fzp-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-            <div class="fzp-hero-title">Mon restaurant</div>
-            <span class="fzp-hero-cta">gérer ›</span>
-          </div>
-          <div class="fzp-hero-body">
-            <div class="fzp-hero-pct" id="fzpHeroPct">0%</div>
-            <div class="fzp-hero-right">
-              <div class="fzp-hero-label">complété</div>
-              <div class="fzp-hero-dots" id="fzpHeroDots" aria-hidden="true">
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-                <span class="fzp-hero-dot"></span>
-              </div>
-            </div>
-          </div>
-          <div class="fzp-hero-track"><div class="fzp-hero-fill" id="fzpHeroFill" style="width:0%;"></div></div>
-        </button>
-      </div>
-
       <!-- Cartes empilées style Apple Health -->
       <div class="health-cards" id="healthCardsClassic" style="display:flex;">
         <!-- 1) Carte Calendrier (bleu) -->
@@ -9683,11 +9223,12 @@
 
 <nav class="tabbar" id="tabbar">
   <!-- Bouton gauche : Accueil (maison) -->
-  <button class="tab-round tab-round--secondary" id="tabHomeBtn" data-page="accueil" aria-label="Accueil">
+  <button class="tab-round tab-round--secondary tab-round--with-label" id="tabHomeBtn" data-page="accueil" aria-label="Accueil">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
+    <span class="tab-round-label">Accueil</span>
   </button>
   <!-- Bouton centre : + Nouvelle résa (gros, bleu) -->
   <button class="tab-round tab-round--primary" id="tabAddBtn" aria-label="Nouvelle réservation">
@@ -9697,11 +9238,12 @@
     </svg>
   </button>
   <!-- Bouton droit : Réglages (engrenage) -->
-  <button class="tab-round tab-round--secondary" id="tabSettingsBtn" data-page="settings" aria-label="Réglages">
+  <button class="tab-round tab-round--secondary tab-round--with-label" id="tabSettingsBtn" data-page="settings" aria-label="Réglages">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
+    <span class="tab-round-label">Réglages</span>
   </button>
 
   <!-- Stubs cachés pour ne pas casser le JS existant -->
@@ -11199,10 +10741,6 @@
         animEl.classList.remove('accueil-page-enter');
         void animEl.offsetWidth;
         animEl.classList.add('accueil-page-enter');
-      }
-      // Re-jouer l'animation typewriter du Bonjour
-      if (typeof window.__animateGreeting === 'function') {
-        setTimeout(window.__animateGreeting, 100);
       }
     }
     // Render le contenu si Notifications (rafraîchit la liste + animation)
@@ -14556,246 +14094,13 @@
           const pct = total > 0 ? Math.round((done / total) * 100) : 0;
           const pctEl = document.getElementById('accueilRestaurantPct');
           if (pctEl) pctEl.textContent = pct + '%';
-          // === MAJ aussi la vue Frizz+ (peek hero) ===
-          const fzpPct = document.getElementById('fzpHeroPct');
-          if (fzpPct) fzpPct.textContent = pct + '%';
-          const fzpFill = document.getElementById('fzpHeroFill');
-          if (fzpFill) fzpFill.style.width = pct + '%';
-          // Dots (sur 7)
-          const fzpDots = document.querySelectorAll('#fzpHeroDots .fzp-hero-dot');
-          fzpDots.forEach((dot, i) => {
-            dot.classList.toggle('is-done', i < done);
-          });
         } catch (e) { console.warn('Complétion mon resto:', e); }
-
-        // === MAJ valeurs Frizz+ peek cards (collapsed + expanded) ===
-        try {
-          // Calendrier
-          const elPeekResas = document.getElementById('fzpPeekResas');
-          const elPeekResasExp = document.getElementById('fzpPeekResasExp');
-          const vResas = document.getElementById('accueilResasValue');
-          const resasNb = vResas ? vResas.textContent : '0';
-          if (elPeekResas) elPeekResas.textContent = resasNb;
-          if (elPeekResasExp) elPeekResasExp.textContent = `${resasNb} résa${parseInt(resasNb) > 1 ? 's' : ''}`;
-          // Notification
-          const elPeekNotif = document.getElementById('fzpPeekNotif');
-          const elPeekNotifExp = document.getElementById('fzpPeekNotifExp');
-          const vNotif = document.getElementById('accueilActivitesValue');
-          const notifNb = vNotif ? vNotif.textContent : '0';
-          if (elPeekNotif) elPeekNotif.textContent = notifNb;
-          if (elPeekNotifExp) elPeekNotifExp.textContent = `${notifNb} à traiter`;
-          // Statistique
-          const elPeekStat = document.getElementById('fzpPeekStat');
-          const elPeekStatExp = document.getElementById('fzpPeekStatExp');
-          if (elPeekStat) {
-            let statText = '—';
-            if (typeof evolPercent !== 'undefined') {
-              const sign = evolPercent > 0 ? '+' : '';
-              statText = sign + evolPercent + '%';
-            }
-            elPeekStat.textContent = statText;
-            if (elPeekStatExp) elPeekStatExp.textContent = statText + ' vs mois dernier';
-          }
-        } catch (e) { console.warn('Frizz+ peek update:', e); }
       }
       window.__renderAccueil = renderAccueil;
 
-      // ═══ Animation typewriter pour "Bonjour, [prénom]" ═══
-      function typewriterGreeting(text) {
-        const el = document.getElementById('accueilGreeting');
-        const wave = document.getElementById('accueilGreetingWave');
-        if (!el) return;
-        // Afficher le texte directement (icône reste affichée car déjà dans HTML)
-        el.textContent = text;
-        if (wave) {
-          // Déclencher l'animation une seule fois (à l'ouverture de la page)
-          wave.classList.remove('is-animating');
-          void wave.offsetWidth; // forcer reflow pour redémarrer l'animation
-          wave.classList.add('is-animating');
-          // Retirer la classe après la durée de l'animation pour qu'elle ne boucle pas
-          setTimeout(() => {
-            wave.classList.remove('is-animating');
-          }, 2500);
-        }
-      }
-      // Calculer le prénom depuis currentSalon.prenom_proprietaire ou défaut
-      function getOwnerFirstName() {
-        try {
-          if (typeof currentSalon !== 'undefined' && currentSalon) {
-            return currentSalon.prenom_proprietaire || currentSalon.prenom || currentSalon.nom_proprietaire || '';
-          }
-        } catch (e) {}
-        return '';
-      }
-      // Saluer (à appeler depuis switchPage quand on revient sur accueil)
-      window.__animateGreeting = function() {
-        const prenom = getOwnerFirstName();
-        const text = prenom ? `Bonjour, ${prenom}` : 'Bonjour';
-        typewriterGreeting(text);
-      };
-      // ═══ Mise à jour de la date sur la carte Calendrier (style icône iOS) ═══
-      function updateAccueilCalDate() {
-        try {
-          const monthEl = document.getElementById('accueilCalMonth');
-          const dayEl = document.getElementById('accueilCalDay');
-          if (!monthEl || !dayEl) return;
-          const now = new Date();
-          const moisLong = ['JANV','FÉVR','MARS','AVRIL','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
-          monthEl.textContent = moisLong[now.getMonth()];
-          dayEl.textContent = String(now.getDate());
-        } catch (e) {}
-      }
-      // Première mise à jour au load + appel quotidien
-      setTimeout(() => { try { updateAccueilCalDate(); } catch (e) {} }, 50);
-      window.__updateAccueilCalDate = updateAccueilCalDate;
-      // Première animation au load
-      setTimeout(() => { try { window.__animateGreeting(); } catch (e) {} }, 300);
-
-      // ═══ Sélecteur de vue (Frizz+ ↔ Classique) ═══
-      function applyView(view) {
-        const fzp = document.getElementById('healthCardsFrizzPlus');
-        const classic = document.getElementById('healthCardsClassic');
-        const label = document.getElementById('accueilViewSwitchLabel');
-        if (view === 'classique') {
-          if (fzp) fzp.style.display = 'none';
-          if (classic) classic.style.display = '';
-          if (label) label.textContent = 'Vue classique';
-        } else {
-          if (fzp) fzp.style.display = '';
-          if (classic) classic.style.display = 'none';
-          if (label) label.textContent = 'Vue Frizz+';
-        }
-        try { localStorage.setItem('frizz_home_view', view); } catch (e) {}
-      }
-      // Charger la vue mémorisée (défaut = Frizz+)
-      let savedView = 'frizzplus';
-      try { savedView = localStorage.getItem('frizz_home_view') || 'frizzplus'; } catch (e) {}
-      applyView(savedView);
-      // Bind sélecteur de vue (action sheet bottom)
-      const viewSwitch = document.getElementById('accueilViewSwitch');
-      if (viewSwitch && !viewSwitch._bound) {
-        viewSwitch.addEventListener('click', () => {
-          // Bottom sheet simple : Frizz+ / Classique
-          openViewPicker();
-        });
-        viewSwitch._bound = true;
-      }
-      function openViewPicker() {
-        // Créer/réutiliser une bottom sheet
-        let sheet = document.getElementById('viewPickerSheet');
-        if (!sheet) {
-          sheet = document.createElement('div');
-          sheet.id = 'viewPickerSheet';
-          sheet.className = 'view-picker-sheet';
-          sheet.innerHTML = `
-            <div class="view-picker-backdrop"></div>
-            <div class="view-picker-content">
-              <div class="view-picker-handle"></div>
-              <div class="view-picker-title">Affichage de l'accueil</div>
-              <button class="view-picker-option" data-view="frizzplus" type="button">
-                <div class="view-picker-option-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="6" y="11" width="14" height="4" rx="1"/><rect x="8" y="16" width="12" height="4" rx="1"/></svg>
-                </div>
-                <div class="view-picker-option-body">
-                  <div class="view-picker-option-title">Vue Frizz+</div>
-                  <div class="view-picker-option-sub">Cartes empilées, focus sur Mon restaurant</div>
-                </div>
-                <svg class="view-picker-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              </button>
-              <button class="view-picker-option" data-view="classique" type="button">
-                <div class="view-picker-option-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="5" rx="1"/><rect x="4" y="11" width="16" height="5" rx="1"/><rect x="4" y="18" width="16" height="3" rx="1"/></svg>
-                </div>
-                <div class="view-picker-option-body">
-                  <div class="view-picker-option-title">Vue classique</div>
-                  <div class="view-picker-option-sub">Toutes les cartes à la suite</div>
-                </div>
-                <svg class="view-picker-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              </button>
-              <button class="view-picker-cancel" type="button">Annuler</button>
-            </div>
-          `;
-          document.body.appendChild(sheet);
-          // Bind clicks
-          sheet.querySelectorAll('.view-picker-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-              const v = opt.dataset.view;
-              applyView(v);
-              closeViewPicker();
-            });
-          });
-          sheet.querySelector('.view-picker-cancel').addEventListener('click', closeViewPicker);
-          sheet.querySelector('.view-picker-backdrop').addEventListener('click', closeViewPicker);
-        }
-        // Update états (coche)
-        let current = 'frizzplus';
-        try { current = localStorage.getItem('frizz_home_view') || 'frizzplus'; } catch (e) {}
-        sheet.querySelectorAll('.view-picker-option').forEach(opt => {
-          opt.classList.toggle('is-active', opt.dataset.view === current);
-        });
-        // Afficher
-        requestAnimationFrame(() => sheet.classList.add('visible'));
-      }
-      function closeViewPicker() {
-        const sheet = document.getElementById('viewPickerSheet');
-        if (sheet) sheet.classList.remove('visible');
-      }
-
-      // ═══ FRIZZ+ : Pop expand au scroll vers le bas ═══
-      function setupFrizzPlusScrollExpand() {
-        const fzpEl = document.getElementById('healthCardsFrizzPlus');
-        if (!fzpEl || fzpEl._scrollBound) return;
-        const THRESHOLD = 40; // pixels de scroll avant déclenchement
-        let lastScrollY = window.scrollY || window.pageYOffset || 0;
-        let ticking = false;
-        function update() {
-          const sy = window.scrollY || window.pageYOffset || 0;
-          // Si on est sur Accueil et qu'on a scrollé vers le bas
-          const pageAccueil = document.getElementById('page-accueil');
-          if (!pageAccueil || pageAccueil.classList.contains('hidden')) {
-            ticking = false;
-            return;
-          }
-          // Si la vue Classique est active, ne rien faire
-          const fzpVisible = fzpEl.style.display !== 'none';
-          if (!fzpVisible) {
-            fzpEl.classList.remove('is-expanded');
-            ticking = false;
-            return;
-          }
-          if (sy > THRESHOLD) {
-            if (!fzpEl.classList.contains('is-expanded')) {
-              fzpEl.classList.add('is-expanded');
-            }
-          } else {
-            if (fzpEl.classList.contains('is-expanded')) {
-              fzpEl.classList.remove('is-expanded');
-            }
-          }
-          lastScrollY = sy;
-          ticking = false;
-        }
-        window.addEventListener('scroll', () => {
-          if (!ticking) {
-            requestAnimationFrame(update);
-            ticking = true;
-          }
-        }, { passive: true });
-        fzpEl._scrollBound = true;
-        // État initial
-        update();
-      }
-      setupFrizzPlusScrollExpand();
 
       // Bind clic sur les cartes pour ouvrir la popup
       document.querySelectorAll('.health-card[data-popup]').forEach(card => {
-        card.addEventListener('click', () => {
-          const popupId = card.dataset.popup;
-          openPopup(popupId);
-        });
-      });
-      // Bind clic sur les cards Frizz+ (peek + hero)
-      document.querySelectorAll('.fzp-peek[data-popup], .fzp-hero[data-popup]').forEach(card => {
         card.addEventListener('click', () => {
           const popupId = card.dataset.popup;
           openPopup(popupId);

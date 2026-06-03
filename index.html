@@ -447,45 +447,36 @@
   /* Gradients Apple Music-like sur fond sombre */
   .health-card--green {
     background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
-    box-shadow: 0 8px 24px rgba(26, 142, 61, 0.22);
   }
   /* Apple TV+ (noir mat) — Calendrier */
   .health-card--blue {
     background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     border: 0.5px solid rgba(255, 255, 255, 0.10);
   }
   .health-card--yellow {
     background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
-    box-shadow: 0 8px 24px rgba(198, 104, 0, 0.22);
   }
   .health-card--pink {
     background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
-    box-shadow: 0 8px 24px rgba(184, 36, 69, 0.22);
   }
   /* Apple Music (rose/rouge) — Notification */
   .health-card--orange {
     background: linear-gradient(160deg, #FB5C74 0%, #FA233B 100%);
-    box-shadow: 0 8px 24px rgba(250, 35, 59, 0.32);
   }
   /* Apple Arcade (bleu/violet) — Statistique */
   .health-card--gold {
     background: linear-gradient(160deg, #5E5CE6 0%, #BF5AF2 100%);
-    box-shadow: 0 8px 24px rgba(94, 92, 230, 0.32);
   }
   /* Apple Fitness+ (vert/bleu) — Mon restaurant */
   .health-card--black {
     background: linear-gradient(160deg, #30D158 0%, #64D2FF 100%);
-    box-shadow: 0 8px 24px rgba(48, 209, 88, 0.30);
   }
   .health-card--purple {
     background: linear-gradient(160deg, #C088FF 0%, #8B5CF6 55%, #5B21B6 100%);
-    box-shadow: 0 8px 24px rgba(91, 33, 182, 0.28);
   }
   /* Gris iOS (4ème carte Tables) — systemGray sombre */
   .health-card--glass {
     background: linear-gradient(160deg, #6E6E73 0%, #48484A 60%, #2C2C2E 100%);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
   }
   /* Top de la carte */
   .health-card-top {
@@ -615,9 +606,9 @@
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.55);
   }
-  .acc-agenda-bar--short  { width: 60px; background: rgba(255, 255, 255, 0.45); }
-  .acc-agenda-bar--medium { width: 95px; background: rgba(255, 255, 255, 0.65); }
-  .acc-agenda-bar--long   { width: 110px; background: rgba(255, 255, 255, 0.85); }
+  .acc-agenda-bar--short  { width: 42px; background: rgba(255, 255, 255, 0.45); }
+  .acc-agenda-bar--medium { width: 65px; background: rgba(255, 255, 255, 0.65); }
+  .acc-agenda-bar--long   { width: 78px; background: rgba(255, 255, 255, 0.85); }
 
   /* Variant "monresto" : 4 mini-tiles 2x2 façon launchpad */
   .monresto-completion {
@@ -1861,7 +1852,6 @@
   /* Peek 1 = Calendrier = Apple TV+ (noir mat) */
   .fzp-peek--blue {
     background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.30);
   }
   /* Peek 2 = Notification = Apple Music (rose/rouge) */
   .fzp-peek--steel {
@@ -1937,7 +1927,6 @@
     border: 0.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 22px;
     padding: 22px 20px;
-    box-shadow: 0 -8px 24px rgba(48, 209, 88, 0.35);
     cursor: pointer;
     text-align: left;
     color: #fff;
@@ -2184,7 +2173,7 @@
     display: none;
   }
   .mon-resto-wrap {
-    padding: 0 20px 20px;
+    padding: 0 0 20px;
   }
   .mon-resto-accordion {
     display: flex;
@@ -4190,10 +4179,22 @@
     height: 50px;
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.20), 0 2px 6px rgba(0, 0, 0, 0.25);
     border: 0.5px solid rgba(255, 255, 255, 0.40);
+    /* Stabilise le rendu GPU pour éviter le sautillement au scroll */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
   }
   .tab-round--primary svg {
     width: 22px;
     height: 22px;
+    /* Force le rendu en pixels entiers (anti-shimmer) */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    shape-rendering: geometricPrecision;
   }
   .tab-round--primary:active {
     background: #E5E5EA;

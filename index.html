@@ -411,7 +411,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: calc(env(safe-area-inset-top, 0px) + 65px) 20px 100px;
+    padding: calc(env(safe-area-inset-top, 0px) + 57px) 20px 100px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -1058,9 +1058,8 @@
   /* Carte principale "Appels ce mois" — Ring central énorme (variante 20)
      Même gradient rose que l'élément Statistique sur l'accueil */
   .stat-ring-card {
-    background: linear-gradient(160deg, #6E6E73 0%, #48484A 55%, #2C2C2E 100%);
-    border: 0.5px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 8px 24px rgba(44, 44, 46, 0.40);
+    background: linear-gradient(160deg, #5E5CE6 0%, #BF5AF2 100%);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     padding: 22px 20px;
     text-align: center;
@@ -1773,37 +1772,23 @@
     50% { transform: rotate(10deg); }
   }
   .accueil-view-switch {
-    background: rgba(255, 255, 255, 0.06);
-    border: 0.5px solid rgba(255, 255, 255, 0.10);
-    border-radius: 14px;
-    padding: 6px 10px 6px 12px;
-    color: #fff;
-    font-size: 12px;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .accueil-view-switch:active { background: rgba(255, 255, 255, 0.12); }
-  .accueil-view-switch svg {
-    width: 12px;
-    height: 12px;
-    opacity: 0.5;
+    display: none !important;
   }
 
-  /* ═══ VUE FRIZZ+ — Peek stack (état COLLAPSED par défaut) ═══ */
+  /* ═══ VUE FRIZZ+ — Peek stack (DÉSACTIVÉE via display:none) ═══ */
   .health-cards-frizzplus {
+    display: none !important;
+    /* Anciennes propriétés gardées pour cohérence du code */
     position: relative;
     padding: 0;
     height: 380px;
     margin-bottom: 24px;
     /* En état "expanded" : on augmente la hauteur pour contenir les 4 cartes en pleine taille */
     transition: height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1);
+  }
+  /* Forcer la vue classique à être toujours visible */
+  #healthCardsClassic {
+    display: flex !important;
   }
   .health-cards-frizzplus.is-expanded {
     height: 580px;
@@ -2395,14 +2380,13 @@
   /* ─── BANDEAU bleu Frizz unifié ─── */
   .service-banner {
     margin: 0 16px 16px;
-    background: linear-gradient(135deg, #4DA2FF 0%, #1E64FF 50%, #0A4FE5 100%);
+    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
     border-radius: 18px;
     padding: 16px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 8px 24px rgba(10, 79, 229, 0.22);
-    border: 0.5px solid rgba(255, 255, 255, 0.06);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
     overflow: hidden;
     position: relative;
   }
@@ -3302,9 +3286,8 @@
     border: 0.5px solid rgba(255, 255, 255, 0.08);
   }
   .popup-acti-card--green {
-    /* Même gradient que la carte Notification (bleu acier) */
-    background: linear-gradient(160deg, #7C9AB8 0%, #4F6B85 55%, #2A3D52 100%);
-    box-shadow: 0 8px 24px rgba(42, 61, 82, 0.32);
+    /* Apple Music rose pour matcher la carte Notification */
+    background: linear-gradient(160deg, #FB5C74 0%, #FA233B 100%);
   }
   .popup-acti-card--glass {
     /* Verre dépoli iOS */
@@ -4578,7 +4561,7 @@
     color: var(--label-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 0 4px 10px;
+    padding: 0 0 10px;
   }
 
   .settings-section-card {
@@ -8218,7 +8201,7 @@
       </div>
 
       <!-- Cartes empilées style Apple Health -->
-      <div class="health-cards" id="healthCardsClassic" style="display:none;">
+      <div class="health-cards" id="healthCardsClassic" style="display:flex;">
         <!-- 1) Carte Calendrier (bleu) -->
         <button class="health-card health-card--blue" data-popup="reservations" type="button">
           <div class="health-card-top">

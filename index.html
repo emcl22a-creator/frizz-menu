@@ -451,7 +451,25 @@
   /* Apple TV+ (noir mat) — Calendrier */
   .health-card--blue {
     background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+  }
+  /* Contour stylé : double bordure subtile avec highlight haut + ombre intérieure */
+  .health-card--blue::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0.10) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
   }
   .health-card--yellow {
     background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
@@ -1290,7 +1308,7 @@
     letter-spacing: -1.5px;
     line-height: 1;
     margin-top: 14px;
-    color: #8E8E93;
+    color: #BF5AF2;
     font-variant-numeric: tabular-nums;
   }
   .stat-cell-b-sub {
@@ -1730,7 +1748,7 @@
     gap: 4px;
     min-width: 0;
     flex: 1;
-    padding-left: 3.5px;
+    padding-left: 5.5px;
   }
   .accueil-greeting {
     font-size: 19px;
@@ -2160,6 +2178,69 @@
   }
   .mon-resto-wrap {
     padding: 0 0 20px;
+  }
+  /* ═══ Override padding interne pour la popup Mon restaurant uniquement ═══ */
+  /* Le titre 'Mon restaurant' de la popup est à 20px du bord. */
+  /* On force le contenu intérieur à être aligné aussi à 20px. */
+  #monRestoAccordion .settings-section {
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  #monRestoAccordion .settings-section-title {
+    padding: 0 20px 10px;
+  }
+  #monRestoAccordion .settings-section-card {
+    margin: 0 20px;
+  }
+  #monRestoAccordion .settings-row {
+    padding: 14px 20px;
+  }
+  #monRestoAccordion .horaires-day-row {
+    padding: 14px 20px;
+  }
+  #monRestoAccordion .voice-card {
+    margin: 0 20px 10px;
+  }
+  /* Bouton centré reste centré, juste s'assurer du padding latéral */
+  #monRestoAccordion .btn-link-blue,
+  #monRestoAccordion .btn-secondary {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  /* ═══ Surcharge tous les textes/icônes BLEUS → VERT Fitness+ #30D158 ═══ */
+  /* Boutons "Ajouter une table", "Voir tous les jours", etc. */
+  #monRestoAccordion .tables-add-btn,
+  #monRestoAccordion .tables-add-btn svg,
+  #monRestoAccordion .btn-link-blue,
+  #monRestoAccordion .btn-secondary,
+  #monRestoAccordion .form-link,
+  #monRestoAccordion .form-action-link,
+  #monRestoAccordion .horaires-modify-btn,
+  #monRestoAccordion .form-cta-link,
+  #monRestoAccordion .settings-row-chevron {
+    color: #30D158 !important;
+  }
+  #monRestoAccordion .tables-add-btn svg,
+  #monRestoAccordion .tables-add-btn svg path,
+  #monRestoAccordion .tables-add-btn svg line,
+  #monRestoAccordion .settings-row-chevron {
+    stroke: #30D158 !important;
+  }
+  /* Voice card sélectionnée */
+  #monRestoAccordion .voice-card.is-selected,
+  #monRestoAccordion .voice-card.selected {
+    border-color: #30D158 !important;
+  }
+  #monRestoAccordion .voice-card.is-selected .voice-card-check,
+  #monRestoAccordion .voice-card.is-selected .voice-card-radio-dot {
+    color: #30D158 !important;
+    background: #30D158 !important;
+  }
+  /* Bouton "Modifier" qui apparaît dans les rangées */
+  #monRestoAccordion [style*="color: #0A84FF"],
+  #monRestoAccordion [style*="color:#0A84FF"] {
+    color: #30D158 !important;
   }
   .mon-resto-accordion {
     display: flex;

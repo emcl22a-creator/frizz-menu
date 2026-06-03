@@ -1716,7 +1716,7 @@
 
   /* ═══ HEADER ACCUEIL (Bonjour + sélecteur de vue) ═══ */
   .accueil-header {
-    padding: 12px 20px 18px;
+    padding: 12px 0 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1731,9 +1731,9 @@
   }
   .accueil-greeting {
     font-size: 17px;
-    font-weight: 500;
+    font-weight: 700;
     color: #fff;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
     line-height: 1.2;
     min-height: 20px;
   }
@@ -1793,7 +1793,7 @@
   /* ═══ VUE FRIZZ+ — Peek stack (état COLLAPSED par défaut) ═══ */
   .health-cards-frizzplus {
     position: relative;
-    padding: 0 20px;
+    padding: 0;
     height: 380px;
     margin-bottom: 24px;
     /* En état "expanded" : on augmente la hauteur pour contenir les 4 cartes en pleine taille */
@@ -14620,11 +14620,11 @@
       renderStatsPopup();
     }
 
-    // Si mon-restaurant : brancher l'action "Ouvrir les réglages"
+    // Si mon-restaurant : déplacer les 4 sections Réglages dans l'accordéon
     if (type === 'mon-restaurant') {
       setTimeout(() => {
         const accordion = document.getElementById('monRestoAccordion');
-        if (!accordion) return;
+        if (!accordion) { console.warn('[mon-resto] accordéon introuvable'); return; }
         // Déplacer les 4 sections Réglages directement dans l'accordéon (ordre choisi)
         const sectionIds = [
           'settings-section-restaurant',
@@ -14632,6 +14632,7 @@
           'settings-section-horaires',
           'settings-section-voix'
         ];
+        let moved = 0;
         sectionIds.forEach(id => {
           const el = document.getElementById(id);
           if (el) {
@@ -14642,10 +14643,19 @@
             }
             // Forcer la visibilité (override le display:none de .settings-section-hideable)
             el.style.display = '';
+            el.style.visibility = 'visible';
             accordion.appendChild(el);
+            moved++;
+          } else {
+            console.warn('[mon-resto] section introuvable:', id);
           }
         });
-      }, 50);
+        console.log('[mon-resto] sections déplacées:', moved, '/ 4');
+        // Si rien n'a été déplacé, afficher un fallback
+        if (moved === 0) {
+          accordion.innerHTML = '<div style="padding:20px; color:rgba(255,255,255,0.6); text-align:center;">Les sections de réglages sont indisponibles. Réouvrez l\'app.</div>';
+        }
+      }, 100);
     }
 
     // Si réservations : déplacer le DOM du calendrier dans la popup

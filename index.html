@@ -186,9 +186,15 @@
   .logo {
     height: 28px;
     width: auto;
+    max-width: 110px;
     padding-left: 4px;
     object-fit: contain;
     display: block;
+    flex-shrink: 0;
+  }
+  svg.logo {
+    height: 28px;
+    width: 110px;
   }
   .bell-btn {
     width: 46px;
@@ -4232,7 +4238,7 @@
   /* Bouton primaire central : bleu iOS */
   .tab-round--primary {
     background: #ffffff;
-    color: #0A84FF;
+    color: #000000;
     width: 50px;
     height: 50px;
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.20);
@@ -8122,16 +8128,17 @@
     letter-spacing: -0.2px;
   }
 
-  /* Sidebar + topbar cachés par défaut */
+  /* Sidebar + topbar cachés par défaut (mobile + login) */
   .desktop-sidebar,
   .desktop-topbar {
-    display: none;
+    display: none !important;
   }
 
   @media (min-width: 1024px) {
 
-    /* ─── Sidebar gauche ─── */
-    .desktop-sidebar {
+    /* ─── Sidebar gauche (visible UNIQUEMENT quand connecté + desktop) ─── */
+    body.app-visible .desktop-sidebar {
+      display: flex !important;
       position: fixed;
       left: 0;
       top: 0;
@@ -8139,7 +8146,6 @@
       width: 240px;
       background: #0A0A0B;
       border-right: 0.5px solid rgba(255, 255, 255, 0.06);
-      display: flex;
       flex-direction: column;
       padding: 24px 16px;
       z-index: 50;
@@ -8257,12 +8263,12 @@
     }
 
     /* ─── Topbar (cloche + menu en haut à droite) ─── */
-    .desktop-topbar {
+    body.app-visible .desktop-topbar {
+      display: flex !important;
       position: fixed;
       top: 24px;
       right: 32px;
       z-index: 51;
-      display: flex;
       align-items: center;
       gap: 8px;
     }
@@ -8304,11 +8310,11 @@
       border: 2px solid #0A0A0B;
     }
 
-    /* ─── Layout principal : décaler le contenu à droite de la sidebar ─── */
-    body {
+    /* ─── Layout principal : décaler le contenu à droite de la sidebar (seulement si connecté) ─── */
+    body.app-visible {
       padding-left: 240px;
     }
-    #page-accueil {
+    body.app-visible #page-accueil {
       padding: 32px 40px 60px;
       max-width: none;
     }
@@ -8484,7 +8490,7 @@
 
 <div class="app hidden" id="app">
   <div class="topbar">
-    <svg class="logo" viewBox="0 0 290 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <svg class="logo" width="110" height="30" viewBox="0 0 290 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <!-- Waveform : 7 barres verticales arrondies, blanches -->
       <g fill="#fff">
         <rect x="0" y="34" width="7" height="12" rx="3.5"/>
@@ -10108,6 +10114,7 @@
     hide('app');
     hide('tabbar');
     show('notConnectedScreen');
+    document.body.classList.remove('app-visible');
   }
 
   function showApp() {
@@ -10115,6 +10122,7 @@
     hide('notConnectedScreen');
     show('app');
     show('tabbar');
+    document.body.classList.add('app-visible');
   }
 
   async function loadAppData() {

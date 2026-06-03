@@ -411,7 +411,7 @@
 
   /* ═══ PAGE ACCUEIL (style Apple Health, mode sombre) ═══ */
   #page-accueil {
-    padding: calc(env(safe-area-inset-top, 0px) + 69px) 20px 100px;
+    padding: calc(env(safe-area-inset-top, 0px) + 65px) 20px 100px;
   }
   .accueil-animatable.accueil-page-enter {
     animation: cascadeIn 0.6s ease-out 0.05s backwards;
@@ -1492,12 +1492,12 @@
   }
   .stat-bar-b-fill {
     height: 100%;
-    background: #8E8E93;
+    background: linear-gradient(90deg, #5E5CE6 0%, #BF5AF2 100%);
     border-radius: 100px;
     transition: width 1s cubic-bezier(0.34, 1.20, 0.64, 1);
   }
-  .stat-bar-b-fill--soft { background: rgba(142, 142, 147, 0.6); }
-  .stat-bar-b-fill--softer { background: rgba(142, 142, 147, 0.35); }
+  .stat-bar-b-fill--soft { background: rgba(94, 92, 230, 0.6); }
+  .stat-bar-b-fill--softer { background: rgba(94, 92, 230, 0.35); }
 
   /* Carte 3 barres : répartition des appels */
   .stat-bars-card {
@@ -4184,18 +4184,19 @@
   }
   /* Bouton primaire central : bleu iOS */
   .tab-round--primary {
-    background: #0A84FF;
-    color: #fff;
+    background: #ffffff;
+    color: #000000;
     width: 50px;
     height: 50px;
-    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.40);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.20), 0 2px 6px rgba(0, 0, 0, 0.25);
+    border: 0.5px solid rgba(255, 255, 255, 0.40);
   }
   .tab-round--primary svg {
     width: 22px;
     height: 22px;
   }
   .tab-round--primary:active {
-    background: #0066CC;
+    background: #E5E5EA;
   }
   .tab {
     flex: 1;
@@ -8076,8 +8077,8 @@
 <svg width="0" height="0" style="position:absolute;" aria-hidden="true">
   <defs>
     <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A84FF"/>
-      <stop offset="100%" stop-color="#5AC8FA"/>
+      <stop offset="0%" stop-color="#5E5CE6"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
     </linearGradient>
   </defs>
 </svg>
@@ -8098,8 +8099,8 @@
 <div class="app hidden" id="app">
   <div class="topbar">
     <svg class="logo" width="110" height="30" viewBox="0 0 290 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-      <!-- Waveform : 7 barres verticales arrondies, bleu Frizz -->
-      <g fill="#0A84FF">
+      <!-- Waveform : 7 barres verticales arrondies, blanches -->
+      <g fill="#fff">
         <rect x="0" y="34" width="7" height="12" rx="3.5"/>
         <rect x="14" y="26" width="7" height="28" rx="3.5"/>
         <rect x="28" y="14" width="7" height="52" rx="3.5"/>
@@ -8108,8 +8109,8 @@
         <rect x="70" y="26" width="7" height="28" rx="3.5"/>
         <rect x="84" y="34" width="7" height="12" rx="3.5"/>
       </g>
-      <!-- Texte Frizz : font rounded, bleu Frizz -->
-      <text x="105" y="59" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Inter', sans-serif" font-weight="700" font-size="60" fill="#0A84FF" letter-spacing="-2.5">Frizz</text>
+      <!-- Texte Frizz : font rounded, blanc -->
+      <text x="105" y="59" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Inter', sans-serif" font-weight="700" font-size="60" fill="#fff" letter-spacing="-2.5">Frizz</text>
     </svg>
     <!-- Bouton cloche supprimé (remplacé par le bottom sheet Activités). Stubs cachés pour JS. -->
     <button id="bellBtn" hidden aria-hidden="true" style="display:none !important; visibility:hidden !important; position:absolute; left:-9999px;"></button>
@@ -15007,7 +15008,7 @@
         <div class="stat-yearchart-head">
           <div class="stat-yearchart-title">Réservations · ${new Date().getFullYear()}</div>
           <div class="stat-yearchart-legend">
-            <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:#8E8E93;"></span>Frizz</span>
+            <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:#BF5AF2;"></span>Frizz</span>
             <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:rgba(255,255,255,0.85);"></span>Total</span>
           </div>
         </div>
@@ -15078,7 +15079,7 @@
       const dotsFrizz = yearData.map((dd, i) => {
         const cx = padL + i * xStep;
         const cy = padT + innerH - ((dd.frizz / maxVal) * innerH);
-        return `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#8E8E93"/>`;
+        return `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#BF5AF2"/>`;
       }).join('');
       const monthLabels = moisLabels.map((m, i) => {
         const x = padL + i * xStep;
@@ -15106,7 +15107,7 @@
           <path d="${areaTotal}" fill="url(#yearChartGradTotal)" stroke="none"/>
           <path d="${areaFrizz}" fill="url(#yearChartGradFrizz)" stroke="none"/>
           <path d="${pathTotal}" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="${pathFrizz}" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathFrizz}" fill="none" stroke="#BF5AF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           ${dotsFrizz}
           ${monthLabels}
         </svg>
@@ -15472,13 +15473,13 @@
     return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:100%;overflow:visible;">
       <defs>
         <linearGradient id="miniSparkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#8E8E93" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#8E8E93" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#BF5AF2" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#BF5AF2" stop-opacity="0"/>
         </linearGradient>
       </defs>
       <path d="${areaFrizz}" fill="url(#miniSparkGrad)" stroke="none"/>
       <path d="${pathTotal}" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="${pathFrizz}" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${pathFrizz}" fill="none" stroke="#BF5AF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
   }
 
@@ -15507,7 +15508,7 @@
     const dotsFrizz = yearData.map((d, i) => {
       const cx = padL + i * xStep;
       const cy = padT + innerH - ((d.frizz / maxVal) * innerH);
-      return `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#8E8E93"/>`;
+      return `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#BF5AF2"/>`;
     }).join('');
     // Points totaux
     const dotsTotal = yearData.map((d, i) => {
@@ -15549,7 +15550,7 @@
         <!-- Légende -->
         <div style="display:flex;gap:18px;margin-bottom:18px;padding:14px 16px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.06);border-radius:14px;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <span style="width:10px;height:10px;border-radius:50%;background:#8E8E93;flex-shrink:0;"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:#BF5AF2;flex-shrink:0;"></span>
             <div>
               <div style="font-size:12px;color:rgba(255,255,255,0.65);">Frizz uniquement</div>
               <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.2;">${totalFrizz}</div>
@@ -15569,8 +15570,8 @@
           <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">
             <defs>
               <linearGradient id="bigSparkGradFrizz" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#8E8E93" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="#8E8E93" stop-opacity="0"/>
+                <stop offset="0%" stop-color="#BF5AF2" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#BF5AF2" stop-opacity="0"/>
               </linearGradient>
               <linearGradient id="bigSparkGradTotal" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stop-color="rgba(255,255,255,1)" stop-opacity="0.12"/>
@@ -15581,7 +15582,7 @@
             <path d="${areaTotal}" fill="url(#bigSparkGradTotal)" stroke="none"/>
             <path d="${areaFrizz}" fill="url(#bigSparkGradFrizz)" stroke="none"/>
             <path d="${pathTotal}" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="${pathFrizz}" fill="none" stroke="#8E8E93" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="${pathFrizz}" fill="none" stroke="#BF5AF2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
             ${dotsTotal}
             ${dotsFrizz}
             ${monthLabels}
@@ -15596,7 +15597,7 @@
               <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);">
                 <span style="font-size:13px;color:rgba(255,255,255,0.7);width:32px;">${moisLabels[i]}</span>
                 <span></span>
-                <span style="font-size:13px;font-weight:700;color:#8E8E93;font-variant-numeric:tabular-nums;">${d.frizz}</span>
+                <span style="font-size:13px;font-weight:700;color:#BF5AF2;font-variant-numeric:tabular-nums;">${d.frizz}</span>
                 <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;">${d.total}</span>
               </div>
             `).join('')}

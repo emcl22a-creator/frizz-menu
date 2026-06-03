@@ -1728,14 +1728,15 @@
     gap: 4px;
     min-width: 0;
     flex: 1;
+    padding-left: 3.5px;
   }
   .accueil-greeting {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 700;
     color: #fff;
     letter-spacing: -0.3px;
     line-height: 1.2;
-    min-height: 20px;
+    min-height: 22px;
   }
   .accueil-greeting .typewriter-caret {
     display: inline-block;
@@ -1750,13 +1751,16 @@
     0%, 49% { opacity: 1; }
     50%, 100% { opacity: 0; }
   }
-  /* Wave hello animation (l'icône 👋 qui salue) */
+  /* Wave hello animation (l'icône 👋 qui salue) — UNIQUEMENT à l'ouverture de la page */
   .accueil-greeting-wave {
     display: inline-block;
-    font-size: 17px;
+    font-size: 19px;
     line-height: 1;
     transform-origin: 70% 70%;
-    animation: waveHello 2.5s ease-in-out infinite;
+  }
+  /* Animation jouée seulement quand la classe is-animating est appliquée (au load de la page) */
+  .accueil-greeting-wave.is-animating {
+    animation: waveHello 2.5s ease-in-out;
   }
   @keyframes waveHello {
     0%, 60%, 100% { transform: rotate(0deg); }
@@ -14282,9 +14286,17 @@
         if (!el) return;
         // Afficher le texte directement
         el.textContent = text;
-        // Afficher immédiatement l'icône 👋 (avec son animation wave en boucle)
+        // Afficher immédiatement l'icône 👋
         if (wave) {
           wave.style.display = 'inline-block';
+          // Déclencher l'animation une seule fois (à l'ouverture de la page)
+          wave.classList.remove('is-animating');
+          void wave.offsetWidth; // forcer reflow pour redémarrer l'animation
+          wave.classList.add('is-animating');
+          // Retirer la classe après la durée de l'animation pour qu'elle ne boucle pas
+          setTimeout(() => {
+            wave.classList.remove('is-animating');
+          }, 2500);
         }
       }
       // Calculer le prénom depuis currentSalon.prenom_proprietaire ou défaut

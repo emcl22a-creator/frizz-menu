@@ -609,6 +609,23 @@
   .acc-agenda-bar--long   { width: 110px; background: rgba(255, 255, 255, 0.85); }
 
   /* Variant "monresto" : 4 mini-tiles 2x2 façon launchpad */
+  .monresto-completion {
+    flex: 1;
+    min-width: 0;
+  }
+  .monresto-completion-pct {
+    font-size: 42px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .monresto-completion-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 4px;
+  }
   .health-card-chart--monresto {
     width: 60px;
     height: 60px;
@@ -1719,7 +1736,11 @@
     display: none;
   }
   .mon-resto-wrap {
-    padding: 0 20px 20px;
+    padding: 0 0 20px;
+  }
+  .mon-resto-accordion {
+    display: flex;
+    flex-direction: column;
   }
   .mon-resto-tiles {
     display: flex;
@@ -1969,7 +1990,7 @@
   .service-banner-counter {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.85);
-    margin-top: 15px;
+    margin-top: 27px;
   }
   .service-banner-right {
     display: flex;
@@ -7770,7 +7791,10 @@
             </div>
           </div>
           <div class="health-card-body">
-            <div class="health-card-value" id="accueilRestaurantName" style="font-size:22px; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">—</div>
+            <div class="monresto-completion">
+              <div class="monresto-completion-pct" id="accueilRestaurantPct">0%</div>
+              <div class="monresto-completion-label">complété</div>
+            </div>
             <div class="health-card-chart health-card-chart--monresto" aria-hidden="true">
               <!-- 4 carrés en grille 2×2 façon launchpad iOS -->
               <div class="monresto-grid">
@@ -7780,6 +7804,8 @@
                 <div class="monresto-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
               </div>
             </div>
+            <!-- Stub caché : ancien id accueilRestaurantName toujours présent au cas où -->
+            <span id="accueilRestaurantName" hidden style="display:none;">—</span>
           </div>
         </button>
 
@@ -13660,6 +13686,45 @@
           const elConv = $('accueilConversionValue');
           if (elConv) elConv.textContent = Math.abs(evolPercent);
         } catch (e) { console.warn('Statistique evol calc:', e); }
+
+        // ═══ CARTE MON RESTAURANT : calcul du % de complétude ═══
+        try {
+          const checks = [];
+          const salon = currentSalon || {};
+          // 1. Nom du restaurant
+          checks.push(!!(salon.nom_restaurant || salon.name));
+          // 2. Adresse
+          checks.push(!!(salon.adresse || salon.address));
+          // 3. Téléphone
+          checks.push(!!(salon.telephone || salon.phone));
+          // 4. Email (depuis currentUser)
+          checks.push(!!(typeof currentUser !== 'undefined' && currentUser && currentUser.email));
+          // 5. Au moins 1 table active
+          const hasTables = typeof allTables !== 'undefined' && Array.isArray(allTables)
+            && allTables.some(t => t.active !== false);
+          checks.push(!!hasTables);
+          // 6. Horaires définis (au moins 1 jour avec créneaux)
+          const horaires = salon.horaires_ouverture;
+          let hasHoraires = false;
+          if (horaires && typeof horaires === 'object') {
+            for (const dayKey in horaires) {
+              const d = horaires[dayKey];
+              if (d && Array.isArray(d.creneaux) && d.creneaux.length > 0 && d.ferme !== true) {
+                hasHoraires = true;
+                break;
+              }
+            }
+          }
+          checks.push(hasHoraires);
+          // 7. Voix de l'assistant choisie
+          checks.push(!!(salon.voix_assistant || salon.voice || salon.voice_id));
+          // Calcul du pourcentage
+          const done = checks.filter(Boolean).length;
+          const total = checks.length;
+          const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+          const pctEl = document.getElementById('accueilRestaurantPct');
+          if (pctEl) pctEl.textContent = pct + '%';
+        } catch (e) { console.warn('Complétion mon resto:', e); }
       }
       window.__renderAccueil = renderAccueil;
 
@@ -13792,49 +13857,11 @@
       `;
     } else if (type === 'mon-restaurant') {
       titleText = 'Mon restaurant';
+      // L'accordéon est rempli après render via déplacement des vraies sections Réglages
       bodyHTML = `
         <div class="mon-resto-wrap">
-          <div class="mon-resto-tiles">
-            <button class="mon-resto-tile" type="button" data-section="restaurant">
-              <div class="mon-resto-tile-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              </div>
-              <div class="mon-resto-tile-body">
-                <div class="mon-resto-tile-title">Mon restaurant</div>
-                <div class="mon-resto-tile-sub">Nom, adresse, contact</div>
-              </div>
-              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-            <button class="mon-resto-tile" type="button" data-section="tables">
-              <div class="mon-resto-tile-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-              </div>
-              <div class="mon-resto-tile-body">
-                <div class="mon-resto-tile-title">Mes tables</div>
-                <div class="mon-resto-tile-sub">Plan de salle, capacités</div>
-              </div>
-              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-            <button class="mon-resto-tile" type="button" data-section="horaires">
-              <div class="mon-resto-tile-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-              </div>
-              <div class="mon-resto-tile-body">
-                <div class="mon-resto-tile-title">Horaires & réservation</div>
-                <div class="mon-resto-tile-sub">Ouverture, durée, règles</div>
-              </div>
-              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-            <button class="mon-resto-tile" type="button" data-section="voix">
-              <div class="mon-resto-tile-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-              </div>
-              <div class="mon-resto-tile-body">
-                <div class="mon-resto-tile-title">Voix de l'assistant</div>
-                <div class="mon-resto-tile-sub">Voix Frizz IA, personnalité</div>
-              </div>
-              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
+          <div class="mon-resto-accordion" id="monRestoAccordion">
+            <!-- Les 4 sections Réglages seront déplacées ici à l'ouverture -->
           </div>
         </div>
       `;
@@ -13853,42 +13880,27 @@
     // Si mon-restaurant : brancher l'action "Ouvrir les réglages"
     if (type === 'mon-restaurant') {
       setTimeout(() => {
-        const tiles = document.querySelectorAll('.mon-resto-tile[data-section]');
-        tiles.forEach(tile => {
-          tile.addEventListener('click', () => {
-            const section = tile.dataset.section;
-            // Fermer la popup d'abord
-            if (typeof closePopup === 'function') closePopup();
-            // Naviguer vers settings + scroller vers la bonne section
-            setTimeout(() => {
-              if (typeof switchPage === 'function') switchPage('settings');
-              else if (typeof showPage === 'function') showPage('settings');
-              // Activer le mode "from-monresto" + focus sur la section choisie
-              const settingsPage = document.getElementById('page-settings');
-              if (settingsPage) {
-                settingsPage.classList.add('is-from-monresto');
-                // Reset autres focus
-                ['restaurant','tables','horaires','voix'].forEach(s => settingsPage.classList.remove('focus-' + s));
-                settingsPage.classList.add('focus-' + section);
-              }
-              // Scroller vers l'ancre de la section
-              setTimeout(() => {
-                const anchorMap = {
-                  'restaurant': 'settings-section-restaurant',
-                  'tables': 'settings-section-tables',
-                  'horaires': 'settings-section-horaires',
-                  'voix': 'settings-section-voix'
-                };
-                const anchorId = anchorMap[section];
-                if (anchorId) {
-                  const target = document.getElementById(anchorId);
-                  if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }
-              }, 200);
-            }, 250);
-          });
+        const accordion = document.getElementById('monRestoAccordion');
+        if (!accordion) return;
+        // Déplacer les 4 sections Réglages directement dans l'accordéon (ordre choisi)
+        const sectionIds = [
+          'settings-section-restaurant',
+          'settings-section-tables',
+          'settings-section-horaires',
+          'settings-section-voix'
+        ];
+        sectionIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            // Sauvegarder la position d'origine pour restituer après fermeture
+            if (!el._origParent) {
+              el._origParent = el.parentElement;
+              el._origNext = el.nextElementSibling;
+            }
+            // Forcer la visibilité (override le display:none de .settings-section-hideable)
+            el.style.display = '';
+            accordion.appendChild(el);
+          }
         });
       }, 50);
     }
@@ -14826,6 +14838,26 @@
       }
       delete popup.dataset.hasCalendrier;
     }
+    // Si les sections mon-resto ont été déplacées dans la popup, les restaurer
+    const sectionIds = [
+      'settings-section-restaurant',
+      'settings-section-tables',
+      'settings-section-horaires',
+      'settings-section-voix'
+    ];
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el._origParent) {
+        // Restaurer le display:none CSS (vis hideable)
+        el.style.display = '';
+        // Replacer à sa position d'origine
+        if (el._origNext && el._origNext.parentElement === el._origParent) {
+          el._origParent.insertBefore(el, el._origNext);
+        } else {
+          el._origParent.appendChild(el);
+        }
+      }
+    });
     if (popup) {
       popup.classList.remove('visible');
       popup.style.transform = '';

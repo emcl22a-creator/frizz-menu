@@ -2283,6 +2283,82 @@
     padding: 0;
   }
 
+  /* ─── Résas non placées (sans table_id) ─── */
+  .service-unplaced-wrap {
+    margin: 0 16px 14px;
+    background: rgba(255, 159, 10, 0.08);
+    border: 1px solid rgba(255, 159, 10, 0.25);
+    border-radius: 14px;
+    padding: 12px;
+    animation: cascadeIn 0.4s ease-out 0.05s backwards;
+  }
+  .service-unplaced-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FF9F0A;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .service-unplaced-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .service-unplaced-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(28, 28, 30, 0.6);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .service-unplaced-row:active {
+    transform: scale(0.98);
+    background: rgba(28, 28, 30, 0.8);
+  }
+  .service-unplaced-row-time {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    width: 54px;
+    flex-shrink: 0;
+    letter-spacing: -0.3px;
+  }
+  .service-unplaced-row-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .service-unplaced-row-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+  }
+  .service-unplaced-row-meta {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1px;
+  }
+  .service-unplaced-row-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: #FF9F0A;
+    padding: 6px 10px;
+    background: rgba(255, 159, 10, 0.12);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
   /* ─── TABLEAU Tables × Créneaux avec colonne fixe ─── */
   .service-table-wrap {
     margin: 0 16px;
@@ -8361,6 +8437,15 @@
     <!-- Contenu animable (swipable) -->
     <div class="service-animatable" id="serviceAnimatable">
 
+      <!-- Résas non placées (pas de table_id) -->
+      <div class="service-unplaced-wrap" id="serviceUnplacedWrap" style="display:none;">
+        <div class="service-unplaced-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="serviceUnplacedTitle">Réservation à placer</span>
+        </div>
+        <div class="service-unplaced-list" id="serviceUnplacedList"></div>
+      </div>
+
       <!-- TABLEAU Tables × Créneaux (avec colonne Table fixe à gauche) -->
       <div class="service-table-wrap" id="serviceTableWrap">
         <!-- Colonne fixe à gauche (Table + nom des tables) -->
@@ -11364,6 +11449,62 @@
     const counterEl = document.getElementById('serviceCounterText');
     if (counterEl) {
       counterEl.textContent = `${totalResas} résa${totalResas > 1 ? 's' : ''} · ${totalCouverts} couvert${totalCouverts > 1 ? 's' : ''}`;
+    }
+
+    // ── Séparer résas placées (avec table_id) et non placées ──
+    const unplacedResas = dayResas.filter(r => !r.table_id);
+    const placedResas = dayResas.filter(r => !!r.table_id);
+
+    // ── Rendre section non placées ──
+    const unplacedWrap = document.getElementById('serviceUnplacedWrap');
+    const unplacedList = document.getElementById('serviceUnplacedList');
+    const unplacedTitle = document.getElementById('serviceUnplacedTitle');
+    if (unplacedWrap && unplacedList) {
+      if (unplacedResas.length === 0) {
+        unplacedWrap.style.display = 'none';
+        unplacedList.innerHTML = '';
+      } else {
+        unplacedWrap.style.display = 'block';
+        if (unplacedTitle) {
+          unplacedTitle.textContent = unplacedResas.length === 1
+            ? 'Réservation à placer'
+            : `${unplacedResas.length} réservations à placer`;
+        }
+        const escHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
+          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        })[c]);
+        unplacedList.innerHTML = unplacedResas
+          .sort((a, b) => String(a.heure_reservation || '').localeCompare(String(b.heure_reservation || '')))
+          .map(r => {
+            const heure = String(r.heure_reservation || r.heure || '').slice(0, 5) || '—';
+            const nom = escHtml(r.client_nom || r.client_name || r.nom || 'Client');
+            const couverts = parseInt(r.nb_couverts || r.couverts) || 0;
+            const emplacement = r.emplacement === 'interieur' ? 'Intérieur'
+                              : r.emplacement === 'exterieur' ? 'Extérieur'
+                              : 'Peu importe';
+            const couvertsStr = couverts ? `${couverts} couvert${couverts > 1 ? 's' : ''}` : '';
+            return `
+              <div class="service-unplaced-row" data-resa-id="${escHtml(r.id)}">
+                <div class="service-unplaced-row-time">${heure}</div>
+                <div class="service-unplaced-row-info">
+                  <div class="service-unplaced-row-name">${nom}</div>
+                  <div class="service-unplaced-row-meta">${couvertsStr}${couvertsStr && emplacement ? ' · ' : ''}${emplacement}</div>
+                </div>
+                <div class="service-unplaced-row-action">Placer</div>
+              </div>
+            `;
+          }).join('');
+        // Bind clic : ouvrir la résa en mode édition pour choisir une table
+        unplacedList.querySelectorAll('.service-unplaced-row[data-resa-id]').forEach(row => {
+          row.addEventListener('click', () => {
+            const id = row.dataset.resaId;
+            const resa = (allReservations || []).find(r => String(r.id) === String(id));
+            if (resa && typeof openResaForm === 'function') {
+              try { openResaForm('edit', resa); } catch (err) { console.warn('openResaForm:', err); }
+            }
+          });
+        });
+      }
     }
 
     // ── Stubs KPI pour rétrocompat ──

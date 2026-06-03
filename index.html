@@ -447,28 +447,9 @@
   .health-card--green {
     background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
   }
-  /* Apple TV+ (noir mat) — Calendrier */
+  /* Bleu Apple Maps — Calendrier */
   .health-card--blue {
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
-    border: 0.5px solid rgba(255, 255, 255, 0.08);
-    position: relative;
-  }
-  /* Contour stylé : double bordure subtile avec highlight haut + ombre intérieure */
-  .health-card--blue::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(160deg,
-      rgba(255, 255, 255, 0.25) 0%,
-      rgba(255, 255, 255, 0.08) 40%,
-      rgba(255, 255, 255, 0.02) 70%,
-      rgba(255, 255, 255, 0.10) 100%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    pointer-events: none;
+    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
   }
   .health-card--yellow {
     background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
@@ -730,7 +711,23 @@
     letter-spacing: 0.2px;
   }
 
-  /* ═══ Icône iOS Calendrier : grosse date avec mois (carte Calendrier) ═══ */
+  /* ═══ Sparkline (mini-courbe) carte Calendrier ═══ */
+  .health-card-chart--cal-spark {
+    width: 80px;
+    height: 44px;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    align-self: flex-end;
+    padding: 0;
+  }
+  .health-card-chart--cal-spark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ═══ Icône iOS Calendrier : grosse date avec mois (ANCIEN, gardé en backup) ═══ */
   .health-card-chart--cal-date {
     width: auto;
     height: 60px;
@@ -1924,7 +1921,7 @@
 
   /* Peek 1 = Calendrier = Apple TV+ (noir mat) */
   .fzp-peek--blue {
-    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
+    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
   }
   /* Peek 2 = Notification = Apple Music (rose/rouge) */
   .fzp-peek--steel {
@@ -2574,7 +2571,7 @@
   /* ─── BANDEAU bleu Frizz unifié ─── */
   .service-banner {
     margin: 0 16px 16px;
-    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
+    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
     border-radius: 18px;
     padding: 16px 18px;
     display: flex;
@@ -6804,7 +6801,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
     color: white;
     display: flex;
     align-items: center;
@@ -8215,7 +8212,7 @@
     bottom: 30px;
     width: 48px;
     height: 48px;
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
     border: 0.5px solid rgba(255, 255, 255, 0.15);
     color: #fff;
     border-radius: 50%;
@@ -8483,16 +8480,27 @@
             </div>
             <div class="health-card-title">Calendrier</div>
             <div class="health-card-meta">
-              <span id="accueilResasMeta">ce mois</span>
+              <span id="accueilResasMeta">voir</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilResasValue">0</span></div>
-            <div class="health-card-chart health-card-chart--cal-date" id="accueilResasChart" aria-hidden="true">
-              <!-- Icône iOS Calendrier : grosse date avec mois au-dessus -->
-              <div class="cal-date-month" id="accueilCalMonth">JUIN</div>
-              <div class="cal-date-day" id="accueilCalDay">3</div>
+            <div class="health-card-chart health-card-chart--cal-spark" id="accueilResasChart" aria-hidden="true">
+              <!-- Sparkline 7 jours façon Apple Health/Stocks + dot "aujourd'hui" -->
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <!-- Ligne de fond (axe) -->
+                <line x1="4" y1="40" x2="76" y2="40" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-linecap="round"/>
+                <!-- Courbe sparkline -->
+                <path d="M 5,32 L 17,28 L 29,18 L 41,22 L 53,12 L 65,16 L 75,8"
+                      fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Aire sous la courbe (léger gradient blanc transparent) -->
+                <path d="M 5,32 L 17,28 L 29,18 L 41,22 L 53,12 L 65,16 L 75,8 L 75,40 L 5,40 Z"
+                      fill="rgba(255,255,255,0.12)"/>
+                <!-- Dot final "aujourd'hui" -->
+                <circle cx="75" cy="8" r="3.5" fill="#ffffff"/>
+                <circle cx="75" cy="8" r="2" fill="#0A84FF"/>
+              </svg>
             </div>
           </div>
         </button>
@@ -14440,7 +14448,7 @@
           // Le dessin (3 lignes agenda) est désormais statique dans le HTML, pas généré par JS
           // Mettre à jour le sous-label
           const elResasMeta = $('accueilResasMeta');
-          if (elResasMeta) elResasMeta.textContent = resasUpcoming > 0 ? 'à venir' : 'au total';
+          if (elResasMeta) elResasMeta.textContent = resasUpcoming > 0 ? 'à venir' : 'voir';
         }
 
         // Activités à traiter

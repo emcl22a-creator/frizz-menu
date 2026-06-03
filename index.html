@@ -1716,24 +1716,31 @@
 
   /* ═══ HEADER ACCUEIL (Bonjour + sélecteur de vue) ═══ */
   .accueil-header {
-    padding: 8px 20px 14px;
+    padding: 12px 20px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
   }
+  .accueil-greeting-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+  }
   .accueil-greeting {
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 500;
     color: #fff;
-    letter-spacing: -0.4px;
+    letter-spacing: -0.2px;
     line-height: 1.2;
-    min-height: 28px; /* éviter saut layout pendant le typing */
+    min-height: 20px;
   }
   .accueil-greeting .typewriter-caret {
     display: inline-block;
     width: 2px;
-    height: 22px;
+    height: 16px;
     background: #0A84FF;
     margin-left: 2px;
     vertical-align: text-bottom;
@@ -1742,6 +1749,22 @@
   @keyframes typewriterBlink {
     0%, 49% { opacity: 1; }
     50%, 100% { opacity: 0; }
+  }
+  /* Wave hello animation (l'icône 👋 qui salue) */
+  .accueil-greeting-wave {
+    display: inline-block;
+    font-size: 17px;
+    line-height: 1;
+    transform-origin: 70% 70%;
+    animation: waveHello 2.5s ease-in-out infinite;
+  }
+  @keyframes waveHello {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    30% { transform: rotate(14deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
   }
   .accueil-view-switch {
     background: rgba(255, 255, 255, 0.06);
@@ -1767,12 +1790,17 @@
     opacity: 0.5;
   }
 
-  /* ═══ VUE FRIZZ+ — Peek stack ═══ */
+  /* ═══ VUE FRIZZ+ — Peek stack (état COLLAPSED par défaut) ═══ */
   .health-cards-frizzplus {
     position: relative;
     padding: 0 20px;
     height: 380px;
     margin-bottom: 24px;
+    /* En état "expanded" : on augmente la hauteur pour contenir les 4 cartes en pleine taille */
+    transition: height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1);
+  }
+  .health-cards-frizzplus.is-expanded {
+    height: 580px;
   }
   .fzp-peek {
     position: absolute;
@@ -1783,10 +1811,38 @@
     cursor: pointer;
     text-align: left;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 0.15s;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.20);
+    overflow: hidden;
+    transition:
+      top 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      left 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      right 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      border-radius 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      transform 0.15s;
   }
-  .fzp-peek:active { transform: translateY(-1px); }
+  .fzp-peek:active { transform: scale(0.99); }
+
+  /* Positions par défaut (collapsed - peek stack) */
+  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-1 { top: 0;  left: 30px; right: 30px; height: 48px; border-radius: 22px 22px 0 0; }
+  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-2 { top: 38px; left: 20px; right: 20px; height: 48px; border-radius: 22px 22px 0 0; }
+  .health-cards-frizzplus:not(.is-expanded) .fzp-peek-3 { top: 76px; left: 10px; right: 10px; height: 48px; border-radius: 22px 22px 0 0; }
+
+  /* Positions en état expanded (B3 pop expand : toutes les peek deviennent des cartes pleines) */
+  .health-cards-frizzplus.is-expanded .fzp-peek-1 { top: 0;   left: 0; right: 0; height: 110px; border-radius: 22px; }
+  .health-cards-frizzplus.is-expanded .fzp-peek-2 { top: 122px; left: 0; right: 0; height: 110px; border-radius: 22px; }
+  .health-cards-frizzplus.is-expanded .fzp-peek-3 { top: 244px; left: 0; right: 0; height: 110px; border-radius: 22px; }
+
+  /* Pop : léger overshoot (scale > 1) au moment du clic switch */
+  @keyframes fzpPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .health-cards-frizzplus.is-expanded .fzp-peek {
+    animation: fzpPop 0.5s ease-out;
+  }
+
   .fzp-peek--blue {
     background: linear-gradient(135deg, #4DA2FF 0%, #1E64FF 50%, #0A4FE5 100%);
     box-shadow: 0 -2px 8px rgba(10, 79, 229, 0.15);
@@ -1801,6 +1857,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+  /* En mode expanded : afficher la valeur grande à droite */
+  .fzp-peek-expanded-value {
+    display: none;
+    font-size: 32px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+    margin-top: 14px;
+    margin-left: 30px;
+    opacity: 0;
+    transition: opacity 0.25s ease-out 0.2s;
+  }
+  .health-cards-frizzplus.is-expanded .fzp-peek-expanded-value {
+    display: block;
+    opacity: 1;
   }
   .fzp-peek-icon {
     width: 22px;
@@ -1843,16 +1917,22 @@
     border: 0.5px solid rgba(255, 255, 255, 0.10);
     border-radius: 22px;
     padding: 22px 20px;
-    height: 266px;
-    margin: 0 20px;
     box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.50);
     cursor: pointer;
     text-align: left;
     color: #fff;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 0.15s;
+    transition:
+      top 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      height 0.45s cubic-bezier(0.32, 1.20, 0.64, 1),
+      transform 0.15s;
+    overflow: hidden;
   }
   .fzp-hero:active { transform: scale(0.995); }
+  /* Position défaut (collapsed) */
+  .health-cards-frizzplus:not(.is-expanded) .fzp-hero { top: 114px; height: 266px; }
+  /* Position expanded : Mon restaurant descend en bas */
+  .health-cards-frizzplus.is-expanded .fzp-hero { top: 366px; height: 200px; }
   .fzp-hero-top {
     display: flex;
     align-items: center;
@@ -2063,7 +2143,11 @@
   .settings-section-hideable {
     display: none;
   }
-  /* Quand on arrive depuis Mon restaurant, ces sections sont visibles */
+  /* Exception : si la section est à l'intérieur de la popup Mon restaurant, on l'affiche */
+  #monRestoAccordion .settings-section-hideable {
+    display: block !important;
+  }
+  /* Quand on arrive depuis Mon restaurant (legacy), ces sections sont visibles */
   #page-settings.is-from-monresto .settings-section-hideable {
     display: block;
   }
@@ -8009,7 +8093,9 @@
 
       <!-- ═══ Bonjour [prénom] + sélecteur de vue ═══ -->
       <div class="accueil-header">
-        <div class="accueil-greeting" id="accueilGreeting"></div>
+        <div class="accueil-greeting-wrap">
+          <span class="accueil-greeting" id="accueilGreeting"></span><span class="accueil-greeting-wave" id="accueilGreetingWave" style="display:none;">👋</span>
+        </div>
         <button class="accueil-view-switch" id="accueilViewSwitch" type="button">
           <span id="accueilViewSwitchLabel">Vue Frizz+</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6"/></svg>
@@ -8019,30 +8105,33 @@
       <!-- ═══ VUE FRIZZ+ (S3 Peek stack) — défaut ═══ -->
       <div class="health-cards-frizzplus" id="healthCardsFrizzPlus">
         <!-- Les 3 mini-cartes peek en haut (header seulement) -->
-        <button class="fzp-peek fzp-peek--blue" data-popup="reservations" type="button" style="top:0; left:30px; right:30px;">
+        <button class="fzp-peek fzp-peek-1 fzp-peek--blue" data-popup="reservations" type="button">
           <div class="fzp-peek-row">
             <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
             <div class="fzp-peek-title">Calendrier · <span id="fzpPeekResas">0</span></div>
             <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
+          <div class="fzp-peek-expanded-value" id="fzpPeekResasExp">0 résas</div>
         </button>
-        <button class="fzp-peek fzp-peek--steel" data-popup="activites" type="button" style="top:38px; left:20px; right:20px;">
+        <button class="fzp-peek fzp-peek-2 fzp-peek--steel" data-popup="activites" type="button">
           <div class="fzp-peek-row">
             <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
             <div class="fzp-peek-title">Notification · <span id="fzpPeekNotif">0</span></div>
             <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
+          <div class="fzp-peek-expanded-value" id="fzpPeekNotifExp">0 à traiter</div>
         </button>
-        <button class="fzp-peek fzp-peek--graphite" data-popup="statistique" type="button" style="top:76px; left:10px; right:10px;">
+        <button class="fzp-peek fzp-peek-3 fzp-peek--graphite" data-popup="statistique" type="button">
           <div class="fzp-peek-row">
             <div class="fzp-peek-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
             <div class="fzp-peek-title">Statistique · <span id="fzpPeekStat">—</span></div>
             <svg class="fzp-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
+          <div class="fzp-peek-expanded-value" id="fzpPeekStatExp">vs M-1</div>
         </button>
 
         <!-- Carte HERO Mon restaurant en focus -->
-        <button class="fzp-hero" data-popup="mon-restaurant" type="button" style="top:114px;">
+        <button class="fzp-hero" data-popup="mon-restaurant" type="button">
           <div class="fzp-hero-top">
             <div class="fzp-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             <div class="fzp-hero-title">Mon restaurant</div>
@@ -14153,30 +14242,33 @@
           });
         } catch (e) { console.warn('Complétion mon resto:', e); }
 
-        // === MAJ valeurs Frizz+ peek cards ===
+        // === MAJ valeurs Frizz+ peek cards (collapsed + expanded) ===
         try {
+          // Calendrier
           const elPeekResas = document.getElementById('fzpPeekResas');
-          if (elPeekResas) {
-            const v = document.getElementById('accueilResasValue');
-            elPeekResas.textContent = v ? v.textContent : '0';
-          }
+          const elPeekResasExp = document.getElementById('fzpPeekResasExp');
+          const vResas = document.getElementById('accueilResasValue');
+          const resasNb = vResas ? vResas.textContent : '0';
+          if (elPeekResas) elPeekResas.textContent = resasNb;
+          if (elPeekResasExp) elPeekResasExp.textContent = `${resasNb} résa${parseInt(resasNb) > 1 ? 's' : ''}`;
+          // Notification
           const elPeekNotif = document.getElementById('fzpPeekNotif');
-          if (elPeekNotif) {
-            const v = document.getElementById('accueilActivitesValue');
-            elPeekNotif.textContent = v ? v.textContent : '0';
-          }
+          const elPeekNotifExp = document.getElementById('fzpPeekNotifExp');
+          const vNotif = document.getElementById('accueilActivitesValue');
+          const notifNb = vNotif ? vNotif.textContent : '0';
+          if (elPeekNotif) elPeekNotif.textContent = notifNb;
+          if (elPeekNotifExp) elPeekNotifExp.textContent = `${notifNb} à traiter`;
+          // Statistique
           const elPeekStat = document.getElementById('fzpPeekStat');
+          const elPeekStatExp = document.getElementById('fzpPeekStatExp');
           if (elPeekStat) {
-            const v = document.getElementById('accueilConversionValue');
-            if (v && v.textContent && v.textContent !== '0') {
-              // Récupérer evolPercent calculé plus haut
-              if (typeof evolPercent !== 'undefined') {
-                const sign = evolPercent > 0 ? '+' : '';
-                elPeekStat.textContent = sign + evolPercent + '%';
-              } else {
-                elPeekStat.textContent = v.textContent + '%';
-              }
+            let statText = '—';
+            if (typeof evolPercent !== 'undefined') {
+              const sign = evolPercent > 0 ? '+' : '';
+              statText = sign + evolPercent + '%';
             }
+            elPeekStat.textContent = statText;
+            if (elPeekStatExp) elPeekStatExp.textContent = statText + ' vs mois dernier';
           }
         } catch (e) { console.warn('Frizz+ peek update:', e); }
       }
@@ -14185,7 +14277,10 @@
       // ═══ Animation typewriter pour "Bonjour, [prénom]" ═══
       function typewriterGreeting(text) {
         const el = document.getElementById('accueilGreeting');
+        const wave = document.getElementById('accueilGreetingWave');
         if (!el) return;
+        // Reset wave
+        if (wave) wave.style.display = 'none';
         el.innerHTML = '';
         const caret = document.createElement('span');
         caret.className = 'typewriter-caret';
@@ -14199,11 +14294,20 @@
             i++;
             setTimeout(type, speed);
           } else {
-            // À la fin, faire clignoter le caret encore 2s puis le retirer
-            setTimeout(() => { try { caret.remove(); } catch (e) {} }, 2000);
+            // Retirer le caret et afficher l'icône 👋 qui salue
+            setTimeout(() => {
+              try { caret.remove(); } catch (e) {}
+              if (wave) {
+                wave.style.display = 'inline-block';
+                // Forcer le redémarrage de l'animation
+                wave.style.animation = 'none';
+                void wave.offsetWidth;
+                wave.style.animation = '';
+              }
+            }, 200);
           }
         }
-        // Démarrer après un léger délai (pour laisser la page s'afficher)
+        // Démarrer après un léger délai
         setTimeout(type, 200);
       }
       // Calculer le prénom depuis currentSalon.prenom_proprietaire ou défaut
@@ -14313,6 +14417,52 @@
         const sheet = document.getElementById('viewPickerSheet');
         if (sheet) sheet.classList.remove('visible');
       }
+
+      // ═══ FRIZZ+ : Pop expand au scroll vers le bas ═══
+      function setupFrizzPlusScrollExpand() {
+        const fzpEl = document.getElementById('healthCardsFrizzPlus');
+        if (!fzpEl || fzpEl._scrollBound) return;
+        const THRESHOLD = 40; // pixels de scroll avant déclenchement
+        let lastScrollY = window.scrollY || window.pageYOffset || 0;
+        let ticking = false;
+        function update() {
+          const sy = window.scrollY || window.pageYOffset || 0;
+          // Si on est sur Accueil et qu'on a scrollé vers le bas
+          const pageAccueil = document.getElementById('page-accueil');
+          if (!pageAccueil || pageAccueil.classList.contains('hidden')) {
+            ticking = false;
+            return;
+          }
+          // Si la vue Classique est active, ne rien faire
+          const fzpVisible = fzpEl.style.display !== 'none';
+          if (!fzpVisible) {
+            fzpEl.classList.remove('is-expanded');
+            ticking = false;
+            return;
+          }
+          if (sy > THRESHOLD) {
+            if (!fzpEl.classList.contains('is-expanded')) {
+              fzpEl.classList.add('is-expanded');
+            }
+          } else {
+            if (fzpEl.classList.contains('is-expanded')) {
+              fzpEl.classList.remove('is-expanded');
+            }
+          }
+          lastScrollY = sy;
+          ticking = false;
+        }
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+          }
+        }, { passive: true });
+        fzpEl._scrollBound = true;
+        // État initial
+        update();
+      }
+      setupFrizzPlusScrollExpand();
 
       // Bind clic sur les cartes pour ouvrir la popup
       document.querySelectorAll('.health-card[data-popup]').forEach(card => {

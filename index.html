@@ -447,27 +447,40 @@
   .health-card--green {
     background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
   }
-  /* Bleu Apple Maps — Calendrier */
-  .health-card--blue {
-    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
+  /* ═══ Toutes les cartes principales de l'accueil = TV+ noir mat avec contour stylé ═══ */
+  .health-card--blue,
+  .health-card--orange,
+  .health-card--gold,
+  .health-card--black {
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+  }
+  /* Contour stylé : double bordure subtile avec highlight haut + ombre intérieure */
+  .health-card--blue::before,
+  .health-card--orange::before,
+  .health-card--gold::before,
+  .health-card--black::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0.10) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
   }
   .health-card--yellow {
     background: linear-gradient(160deg, #FFD15A 0%, #FF9F0A 60%, #C66800 100%);
   }
   .health-card--pink {
     background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
-  }
-  /* Rouge Apple iOS — Notification (plus rouge) */
-  .health-card--orange {
-    background: linear-gradient(160deg, #FF453A 0%, #C50018 100%);
-  }
-  /* Apple Arcade (bleu/violet) — Statistique */
-  .health-card--gold {
-    background: linear-gradient(160deg, #5E5CE6 0%, #BF5AF2 100%);
-  }
-  /* Apple Fitness+ (vert/bleu) — Mon restaurant */
-  .health-card--black {
-    background: linear-gradient(160deg, #30D158 0%, #64D2FF 100%);
   }
   .health-card--purple {
     background: linear-gradient(160deg, #C088FF 0%, #8B5CF6 55%, #5B21B6 100%);
@@ -1921,7 +1934,7 @@
 
   /* Peek 1 = Calendrier = Apple TV+ (noir mat) */
   .fzp-peek--blue {
-    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
+    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
   }
   /* Peek 2 = Notification = Apple Music (rose/rouge) */
   .fzp-peek--steel {
@@ -2571,7 +2584,7 @@
   /* ─── BANDEAU bleu Frizz unifié ─── */
   .service-banner {
     margin: 0 16px 16px;
-    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
+    background: linear-gradient(135deg, #1C1C1E 0%, #000000 100%);
     border-radius: 18px;
     padding: 16px 18px;
     display: flex;
@@ -6801,7 +6814,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
     color: white;
     display: flex;
     align-items: center;
@@ -8212,7 +8225,7 @@
     bottom: 30px;
     width: 48px;
     height: 48px;
-    background: linear-gradient(160deg, #0A84FF 0%, #5E5CE6 100%);
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
     border: 0.5px solid rgba(255, 255, 255, 0.15);
     color: #fff;
     border-radius: 50%;
@@ -8499,7 +8512,7 @@
                       fill="rgba(255,255,255,0.12)"/>
                 <!-- Dot final "aujourd'hui" -->
                 <circle cx="75" cy="8" r="3.5" fill="#ffffff"/>
-                <circle cx="75" cy="8" r="2" fill="#0A84FF"/>
+                <circle cx="75" cy="8" r="2" fill="#1C1C1E"/>
               </svg>
             </div>
           </div>

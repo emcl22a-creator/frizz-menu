@@ -476,9 +476,9 @@
   .health-card--pink {
     background: linear-gradient(160deg, #FF7A95 0%, #FF375F 60%, #B82445 100%);
   }
-  /* Apple Music (rose/rouge) — Notification */
+  /* Rouge Apple iOS — Notification (plus rouge) */
   .health-card--orange {
-    background: linear-gradient(160deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(160deg, #FF453A 0%, #C50018 100%);
   }
   /* Apple Arcade (bleu/violet) — Statistique */
   .health-card--gold {
@@ -523,7 +523,7 @@
   .health-card--yellow .health-card-icon { color: #FF9F0A; }
   .health-card--pink .health-card-icon { color: #FF375F; }
   /* Notification = Apple Music (rose/rouge) */
-  .health-card--orange .health-card-icon { color: #FA233B; }
+  .health-card--orange .health-card-icon { color: #C50018; }
   /* Statistique = Apple Arcade (violet) */
   .health-card--gold .health-card-icon { color: #5E5CE6; }
   .health-card--gold .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
@@ -730,7 +730,37 @@
     letter-spacing: 0.2px;
   }
 
-  /* ═══ Mini page calendrier (carte Calendrier) ═══ */
+  /* ═══ Icône iOS Calendrier : grosse date avec mois (carte Calendrier) ═══ */
+  .health-card-chart--cal-date {
+    width: auto;
+    height: 60px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: flex-end;
+    padding: 0 6px;
+    gap: 0;
+  }
+  .cal-date-month {
+    font-size: 11px;
+    font-weight: 700;
+    color: #FF453A;
+    letter-spacing: 1.2px;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .cal-date-day {
+    font-size: 38px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ═══ Mini page calendrier (ANCIEN, gardé en backup) ═══ */
   .health-card-chart--cal-mini {
     width: 72px;
     height: 60px;
@@ -1787,12 +1817,7 @@
     gap: 12px;
   }
   .accueil-greeting-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    min-width: 0;
-    flex: 1;
-    padding-left: 5.5px;
+    display: none !important;
   }
   .accueil-greeting {
     font-size: 19px;
@@ -1903,7 +1928,7 @@
   }
   /* Peek 2 = Notification = Apple Music (rose/rouge) */
   .fzp-peek--steel {
-    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
   }
   /* Peek 3 = Statistique = Apple Arcade (bleu/violet) */
   .fzp-peek--graphite {
@@ -1949,7 +1974,7 @@
   }
   .fzp-peek--blue .fzp-peek-icon { background: rgba(255, 255, 255, 0.12); }
   .fzp-peek--blue .fzp-peek-icon svg { color: #fff; }
-  .fzp-peek--steel .fzp-peek-icon svg { color: #FA233B; }
+  .fzp-peek--steel .fzp-peek-icon svg { color: #C50018; }
   .fzp-peek--graphite .fzp-peek-icon svg { color: #5E5CE6; }
   .fzp-peek-title {
     font-size: 12px;
@@ -3457,7 +3482,7 @@
   }
   .popup-acti-card--green {
     /* Apple Music rose pour matcher la carte Notification */
-    background: linear-gradient(160deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(160deg, #FF453A 0%, #C50018 100%);
   }
   .popup-acti-card--glass {
     /* Verre dépoli iOS */
@@ -6502,7 +6527,7 @@
   }
   /* Plan Starter = gradient Apple Music (rose) */
   .plan-card[data-plan="starter"] .plan-badge.current {
-    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
     color: #fff;
   }
   /* Plan Premium = gradient Apple Arcade (violet) */
@@ -6516,7 +6541,7 @@
     box-shadow: 0 8px 24px rgba(48, 209, 88, 0.20);
   }
   .plan-card[data-plan="starter"].current {
-    border-color: #FA233B;
+    border-color: #C50018;
     box-shadow: 0 8px 24px rgba(250, 35, 59, 0.20);
   }
   .plan-card[data-plan="premium"].current {
@@ -6575,7 +6600,7 @@
   }
   /* Frizz Starter = Apple Music (rose/rouge) */
   .plan-name.starter {
-    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -6670,7 +6695,7 @@
   .plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   /* Frizz Starter = Apple Music rose */
   .plan-btn[data-plan="starter"] {
-    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    background: linear-gradient(135deg, #FF453A 0%, #C50018 100%);
     color: #fff;
   }
   /* Frizz Pro = Apple Fitness+ vert/bleu (= carte Mon restaurant) */
@@ -8464,25 +8489,10 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilResasValue">0</span></div>
-            <div class="health-card-chart health-card-chart--cal-mini" id="accueilResasChart" aria-hidden="true">
-              <!-- Mini page calendrier façon icône iOS -->
-              <div class="cal-mini-page">
-                <div class="cal-mini-header">JUIN</div>
-                <div class="cal-mini-grid">
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell is-today"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                  <span class="cal-mini-cell"></span>
-                </div>
-              </div>
+            <div class="health-card-chart health-card-chart--cal-date" id="accueilResasChart" aria-hidden="true">
+              <!-- Icône iOS Calendrier : grosse date avec mois au-dessus -->
+              <div class="cal-date-month" id="accueilCalMonth">JUIN</div>
+              <div class="cal-date-day" id="accueilCalDay">3</div>
             </div>
           </div>
         </button>
@@ -14602,6 +14612,21 @@
         const text = prenom ? `Bonjour, ${prenom}` : 'Bonjour';
         typewriterGreeting(text);
       };
+      // ═══ Mise à jour de la date sur la carte Calendrier (style icône iOS) ═══
+      function updateAccueilCalDate() {
+        try {
+          const monthEl = document.getElementById('accueilCalMonth');
+          const dayEl = document.getElementById('accueilCalDay');
+          if (!monthEl || !dayEl) return;
+          const now = new Date();
+          const moisLong = ['JANV','FÉVR','MARS','AVRIL','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+          monthEl.textContent = moisLong[now.getMonth()];
+          dayEl.textContent = String(now.getDate());
+        } catch (e) {}
+      }
+      // Première mise à jour au load + appel quotidien
+      setTimeout(() => { try { updateAccueilCalDate(); } catch (e) {} }, 50);
+      window.__updateAccueilCalDate = updateAccueilCalDate;
       // Première animation au load
       setTimeout(() => { try { window.__animateGreeting(); } catch (e) {} }, 300);
 

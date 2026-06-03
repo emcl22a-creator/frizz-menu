@@ -2535,8 +2535,9 @@
   }
   .service-banner-counter {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff;
     margin-top: 27px;
+    font-weight: 500;
   }
   .service-banner-right {
     display: flex;
@@ -2701,9 +2702,9 @@
   }
   .service-pill:active { transform: scale(0.95); }
   .service-pill--reserved {
-    background: #0A84FF;
-    color: #fff;
-    font-weight: 500;
+    background: #ffffff;
+    color: #000000;
+    font-weight: 600;
   }
   .service-pill--free {
     background: transparent;
@@ -2711,8 +2712,8 @@
     color: rgba(255, 255, 255, 0.45);
   }
   .service-pill--arrived {
-    background: #0A84FF;
-    color: #fff;
+    background: #ffffff;
+    color: #000000;
     font-weight: 500;
     box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3);
   }
@@ -5042,7 +5043,7 @@
   .frizz-number-value {
     font-size: 22px;
     font-weight: 600;
-    color: var(--blue);
+    color: #ffffff;
     letter-spacing: -0.5px;
     font-variant-numeric: tabular-nums;
     margin-bottom: 12px;
@@ -5052,8 +5053,8 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: var(--blue-light);
-    color: var(--blue);
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
     border-radius: 100px;
     font-size: 14px;
     font-weight: 600;
@@ -6511,12 +6512,6 @@
   #page-settings .voice-card.is-selected .voice-card-check {
     color: #ffffff !important;
   }
-  /* EXCEPTION : tous les éléments à l'intérieur d'une .plan-card gardent leurs couleurs (gérées par plan-card[data-plan=...]) */
-  #page-settings .plan-card,
-  #page-settings .plan-card * {
-    color: inherit !important;
-    stroke: inherit !important;
-  }
   /* MAIS le badge "Plan actuel" garde EXPLICITEMENT sa couleur de plan */
   #page-settings .plan-badge.current {
     color: #fff !important; /* texte du badge reste blanc lisible sur fond coloré */
@@ -6534,15 +6529,23 @@
     color: var(--label);
     letter-spacing: -0.4px;
   }
-  .plan-name.starter { color: #6B7280; }
-  .plan-name.pro { 
-    background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  /* Frizz Starter = Apple Music (rose/rouge) */
+  .plan-name.starter {
+    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  /* Frizz Pro = Apple Fitness+ (vert/bleu) = couleur carte Mon restaurant */
+  .plan-name.pro { 
+    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  /* Frizz Premium = Apple Arcade (bleu/violet) */
   .plan-name.premium { 
-    background: linear-gradient(135deg, #AF52DE 0%, #FF2D55 100%);
+    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -6621,19 +6624,25 @@
   }
   .plan-btn:active { transform: scale(0.97); }
   .plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .plan-btn.primary {
-    background: var(--blue);
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+  /* Frizz Starter = Apple Music rose */
+  .plan-btn[data-plan="starter"] {
+    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    color: #fff;
   }
-  .plan-btn.premium {
-    background: linear-gradient(135deg, #AF52DE 0%, #FF2D55 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
+  /* Frizz Pro = Apple Fitness+ vert/bleu (= carte Mon restaurant) */
+  .plan-btn.primary,
+  .plan-btn[data-plan="pro"] {
+    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
+    color: #fff;
+  }
+  /* Frizz Premium = Apple Arcade violet */
+  .plan-btn.premium,
+  .plan-btn[data-plan="premium"] {
+    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
+    color: #fff;
   }
   .plan-btn.current-plan {
-    /* La couleur de fond vient des classes primary/premium (ou du défaut blanc pour Starter).
-       On ajoute juste une icône check via le contenu et on garde la couleur du plan. */
+    /* La couleur du bouton "Plan actuel" reste celle du plan (Starter rose / Pro vert / Premium violet) */
   }
 
   /* Compteur d'appels (si abonné) */
@@ -8137,12 +8146,11 @@
     bottom: 30px;
     width: 48px;
     height: 48px;
-    background: var(--blue);
-    border: none;
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
     color: #fff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(10, 132, 255, 0.50);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -5277,6 +5277,50 @@
   .agenda-badge.src-frizz { background: rgba(255, 149, 0, 0.12); color: #C76B00; }
   .agenda-badge.src-manual { background: var(--blue-light); color: var(--blue); }
 
+  /* ─── Header de service (Midi / Soir) ─── */
+  .agenda-service-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 6px 20px;
+    margin-top: 4px;
+  }
+  .agenda-service-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .agenda-service-meta {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.2px;
+  }
+  /* ─── Ligne meta : couverts + emplacement ─── */
+  .agenda-meta-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 6px;
+  }
+  .agenda-couverts {
+    font-weight: 500;
+  }
+  .agenda-dot-sep {
+    color: rgba(255, 255, 255, 0.30);
+    font-weight: 700;
+  }
+  .agenda-emp {
+    font-weight: 500;
+  }
+  .agenda-emp.emp-int { color: rgba(94, 92, 230, 0.95); }
+  .agenda-emp.emp-ext { color: rgba(48, 209, 88, 0.95); }
+  .agenda-emp.emp-any { color: rgba(255, 255, 255, 0.45); }
+
   /* ═══ POPUP NOTIFICATIONS ═══ */
   .notif-backdrop {
     position: fixed;
@@ -10266,26 +10310,60 @@
           <span class="agenda-day-name">${dayLabel(key)}</span>
           <span class="agenda-day-count">${items.length} réservation${items.length > 1 ? 's' : ''}</span>
         </div>`;
-      items.forEach(r => {
-        const isFrizz = (r.source === 'ia' || r.source === 'vapi');
-        const cls = isFrizz ? 'src-frizz' : 'src-manual';
-        const icon = isFrizz ? ICON_FRIZZ : ICON_MANUAL;
-        const badge = isFrizz ? 'Frizz' : 'Manuelle';
-        const heure = formatHeure(r.heure_reservation);
-        const couverts = parseInt(r.nb_couverts) || '?';
-        html += `
-        <div class="agenda-item" data-resa-id="${escapeHtml(r.id)}">
-          <div class="agenda-time">${heure}</div>
-          <div class="agenda-rail"><span class="agenda-dot ${cls}"></span></div>
-          <div class="agenda-card">
-            <div class="agenda-avatar ${cls}">${icon}</div>
-            <div class="agenda-text">
-              <div class="agenda-name">Table de ${couverts} · ${escapeHtml(r.client_nom || 'Client')}</div>
-              <span class="agenda-badge ${cls}">${badge}</span>
-            </div>
-          </div>
-        </div>`;
+
+      // Séparer en services Midi (avant 17h) et Soir (17h et plus)
+      const midiItems = items.filter(r => {
+        const h = parseInt((r.heure_reservation || '').slice(0, 2)) || 0;
+        return h < 17;
       });
+      const soirItems = items.filter(r => {
+        const h = parseInt((r.heure_reservation || '').slice(0, 2)) || 0;
+        return h >= 17;
+      });
+
+      const renderService = (label, list) => {
+        if (list.length === 0) return '';
+        const totalCouverts = list.reduce((sum, r) => sum + (parseInt(r.nb_couverts) || 0), 0);
+        let block = `
+          <div class="agenda-service-header">
+            <span class="agenda-service-label">${label}</span>
+            <span class="agenda-service-meta">${list.length} résa${list.length > 1 ? 's' : ''} · ${totalCouverts} couvert${totalCouverts > 1 ? 's' : ''}</span>
+          </div>`;
+        list.forEach(r => {
+          const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+          const cls = isFrizz ? 'src-frizz' : 'src-manual';
+          const icon = isFrizz ? ICON_FRIZZ : ICON_MANUAL;
+          const badge = isFrizz ? 'Frizz' : 'Manuelle';
+          const heure = formatHeure(r.heure_reservation);
+          const couverts = parseInt(r.nb_couverts) || '?';
+          const nomClient = escapeHtml(r.client_nom || 'Client');
+          let emplacementText = '—';
+          let emplacementCls = 'emp-any';
+          if (r.emplacement === 'interieur') { emplacementText = 'Intérieur'; emplacementCls = 'emp-int'; }
+          else if (r.emplacement === 'exterieur') { emplacementText = 'Extérieur'; emplacementCls = 'emp-ext'; }
+          block += `
+          <div class="agenda-item" data-resa-id="${escapeHtml(r.id)}">
+            <div class="agenda-time">${heure}</div>
+            <div class="agenda-rail"><span class="agenda-dot ${cls}"></span></div>
+            <div class="agenda-card">
+              <div class="agenda-avatar ${cls}">${icon}</div>
+              <div class="agenda-text">
+                <div class="agenda-name">${nomClient}</div>
+                <div class="agenda-meta-line">
+                  <span class="agenda-couverts">${couverts} couvert${couverts > 1 ? 's' : ''}</span>
+                  <span class="agenda-dot-sep">·</span>
+                  <span class="agenda-emp ${emplacementCls}">${emplacementText}</span>
+                </div>
+                <span class="agenda-badge ${cls}">${badge}</span>
+              </div>
+            </div>
+          </div>`;
+        });
+        return block;
+      };
+
+      html += renderService('Midi', midiItems);
+      html += renderService('Soir', soirItems);
     });
     container.innerHTML = html;
 

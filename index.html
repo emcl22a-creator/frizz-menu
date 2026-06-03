@@ -587,26 +587,56 @@
     gap: 6px;
     padding: 0;
   }
-  .agenda-line {
+  .acc-agenda-line {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .agenda-dot {
+  .acc-agenda-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
     flex-shrink: 0;
   }
-  .agenda-bar {
+  .acc-agenda-bar {
     height: 6px;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.55);
   }
-  .agenda-bar--short  { width: 60px; background: rgba(255, 255, 255, 0.45); }
-  .agenda-bar--medium { width: 95px; background: rgba(255, 255, 255, 0.65); }
-  .agenda-bar--long   { width: 110px; background: rgba(255, 255, 255, 0.85); }
+  .acc-agenda-bar--short  { width: 60px; background: rgba(255, 255, 255, 0.45); }
+  .acc-agenda-bar--medium { width: 95px; background: rgba(255, 255, 255, 0.65); }
+  .acc-agenda-bar--long   { width: 110px; background: rgba(255, 255, 255, 0.85); }
+
+  /* Variant "monresto" : 4 mini-tiles 2x2 façon launchpad */
+  .health-card-chart--monresto {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .monresto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+    width: 56px;
+    height: 56px;
+  }
+  .monresto-tile {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .monresto-tile svg {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
   .health-card-chart--badge {
     width: 56px;
     height: 56px;
@@ -1241,7 +1271,7 @@
     letter-spacing: -1.5px;
     line-height: 1;
     margin-top: 14px;
-    color: #FF375F;
+    color: #8E8E93;
     font-variant-numeric: tabular-nums;
   }
   .stat-cell-b-sub {
@@ -1434,12 +1464,12 @@
   }
   .stat-bar-b-fill {
     height: 100%;
-    background: #FF375F;
+    background: #8E8E93;
     border-radius: 100px;
     transition: width 1s cubic-bezier(0.34, 1.20, 0.64, 1);
   }
-  .stat-bar-b-fill--soft { background: rgba(255, 55, 95, 0.6); }
-  .stat-bar-b-fill--softer { background: rgba(255, 55, 95, 0.3); }
+  .stat-bar-b-fill--soft { background: rgba(142, 142, 147, 0.6); }
+  .stat-bar-b-fill--softer { background: rgba(142, 142, 147, 0.35); }
 
   /* Carte 3 barres : répartition des appels */
   .stat-bars-card {
@@ -1667,7 +1697,97 @@
     font-weight: 500;
   }
 
-  /* ═══ POPUP MON RESTAURANT ═══ */
+  /* ═══ POPUP MON RESTAURANT (4 tuiles) ═══ */
+  /* Sections settings accessibles uniquement via Mon restaurant */
+  .settings-section-hideable {
+    display: none;
+  }
+  /* Quand on arrive depuis Mon restaurant, ces sections sont visibles */
+  #page-settings.is-from-monresto .settings-section-hideable {
+    display: block;
+  }
+  /* Quand on est focalisé sur UNE section spécifique, on cache les autres */
+  #page-settings.is-from-monresto.focus-restaurant .settings-section-hideable:not(#settings-section-restaurant) { display: none; }
+  #page-settings.is-from-monresto.focus-tables .settings-section-hideable:not(#settings-section-tables) { display: none; }
+  #page-settings.is-from-monresto.focus-horaires .settings-section-hideable:not(#settings-section-horaires) { display: none; }
+  #page-settings.is-from-monresto.focus-voix .settings-section-hideable:not(#settings-section-voix) { display: none; }
+  /* Quand on est dans une focus mode, on cache aussi les autres settings-sections (numéro Frizz, etc.) */
+  #page-settings.is-from-monresto.focus-restaurant .settings-section:not(.settings-section-hideable),
+  #page-settings.is-from-monresto.focus-tables .settings-section:not(.settings-section-hideable),
+  #page-settings.is-from-monresto.focus-horaires .settings-section:not(.settings-section-hideable),
+  #page-settings.is-from-monresto.focus-voix .settings-section:not(.settings-section-hideable) {
+    display: none;
+  }
+  .mon-resto-wrap {
+    padding: 0 20px 20px;
+  }
+  .mon-resto-tiles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mon-resto-tile {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    text-align: left;
+    color: #fff;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mon-resto-tile:active {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(0.99);
+  }
+  .mon-resto-tile-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #3A3A3D 0%, #1C1C1E 55%, #000 100%);
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .mon-resto-tile-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #fff;
+  }
+  .mon-resto-tile-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .mon-resto-tile-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .mon-resto-tile-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mon-resto-tile-chev {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+  }
+
+  /* (legacy) anciennes classes mon-resto-* gardées au cas où */
   .mon-resto-wrap {
     padding: 0 20px;
     display: flex;
@@ -7542,17 +7662,17 @@
             <div class="health-card-value"><span id="accueilResasValue">0</span></div>
             <div class="health-card-chart health-card-chart--agenda" id="accueilResasChart" aria-hidden="true">
               <!-- 3 lignes agenda style résa (le dot + la barre = un slot de résa) -->
-              <div class="agenda-line">
-                <span class="agenda-dot"></span>
-                <span class="agenda-bar agenda-bar--short"></span>
+              <div class="acc-agenda-line">
+                <span class="acc-agenda-dot"></span>
+                <span class="acc-agenda-bar acc-agenda-bar--short"></span>
               </div>
-              <div class="agenda-line">
-                <span class="agenda-dot"></span>
-                <span class="agenda-bar agenda-bar--long"></span>
+              <div class="acc-agenda-line">
+                <span class="acc-agenda-dot"></span>
+                <span class="acc-agenda-bar acc-agenda-bar--long"></span>
               </div>
-              <div class="agenda-line">
-                <span class="agenda-dot"></span>
-                <span class="agenda-bar agenda-bar--medium"></span>
+              <div class="acc-agenda-line">
+                <span class="acc-agenda-dot"></span>
+                <span class="acc-agenda-bar acc-agenda-bar--medium"></span>
               </div>
             </div>
           </div>
@@ -7650,7 +7770,16 @@
             </div>
           </div>
           <div class="health-card-body">
-            <div class="health-card-value" id="accueilRestaurantName" style="font-size:22px;">—</div>
+            <div class="health-card-value" id="accueilRestaurantName" style="font-size:22px; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">—</div>
+            <div class="health-card-chart health-card-chart--monresto" aria-hidden="true">
+              <!-- 4 carrés en grille 2×2 façon launchpad iOS -->
+              <div class="monresto-grid">
+                <div class="monresto-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+                <div class="monresto-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+                <div class="monresto-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+                <div class="monresto-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+              </div>
+            </div>
           </div>
         </button>
 
@@ -8097,7 +8226,7 @@
     </div>
 
     <!-- Section : Voix de l'assistant -->
-    <div class="settings-section">
+    <div class="settings-section settings-section-hideable" id="settings-section-voix">
       <div class="settings-section-title">Voix de l'assistant</div>
       <div class="settings-section-card">
 
@@ -8149,7 +8278,7 @@
     </div>
 
     <!-- Section : Mon restaurant -->
-    <div class="settings-section">
+    <div class="settings-section settings-section-hideable" id="settings-section-restaurant">
       <div class="settings-section-title">Mon restaurant</div>
       <div class="settings-section-card">
         <div class="settings-row editable" data-field="nom" data-type="text" data-label="Nom du restaurant">
@@ -8177,7 +8306,7 @@
     </div>
 
     <!-- Section : Mes tables -->
-    <div class="settings-section">
+    <div class="settings-section settings-section-hideable" id="settings-section-tables">
       <div class="settings-section-title">Mes tables</div>
       <div class="settings-section-card">
         <div class="tables-intro">
@@ -8213,7 +8342,7 @@
     </div>
 
     <!-- Section : Horaires & réservations -->
-    <div class="settings-section">
+    <div class="settings-section settings-section-hideable" id="settings-section-horaires">
       <div class="settings-section-title">Horaires & réservations</div>
       <div class="settings-section-card">
         <div class="settings-row editable" data-field="duree_table_minutes" data-type="number" data-label="Durée d'une table (minutes)">
@@ -10191,6 +10320,14 @@
     // Cacher toutes les pages
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Si on quitte la page settings → reset les flags "from monresto"
+    if (pageId !== 'settings') {
+      const sp = document.getElementById('page-settings');
+      if (sp) {
+        sp.classList.remove('is-from-monresto');
+        ['restaurant','tables','horaires','voix'].forEach(s => sp.classList.remove('focus-' + s));
+      }
+    }
     // Afficher la page cible
     const target = document.getElementById('page-' + pageId);
     if (target) {
@@ -13655,55 +13792,49 @@
       `;
     } else if (type === 'mon-restaurant') {
       titleText = 'Mon restaurant';
-      const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, c => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      })[c]);
-      const nom = currentSalon?.nom_restaurant || currentSalon?.name || '—';
-      const adresse = currentSalon?.adresse || currentSalon?.address || '—';
-      const tel = currentSalon?.telephone || currentSalon?.phone || '—';
-      const numeroFrizz = currentSalon?.numero_frizz || '—';
-      const email = (typeof currentUser !== 'undefined' && currentUser?.email) ? currentUser.email : '—';
       bodyHTML = `
         <div class="mon-resto-wrap">
-          <div class="mon-resto-section">
-            <div class="mon-resto-section-title">Établissement</div>
-            <div class="mon-resto-card">
-              <div class="mon-resto-row">
-                <div class="mon-resto-row-label">Nom</div>
-                <div class="mon-resto-row-value">${escapeHtml(nom)}</div>
+          <div class="mon-resto-tiles">
+            <button class="mon-resto-tile" type="button" data-section="restaurant">
+              <div class="mon-resto-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
               </div>
-              <div class="mon-resto-row">
-                <div class="mon-resto-row-label">Adresse</div>
-                <div class="mon-resto-row-value">${escapeHtml(adresse)}</div>
+              <div class="mon-resto-tile-body">
+                <div class="mon-resto-tile-title">Mon restaurant</div>
+                <div class="mon-resto-tile-sub">Nom, adresse, contact</div>
               </div>
-              <div class="mon-resto-row">
-                <div class="mon-resto-row-label">Téléphone</div>
-                <div class="mon-resto-row-value">${escapeHtml(tel)}</div>
+              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="mon-resto-tile" type="button" data-section="tables">
+              <div class="mon-resto-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
               </div>
-              <div class="mon-resto-row">
-                <div class="mon-resto-row-label">Email</div>
-                <div class="mon-resto-row-value">${escapeHtml(email)}</div>
+              <div class="mon-resto-tile-body">
+                <div class="mon-resto-tile-title">Mes tables</div>
+                <div class="mon-resto-tile-sub">Plan de salle, capacités</div>
               </div>
-            </div>
-          </div>
-          <div class="mon-resto-section">
-            <div class="mon-resto-section-title">Numéro Frizz</div>
-            <div class="mon-resto-card">
-              <div class="mon-resto-row">
-                <div class="mon-resto-row-label">Numéro IA</div>
-                <div class="mon-resto-row-value mon-resto-row-value--mono">${escapeHtml(numeroFrizz)}</div>
+              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="mon-resto-tile" type="button" data-section="horaires">
+              <div class="mon-resto-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
               </div>
-            </div>
-          </div>
-          <div class="mon-resto-section">
-            <div class="mon-resto-section-title">Actions rapides</div>
-            <div class="mon-resto-card">
-              <button class="mon-resto-action" type="button" data-action="settings">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                <span>Ouvrir les réglages complets</span>
-                <svg class="mon-resto-action-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-              </button>
-            </div>
+              <div class="mon-resto-tile-body">
+                <div class="mon-resto-tile-title">Horaires & réservation</div>
+                <div class="mon-resto-tile-sub">Ouverture, durée, règles</div>
+              </div>
+              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="mon-resto-tile" type="button" data-section="voix">
+              <div class="mon-resto-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+              </div>
+              <div class="mon-resto-tile-body">
+                <div class="mon-resto-tile-title">Voix de l'assistant</div>
+                <div class="mon-resto-tile-sub">Voix Frizz IA, personnalité</div>
+              </div>
+              <svg class="mon-resto-tile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
           </div>
         </div>
       `;
@@ -13722,17 +13853,43 @@
     // Si mon-restaurant : brancher l'action "Ouvrir les réglages"
     if (type === 'mon-restaurant') {
       setTimeout(() => {
-        const actionBtn = document.querySelector('.mon-resto-action[data-action="settings"]');
-        if (actionBtn) {
-          actionBtn.addEventListener('click', () => {
-            // Fermer la popup et naviguer vers Réglages
+        const tiles = document.querySelectorAll('.mon-resto-tile[data-section]');
+        tiles.forEach(tile => {
+          tile.addEventListener('click', () => {
+            const section = tile.dataset.section;
+            // Fermer la popup d'abord
             if (typeof closePopup === 'function') closePopup();
+            // Naviguer vers settings + scroller vers la bonne section
             setTimeout(() => {
-              if (typeof showPage === 'function') showPage('settings');
-              else if (typeof goToPage === 'function') goToPage('settings');
+              if (typeof switchPage === 'function') switchPage('settings');
+              else if (typeof showPage === 'function') showPage('settings');
+              // Activer le mode "from-monresto" + focus sur la section choisie
+              const settingsPage = document.getElementById('page-settings');
+              if (settingsPage) {
+                settingsPage.classList.add('is-from-monresto');
+                // Reset autres focus
+                ['restaurant','tables','horaires','voix'].forEach(s => settingsPage.classList.remove('focus-' + s));
+                settingsPage.classList.add('focus-' + section);
+              }
+              // Scroller vers l'ancre de la section
+              setTimeout(() => {
+                const anchorMap = {
+                  'restaurant': 'settings-section-restaurant',
+                  'tables': 'settings-section-tables',
+                  'horaires': 'settings-section-horaires',
+                  'voix': 'settings-section-voix'
+                };
+                const anchorId = anchorMap[section];
+                if (anchorId) {
+                  const target = document.getElementById(anchorId);
+                  if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }
+              }, 200);
             }, 250);
           });
-        }
+        });
       }, 50);
     }
 

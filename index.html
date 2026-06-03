@@ -2131,10 +2131,8 @@
     transform: translate(-50%, -120%);
     width: calc(100% - 24px);
     max-width: 420px;
-    background: rgba(28, 28, 30, 0.92);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.14);
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 12px 14px;
     display: flex;
@@ -2146,6 +2144,24 @@
     margin-top: max(12px, env(safe-area-inset-top));
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+  }
+  /* Contour stylé : double bordure subtile (même que la carte Calendrier) */
+  .toast-notif::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0.10) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
   }
   .toast-notif.visible {
     transform: translate(-50%, 0);
@@ -9640,6 +9656,7 @@
   let currentUser = null;
   let currentSalon = null;
   let allReservations = []; // stockage global pour la popup notifs
+  let allReservationTables = []; // liens résa ↔ tables (table de jointure)
   let monthCallsCount = 0;  // vrais appels Frizz du mois (table frizz_ai_appels)
   let weekCallsCount = 0;   // vrais appels Frizz de cette semaine
   let todayCallsCount = 0;  // vrais appels Frizz d'aujourd'hui (table frizz_ai_appels)
@@ -9729,6 +9746,29 @@
       if (resaErr) throw resaErr;
 
       allReservations = reservations || [];
+
+      // Charger les liens résa ↔ tables (table de jointure)
+      try {
+        const resaIds = allReservations.map(r => r.id);
+        if (resaIds.length > 0) {
+          const { data: liens, error: liensErr } = await supa
+            .from('frizz_ai_reservation_tables')
+            .select('reservation_id, table_id')
+            .in('reservation_id', resaIds);
+          if (!liensErr) {
+            allReservationTables = liens || [];
+          } else {
+            console.warn('Liens résa-tables non chargés:', liensErr);
+            allReservationTables = [];
+          }
+        } else {
+          allReservationTables = [];
+        }
+      } catch (e) {
+        console.warn('Erreur chargement liens:', e);
+        allReservationTables = [];
+      }
+
       renderStats(allReservations);
       loadMonthCalls(); // charge le vrai nombre d'appels Frizz du mois
       loadTablesForPopup(); // charge les tables pour la 4ème carte + popup Tables
@@ -10611,6 +10651,11 @@
           const { error: errLiens } = await supa.from('frizz_ai_reservation_tables').insert(liens);
           if (errLiens) throw errLiens;
         }
+        // Mettre à jour le cache local pour que le rendu marche immédiatement
+        allReservationTables = (allReservationTables || []).filter(
+          l => String(l.reservation_id) !== String(resaId)
+        );
+        liens.forEach(l => allReservationTables.push(l));
       }
 
       closeResaForm();
@@ -11322,6 +11367,19 @@
     return 'Peu importe';
   }
 
+  // Helper : récupère TOUS les table_id liés à une résa
+  // (table_id direct sur frizz_ai_reservations + liens dans frizz_ai_reservation_tables)
+  function getResaTableIds(resa) {
+    if (!resa) return [];
+    const ids = new Set();
+    if (resa.table_id) ids.add(String(resa.table_id));
+    const liens = (allReservationTables || []).filter(
+      l => String(l.reservation_id) === String(resa.id)
+    );
+    liens.forEach(l => { if (l.table_id) ids.add(String(l.table_id)); });
+    return Array.from(ids);
+  }
+
   function renderCalendarDayDetail() {
     const titleEl = $('calPageTitle');
     const subtitleEl = $('calendrierSubtitle');
@@ -11451,9 +11509,9 @@
       counterEl.textContent = `${totalResas} résa${totalResas > 1 ? 's' : ''} · ${totalCouverts} couvert${totalCouverts > 1 ? 's' : ''}`;
     }
 
-    // ── Séparer résas placées (avec table_id) et non placées ──
-    const unplacedResas = dayResas.filter(r => !r.table_id);
-    const placedResas = dayResas.filter(r => !!r.table_id);
+    // ── Séparer résas placées (avec table_id direct ou via jointure) et non placées ──
+    const unplacedResas = dayResas.filter(r => getResaTableIds(r).length === 0);
+    const placedResas = dayResas.filter(r => getResaTableIds(r).length > 0);
 
     // ── Rendre section non placées ──
     const unplacedWrap = document.getElementById('serviceUnplacedWrap');
@@ -11607,7 +11665,9 @@
       body.innerHTML = tables.map(t => {
         const cells = creneaux.map(slot => {
           const reso = dayResas.find(r => {
-            if (String(r.table_id || '') !== String(t.id)) return false;
+            // Cherche dans table_id direct ET dans la table de jointure
+            const tableIds = getResaTableIds(r);
+            if (!tableIds.includes(String(t.id))) return false;
             const heureRes = String(r.heure_reservation || r.heure || '').slice(0, 5);
             if (!heureRes) return false;
             const duree = parseInt(currentSalon?.duree_table_minutes) || 90;

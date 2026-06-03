@@ -1849,7 +1849,7 @@
   .service-banner-counter {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.85);
-    margin-top: 6px;
+    margin-top: 15px;
   }
   .service-banner-right {
     display: flex;
@@ -11199,30 +11199,10 @@
       todayBtn._svcBound = true;
     }
 
-    // Swipe gauche/droite sur toute la page (jour précédent/suivant)
-    const pageEl = $('page-calendrier');
-    if (pageEl && !pageEl._swipeBound) {
-      let startX = 0, startY = 0, startTime = 0, tracking = false;
-      pageEl.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) { tracking = false; return; }
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        startTime = Date.now();
-        tracking = true;
-      }, { passive: true });
-      pageEl.addEventListener('touchend', (e) => {
-        if (!tracking) return;
-        tracking = false;
-        const touch = e.changedTouches[0];
-        const dx = touch.clientX - startX;
-        const dy = touch.clientY - startY;
-        const dt = Date.now() - startTime;
-        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
-          changeCalendarWeek(dx < 0 ? 'next' : 'prev');
-        }
-      }, { passive: true });
-      pageEl._swipeBound = true;
-    }
+    // Swipe gauche/droite désactivé : navigation uniquement via les 2 flèches du bandeau
+    // (gardé en commentaire pour la mémoire)
+    // const pageEl = $('page-calendrier');
+    // if (pageEl && !pageEl._swipeBound) { ... pageEl._swipeBound = true; }
   }
 
   // ════════════════════════════════════════════════════
@@ -13780,31 +13760,14 @@
         } else {
           finishRender();
         }
-        // Brancher le swipe gauche/droite sur le body de la popup pour changer de jour
-        if (!popupBody._calSwipeBound) {
-          let startX = 0, startY = 0, startTime = 0, tracking = false;
-          popupBody.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) { tracking = false; return; }
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            startTime = Date.now();
-            tracking = true;
-          }, { passive: true });
-          popupBody.addEventListener('touchend', (e) => {
-            if (!tracking) return;
-            tracking = false;
-            const touch = e.changedTouches[0];
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            const dt = Date.now() - startTime;
-            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
-              if (typeof changeCalendarWeek === 'function') {
-                changeCalendarWeek(dx < 0 ? 'next' : 'prev');
-              }
-            }
-          }, { passive: true });
-          popupBody._calSwipeBound = true;
-        }
+        // Swipe gauche/droite désactivé : navigation uniquement via les 2 flèches du bandeau
+        // (gardé en commentaire pour la mémoire)
+        // if (!popupBody._calSwipeBound) {
+        //   let startX = 0, startY = 0, startTime = 0, tracking = false;
+        //   popupBody.addEventListener('touchstart', ...);
+        //   popupBody.addEventListener('touchend', ...);
+        //   popupBody._calSwipeBound = true;
+        // }
       }
     }
 

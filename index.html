@@ -2176,6 +2176,49 @@
   #page-settings.is-from-monresto.focus-voix .settings-section:not(.settings-section-hideable) {
     display: none;
   }
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* ═══ PAGE RÉGLAGES : tous les BLEUS → BLANC                  ═══ */
+  /* ═══ (sauf .plan-card .plan-badge.current qui ont leur color) ═══ */
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* Textes bleus de boutons/liens dans la page settings */
+  #page-settings .btn-link-blue,
+  #page-settings .btn-secondary,
+  #page-settings .form-link,
+  #page-settings .form-action-link,
+  #page-settings .horaires-modify-btn,
+  #page-settings .form-cta-link,
+  #page-settings .settings-row-chevron,
+  #page-settings .tables-add-btn {
+    color: #ffffff !important;
+  }
+  #page-settings .tables-add-btn svg,
+  #page-settings .tables-add-btn svg path,
+  #page-settings .tables-add-btn svg line,
+  #page-settings .settings-row-chevron {
+    stroke: #ffffff !important;
+  }
+  /* Voice card sélectionnée : bordure blanche */
+  #page-settings .voice-card.is-selected,
+  #page-settings .voice-card.selected {
+    border-color: #ffffff !important;
+  }
+  #page-settings .voice-card.is-selected .voice-card-check {
+    color: #ffffff !important;
+  }
+  /* Inline color: #0A84FF → blanc dans settings */
+  #page-settings [style*="color: #0A84FF"],
+  #page-settings [style*="color:#0A84FF"] {
+    color: #ffffff !important;
+  }
+  /* Exception : on garde les couleurs spécifiques pour les éléments des plans */
+  #page-settings .plan-card .plan-badge.current,
+  #page-settings .plan-card .plan-name,
+  #page-settings .plan-card .plan-price,
+  #page-settings .plan-card .plan-btn {
+    color: revert !important;
+  }
+
   .mon-resto-wrap {
     padding: 0 0 20px;
   }
@@ -2531,7 +2574,7 @@
   .service-banner-today-btn {
     background: rgba(255, 255, 255, 0.96);
     border: none;
-    color: #0A4FE5;
+    color: #000000;
     font-size: 11px;
     padding: 5px 12px;
     border-radius: 14px;
@@ -6402,9 +6445,81 @@
     background: var(--blue);
     color: white;
   }
+  /* Badge "Plan actuel" : couleur dépend du plan */
   .plan-badge.current {
     background: var(--blue);
     color: white;
+  }
+  /* Plan Pro = gradient Apple Fitness+ (vert → bleu) — couleur de la carte Mon restaurant */
+  .plan-card[data-plan="pro"] .plan-badge.current {
+    background: linear-gradient(135deg, #30D158 0%, #64D2FF 100%);
+    color: #fff;
+  }
+  /* Plan Starter = gradient Apple Music (rose) */
+  .plan-card[data-plan="starter"] .plan-badge.current {
+    background: linear-gradient(135deg, #FB5C74 0%, #FA233B 100%);
+    color: #fff;
+  }
+  /* Plan Premium = gradient Apple Arcade (violet) */
+  .plan-card[data-plan="premium"] .plan-badge.current {
+    background: linear-gradient(135deg, #5E5CE6 0%, #BF5AF2 100%);
+    color: #fff;
+  }
+  /* Border de la plan-card "current" matche aussi son plan */
+  .plan-card[data-plan="pro"].current {
+    border-color: #30D158;
+    box-shadow: 0 8px 24px rgba(48, 209, 88, 0.20);
+  }
+  .plan-card[data-plan="starter"].current {
+    border-color: #FA233B;
+    box-shadow: 0 8px 24px rgba(250, 35, 59, 0.20);
+  }
+  .plan-card[data-plan="premium"].current {
+    border-color: #BF5AF2;
+    box-shadow: 0 8px 24px rgba(191, 90, 242, 0.20);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* ═══ Page Config (Réglages) — Bleu → Blanc                      ═══ */
+  /* ═══   sauf : .plan-card et tout ce qui est plan-related        ═══ */
+  /* ═══════════════════════════════════════════════════════════════ */
+  #page-settings .settings-row-chevron,
+  #page-settings .settings-row-value[style*="color: #0A84FF"],
+  #page-settings .settings-row-value[style*="color:#0A84FF"],
+  #page-settings [style*="color: var(--blue)"],
+  #page-settings [style*="color:var(--blue)"],
+  #page-settings .btn-link-blue,
+  #page-settings .btn-link,
+  #page-settings .form-link,
+  #page-settings .form-action-link,
+  #page-settings .form-cta-link,
+  #page-settings .horaires-modify-btn,
+  #page-settings .tables-add-btn,
+  #page-settings .tables-add-btn svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+  /* Logout / Manage billing reset */
+  #page-settings #manageBillingBtn {
+    color: #ffffff !important;
+  }
+  /* Voice cards sélectionnées en blanc */
+  #page-settings .voice-card.is-selected,
+  #page-settings .voice-card.selected {
+    border-color: #ffffff !important;
+  }
+  #page-settings .voice-card.is-selected .voice-card-check {
+    color: #ffffff !important;
+  }
+  /* EXCEPTION : tous les éléments à l'intérieur d'une .plan-card gardent leurs couleurs (gérées par plan-card[data-plan=...]) */
+  #page-settings .plan-card,
+  #page-settings .plan-card * {
+    color: inherit !important;
+    stroke: inherit !important;
+  }
+  /* MAIS le badge "Plan actuel" garde EXPLICITEMENT sa couleur de plan */
+  #page-settings .plan-badge.current {
+    color: #fff !important; /* texte du badge reste blanc lisible sur fond coloré */
   }
 
   .plan-header {
@@ -6611,16 +6726,13 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4DA2FF 0%, #007AFF 60%, #0A4FE5 100%);
+    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 
-      0 12px 28px rgba(0, 122, 255, 0.50),
-      0 4px 8px rgba(0, 0, 0, 0.10),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s, box-shadow 0.2s;
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
@@ -6633,9 +6745,9 @@
   .resa-fab:active {
     transform: scale(0.92);
     box-shadow: 
-      0 6px 16px rgba(0, 122, 255, 0.40),
-      0 2px 4px rgba(0, 0, 0, 0.10),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      0 6px 16px rgba(0, 0, 0, 0.40),
+      0 2px 4px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
   .resa-fab svg {
     width: 28px;
@@ -8300,19 +8412,15 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilResasValue">0</span></div>
-            <div class="health-card-chart health-card-chart--agenda" id="accueilResasChart" aria-hidden="true">
-              <!-- 3 lignes agenda style résa (le dot + la barre = un slot de résa) -->
-              <div class="acc-agenda-line">
-                <span class="acc-agenda-dot"></span>
-                <span class="acc-agenda-bar acc-agenda-bar--short"></span>
+            <div class="health-card-chart health-card-chart--compare" id="accueilResasChart" aria-hidden="true">
+              <!-- 2 barres compare : Aujourd'hui vs Demain -->
+              <div class="compare-bar-group">
+                <div class="compare-bar compare-bar--prev" id="accueilResasBarToday"></div>
+                <div class="compare-bar-label">Auj</div>
               </div>
-              <div class="acc-agenda-line">
-                <span class="acc-agenda-dot"></span>
-                <span class="acc-agenda-bar acc-agenda-bar--long"></span>
-              </div>
-              <div class="acc-agenda-line">
-                <span class="acc-agenda-dot"></span>
-                <span class="acc-agenda-bar acc-agenda-bar--medium"></span>
+              <div class="compare-bar-group">
+                <div class="compare-bar compare-bar--curr" id="accueilResasBarTomorrow"></div>
+                <div class="compare-bar-label">Dem</div>
               </div>
             </div>
           </div>

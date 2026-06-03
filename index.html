@@ -486,13 +486,26 @@
             mask-composite: exclude;
     pointer-events: none;
   }
-  /* ═══ Carte Notification : style Apple Music (gradient rouge/rose) ═══ */
+  /* ═══ Carte Notification : style Apple Music (rouge/rose avec effet shine) ═══ */
   .health-card--orange {
-    background: linear-gradient(160deg, #ff4e6b 0%, #ff0436 100%);
+    background:
+      radial-gradient(ellipse 110% 70% at 30% -10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
+      linear-gradient(160deg, #ff4e6b 0%, #ff0436 100%);
   }
-  /* ═══ Carte Statistique : style Apple Arcade (gradient violet) ═══ */
+  /* ═══ Carte Statistique : style Apple Arcade (violet avec effet shine) ═══ */
   .health-card--gold {
-    background: linear-gradient(160deg, #7C7FE8 0%, #4338CA 100%);
+    background:
+      radial-gradient(ellipse 110% 70% at 30% -10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
+      linear-gradient(160deg, #7C7FE8 0%, #4338CA 100%);
+  }
+  /* Renforcer le contour stylé sur les cartes colorées : highlight blanc en haut bien marqué */
+  .health-card--orange::before,
+  .health-card--gold::before {
+    background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.20) 25%,
+      rgba(255, 255, 255, 0.05) 60%,
+      rgba(255, 255, 255, 0.18) 100%);
   }
   /* Top de la carte */
   .health-card-top {

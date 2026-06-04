@@ -3453,7 +3453,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 14px;
-    padding: 28px 22px 22px;
+    padding: 6px 0 22px;
     animation: cascadeIn 0.6s ease-out 0.04s backwards;
   }
   .accueil-hero-text { min-width: 0; }
@@ -3488,18 +3488,7 @@
     margin: 0;
     max-width: 92%;
   }
-  .accueil-hero-avatar {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.12) center/cover no-repeat;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.15s ease;
-  }
-  .accueil-hero-avatar:active { transform: scale(0.94); }
+
 
   /* Greeting de la page Calendrier à 25px (pour cohérence avec le reste de la page) */
   #page-calendrier .greeting {
@@ -14513,6 +14502,13 @@
           } catch (e) { heroDateEl.textContent = ''; }
         }
 
+        // Avatar = première lettre du nom
+        const avatarEl = $('accueilAvatarBtn');
+        if (avatarEl && typeof currentSalon !== 'undefined' && currentSalon) {
+          const source = currentSalon.patron_prenom || currentSalon.nom || '';
+          avatarEl.textContent = source ? source.trim().charAt(0).toUpperCase() : '?';
+        }
+
         // Appels Frizz (today)
         const elAppels = $('accueilAppelsValue');
         if (elAppels) elAppels.textContent = (typeof todayCallsCount !== 'undefined') ? todayCallsCount : 0;
@@ -14676,6 +14672,26 @@
           if (typeof openResaForm === 'function') openResaForm('create');
         });
         tabAdd._bound = true;
+      }
+
+      // Clic sur l'avatar → affiche le plan d'abonnement
+      const avatarBtn = $('accueilAvatarBtn');
+      if (avatarBtn && !avatarBtn._planBound) {
+        avatarBtn.addEventListener('click', () => {
+          let msg;
+          const plan = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : (currentSalon && currentSalon.plan);
+          if (plan && typeof PLANS !== 'undefined' && PLANS[plan]) {
+            const actif = (typeof isSubscriptionActive === 'function') ? isSubscriptionActive() : true;
+            msg = actif
+              ? `⭐ Votre forfait : ${PLANS[plan].name}`
+              : `⚠️ Forfait ${PLANS[plan].name} (inactif)`;
+          } else {
+            msg = 'Aucun forfait actif — choisissez un forfait';
+          }
+          if (typeof showToast === 'function') showToast(msg);
+          else alert(msg);
+        });
+        avatarBtn._planBound = true;
       }
 
       // Premier rendu

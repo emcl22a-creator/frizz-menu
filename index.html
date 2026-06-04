@@ -55,10 +55,38 @@
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
   input { font-family: inherit; color: inherit; }
 
-  /* Effet bleu en arrière-plan : désactivé (fond neutre) */
+  /* Effet Vision Pro : halos indigo + violet en arrière-plan */
   body::before,
   body::after {
-    display: none !important;
+    content: '';
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.7;
+  }
+  body::before {
+    /* Halo indigo profond en haut-gauche */
+    top: -15%;
+    left: -10%;
+    width: 70vw;
+    height: 70vw;
+    max-width: 600px;
+    max-height: 600px;
+    background: #3A1CB0;
+    animation: floatOrb1 22s ease-in-out infinite;
+  }
+  body::after {
+    /* Halo violet plus clair en bas-droit */
+    bottom: -15%;
+    right: -10%;
+    width: 75vw;
+    height: 75vw;
+    max-width: 650px;
+    max-height: 650px;
+    background: #7B6FE5;
+    animation: floatOrb2 26s ease-in-out infinite;
   }
   @keyframes floatOrb1 {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -457,13 +485,15 @@
   .health-card--green {
     background: linear-gradient(160deg, #66E08C 0%, #30D158 60%, #1A8E3D 100%);
   }
-  /* ═══ Toutes les cartes principales de l'accueil = TV+ noir mat avec contour stylé ═══ */
+  /* ═══ Toutes les cartes principales de l'accueil = effet glass Vision Pro ═══ */
   .health-card--blue,
   .health-card--orange,
   .health-card--gold,
   .health-card--black {
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
-    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
     position: relative;
   }
   /* Contour stylé : double bordure subtile avec highlight haut + ombre intérieure */
@@ -486,27 +516,6 @@
             mask-composite: exclude;
     pointer-events: none;
   }
-  /* ═══ Carte Notification : style Apple Music (rouge/rose avec effet shine) ═══ */
-  .health-card--orange {
-    background:
-      radial-gradient(ellipse 110% 70% at 30% -10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
-      linear-gradient(160deg, #ff4e6b 0%, #ff0436 100%);
-  }
-  /* ═══ Carte Statistique : gradient violet profond → violet clair (avec effet shine) ═══ */
-  .health-card--gold {
-    background:
-      radial-gradient(ellipse 110% 70% at 30% -10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
-      linear-gradient(160deg, #442DC5 0%, #835be2 100%);
-  }
-  /* Renforcer le contour stylé sur les cartes colorées : highlight blanc en haut bien marqué */
-  .health-card--orange::before,
-  .health-card--gold::before {
-    background: linear-gradient(180deg,
-      rgba(255, 255, 255, 0.55) 0%,
-      rgba(255, 255, 255, 0.20) 25%,
-      rgba(255, 255, 255, 0.05) 60%,
-      rgba(255, 255, 255, 0.18) 100%);
-  }
   /* Top de la carte */
   .health-card-top {
     display: flex;
@@ -528,18 +537,17 @@
     height: 20px;
     color: #000000;
   }
-  /* Toutes les cartes : cercle blanc */
+  /* Toutes les cartes glass : cercle blanc + icône noire (uniforme Vision Pro) */
   .health-card--blue .health-card-icon-wrap,
   .health-card--orange .health-card-icon-wrap,
   .health-card--gold .health-card-icon-wrap,
   .health-card--black .health-card-icon-wrap {
     background: #ffffff;
   }
-  /* Icône : même couleur que le fond dominant de sa carte */
-  .health-card--blue .health-card-icon { color: #000000; }   /* Calendrier — noir TV+ */
-  .health-card--orange .health-card-icon { color: #ff0436; } /* Notification — rouge Apple Music */
-  .health-card--gold .health-card-icon { color: #442DC5; }   /* Statistique — violet profond */
-  .health-card--black .health-card-icon { color: #000000; }  /* Mon restaurant — noir TV+ */
+  .health-card--blue .health-card-icon,
+  .health-card--orange .health-card-icon,
+  .health-card--gold .health-card-icon,
+  .health-card--black .health-card-icon { color: #000000; }
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }

@@ -30,7 +30,7 @@
     --blue-vivid: #FFFFFF;
     --blue-light: rgba(255, 255, 255, 0.18);
     --on-accent: #0A0A0C;
-    --accueil-gradient: linear-gradient(150deg, #6E6E78 0%, #48484E 40%, #4A0E16 75%, #6E1420 100%);
+    --accueil-gradient: linear-gradient(150deg, #2C2C34 0%, #1E1E24 40%, #141418 75%, #0C0C10 100%);
     --green: #30D158;
     --green-light: rgba(48, 209, 88, 0.18);
     --red: #FF453A;
@@ -67,11 +67,11 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
     background: var(--bg);
     background-image:
-      radial-gradient(90% 50% at 25% 0%, rgba(12,12,16,0.85) 0%, rgba(12,12,16,0.4) 35%, transparent 62%),
-      radial-gradient(140% 110% at 90% 40%, rgba(120,120,130,0.9) 0%, rgba(95,95,105,0.5) 35%, transparent 68%),
-      radial-gradient(95% 75% at 100% 68%, rgba(10,10,14,0.8) 0%, rgba(10,10,14,0.35) 32%, transparent 60%),
-      radial-gradient(130% 80% at 20% 100%, #6E1420 0%, #4A0E16 30%, transparent 58%),
-      linear-gradient(180deg, #1A1A1E 0%, #232328 42%, #21262A 62%, #241A1E 100%);
+      radial-gradient(90% 50% at 25% 0%, rgba(20,20,26,0.9) 0%, rgba(16,16,22,0.4) 35%, transparent 62%),
+      radial-gradient(140% 110% at 90% 40%, rgba(28,28,34,0.85) 0%, rgba(18,18,24,0.45) 35%, transparent 68%),
+      radial-gradient(95% 75% at 100% 68%, rgba(14,14,18,0.8) 0%, rgba(10,10,14,0.35) 32%, transparent 60%),
+      radial-gradient(130% 80% at 20% 100%, #161620 0%, #0C0C12 30%, transparent 58%),
+      linear-gradient(180deg, #0A0A0E 0%, #101014 42%, #0C0C10 62%, #08080C 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--label);
@@ -110,7 +110,7 @@
     height: 75vw;
     max-width: 620px;
     max-height: 620px;
-    background: #6E6E78;
+    background: #1A1A20;
     animation: floatOrb1 22s ease-in-out infinite;
   }
   body::after {
@@ -122,7 +122,7 @@
     height: 80vw;
     max-width: 660px;
     max-height: 660px;
-    background: #6E1420;
+    background: #14141A;
     animation: floatOrb2 26s ease-in-out infinite;
   }
   @keyframes floatOrb1 {
@@ -3446,6 +3446,61 @@
     padding: 27px 20px 22px;
     animation: cascadeIn 0.6s ease-out 0.06s backwards;
   }
+
+  /* ═══ Header dashboard accueil (style carte premium) ═══ */
+  .accueil-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 28px 22px 22px;
+    animation: cascadeIn 0.6s ease-out 0.04s backwards;
+  }
+  .accueil-hero-text { min-width: 0; }
+  .accueil-hero-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0 0 8px;
+  }
+  .accueil-hero-title {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: #FFFFFF;
+    margin: 0 0 6px;
+  }
+  .accueil-hero-sub {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 10px;
+  }
+  .accueil-hero-tagline {
+    font-size: 13.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    max-width: 92%;
+  }
+  .accueil-hero-avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12) center/cover no-repeat;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease;
+  }
+  .accueil-hero-avatar:active { transform: scale(0.94); }
+
   /* Greeting de la page Calendrier à 25px (pour cohérence avec le reste de la page) */
   #page-calendrier .greeting {
     padding: 27px 25px 22px;
@@ -8350,9 +8405,16 @@
   <div class="page active" id="page-accueil">
     <div class="accueil-animatable accueil-page-enter" id="accueilAnimatable">
 
-      <!-- Header retiré (titre + avatar). Stubs cachés. -->
-      <span id="accueilFirstName" hidden style="display:none;">—</span>
-      <span id="accueilAvatarBtn" hidden style="display:none;"></span>
+      <!-- Header dashboard (style carte premium) -->
+      <header class="accueil-hero">
+        <div class="accueil-hero-text">
+          <p class="accueil-hero-eyebrow" id="accueilHeroDate">—</p>
+          <h1 class="accueil-hero-title">Tableau de bord<br>de votre restaurant</h1>
+          <p class="accueil-hero-sub">Bonjour <span id="accueilFirstName">—</span> 👋</p>
+          <p class="accueil-hero-tagline">Voici un aperçu de votre activité aujourd'hui — réservations, appels et messages en un coup d'œil.</p>
+        </div>
+        <button class="accueil-hero-avatar" id="accueilAvatarBtn" type="button" aria-label="Profil"></button>
+      </header>
 
       <!-- Cartes empilées style Apple Health -->
       <div class="health-cards" id="healthCardsClassic" style="display:flex;">
@@ -14439,7 +14501,16 @@
         const firstNameEl = $('accueilFirstName');
         if (firstNameEl && typeof currentSalon !== 'undefined' && currentSalon) {
           const prenom = currentSalon.patron_prenom || currentSalon.nom || '';
-          firstNameEl.textContent = prenom || '👋';
+          firstNameEl.textContent = prenom || '';
+        }
+
+        // Date du jour (eyebrow)
+        const heroDateEl = $('accueilHeroDate');
+        if (heroDateEl) {
+          try {
+            const d = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            heroDateEl.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+          } catch (e) { heroDateEl.textContent = ''; }
         }
 
         // Appels Frizz (today)

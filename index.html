@@ -6871,7 +6871,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    background: var(--accueil-gradient);
     color: white;
     display: flex;
     align-items: center;
@@ -8282,7 +8282,7 @@
     bottom: 30px;
     width: 48px;
     height: 48px;
-    background: linear-gradient(160deg, #1C1C1E 0%, #000000 100%);
+    background: var(--accueil-gradient);
     border: 0.5px solid rgba(255, 255, 255, 0.15);
     color: #fff;
     border-radius: 50%;
@@ -14356,9 +14356,11 @@
     // Construit la liste agrégée et triée par date desc
     function buildActivityList() {
       const items = [];
-      // Réservations
+      // Réservations — uniquement celles prises par Frizz (IA/Vapi), pas les manuelles
       if (Array.isArray(allReservations)) {
         allReservations.forEach(r => {
+          const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+          if (!isFrizz) return; // on ignore les réservations créées manuellement
           const statut = (r.statut || r.status || r.state || '').toString().toLowerCase().trim();
           let kind = 'created';
           if (['annulee','annulée','annule','annulé','cancelled','canceled','cancel','annulation'].includes(statut)) {
@@ -14818,7 +14820,7 @@
       titleText = 'Calendrier';
       bodyHTML = ''; // sera rempli par DOM move
     } else if (type === 'activites') {
-      titleText = 'Notification';
+      titleText = 'Notification Frizz';
       // Calculs rapides pour les 2 cartes en haut
       let unreadCount = 0, totalToday = 0;
       try {

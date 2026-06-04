@@ -528,17 +528,18 @@
     height: 20px;
     color: #000000;
   }
-  /* Toutes les cartes : cercle blanc + icône noire */
+  /* Toutes les cartes : cercle blanc */
   .health-card--blue .health-card-icon-wrap,
   .health-card--orange .health-card-icon-wrap,
   .health-card--gold .health-card-icon-wrap,
   .health-card--black .health-card-icon-wrap {
     background: #ffffff;
   }
-  .health-card--blue .health-card-icon,
-  .health-card--orange .health-card-icon,
-  .health-card--gold .health-card-icon,
-  .health-card--black .health-card-icon { color: #000000; }
+  /* Icône : même couleur que le fond dominant de sa carte */
+  .health-card--blue .health-card-icon { color: #000000; }   /* Calendrier — noir TV+ */
+  .health-card--orange .health-card-icon { color: #ff0436; } /* Notification — rouge Apple Music */
+  .health-card--gold .health-card-icon { color: #442DC5; }   /* Statistique — violet profond */
+  .health-card--black .health-card-icon { color: #000000; }  /* Mon restaurant — noir TV+ */
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
@@ -1952,16 +1953,14 @@
     padding: 0 20px 10px;
   }
   #monRestoAccordion .settings-section-card {
-    margin: 0;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    margin: 0 4px;
+    border-radius: 16px;
   }
   #monRestoAccordion .settings-row {
-    padding: 14px 20px;
+    padding: 14px 16px;
   }
   #monRestoAccordion .horaires-day-row {
-    padding: 14px 20px;
+    padding: 14px 16px;
   }
   #monRestoAccordion .voice-card {
     margin: 0 20px 10px;
@@ -2029,6 +2028,34 @@
   #monRestoAccordion .tables-add-btn * {
     color: #ffffff !important;
     stroke: #ffffff !important;
+  }
+  /* Bouton "Tester" en blanc transparent (au lieu du bleu var(--blue)) */
+  #monRestoAccordion .resa-form-btn.save,
+  #monRestoAccordion .resa-form-btn {
+    background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+  }
+  /* Boutons Play (▶) des voice cards : blanc */
+  #monRestoAccordion .voice-play-btn {
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff !important;
+  }
+  #monRestoAccordion .voice-play-btn.playing {
+    background: rgba(255, 255, 255, 0.20) !important;
+    color: #ffffff !important;
+  }
+  /* Check (✓) de la voice card sélectionnée : blanc */
+  #monRestoAccordion .voice-check {
+    background: rgba(255, 255, 255, 0.20) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+  }
+  /* Bordure carte voix sélectionnée : blanche au lieu du bleu */
+  #monRestoAccordion .voice-card.selected,
+  #monRestoAccordion .voice-card.is-selected {
+    border-color: rgba(255, 255, 255, 0.35) !important;
   }
   .mon-resto-accordion {
     display: flex;
@@ -3249,8 +3276,10 @@
     border: 0.5px solid rgba(255, 255, 255, 0.08);
   }
   .popup-acti-card--green {
-    /* Apple Music rose pour matcher la carte Notification */
-    background: linear-gradient(160deg, #FF453A 0%, #C50018 100%);
+    /* Exactement la même couleur Apple Music que la carte Notification de l'accueil */
+    background:
+      radial-gradient(ellipse 110% 70% at 30% -10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
+      linear-gradient(160deg, #ff4e6b 0%, #ff0436 100%);
   }
   .popup-acti-card--glass {
     /* Verre dépoli iOS */

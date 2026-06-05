@@ -8752,6 +8752,102 @@
     .plan-price { font-size: 30px; }
     .settings-section-title { font-size: 15px; }
   }
+  /* ═══ DESSIN NOTIFICATION (refait) : mini-liste compacte, animation d'entrée ═══ */
+  .notifv2 {
+    width: 60px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 5px;
+  }
+  .notifv2-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: notifv2In 0.55s cubic-bezier(0.34, 1.25, 0.64, 1) backwards;
+  }
+  .notifv2-row:nth-child(1) { animation-delay: 0.05s; }
+  .notifv2-row:nth-child(2) { animation-delay: 0.16s; }
+  .notifv2-row:nth-child(3) { animation-delay: 0.27s; }
+  .notifv2-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    flex-shrink: 0;
+  }
+  .notifv2-line {
+    height: 5px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.55);
+  }
+  .notifv2-line--l { width: 36px; }
+  .notifv2-line--m { width: 26px; }
+  .notifv2-line--s { width: 16px; }
+  @keyframes notifv2In {
+    from { transform: translateX(10px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  /* Coloration selon le forfait */
+  .health-card.chartplan-starter .notifv2-dot, .health-card.chartplan-starter .notifv2-line { background: #C98E5E; }
+  .health-card.chartplan-pro .notifv2-dot, .health-card.chartplan-pro .notifv2-line { background: #C8CCD2; }
+  .health-card.chartplan-premium .notifv2-dot, .health-card.chartplan-premium .notifv2-line { background: #D8B45A; }
+
+  /* ═══ DESSIN STATISTIQUE (refait) : 2 barres arrondies, M-1/M dessous, animation ═══ */
+  .comparev2 {
+    width: 70px;
+    height: 60px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+  .comparev2-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+  }
+  .comparev2-bar {
+    width: 13px;
+    border-radius: 100px;
+    transform-origin: bottom center;
+    animation: comparev2Grow 0.8s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+  }
+  .comparev2-bar--prev { height: 22px; background: rgba(255,255,255,0.4); animation-delay: 0.15s; }
+  .comparev2-bar--curr { height: 36px; background: #ffffff; animation-delay: 0.3s; }
+  .comparev2-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85) !important;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    animation: comparev2LabelIn 0.5s ease-out 0.55s backwards;
+  }
+  @keyframes comparev2Grow {
+    from { transform: scaleY(0); opacity: 0; }
+    60% { opacity: 1; }
+    to { transform: scaleY(1); opacity: 1; }
+  }
+  @keyframes comparev2LabelIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Barres colorées selon le forfait (les labels restent blancs) */
+  .health-card.chartplan-starter .comparev2-bar--curr { background: #C98E5E; }
+  .health-card.chartplan-starter .comparev2-bar--prev { background: rgba(201,142,94,0.45); }
+  .health-card.chartplan-pro .comparev2-bar--curr { background: #C8CCD2; }
+  .health-card.chartplan-pro .comparev2-bar--prev { background: rgba(200,204,210,0.45); }
+  .health-card.chartplan-premium .comparev2-bar--curr { background: #D8B45A; }
+  .health-card.chartplan-premium .comparev2-bar--prev { background: rgba(216,180,90,0.45); }
+  @media (prefers-reduced-motion: reduce) {
+    .notifv2-row, .comparev2-bar, .comparev2-label { animation: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -8866,20 +8962,10 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilActivitesValue">0</span></div>
-            <div class="health-card-chart health-card-chart--notif" id="accueilActivitesBadge" aria-hidden="true">
-              <!-- Mini-liste de notifications, coordonnée avec la popup (pastille ronde + ligne) -->
-              <div class="notif-row">
-                <span class="notif-dot"></span>
-                <span class="notif-line notif-line--long"></span>
-              </div>
-              <div class="notif-row">
-                <span class="notif-dot"></span>
-                <span class="notif-line notif-line--med"></span>
-              </div>
-              <div class="notif-row">
-                <span class="notif-dot"></span>
-                <span class="notif-line notif-line--short"></span>
-              </div>
+            <div class="health-card-chart notifv2" id="accueilActivitesBadge" aria-hidden="true">
+              <div class="notifv2-row"><span class="notifv2-dot"></span><span class="notifv2-line notifv2-line--l"></span></div>
+              <div class="notifv2-row"><span class="notifv2-dot"></span><span class="notifv2-line notifv2-line--m"></span></div>
+              <div class="notifv2-row"><span class="notifv2-dot"></span><span class="notifv2-line notifv2-line--s"></span></div>
             </div>
           </div>
         </button>
@@ -8908,15 +8994,14 @@
               <span id="accueilEvolValue">+0</span><span class="health-card-unit">%</span>
               <div class="health-card-sublabel">vs mois dernier</div>
             </div>
-            <div class="health-card-chart health-card-chart--compare" aria-hidden="true">
-              <!-- Comparaison visuelle : 2 barres côte à côte (mois -1 vs ce mois) -->
-              <div class="compare-bar-group">
-                <div class="compare-bar compare-bar--prev" id="accueilCompareBarPrev"></div>
-                <div class="compare-bar-label">M-1</div>
+            <div class="health-card-chart comparev2" aria-hidden="true">
+              <div class="comparev2-group">
+                <div class="comparev2-bar comparev2-bar--prev" id="accueilCompareBarPrev"></div>
+                <div class="comparev2-label">M-1</div>
               </div>
-              <div class="compare-bar-group">
-                <div class="compare-bar compare-bar--curr" id="accueilCompareBarCurr"></div>
-                <div class="compare-bar-label">M</div>
+              <div class="comparev2-group">
+                <div class="comparev2-bar comparev2-bar--curr" id="accueilCompareBarCurr"></div>
+                <div class="comparev2-label">M</div>
               </div>
             </div>
             <!-- Stubs cachés pour ne pas casser l'ancien JS -->

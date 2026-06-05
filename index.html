@@ -768,38 +768,68 @@
     margin-left: 3px;
   }
   /* Dessin du bas (chart) coloré selon le forfait choisi */
-  .health-card[class*="chartplan-starter"] .health-card-chart .bar,
-  .health-card.chartplan-starter .compare-bar,
-  .health-card.chartplan-starter .mini-list-dot,
-  .health-card.chartplan-starter .mini-list-line,
+  .health-card.chartplan-starter .health-card-chart * { color: #C98E5E !important; }
   .health-card.chartplan-starter .health-card-chart [class*="bar"],
   .health-card.chartplan-starter .health-card-chart [class*="dot"],
   .health-card.chartplan-starter .health-card-chart [class*="line"],
   .health-card.chartplan-starter .health-card-chart [class*="cell"],
-  .health-card.chartplan-starter .health-card-chart [class*="day"] { background: #A56A3C !important; }
-  .health-card.chartplan-starter .health-card-chart svg { color: #A56A3C !important; fill: #A56A3C !important; }
+  .health-card.chartplan-starter .health-card-chart [class*="day"],
+  .health-card.chartplan-starter .health-card-chart .wave-bar,
+  .health-card.chartplan-starter .health-card-chart .monresto-tile { background: #C98E5E !important; }
+  .health-card.chartplan-starter .health-card-chart .monresto-tile svg { color: #2A1A0C !important; stroke: #2A1A0C !important; }
+  .health-card.chartplan-starter .health-card-chart svg:not(.monresto-tile svg) { stroke: #C98E5E !important; fill: #C98E5E !important; }
 
-  .health-card.chartplan-pro .health-card-chart .bar,
-  .health-card.chartplan-pro .compare-bar,
-  .health-card.chartplan-pro .mini-list-dot,
-  .health-card.chartplan-pro .mini-list-line,
+  .health-card.chartplan-pro .health-card-chart * { color: #C8CCD2 !important; }
   .health-card.chartplan-pro .health-card-chart [class*="bar"],
   .health-card.chartplan-pro .health-card-chart [class*="dot"],
   .health-card.chartplan-pro .health-card-chart [class*="line"],
   .health-card.chartplan-pro .health-card-chart [class*="cell"],
-  .health-card.chartplan-pro .health-card-chart [class*="day"] { background: #B8BCC2 !important; }
-  .health-card.chartplan-pro .health-card-chart svg { color: #B8BCC2 !important; fill: #B8BCC2 !important; }
+  .health-card.chartplan-pro .health-card-chart [class*="day"],
+  .health-card.chartplan-pro .health-card-chart .wave-bar,
+  .health-card.chartplan-pro .health-card-chart .monresto-tile { background: #C8CCD2 !important; }
+  .health-card.chartplan-pro .health-card-chart .monresto-tile svg { color: #1A1A1E !important; stroke: #1A1A1E !important; }
+  .health-card.chartplan-pro .health-card-chart svg:not(.monresto-tile svg) { stroke: #C8CCD2 !important; fill: #C8CCD2 !important; }
 
-  .health-card.chartplan-premium .health-card-chart .bar,
-  .health-card.chartplan-premium .compare-bar,
-  .health-card.chartplan-premium .mini-list-dot,
-  .health-card.chartplan-premium .mini-list-line,
+  .health-card.chartplan-premium .health-card-chart * { color: #E2C063 !important; }
   .health-card.chartplan-premium .health-card-chart [class*="bar"],
   .health-card.chartplan-premium .health-card-chart [class*="dot"],
   .health-card.chartplan-premium .health-card-chart [class*="line"],
   .health-card.chartplan-premium .health-card-chart [class*="cell"],
-  .health-card.chartplan-premium .health-card-chart [class*="day"] { background: #D8B45A !important; }
-  .health-card.chartplan-premium .health-card-chart svg { color: #D8B45A !important; fill: #D8B45A !important; }
+  .health-card.chartplan-premium .health-card-chart [class*="day"],
+  .health-card.chartplan-premium .health-card-chart .wave-bar,
+  .health-card.chartplan-premium .health-card-chart .monresto-tile { background: #E2C063 !important; }
+  .health-card.chartplan-premium .health-card-chart .monresto-tile svg { color: #2A2010 !important; stroke: #2A2010 !important; }
+  .health-card.chartplan-premium .health-card-chart svg:not(.monresto-tile svg) { stroke: #E2C063 !important; fill: #E2C063 !important; }
+
+  /* Onde sonore (equalizer) — carte Notification */
+  .health-card-chart--wave {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 5px;
+    height: 56px;
+    padding-bottom: 2px;
+  }
+  .health-card-chart--wave .wave-bar {
+    width: 5px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.92);
+    animation: waveBeat 1.3s ease-in-out infinite;
+  }
+  .health-card-chart--wave .wave-bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+  .health-card-chart--wave .wave-bar:nth-child(2) { height: 65%; animation-delay: 0.15s; }
+  .health-card-chart--wave .wave-bar:nth-child(3) { height: 100%; animation-delay: 0.30s; }
+  .health-card-chart--wave .wave-bar:nth-child(4) { height: 75%; animation-delay: 0.45s; }
+  .health-card-chart--wave .wave-bar:nth-child(5) { height: 100%; animation-delay: 0.60s; }
+  .health-card-chart--wave .wave-bar:nth-child(6) { height: 50%; animation-delay: 0.75s; }
+  .health-card-chart--wave .wave-bar:nth-child(7) { height: 28%; animation-delay: 0.90s; }
+  @keyframes waveBeat {
+    0%, 100% { transform: scaleY(0.55); opacity: 0.7; }
+    50% { transform: scaleY(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .health-card-chart--wave .wave-bar { animation: none; }
+  }
 
   .health-card-chart {
     width: 115px;
@@ -8725,20 +8755,15 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilActivitesValue">0</span></div>
-            <div class="health-card-chart health-card-chart--list" id="accueilActivitesBadge" aria-hidden="true">
-              <!-- Mini-liste de notifications (cohérent avec la popup Activités) -->
-              <div class="mini-list-row">
-                <span class="mini-list-dot"></span>
-                <span class="mini-list-line mini-list-line--long"></span>
-              </div>
-              <div class="mini-list-row">
-                <span class="mini-list-dot"></span>
-                <span class="mini-list-line mini-list-line--med"></span>
-              </div>
-              <div class="mini-list-row">
-                <span class="mini-list-dot"></span>
-                <span class="mini-list-line mini-list-line--short"></span>
-              </div>
+            <div class="health-card-chart health-card-chart--wave" id="accueilActivitesBadge" aria-hidden="true">
+              <!-- Onde sonore stylée (equalizer) -->
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
             </div>
           </div>
         </button>

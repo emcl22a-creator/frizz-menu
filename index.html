@@ -747,6 +747,17 @@
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
+
+  /* Carte Calendrier colorée selon le forfait choisi (titre + fond icône) */
+  .health-card[data-popup="reservations"].cal-plan-starter .health-card-icon-wrap { background: linear-gradient(145deg, #D9A574, #A56A3C); }
+  .health-card[data-popup="reservations"].cal-plan-starter .health-card-title { color: #D9A574; }
+  .health-card[data-popup="reservations"].cal-plan-pro .health-card-icon-wrap { background: linear-gradient(145deg, #F0F1F3, #AEB2B8); }
+  .health-card[data-popup="reservations"].cal-plan-pro .health-card-title { color: #DCE0E4; }
+  .health-card[data-popup="reservations"].cal-plan-premium .health-card-icon-wrap { background: linear-gradient(145deg, #F6E4A8, #D8B45A); }
+  .health-card[data-popup="reservations"].cal-plan-premium .health-card-title { color: #E9CE7E; }
+  .health-card[data-popup="reservations"].cal-plan-starter .health-card-icon { color: #2A1A0C; }
+  .health-card[data-popup="reservations"].cal-plan-pro .health-card-icon { color: #1A1A1E; }
+  .health-card[data-popup="reservations"].cal-plan-premium .health-card-icon { color: #2A2010; }
   .health-card--glass .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--glass .health-card-icon { color: #48484A; }
   .health-card-title {
@@ -14856,6 +14867,16 @@
           try { plan = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { plan = null; }
           if (plan === 'starter' || plan === 'pro' || plan === 'premium') {
             avatarEl.classList.add('avatar-plan-' + plan);
+          }
+        }
+        // Couleur de la carte Calendrier (titre + icône) selon le forfait choisi
+        const calCard = document.querySelector('.health-card[data-popup="reservations"]');
+        if (calCard) {
+          calCard.classList.remove('cal-plan-starter', 'cal-plan-pro', 'cal-plan-premium');
+          let planCal = null;
+          try { planCal = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { planCal = null; }
+          if (planCal === 'starter' || planCal === 'pro' || planCal === 'premium') {
+            calCard.classList.add('cal-plan-' + planCal);
           }
         }
 

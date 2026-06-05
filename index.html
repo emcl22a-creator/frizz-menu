@@ -952,7 +952,7 @@
   /* Comparaison visuelle : 2 barres côte à côte (mois précédent vs mois actuel) */
   .health-card-chart--compare {
     width: 95px !important;
-    height: 56px !important;
+    height: 62px !important;
     display: flex !important;
     flex-direction: row !important;
     align-items: flex-end !important;
@@ -963,33 +963,51 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
     gap: 4px;
   }
   .compare-bar {
     width: 14px;
-    border-radius: 7px;
+    border-radius: 6px;
     transform-origin: bottom center;
-    animation: compareBarGrow 0.9s cubic-bezier(0.34, 1.2, 0.64, 1) backwards;
+    animation: compareBarGrow 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+  }
+  /* Les labels M-1 / M restent toujours blancs et lisibles (pas colorés par le plan) */
+  .health-card-chart .compare-bar-label,
+  .health-card.chartplan-starter .health-card-chart .compare-bar-label,
+  .health-card.chartplan-pro .health-card-chart .compare-bar-label,
+  .health-card.chartplan-premium .health-card-chart .compare-bar-label,
+  .health-card.chartplan-starter .health-card-chart .compare-bar-label *,
+  .health-card.chartplan-pro .health-card-chart .compare-bar-label *,
+  .health-card.chartplan-premium .health-card-chart .compare-bar-label * {
+    color: rgba(255, 255, 255, 0.92) !important;
+    background: transparent !important;
   }
   .compare-bar--prev {
     background: rgba(255, 255, 255, 0.35);
     height: 24px;
-    animation-delay: 0.1s;
+    animation-delay: 0.15s;
   }
   .compare-bar--curr {
     background: #ffffff;
     height: 40px;
-    animation-delay: 0.25s;
+    animation-delay: 0.35s;
   }
   @keyframes compareBarGrow {
     from { transform: scaleY(0); opacity: 0; }
+    60% { opacity: 1; }
     to { transform: scaleY(1); opacity: 1; }
   }
   .compare-bar-label {
     font-size: 9px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
     letter-spacing: 0.2px;
+    animation: compareLabelIn 0.5s ease-out 0.5s backwards;
+  }
+  @keyframes compareLabelIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* ═══ Mini-tableau calendrier carte Calendrier ═══ */
@@ -1026,11 +1044,17 @@
   }
   .cal-table-header span {
     font-size: 7px;
-    font-weight: 600;
-    color: transparent !important;
+    font-weight: 700;
+    color: #1A1A1E !important;
     text-align: center;
     line-height: 1;
     letter-spacing: 0.2px;
+  }
+  /* Garder les lettres des jours en NOIR même avec la coloration par plan */
+  .health-card.chartplan-starter .health-card-chart .cal-table-header span,
+  .health-card.chartplan-pro .health-card-chart .cal-table-header span,
+  .health-card.chartplan-premium .health-card-chart .cal-table-header span {
+    color: #1A1A1E !important;
   }
   .cal-table-grid {
     display: grid;

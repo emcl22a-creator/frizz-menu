@@ -810,36 +810,44 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    gap: 8px;
-    height: 56px;
+    gap: 6px;
+    height: 48px;
   }
   .health-card-chart--notif .notif-row {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     animation: notifRowIn 0.6s cubic-bezier(0.34, 1.25, 0.64, 1) backwards;
   }
   .health-card-chart--notif .notif-row:nth-child(1) { animation-delay: 0.05s; }
   .health-card-chart--notif .notif-row:nth-child(2) { animation-delay: 0.18s; }
   .health-card-chart--notif .notif-row:nth-child(3) { animation-delay: 0.31s; }
   .health-card-chart--notif .notif-dot {
-    width: 9px;
-    height: 9px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.92);
     flex-shrink: 0;
+    animation: notifDotPulse 2.2s ease-in-out infinite;
   }
+  .health-card-chart--notif .notif-row:nth-child(1) .notif-dot { animation-delay: 0s; }
+  .health-card-chart--notif .notif-row:nth-child(2) .notif-dot { animation-delay: 0.5s; }
+  .health-card-chart--notif .notif-row:nth-child(3) .notif-dot { animation-delay: 1s; }
   .health-card-chart--notif .notif-line {
-    height: 6px;
+    height: 5px;
     border-radius: 100px;
     background: rgba(255, 255, 255, 0.55);
   }
-  .health-card-chart--notif .notif-line--long { width: 64px; }
-  .health-card-chart--notif .notif-line--med { width: 48px; }
-  .health-card-chart--notif .notif-line--short { width: 32px; }
+  .health-card-chart--notif .notif-line--long { width: 50px; }
+  .health-card-chart--notif .notif-line--med { width: 38px; }
+  .health-card-chart--notif .notif-line--short { width: 26px; }
   @keyframes notifRowIn {
     from { transform: translateX(12px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes notifDotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.45); opacity: 1; }
   }
 
 
@@ -976,11 +984,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    gap: 4px;
+    gap: 6px;
   }
   .compare-bar {
-    width: 14px;
-    border-radius: 6px;
+    width: 13px;
+    border-radius: 100px;
     transform-origin: bottom center;
     animation: compareBarGrow 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
   }

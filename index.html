@@ -200,7 +200,7 @@
       radial-gradient(1.2px 1.2px at 48% 56%, rgba(255,255,255,0.9), transparent 100%),
       radial-gradient(1px 1px at 82% 94%, rgba(255,255,255,0.72), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 5.5s ease-in-out infinite;
+    animation: twinkle 7s ease-in-out infinite;
   }
   /* Deuxième couche d'étoiles fines, plus dense et décalée */
   /* 3e couche : poussière d'étoiles très dense (effet plafond Rolls-Royce) */
@@ -235,7 +235,7 @@
       radial-gradient(0.7px 0.7px at 3% 90%, rgba(255,255,255,0.65), transparent 100%),
       radial-gradient(0.6px 0.6px at 57% 60%, rgba(255,255,255,0.6), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 6.3s ease-in-out infinite 0.8s;
+    animation: twinkle 8.5s ease-in-out infinite 1.2s;
   }
   .starfield::after {
     content: '';
@@ -254,17 +254,17 @@
       radial-gradient(0.8px 0.8px at 6% 80%, rgba(255,255,255,0.72), transparent 100%),
       radial-gradient(0.9px 0.9px at 95% 34%, rgba(255,255,255,0.65), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 7s ease-in-out infinite 1.5s;
+    animation: twinkle 9s ease-in-out infinite 2.4s;
   }
   @keyframes twinkle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 0.95; }
+    50% { opacity: 0.65; }
   }
   /* 2e couche d'étoiles : même motif décalé + retourné = densité doublée */
   .starfield-2 {
     transform: scaleX(-1) scaleY(-1);
     background-position: 37% 21%;
-    animation: twinkle 6.8s ease-in-out infinite 0.5s;
+    animation: twinkle 7.8s ease-in-out infinite 0.6s;
   }
   .starfield-2::before { background-position: 50% 30%; }
   .starfield-2::after { background-position: 25% 60%; }
@@ -774,7 +774,8 @@
   .health-card.chartplan-starter .health-card-chart [class*="line"],
   .health-card.chartplan-starter .health-card-chart [class*="cell"],
   .health-card.chartplan-starter .health-card-chart [class*="day"],
-  .health-card.chartplan-starter .health-card-chart .wave-bar,
+  .health-card.chartplan-starter .health-card-chart .notif-dot,
+  .health-card.chartplan-starter .health-card-chart .notif-line,
   .health-card.chartplan-starter .health-card-chart .monresto-tile { background: #C98E5E !important; }
   .health-card.chartplan-starter .health-card-chart .monresto-tile svg { color: #2A1A0C !important; stroke: #2A1A0C !important; }
   .health-card.chartplan-starter .health-card-chart svg:not(.monresto-tile svg) { stroke: #C98E5E !important; fill: #C98E5E !important; }
@@ -785,7 +786,8 @@
   .health-card.chartplan-pro .health-card-chart [class*="line"],
   .health-card.chartplan-pro .health-card-chart [class*="cell"],
   .health-card.chartplan-pro .health-card-chart [class*="day"],
-  .health-card.chartplan-pro .health-card-chart .wave-bar,
+  .health-card.chartplan-pro .health-card-chart .notif-dot,
+  .health-card.chartplan-pro .health-card-chart .notif-line,
   .health-card.chartplan-pro .health-card-chart .monresto-tile { background: #C8CCD2 !important; }
   .health-card.chartplan-pro .health-card-chart .monresto-tile svg { color: #1A1A1E !important; stroke: #1A1A1E !important; }
   .health-card.chartplan-pro .health-card-chart svg:not(.monresto-tile svg) { stroke: #C8CCD2 !important; fill: #C8CCD2 !important; }
@@ -796,40 +798,50 @@
   .health-card.chartplan-premium .health-card-chart [class*="line"],
   .health-card.chartplan-premium .health-card-chart [class*="cell"],
   .health-card.chartplan-premium .health-card-chart [class*="day"],
-  .health-card.chartplan-premium .health-card-chart .wave-bar,
+  .health-card.chartplan-premium .health-card-chart .notif-dot,
+  .health-card.chartplan-premium .health-card-chart .notif-line,
   .health-card.chartplan-premium .health-card-chart .monresto-tile { background: #E2C063 !important; }
   .health-card.chartplan-premium .health-card-chart .monresto-tile svg { color: #2A2010 !important; stroke: #2A2010 !important; }
   .health-card.chartplan-premium .health-card-chart svg:not(.monresto-tile svg) { stroke: #E2C063 !important; fill: #E2C063 !important; }
 
-  /* Onde sonore (equalizer) — carte Notification */
-  .health-card-chart--wave {
+  /* Mini-liste de notifications — carte Notification (coordonnée avec la popup) */
+  .health-card-chart--notif {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: flex-end;
-    justify-content: flex-end;
-    gap: 5px;
+    gap: 8px;
     height: 56px;
-    padding-bottom: 2px;
   }
-  .health-card-chart--wave .wave-bar {
-    width: 5px;
-    border-radius: 100px;
+  .health-card-chart--notif .notif-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    animation: notifRowIn 0.6s cubic-bezier(0.34, 1.25, 0.64, 1) backwards;
+  }
+  .health-card-chart--notif .notif-row:nth-child(1) { animation-delay: 0.05s; }
+  .health-card-chart--notif .notif-row:nth-child(2) { animation-delay: 0.18s; }
+  .health-card-chart--notif .notif-row:nth-child(3) { animation-delay: 0.31s; }
+  .health-card-chart--notif .notif-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.92);
-    animation: waveBeat 1.3s ease-in-out infinite;
+    flex-shrink: 0;
   }
-  .health-card-chart--wave .wave-bar:nth-child(1) { height: 30%; animation-delay: 0s; }
-  .health-card-chart--wave .wave-bar:nth-child(2) { height: 65%; animation-delay: 0.15s; }
-  .health-card-chart--wave .wave-bar:nth-child(3) { height: 100%; animation-delay: 0.30s; }
-  .health-card-chart--wave .wave-bar:nth-child(4) { height: 75%; animation-delay: 0.45s; }
-  .health-card-chart--wave .wave-bar:nth-child(5) { height: 100%; animation-delay: 0.60s; }
-  .health-card-chart--wave .wave-bar:nth-child(6) { height: 50%; animation-delay: 0.75s; }
-  .health-card-chart--wave .wave-bar:nth-child(7) { height: 28%; animation-delay: 0.90s; }
-  @keyframes waveBeat {
-    0%, 100% { transform: scaleY(0.55); opacity: 0.7; }
-    50% { transform: scaleY(1); opacity: 1; }
+  .health-card-chart--notif .notif-line {
+    height: 6px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.55);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .health-card-chart--wave .wave-bar { animation: none; }
+  .health-card-chart--notif .notif-line--long { width: 64px; }
+  .health-card-chart--notif .notif-line--med { width: 48px; }
+  .health-card-chart--notif .notif-line--short { width: 32px; }
+  @keyframes notifRowIn {
+    from { transform: translateX(12px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
   }
+
 
   .health-card-chart {
     width: 115px;
@@ -8809,15 +8821,20 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilActivitesValue">0</span></div>
-            <div class="health-card-chart health-card-chart--wave" id="accueilActivitesBadge" aria-hidden="true">
-              <!-- Onde sonore stylée (equalizer) -->
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
-              <span class="wave-bar"></span>
+            <div class="health-card-chart health-card-chart--notif" id="accueilActivitesBadge" aria-hidden="true">
+              <!-- Mini-liste de notifications, coordonnée avec la popup (pastille ronde + ligne) -->
+              <div class="notif-row">
+                <span class="notif-dot"></span>
+                <span class="notif-line notif-line--long"></span>
+              </div>
+              <div class="notif-row">
+                <span class="notif-dot"></span>
+                <span class="notif-line notif-line--med"></span>
+              </div>
+              <div class="notif-row">
+                <span class="notif-dot"></span>
+                <span class="notif-line notif-line--short"></span>
+              </div>
             </div>
           </div>
         </button>

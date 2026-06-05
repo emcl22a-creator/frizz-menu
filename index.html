@@ -20,7 +20,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0A0A0C;
+    --bg: #080C1C;
     --bg-card: #0D0D0F;
     --bg-card-translucent: rgba(13, 13, 15, 0.92);
     --label: #FFFFFF;
@@ -98,11 +98,11 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
     background: var(--bg);
     background-image:
-      radial-gradient(90% 50% at 25% 0%, rgba(20,20,26,0.9) 0%, rgba(16,16,22,0.4) 35%, transparent 62%),
-      radial-gradient(140% 110% at 90% 40%, rgba(28,28,34,0.85) 0%, rgba(18,18,24,0.45) 35%, transparent 68%),
-      radial-gradient(95% 75% at 100% 68%, rgba(14,14,18,0.8) 0%, rgba(10,10,14,0.35) 32%, transparent 60%),
-      radial-gradient(130% 80% at 20% 100%, #161620 0%, #0C0C12 30%, transparent 58%),
-      linear-gradient(180deg, #0A0A0E 0%, #101014 42%, #0C0C10 62%, #08080C 100%);
+      radial-gradient(90% 50% at 25% 0%, rgba(20,28,52,0.9) 0%, rgba(14,20,40,0.4) 35%, transparent 62%),
+      radial-gradient(140% 110% at 90% 40%, rgba(24,34,62,0.85) 0%, rgba(16,24,46,0.45) 35%, transparent 68%),
+      radial-gradient(95% 75% at 100% 68%, rgba(12,18,36,0.8) 0%, rgba(8,14,30,0.35) 32%, transparent 60%),
+      radial-gradient(130% 80% at 20% 100%, #14203C 0%, #0A1024 30%, transparent 58%),
+      linear-gradient(180deg, #080C1C 0%, #0E1430 42%, #0A1024 62%, #060A18 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--label);
@@ -185,7 +185,7 @@
     height: 60vw;
     max-width: 520px;
     max-height: 520px;
-    background: radial-gradient(circle, #1E1E26 0%, transparent 70%);
+    background: radial-gradient(circle, #1C2A52 0%, transparent 70%);
   }
   .chalo-2 {
     bottom: 0%;
@@ -194,7 +194,7 @@
     height: 65vw;
     max-width: 560px;
     max-height: 560px;
-    background: radial-gradient(circle, #24242E 0%, transparent 70%);
+    background: radial-gradient(circle, #22325E 0%, transparent 70%);
   }
   .chalo-4 {
     top: -10%;
@@ -204,7 +204,7 @@
     height: 60vw;
     max-width: 900px;
     max-height: 520px;
-    background: radial-gradient(circle, #20202A 0%, transparent 68%);
+    background: radial-gradient(circle, #1E2C54 0%, transparent 68%);
     opacity: 0.7;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -294,6 +294,14 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
   }
+  /* 2e couche d'étoiles : même motif décalé + retourné = densité doublée */
+  .starfield-2 {
+    transform: scaleX(-1) scaleY(-1);
+    background-position: 37% 21%;
+    animation: twinkle 6.8s ease-in-out infinite 0.5s;
+  }
+  .starfield-2::before { background-position: 50% 30%; }
+  .starfield-2::after { background-position: 25% 60%; }
   @media (prefers-reduced-motion: reduce) {
     body::before, body::after { animation: none; }
   }
@@ -747,17 +755,6 @@
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
-
-  /* Cartes du tableau de bord colorées selon le forfait choisi (titre + fond icône) */
-  .health-card.cal-plan-starter .health-card-icon-wrap { background: linear-gradient(145deg, #D9A574, #A56A3C); }
-  .health-card.cal-plan-starter .health-card-title { color: #D9A574; }
-  .health-card.cal-plan-pro .health-card-icon-wrap { background: linear-gradient(145deg, #F0F1F3, #AEB2B8); }
-  .health-card.cal-plan-pro .health-card-title { color: #DCE0E4; }
-  .health-card.cal-plan-premium .health-card-icon-wrap { background: linear-gradient(145deg, #F6E4A8, #D8B45A); }
-  .health-card.cal-plan-premium .health-card-title { color: #E9CE7E; }
-  .health-card.cal-plan-starter .health-card-icon { color: #2A1A0C; }
-  .health-card.cal-plan-pro .health-card-icon { color: #1A1A1E; }
-  .health-card.cal-plan-premium .health-card-icon { color: #2A2010; }
   .health-card--glass .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--glass .health-card-icon { color: #48484A; }
   .health-card-title {
@@ -8655,6 +8652,7 @@
 </head>
 <body>
   <div class="starfield" aria-hidden="true"></div>
+  <div class="starfield starfield-2" aria-hidden="true"></div>
   <div class="color-halos" aria-hidden="true">
     <span class="chalo chalo-1"></span>
     <span class="chalo chalo-2"></span>
@@ -14869,15 +14867,7 @@
             avatarEl.classList.add('avatar-plan-' + plan);
           }
         }
-        // Couleur des cartes du tableau de bord (titre + icône) selon le forfait choisi
-        let planCards = null;
-        try { planCards = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { planCards = null; }
-        document.querySelectorAll('.health-card').forEach(card => {
-          card.classList.remove('cal-plan-starter', 'cal-plan-pro', 'cal-plan-premium');
-          if (planCards === 'starter' || planCards === 'pro' || planCards === 'premium') {
-            card.classList.add('cal-plan-' + planCards);
-          }
-        });
+
 
         // Appels Frizz (today)
         const elAppels = $('accueilAppelsValue');

@@ -3687,6 +3687,23 @@
   }
   .accueil-hero-avatar:active { transform: scale(0.92); }
 
+  /* Avatar coloré selon le forfait choisi */
+  .accueil-hero-avatar.avatar-plan-starter {
+    background: linear-gradient(145deg, #D9A574 0%, #A56A3C 100%);
+    border-color: rgba(217, 165, 116, 0.7);
+    color: #2A1A0C;
+  }
+  .accueil-hero-avatar.avatar-plan-pro {
+    background: linear-gradient(145deg, #F0F1F3 0%, #AEB2B8 100%);
+    border-color: rgba(220, 224, 228, 0.8);
+    color: #1A1A1E;
+  }
+  .accueil-hero-avatar.avatar-plan-premium {
+    background: linear-gradient(145deg, #F6E4A8 0%, #D8B45A 100%);
+    border-color: rgba(216, 180, 90, 0.8);
+    color: #2A2010;
+  }
+
 
   /* Greeting de la page Calendrier à 25px (pour cohérence avec le reste de la page) */
   #page-calendrier .greeting {
@@ -6764,8 +6781,8 @@
   }
   /* Plan Starter = blanc */
   .plan-card[data-plan="starter"] .plan-badge.current {
-    background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E4 100%);
-    color: #1A1A1E;
+    background: linear-gradient(135deg, #D9A574 0%, #A56A3C 55%, #C98E5E 100%);
+    color: #2A1A0C;
   }
   /* Plan Premium = or */
   .plan-card[data-plan="premium"] .plan-badge.current {
@@ -6778,8 +6795,8 @@
     box-shadow: 0 8px 24px rgba(188, 192, 198, 0.25);
   }
   .plan-card[data-plan="starter"].current {
-    border-color: #FFFFFF;
-    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.20);
+    border-color: #C98E5E;
+    box-shadow: 0 8px 24px rgba(165, 106, 60, 0.25);
   }
   .plan-card[data-plan="premium"].current {
     border-color: #D8B45A;
@@ -6837,7 +6854,7 @@
   }
   /* Frizz Starter = blanc */
   .plan-name.starter {
-    background: linear-gradient(135deg, #FFFFFF 0%, #D8D8DC 100%);
+    background: linear-gradient(135deg, #D9A574 0%, #A56A3C 55%, #C98E5E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -6932,8 +6949,8 @@
   .plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   /* Frizz Starter = Apple Music rose */
   .plan-btn[data-plan="starter"] {
-    background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E4 100%);
-    color: #1A1A1E !important;
+    background: linear-gradient(135deg, #D9A574 0%, #A56A3C 55%, #C98E5E 100%);
+    color: #2A1A0C !important;
   }
   /* Frizz Pro = argent */
   .plan-btn.primary,
@@ -14828,6 +14845,15 @@
         if (avatarEl && typeof currentSalon !== 'undefined' && currentSalon) {
           const source = currentSalon.patron_prenom || currentSalon.nom || '';
           avatarEl.textContent = source ? source.trim().charAt(0).toUpperCase() : '?';
+        }
+        // Couleur de l'avatar selon le forfait choisi
+        if (avatarEl) {
+          avatarEl.classList.remove('avatar-plan-starter', 'avatar-plan-pro', 'avatar-plan-premium');
+          let plan = null;
+          try { plan = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { plan = null; }
+          if (plan === 'starter' || plan === 'pro' || plan === 'premium') {
+            avatarEl.classList.add('avatar-plan-' + plan);
+          }
         }
 
         // Appels Frizz (today)

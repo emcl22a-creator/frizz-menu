@@ -15668,6 +15668,15 @@
   function renderStatsPopup() {
     const container = document.getElementById('statsPopupBody');
     if (!container) return;
+    // Couleur de la courbe Frizz selon le forfait (disponible dans toute la fonction)
+    let frizzColor = '#5A5E66';
+    try {
+      const pl = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null;
+      if (pl === 'starter') frizzColor = '#C98E5E';
+      else if (pl === 'pro') frizzColor = '#C8CCD2';
+      else if (pl === 'premium') frizzColor = '#D8B45A';
+    } catch (e) {}
+    const frizzRgb = frizzColor === '#C98E5E' ? '201,142,94' : frizzColor === '#C8CCD2' ? '200,204,210' : frizzColor === '#D8B45A' ? '216,180,90' : '156,160,166';
     const now = new Date();
     const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -15817,15 +15826,6 @@
       const w = 320, h = 160, padL = 26, padR = 10, padT = 14, padB = 24;
       const xStep = (w - padL - padR) / 11;
       const innerH = h - padT - padB;
-      // Couleur de la courbe Frizz selon le forfait
-      let frizzColor = '#5A5E66';
-      try {
-        const pl = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null;
-        if (pl === 'starter') frizzColor = '#C98E5E';
-        else if (pl === 'pro') frizzColor = '#C8CCD2';
-        else if (pl === 'premium') frizzColor = '#D8B45A';
-      } catch (e) {}
-      const frizzRgb = frizzColor === '#C98E5E' ? '201,142,94' : frizzColor === '#C8CCD2' ? '200,204,210' : frizzColor === '#D8B45A' ? '216,180,90' : '156,160,166';
       const ptsFrizz = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.frizz / maxVal) * innerH)]);
       const ptsTotal = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.total / maxVal) * innerH)]);
       const pathFrizz = pointsToSmoothPath(ptsFrizz);

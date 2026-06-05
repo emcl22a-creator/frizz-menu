@@ -63,11 +63,14 @@
     fill: var(--on-accent) !important;
   }
 
+  html {
+    background: #1E1E22;
+  }
   html, body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
-    background: var(--bg);
+    background-color: transparent;
     background-image:
-      linear-gradient(180deg, #1E1E22 0%, #1E1E22 100%);
+      linear-gradient(180deg, rgba(30,30,34,0) 0%, rgba(30,30,34,0) 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--label);
@@ -130,7 +133,6 @@
 
   /* ═══ Halos de couleur animés (subtils, fond noir luxe) ═══ */
   .color-halos {
-    display: none;
     position: fixed;
     inset: 0;
     z-index: -1;
@@ -140,38 +142,53 @@
   .chalo {
     position: absolute;
     border-radius: 50%;
-    filter: blur(110px);
-    opacity: 0.5;
-    will-change: transform;
+    filter: blur(120px);
+    opacity: 0.8;
+    will-change: transform, opacity;
   }
   .chalo-1 {
-    top: 8%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    max-width: 520px;
-    max-height: 520px;
-    background: radial-gradient(circle, #3A3A42 0%, transparent 70%);
+    top: 4%;
+    left: -14%;
+    width: 70vw;
+    height: 70vw;
+    max-width: 620px;
+    max-height: 620px;
+    background: radial-gradient(circle, #3E3E46 0%, #303036 45%, transparent 72%);
+    animation: chaloBreath1 14s ease-in-out infinite;
   }
   .chalo-2 {
-    bottom: 0%;
-    right: -12%;
-    width: 65vw;
-    height: 65vw;
-    max-width: 560px;
-    max-height: 560px;
-    background: radial-gradient(circle, #44444E 0%, transparent 70%);
+    bottom: -8%;
+    right: -16%;
+    width: 75vw;
+    height: 75vw;
+    max-width: 660px;
+    max-height: 660px;
+    background: radial-gradient(circle, #46464E 0%, #38383E 45%, transparent 72%);
+    animation: chaloBreath2 18s ease-in-out infinite;
   }
   .chalo-4 {
-    top: -10%;
+    top: -14%;
     left: 50%;
     transform: translateX(-50%);
-    width: 110vw;
-    height: 60vw;
-    max-width: 900px;
-    max-height: 520px;
-    background: radial-gradient(circle, #3E3E46 0%, transparent 68%);
-    opacity: 0.7;
+    width: 120vw;
+    height: 70vw;
+    max-width: 1000px;
+    max-height: 600px;
+    background: radial-gradient(circle, #42424A 0%, #34343A 48%, transparent 70%);
+    opacity: 0.9;
+    animation: chaloBreath3 16s ease-in-out infinite;
+  }
+  @keyframes chaloBreath1 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    50% { transform: translate(6%, 4%) scale(1.12); opacity: 0.95; }
+  }
+  @keyframes chaloBreath2 {
+    0%, 100% { transform: translate(0, 0) scale(1.05); opacity: 0.65; }
+    50% { transform: translate(-5%, -6%) scale(1); opacity: 0.9; }
+  }
+  @keyframes chaloBreath3 {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+    50% { transform: translateX(-50%) scale(1.15); opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
     .chalo { animation: none; }
@@ -200,7 +217,7 @@
       radial-gradient(1.2px 1.2px at 48% 56%, rgba(255,255,255,0.9), transparent 100%),
       radial-gradient(1px 1px at 82% 94%, rgba(255,255,255,0.72), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 7s ease-in-out infinite;
+    animation: twinkle 4s ease-in-out infinite;
   }
   /* Deuxième couche d'étoiles fines, plus dense et décalée */
   /* 3e couche : poussière d'étoiles très dense (effet plafond Rolls-Royce) */
@@ -235,7 +252,7 @@
       radial-gradient(0.7px 0.7px at 3% 90%, rgba(255,255,255,0.65), transparent 100%),
       radial-gradient(0.6px 0.6px at 57% 60%, rgba(255,255,255,0.6), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 8.5s ease-in-out infinite 1.2s;
+    animation: twinkle 5s ease-in-out infinite 0.8s;
   }
   .starfield::after {
     content: '';
@@ -254,17 +271,17 @@
       radial-gradient(0.8px 0.8px at 6% 80%, rgba(255,255,255,0.72), transparent 100%),
       radial-gradient(0.9px 0.9px at 95% 34%, rgba(255,255,255,0.65), transparent 100%);
     background-size: 100% 100%;
-    animation: twinkle 9s ease-in-out infinite 2.4s;
+    animation: twinkle 5.5s ease-in-out infinite 1.6s;
   }
   @keyframes twinkle {
-    0%, 100% { opacity: 0.95; }
-    50% { opacity: 0.65; }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
   /* 2e couche d'étoiles : même motif décalé + retourné = densité doublée */
   .starfield-2 {
     transform: scaleX(-1) scaleY(-1);
     background-position: 37% 21%;
-    animation: twinkle 7.8s ease-in-out infinite 0.6s;
+    animation: twinkle 4.5s ease-in-out infinite 0.4s;
   }
   .starfield-2::before { background-position: 50% 30%; }
   .starfield-2::after { background-position: 25% 60%; }
@@ -377,7 +394,9 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: #1E1E22;
+    background: rgba(30, 30, 34, 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border-bottom: none;
   }
 

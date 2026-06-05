@@ -14855,33 +14855,44 @@
         try {
           const checks = [];
           const salon = currentSalon || {};
+          const has = (...keys) => keys.some(k => {
+            const v = salon[k];
+            return v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0);
+          });
           // 1. Nom du restaurant
-          checks.push(!!(salon.nom_restaurant || salon.name));
+          checks.push(has('nom_restaurant', 'name', 'nom', 'restaurant_nom', 'restaurant_name', 'business_name'));
           // 2. Adresse
-          checks.push(!!(salon.adresse || salon.address));
+          checks.push(has('adresse', 'address', 'adresse_complete', 'rue', 'street', 'ville', 'city'));
           // 3. Téléphone
-          checks.push(!!(salon.telephone || salon.phone));
-          // 4. Email (depuis currentUser)
-          checks.push(!!(typeof currentUser !== 'undefined' && currentUser && currentUser.email));
-          // 5. Au moins 1 table active
-          const hasTables = typeof allTables !== 'undefined' && Array.isArray(allTables)
-            && allTables.some(t => t.active !== false);
+          checks.push(has('telephone', 'phone', 'tel', 'numero', 'phone_number', 'telephone_restaurant'));
+          // 4. Email (salon ou currentUser)
+          checks.push(has('email', 'email_restaurant', 'contact_email') || !!(typeof currentUser !== 'undefined' && currentUser && currentUser.email));
+          // 5. Au moins 1 table active (variable globale OU champ du salon)
+          let hasTables = false;
+          if (typeof allTables !== 'undefined' && Array.isArray(allTables) && allTables.length > 0) {
+            hasTables = allTables.some(t => t.active !== false);
+          }
+          if (!hasTables) hasTables = has('nombre_tables', 'nb_tables', 'capacite', 'capacity', 'couverts', 'tables');
           checks.push(!!hasTables);
-          // 6. Horaires définis (au moins 1 jour avec créneaux)
-          const horaires = salon.horaires_ouverture;
+          // 6. Horaires définis (plusieurs structures possibles)
           let hasHoraires = false;
-          if (horaires && typeof horaires === 'object') {
-            for (const dayKey in horaires) {
-              const d = horaires[dayKey];
-              if (d && Array.isArray(d.creneaux) && d.creneaux.length > 0 && d.ferme !== true) {
-                hasHoraires = true;
-                break;
+          const horaires = salon.horaires_ouverture || salon.horaires || salon.opening_hours || salon.hours;
+          if (horaires) {
+            if (typeof horaires === 'string' && horaires.trim().length > 2) {
+              hasHoraires = true;
+            } else if (typeof horaires === 'object') {
+              for (const dayKey in horaires) {
+                const d = horaires[dayKey];
+                if (!d) continue;
+                if (Array.isArray(d) && d.length > 0) { hasHoraires = true; break; }
+                if (Array.isArray(d.creneaux) && d.creneaux.length > 0 && d.ferme !== true) { hasHoraires = true; break; }
+                if ((d.ouverture || d.open || d.midi || d.soir) && d.ferme !== true) { hasHoraires = true; break; }
               }
             }
           }
           checks.push(hasHoraires);
           // 7. Voix de l'assistant choisie
-          checks.push(!!(salon.voix_assistant || salon.voice || salon.voice_id));
+          checks.push(has('voix_assistant', 'voice', 'voice_id', 'voix', 'assistant_voice', 'vapi_voice'));
           // Calcul du pourcentage
           const done = checks.filter(Boolean).length;
           const total = checks.length;

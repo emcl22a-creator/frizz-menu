@@ -380,7 +380,7 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(10, 10, 12, 0.55);
+    background: rgba(30, 30, 34, 0.55);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
@@ -721,6 +721,11 @@
   .health-card--orange .health-card-icon,
   .health-card--gold .health-card-icon,
   .health-card--black .health-card-icon { color: #000000; }
+
+  /* Dessin (icône) coloré selon le forfait choisi */
+  .health-card.cardicon-plan-starter .health-card-icon { color: #A56A3C; }
+  .health-card.cardicon-plan-pro .health-card-icon { color: #8E9298; }
+  .health-card.cardicon-plan-premium .health-card-icon { color: #C99A3C; }
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
@@ -14757,6 +14762,15 @@
             avatarEl.classList.add('avatar-plan-' + plan);
           }
         }
+        // Couleur des dessins (icônes) des cartes selon le forfait choisi
+        let planIcons = null;
+        try { planIcons = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { planIcons = null; }
+        document.querySelectorAll('.health-card').forEach(card => {
+          card.classList.remove('cardicon-plan-starter', 'cardicon-plan-pro', 'cardicon-plan-premium');
+          if (planIcons === 'starter' || planIcons === 'pro' || planIcons === 'premium') {
+            card.classList.add('cardicon-plan-' + planIcons);
+          }
+        });
 
 
         // Appels Frizz (today)

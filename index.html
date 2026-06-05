@@ -38,37 +38,6 @@
     --tabbar-bg: #000000;
   }
 
-  /* ═══ MODE CLAIR (blanc pur — Apple/iOS) ═══ */
-  html[data-theme="light"] {
-    --bg: #FFFFFF;
-    --bg-card: #F7F8FA;
-    --bg-card-translucent: rgba(247, 248, 250, 0.92);
-    --label: #1A1A1E;
-    --label-secondary: rgba(60, 60, 67, 0.62);
-    --label-tertiary: rgba(60, 60, 67, 0.32);
-    --blue: #1A1A1E;
-    --blue-vivid: #1A1A1E;
-    --blue-light: rgba(0, 0, 0, 0.06);
-    --on-accent: #FFFFFF;
-    --accueil-gradient: linear-gradient(150deg, #F2F3F5 0%, #ECEEF1 40%, #E7E9ED 75%, #F2F3F5 100%);
-    --separator: rgba(60, 60, 67, 0.18);
-    --tabbar-bg: #FFFFFF;
-  }
-  /* En clair : fond blanc, on masque les étoiles et les halos sombres */
-  html[data-theme="light"] body {
-    background: #FFFFFF;
-    background-image: none;
-  }
-  html[data-theme="light"] .starfield,
-  html[data-theme="light"] body::before,
-  html[data-theme="light"] body::after {
-    display: none;
-  }
-  /* Halos gris très pâle en mode clair */
-  html[data-theme="light"] .chalo-1 { background: radial-gradient(circle, #F0F1F3 0%, transparent 70%); }
-  html[data-theme="light"] .chalo-2 { background: radial-gradient(circle, #ECEEF1 0%, transparent 70%); }
-  html[data-theme="light"] .chalo-4 { background: radial-gradient(circle, #EEF0F3 0%, transparent 68%); }
-
   /* Lisibilité : texte sombre sur les fonds d'accent devenus blancs */
   .help-code-copy,
   .btn-call,
@@ -694,7 +663,7 @@
   .health-card--orange,
   .health-card--gold,
   .health-card--black {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(28, 30, 38, 0.55);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 0.5px solid rgba(255, 255, 255, 0.18);
@@ -4888,53 +4857,6 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0 0 10px;
-  }
-
-  /* ═══ Sélecteur de thème (Sombre / Clair) ═══ */
-  .theme-switch {
-    display: flex;
-    gap: 8px;
-    background: var(--bg-card);
-    border: 0.5px solid var(--separator);
-    border-radius: 14px;
-    padding: 5px;
-  }
-  .theme-switch-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--label-secondary);
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    letter-spacing: -0.2px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .theme-switch-btn.active {
-    background: var(--accueil-gradient);
-    color: var(--label);
-  }
-  .theme-switch-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .theme-switch-dot--dark {
-    background: linear-gradient(135deg, #2C2C34, #0C0C10);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-  .theme-switch-dot--light {
-    background: linear-gradient(135deg, #FFFFFF, #E0E0E4);
-    border: 1px solid rgba(0, 0, 0, 0.15);
   }
 
   .settings-section-card {
@@ -9150,21 +9072,6 @@
       
     </section>
 
-    <!-- Section : Apparence (thème sombre / clair) -->
-    <div class="settings-section">
-      <div class="settings-section-title">Apparence</div>
-      <div class="theme-switch" role="group" aria-label="Choix du thème">
-        <button type="button" class="theme-switch-btn active" data-theme-choice="dark">
-          <span class="theme-switch-dot theme-switch-dot--dark"></span>
-          Sombre
-        </button>
-        <button type="button" class="theme-switch-btn" data-theme-choice="light">
-          <span class="theme-switch-dot theme-switch-dot--light"></span>
-          Clair
-        </button>
-      </div>
-    </div>
-
     <!-- Section : Abonnement (3 forfaits) -->
     <div class="settings-section">
       
@@ -10211,33 +10118,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ═══ THÈME SOMBRE / CLAIR ═══
-  (function initTheme() {
-    try {
-      const saved = localStorage.getItem('frizz-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', saved);
-    } catch (e) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  })();
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    try { localStorage.setItem('frizz-theme', theme); } catch (e) {}
-    document.querySelectorAll('.theme-switch-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-theme-choice') === theme);
-    });
-  }
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.theme-switch-btn');
-    if (btn) applyTheme(btn.getAttribute('data-theme-choice'));
-  });
-  document.addEventListener('DOMContentLoaded', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    document.querySelectorAll('.theme-switch-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-theme-choice') === current);
-    });
-  });
-
   // CONFIG SUPABASE
   const SUPABASE_URL = 'https://iryhmfiuvpxbssjquxyo.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyeWhtZml1dnB4YnNzanF1eHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU1NjQsImV4cCI6MjA5MjY1MTU2NH0.aYLAXhLoNJaefGt_1j1z1x8nd_DypFaaP1LPdLrxCM0';

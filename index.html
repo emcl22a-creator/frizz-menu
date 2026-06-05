@@ -67,11 +67,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
     background: var(--bg);
     background-image:
-      radial-gradient(90% 50% at 25% 0%, rgba(52,52,58,0.9) 0%, rgba(40,40,46,0.4) 35%, transparent 62%),
-      radial-gradient(140% 110% at 90% 40%, rgba(60,60,68,0.85) 0%, rgba(44,44,50,0.45) 35%, transparent 68%),
-      radial-gradient(95% 75% at 100% 68%, rgba(46,46,52,0.8) 0%, rgba(34,34,40,0.35) 32%, transparent 60%),
-      radial-gradient(130% 80% at 20% 100%, #34343C 0%, #24242A 30%, transparent 58%),
-      linear-gradient(180deg, #1E1E22 0%, #2A2A30 42%, #232328 62%, #1A1A1E 100%);
+      linear-gradient(180deg, #1E1E22 0%, #1E1E22 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--label);
@@ -134,6 +130,7 @@
 
   /* ═══ Halos de couleur animés (subtils, fond noir luxe) ═══ */
   .color-halos {
+    display: none;
     position: fixed;
     inset: 0;
     z-index: -1;
@@ -721,11 +718,6 @@
   .health-card--orange .health-card-icon,
   .health-card--gold .health-card-icon,
   .health-card--black .health-card-icon { color: #000000; }
-
-  /* Dessin (icône) coloré selon le forfait choisi */
-  .health-card.cardicon-plan-starter .health-card-icon { color: #A56A3C; }
-  .health-card.cardicon-plan-pro .health-card-icon { color: #8E9298; }
-  .health-card.cardicon-plan-premium .health-card-icon { color: #C99A3C; }
   /* Autres variantes (peu utilisées) */
   .health-card--green .health-card-icon-wrap { background: rgba(255, 255, 255, 0.96); }
   .health-card--green .health-card-icon { color: #30D158; }
@@ -775,6 +767,40 @@
     color: rgba(255, 255, 255, 0.7);
     margin-left: 3px;
   }
+  /* Dessin du bas (chart) coloré selon le forfait choisi */
+  .health-card[class*="chartplan-starter"] .health-card-chart .bar,
+  .health-card.chartplan-starter .compare-bar,
+  .health-card.chartplan-starter .mini-list-dot,
+  .health-card.chartplan-starter .mini-list-line,
+  .health-card.chartplan-starter .health-card-chart [class*="bar"],
+  .health-card.chartplan-starter .health-card-chart [class*="dot"],
+  .health-card.chartplan-starter .health-card-chart [class*="line"],
+  .health-card.chartplan-starter .health-card-chart [class*="cell"],
+  .health-card.chartplan-starter .health-card-chart [class*="day"] { background: #A56A3C !important; }
+  .health-card.chartplan-starter .health-card-chart svg { color: #A56A3C !important; fill: #A56A3C !important; }
+
+  .health-card.chartplan-pro .health-card-chart .bar,
+  .health-card.chartplan-pro .compare-bar,
+  .health-card.chartplan-pro .mini-list-dot,
+  .health-card.chartplan-pro .mini-list-line,
+  .health-card.chartplan-pro .health-card-chart [class*="bar"],
+  .health-card.chartplan-pro .health-card-chart [class*="dot"],
+  .health-card.chartplan-pro .health-card-chart [class*="line"],
+  .health-card.chartplan-pro .health-card-chart [class*="cell"],
+  .health-card.chartplan-pro .health-card-chart [class*="day"] { background: #B8BCC2 !important; }
+  .health-card.chartplan-pro .health-card-chart svg { color: #B8BCC2 !important; fill: #B8BCC2 !important; }
+
+  .health-card.chartplan-premium .health-card-chart .bar,
+  .health-card.chartplan-premium .compare-bar,
+  .health-card.chartplan-premium .mini-list-dot,
+  .health-card.chartplan-premium .mini-list-line,
+  .health-card.chartplan-premium .health-card-chart [class*="bar"],
+  .health-card.chartplan-premium .health-card-chart [class*="dot"],
+  .health-card.chartplan-premium .health-card-chart [class*="line"],
+  .health-card.chartplan-premium .health-card-chart [class*="cell"],
+  .health-card.chartplan-premium .health-card-chart [class*="day"] { background: #D8B45A !important; }
+  .health-card.chartplan-premium .health-card-chart svg { color: #D8B45A !important; fill: #D8B45A !important; }
+
   .health-card-chart {
     width: 115px;
     height: 50px;
@@ -14762,13 +14788,13 @@
             avatarEl.classList.add('avatar-plan-' + plan);
           }
         }
-        // Couleur des dessins (icônes) des cartes selon le forfait choisi
+        // Couleur des dessins (en bas à droite) des cartes selon le forfait choisi
         let planIcons = null;
         try { planIcons = (typeof getCurrentPlan === 'function') ? getCurrentPlan() : null; } catch (e) { planIcons = null; }
         document.querySelectorAll('.health-card').forEach(card => {
-          card.classList.remove('cardicon-plan-starter', 'cardicon-plan-pro', 'cardicon-plan-premium');
+          card.classList.remove('chartplan-starter', 'chartplan-pro', 'chartplan-premium');
           if (planIcons === 'starter' || planIcons === 'pro' || planIcons === 'premium') {
-            card.classList.add('cardicon-plan-' + planIcons);
+            card.classList.add('chartplan-' + planIcons);
           }
         });
 

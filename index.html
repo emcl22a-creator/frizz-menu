@@ -14000,7 +14000,10 @@
   function isSubscriptionActive() {
     if (!currentSalon) return false;
     const status = currentSalon.subscription_status;
-    return status === 'active' || status === 'trialing';
+    // On ne considère l'abonnement actif que s'il existe AUSSI un customer Stripe.
+    // Sinon, on doit passer par le Checkout (souscription), pas le portail.
+    const hasStripeCustomer = !!currentSalon.stripe_customer_id;
+    return hasStripeCustomer && (status === 'active' || status === 'trialing');
   }
 
   // ═══ DÉTECTION DU PLAN ACTUEL ═══

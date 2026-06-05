@@ -42,6 +42,18 @@
   body.plan-pro { --plan-accent: #C8CCD2; }
   body.plan-premium { --plan-accent: #D8B45A; }
 
+  /* Bandeau Calendrier + bouton + (FAB) colorés selon le forfait */
+  body.plan-starter .service-banner, body.plan-starter .resa-fab { background: linear-gradient(150deg, #D9A574 0%, #A56A3C 55%, #C98E5E 100%) !important; }
+  body.plan-pro .service-banner, body.plan-pro .resa-fab { background: linear-gradient(150deg, #F0F1F3 0%, #BCC0C6 50%, #E2E4E8 100%) !important; }
+  body.plan-premium .service-banner, body.plan-premium .resa-fab { background: linear-gradient(150deg, #F6E4A8 0%, #D8B45A 55%, #EBD08A 100%) !important; }
+  /* Texte du bandeau lisible sur fond clair coloré */
+  body.plan-pro .service-banner-dow, body.plan-pro .service-banner-date, body.plan-pro .service-banner-counter,
+  body.plan-premium .service-banner-dow, body.plan-premium .service-banner-date, body.plan-premium .service-banner-counter,
+  body.plan-starter .service-banner-dow, body.plan-starter .service-banner-date, body.plan-starter .service-banner-counter {
+    color: #1A1A1E !important;
+  }
+  body.plan-starter .resa-fab svg, body.plan-pro .resa-fab svg, body.plan-premium .resa-fab svg { color: #1A1A1E !important; }
+
 
   /* Lisibilité : texte sombre sur les fonds d'accent devenus blancs */
   .help-code-copy,
@@ -3666,8 +3678,9 @@
     width: 26px;
     height: 26px;
   }
-  .popup-acti-card--green .popup-acti-card-icon svg { color: #fff; }
+  .popup-acti-card--green .popup-acti-card-icon svg { color: var(--plan-accent); }
   .popup-acti-card--glass .popup-acti-card-icon svg { color: #fff; }
+  .popup-acti-card--green .popup-acti-card-value { color: var(--plan-accent); }
   .popup-acti-card-content {
     display: flex;
     flex-direction: column;
@@ -15361,7 +15374,7 @@
 
     // Si statistique : render direct (plus de filtres)
     if (type === 'conversion' || type === 'statistique') {
-      renderStatsPopup();
+      try { renderStatsPopup(); } catch (e) { console.error('renderStatsPopup:', e); }
     }
 
     // Si mon-restaurant : déplacer les 4 sections Réglages dans l'accordéon

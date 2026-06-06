@@ -2609,19 +2609,9 @@
     height: 14px !important;
   }
 
-  /* ── Survol (hover) de tous les éléments de la popup Mon restaurant : blanc, jamais bleu ── */
-  #monRestoAccordion *:hover,
-  #monRestoAccordion .settings-section:hover,
-  #monRestoAccordion .settings-row:hover,
-  #monRestoAccordion .mon-resto-action:hover,
-  .mon-resto-wrap *:hover {
+  /* ── Survol (hover) dans la popup Mon restaurant : l'élément intérieur bleu devient blanc ── */
+  #monRestoAccordion *:hover {
     color: #FFFFFF !important;
-    border-color: rgba(255, 255, 255, 0.25) !important;
-  }
-  #monRestoAccordion .settings-row:hover,
-  #monRestoAccordion .mon-resto-action:hover,
-  #monRestoAccordion .settings-section:hover {
-    background: rgba(255, 255, 255, 0.06) !important;
   }
   /* Les chevrons gris restent gris même au survol */
   #monRestoAccordion .mon-resto-action-chevron:hover,
@@ -11623,6 +11613,12 @@
     renderNotifs();
     $('notifBackdrop').classList.add('visible');
     $('notifPopup').classList.add('visible');
+    // Effet WhatsApp : après un court instant, les nouvelles réservations passent en "vu"
+    setTimeout(() => {
+      if (typeof window.__markAllNotifsRead === 'function') {
+        window.__markAllNotifsRead();
+      }
+    }, 1500);
   }
 
   function closeNotifs() {
@@ -14903,6 +14899,20 @@
     // Expose globalement pour pouvoir rafraîchir depuis switchPage
     window.__renderNotifPage = renderList;
     window.__updateNotifCounter = updateCounter;
+    // Marque toutes les notifs non lues comme lues (effet WhatsApp à l'ouverture)
+    window.__markAllNotifsRead = async function() {
+      const items = buildActivityList().filter(i => !i.read);
+      if (items.length === 0) return;
+      // Mise à jour optimiste de l'affichage : coches passent en couleur du plan
+      // (cible la liste source ET le clone affiché dans la popup)
+      document.querySelectorAll('.activity-item:not(.read)').forEach(el => el.classList.add('read'));
+      updateCounter();
+      // Persister en base pour chaque item non lu
+      for (const it of items) {
+        try { await persistRead(it.type, it.id, true); } catch (e) { console.warn(e); }
+      }
+      updateCounter();
+    };
 
     // Construit la liste agrégée et triée par date desc
     function buildActivityList() {
@@ -15590,6 +15600,15 @@
     backdrop.classList.add('visible');
     popup.classList.add('visible');
     document.body.style.overflow = 'hidden';
+
+    // Effet WhatsApp : après un court instant, les notifications vues passent en "lu"
+    if (type === 'activites') {
+      setTimeout(() => {
+        if (typeof window.__markAllNotifsRead === 'function') {
+          window.__markAllNotifsRead();
+        }
+      }, 1500);
+    }
   }
 
   // Re-binder les listeners de la liste activités (utile après injection ou retour de profil)

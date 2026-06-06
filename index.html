@@ -2872,6 +2872,65 @@
     flex-shrink: 0;
   }
 
+  /* ─── Liste détaillée des réservations sous la grille ─── */
+  .service-resa-list {
+    margin: 20px 16px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .service-resa-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 0.33px solid rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .service-resa-row:last-child { border-bottom: none; }
+  .service-resa-row:active { opacity: 0.6; }
+  .service-resa-time {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    width: 56px;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+  }
+  .service-resa-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+  }
+  .service-resa-info { flex: 1; min-width: 0; }
+  .service-resa-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .service-resa-meta {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1px;
+  }
+  .service-resa-chevron {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
   /* ─── TABLEAU Tables × Créneaux avec colonne fixe ─── */
   .service-table-wrap {
     margin: 0 16px;
@@ -9359,6 +9418,9 @@
         </div>
       </div>
 
+      <!-- Liste détaillée des réservations du jour (avatar + infos, triée par heure) -->
+      <div class="service-resa-list" id="serviceResaList"></div>
+
       <!-- Compteur stub (rétrocompat) -->
       <div hidden style="display:none;" aria-hidden="true">
         <div class="service-counter" id="serviceCounter"></div>
@@ -12656,6 +12718,48 @@
           </div>
         `;
       }).join('');
+    }
+
+    // ── Liste détaillée des réservations du jour (avatar + infos, triée par heure) ──
+    const resaListEl = document.getElementById('serviceResaList');
+    if (resaListEl) {
+      const sorted = (dayResas || []).slice().sort((a, b) => {
+        const ha = String(a.heure_reservation || a.heure || '');
+        const hb = String(b.heure_reservation || b.heure || '');
+        return ha < hb ? -1 : (ha > hb ? 1 : 0);
+      });
+      if (sorted.length === 0) {
+        resaListEl.innerHTML = '';
+      } else {
+        resaListEl.innerHTML = sorted.map(r => {
+          const col = colorForResa(r);
+          const initiales = (typeof getInitials === 'function' ? getInitials(r.client_nom || 'Client') : '—');
+          const heure = (typeof formatHeure === 'function' ? formatHeure(r.heure_reservation) : (r.heure_reservation || ''));
+          const couverts = parseInt(r.nb_couverts) || '?';
+          const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
+          const lieu = (typeof formatEmplacement === 'function' ? formatEmplacement(r.emplacement) : (r.emplacement || ''));
+          const nom = String(r.client_nom || 'Client').replace(/</g, '&lt;');
+          return `
+            <div class="service-resa-row" data-resa-id="${r.id}">
+              <div class="service-resa-time">${heure}</div>
+              <div class="service-resa-avatar" style="background:${col.solid};">${initiales}</div>
+              <div class="service-resa-info">
+                <div class="service-resa-name">${nom}</div>
+                <div class="service-resa-meta">${personnes} · ${lieu}</div>
+              </div>
+              <div class="service-resa-chevron">›</div>
+            </div>`;
+        }).join('');
+        // Clic sur une ligne → ouvrir le détail
+        resaListEl.querySelectorAll('.service-resa-row[data-resa-id]').forEach(row => {
+          row.addEventListener('click', () => {
+            const resa = (allReservations || []).find(r => String(r.id) === String(row.dataset.resaId));
+            if (resa && typeof openResaDetail === 'function') {
+              try { openResaDetail(resa); } catch (err) { console.warn(err); }
+            }
+          });
+        });
+      }
     }
 
     // Bind clics

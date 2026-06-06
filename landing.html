@@ -215,7 +215,7 @@
     }
   }
 </style>
-<link rel="prefetch" href="signup.html"><link rel="prefetch" href="login.html"></head>
+<link rel="prefetch" href="login.html"><link rel="prefetch" href="signup.html"><link rel="prefetch" href="index.html"></head>
 <body>
   <div class="frizz-stars" aria-hidden="true"></div>
   <div class="frizz-halo frizz-halo-1" aria-hidden="true"></div>
@@ -239,5 +239,26 @@
 
   <div class="footer">Sans engagement · annulation à tout moment</div>
 </div>
+<script>
+(function(){
+  var done = {};
+  function prefetch(url){
+    if(!url || done[url]) return;
+    done[url] = true;
+    var l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = url;
+    document.head.appendChild(l);
+  }
+  function handler(e){
+    var a = e.target.closest('a[href]');
+    if(a && a.getAttribute('href') && a.getAttribute('href').indexOf('.html') !== -1){
+      prefetch(a.getAttribute('href'));
+    }
+  }
+  document.addEventListener('touchstart', handler, {passive:true});
+  document.addEventListener('mouseover', handler, {passive:true});
+})();
+</script>
 </body>
 </html>

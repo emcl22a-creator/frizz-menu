@@ -8604,6 +8604,20 @@
     width: 62px;
     flex-shrink: 0;
   }
+  .cal-day-row-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+  }
   .cal-day-row-info {
     flex: 1;
     min-width: 0;
@@ -11177,12 +11191,12 @@
   function openResaDetail(resa) {
     currentDetailResa = resa;
     const initials = getInitials(resa.client_nom);
-    const color = avatarColorFor(resa.client_nom || '');
+    const color = colorForResa(resa);
 
     const avatar = $('resaDetailAvatar');
     avatar.textContent = initials;
-    avatar.style.background = color.bg;
-    avatar.style.color = color.fg;
+    avatar.style.background = color.solid;
+    avatar.style.color = '#FFFFFF';
 
     $('resaDetailName').textContent = resa.client_nom || 'Client';
     const sourceText = (['ia','vapi','frizz_ia','frizz'].includes((resa.source||'').toString().toLowerCase().trim())) 
@@ -11770,6 +11784,24 @@
     { bg: 'rgba(50, 215, 75, 0.10)', fg: '#32D74B', solid: '#32D74B' },
   ];
 
+  // Couleur STABLE par réservation (même couleur partout : calendrier, avatar, détail)
+  // Basée sur la position de la résa dans les réservations de SON jour, comme le calendrier.
+  function colorForResa(resa) {
+    if (!resa) return avatarColors[0];
+    const jour = String(resa.date_reservation || resa.date || '');
+    // Toutes les résas du même jour, triées par heure puis par id (ordre déterministe)
+    const memeJour = (allReservations || [])
+      .filter(r => String(r.date_reservation || r.date || '') === jour)
+      .sort((a, b) => {
+        const ha = String(a.heure_reservation || a.heure || '');
+        const hb = String(b.heure_reservation || b.heure || '');
+        if (ha !== hb) return ha < hb ? -1 : 1;
+        return String(a.id) < String(b.id) ? -1 : 1;
+      });
+    const idx = memeJour.findIndex(r => String(r.id) === String(resa.id));
+    return avatarColors[(idx < 0 ? 0 : idx) % avatarColors.length];
+  }
+
   function avatarColorFor(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -12335,9 +12367,12 @@
       const nom = escapeHtml(r.client_nom || 'Client');
       const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
       const lieu = formatEmplacement(r.emplacement);
+      const col = colorForResa(r);
+      const initiales = escapeHtml(getInitials(r.client_nom || 'Client'));
       return `
         <div class="cal-day-row" data-resa-id="${escapeHtml(r.id)}">
           <div class="cal-day-row-time">${heure}</div>
+          <div class="cal-day-row-avatar" style="background:${col.solid};">${initiales}</div>
           <div class="cal-day-row-info">
             <div class="cal-day-row-name">${nom}</div>
             <div class="cal-day-row-meta">${personnes} · ${lieu}</div>
@@ -12604,7 +12639,7 @@
           });
           if (reso) {
             const arrived = isArrived(reso);
-            const resaColor = resaColorMap[String(reso.id)] || avatarColorFor(reso.client_nom || reso.nom || '');
+            const resaColor = colorForResa(reso);
             const pillStyle = `background:${resaColor.solid}; border-color:${resaColor.solid}; color:#FFFFFF;`;
             return `<div class="service-table-cell">
               <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" style="${pillStyle}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>

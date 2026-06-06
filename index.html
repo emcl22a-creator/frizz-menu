@@ -3803,6 +3803,17 @@
     color: rgba(255, 255, 255, 0.4);
     font-size: 15px;
   }
+  /* En-tête de jour (Aujourd'hui, Hier, date...) dans la liste de notifications */
+  .notif-day-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.45);
+    padding: 16px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .notif-day-header:first-child {
+    padding-top: 4px;
+  }
   /* Items de la liste : style iOS épuré (override les autres .activity-item) */
   .notif-page-list .activity-item {
     background: transparent !important;
@@ -15034,9 +15045,33 @@
         list.innerHTML = '<div class="notif-page-empty">Aucune activité pour le moment.</div>';
         return;
       }
+      // Label de jour pour les séparateurs (Aujourd'hui, Hier, ou date)
+      const dayLabelFor = (dateVal) => {
+        if (!dateVal) return 'Plus ancien';
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return 'Plus ancien';
+        const now = new Date();
+        const startOf = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+        const diffJours = Math.round((startOf(now) - startOf(d)) / 86400000);
+        if (diffJours <= 0) return "Aujourd'hui";
+        if (diffJours === 1) return 'Hier';
+        if (diffJours < 7) {
+          const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+          return jours[d.getDay()].charAt(0).toUpperCase() + jours[d.getDay()].slice(1);
+        }
+        return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+      };
+
+      let lastDayLabel = null;
       const html = items.map(item => {
         const ic = iconForKind(item.kind);
-        return `
+        const dayLabel = dayLabelFor(item.date);
+        let separator = '';
+        if (dayLabel !== lastDayLabel) {
+          separator = `<div class="notif-day-header">${dayLabel}</div>`;
+          lastDayLabel = dayLabel;
+        }
+        return separator + `
           <div class="activity-item ${item.read ? 'read' : ''}" data-type="${item.type}" data-id="${item.id}">
             <div class="activity-item-icon ${ic.cls}">${ic.svg}</div>
             <div class="activity-item-body">

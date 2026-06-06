@@ -11730,11 +11730,11 @@
   }
 
   const avatarColors = [
-    { bg: 'rgba(0, 122, 255, 0.10)', fg: '#FFFFFF' },
-    { bg: 'rgba(52, 199, 89, 0.10)', fg: '#34C759' },
-    { bg: 'rgba(255, 149, 0, 0.10)', fg: '#FF9500' },
-    { bg: 'rgba(175, 82, 222, 0.10)', fg: '#AF52DE' },
-    { bg: 'rgba(255, 45, 85, 0.10)', fg: '#FF2D55' },
+    { bg: 'rgba(0, 122, 255, 0.10)', fg: '#FFFFFF', solid: '#007AFF' },
+    { bg: 'rgba(52, 199, 89, 0.10)', fg: '#34C759', solid: '#34C759' },
+    { bg: 'rgba(255, 149, 0, 0.10)', fg: '#FF9500', solid: '#FF9500' },
+    { bg: 'rgba(175, 82, 222, 0.10)', fg: '#AF52DE', solid: '#AF52DE' },
+    { bg: 'rgba(255, 45, 85, 0.10)', fg: '#FF2D55', solid: '#FF2D55' },
   ];
 
   function avatarColorFor(str) {
@@ -12563,8 +12563,10 @@
           });
           if (reso) {
             const arrived = isArrived(reso);
+            const resaColor = avatarColorFor(reso.client_nom || reso.nom || '');
+            const pillStyle = `background:${resaColor.solid}; border-color:${resaColor.solid}; color:#FFFFFF;`;
             return `<div class="service-table-cell">
-              <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>
+              <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" style="${pillStyle}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>
             </div>`;
           } else {
             return `<div class="service-table-cell">

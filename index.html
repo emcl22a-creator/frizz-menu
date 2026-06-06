@@ -628,34 +628,32 @@
     white-space: nowrap;
   }
   .activity-item-check {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    width: 30px;
+    height: 22px;
+    border-radius: 0;
+    border: none;
     background: transparent;
     cursor: pointer;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+    transition: transform 0.1s;
     padding: 0;
   }
   .activity-item-check:active { transform: scale(0.9); }
-  .activity-item-check svg {
-    width: 14px;
-    height: 14px;
-    stroke: #fff;
-    stroke-width: 3;
-    fill: none;
-    opacity: 0;
-    transition: opacity 0.2s;
+  .activity-item-check .dbl-check {
+    width: 26px;
+    height: 17px;
+    /* Non lu : double coche grise */
+    color: rgba(255, 255, 255, 0.35);
+    opacity: 1;
+    transition: color 0.2s;
   }
-  .activity-item.read .activity-item-check {
-    background: var(--blue);
-    border-color: var(--blue);
+  /* Lu : double coche en couleur du plan d'abonnement */
+  .activity-item.read .activity-item-check .dbl-check {
+    color: var(--plan-accent);
   }
-  .activity-item.read .activity-item-check svg { opacity: 1; }
   .activity-sheet-section-header {
     font-size: 12px;
     font-weight: 600;
@@ -15015,7 +15013,10 @@
               <div class="activity-item-sub">${subFor(item).replace(/</g, '&lt;')}</div>
             </div>
             <button class="activity-item-check" aria-label="Marquer comme lu">
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="dbl-check" viewBox="0 0 28 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="2 9 7 14 16 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="11 14 12 13 21 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
           </div>`;
       }).join('');

@@ -11735,6 +11735,13 @@
     { bg: 'rgba(255, 149, 0, 0.10)', fg: '#FF9500', solid: '#FF9500' },
     { bg: 'rgba(175, 82, 222, 0.10)', fg: '#AF52DE', solid: '#AF52DE' },
     { bg: 'rgba(255, 45, 85, 0.10)', fg: '#FF2D55', solid: '#FF2D55' },
+    { bg: 'rgba(0, 199, 190, 0.10)', fg: '#00C7BE', solid: '#00C7BE' },
+    { bg: 'rgba(255, 204, 0, 0.10)', fg: '#FFCC00', solid: '#FFCC00' },
+    { bg: 'rgba(88, 86, 214, 0.10)', fg: '#5856D6', solid: '#5856D6' },
+    { bg: 'rgba(255, 105, 180, 0.10)', fg: '#FF69B4', solid: '#FF69B4' },
+    { bg: 'rgba(48, 176, 199, 0.10)', fg: '#30B0C7', solid: '#30B0C7' },
+    { bg: 'rgba(162, 132, 94, 0.10)', fg: '#A2845E', solid: '#A2845E' },
+    { bg: 'rgba(50, 215, 75, 0.10)', fg: '#32D74B', solid: '#32D74B' },
   ];
 
   function avatarColorFor(str) {
@@ -12471,7 +12478,7 @@
         const [fh, fm] = ferm.split(':').map(x => parseInt(x) || 0);
         const startMin = oh * 60 + om;
         const endMin = fh * 60 + fm;
-        for (let m = startMin; m < endMin; m += 30) {
+        for (let m = startMin; m <= endMin; m += 30) {
           const h = String(Math.floor(m / 60)).padStart(2, '0');
           const mm = String(m % 60).padStart(2, '0');
           creneaux.push(`${h}:${mm}`);
@@ -12482,12 +12489,14 @@
     if (creneaux.length === 0) {
       for (let h = 12; h < 15; h++) {
         creneaux.push(`${String(h).padStart(2,'0')}:00`);
-        creneaux.push(`${String(h).padStart(2,'0')}:30`);
+        if (h < 14) creneaux.push(`${String(h).padStart(2,'0')}:30`);
       }
+      creneaux.push('14:30');
       for (let h = 19; h < 23; h++) {
         creneaux.push(`${String(h).padStart(2,'0')}:00`);
-        creneaux.push(`${String(h).padStart(2,'0')}:30`);
+        if (h < 22) creneaux.push(`${String(h).padStart(2,'0')}:30`);
       }
+      creneaux.push('22:30');
     }
 
     // ── Construire la liste des tables (depuis allTables) ──
@@ -12544,6 +12553,12 @@
       const s = String(r.statut || '').toLowerCase().trim();
       return s === 'arrivee' || s === 'arrivée';
     };
+    // Couleur unique par réservation : on assigne selon l'ordre des résas du jour
+    // (chaque réservation distincte = une couleur différente, en cyclant sur la palette)
+    const resaColorMap = {};
+    (dayResas || []).forEach((r, i) => {
+      resaColorMap[String(r.id)] = avatarColors[i % avatarColors.length];
+    });
     if (body) {
       body.innerHTML = tables.map(t => {
         const cells = creneaux.map(slot => {
@@ -12563,7 +12578,7 @@
           });
           if (reso) {
             const arrived = isArrived(reso);
-            const resaColor = avatarColorFor(reso.client_nom || reso.nom || '');
+            const resaColor = resaColorMap[String(reso.id)] || avatarColorFor(reso.client_nom || reso.nom || '');
             const pillStyle = `background:${resaColor.solid}; border-color:${resaColor.solid}; color:#FFFFFF;`;
             return `<div class="service-table-cell">
               <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" style="${pillStyle}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>

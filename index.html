@@ -10908,7 +10908,7 @@
     const ICON_MANUAL = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
 
     container.innerHTML = todayResas.map(r => {
-      const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+      const isFrizz = (['ia','vapi','frizz_ia','frizz'].includes((r.source||'').toString().toLowerCase().trim()));
       const cls = isFrizz ? 'src-frizz' : 'src-manual';
       const icon = isFrizz ? ICON_FRIZZ : ICON_MANUAL;
       const badge = isFrizz ? 'Frizz' : 'Manuelle';
@@ -11104,7 +11104,7 @@
             <span class="agenda-service-meta">${list.length} résa${list.length > 1 ? 's' : ''} · ${totalCouverts} couvert${totalCouverts > 1 ? 's' : ''}</span>
           </div>`;
         list.forEach(r => {
-          const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+          const isFrizz = (['ia','vapi','frizz_ia','frizz'].includes((r.source||'').toString().toLowerCase().trim()));
           const cls = isFrizz ? 'src-frizz' : 'src-manual';
           const icon = isFrizz ? ICON_FRIZZ : ICON_MANUAL;
           const badge = isFrizz ? 'Frizz' : 'Manuelle';
@@ -11165,7 +11165,7 @@
     avatar.style.color = color.fg;
 
     $('resaDetailName').textContent = resa.client_nom || 'Client';
-    const sourceText = (resa.source === 'ia' || resa.source === 'vapi') 
+    const sourceText = (['ia','vapi','frizz_ia','frizz'].includes((resa.source||'').toString().toLowerCase().trim())) 
       ? 'Réservation confirmée par IA' 
       : 'Réservation confirmée';
     $('resaDetailSource').textContent = sourceText;
@@ -14891,7 +14891,8 @@
       // Réservations — uniquement celles prises par Frizz (IA/Vapi), pas les manuelles
       if (Array.isArray(allReservations)) {
         allReservations.forEach(r => {
-          const isFrizz = (r.source === 'ia' || r.source === 'vapi');
+          const src = (r.source || '').toString().toLowerCase().trim();
+          const isFrizz = (src === 'ia' || src === 'vapi' || src === 'frizz_ia' || src === 'frizz' || src.includes('ia') || src.includes('vapi'));
           if (!isFrizz) return; // on ignore les réservations créées manuellement
           const statut = (r.statut || r.status || r.state || '').toString().toLowerCase().trim();
           let kind = 'created';
@@ -15757,7 +15758,7 @@
     const startWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
 
     const all = allReservations || [];
-    const isFrizzResa = r => (r.source === 'ia' || r.source === 'vapi');
+    const isFrizzResa = r => (['ia','vapi','frizz_ia','frizz'].includes((r.source||'').toString().toLowerCase().trim()));
     const resasToday = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startToday).length;
     const resasWeek = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startWeek).length;
     const resasMonth = all.filter(r => isFrizzResa(r) && r.created_at && new Date(r.created_at) >= startThisMonth).length;
@@ -16264,7 +16265,7 @@
         const d = new Date(r.created_at);
         return d >= monthStart && d <= monthEnd;
       });
-      const frizz = inMonth.filter(r => r.source === 'ia' || r.source === 'vapi').length;
+      const frizz = inMonth.filter(r => ['ia','vapi','frizz_ia','frizz'].includes((r.source||'').toString().toLowerCase().trim())).length;
       const total = inMonth.length;
       data.push({ month: m, frizz, total });
     }

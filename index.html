@@ -13800,13 +13800,20 @@
           const personnes = `${couverts} personne${couverts > 1 ? 's' : ''}`;
           const lieu = (typeof formatEmplacement === 'function' ? formatEmplacement(r.emplacement) : (r.emplacement || ''));
           const nom = String(r.client_nom || 'Client').replace(/</g, '&lt;');
+          // Service : Midi (avant 17h), Soir (17h+), Autre si heure inconnue
+          let service = 'Autre';
+          const hStr = String(r.heure_reservation || r.heure || '');
+          const hNum = parseInt(hStr.split(':')[0]);
+          if (!isNaN(hNum)) service = (hNum < 17 ? 'Midi' : 'Soir');
+          const metaParts = [`Réservation ${service.toLowerCase()}`, personnes];
+          if (lieu) metaParts.push(lieu);
           return `
             <div class="service-resa-row" data-resa-id="${r.id}">
               <div class="service-resa-time">${heure}</div>
               <div class="service-resa-avatar" style="background:${col.solid}; color:${col.fg};">${initiales}</div>
               <div class="service-resa-info">
                 <div class="service-resa-name">${nom}</div>
-                <div class="service-resa-meta">${personnes} · ${lieu}</div>
+                <div class="service-resa-meta">${metaParts.join(' · ')}</div>
               </div>
               <div class="service-resa-chevron">›</div>
             </div>`;

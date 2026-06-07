@@ -349,6 +349,8 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .not-connected-card {
     background: rgba(20, 20, 22, 0.95);
@@ -8987,6 +8989,18 @@
 
 
 #authRoot { --bg-secondary: #141416; }
+#authRoot {
+  width: 100%;
+  min-height: 100%;
+}
+.auth-screen {
+  width: 100%;
+  min-height: 100%;
+}
+/* Quand l'écran auth est affiché, on aligne en haut pour permettre le défilement complet */
+.not-connected-screen:has(#authRoot) {
+  align-items: flex-start;
+}
 
 /* ====== CSS PAGES AUTH (préfixé auth-) ====== */
 /* ===== CSS landing (préfixé auth-) ===== */
@@ -9086,6 +9100,31 @@
     text-align: center; font-size: 13px; color: var(--label-tertiary);
     margin-top: 24px;
     animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.65s backwards;
+  }
+
+  /* ── LANDING compacte : tient sur un écran sans scroll (mobile) ── */
+  @media (max-width: 899px) {
+    #authLanding .auth-container {
+      min-height: 100vh;
+      min-height: 100dvh;
+      justify-content: center;
+      padding: 20px 24px max(20px, env(safe-area-inset-bottom));
+    }
+    #authLanding .auth-hero {
+      flex: 0 1 auto;
+      padding: 0 0 8px;
+    }
+    #authLanding .auth-logo-big {
+      width: 60px; height: 60px; margin-bottom: 18px;
+    }
+    #authLanding .auth-title {
+      font-size: 30px; margin-bottom: 10px;
+    }
+    #authLanding .auth-subtitle {
+      font-size: 15px; line-height: 1.4;
+    }
+    #authLanding .auth-actions { margin-top: 18px; }
+    #authLanding .auth-footer { margin-top: 16px; }
   }
 
   @media (min-width: 900px) {
@@ -15118,8 +15157,21 @@
     try {
       const { error } = await supa.auth.signOut();
       if (error) throw error;
-      // Rediriger vers la page de login
-      window.location.href = '/login';
+      // Afficher l'écran auth intégré (landing) SANS recharger
+      if (typeof currentUser !== 'undefined') currentUser = null;
+      if (typeof showNotConnected === 'function') {
+        showNotConnected();
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="16 17 21 12 16 7" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="21" y1="12" x2="9" y2="12" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Se déconnecter`;
+      } else {
+        window.location.reload();
+      }
     } catch (err) {
       console.error('Logout error:', err);
       showToast('⚠️ ' + (err.message || 'Erreur de déconnexion'));

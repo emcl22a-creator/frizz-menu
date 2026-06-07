@@ -444,6 +444,10 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   }
   .topbar .logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     height: 28px;
     width: 28px;
     max-width: none;
@@ -451,7 +455,6 @@
     object-position: center center;
     display: block;
     margin: 0;
-    flex: 0 0 auto;
   }
 
   /* Sur Stats : plus d'espace entre la topbar et les KPI (pas de greeting entre) */
@@ -892,7 +895,7 @@
     background-image: none !important;
     background-color: #D0D4DB !important;
   }
-  #healthCardsClassic .health-card-chart .monresto-tile svg { color: #1A1A1E !important; stroke: #1A1A1E !important; fill: #1A1A1E !important; }
+  #healthCardsClassic .health-card-chart .monresto-tile svg { color: #FFFFFF !important; stroke: #FFFFFF !important; fill: #FFFFFF !important; }
   #healthCardsClassic .health-card-chart svg:not(.monresto-tile svg) { stroke: #D6DAE0 !important; fill: #D6DAE0 !important; }
 
   /* Mini-liste de notifications — carte Notification (coordonnée avec la popup) */
@@ -1215,6 +1218,14 @@
   .health-card.chartplan-premium .cal-table-header,
   .health-card.chartplan-premium .cal-table-cell { background: #D8B45A !important; }
   .health-card.chartplan-premium .cal-table-cell.is-today { background: #F0D27A !important; }
+  /* Mini-calendrier carte accueil : toujours argent (Pro), écrase l'or/bronze */
+  #healthCardsClassic .cal-table { background: rgba(208,212,219,0.12) !important; border-color: rgba(208,212,219,0.65) !important; }
+  #healthCardsClassic .cal-table-header,
+  #healthCardsClassic .cal-table-header span,
+  #healthCardsClassic .cal-table-cell { background: #D0D4DB !important; }
+  #healthCardsClassic .cal-table-cell.is-today { background: #E8EBEF !important; }
+  /* Le texte des jours (L M M J V S D) reste foncé pour rester lisible sur l'argent */
+  #healthCardsClassic .cal-table-header span { color: #1A1A1E !important; }
 
   /* ═══ Icône iOS Calendrier : grosse date avec mois (ANCIEN, gardé en backup) ═══ */
   .health-card-chart--cal-date {

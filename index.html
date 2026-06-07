@@ -17983,8 +17983,15 @@
         s.style.height = size + 'px';
         s.style.left = (Math.random() * 100).toFixed(2) + '%';
         s.style.top = (Math.random() * 100).toFixed(2) + '%';
-        s.style.setProperty('--dur', (Math.random() * 4 + 3).toFixed(2) + 's'); // 3 → 7s
-        s.style.setProperty('--delay', (Math.random() * 6).toFixed(2) + 's');
+        const dur = (Math.random() * 4 + 3); // 3 → 7s
+        s.style.setProperty('--dur', dur.toFixed(2) + 's');
+        // La moitié des étoiles démarre "déjà en cours" (visibles tout de suite),
+        // l'autre moitié apparaît progressivement (délai positif).
+        if (i % 2 === 0) {
+          s.style.setProperty('--delay', (-Math.random() * dur).toFixed(2) + 's');
+        } else {
+          s.style.setProperty('--delay', (Math.random() * 6).toFixed(2) + 's');
+        }
         s.style.setProperty('--max', (Math.random() * 0.5 + 0.45).toFixed(2)); // 0.45 → 0.95
         frag.appendChild(s);
       }

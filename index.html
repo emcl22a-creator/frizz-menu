@@ -9226,10 +9226,25 @@
       radial-gradient(1px 1px at 82% 94%, rgba(255,255,255,0.5), transparent 100%);
     background-size: 100% 100%;
   }
+  /* Étoiles animées (scintillement stylé : apparaissent/disparaissent) */
+  .auth-star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity, transform;
+    animation: authStarTwinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+    box-shadow: 0 0 6px 1px rgba(255,255,255,0.55);
+  }
+  @keyframes authStarTwinkle {
+    0%, 100% { opacity: 0; transform: scale(0.6); }
+    50% { opacity: var(--max, 0.9); transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .auth-star { animation: none; opacity: 0.5; }
+  }
 
-  /* Logo en ondes */
-  .auth-logo-big { border-radius: 0 !important; width: auto !important; height: 96px !important; object-fit: contain !important; background: transparent !important; }
-  @media (max-width: 760px) { .auth-logo-big { height: 80px !important; } }
 
   /* Accents bleus -> blanc */
   .auth-btn-primary { background: #FFFFFF !important; color: #0A0A0C !important; box-shadow: 0 8px 24px rgba(0,0,0,0.35) !important; }
@@ -11596,6 +11611,7 @@
     show('notConnectedScreen');
     // Afficher l'écran landing par défaut (auth intégré)
     if (typeof window.showAuthScreen === 'function') window.showAuthScreen('landing');
+    if (typeof window.__genererEtoiles === 'function') window.__genererEtoiles();
   }
 
   function showApp() {
@@ -17950,6 +17966,35 @@
 /* ====== AUTH INTÉGRÉ (landing / login / signup) — sans rechargement ====== */
 (function(){
   function qs(id){ return document.getElementById(id); }
+
+  // ── Étoiles animées scintillantes dans les fonds auth ──
+  function genererEtoiles() {
+    document.querySelectorAll('.auth-frizz-stars').forEach(function(container){
+      if (container.dataset.starsDone === '1') return;
+      container.dataset.starsDone = '1';
+      container.style.backgroundImage = 'none'; // on remplace le fond statique par des étoiles animées
+      const nb = 46;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < nb; i++) {
+        const s = document.createElement('span');
+        s.className = 'auth-star';
+        const size = (Math.random() * 1.8 + 1.6).toFixed(2); // 1.6 → 3.4 px (légèrement plus gros)
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.left = (Math.random() * 100).toFixed(2) + '%';
+        s.style.top = (Math.random() * 100).toFixed(2) + '%';
+        s.style.setProperty('--dur', (Math.random() * 4 + 3).toFixed(2) + 's'); // 3 → 7s
+        s.style.setProperty('--delay', (Math.random() * 6).toFixed(2) + 's');
+        s.style.setProperty('--max', (Math.random() * 0.5 + 0.45).toFixed(2)); // 0.45 → 0.95
+        frag.appendChild(s);
+      }
+      container.appendChild(frag);
+    });
+  }
+  // Générer dès que possible + à l'ouverture de l'écran auth
+  if (document.readyState !== 'loading') genererEtoiles();
+  else document.addEventListener('DOMContentLoaded', genererEtoiles);
+  window.__genererEtoiles = genererEtoiles;
 
   // Navigation entre les écrans auth
   function showAuthScreen(name){

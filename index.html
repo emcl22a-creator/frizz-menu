@@ -15021,8 +15021,8 @@
       if (Array.isArray(allReservations)) {
         allReservations.forEach(r => {
           const src = (r.source || '').toString().toLowerCase().trim();
-          const isFrizz = (src === 'ia' || src === 'vapi' || src === 'frizz_ia' || src === 'frizz' || src.includes('ia') || src.includes('vapi'));
-          if (!isFrizz) return; // on ignore les réservations créées manuellement
+          const isFrizz = (src === 'ia' || src === 'vapi' || src === 'frizz_ia' || src === 'frizz' || src === 'frizz_ai' || src === 'ai');
+          if (!isFrizz) return; // on ignore tout ce qui n'est pas un appel IA Frizz
           const statut = (r.statut || r.status || r.state || '').toString().toLowerCase().trim();
           let kind = 'created';
           if (['annulee','annulée','annule','annulé','cancelled','canceled','cancel','annulation'].includes(statut)) {
@@ -15951,9 +15951,13 @@
     const convPercent = monthCalls > 0 ? Math.min(100, Math.round((resasMonth / monthCalls) * 100)) : 0;
 
     // Répartition des appels par type (réservation / annulation / autre)
-    // On déduit depuis les résas (created + cancelled) et le total appels
+    // On ne compte QUE les appels IA Frizz (pas les réservations manuelles)
+    const isFrizzSrc = (r) => {
+      const s = (r.source || '').toString().toLowerCase().trim();
+      return s === 'ia' || s === 'vapi' || s === 'frizz_ia' || s === 'frizz' || s === 'frizz_ai' || s === 'ai';
+    };
     let appelsResa = 0, appelsAnnul = 0;
-    all.filter(r => r.created_at && new Date(r.created_at) >= startThisMonth).forEach(r => {
+    all.filter(r => isFrizzSrc(r) && r.created_at && new Date(r.created_at) >= startThisMonth).forEach(r => {
       const statut = (r.statut || r.status || '').toString().toLowerCase().trim();
       if (['annulee','annulée','annule','annulé','cancelled','canceled','cancel','annulation'].includes(statut)) {
         appelsAnnul++;

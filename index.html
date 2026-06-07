@@ -9033,6 +9033,7 @@
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
 }
 /* Quand l'écran auth est affiché : pas de padding, l'auth-screen gère tout */
 .not-connected-screen:has(#authRoot) {
@@ -9336,6 +9337,12 @@
     .auth-nav {
       max-width: 1200px;
       padding: 22px 60px 0;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      z-index: 2;
     }
     .auth-page-wrap {
       max-width: 1200px;
@@ -9343,10 +9350,13 @@
       display: grid;
       grid-template-columns: 1.05fr 1fr;
       gap: 80px;
-      padding: 20px 60px 60px;
+      padding: 60px;
       align-items: center;
-      min-height: calc(100% - 80px);
+      justify-items: stretch;
+      min-height: 100vh;
     }
+    .auth-marketing-col { align-self: center; }
+    #authLogin .auth-container { align-self: center; padding-top: 0; padding-bottom: 0; min-height: auto; }
     .auth-marketing-col { display: block; }
     .auth-marketing-logo {
       width: 84px; height: 84px;

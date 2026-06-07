@@ -314,6 +314,7 @@
   }
   /* 2e couche d'étoiles : même motif décalé + retourné = densité doublée */
   .starfield-2 {
+    display: none;
     transform: scaleX(-1) scaleY(-1);
     background-position: 37% 21%;
     animation: twinkle 4.5s ease-in-out infinite 0.4s;
@@ -17966,9 +17967,9 @@
 (function(){
   function qs(id){ return document.getElementById(id); }
 
-  // ── Étoiles animées scintillantes dans les fonds auth ──
+  // ── Étoiles animées scintillantes dans les fonds auth + app ──
   function genererEtoiles() {
-    document.querySelectorAll('.auth-frizz-stars').forEach(function(container){
+    document.querySelectorAll('.auth-frizz-stars, .starfield:not(.starfield-2)').forEach(function(container){
       if (container.dataset.starsDone === '1') return;
       container.dataset.starsDone = '1';
       container.style.backgroundImage = 'none'; // on remplace le fond statique par des étoiles animées

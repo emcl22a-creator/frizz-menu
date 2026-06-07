@@ -5163,6 +5163,14 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.04);
     overflow: hidden;
   }
+  /* Texte d'explication sous une ligne de réglage */
+  .settings-row-help {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px 16px 14px;
+    letter-spacing: -0.01em;
+  }
 
   /* ═══ Ligne jour (Horaires) ═══ */
   .horaires-day-row {
@@ -10710,13 +10718,14 @@
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
-        <div class="settings-row editable" data-field="seuil_couverts" data-type="number" data-label="Seuil de couverts (rappel)" style="background:rgba(255,0,0,0.4) !important;">
-          <div class="settings-row-label">Seuil de couverts</div>
+        <div class="settings-row editable" data-field="seuil_couverts" data-type="number" data-label="Au-delà de combien de personnes Frizz doit-il vous prévenir au lieu de confirmer ?">
+          <div class="settings-row-label">Grandes tables à valider</div>
           <div class="settings-row-value" id="settingsSeuilCouvertsValue">—</div>
           <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
+        <div class="settings-row-help">À partir de ce nombre de personnes, Frizz ne confirme pas tout seul : il prend les coordonnées du client et vous recevez une notification pour le rappeler et décider vous-même. Pratique pour les grands groupes. Laissez vide pour que Frizz confirme toujours.</div>
       </div>
     </div>
 
@@ -14497,7 +14506,7 @@
     $('settingsAdresseValue').textContent = currentSalon.adresse || '—';
     $('settingsVilleValue').textContent = currentSalon.ville || '—';
     const seuilEl = $('settingsSeuilCouvertsValue');
-    if (seuilEl) seuilEl.textContent = (currentSalon.seuil_couverts ? currentSalon.seuil_couverts + ' personnes' : '— (aucun)');
+    if (seuilEl) seuilEl.textContent = (currentSalon.seuil_couverts ? 'À partir de ' + currentSalon.seuil_couverts : 'Toujours confirmer');
 
     // Horaires & réservations
     $('settingsDureeValue').textContent = (currentSalon.duree_table_minutes || 70) + ' min';

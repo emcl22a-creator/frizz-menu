@@ -11759,6 +11759,8 @@
         subscribeMessagesRealtime();
       }
       renderActivity(); // Force le rendu du Journal pour que son contenu soit présent sous le paywall
+      if (typeof loadMessages === 'function') loadMessages(); // Charge les messages (prises de message, grands groupes à rappeler)
+      if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
       updateFrizzNumberDisplay(); // Affiche le numéro Frizz du salon (ou message "aucun numéro" si pas d'abonnement)
       updateBellDot();
       // Calendrier : branche les events et fait un premier rendu
@@ -18018,6 +18020,42 @@
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && currentSalon) loadAppData();
   });
+  // Rafraîchissement silencieux des réservations + messages (notifications en temps quasi-réel)
+  async function refreshDataSilencieux() {
+    if (document.hidden || !currentSalon) return;
+    try {
+      // Réservations
+      const { data: reservations } = await supa
+        .from('frizz_ai_reservations')
+        .select('*')
+        .eq('salon_id', currentSalon.id)
+        .order('date_reservation', { ascending: true });
+      if (Array.isArray(reservations)) {
+        allReservations = reservations;
+        // Liens résa ↔ tables (pour le calendrier)
+        try {
+          const resaIds = allReservations.map(r => r.id);
+          if (resaIds.length > 0) {
+            const { data: liens } = await supa
+              .from('frizz_ai_reservation_tables')
+              .select('reservation_id, table_id')
+              .in('reservation_id', resaIds);
+            if (Array.isArray(liens) && typeof allReservationTables !== 'undefined') {
+              allReservationTables = liens;
+            }
+          }
+        } catch (e) { /* liens non critiques */ }
+        if (typeof renderStats === 'function') renderStats(allReservations);
+        if (typeof renderCalendarPage === 'function') renderCalendarPage();
+        if (typeof renderServiceDuJour === 'function') renderServiceDuJour();
+      }
+      // Messages (prises de message, grands groupes à rappeler)
+      if (typeof loadMessages === 'function') await loadMessages();
+      if (typeof window.__renderNotifPage === 'function') window.__renderNotifPage();
+      if (typeof renderActivity === 'function') renderActivity();
+    } catch (e) { /* silencieux */ }
+  }
+  setInterval(refreshDataSilencieux, 30000);
 </script>
 
 

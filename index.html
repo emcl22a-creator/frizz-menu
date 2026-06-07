@@ -3089,6 +3089,31 @@
     font-weight: 500;
     box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3);
   }
+  /* Pastille coupée en deux : qui part (gauche) / qui arrive (droite) */
+  .service-pill--split {
+    display: inline-flex;
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    width: auto;
+  }
+  .service-pill-half {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 0;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .service-pill-half--left { width: 16px; }
+  .service-pill-half--right { padding: 4px 8px 4px 5px; }
+  .service-pill-half:active { transform: scale(0.95); }
 
   /* Bouton Aujourd'hui (legacy stub, plus utilisé) */
   .service-today-wrap {
@@ -4704,7 +4729,7 @@
     width: auto;
     min-width: 50px;
     height: 44px;
-    border-radius: 22px;
+    border-radius: 100px;
     padding: 0 14px 0 12px;
     gap: 6px;
   }
@@ -10685,6 +10710,13 @@
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
+        <div class="settings-row editable" data-field="seuil_couverts" data-type="number" data-label="Seuil de couverts (rappel)">
+          <div class="settings-row-label">Seuil de couverts</div>
+          <div class="settings-row-value" id="settingsSeuilCouvertsValue">—</div>
+          <svg class="settings-row-chevron" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -12176,7 +12208,7 @@
     const avatar = $('resaDetailAvatar');
     avatar.textContent = initials;
     avatar.style.background = color.solid;
-    avatar.style.color = '#FFFFFF';
+    avatar.style.color = color.fg;
 
     $('resaDetailName').textContent = resa.client_nom || 'Client';
     const sourceText = (['ia','vapi','frizz_ia','frizz'].includes((resa.source||'').toString().toLowerCase().trim())) 
@@ -12767,19 +12799,16 @@
   // Couleur STABLE par réservation (même couleur partout : calendrier, avatar, détail)
   // Basée sur la position de la résa dans les réservations de SON jour, comme le calendrier.
   function colorForResa(resa) {
-    if (!resa) return avatarColors[0];
-    const jour = String(resa.date_reservation || resa.date || '');
-    // Toutes les résas du même jour, triées par heure puis par id (ordre déterministe)
-    const memeJour = (allReservations || [])
-      .filter(r => String(r.date_reservation || r.date || '') === jour)
-      .sort((a, b) => {
-        const ha = String(a.heure_reservation || a.heure || '');
-        const hb = String(b.heure_reservation || b.heure || '');
-        if (ha !== hb) return ha < hb ? -1 : 1;
-        return String(a.id) < String(b.id) ? -1 : 1;
-      });
-    const idx = memeJour.findIndex(r => String(r.id) === String(resa.id));
-    return avatarColors[(idx < 0 ? 0 : idx) % avatarColors.length];
+    // Couleur selon la SOURCE :
+    // - Réservation prise par Frizz (IA) → couleur du plan d'abonnement (--plan-accent)
+    // - Réservation manuelle → blanc
+    const planColor = (getComputedStyle(document.body).getPropertyValue('--plan-accent') || '#FFFFFF').trim() || '#FFFFFF';
+    const src = (resa && (resa.source || '')).toString().toLowerCase().trim();
+    const isFrizz = (src === 'ia' || src === 'vapi' || src === 'frizz_ia' || src === 'frizz' || src === 'frizz_ai' || src === 'ai');
+    if (isFrizz) {
+      return { bg: planColor, fg: '#000000', solid: planColor };
+    }
+    return { bg: '#FFFFFF', fg: '#000000', solid: '#FFFFFF' };
   }
 
   function avatarColorFor(str) {
@@ -13603,24 +13632,45 @@
     if (body) {
       body.innerHTML = tables.map(t => {
         const cells = creneaux.map(slot => {
-          const reso = dayResas.find(r => {
-            // Cherche dans table_id direct ET dans la table de jointure
+          const duree = parseInt(currentSalon?.duree_table_minutes) || 90;
+          const [sh, sm] = slot.split(':').map(x => parseInt(x) || 0);
+          const slotMin = sh * 60 + sm;
+          // Résas de cette table avec leurs bornes calculées
+          const resasTable = dayResas.filter(r => {
             const tableIds = getResaTableIds(r);
             if (!tableIds.includes(String(t.id))) return false;
             const heureRes = String(r.heure_reservation || r.heure || '').slice(0, 5);
-            if (!heureRes) return false;
-            const duree = parseInt(currentSalon?.duree_table_minutes) || 90;
+            return !!heureRes;
+          }).map(r => {
+            const heureRes = String(r.heure_reservation || r.heure || '').slice(0, 5);
             const [rh, rm] = heureRes.split(':').map(x => parseInt(x) || 0);
-            const resaStartMin = rh * 60 + rm;
-            const resaEndMin = resaStartMin + duree;
-            const [sh, sm] = slot.split(':').map(x => parseInt(x) || 0);
-            const slotMin = sh * 60 + sm;
-            return slotMin >= resaStartMin && slotMin < resaEndMin;
+            const start = rh * 60 + rm;
+            return { r, start, end: start + duree };
           });
+          // Résa qui OCCUPE ce créneau (commence à ce slot ou avant, finit après)
+          const occupante = resasTable.find(x => slotMin >= x.start && slotMin < x.end);
+          // Résa qui FINIT exactement à ce créneau (la précédente qui part)
+          const sortante = resasTable.find(x => x.end === slotMin);
+          // Résa qui COMMENCE exactement à ce créneau
+          const entrante = resasTable.find(x => x.start === slotMin);
+
+          // CAS SPLIT : une résa finit ici ET une autre commence ici (différentes)
+          if (sortante && entrante && String(sortante.r.id) !== String(entrante.r.id)) {
+            const cg = colorForResa(sortante.r); // qui part → gauche
+            const cd = colorForResa(entrante.r); // qui arrive → droite
+            return `<div class="service-table-cell">
+              <div class="service-pill service-pill--split">
+                <button class="service-pill-half service-pill-half--left" style="background:${cg.solid}; color:${cg.fg};" data-action="open-resa" data-resa-id="${sortante.r.id}" type="button" title="Départ"></button>
+                <button class="service-pill-half service-pill-half--right" style="background:${cd.solid}; color:${cd.fg};" data-action="open-resa" data-resa-id="${entrante.r.id}" type="button" title="Arrivée">Rés.</button>
+              </div>
+            </div>`;
+          }
+
+          const reso = occupante ? occupante.r : null;
           if (reso) {
             const arrived = isArrived(reso);
             const resaColor = colorForResa(reso);
-            const pillStyle = `background:${resaColor.solid}; border-color:${resaColor.solid}; color:#FFFFFF;`;
+            const pillStyle = `background:${resaColor.solid}; border-color:${resaColor.solid}; color:${resaColor.fg};`;
             return `<div class="service-table-cell">
               <button class="service-pill ${arrived ? 'service-pill--arrived' : 'service-pill--reserved'}" style="${pillStyle}" data-action="open-resa" data-resa-id="${reso.id}" type="button">Rés.</button>
             </div>`;
@@ -13660,7 +13710,7 @@
           return `
             <div class="service-resa-row" data-resa-id="${r.id}">
               <div class="service-resa-time">${heure}</div>
-              <div class="service-resa-avatar" style="background:${col.solid};">${initiales}</div>
+              <div class="service-resa-avatar" style="background:${col.solid}; color:${col.fg};">${initiales}</div>
               <div class="service-resa-info">
                 <div class="service-resa-name">${nom}</div>
                 <div class="service-resa-meta">${personnes} · ${lieu}</div>
@@ -14446,6 +14496,8 @@
     $('settingsNomValue').textContent = currentSalon.nom || '—';
     $('settingsAdresseValue').textContent = currentSalon.adresse || '—';
     $('settingsVilleValue').textContent = currentSalon.ville || '—';
+    const seuilEl = $('settingsSeuilCouvertsValue');
+    if (seuilEl) seuilEl.textContent = (currentSalon.seuil_couverts ? currentSalon.seuil_couverts + ' personnes' : '— (aucun)');
 
     // Horaires & réservations
     $('settingsDureeValue').textContent = (currentSalon.duree_table_minutes || 70) + ' min';
@@ -17108,8 +17160,37 @@
   //   TOAST/BANDEAU NOTIFICATION IN-APP
   // ═══════════════════════════════════════════════════════════
   let _toastTimer = null;
+  let _simpleToastTimer = null;
+
+  // Petit toast discret pour les confirmations de changements (PAS le style SMS)
+  function showSimpleToast(message, durationMs = 2600) {
+    let el = document.getElementById('simpleToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'simpleToast';
+      el.style.cssText = 'position:fixed; left:50%; bottom:calc(100px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(10px); background:rgba(40,40,44,0.96); color:#fff; font-size:14px; font-weight:500; padding:11px 18px; border-radius:14px; z-index:5000; opacity:0; transition:opacity 0.2s, transform 0.2s; pointer-events:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:0.5px solid rgba(255,255,255,0.14); box-shadow:0 8px 24px rgba(0,0,0,0.3); max-width:80vw; text-align:center;';
+      document.body.appendChild(el);
+    }
+    el.textContent = message || '';
+    requestAnimationFrame(() => {
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    if (_simpleToastTimer) { clearTimeout(_simpleToastTimer); }
+    _simpleToastTimer = setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-50%) translateY(10px)';
+      _simpleToastTimer = null;
+    }, durationMs);
+  }
 
   function showToast(title, msg, durationMs = 5000) {
+    // Appel à UN seul argument = confirmation/erreur de changement → petit toast discret
+    // (le style SMS riche est réservé aux VRAIES notifications, appelées avec un titre ET un message)
+    if (msg === undefined || msg === null) {
+      showSimpleToast(title);
+      return;
+    }
     const toast = document.getElementById('toastNotif');
     if (!toast) return;
     const titleEl = document.getElementById('toastNotifTitle');

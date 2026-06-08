@@ -17130,9 +17130,8 @@
     // Remplacer le contenu de la popup
     const title = $('modalPopupTitle');
     const body = $('modalPopupBody');
-    if (title) title.textContent = nom;
     if (body) {
-      // Mémoriser l'ancien contenu (liste) pour pouvoir y revenir
+      // Mémoriser l'ancien contenu (liste) ET le titre AVANT toute modification
       const popup = $('modalPopup');
       if (!popup.dataset.prevContent) {
         popup.dataset.prevContent = body.innerHTML;
@@ -17141,6 +17140,7 @@
       body.innerHTML = html;
       body.scrollTop = 0;
     }
+    // Le titre reste "Notification Frizz" (on ne le remplace pas par le nom du client)
     // Bouton fermer : retourne à la liste au lieu de fermer
     const closeBtn = $('modalPopupCloseBtn');
     if (closeBtn) {

@@ -1476,15 +1476,18 @@
     fill: none;
   }
   /* Override couleurs UNIQUEMENT dans la popup Activités */
-  /* Création de résa (kind=created) : était bleu → maintenant vert */
-  #popupActivitesContainer .activity-item-icon--blue {
-    background: rgba(48, 209, 88, 0.18) !important;
-    color: #30D158 !important;
-  }
-  /* Message (kind=message) : était vert → maintenant bleu */
+  /* Toutes les icônes (nouvelle résa, appel, annulation, modification, message…) à la couleur du plan */
+  #popupActivitesContainer .activity-item-icon,
+  #popupActivitesContainer .activity-item-icon--blue,
+  #popupActivitesContainer .activity-item-icon--orange,
+  #popupActivitesContainer .activity-item-icon--red,
   #popupActivitesContainer .activity-item-icon--green {
-    background: rgba(10, 132, 255, 0.18) !important;
-    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--plan-accent) !important;
+  }
+  #popupActivitesContainer .activity-item-icon svg {
+    color: var(--plan-accent) !important;
+    stroke: var(--plan-accent) !important;
   }
   /* Coche "marquer comme lu" : pas de fond, juste les doubles coches en couleur du plan */
   #popupActivitesContainer .activity-item.read .activity-item-check {

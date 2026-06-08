@@ -1583,6 +1583,7 @@
   }
   .client-action--green .client-action-icon { background: #30D158; }
   .client-action--blue .client-action-icon { background: #FFFFFF; }
+  .client-action--blue .client-action-icon svg { color: #000000; fill: #000000; }
   .client-action--whatsapp .client-action-icon { background: #25D366; }
   .client-action-label {
     font-size: 13px;
@@ -16735,6 +16736,12 @@
     const body = $('modalPopupBody');
     if (!popup || !backdrop || !body) return;
 
+    // Nettoyer tout état de profil client résiduel (évite que le titre reste sur un nom de client)
+    delete popup.dataset.prevContent;
+    delete popup.dataset.prevTitle;
+    const cbtn = $('modalPopupCloseBtn');
+    if (cbtn) cbtn.dataset.mode = '';
+
     // Définir titre + contenu selon le type
     let titleText = '';
     let bodyHTML = '';
@@ -17908,6 +17915,11 @@
     if (popup) {
       popup.classList.remove('visible');
       popup.style.transform = '';
+      // Nettoyer l'état profil client (titre/contenu mémorisés)
+      delete popup.dataset.prevContent;
+      delete popup.dataset.prevTitle;
+      const cb = $('modalPopupCloseBtn');
+      if (cb) cb.dataset.mode = '';
     }
     if (backdrop) backdrop.classList.remove('visible');
     document.body.style.overflow = '';

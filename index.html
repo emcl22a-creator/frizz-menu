@@ -16374,6 +16374,10 @@
       const telClean = tel.replace(/\s/g, '');
       const raison = (item.raison || '').replace(/</g, '&lt;');
       const catLabel = (typeof MESSAGE_CAT_LABELS !== 'undefined' && MESSAGE_CAT_LABELS[item.categorie]) ? MESSAGE_CAT_LABELS[item.categorie] : 'Message';
+      // Couleur du plan d'abonnement pour l'avatar
+      const planColor = (getComputedStyle(document.body).getPropertyValue('--plan-accent') || '#FFFFFF').trim() || '#FFFFFF';
+      // Initiales
+      const initiales = (item.nom || 'A').toString().trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase();
       let overlay = document.getElementById('msgProfileOverlay');
       if (overlay) overlay.remove();
       overlay = document.createElement('div');
@@ -16387,13 +16391,18 @@
            <a href="sms:${telClean}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.12); color:#fff; font-weight:600; padding:13px; border-radius:14px; text-decoration:none;">Envoyer un SMS</a>`
         : '';
       overlay.innerHTML = `
-        <div style="background:rgba(255,0,0,0.5); width:100%; max-width:600px; border-top-left-radius:24px; border-top-right-radius:24px; padding:22px 22px calc(env(safe-area-inset-bottom) + 28px);">
+        <div style="background:#1A1A1D; width:100%; max-width:600px; border-top-left-radius:24px; border-top-right-radius:24px; padding:22px 22px calc(env(safe-area-inset-bottom) + 28px);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
             <span style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.55); text-transform:uppercase; letter-spacing:0.5px;">${catLabel}</span>
             <button id="msgProfileClose" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center;">✕</button>
           </div>
-          <div style="font-size:24px; font-weight:700; color:#fff; margin-bottom:4px;">${nom}</div>
-          <div style="margin-bottom:18px;">${telBlock}</div>
+          <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+            <div style="width:52px; height:52px; border-radius:50%; background:${planColor}; color:#000; display:flex; align-items:center; justify-content:center; font-size:19px; font-weight:700; flex-shrink:0;">${initiales}</div>
+            <div>
+              <div style="font-size:22px; font-weight:700; color:#fff; margin-bottom:2px;">${nom}</div>
+              <div>${telBlock}</div>
+            </div>
+          </div>
           ${raison ? `<div style="background:rgba(255,255,255,0.06); border-radius:14px; padding:14px; font-size:15px; color:rgba(255,255,255,0.85); line-height:1.5; margin-bottom:18px;">${raison}</div>` : ''}
           <div style="display:flex; gap:10px;">${actions}</div>
         </div>`;

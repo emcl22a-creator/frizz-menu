@@ -16204,7 +16204,7 @@
             date: m.created_at,
             read: m.traite === true,
             nom: m.appelant_nom || 'Appelant',
-            telephone: m.appelant_tel || m.telephone || m.tel || m.phone || m.numero || m.numero_appelant || m.from_number || '',
+            telephone: m.appelant_telephone || m.appelant_tel || m.telephone || m.tel || m.phone || m.numero || m.numero_appelant || m.from_number || '',
             raison: m.raison || '',
             categorie: m.categorie,
             _raw: m
@@ -16332,7 +16332,52 @@
             else subtitle.textContent = `${unread2} non lue${unread2 > 1 ? 's' : ''}`;
           }
         });
+        // Clic sur l'item (message) → ouvre le profil complet avec téléphone + actions
+        if (el.dataset.type === 'message') {
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', () => {
+            const items = buildActivityList();
+            const item = items.find(i => String(i.id) === String(el.dataset.id) && i.type === 'message');
+            if (item) openMessageProfile(item);
+          });
+        }
       });
+    }
+
+    // Popup profil complet d'un message (nom, téléphone, raison, boutons Rappeler/SMS)
+    function openMessageProfile(item) {
+      const nom = (item.nom || 'Appelant').replace(/</g, '&lt;');
+      const tel = (item.telephone || '').toString();
+      const telClean = tel.replace(/\s/g, '');
+      const raison = (item.raison || '').replace(/</g, '&lt;');
+      const catLabel = (typeof MESSAGE_CAT_LABELS !== 'undefined' && MESSAGE_CAT_LABELS[item.categorie]) ? MESSAGE_CAT_LABELS[item.categorie] : 'Message';
+      let overlay = document.getElementById('msgProfileOverlay');
+      if (overlay) overlay.remove();
+      overlay = document.createElement('div');
+      overlay.id = 'msgProfileOverlay';
+      overlay.style.cssText = 'position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:flex-end; justify-content:center;';
+      const telBlock = tel
+        ? `<a href="tel:${telClean}" style="font-size:17px; font-weight:600; color:#fff; text-decoration:none;">${tel.replace(/</g,'&lt;')}</a>`
+        : `<span style="font-size:15px; color:rgba(255,255,255,0.5);">Numéro non communiqué</span>`;
+      const actions = tel
+        ? `<a href="tel:${telClean}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#30D158; color:#000; font-weight:600; padding:13px; border-radius:14px; text-decoration:none;">Rappeler</a>
+           <a href="sms:${telClean}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.12); color:#fff; font-weight:600; padding:13px; border-radius:14px; text-decoration:none;">Envoyer un SMS</a>`
+        : '';
+      overlay.innerHTML = `
+        <div style="background:#1A1A1D; width:100%; max-width:600px; border-top-left-radius:24px; border-top-right-radius:24px; padding:22px 22px calc(env(safe-area-inset-bottom) + 28px);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <span style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.55); text-transform:uppercase; letter-spacing:0.5px;">${catLabel}</span>
+            <button id="msgProfileClose" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center;">✕</button>
+          </div>
+          <div style="font-size:24px; font-weight:700; color:#fff; margin-bottom:4px;">${nom}</div>
+          <div style="margin-bottom:18px;">${telBlock}</div>
+          ${raison ? `<div style="background:rgba(255,255,255,0.06); border-radius:14px; padding:14px; font-size:15px; color:rgba(255,255,255,0.85); line-height:1.5; margin-bottom:18px;">${raison}</div>` : ''}
+          <div style="display:flex; gap:10px;">${actions}</div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+      const closeBtn = document.getElementById('msgProfileClose');
+      if (closeBtn) closeBtn.addEventListener('click', () => overlay.remove());
     }
 
     async function persistRead(type, id, value) {

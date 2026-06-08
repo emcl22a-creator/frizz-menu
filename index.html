@@ -11488,6 +11488,17 @@
     </div>
   </div>
 
+  <div class="resa-detail-actions" id="resaDetailContactActions" style="display:none;">
+    <a class="resa-detail-action-btn" id="resaDetailCallBtn" href="#" style="background:#30D158; color:#000;">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Appeler
+    </a>
+    <a class="resa-detail-action-btn" id="resaDetailSmsBtn" href="#" style="background:rgba(255,255,255,0.12); color:#fff;">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      SMS
+    </a>
+  </div>
+
   <div class="resa-detail-actions">
     <button class="resa-detail-action-btn cancel" id="resaDetailCancelBtn">
       <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -12312,11 +12323,20 @@
     $('resaDetailCouverts').textContent = (parseInt(resa.nb_couverts) || '?') + ' personnes' + (resa.emplacement === 'terrasse' ? ' · Terrasse' : ' · Intérieur');
 
     // Téléphone : afficher seulement si présent
+    const contactActions = $('resaDetailContactActions');
     if (resa.client_telephone) {
       $('resaDetailTel').textContent = resa.client_telephone;
       $('resaDetailTelRow').classList.remove('hidden');
+      // Boutons Appeler / SMS
+      const telClean = String(resa.client_telephone).replace(/\s/g, '');
+      const callBtn = $('resaDetailCallBtn');
+      const smsBtn = $('resaDetailSmsBtn');
+      if (callBtn) callBtn.setAttribute('href', 'tel:' + telClean);
+      if (smsBtn) smsBtn.setAttribute('href', 'sms:' + telClean);
+      if (contactActions) contactActions.style.display = '';
     } else {
       $('resaDetailTelRow').classList.add('hidden');
+      if (contactActions) contactActions.style.display = 'none';
     }
 
     // Notes

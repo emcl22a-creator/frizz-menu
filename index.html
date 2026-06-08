@@ -13464,6 +13464,10 @@
     const iso = calIsoDate(calSelectedDate);
     const dayResas = (allReservations || [])
       .filter(r => r.date_reservation === iso && r.statut !== 'annulee' && r.statut !== 'annule')
+      .filter(r => {
+        const dObj = new Date(String(r.date_reservation).slice(0,10) + 'T00:00:00');
+        return isNaN(dObj.getTime()) || (new Date() - dObj) / 86400000 <= 14;
+      })
       .sort((a, b) => (a.heure_reservation || '').localeCompare(b.heure_reservation || ''));
 
     // Titre de la page = la date du jour sélectionné ("Vendredi 29 mai")
@@ -13576,6 +13580,9 @@
         if (d !== dateStr) return false;
         const s = String(r.statut || '').toLowerCase().trim();
         if (annulesStatuts.includes(s)) return false;
+        // Masquer les réservations dont la date est passée depuis plus de 2 semaines
+        const dObj = new Date(d + 'T00:00:00');
+        if (!isNaN(dObj.getTime()) && (new Date() - dObj) / 86400000 > 14) return false;
         return true;
       });
 
@@ -16174,6 +16181,16 @@
     };
 
     // Construit la liste agrégée et triée par date desc
+    // Renvoie true si la date de réservation est passée depuis plus de 14 jours
+    function estTropAncienne(dateResa) {
+      if (!dateResa) return false;
+      const d = new Date(String(dateResa).slice(0, 10) + 'T00:00:00');
+      if (isNaN(d.getTime())) return false;
+      const maintenant = new Date();
+      const diffJours = (maintenant - d) / (1000 * 60 * 60 * 24);
+      return diffJours > 14;
+    }
+
     function buildActivityList() {
       const items = [];
       // Réservations — uniquement celles prises par Frizz (IA/Vapi), pas les manuelles
@@ -16182,6 +16199,8 @@
           const src = (r.source || '').toString().toLowerCase().trim();
           const isFrizz = (src === 'ia' || src === 'vapi' || src === 'frizz_ia' || src === 'frizz' || src === 'frizz_ai' || src === 'ai');
           if (!isFrizz) return; // on ignore tout ce qui n'est pas un appel IA Frizz
+          // Masquer les réservations dont la date est passée depuis plus de 2 semaines
+          if (estTropAncienne(r.date_reservation || r.date)) return;
           const statut = (r.statut || r.status || r.state || '').toString().toLowerCase().trim();
           let kind = 'created';
           if (['annulee','annulée','annule','annulé','cancelled','canceled','cancel','annulation'].includes(statut)) {
@@ -16220,6 +16239,8 @@
       // Messages à rappeler
       if (typeof allMessages !== 'undefined' && Array.isArray(allMessages)) {
         allMessages.forEach(m => {
+          // Masquer les messages créés depuis plus de 2 semaines
+          if (estTropAncienne(m.created_at)) return;
           items.push({
             type: 'message',
             kind: 'message',

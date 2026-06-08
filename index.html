@@ -17026,7 +17026,7 @@
     const raw = item._raw || item;
     // Extraire les infos (cherche d'abord dans raw, puis dans item)
     const nom = raw.client_name || raw.nom || raw.client_nom || raw.appelant_nom || raw.from_name || item.nom || 'Client';
-    const tel = raw.client_phone || raw.telephone || raw.tel || raw.phone || raw.appelant_tel || raw.numero || raw.numero_appelant || raw.from_number || item.telephone || '';
+    const tel = raw.appelant_telephone || raw.client_phone || raw.client_telephone || raw.telephone || raw.tel || raw.phone || raw.appelant_tel || raw.numero || raw.numero_appelant || raw.from_number || item.telephone || '';
     const couverts = raw.nb_couverts || raw.couverts || item.nbCouverts || '';
     const dateResa = raw.date_reservation || raw.date || item.jour || '';
     const heureResa = raw.heure_reservation || raw.heure || raw.time || item.heure || '';
@@ -17049,11 +17049,13 @@
     // Construire le HTML du profil
     const escapeHTML = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const initial = nom.trim().charAt(0).toUpperCase() || '?';
+    // Couleur du plan d'abonnement pour l'avatar
+    const planColorProfil = (getComputedStyle(document.body).getPropertyValue('--plan-accent') || '#FFFFFF').trim() || '#FFFFFF';
 
     const html = `
       <div class="client-profile">
         <div class="client-profile-header">
-          <div class="client-profile-avatar">${escapeHTML(initial)}</div>
+          <div class="client-profile-avatar" style="background:${planColorProfil}; color:#000; box-shadow:0 6px 18px rgba(0,0,0,0.25);">${escapeHTML(initial)}</div>
           <div class="client-profile-name">${escapeHTML(nom)}</div>
           ${tel ? `<div class="client-profile-phone">${escapeHTML(tel)}</div>` : ''}
         </div>

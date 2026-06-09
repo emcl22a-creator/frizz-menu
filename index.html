@@ -16553,21 +16553,29 @@
         if (typeof allReservations !== 'undefined' && Array.isArray(allReservations)) {
           const now0 = new Date();
           const todayStart = new Date(now0.getFullYear(), now0.getMonth(), now0.getDate());
-          const resasUpcoming = allReservations.filter(r => {
+          const resasUpcomingList = allReservations.filter(r => {
             // Date de la résa elle-même (date_reservation) ou created_at en fallback
             const dateStr = r.date_reservation || r.created_at;
             if (!dateStr) return false;
+            // Exclure les réservations annulées
+            const st = String(r.statut || '').toLowerCase().trim();
+            if (st === 'annulee' || st === 'annule') return false;
             try {
               const d = new Date(r.date_reservation
                 ? `${r.date_reservation}T${r.heure_reservation || '00:00:00'}`
                 : r.created_at);
               return d >= todayStart;
             } catch (e) { return false; }
-          }).length;
-          // Si pas de résa à venir, montrer le total
-          const resasToShow = resasUpcoming > 0 ? resasUpcoming : allReservations.length;
+          });
+          const resasUpcoming = resasUpcomingList.length;
+          // Somme des COUVERTS à venir (pas le nombre de réservations)
+          const couvertsUpcoming = resasUpcomingList.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
+          // Si pas de résa à venir, montrer le total des couverts de toutes les résas
+          const couvertsToShow = resasUpcoming > 0
+            ? couvertsUpcoming
+            : allReservations.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
           const elResas = $('accueilResasValue');
-          if (elResas) elResas.textContent = resasToShow;
+          if (elResas) elResas.textContent = couvertsToShow;
           // Le dessin (3 lignes agenda) est désormais statique dans le HTML, pas généré par JS
           // Mettre à jour le sous-label
           const elResasMeta = $('accueilResasMeta');

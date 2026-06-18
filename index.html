@@ -10145,7 +10145,7 @@
           </div>
           <div class="health-card-body">
             <div class="health-card-value"><span id="accueilResasValue">0</span>
-              <div class="health-card-sublabel">couverts</div>
+              <div class="health-card-sublabel">réservations</div>
             </div>
             <div class="health-card-chart health-card-chart--cal-table" id="accueilResasChart" aria-hidden="true">
               <!-- Mini-tableau calendrier (style page d'agenda iOS) -->
@@ -16568,14 +16568,15 @@
             } catch (e) { return false; }
           });
           const resasUpcoming = resasUpcomingList.length;
-          // Somme des COUVERTS à venir (pas le nombre de réservations)
-          const couvertsUpcoming = resasUpcomingList.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
-          // Si pas de résa à venir, montrer le total des couverts de toutes les résas
-          const couvertsToShow = resasUpcoming > 0
-            ? couvertsUpcoming
-            : allReservations.reduce((s, r) => s + (parseInt(r.nb_couverts || r.couverts) || 0), 0);
+          // Nombre de réservations à venir (pas la somme des couverts)
+          const resasToShow = resasUpcoming > 0
+            ? resasUpcoming
+            : allReservations.filter(r => {
+                const st = String(r.statut || '').toLowerCase().trim();
+                return st !== 'annulee' && st !== 'annule';
+              }).length;
           const elResas = $('accueilResasValue');
-          if (elResas) elResas.textContent = couvertsToShow;
+          if (elResas) elResas.textContent = resasToShow;
           // Le dessin (3 lignes agenda) est désormais statique dans le HTML, pas généré par JS
           // Mettre à jour le sous-label
           const elResasMeta = $('accueilResasMeta');

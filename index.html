@@ -5403,6 +5403,31 @@
     padding: 0;
     flex-shrink: 0;
   }
+  .horaires-creneau-block {
+    margin-bottom: 8px;
+  }
+  .horaires-derniere-resa-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    margin-top: -9px;
+  }
+  .horaires-derniere-resa-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .horaires-derniere-resa-input {
+    width: auto !important;
+    min-width: 92px;
+    max-width: 110px;
+    flex-shrink: 0;
+  }
   .horaires-creneau-add {
     width: 100%;
     background: transparent;
@@ -14709,6 +14734,17 @@
   window.__renderHorairesAllDays = renderHorairesAllDays;
 
   // Ouvre la modale d'édition pour un jour donné
+  // Calcule une heure HH:MM moins 30 minutes (pour la dernière réservation par défaut)
+  function _heureMoins30(hhmm) {
+    if (!hhmm || !/^\d{1,2}:\d{2}/.test(hhmm)) return hhmm || '';
+    const [h, m] = hhmm.split(':').map(n => parseInt(n));
+    let total = h * 60 + m - 30;
+    if (total < 0) total = 0;
+    const nh = Math.floor(total / 60);
+    const nm = total % 60;
+    return String(nh).padStart(2, '0') + ':' + String(nm).padStart(2, '0');
+  }
+
   function openHorairesDayModal(dayKey) {
     if (!currentSalon) return;
     _horairesEditingDay = dayKey;
@@ -14718,13 +14754,18 @@
     _horairesEditingFerme = conf.ferme === true || (Array.isArray(conf.creneaux) && conf.creneaux.length === 0) || (!conf.creneaux && !conf.ouverture);
     // Copie locale des créneaux (pour pouvoir annuler sans tout perdre)
     if (Array.isArray(conf.creneaux) && conf.creneaux.length > 0) {
-      _horairesEditingCreneaux = conf.creneaux.map(c => ({
-        ouverture: c.ouverture || c.start || '12:00',
-        fermeture: c.fermeture || c.end || '14:30'
-      }));
+      _horairesEditingCreneaux = conf.creneaux.map(c => {
+        const fermeture = c.fermeture || c.end || '14:30';
+        return {
+          ouverture: c.ouverture || c.start || '12:00',
+          fermeture: fermeture,
+          // Dernière heure de réservation : valeur sauvegardée, sinon fermeture - 30 min par défaut
+          derniere_resa: c.derniere_resa || _heureMoins30(fermeture)
+        };
+      });
     } else if (conf.ouverture && conf.fermeture) {
       // Legacy : un seul créneau "ouverture / fermeture"
-      _horairesEditingCreneaux = [{ ouverture: conf.ouverture, fermeture: conf.fermeture }];
+      _horairesEditingCreneaux = [{ ouverture: conf.ouverture, fermeture: conf.fermeture, derniere_resa: _heureMoins30(conf.fermeture) }];
     } else {
       _horairesEditingCreneaux = [];
     }
@@ -14762,11 +14803,17 @@
     }
     addBtn.style.display = '';
     container.innerHTML = _horairesEditingCreneaux.map((c, idx) => `
-      <div class="horaires-creneau-row" data-idx="${idx}">
-        <input type="time" class="horaires-creneau-input" data-role="ouverture" data-idx="${idx}" value="${c.ouverture}">
-        <div class="horaires-creneau-sep">→</div>
-        <input type="time" class="horaires-creneau-input" data-role="fermeture" data-idx="${idx}" value="${c.fermeture}">
-        <button class="horaires-creneau-del" data-idx="${idx}" type="button" aria-label="Supprimer">×</button>
+      <div class="horaires-creneau-block" data-idx="${idx}">
+        <div class="horaires-creneau-row" data-idx="${idx}">
+          <input type="time" class="horaires-creneau-input" data-role="ouverture" data-idx="${idx}" value="${c.ouverture}">
+          <div class="horaires-creneau-sep">→</div>
+          <input type="time" class="horaires-creneau-input" data-role="fermeture" data-idx="${idx}" value="${c.fermeture}">
+          <button class="horaires-creneau-del" data-idx="${idx}" type="button" aria-label="Supprimer">×</button>
+        </div>
+        <div class="horaires-derniere-resa-row">
+          <span class="horaires-derniere-resa-label">Dernière réservation acceptée</span>
+          <input type="time" class="horaires-creneau-input horaires-derniere-resa-input" data-role="derniere_resa" data-idx="${idx}" value="${c.derniere_resa || ''}">
+        </div>
       </div>
     `).join('');
     // Bind events
@@ -14780,6 +14827,19 @@
       inp.addEventListener('input', e => {
         const idx = parseInt(inp.dataset.idx);
         _horairesEditingCreneaux[idx].fermeture = e.target.value;
+        // Si la dernière résa n'a pas été modifiée manuellement, la recaler à fermeture - 30
+        if (!_horairesEditingCreneaux[idx]._dernModifiee) {
+          _horairesEditingCreneaux[idx].derniere_resa = _heureMoins30(e.target.value);
+          const dernInp = container.querySelector(`input[data-role="derniere_resa"][data-idx="${idx}"]`);
+          if (dernInp) dernInp.value = _horairesEditingCreneaux[idx].derniere_resa;
+        }
+      });
+    });
+    container.querySelectorAll('input[data-role="derniere_resa"]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const idx = parseInt(inp.dataset.idx);
+        _horairesEditingCreneaux[idx].derniere_resa = e.target.value;
+        _horairesEditingCreneaux[idx]._dernModifiee = true; // l'utilisateur a personnalisé
       });
     });
     container.querySelectorAll('.horaires-creneau-del').forEach(btn => {
@@ -14813,7 +14873,13 @@
     } else {
       // Trier les créneaux par heure d'ouverture
       const sorted = [..._horairesEditingCreneaux].sort((a, b) => a.ouverture.localeCompare(b.ouverture));
-      newConf = { creneaux: sorted };
+      // Ne garder que les champs utiles (ouverture, fermeture, derniere_resa)
+      const cleaned = sorted.map(c => ({
+        ouverture: c.ouverture,
+        fermeture: c.fermeture,
+        derniere_resa: c.derniere_resa || _heureMoins30(c.fermeture)
+      }));
+      newConf = { creneaux: cleaned };
     }
     // Update la copie locale
     const horaires = { ...(currentSalon.horaires_ouverture || {}) };

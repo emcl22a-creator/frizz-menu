@@ -17268,6 +17268,7 @@
           <div class="stat-yearchart-title">Réservations · ${new Date().getFullYear()}</div>
           <div class="stat-yearchart-legend">
             <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:${frizzColor};"></span>Frizz</span>
+            <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:#000000; border:0.5px solid rgba(255,255,255,0.3);"></span>Manuelle</span>
             <span class="stat-yearchart-legend-item"><span class="stat-yearchart-legend-dot" style="background:#FFFFFF;"></span>Total</span>
           </div>
         </div>
@@ -17328,8 +17329,10 @@
       const innerH = h - padT - padB;
       const ptsFrizz = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.frizz / maxVal) * innerH)]);
       const ptsTotal = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.total / maxVal) * innerH)]);
+      const ptsManuel = yearData.map((dd, i) => [padL + i * xStep, padT + innerH - ((dd.manuel / maxVal) * innerH)]);
       const pathFrizz = pointsToSmoothPath(ptsFrizz);
       const pathTotal = pointsToSmoothPath(ptsTotal);
+      const pathManuel = pointsToSmoothPath(ptsManuel);
       const lastX = ptsFrizz[ptsFrizz.length - 1][0];
       const firstX = ptsFrizz[0][0];
       const baseY = padT + innerH;
@@ -17366,6 +17369,8 @@
           <path d="${areaTotal}" fill="url(#yearChartGradTotal)" stroke="none"/>
           <path d="${areaFrizz}" fill="url(#yearChartGradFrizz)" stroke="none"/>
           <path d="${pathTotal}" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathManuel}" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathManuel}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="${pathFrizz}" fill="none" stroke="${frizzColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           ${dotsFrizz}
           ${monthLabels}
@@ -17723,7 +17728,8 @@
       });
       const frizz = inMonth.filter(r => ['ia','vapi','frizz_ia','frizz'].includes((r.source||'').toString().toLowerCase().trim())).length;
       const total = inMonth.length;
-      data.push({ month: m, frizz, total });
+      const manuel = total - frizz; // réservations non prises par Frizz = saisies manuelles
+      data.push({ month: m, frizz, total, manuel });
     }
     return data;
   }
